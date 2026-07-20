@@ -1,0 +1,69 @@
+{
+  "contractVersion": "tasq.lifecycle-certification.v1",
+  "status": "candidate-certified-publication-pending",
+  "productShape": "tasq-local",
+  "supportedTargets": ["darwin-arm64", "linux-x64-gnu"],
+  "releaseAssets": {
+    "archive": "tasq-v<version>-<target>.tar.gz",
+    "installer": "tasq-v<version>-<target>.install.ts",
+    "manifest": "tasq-v<version>-<target>.release.json",
+    "checksums": "tasq-v<version>-<target>.SHA256SUMS",
+    "sbom": "tasq-v<version>-<target>.cdx.json",
+    "attestationAuthority": "protected-github-actions-tag-workflow"
+  },
+  "installation": {
+    "layout": "side-by-side-explicit-prefix",
+    "versionDirectory": "<prefix>/lib/tasq/<version>/<target>",
+    "activeExecutable": "<prefix>/bin/tasq",
+    "installRecord": "<prefix>/share/tasq/installations/<version>-<target>.json",
+    "activation": "atomic-managed-symlink",
+    "shellStartupMutation": false,
+    "implicitGlobalIdentityMutation": false
+  },
+  "data": {
+    "locationAuthority": "TASQ_HOME-or-user-config",
+    "managedByInstaller": false,
+    "uninstallDisposition": "preserved-not-touched",
+    "rollback": "restore-matching-verified-snapshot-and-activate-matching-binary",
+    "downgradeInPlace": false
+  },
+  "authority": {
+    "undocumentedListener": false,
+    "listenerOnInstall": false,
+    "credentialReadOnInstall": false,
+    "deviceClockReadOnInstall": false,
+    "runtimeAuthorityTime": "injected-clock-with-explicit-systemClock-composition-adapter"
+  },
+  "candidateEvidence": {
+    "test": "packages/tasq-cli/test/public-lifecycle.test.ts",
+    "requiredCiTargets": ["verify (macos-14)", "verify (ubuntu-latest)"],
+    "journey": [
+      "verify-release-envelope",
+      "install-outside-checkout",
+      "autonomous-onboard",
+      "two-agent-contention-and-recovery",
+      "inspect-same-ledger-through-console",
+      "backup",
+      "direct-upgrade",
+      "doctor-and-read-after-upgrade",
+      "restore-snapshot-with-matching-binary",
+      "uninstall-all-binaries-with-data-preserved"
+    ],
+    "negativeCases": [
+      "tampered-archive-refused",
+      "installer-checksum-mismatch-refused",
+      "wrong-host-target-refused",
+      "unmanaged-binary-collision-refused",
+      "different-bytes-same-version-refused"
+    ]
+  },
+  "publishedArtifactEvidence": {
+    "status": "not-run-no-public-release-exists",
+    "requiredBeforeCompletion": [
+      "verify-each-published-asset-attestation",
+      "run-clean-room-journey-from-downloaded-assets-on-both-targets",
+      "record-release-url-version-commit-and-digests"
+    ]
+  },
+  "tq604Complete": false
+}

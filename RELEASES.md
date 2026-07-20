@@ -27,3 +27,10 @@ Use `linux-x64-gnu` on the supported Linux runner. Inputs are explicit and no
 build timestamp is recorded. The output is deterministic, but remains
 unpublishable until protected CI in the canonical public repository attests
 it. See `TQ-603_RELEASE_CONTRACT.md` for files, verification and refusal gates.
+
+Each target envelope also contains a target-named `.install.ts` lifecycle
+tool. It verifies itself, the manifest and archive against `SHA256SUMS`, then
+installs versions side by side under an explicit prefix. It never edits shell
+startup files or manages `TASQ_HOME`. Exact commands, upgrade/rollback rules
+and the remaining published-byte gate are in
+`TQ-604_LIFECYCLE_CERTIFICATION.md`.

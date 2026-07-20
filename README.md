@@ -48,6 +48,13 @@ argv recipes. Actor labels are attribution, not authentication or authority.
 The packages are release candidates until the first protected, attested public
 release is published. Do not infer npm availability from this source tree.
 
+The release-candidate lifecycle is implemented: target artifacts include a
+checksummed standalone installer, side-by-side activation and data-preserving
+uninstall. The complete install/upgrade/restore contract and its executable
+clean-room evidence are documented in
+[TQ-604_LIFECYCLE_CERTIFICATION.md](TQ-604_LIFECYCLE_CERTIFICATION.md). No
+download command is advertised until protected artifacts actually exist.
+
 ## Build from source
 
 Requirements: Bun 1.3+, Node.js 22+, and pnpm 10.29+.

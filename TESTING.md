@@ -172,6 +172,13 @@ raw host time only inside the explicit `systemClock` adapter.
 archive/SBOM/manifest/checksum bytes. It rejects target mismatch, detects a
 tampered archive, proves no absolute builder path remains, extracts outside the
 checkout and performs real onboarding from only the shipped files.
+`public-lifecycle.test.ts` executes the complete target release lifecycle from
+outside the checkout: self/checksum/manifest verification, side-by-side
+install, autonomous onboarding, two-process resource contention and recovery,
+same-ledger Console inspection, backup, upgrade, `doctor`, matching
+snapshot/binary restore, and data-preserving uninstall. It also refuses a
+tampered archive and an unmanaged executable collision. CI runs it on both
+supported native targets.
 `web.test.ts` starts the real loopback listener on an ephemeral port, reads its
 JSON, sends `SIGTERM`, proves the socket and database close, and exercises
 missing tenant, JSON misuse and public-bind refusal.
@@ -302,9 +309,10 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   non-compensable failures and state-based release evidence. It validates a
   design matrix, not a hosted implementation certificate.
 - eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
-  shapes, the closed support vocabulary, consumer inputs and the explicit
-  absence of public install, REST, remote MCP and self-host lifecycle. It is a
-  design/claims guard, not evidence that those missing surfaces ship.
+  shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
+  the claims guard with a candidate-only public install lifecycle while REST,
+  remote MCP and self-host lifecycle remain explicitly absent. The machine
+  certificate cannot claim published-byte completion before a release exists.
 
 See `packages/tasq-evals/README.md` for the rationale of evals vs tests.
 

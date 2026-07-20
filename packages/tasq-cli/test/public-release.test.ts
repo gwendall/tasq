@@ -57,6 +57,7 @@ describe.skipIf(target === null)("Tasq public release envelope", () => {
     expect(names).toEqual([
       `${expectedPrefix}.SHA256SUMS`,
       `${expectedPrefix}.cdx.json`,
+      `${expectedPrefix}.install.ts`,
       `${expectedPrefix}.release.json`,
       `${expectedPrefix}.tar.gz`,
     ]);

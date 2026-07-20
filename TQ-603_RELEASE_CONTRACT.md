@@ -13,6 +13,8 @@ clean CI build emits:
   executable Bun bundle, native SQLite binding, migrations, Apache-2.0 license,
   generated third-party notices and the matching SBOM;
 - `tasq-v<version>-<target>.cdx.json`, a deterministic CycloneDX 1.6 SBOM;
+- `tasq-v<version>-<target>.install.ts`, the standalone checksummed lifecycle
+  tool for explicit-prefix install, activation and data-preserving uninstall;
 - `tasq-v<version>-<target>.release.json`, the source commit, target, runtime,
   compatibility, file digests and provenance policy;
 - `tasq-v<version>-<target>.SHA256SUMS`, independent SHA-256 checksums.
@@ -43,6 +45,12 @@ gzip output is deterministic. Two builds with identical sources, lockfile, Bun
 version, target and explicit inputs must be byte-identical. The release test
 builds twice, compares every file, extracts the archive outside the checkout,
 and performs real autonomous onboarding.
+
+The lifecycle candidate extends that clean-room gate through side-by-side
+install, two-agent contention/recovery, Console inspection, backup, upgrade,
+snapshot-and-binary rollback and data-preserving uninstall. See
+`TQ-604_LIFECYCLE_CERTIFICATION.md`. Published-byte certification remains
+pending because no public release exists yet.
 
 A local output is always an **unpublishable candidate**. Only the protected tag
 workflow in the canonical public repository may attach GitHub/Sigstore build

@@ -77,7 +77,7 @@ provenance before publication.
 The canonical repository, required Linux/macOS checks, pull-request rule,
 non-deletable/non-fast-forward `main`, immutable `v*` tags, tag-scoped
 `release` environment, dependency alerts, secret scanning and private
-vulnerability reporting are active. The destination CI runs the complete 697
+vulnerability reporting are active. The destination CI runs the complete
 test suite in isolated package processes and rejects an install that mutates
 tracked source.
 
