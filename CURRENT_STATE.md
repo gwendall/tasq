@@ -35,5 +35,5 @@ Authority time is injectable throughout the kernel. Raw device time is allowed
 only in the explicit `systemClock` composition adapter.
 
 For orientation, read `README.md`, `PRODUCT_CONSUMPTION_SPEC.md`,
-`UNIVERSAL_KERNEL_SPEC.md`, `ARCHITECTURE.md`, and `SECURITY.md`, then run
-`pnpm typecheck` and `pnpm test`.
+`UNIVERSAL_KERNEL_SPEC.md`, `BACKLOG.md`, `ARCHITECTURE.md`, and `SECURITY.md`,
+then run `pnpm typecheck` and `pnpm test`.

@@ -1,7 +1,9 @@
 # Working on Tasq
 
 Read `README.md`, `CURRENT_STATE.md`, `PRODUCT_CONSUMPTION_SPEC.md`,
-`UNIVERSAL_KERNEL_SPEC.md`, and `SECURITY.md` before changing a public contract.
+`UNIVERSAL_KERNEL_SPEC.md`, `BACKLOG.md`, and `SECURITY.md` before changing a
+public contract. `BACKLOG.json` is the machine-readable execution authority;
+planned status never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
 
 Non-negotiable rules:
 

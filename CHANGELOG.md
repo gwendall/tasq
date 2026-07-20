@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Add canonical human and machine-readable public backlogs so a fresh human or
+  agent can distinguish the next executable checkpoint, external publication
+  gates and unimplemented remote products without private-repository context.
 - Add a deterministic target release installer with side-by-side versions,
   atomic activation and data-preserving uninstall, plus a clean-room lifecycle
   certificate covering onboarding, contention, Console, backup, upgrade and
