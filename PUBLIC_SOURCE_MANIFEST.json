@@ -467,7 +467,7 @@
     {
       "path": "packages/tasq-cli/src/index.ts",
       "sha256": "bf70e9d55dc495f53fb1ac06263b5ce71ababd9b061a1236ffef8ad1d3fbe015",
-      "executable": true
+      "executable": false
     },
     {
       "path": "packages/tasq-cli/src/journal.ts",
@@ -1087,7 +1087,7 @@
     {
       "path": "packages/tasq-filesystem-watcher/src/cli.ts",
       "sha256": "514a668230a04ca60bd2c896d07f17220e4479a9bec7a8ead0cfcfcd863aad20",
-      "executable": true
+      "executable": false
     },
     {
       "path": "packages/tasq-filesystem-watcher/src/index.ts",
@@ -1227,7 +1227,7 @@
     {
       "path": "packages/tasq-mcp/src/stdio.ts",
       "sha256": "d8853422ccfd8fc175b171555e0c9756042c291b00bc9a3aa74fb9a0e3ee16ce",
-      "executable": true
+      "executable": false
     },
     {
       "path": "packages/tasq-mcp/test/mcp-server.test.ts",

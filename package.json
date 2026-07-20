@@ -15,5 +15,8 @@
     "build:cli": "bun packages/tasq-cli/scripts/build.ts --outdir dist/cli",
     "build:packages": "bun scripts/release/build-public-packages.ts",
     "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }
