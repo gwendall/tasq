@@ -14,7 +14,7 @@
     "./context-packet": "./src/context-packet.ts"
   },
   "scripts": {
-    "test": "bun test",
+    "test": "bun run ./scripts/test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
