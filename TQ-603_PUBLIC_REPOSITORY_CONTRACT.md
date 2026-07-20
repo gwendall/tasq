@@ -1,6 +1,6 @@
 # TQ-603 public repository contract
 
-**Status:** deterministic standalone export implemented; destination repository not yet created
+**Status:** canonical public repository live and protected; npm publication still gated
 **Contract:** `tasq.public-source-export.v1`
 
 ## Purpose
@@ -17,8 +17,9 @@ Before cutover, `products/tasq` is the source authority and
 The exporter accepts only an explicit 40-character source commit and output
 directory. It does not read wall time or device time.
 
-After the reviewed candidate is committed to `gwendall/tasq`, that public
-repository becomes canonical. Further work lands there first. The private
+The reviewed candidate was committed to `gwendall/tasq` as
+`ce8070e066ab0c4df15bbcacd98ad871d9cd8db3`; that public repository is now
+canonical. Further work lands here first. The private
 monorepo may consume releases or a one-way generated mirror; bidirectional
 source synchronization is forbidden because it creates two competing truths.
 
@@ -56,7 +57,7 @@ not a substitute for green destination-repository CI.
 
 ## Repository protection
 
-The destination must be public and have:
+The destination is public and has:
 
 1. `main` protected against deletion and non-fast-forward updates;
 2. pull requests and both Linux/macOS CI checks required before merge;
@@ -71,9 +72,15 @@ The release workflow independently verifies repository identity, exact
 `vX.Y.Z` tag-to-commit identity, explicit version, checksums, SBOMs and build
 provenance before publication.
 
-## Honest current limit
+## Observed cutover state
 
-The exporter, lockfile and destination workflows exist and pass locally. The
-external repository, repository rules, npm scope ownership and npm trusted
-publisher are external state and remain unverified until configured and
-observed directly. No local artifact is publishable authority.
+The canonical repository, required Linux/macOS checks, pull-request rule,
+non-deletable/non-fast-forward `main`, immutable `v*` tags, tag-scoped
+`release` environment, dependency alerts, secret scanning and private
+vulnerability reporting are active. The destination CI runs the complete 694
+test suite in isolated package processes and rejects an install that mutates
+tracked source.
+
+The remaining external blockers are npm `@tasq` scope control and trusted
+publisher configuration. No local artifact and no untagged GitHub build is
+publishable authority.

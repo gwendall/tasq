@@ -1,13 +1,13 @@
 {
   "contractVersion": "tasq.public-release-policy.v1",
-  "status": "accepted-not-published",
+  "status": "canonical-repository-live-not-published",
   "acceptedAt": "2026-07-20",
   "identity": {
     "productName": "Tasq",
     "cliBinary": "tasq",
     "npmScope": "@tasq",
     "canonicalRepository": "https://github.com/gwendall/tasq",
-    "repositoryState": "standalone-export-ready-not-created",
+    "repositoryState": "public-canonical-protected",
     "unscopedNpmPackage": {
       "name": "tasq",
       "ownership": "unrelated-third-party",
@@ -26,7 +26,7 @@
     "contributionTerms": "DCO-1.1",
     "copyrightModel": "contributor-retained-no-assignment",
     "initialLicensor": "@gwendall",
-    "scope": "products/tasq subtree until public repository cutover"
+    "scope": "canonical public repository; private monorepo siblings excluded"
   },
   "repository": {
     "topology": "dedicated-public-monorepo",
@@ -154,5 +154,26 @@
     "tag_protection_configured",
     "license_and_third_party_notice_closure_verified",
     "candidate_targets_clean_room_certified"
-  ]
+  ],
+  "externalPublicationGateStatus": {
+    "canonical_repository_control_verified": true,
+    "npm_scope_control_verified": false,
+    "trusted_publishing_configured": false,
+    "tag_protection_configured": true,
+    "license_and_third_party_notice_closure_verified": true,
+    "candidate_targets_clean_room_certified": true
+  },
+  "repositoryControls": {
+    "requiredPullRequest": true,
+    "requiredChecks": [
+      "verify (macos-14)",
+      "verify (ubuntu-latest)"
+    ],
+    "mainDeletionAllowed": false,
+    "mainNonFastForwardAllowed": false,
+    "releaseTagPattern": "v*",
+    "releaseTagsMutable": false,
+    "releaseEnvironment": "release",
+    "privateVulnerabilityReporting": true
+  }
 }

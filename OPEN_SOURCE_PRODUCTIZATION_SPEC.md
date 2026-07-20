@@ -1,7 +1,7 @@
 # TQ-601/TQ-602 — Open-source productization specification
 
 > **Status:** accepted productization and governance boundary, not released — 2026-07-20
-> **Current truth:** all Tasq packages are currently private monorepo packages
+> **Current truth:** source is public and canonical; npm packages and release artifacts are not yet published
 > **Product contract:** `PRODUCT_CONSUMPTION_SPEC.md`
 > **Binding decision:** `ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
 > `PUBLIC_RELEASE_POLICY.json`
@@ -94,10 +94,11 @@ opens a network listener or migrates an unrelated/live store.
 
 ## 6. Repository and community baseline
 
-The selected initial repository is `https://github.com/gwendall/tasq`, a
-dedicated monorepo exported from ``. At first release it becomes
-the public source/tag/issue authority; the private monorepo may consume releases
-or a one-way generated mirror, never a permanent bidirectional fork.
+The selected repository is `https://github.com/gwendall/tasq`, a dedicated
+monorepo initially exported from the private `products/tasq` subtree. The
+public source cutover is complete: this repository is the source, tag, issue
+and security authority. The private monorepo may consume releases or a one-way
+generated mirror, never a permanent bidirectional fork.
 
 Before public announcement the chosen repository contains, at minimum:
 

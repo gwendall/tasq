@@ -28,12 +28,13 @@ The build receives `version`, `sourceCommit` and `target` explicitly. It omits
 wall-clock metadata. Release tooling is covered by the same architecture test
 that rejects ambient device time outside `systemClock`.
 
-`scripts/release/export-public-repository.ts` also creates the complete
-standalone source candidate for `gwendall/tasq`. It uses an explicit allowlist,
-rewrites public/internal package coordinates, materializes strict Core,
-includes a frozen lockfile and protected CI/release workflows, and records
-every output digest and executable bit in `PUBLIC_SOURCE_MANIFEST.json`. See
-`TQ-603_PUBLIC_REPOSITORY_CONTRACT.md`.
+The private bootstrap exporter created the complete standalone source
+candidate for `gwendall/tasq`. It used an explicit allowlist, rewrote
+public/internal package coordinates, materialized strict Core, included a
+frozen lockfile and protected CI/release workflows, and recorded every initial
+output digest and executable bit in `PUBLIC_SOURCE_MANIFEST.json`. That
+manifest is historical cutover evidence, not a live manifest for later public
+commits. See `TQ-603_PUBLIC_REPOSITORY_CONTRACT.md`.
 
 ## Reproducibility and authority
 
@@ -74,6 +75,8 @@ The pipeline must refuse a public release until all of these facts are true:
    old internal identifier without creating a dependency);
 7. every shipped component has a declared license and SBOM identity.
 
-The current repository can exercise all three candidate pipelines but cannot
-satisfy gates 1, 3 or 4. Therefore this checkpoint does not claim that Tasq is
-published.
+The canonical public repository and both clean-room CI targets now satisfy
+gates 1 and 5, while the repository rules, release environment and immutable
+tag policy enforce the corresponding source boundary. Gates 3 and 4 remain
+blocked until npm `@tasq` scope control and trusted publishing are observed
+directly. Therefore this checkpoint does not claim that Tasq is published.

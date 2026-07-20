@@ -8,10 +8,12 @@ Tasq currently ships source for two local product shapes:
 Server, remote REST/MCP and Cloud are planned, not implemented. Provider
 connectors, domain policy and agent runtimes remain outside Core.
 
-The repository contains seven public package sources and private compatibility,
-example and eval workspaces. A package is not available merely because its
-source exists here; npm availability starts only after a protected attested
-release.
+This is the canonical public source repository. `main` requires pull requests
+and green Linux/macOS CI; release tags are immutable and the `release`
+environment accepts only `v*` tags. The repository contains seven public
+package sources and private compatibility, example and eval workspaces. A
+package is not available merely because its source exists here; npm
+availability starts only after a protected attested release.
 
 The shortest verified loop is:
 
