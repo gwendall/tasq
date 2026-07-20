@@ -15,6 +15,7 @@ import {
   openDb,
   runKernelMigrations,
 } from "../src/kernel.js";
+import { assertDatabaseInvariantRejected } from "./support/database-invariant.js";
 
 const tmpDirs: string[] = [];
 afterEach(() => {
@@ -123,10 +124,16 @@ describe("TQ-503 external context links", () => {
       });
       expect(history.map((item) => item.state)).toEqual(["superseded", "superseded", "detached"]);
 
-      await expect(Promise.resolve(db.update(externalContextLink).set({ version: "tampered" })
-        .where(eq(externalContextLink.id, root.id)))).rejects.toThrow(/immutable/);
-      await expect(Promise.resolve(db.delete(externalContextLink)
-        .where(eq(externalContextLink.id, root.id)))).rejects.toThrow(/append-only/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(externalContextLink).set({ version: "tampered" })
+          .where(eq(externalContextLink.id, root.id))),
+        /immutable/,
+      );
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.delete(externalContextLink)
+          .where(eq(externalContextLink.id, root.id))),
+        /append-only/,
+      );
     } finally {
       await close();
     }

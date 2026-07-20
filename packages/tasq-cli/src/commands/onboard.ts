@@ -18,6 +18,7 @@ import { printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 import { configDir } from "../config.js";
 import { existsSync, lstatSync } from "node:fs";
+import { errorMatches, errorMessage } from "../errors.js";
 
 const CAPABILITY_ORDER = new Map(
   BOOTSTRAP_RECIPE_CAPABILITIES.map((capability, index) => [capability, index]),
@@ -506,10 +507,10 @@ export async function onboardCmd(
 }
 
 export function printOnboardProblem(error: unknown, executable = "tasq"): number {
-  const unboundedMessage = error instanceof Error ? error.message : String(error);
+  const unboundedMessage = errorMessage(error);
   const message = [...unboundedMessage].slice(0, 2_000).join("") || "Unknown bootstrap failure";
   const isConfig = /^Config error/.test(message);
-  const isStorage = /database|disk|permission|SQLITE|readonly|read-only/i.test(message);
+  const isStorage = errorMatches(error, /database|disk|permission|SQLITE|readonly|read-only/i);
   const isUnsafeHome = /^Unsafe Tasq home/.test(message);
   const isInput = /^(Missing|required|Unexpected|Unknown flag|Invalid (?:value|boolean|number|JSON)|--)/i.test(message) ||
     (error instanceof Error && error.name === "ZodError");
@@ -519,7 +520,7 @@ export function printOnboardProblem(error: unknown, executable = "tasq"): number
     status: "error",
     code,
     message,
-    retryable: /SQLITE_BUSY|temporar|locked/i.test(message),
+    retryable: errorMatches(error, /SQLITE_BUSY|temporar|locked/i),
     nextActions: isUnsafeHome ? [{
       description: "Inspect and explicitly repair private Tasq filesystem permissions before retrying.",
       argv: [executable, "doctor", "--fix-permissions", "--json"],

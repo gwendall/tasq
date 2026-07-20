@@ -24,6 +24,7 @@ import type { ParsedArgs } from "../args.js";
 import { color, printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 import { RESOURCE_USAGE } from "./usage.js";
+import { errorMatches, errorMessage } from "../errors.js";
 
 function parseDuration(raw: string | undefined): number | undefined {
   if (raw === undefined) return undefined;
@@ -96,11 +97,11 @@ function problemFor(
   actor: string | null,
   resourceKey: string | null,
 ) {
-  const message = [...(error instanceof Error ? error.message : String(error))].slice(0, 2_000).join("") || "Unknown resource failure";
+  const message = [...errorMessage(error)].slice(0, 2_000).join("") || "Unknown resource failure";
   const leaseError = error instanceof ResourceLeaseError ? error : null;
   const isInput = error instanceof Error && error.name === "ZodError" ||
     /^(Missing|required|Unexpected|Unknown flag|Invalid|--)/i.test(message);
-  const isStorage = /database|disk|permission|SQLITE|readonly|read-only/i.test(message);
+  const isStorage = errorMatches(error, /database|disk|permission|SQLITE|readonly|read-only/i);
   const code: ResourceProblemCode = leaseError?.code ?? (isInput ? "invalid_input" : isStorage ? "storage_error" : "unavailable");
   const currentLease: ResourceLeaseView | null = leaseError?.currentLease ?? null;
   const nextActions: Array<{
@@ -146,7 +147,7 @@ function problemFor(
     status: "error",
     code,
     message,
-    retryable: code === "contended" || code === "storage_error" && /BUSY|locked|temporar/i.test(message),
+    retryable: code === "contended" || code === "storage_error" && errorMatches(error, /BUSY|locked|temporar/i),
     workspaceId,
     resourceKey,
     currentLease,
@@ -257,7 +258,7 @@ export async function resourceCmd(
     // boundary where the first attempt committed. Reads are naturally safe.
     // Keep this retry inside the resource surface so the final failure still
     // uses its stdout-only typed problem contract.
-    if (/SQLITE_BUSY|database is locked/i.test(error instanceof Error ? error.message : String(error)) && busyAttempt < 5) {
+    if (errorMatches(error, /SQLITE_BUSY|database is locked/i) && busyAttempt < 5) {
       const delay = 25 * 2 ** (busyAttempt - 1);
       await new Promise((resolve) => setTimeout(resolve, delay));
       return resourceCmd(args, clock, busyAttempt + 1);

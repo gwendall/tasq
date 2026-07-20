@@ -17,6 +17,7 @@ import {
   runKernelMigrations,
 } from "../src/kernel.js";
 import { diagnoseStore } from "../src/doctor.js";
+import { assertDatabaseInvariantRejected } from "./support/database-invariant.js";
 
 const dirs: string[] = [];
 afterEach(() => {
@@ -143,10 +144,15 @@ describe("source-bound commitment summaries", () => {
       expect(correction.source.digest).toBe(first.source.digest);
       expect(correction.source.rawEventSequence).toBe(first.source.rawEventSequence);
 
-      await expect(Promise.resolve(db.update(commitmentSummary).set({ summary: "rewrite" })
-        .where(eq(commitmentSummary.id, first.id)))).rejects.toThrow("append-only");
-      await expect(Promise.resolve(db.delete(commitmentSummary).where(eq(commitmentSummary.id, first.id))))
-        .rejects.toThrow("append-only");
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(commitmentSummary).set({ summary: "rewrite" })
+          .where(eq(commitmentSummary.id, first.id))),
+        "append-only",
+      );
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.delete(commitmentSummary).where(eq(commitmentSummary.id, first.id))),
+        "append-only",
+      );
     } finally {
       await close();
     }

@@ -118,6 +118,21 @@ describe("Tasq public npm package candidates", () => {
       }
     }
 
+    for (const [releasedDirectory, sourceDirectory] of [
+      [`tasq-schema-${version}`, "tasq-schema"],
+      [`tasq-core-${version}`, "tasq-service"],
+    ]) {
+      const released = JSON.parse(await readFile(
+        join(extracted, releasedDirectory, "package", "package.json"),
+        "utf8",
+      ));
+      const source = JSON.parse(await readFile(
+        join(productRoot, "packages", sourceDirectory, "package.json"),
+        "utf8",
+      ));
+      expect(released.dependencies["drizzle-orm"]).toBe(source.dependencies["drizzle-orm"]);
+    }
+
     const coreRoot = join(extracted, `tasq-core-${version}`, "package", "src");
     for (const forbidden of ["areas.ts", "goals.ts", "projects.ts", "recurrence.ts", "life-task-policy.ts"]) {
       expect((await files(coreRoot)).some((path) => path.endsWith(`/${forbidden}`)), forbidden).toBe(false);
