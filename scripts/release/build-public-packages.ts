@@ -58,7 +58,24 @@ function parseInputs(): Inputs {
   return { version, sourceCommit, outdir: resolve(requiredFlag("--outdir")) };
 }
 
-function definitions(version: string): PublicPackage[] {
+async function selectedDependencies(
+  sourceDirectory: string,
+  names: readonly string[],
+): Promise<Record<string, string>> {
+  const source = JSON.parse(await readFile(
+    join(packagesRoot, sourceDirectory, "package.json"),
+    "utf8",
+  )) as { dependencies?: Record<string, string> };
+  return Object.fromEntries(names.map((name) => {
+    const version = source.dependencies?.[name];
+    if (!version || version.startsWith("workspace:")) {
+      throw new Error(`Missing external dependency ${name} in packages/${sourceDirectory}/package.json`);
+    }
+    return [name, version];
+  }));
+}
+
+async function definitions(version: string): Promise<PublicPackage[]> {
   return [
     {
       name: "@tasq/schema",
@@ -80,7 +97,7 @@ function definitions(version: string): PublicPackage[] {
         "./clock": "./src/clock.ts",
         "./ids": "./src/ids.ts",
       },
-      dependencies: { "drizzle-orm": "^0.36.4", zod: "^3.23.8" },
+      dependencies: await selectedDependencies("tasq-schema", ["drizzle-orm", "zod"]),
       copyMode: "all-source",
     },
     {
@@ -101,9 +118,7 @@ function definitions(version: string): PublicPackage[] {
       dependencies: {
         "@tasq/extension-sdk": version,
         "@tasq/schema": version,
-        "@libsql/client": "^0.14.0",
-        "drizzle-orm": "^0.36.4",
-        zod: "^3.23.8",
+        ...await selectedDependencies("tasq-service", ["@libsql/client", "drizzle-orm", "zod"]),
       },
       copyMode: "core-graph",
     },
@@ -117,8 +132,7 @@ function definitions(version: string): PublicPackage[] {
       dependencies: {
         "@tasq/core": version,
         "@tasq/schema": version,
-        "@modelcontextprotocol/sdk": "^1.29.0",
-        zod: "^3.23.8",
+        ...await selectedDependencies("tasq-mcp", ["@modelcontextprotocol/sdk", "zod"]),
       },
       copyMode: "all-source",
     },
@@ -128,7 +142,11 @@ function definitions(version: string): PublicPackage[] {
       description: "Commitment-safe MCP Tasks and A2A execution adapters for Tasq.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
-      dependencies: { "@tasq/core": version, "@tasq/schema": version, zod: "^3.23.8" },
+      dependencies: {
+        "@tasq/core": version,
+        "@tasq/schema": version,
+        ...await selectedDependencies("tasq-protocol-adapters", ["zod"]),
+      },
       copyMode: "all-source",
     },
     {
@@ -327,7 +345,7 @@ async function main(): Promise<void> {
   await mkdir(work, { recursive: true });
 
   const artifacts: Array<{ name: string; version: string; filename: string; sha256: string; dependencies: string[] }> = [];
-  for (const definition of definitions(inputs.version)) {
+  for (const definition of await definitions(inputs.version)) {
     const stage = join(work, definition.name.replace("@", "").replace("/", "-"));
     await stagePackage(definition, inputs, stage);
     const filename = await pack(stage, inputs.outdir);

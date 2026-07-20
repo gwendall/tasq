@@ -15,6 +15,7 @@
 
 import { committedMutationCount, systemClock, type Clock } from "@tasq-internal/local-service";
 import { parseArgs } from "./args.js";
+import { errorMatches, errorMessage } from "./errors.js";
 import { color, printError, printInfo } from "./output/format.js";
 import { configCmd, init } from "./commands/init.js";
 import { areaCmd } from "./commands/area.js";
@@ -404,30 +405,31 @@ export async function main(
       // replays read-only commands (mutations are atomic + serialized; see
       // its doc comment). Mutating commands surface exit 3 there rather than
       // risk a double-apply on replay — so we just re-throw here.
-      if (/SQLITE_BUSY|database is locked/i.test(err.message)) throw err;
+      if (errorMatches(err, /SQLITE_BUSY|database is locked/i)) throw err;
 
       // Zod errors are common ; surface them cleanly
+      const message = errorMessage(err);
       const isZod = err.name === "ZodError";
-      const isFK = /FOREIGN KEY|REFERENCES/.test(err.message);
-      const isUnique = /UNIQUE constraint/.test(err.message);
-      const isCheck = /CHECK constraint/.test(err.message);
+      const isFK = errorMatches(err, /FOREIGN KEY|REFERENCES/);
+      const isUnique = errorMatches(err, /UNIQUE constraint/);
+      const isCheck = errorMatches(err, /CHECK constraint/);
       // enumArg rejects an out-of-set flag value (e.g. --recurrence hourly) with
       // a "Invalid value for --<flag>" message — that is a validation error, same
       // class as a Zod parse failure, so it shares exit code 2.
-      const isEnumArg = /^Invalid value for --/.test(err.message);
-      const isArgError = /^(Unknown flag|Missing value for --|Invalid (number|boolean) for --|Invalid JSON for --|--.+ must be a JSON object)/.test(err.message);
+      const isEnumArg = /^Invalid value for --/.test(message);
+      const isArgError = /^(Unknown flag|Missing value for --|Invalid (number|boolean) for --|Invalid JSON for --|--.+ must be a JSON object)/.test(message);
 
       if (command === "onboard" && args.flag("json", "j") !== undefined) {
         return printOnboardProblem(err, executable);
       }
 
-      printError(err.message);
+      printError(message);
 
       if (isZod) return 2;
       if (isFK || isUnique || isCheck) return 2;
       if (isEnumArg || isArgError) return 2;
-      if (/^Config error/.test(err.message)) return 4;
-      if (/database|disk|permission/i.test(err.message)) return 3;
+      if (/^Config error/.test(message)) return 4;
+      if (errorMatches(err, /database|disk|permission|SQLITE/i)) return 3;
       return 1;
     }
     printError(String(err));
@@ -479,8 +481,8 @@ export async function runWithRetry(
     try {
       return await main(argv, clock, executable);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      const isTransient = /SQLITE_BUSY|database is locked/i.test(msg);
+      const msg = errorMessage(err);
+      const isTransient = errorMatches(err, /SQLITE_BUSY|database is locked/i);
       if (!isTransient) throw err;
       // Did a domain mutation commit during this attempt? If so, replaying the
       // whole command would double-apply (fresh uuidv7) — never replay; exit 3.
@@ -519,7 +521,7 @@ export async function runTasqCli(
     if (argv[0] === "onboard" && argv.some((value) => value === "--json" || value === "-j" || value.startsWith("--json="))) {
       return printOnboardProblem(err, executable);
     }
-    printError(err instanceof Error ? err.message : String(err));
+    printError(errorMessage(err));
     return 1;
   }
 }

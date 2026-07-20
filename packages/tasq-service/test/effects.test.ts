@@ -38,6 +38,7 @@ import {
   runKernelMigrations,
   startTaskAttempt,
 } from "../src/kernel.js";
+import { assertDatabaseInvariantRejected } from "./support/database-invariant.js";
 import { diagnoseStore, installExtension } from "../src/index.js";
 
 const tmpDirs: string[] = [];
@@ -270,10 +271,12 @@ describe("K2 effect and approval ledger", () => {
       expect((await listEvents(db, { entityId: commitment.id })).map((event) => event.eventType))
         .toContain("effect_proposed");
 
-      await expect(Promise.resolve(
-        db.update(effectTable).set({ requestDigest: `sha256:${"f".repeat(64)}`, revision: 2 })
-          .where(eq(effectTable.id, first.id)),
-      )).rejects.toThrow(/immutable/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(effectTable)
+          .set({ requestDigest: `sha256:${"f".repeat(64)}`, revision: 2 })
+          .where(eq(effectTable.id, first.id))),
+        /immutable/,
+      );
       expect(await diagnoseStore(db, client)).toMatchObject({ ok: true, issues: [] });
     } finally {
       await close();
@@ -365,10 +368,11 @@ describe("K2 effect and approval ledger", () => {
         now: 15_999,
       })).toMatchObject({ status: "authorized", revision: 4 });
 
-      await expect(Promise.resolve(
-        db.update(approvalTable).set({ decision: "denied" })
-          .where(eq(approvalTable.id, replacement.id)),
-      )).rejects.toThrow(/immutable/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(approvalTable).set({ decision: "denied" })
+          .where(eq(approvalTable.id, replacement.id))),
+        /immutable/,
+      );
       expect(await listEffectApprovals(db, { effectId: proposed.id })).toHaveLength(3);
     } finally {
       await close();
@@ -501,14 +505,17 @@ describe("K2 effect and approval ledger", () => {
         now: 11_450,
       })).toEqual(authorized);
 
-      await expect(Promise.resolve(db.update(effectTable).set({
-        status: "executing",
-        claimId: claim.id,
-        fence: claim.fence + 1,
-        executionStartedAt: 11_450,
-        updatedAt: 11_450,
-        revision: authorized.revision + 1,
-      }).where(eq(effectTable.id, proposed.id)))).rejects.toThrow(/live claim fence|running attempt/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(effectTable).set({
+          status: "executing",
+          claimId: claim.id,
+          fence: claim.fence + 1,
+          executionStartedAt: 11_450,
+          updatedAt: 11_450,
+          revision: authorized.revision + 1,
+        }).where(eq(effectTable.id, proposed.id))),
+        /live claim fence|running attempt/,
+      );
 
       await expect(beginEffectExecution(db, proposed.id, {
         principalId: proposer.id,
@@ -646,8 +653,11 @@ describe("K2 effect and approval ledger", () => {
         verifier: strongReceiptVerifier,
         now: 12_000,
       })).rejects.toThrow(/reused with different content/);
-      await expect(Promise.resolve(db.update(receiptTable).set({ recordedAt: 99_999 })
-        .where(eq(receiptTable.id, receipt.id)))).rejects.toThrow(/immutable/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(receiptTable).set({ recordedAt: 99_999 })
+          .where(eq(receiptTable.id, receipt.id))),
+        /immutable/,
+      );
       expect(await getEffectReceipt(db, receipt.id)).toEqual(receipt);
       const inspection = await inspectCommitment(db, commitment.id, {
         workspaceId: "gwendall",

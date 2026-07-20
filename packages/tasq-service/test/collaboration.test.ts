@@ -26,6 +26,7 @@ import {
   startTaskAttempt,
 } from "../src/kernel.js";
 import { dependTask, diagnoseStore, listDependencies, undependTask } from "../src/index.js";
+import { assertDatabaseInvariantRejected } from "./support/database-invariant.js";
 
 const tmpDirs: string[] = [];
 afterEach(() => {
@@ -207,9 +208,11 @@ describe("universal collaboration records", () => {
         digest: "sha256:abc123",
       }, { actor: "researcher", now: 32_000, idempotencyKey: "artifact-1" });
       expect(retry.id).toBe(artifact.id);
-      await expect(Promise.resolve(db.update(artifactTable).set({ digest: "sha256:tampered" })
-        .where((await import("drizzle-orm")).eq(artifactTable.id, artifact.id))))
-        .rejects.toThrow(/artifacts are immutable/);
+      await assertDatabaseInvariantRejected(
+        Promise.resolve(db.update(artifactTable).set({ digest: "sha256:tampered" })
+          .where((await import("drizzle-orm")).eq(artifactTable.id, artifact.id))),
+        /artifacts are immutable/,
+      );
 
       const external = await appendExternalRef(db, {
         recordType: "artifact",
@@ -222,13 +225,13 @@ describe("universal collaboration records", () => {
         digest: "sha256:abc123",
       }, { actor: "researcher", now: 33_000, idempotencyKey: "ref-1" });
       expect(external.recordId).toBe(artifact.id);
-      await expect(appendExternalRef(db, {
+      await assertDatabaseInvariantRejected(appendExternalRef(db, {
         recordType: "commitment",
         recordId: commitment.id,
         system: "https://github.com",
         resourceType: "pull-request",
         externalId: "acme/repo#42",
-      }, { actor: "researcher", now: 34_000 })).rejects.toThrow(/UNIQUE/);
+      }, { actor: "researcher", now: 34_000 }), /UNIQUE/);
       expect(await client.execute("PRAGMA foreign_key_check")).toMatchObject({ rows: [] });
     } finally {
       await close();
