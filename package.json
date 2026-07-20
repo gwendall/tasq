@@ -11,7 +11,7 @@
   },
   "scripts": {
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "bun test --timeout 20000 packages",
+    "test": "pnpm --workspace-concurrency=1 -r --if-present test",
     "build:cli": "bun packages/tasq-cli/scripts/build.ts --outdir dist/cli",
     "build:packages": "bun scripts/release/build-public-packages.ts",
     "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts"
