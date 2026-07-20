@@ -35,6 +35,21 @@ const matrix = JSON.parse(readFileSync(
   journeys: Array<{ id: string; support: string; steps: string[] }>;
   criticalTruths: string[];
 };
+const releasePolicy = JSON.parse(readFileSync(
+  resolve(product, "PUBLIC_RELEASE_POLICY.json"),
+  "utf8",
+)) as {
+  status: string;
+  identity: { repositoryState: string };
+  externalPublicationGateStatus: Record<string, boolean>;
+  repositoryControls: {
+    requiredPullRequest: boolean;
+    requiredChecks: string[];
+    releaseTagsMutable: boolean;
+    releaseEnvironment: string;
+    privateVulnerabilityReporting: boolean;
+  };
+};
 
 function byId<T extends { id: string }>(items: T[], id: string): T {
   const item = items.find((candidate) => candidate.id === id);
@@ -163,10 +178,32 @@ describe("TQ-601 product consumption design", () => {
       "rest_is_not_implemented",
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
-      "all_public_packages_are_currently_private",
+      "public_package_sources_are_open_but_registry_artifacts_are_not_published",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);
     }
+  });
+
+  test("separates canonical public source from unpublished registry artifacts", () => {
+    expect(releasePolicy).toMatchObject({
+      status: "canonical-repository-live-not-published",
+      identity: { repositoryState: "public-canonical-protected" },
+      repositoryControls: {
+        requiredPullRequest: true,
+        requiredChecks: ["verify (macos-14)", "verify (ubuntu-latest)"],
+        releaseTagsMutable: false,
+        releaseEnvironment: "release",
+        privateVulnerabilityReporting: true,
+      },
+    });
+    expect(releasePolicy.externalPublicationGateStatus).toMatchObject({
+      canonical_repository_control_verified: true,
+      npm_scope_control_verified: false,
+      trusted_publishing_configured: false,
+      tag_protection_configured: true,
+    });
+    expect(byId(matrix.journeys, "public_install_to_first_agent").support)
+      .toBe("not_implemented");
   });
 });

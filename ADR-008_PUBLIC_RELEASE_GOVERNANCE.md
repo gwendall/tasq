@@ -8,11 +8,11 @@
 
 ## 1. Context
 
-Tasq Core and Tasq Local are implemented inside a larger private monorepo.
-Their behavior is certified, but the packages are private, the current
-`@kami/*` names are internal, and the repository contains unrelated products.
-Publishing those packages in place would blur ownership, expose unrelated
-history and make the public build impossible to reproduce independently.
+Tasq Core and Tasq Local originated inside a larger private monorepo. Their
+standalone public source now lives in the canonical Tasq repository; npm
+packages remain unpublished. Publishing directly from the original monorepo
+would blur ownership, expose unrelated history and make the public build
+impossible to reproduce independently.
 
 The product name remains **Tasq** for the pre-1.0 line. The unscoped npm name
 `tasq` is already owned by an unrelated project, so product identity and npm
@@ -81,17 +81,17 @@ consumer demand, a support owner and its own compatibility gate.
 
 ### 2.4 Repository topology
 
-The public project is a dedicated monorepo rooted at today's
-``, not a public view of the whole Kami monorepo and not a
-per-package repository fleet.
+The public project is a dedicated monorepo rooted at the repository root, not
+a public view of the whole Kami monorepo and not a per-package repository
+fleet.
 
 The cutover has two phases:
 
 1. Before the first public release, a deterministic export includes only the
    approved Tasq paths and proves that no unrelated history, credentials,
    private package coordinates or live ledger data entered the artifact.
-2. At the first public release, `gwendall/tasq` becomes canonical for public
-   source, issues, security advisories and tags. The private monorepo consumes
+2. At public source cutover, `gwendall/tasq` becomes canonical for source,
+   issues, security advisories and tags. The private monorepo consumes
    tagged releases or an explicitly one-way generated mirror; it must not
    silently become a second writable source of truth.
 

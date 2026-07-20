@@ -245,7 +245,7 @@
     "rest_is_not_implemented",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
-    "all_public_packages_are_currently_private",
+    "public_package_sources_are_open_but_registry_artifacts_are_not_published",
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]

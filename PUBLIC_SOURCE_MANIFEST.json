@@ -6,7 +6,11 @@
     "commit": "aabbb3dce9c5788b827451730d83dc69bb10e754"
   },
   "destination": "https://github.com/gwendall/tasq",
-  "authority": "generated candidate; canonical only after reviewed commit in destination repository",
+  "authority": "historical bootstrap evidence; destination repository is canonical",
+  "manifestScope": "initial deterministic export only; not a live manifest for later public commits",
+  "canonicalization": {
+    "destinationCommit": "ce8070e066ab0c4df15bbcacd98ad871d9cd8db3"
+  },
   "clockBoundary": "explicit source commit only; device time is not read",
   "files": [
     {
