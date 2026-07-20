@@ -15,6 +15,12 @@ package sources and private compatibility, example and eval workspaces. A
 package is not available merely because its source exists here; npm
 availability starts only after a protected attested release.
 
+The Local release lifecycle now exists as a certified candidate. Generated
+target assets can be verified and installed outside the checkout, upgraded,
+paired with a matching snapshot for rollback, and uninstalled without touching
+`TASQ_HOME`. This is not yet a published-download claim; see
+`TQ-604_LIFECYCLE_CERTIFICATION.md` for the remaining evidence gate.
+
 The shortest verified loop is:
 
 ```text

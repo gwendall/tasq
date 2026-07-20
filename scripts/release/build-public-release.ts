@@ -142,6 +142,11 @@ async function main(): Promise<void> {
   const archivePath = join(release.outdir, archiveName);
   await writeFile(archivePath, await deterministicTarGzip(payload, payloadName));
 
+  const installerName = `${payloadName}.install.ts`;
+  const installerPath = join(release.outdir, installerName);
+  await copyFile(join(productRoot, "scripts/release/install-public-release.ts"), installerPath);
+  await chmod(installerPath, 0o755);
+
   const manifestName = `${payloadName}.release.json`;
   const manifestPath = join(release.outdir, manifestName);
   const manifest = {
@@ -161,6 +166,7 @@ async function main(): Promise<void> {
     files: [
       { name: archiveName, mediaType: "application/gzip", sha256: await sha256File(archivePath) },
       { name: sbomName, mediaType: "application/vnd.cyclonedx+json", sha256: await sha256File(sbomPath) },
+      { name: installerName, mediaType: "application/typescript", sha256: await sha256File(installerPath) },
     ],
     provenance: {
       requiredBuilder: "protected-github-actions-tag-workflow",
@@ -171,7 +177,7 @@ async function main(): Promise<void> {
   };
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 
-  const checksums = await Promise.all([archiveName, sbomName, manifestName].sort().map(async (name) => (
+  const checksums = await Promise.all([archiveName, installerName, sbomName, manifestName].sort().map(async (name) => (
     `${await sha256File(join(release.outdir, name))}  ${name}`
   )));
   await writeFile(join(release.outdir, `${payloadName}.SHA256SUMS`), `${checksums.join("\n")}\n`, "utf8");

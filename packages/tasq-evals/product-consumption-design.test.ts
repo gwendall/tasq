@@ -50,6 +50,20 @@ const releasePolicy = JSON.parse(readFileSync(
     privateVulnerabilityReporting: boolean;
   };
 };
+const lifecycle = JSON.parse(readFileSync(
+  resolve(product, "TQ-604_LIFECYCLE_CERTIFICATION.json"),
+  "utf8",
+)) as {
+  contractVersion: string;
+  status: string;
+  supportedTargets: string[];
+  installation: Record<string, unknown>;
+  data: Record<string, unknown>;
+  authority: Record<string, unknown>;
+  candidateEvidence: { requiredCiTargets: string[]; journey: string[] };
+  publishedArtifactEvidence: { status: string };
+  tq604Complete: boolean;
+};
 
 function byId<T extends { id: string }>(items: T[], id: string): T {
   const item = items.find((candidate) => candidate.id === id);
@@ -87,6 +101,7 @@ describe("TQ-601 product consumption design", () => {
   test("classifies every surface with a closed support vocabulary", () => {
     expect(matrix.supportLevels).toEqual([
       "implemented_certified",
+      "implemented_candidate_not_published",
       "implemented_local_only",
       "implemented_integration_required",
       "reference_only",
@@ -156,14 +171,12 @@ describe("TQ-601 product consumption design", () => {
     });
   });
 
-  test("keeps install, self-host and remote journeys honestly unimplemented", () => {
+  test("separates the certified candidate install from absent remote products", () => {
     expect(byId(matrix.journeys, "local_agent_from_executable").support)
       .toBe("implemented_certified");
-    for (const id of [
-      "public_install_to_first_agent",
-      "remote_multi_user_collaboration",
-      "self_host_lifecycle",
-    ]) {
+    expect(byId(matrix.journeys, "public_install_to_first_agent").support)
+      .toBe("implemented_candidate_not_published");
+    for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
     }
   });
@@ -179,6 +192,7 @@ describe("TQ-601 product consumption design", () => {
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
       "public_package_sources_are_open_but_registry_artifacts_are_not_published",
+      "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);
@@ -204,6 +218,43 @@ describe("TQ-601 product consumption design", () => {
       tag_protection_configured: true,
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
-      .toBe("not_implemented");
+      .toBe("implemented_candidate_not_published");
+  });
+
+  test("keeps candidate lifecycle evidence distinct from a published certificate", () => {
+    expect(lifecycle).toMatchObject({
+      contractVersion: "tasq.lifecycle-certification.v1",
+      status: "candidate-certified-publication-pending",
+      supportedTargets: ["darwin-arm64", "linux-x64-gnu"],
+      installation: {
+        layout: "side-by-side-explicit-prefix",
+        activation: "atomic-managed-symlink",
+        shellStartupMutation: false,
+      },
+      data: {
+        managedByInstaller: false,
+        uninstallDisposition: "preserved-not-touched",
+        downgradeInPlace: false,
+      },
+      authority: {
+        listenerOnInstall: false,
+        credentialReadOnInstall: false,
+        deviceClockReadOnInstall: false,
+      },
+      candidateEvidence: {
+        requiredCiTargets: ["verify (macos-14)", "verify (ubuntu-latest)"],
+      },
+      publishedArtifactEvidence: { status: "not-run-no-public-release-exists" },
+      tq604Complete: false,
+    });
+    for (const step of [
+      "install-outside-checkout",
+      "two-agent-contention-and-recovery",
+      "inspect-same-ledger-through-console",
+      "restore-snapshot-with-matching-binary",
+      "uninstall-all-binaries-with-data-preserved",
+    ]) {
+      expect(lifecycle.candidateEvidence.journey).toContain(step);
+    }
   });
 });
