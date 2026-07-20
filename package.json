@@ -1,0 +1,19 @@
+{
+  "name": "tasq-monorepo",
+  "version": "0.0.0-private",
+  "private": true,
+  "description": "Universal local-first commitment coordination for humans, agents, and runtimes.",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.29.3",
+  "engines": {
+    "bun": ">=1.3.0",
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "bun test --timeout 20000 packages",
+    "build:cli": "bun packages/tasq-cli/scripts/build.ts --outdir dist/cli",
+    "build:packages": "bun scripts/release/build-public-packages.ts",
+    "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts"
+  }
+}

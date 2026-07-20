@@ -1,0 +1,31 @@
+{
+  "name": "@tasq-internal/reference-connectors",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference read and effect connectors demonstrating the Tasq provider boundary.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/extension-sdk": "workspace:*",
+    "@tasq/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-reference-connectors"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme"
+}

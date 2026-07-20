@@ -1,0 +1,34 @@
+{
+  "name": "@tasq/extension-sdk",
+  "version": "0.1.0",
+  "description": "Pure runtime contract and trusted in-process registry for Tasq domain extensions.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-extension-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

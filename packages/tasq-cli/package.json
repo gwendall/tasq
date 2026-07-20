@@ -1,0 +1,40 @@
+{
+  "name": "@tasq/cli",
+  "version": "0.1.0",
+  "description": "tasq-zero CLI — the Bun `tasq` package binary. Consumes @tasq-internal/local-service.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "tasq": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run ./src/index.ts",
+    "build": "bun run ./scripts/build.ts",
+    "test": "bun test",
+    "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/console": "workspace:*",
+    "@tasq/mcp": "workspace:*",
+    "@tasq/schema": "workspace:*",
+    "@tasq-internal/local-service": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

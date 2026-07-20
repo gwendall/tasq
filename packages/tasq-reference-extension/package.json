@@ -1,0 +1,32 @@
+{
+  "name": "@tasq-internal/reference-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bundled Gmail, GitHub, Mercury, HTTP and filesystem compatibility extension for Tasq.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/extension-sdk": "workspace:*",
+    "@tasq/schema": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-reference-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme"
+}

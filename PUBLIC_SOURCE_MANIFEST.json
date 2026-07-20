@@ -1,0 +1,2078 @@
+{
+  "contractVersion": "tasq.public-source-export.v1",
+  "source": {
+    "repository": "https://github.com/gwendall/kira-monorepo",
+    "subtree": "products/tasq",
+    "commit": "aabbb3dce9c5788b827451730d83dc69bb10e754"
+  },
+  "destination": "https://github.com/gwendall/tasq",
+  "authority": "generated candidate; canonical only after reviewed commit in destination repository",
+  "clockBoundary": "explicit source commit only; device time is not read",
+  "files": [
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "sha256": "535d1824056070b5b5b5b831b8fb3becd48f8264836e9df81bd59ac4550be737",
+      "executable": false
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "sha256": "71d22f317c054014bd33c58fc616c3c17c7f31376fcfc2b01ce0703159393000",
+      "executable": false
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "ec1407f0b9138147b1bf7feafdafd182fbdb8586adbe3d53a24b7e9422ba5367",
+      "executable": false
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "7f0d5b52011b6f261dcf2ce36d7e005e457ce8049b2619bf07107445b52a6fab",
+      "executable": false
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "da793ddc05c2ad0f305ca63066fdba3177b3e4fd13066d7a672fb17968668f85",
+      "executable": false
+    },
+    {
+      "path": ".npmrc",
+      "sha256": "cb2984b094233a79661d02d1facc1fead207bfc9d8b30c9202f427b366607b32",
+      "executable": false
+    },
+    {
+      "path": "ADR-002_EFFECT_REQUEST_IDENTITY.md",
+      "sha256": "0d8a9fdb39213fb396ab1ff12828fa91fb97b499fb9c986a927d32f6840864c8",
+      "executable": false
+    },
+    {
+      "path": "ADR-003_REPLICA_CONFLICT_MODEL.md",
+      "sha256": "57c84818c5154df25f208354bcd5e96f8634458b0c915b18ce5727cbd4fca469",
+      "executable": false
+    },
+    {
+      "path": "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
+      "sha256": "ed3ca2a46371dc90c6dc73f1a4493735c291a3d1b90daf8625b22febc44076ce",
+      "executable": false
+    },
+    {
+      "path": "ADR-006_MACHINE_DISCOVERY_ONBOARDING.md",
+      "sha256": "0c462eb2c8bf5e9ad9c12f9f3594b40c8d3380e9038b8c2de6861bde8e0a20e9",
+      "executable": false
+    },
+    {
+      "path": "ADR-007_PROTOCOL_TASK_ADAPTERS.md",
+      "sha256": "08ea00245e25fabae11b837581ab02027e25330903a14d4931999f6112c82f45",
+      "executable": false
+    },
+    {
+      "path": "ADR-008_PUBLIC_RELEASE_GOVERNANCE.md",
+      "sha256": "d87fd4c9f5c8b17eac2b6ff4c63676757155c2c7a31856ba356122bb40b245aa",
+      "executable": false
+    },
+    {
+      "path": "ADR-UK-006_COLLABORATION_RECORDS.md",
+      "sha256": "64afb1108408dc9a407a7781f464824a32bc8d721ce2f2064c63d31fbb9eac14",
+      "executable": false
+    },
+    {
+      "path": "ADR-UK-EXT_EXTENSION_REGISTRY.md",
+      "sha256": "0061a5ba1c0443005763ba4cca48e8a25789405b54135e75a02e6db2fbffffc8",
+      "executable": false
+    },
+    {
+      "path": "AGENTIC_PRIMITIVES.md",
+      "sha256": "953700ec10fb68df8938313716302df98bc235646967979207704a9fd8edf7ca",
+      "executable": false
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "646fad19a89f92871714c01a7bea887d1d91b3400cb1db1c8729b3f055023d07",
+      "executable": false
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "sha256": "abe8a65c123a02d639cab850dedca1a159d127b50d12fd27b0693efce1c3bbc8",
+      "executable": false
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "e9a12c0b32f96cd60a7ac23ae9d28bf06a944791c6ebda2f876ac074f9381254",
+      "executable": false
+    },
+    {
+      "path": "CLI_JSON_CONTRACT.md",
+      "sha256": "5d040e02060eb468e0bbb2fc81a1c727dabcd8f9c37613e917fa2f681d710f1f",
+      "executable": false
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "6620da86f9e9eea83d2a62b803664d7a304a5da51ca970875bb450e375761285",
+      "executable": false
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "cd981b2a903c1a65f7b672ab3351ef0827c969713d2d11b47190e5911d0fee4b",
+      "executable": false
+    },
+    {
+      "path": "CURRENT_STATE.md",
+      "sha256": "d5f2197ef7da5ec00130cef45d3c5efe2d3476bd866ba5c0ee998156c850eb34",
+      "executable": false
+    },
+    {
+      "path": "DCO",
+      "sha256": "32c6ec6495909000b5924bf2008acbeddc3d0bad2eb614c23d0b29e4872300af",
+      "executable": false
+    },
+    {
+      "path": "EXTENSION_SDK.md",
+      "sha256": "dcab177ce058f9bfe868a1079485971a18ef7a3252e8d5b2bdfd5be40bac662d",
+      "executable": false
+    },
+    {
+      "path": "GOVERNANCE.md",
+      "sha256": "e08e354310a739480d325086d0dd0034307a57bb2bd3ead0035077391f28b59c",
+      "executable": false
+    },
+    {
+      "path": "HOSTED_TENANCY_ACCEPTANCE.json",
+      "sha256": "639b70ea1fe80d4d19b6dcb35b5ba7516a4bc0cee54b425cc122271373cab658",
+      "executable": false
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "executable": false
+    },
+    {
+      "path": "LOCAL_CONSOLE_SPEC.md",
+      "sha256": "4861e10de6fd41fc81ff5fcd03514aef154ce520b10127fc4d766121e8560ac2",
+      "executable": false
+    },
+    {
+      "path": "OPEN_SOURCE_PRODUCTIZATION_SPEC.md",
+      "sha256": "ca9313b8372e384c223249a72a00f97dfbed4107601c7bcfd79125478cec40eb",
+      "executable": false
+    },
+    {
+      "path": "PRODUCT_CONSUMPTION_SPEC.md",
+      "sha256": "9b2a13b876773b37934a839b2c82419ea426f65fec81be7b5010dc0b4fbded2d",
+      "executable": false
+    },
+    {
+      "path": "PRODUCT_SURFACE_MATRIX.json",
+      "sha256": "f42b2372085803f476007552d67f54fb2c045e06ce1873db784cff4609e6ba5e",
+      "executable": false
+    },
+    {
+      "path": "PUBLIC_RELEASE_POLICY.json",
+      "sha256": "9f5b98f7ca5e06aba5eb5b2c214127ba3f465202de35ab0dd0c8d658e155f5a4",
+      "executable": false
+    },
+    {
+      "path": "README.md",
+      "sha256": "ce4a63abca7ce93cff7e14282bda6dd4cb46347624a1b426f7c2ad4db15a7c41",
+      "executable": false
+    },
+    {
+      "path": "RELEASES.md",
+      "sha256": "77e5b9ff7d47d629de49e0fa3fb451af95073a9ccc59f29b222452af8ae0252c",
+      "executable": false
+    },
+    {
+      "path": "RUNTIME_RECONCILIATION_RECIPES.md",
+      "sha256": "c1441303908aee78d99bbd5dc2313228657d141e6352a929112192ccfa926ee1",
+      "executable": false
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "ea6ad42d318a88ad9276fbea085fb6bf2b081aa074ce3a837bab680ca97037cf",
+      "executable": false
+    },
+    {
+      "path": "SUPPORT.md",
+      "sha256": "040a74d8d2f0454bc96eed5d86468532516fc0d338b8c2d62d53fd6a2cd490cc",
+      "executable": false
+    },
+    {
+      "path": "TESTING.md",
+      "sha256": "998f621e46a88d014051ae26a1dbaeaa89a5727dae23dc0d77ee5c5b5f75e388",
+      "executable": false
+    },
+    {
+      "path": "TQ-107_GENERIC_INSPECTION.md",
+      "sha256": "6bfdd8d79f5069e5407b0ed8ee2ebae71864734769f8d749851d993292c5d168",
+      "executable": false
+    },
+    {
+      "path": "TQ-201_EFFECT_AUTHORITY_THREAT_MODEL.md",
+      "sha256": "64b53f4a706e41ada5228f2f06b0ffb90204534f69be2f5092aa0618ea774c85",
+      "executable": false
+    },
+    {
+      "path": "TQ-203_EFFECT_LEDGER_AND_AUTHORITY.md",
+      "sha256": "faa6183a0a4666d434e928c2575cc8e222c449dba161e8bf1a1f1065e474bf79",
+      "executable": false
+    },
+    {
+      "path": "TQ-205_CONNECTOR_DISPATCH_GATE.md",
+      "sha256": "925d367e1e217dc36e5fe236a43dd5895e9ea74bb6b95716cc51d78d4d783a20",
+      "executable": false
+    },
+    {
+      "path": "TQ-206_EFFECT_RECEIPTS_AND_COMPENSATION.md",
+      "sha256": "5a8177f8bc49a0f50110eacd9e70068dc485cf424f876ad768fbb298f8540500",
+      "executable": false
+    },
+    {
+      "path": "TQ-208_ADVERSARIAL_EFFECT_ACCEPTANCE.md",
+      "sha256": "713d4d5d822f40feba6df2e0d20af48d31837eabecaf95da8cc16c8bd5d9a3e1",
+      "executable": false
+    },
+    {
+      "path": "TQ-302_MCP_SERVER.md",
+      "sha256": "aa6fefa612fa01f30fb49897bffcf53b5bbe674c9e8aef7439378dbd9aa917ff",
+      "executable": false
+    },
+    {
+      "path": "TQ-305_CONNECTOR_CONFORMANCE.md",
+      "sha256": "dee45dfa3849ddf5648b5cc9325a3c78604f011fb2e6c471d1bb7f4c09ae5a3b",
+      "executable": false
+    },
+    {
+      "path": "TQ-306_REFERENCE_CONNECTORS.md",
+      "sha256": "df21dc0c182721b46f61bbb3a75a522efabedf1fe43f80bd9c5d0970764fcec6",
+      "executable": false
+    },
+    {
+      "path": "TQ-307_SURFACE_COMPATIBILITY.md",
+      "sha256": "7a22e421c261be113d37b38c0c2e12b390da25a86a3bf9db0cb5d17388cd880e",
+      "executable": false
+    },
+    {
+      "path": "TQ-312_SELF_SERVICE_BOOTSTRAP.md",
+      "sha256": "a04bd839798b853b901aa3609e2e285ce6cdf1d0642277cbf83ffffbecdbc12d",
+      "executable": false
+    },
+    {
+      "path": "TQ-401_TRANSACTIONAL_OUTBOX.md",
+      "sha256": "ce765a0f7dda337d5877690fecb19a14d4cccad21f5aa00295db82f5c4fe1e2a",
+      "executable": false
+    },
+    {
+      "path": "TQ-402_OUTBOX_DRAIN_AND_REPAIR.md",
+      "sha256": "b349f20093f53fdf915dfb5f4fe0c7619f23feddaa54cd29727ce02137d4aeca",
+      "executable": false
+    },
+    {
+      "path": "TQ-403_DURABLE_IDEMPOTENCY.md",
+      "sha256": "6814053e133897f535d8cc6a25615c3ebe6f01a6e8bef8ceb92054c1103ff9b5",
+      "executable": false
+    },
+    {
+      "path": "TQ-405_EXPLICIT_REPLICATION.md",
+      "sha256": "948139a13eb0701c284a8336ed46a8c9d9b6ec75df65b5b4654c567dbd878123",
+      "executable": false
+    },
+    {
+      "path": "TQ-406_SYNC_CHAOS_AND_RECOVERY.md",
+      "sha256": "d67f7061cd2e672a24104d8e4007e7f81e1fe8544b9b5c1950bf3f455c98d752",
+      "executable": false
+    },
+    {
+      "path": "TQ-501_BOUNDED_CONTEXT_PACKETS.md",
+      "sha256": "19d3959866c086476d579964d9757d829257bb7ed84ca9ce0d714a0bdf408832",
+      "executable": false
+    },
+    {
+      "path": "TQ-502_SOURCE_BOUND_COMPACTION.md",
+      "sha256": "4d9633957c50b493881d3c46a89ef1336d593a51cf82e23170edf9f9a5f7f28a",
+      "executable": false
+    },
+    {
+      "path": "TQ-503_EXTERNAL_CONTEXT_LINKS.md",
+      "sha256": "7f769828c00e7b59fcf908b8fb505758ff0122f4bda10074de15b99ea1932f05",
+      "executable": false
+    },
+    {
+      "path": "TQ-504_READ_FIRST_INSPECTOR.md",
+      "sha256": "cc7f7bf19a99330cb93e49fe6fd673f5b8a938ce24dfcfc1eac0258ea70f7825",
+      "executable": false
+    },
+    {
+      "path": "TQ-603_PUBLIC_REPOSITORY_CONTRACT.md",
+      "sha256": "9dc4d9ca9f220903eeb6f510796cb0b198cb0eaadb048939a67b0012636ee2eb",
+      "executable": false
+    },
+    {
+      "path": "TQ-603_RELEASE_CONTRACT.md",
+      "sha256": "fed08e73375cc781ce8a4d7d9731a7bb90a38bade67b8cc66e1b420dc76073ae",
+      "executable": false
+    },
+    {
+      "path": "UNIVERSAL_COMPATIBILITY_INVENTORY.json",
+      "sha256": "1f9d29a777d2ea2044c24d48750beae5f9da7b2224e5da6bf22dd620281208b0",
+      "executable": false
+    },
+    {
+      "path": "UNIVERSAL_KERNEL_SPEC.md",
+      "sha256": "377c0f1c81e853b03e398b67b8ea33b8d8aa0044a176d4e773c9cdd30d875dd8",
+      "executable": false
+    },
+    {
+      "path": "WATCHER_RECIPES.md",
+      "sha256": "dd92d0d728f71307f119e36f7a8544a13b55c8ed9d93ed82d895c1edb0192f74",
+      "executable": false
+    },
+    {
+      "path": "package.json",
+      "sha256": "858ba47b9ef60f46317916da4f1c4c49dfb566f7c8b5ade17e334c79ba16509c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/package.json",
+      "sha256": "1e29366b3fd3b27e83e52f5104b56f1510cab99f15c7806ff4e23e7b9536fffe",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/scripts/build.ts",
+      "sha256": "570b7f6ec25a3d8bdfb6c96680e6e7aa3b58c9a55ee60ed04b284cceed079267",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/args.ts",
+      "sha256": "657400d48b4f808d0c3f7a9a57932f7e0d25a046e9201bb73abe60a946f95070",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/_resolve.ts",
+      "sha256": "6f1c798c7f91bf4d5ccf0544d995ea1262743e1580aac542932f952fadc800af",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/agentic.ts",
+      "sha256": "a18c1ea8a42f4a91f8425e08c50b59806ccf61cbf759b84cd683adc015d96d03",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/area.ts",
+      "sha256": "516173d54b124d6aebcd0973666da32271fcbcf7b71cfd06b65c5d6805955d7f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/backup.ts",
+      "sha256": "36b98aa5100e2a007aa5a0485120dd745f3ae58054658767238c4c52f1566fe2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/context-link.ts",
+      "sha256": "7f3f8468296e60044be7b7e06993bcc527f2d7cbfd771fb1483b637195483058",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/context.ts",
+      "sha256": "2dd8de3ab6b2224e9648d142b33f0b7890850301d8ff51fe3276e9136401e2c2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/dependency.ts",
+      "sha256": "bac3952df251fe580cb4837727e3f42b53bd22308d0d845d5cba115d0011957a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/discover.ts",
+      "sha256": "5ff561d79e08a2191d4eb7f58f52b9a04729dca35c3bee6c9db709be313defec",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/doctor.ts",
+      "sha256": "c05005fb50fe4b16868add89c9a9adbd28b932903524780e61c129f2ed932f66",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/goal-project.ts",
+      "sha256": "2d455f7650a893ecd205d6ac42584b60c26bcf4249c48923a177c6644782e404",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/init.ts",
+      "sha256": "fe883a5b4d04607710710be18fcfd355e32c30fb4718bccf1716b36d9d806423",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/inspect.ts",
+      "sha256": "14bfdb54502b263a14d83a0ac30ac9a9e83dfaeeef1c72e03ffd62059ff5f3f6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/journal.ts",
+      "sha256": "530b1b8fbd0a42f5d533730565a687de2de0393f773078c7ec9ebe9e2ec0dbdc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/mcp.ts",
+      "sha256": "5c1a22e069357b1e1c1a5a6d74f5f0101596ab647eda349ca7e11fb355097e0f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/next-search-event-projection.ts",
+      "sha256": "53ac3de5deae96e2c9bbf30e7d6db41f3ac69e1153724bea88211dc58041b93b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/onboard.ts",
+      "sha256": "20c6eb777bf2874ba070ec095a856fd288f931f041b92dcb1f849199bc25bb90",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/resource.ts",
+      "sha256": "3320de1daa44a810d44fd77e4e575bb746ae261330784bac8faa62e117727e93",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/summary.ts",
+      "sha256": "628a2ad7a195098d8988bfee1c5a7a4e2b1980253eafbbb0551d492e40ed4d74",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/task.ts",
+      "sha256": "444cd431be1868b3f4617c91b79de0fefa41cee5710ad707cee9b239efd58f1e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/tree-status.ts",
+      "sha256": "c42d63d2d145a0ef372783f25b40ae94d21df6a9f6bb1129f90570c15ce1adbf",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/usage.ts",
+      "sha256": "e76c85fea4aa8ed2766b692c01b88b779a76acee9805a27791641fffd7f1409d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/wait-observe.ts",
+      "sha256": "30f6f916afc07afec551de22f49c3f4fe2f9b4a0cf9a36a24371515dc70a3265",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/commands/web.ts",
+      "sha256": "a3a416f61ced978bc9f48df9a83f1c04e9674b930b8efa62298b483980c7de74",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/config.ts",
+      "sha256": "aad2f732bd485c5511b5b7b07a7793cdb5bec11d1704f1c81f9946c7295d654e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/index.ts",
+      "sha256": "bf70e9d55dc495f53fb1ac06263b5ce71ababd9b061a1236ffef8ad1d3fbe015",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/journal.ts",
+      "sha256": "8df6fd39841b99cab3833bb5cd7f204161ceb8e75f40e60878db5c3a3902cfa6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/output/format.ts",
+      "sha256": "8849d5bd40233694666d3f93aace07805cdc8213592ade229c7f61cfe0f456e6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/src/runtime.ts",
+      "sha256": "8d27217237613d55ae0704bbaf3941a02b977c5ec5458c024d2bf13b5ceffb00",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/artifact-smoke.test.ts",
+      "sha256": "482cb237a7ec4d7e463e46b2657aefe9d4f08131f8e826cb7f920e4289b32cd0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/e2e.test.ts",
+      "sha256": "dcfad96b87da4fa54ec742c9b75a7f3254e6afd45456f5f6af0b3713a1a9f22c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/extension-boundary.test.ts",
+      "sha256": "7af81a213fb37b729ad893d909e0c7c381d068d6fec451232d356b85c8ff7c73",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/outbox-drain.test.ts",
+      "sha256": "5d4b87e2f5241a036141841bce303fca27558f143ab16f784d18b1ac44cbaff3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/public-packages.test.ts",
+      "sha256": "d3bd146497b2d550edb637147ac4aadcef73af809ef8bb312bfc0de8ab3a8fba",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/public-release.test.ts",
+      "sha256": "fc657082265c6ac81719008c0bf7edfeb61d56cd9f91f49f4061a86bd0e2f714",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/universal-inventory.test.ts",
+      "sha256": "dc2f0e49604ae3af5a5d57f1989608563930e1229ab0eaede821e1a209b6856e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/test/web.test.ts",
+      "sha256": "52e5187a7bc95944fe6dca4a2b4bd532ee7369555ed64f6d4df9fc3b566058c7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-cli/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/README.md",
+      "sha256": "9516e91ba5638f514b5bb4491aa926ac85455572640c776e34f879d42d151ec2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/package.json",
+      "sha256": "0dac92a50e6036ae2cc6925e070e26f046f6624aa7f5d58daf3dd136ecef65de",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/commitments.ts",
+      "sha256": "38a0e2b1bec98a22450609cf57a57ac98000a99c5027503616636af70bb6a9fc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/context-packet.ts",
+      "sha256": "d01505bce59f517e19bc383ae900205baee5281f30c6d3484cbb937ac65616a8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/db.ts",
+      "sha256": "6d16278c2b4dc33e33e8ecd34c8eb4c6582baffb0700a0de761f548cf9e8d836",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/discovery.ts",
+      "sha256": "75b54e043a5af8539b66f908243a68a9a5dbe9d33c758682d339172ccf55ffe8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/inspection.ts",
+      "sha256": "623fee3fd1a0820f1e7261b2201650102210acd4eb1688d30ddd96bb4b02211d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/inspector-index.ts",
+      "sha256": "1fe0f225f3639cb38925873bad9cec13d5c549c2613a54d3d564aab292deb91b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/kernel.ts",
+      "sha256": "79689701505bdfa004b75b735ea2665fd373fca35d9b8aa190b5765102d0d22e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0000_init.sql",
+      "sha256": "05d88e97ee566b3770dd0b906ffbf1eca4bd0c02fe3f6bad91dec2524633d838",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0001_subtasks.sql",
+      "sha256": "7ee42a927a5902d3a71ecfe816fc59c789f70a53f3a7ebca795892c69bd09b47",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0002_task_dependency.sql",
+      "sha256": "01b1fb121d8e74fff71c943b91ba49f10640d7e022b110eb175f41dc96a4b3f7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0003_recurrence.sql",
+      "sha256": "7078e3f6759a69b730e3768f239da6022b4507df27082c60ce71b10738315fac",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0004_event_sequence.sql",
+      "sha256": "c6d9f041f138750ee8d8c283460dc636b795ab3570f10ec0bc7c0ad4675f4ce0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0005_idempotency.sql",
+      "sha256": "93949a61e26bb4761f6c022129c925b8a0d4d1fd0b67721717216cae6cbf7431",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0006_agent_primitives.sql",
+      "sha256": "12cba60f4a9912d14259bbdc221b8e8a8d3f99aa78d81f1572e3a5710e5fcb21",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0007_agent_invariants.sql",
+      "sha256": "09839b5f0b54864a4b636eacc648a7f82f2e7bf5cd89b876acc2a7e698eb113b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0008_wait_condition.sql",
+      "sha256": "fe058e2415018f012d1b8950cd730151b871b12c2c3f386cd7b5712328a2cfa8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0009_observation.sql",
+      "sha256": "c706c86d8f4d4b631074487279e30681ef06f46dd4af996c893969a968a65703",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0010_reconciliation.sql",
+      "sha256": "e958d100a8c02a5454d45a1362562b7746d125098240ce36d25f3a358a6c668a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0011_deadline_fallback.sql",
+      "sha256": "af34cff2eacc2766b5b67c792b1769f52364fa6f6413f1062cf154adb32e7e5b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0012_extension_registry.sql",
+      "sha256": "928a8821701fa316e98b410066540168162bb80336395f556ef3ccbfe51d2aae",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0013_universal_collaboration.sql",
+      "sha256": "1656c56ceacb052a203c952eb019a8adaebe21a0887de7b70387116830d2cde8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0014_effect_ledger.sql",
+      "sha256": "e0f65e023e8b3e13e273d720172aba086ca04c2236d8865cf50a58a9280ee1b5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0015_effect_dispatch_gate.sql",
+      "sha256": "a0249740f4752446cc1816d20ecc0093dd002110c15584084e64bbf12aeeb739",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0016_effect_receipt.sql",
+      "sha256": "8eac9fca3a6dbb8e90741258a58388ad0177cc6cba24bef1635a2a1410bf0903",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0017_transactional_outbox.sql",
+      "sha256": "3515e58a31797cfaf4663c748c66d1cd987d6bcab17f51f29b82e472811838da",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0018_scoped_idempotency.sql",
+      "sha256": "ae1b6885a594456efa0fb50780a2c2226790233b952eb1849ddc1b98a69e05f7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0019_replication.sql",
+      "sha256": "af7ce45c1d2c5660ad14c8bfa90e09bef2c8167aeda1e5870d69f2b3e5a4a2ff",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0020_coordination_space.sql",
+      "sha256": "eb68d3b4f7c105ae33a6d05c14851c9d26a89a4afd826774b5a56d0d2cc9dd48",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0021_resource_leases.sql",
+      "sha256": "5ba4f78b2dc977fa2ffa0cf9471019d786197e9dd7c360875dc50a04ed2b0ffb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0022_replication_recovery.sql",
+      "sha256": "79bd80ab3c0a36249d8964ea5bdf8f6c8db930cdb32ae55905c4bc5eb8bd1ecb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0023_commitment_summaries.sql",
+      "sha256": "56a335076188448ca3b695f12c3ba7b83a4d47e0de61ad9d973de61c8ae11b08",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/0024_external_context_links.sql",
+      "sha256": "6ddcff812d197c63f172f0fbb2743b308e33cb9b092642719641196795dcd2cb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/migrations/index.ts",
+      "sha256": "85cd8f452c07cc7320121982f61973657214f8ca60158d7a07dd89d6e6d6ff9d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/agentic.ts",
+      "sha256": "cdc19577ad15b6fa41bdde935703f770566690563e0473b91e94d9e1f1e713b6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/collaboration.ts",
+      "sha256": "d0673bc26dd128c59e8e312e1507c892ab03547c6b9f42cf5129352f5a38c530",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/context-links.ts",
+      "sha256": "e9f3fc8e55f0ec07e2455258521bafaf6a389d3822db3665bf503da59cd2ed48",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/context.ts",
+      "sha256": "f2831c5791f6bbd21c70fabf2093d52e2861fbe406600ccabb32d8a1ba058519",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/delivery.ts",
+      "sha256": "a4cc25baaf22a852eeb392f34914097fca9b7b63e4eff35d8f6a1bc349d3b977",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/effects.ts",
+      "sha256": "0dfa2d360099941f630a08f700d454cd81640e74914b1959efc4203353053f92",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/events.ts",
+      "sha256": "e6d398d1c4d93447f3f476121177e300faa878fcd012ce0334aadd673d00dafd",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/idempotency.ts",
+      "sha256": "709f97918d66af12a457de67d21644cf6f44a8354b82826eec373087d1549068",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/principals.ts",
+      "sha256": "ba5fc06e2c8847487c7fdef0c4f3a178f81ed68f421113d66ac45faa1b1377ba",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/replication.ts",
+      "sha256": "0d54e22242b582a36804f9b274c8cf61df0c5d89b152cc8d0060d09e927e9a6d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/resources.ts",
+      "sha256": "34b70788b6008e5a698a9a976b9bb069ac53c7f118b548584bf38e417e678165",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/spaces.ts",
+      "sha256": "3d855395880537c20b8445fc60fe29c914ca5b183343e8f366ff90b3ef607a1e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/summaries.ts",
+      "sha256": "00371e9189b9f15b48964651cd3fbe77f86dd12723d21f2f5c1bfd71cde733bf",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/service/tasks.ts",
+      "sha256": "31756bef3f3d7e67d5d6713f3fe3c6abea00689e0ee085aa0ac2d27ebb871968",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/util/canonical-json.ts",
+      "sha256": "fb2be290278e44809e1076c44bd6d323f0057ceb87bde8bda88c9df42691a28b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/util/clock.ts",
+      "sha256": "c2848bcaa565eecf0d4069e3d3ad818261cd9485dca3882e2e6815cdc22da4cf",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/util/diff.ts",
+      "sha256": "4ccfb087df873a19c095b2c4456eeafe6687dad81dc2df726102f6eade4442d9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/src/util/row.ts",
+      "sha256": "d413f00f5cd80bb3204e3b29a9af0fdce0ad63bd3ba9f023838bf000218e17ba",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-core/tsconfig.json",
+      "sha256": "04888c7a467b4ddb2ecf203009dd7c22e45feebb66eac7d73a08ee3bee1ab443",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/README.md",
+      "sha256": "a50c3750b895d236a45c943220b31184a27650546f2683a06be6ac4056b03fd7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/agentic-resilience.test.ts",
+      "sha256": "bd8099e1c16cbe2041c44cdea17e177618f77421b62f2a5e15a01ef8d4e115af",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/autonomous-onboarding-matrix.test.ts",
+      "sha256": "2715332325be3fa004be15f66ea216ffd4a0d6e8fe94dea57b06495f93f8aa30",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/blind-agent-harness.test.ts",
+      "sha256": "f1e8ce63e71b6215ab21bc523d834b0311eeefd066d33f282896a4e6074c70a3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/cold-start-configuration-matrix.test.ts",
+      "sha256": "35dce50b55aa29d31df6ab059917da4f2f3af8e45cd0c475dc21bdafb4f7f107",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/connector-conformance.test.ts",
+      "sha256": "29eefafb0c298640f2f616afaa5c096921ab4ea3b60c4e1bb9ef996e0bbfb746",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/cross-domain-conformance.test.ts",
+      "sha256": "4f5a5ff44f27270b067817546dc532ef0f0d8deb29bd4565152e2cc2becaf789",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/delivery-crash-recovery.test.ts",
+      "sha256": "36268e831dedcd7e574f381428622b8ad8e9dcc3860fd9bf73f693f41f116655",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/durable-idempotency-recovery.test.ts",
+      "sha256": "30ef51d0e661d02655d8da59d3a0db947ef4c5310cbef41a3fb31ae53a80d777",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/effect-authority-adversarial.test.ts",
+      "sha256": "b78053096ff0bef4898de664a09883b848b88beaa48b73903da06ac3cd1c900f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/external-context-links.test.ts",
+      "sha256": "90f449a32e14ac8091868de5d11147e8daa865132bcb3d604230a4af6bb8c3cd",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/bootstrap-version-client.mjs",
+      "sha256": "57febc38c39f03806726161d49e0c5dc0f148b1f5e43200663368372a4d02542",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/cold-start-client.ts",
+      "sha256": "124d455a48b4c236980f36e353a55865a673bf9c480107f952261c754d424bdb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/discovery-recipe-client.mjs",
+      "sha256": "e28c660420465960afc67fa8bc568e87eaf568c025d4ad91fdc95eba56bac59d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/discovery-recipe-client.py",
+      "sha256": "57392447f669929e233aa48b148b7e42d7d3016f3f38a37d22e81bfe9cbeb228",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/discovery-recipe-client.sh",
+      "sha256": "dc3a9b8f4dce3b869daa49180e696f5c77995ce56aec68bf1d9be4fe48ee11d9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/injected-clock-cli.ts",
+      "sha256": "ba2c2b905156cee1f7569901a04491f2d0efc0ffed06649029b7aa9427a5ade9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/raw-mcp-client.mjs",
+      "sha256": "318b4983aa001457b90cdb08e566e60abf0deb305fb55ca4bff80fdd86156550",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/read-only-watchers.json",
+      "sha256": "860f542de4f66672b8be04d1b9bfeb089821a09d2fe2633d079b5acdd7d90671",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/sync-chaos-worker.ts",
+      "sha256": "5747b2a05cbd23dea4b13a7512baf3af8794800669489e114c2e650b198eb580",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/unfamiliar-a2a-runtime.ts",
+      "sha256": "9728156d4d6394d5cdfd9916691d630c0cfde51dcd4062bb15ebc9c01b5c0886",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/unfamiliar-mcp-runtime.ts",
+      "sha256": "8d3145d9bb68b2330f6a815ff7b4bc5a92454684fe32130c102dea46f0369574",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/fixtures/unfamiliar-runtime-common.ts",
+      "sha256": "45b37f52bab7a52b916f439be476d2c91f077e5e29a0191872b4355c682957d5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/hermes-daily-brief.test.ts",
+      "sha256": "3204cb6d4aef35609ca65d8c557202cd4de413ba62331356fd6866e6823fb5a3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/hosted-tenancy-design.test.ts",
+      "sha256": "f442efd8cdbbceebaaf0d9b1375a0748fd096b534beeda4688ff2ca3a1b4e083",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/life-filesystem-loop.test.ts",
+      "sha256": "6f9dd4f34c097061f5589a4d3ae7e650ad58749cc824575114463e3c894cb116",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/long-project-with-subtasks.test.ts",
+      "sha256": "a7445f9b96e08ff7edd7a1d041786587d708a38ec15f3a5cc999315c993dfb78",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/machine-onboarding.test.ts",
+      "sha256": "7c523c85df441b66df3a46050eeda6a7e3a01a83baa9ee8122eb34f86c022ca6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/markdown-snapshot.test.ts",
+      "sha256": "c08fab43d86cbb0653bd04a52c1a88eb536fa8ed3af4be6c57b1c034a6f59ade",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/mcp-capability-onboarding.test.ts",
+      "sha256": "09b7ec40e36b6058fb826d6082667787a23efbb959a71a1b0678d067cb067ac6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/outbox-drain-recovery.test.ts",
+      "sha256": "202269f395394ff1f778ae6b1a321beee9dd0282d920ab4e704e2e1c78408024",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/package.json",
+      "sha256": "c151cf44f64bdf2cf5d21221a56424ec7632b63b0ca03ac8dea4bc71b97333be",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/prioritizer-quality.test.ts",
+      "sha256": "e7cda269893ebebf97b62ec2ddd8bc8935f04037658c6a586b0fcea989885a81",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/product-consumption-design.test.ts",
+      "sha256": "28d17b0fc152af4b19cca02e1da8f003089610ab76ea883b92dc94e0606af96e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/protocol-interoperability.test.ts",
+      "sha256": "5503ae3727242b295a6c3e5d848c06b0a4ac654ffc2bbb04a6177b4eab59edd2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/read-only-watchers.test.ts",
+      "sha256": "17aa0b1eaf4f944d9303c2e8e64e8dcffd5daac9d8c9cb059181d5f471160d13",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/readiness-gate.test.ts",
+      "sha256": "ad9f68872ce8bed86185678350d13ecd68728b15f620526789ebbe94a9fcd085",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/reference-connectors.test.ts",
+      "sha256": "e49bcee74080720fbb75627e9a4de53cc371c2fea72bf8772fd079edbdd94a68",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/replica-conflict-contract.test.ts",
+      "sha256": "abb9a4ab930f60e7ab69d328677f8a321fb6d9a724da8c22d250dd264453930e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/runtime-reconciliation-recipes.test.ts",
+      "sha256": "9c27111c4bf7e1d0076125bef79a1ff795dcda2db5becf15f0f1ad4f00dd1a91",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/source-bound-compaction.test.ts",
+      "sha256": "4b42fc99fcd208d2d80de49b54c4d415e6b0495cb35519a51b0082cfbe1b5466",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/src/blind-agent-observer.ts",
+      "sha256": "6a11c2fa335f868ea072739c01d4a1368161cae6b160aeb2bb6a50775e71442f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/surface-compatibility.test.ts",
+      "sha256": "94d751d689aec21190ea6af6a29f1f86a8cb7eda232c226303e6822b446fe179",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/sync-chaos-recovery.test.ts",
+      "sha256": "0775f37ac174cac332f23bff7b2e73719d2c638c53a3dc400b6517a533679d4d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/tsconfig.json",
+      "sha256": "191311815041991bb9388a10a87443ac5d1941d4eab368a767c9cfd957a9135a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/universal-collaboration.test.ts",
+      "sha256": "d69892cd06bc74ffbbdc085b817c06fffbbb074af5d691ccd490310dbdc70e1f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-evals/universal-kernel-acceptance.test.ts",
+      "sha256": "4debcf544e16490d335240b71dc002fa59c8576b9b2325d9bd23a5779ac0f3c2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/package.json",
+      "sha256": "de03779df6c5cd170aac4be42f68981d7ea52c1a770ca0b8c9142318d5c25991",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/src/connector-conformance.ts",
+      "sha256": "72e944d91345c067fd435ae2e5d311b59b0cd3ca212116c5168cb6591868944c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/src/effects.ts",
+      "sha256": "bbbc5f3aaf4e886c76eac8bb284db1b9c6cd732d5330bb31c0c8c5393ae72b73",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/src/index.ts",
+      "sha256": "a046be5b268e57e8cecf442ac1c1d01fc6206341af64763ed9495090e846cab5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/test/connector-conformance.test.ts",
+      "sha256": "40af8741b1c388e12f93bf1242f6869b9692f9911b3e683a329a79608f2e69b8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/test/effects.test.ts",
+      "sha256": "68be78cb440a38384bf34d21f5b25192d687bd7801f7c38c6fe8672a224fb087",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/test/runtime.test.ts",
+      "sha256": "e4dfca3fcd39898ee205f73f37ed8c262c9db67e4d542d3d58295d29bbaa7dbc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-extension-sdk/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-filesystem-watcher/package.json",
+      "sha256": "245bd231e75fca663fcd5649f2f17a5b245015b2c9bc36cc5d5a6a06239f1508",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-filesystem-watcher/src/cli.ts",
+      "sha256": "514a668230a04ca60bd2c896d07f17220e4479a9bec7a8ead0cfcfcd863aad20",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-filesystem-watcher/src/index.ts",
+      "sha256": "72ba59f0398e807b38df840e7b2bd6052ce2852288f15f778b895f4aaf940cb1",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-filesystem-watcher/test/filesystem-watcher.test.ts",
+      "sha256": "8f98e01eb148d63c6aaccbd7c177ffebb19ea9fa2bfd252a170879155ea4b9d9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-filesystem-watcher/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/.gitignore",
+      "sha256": "e1f0b9d25315a220bfccf630df06fd3ad03630abdea78ff0bf8c8d551498e642",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/browser/inspector.pw.ts",
+      "sha256": "8ec103488499889884dc8d3c902b142146839a157532daa2c6d985de14ed3653",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/package.json",
+      "sha256": "e38fe0ccd253037f4fcbb61d88574d141718bcc6873fa7f41e0381057daae20e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/playwright.config.ts",
+      "sha256": "d3c2a8d39d64c4e499bdcfe525081529c9d453fa790353ce50a00465c3b6c470",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/src/index.ts",
+      "sha256": "6238b98a909a7250c7992cc6cc226fb6c841b846b801c4ad571bb34102ca7af9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/src/loopback.ts",
+      "sha256": "4b7f96984cb6d3e4084bfe85e8d4fa825820ece4408f19254e80f395bf25101c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/src/render.ts",
+      "sha256": "0f4e978141a245cbe7d10ac9cebabf3f08a0c4edb5fa81ac190b1d75d31fa7c4",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/src/serve.ts",
+      "sha256": "baa2bf67929fe138fe7984e29f687c0b24dcacdb8185adc60c4773fac85d191f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/src/server.ts",
+      "sha256": "b5734865e6e2039a0fb153ea001c4c674b25f75b589e6257a0863d61c3c024da",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/test/inspector.test.ts",
+      "sha256": "64869b34eade3a053ef760beeb0adb2738f0d5f465d6cb903fc2e129963e5b0b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-inspector/tsconfig.json",
+      "sha256": "6a0a49e8191b5582ae6f35e08cec6d66051edd00a32b5e5e37322f939869c8ca",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/package.json",
+      "sha256": "0bc3cb20ddc7f27539474f3516f0aca0f6e4d34554cacef73a3b29944ff2d0dc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/src/hierarchy.ts",
+      "sha256": "ed96203153f36a0dfa7785401c918a9bcc9efd4e7df3d033b42b4ee7e81fb591",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/src/index.ts",
+      "sha256": "cdda96ea9d763fa6e395ee22a37cd4ac52248db04de6f0664e5feadc8afe97b8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/src/prioritizer.ts",
+      "sha256": "be2bc9b7433eae61bb5ecbed1fefb33c34c737f5e149859d7ce0c26f0a46724e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/src/projection.ts",
+      "sha256": "5802e1f464d04815c653aca3f9f11f5158778154459dc922455d3825f8c77c82",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/src/recurrence.ts",
+      "sha256": "219589b8af3b98b12420a3b90d4c3f264634443740361f881891949d09ae5a99",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/test/hierarchy.test.ts",
+      "sha256": "1d7d2f7e0ca4cbeca261cd86dbc6e121958d31f365c9fdf47bac6b382cbf47bc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/test/prioritizer.test.ts",
+      "sha256": "24a907b6fa34dee753bca6b4c10fe2ebcc77c76ce594b96d6300be748b016baa",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/test/recurrence.test.ts",
+      "sha256": "62aae70b51aff3e9dd2e6c9988acffd05913669f4f70964eaeb5d1ddfa13a386",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-life-planning-profile/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/README.md",
+      "sha256": "6f15a81e00a2206f30d80255e69ce6b0eebf67819a9841b030e652227058333a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/package.json",
+      "sha256": "a829b5677fa9099dd287c144c4462a94e6b95d9c1b0735057b8e30e87a6ef107",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/src/index.ts",
+      "sha256": "dd3e475d3c5510274c9635c32ef2146757d420471fa1c8997bdf264d87af550a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/src/stdio.ts",
+      "sha256": "d8853422ccfd8fc175b171555e0c9756042c291b00bc9a3aa74fb9a0e3ee16ce",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/test/mcp-server.test.ts",
+      "sha256": "e9c44c33ffc138e7c980c898641795c1a2ca6c2f5e1877a9e44bad90ef8d5740",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-mcp/tsconfig.json",
+      "sha256": "6a0a49e8191b5582ae6f35e08cec6d66051edd00a32b5e5e37322f939869c8ca",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-protocol-adapters/package.json",
+      "sha256": "f5e39cb8fd9417b7ea3873b5ce360aac5ab757da882789c7a03ce17453a81406",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-protocol-adapters/src/index.ts",
+      "sha256": "8b2bbd4c537760de03f289ece14890570427c70c8568648253d214fa8fb6f1e3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-protocol-adapters/test/protocol-adapters.test.ts",
+      "sha256": "9bf5d994774a6c8a863e62cc27be62de2120acbce7cc3c83715741c0c4fa2d9c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-protocol-adapters/tsconfig.json",
+      "sha256": "0ee071f2b2dd009adb1d1afd455e08ed18e1154e6fd51fbfe38a552776cc21a6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/README.md",
+      "sha256": "52ec0a7a00570b33f9bcc5a4c8cf43c32a5b355cf2089215a036103ed24fc47c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/package.json",
+      "sha256": "b7ada884718a186fa124060a3e0f70928f7ebbaa4db42497c5247e992660b5eb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/src/constants.ts",
+      "sha256": "739cc43945ce11505180cecf7801cc63af6d5d48688ab4352312cfd19ee86681",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/src/effect.ts",
+      "sha256": "9b6fb3d389154bcd63a464dcff93106a407cec8b6e2fef3e02cae6cf838f949c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/src/index.ts",
+      "sha256": "e7ebe0add1f901b80d9df8fe1069bd7e7177bfff49402e652b4480174d179c3f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/src/provider.ts",
+      "sha256": "cd91a5828714ddab84679943250c455f78e3d9ec9239036673a54f2426fc5538",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/src/read.ts",
+      "sha256": "60fa37811be4fecfc6d9457889107138f76e917294d17b9bd42b9af7bf2f6155",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/test/reference-connectors.test.ts",
+      "sha256": "d962899afc3e266ca1696f2c06878ea4f1f853051da6a3f72ada1e6755c497b0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-connectors/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/package.json",
+      "sha256": "5a71304df43183919ab2b6d7ebc4919d82e861d5d01c737964c5d9e741ed118b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/domains/filesystem.ts",
+      "sha256": "667bdc20a51f4bf02f06baed274cc23f2ad11667885bfac9785237624ae4f899",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/domains/github.ts",
+      "sha256": "60a4fa8b6e1aff762e661f66cbc7b2ef3bab8c2f642f566c13c70d882a4a04a7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/domains/gmail.ts",
+      "sha256": "79b6ef59c5abf27ab743ecea2ada729f17ea59c5e6dbad1209613ba663edfa7e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/domains/http.ts",
+      "sha256": "814c3a371eb2abc2dbeef785112a236035d3c3b3d0ebee857259639b5c97d1ab",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/domains/mercury.ts",
+      "sha256": "17edabe53de09cdb2bc0e11da38422be44fff0d4a7dc7c682c532316d94888ce",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/index.ts",
+      "sha256": "58ed5483a6a075cd54902a58ba9b94ea013b69f31fd7d2a095042246c23336d5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/src/shared.ts",
+      "sha256": "2bf257ed589af89de56eac4ea9492b9b6da3c42ae4953dfe5e15156e87662d5f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/test/runtime.test.ts",
+      "sha256": "1add4365bee87ead5106499d7b15edb8ef9ab0b55bc1159cbad5a12b2e14cd41",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-reference-extension/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/package.json",
+      "sha256": "a70c4763fe66d2019c9dda1d575c39d6a45eb08cb557cb5d4d58e22f487a99df",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/bootstrap.ts",
+      "sha256": "c9d609bacdd86db4d25bcad1212252993398ef39b0d83f4a17b8a05c2ddc8335",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/clock.ts",
+      "sha256": "d98ec67e06aee1e1fa74db93f83ded36308545e3783cf8110df785eed4fc94be",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/context-links.ts",
+      "sha256": "b2617a340a1219e25952adc8736289cbad3317f5977f4039aafbbe256a42105c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/context.ts",
+      "sha256": "60adc3928dc752a1f83f1eef005760eff321eb82bdb395099329d4ea19fb4a02",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/discovery.ts",
+      "sha256": "65cf89a3ab41caa898b75905e78a55f872c20d6b3206fab934e6a028ed27952f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/effects.ts",
+      "sha256": "eee2a13d0d0e8b205a1b1feb26270aab7880c7a1ba30e17a4d7171a9bc93cf73",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/extensions.ts",
+      "sha256": "286cb451c2309c7468c9e61f12b634ac16ac02b4a8c6e9f83860ad693b893898",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/ids.ts",
+      "sha256": "51faf19e1c5bd7ec26bbfe2d2a640593eefc517e4db7430dd6c21bf9cdd1a969",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/index.ts",
+      "sha256": "e3e158549e054f5c66a960ded32dcafda0c4acc8eea87de28e40da42a741966c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/inspector.ts",
+      "sha256": "d5b2f379ba4f0c354f74607cd2ec4185952b9f1142cce0f2af5bcb7d92755e72",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/replication.ts",
+      "sha256": "439a05db418ae966884e8da338c1d5ecc9bf0af9a26321673e1ed5c3a19c50b0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/resources.ts",
+      "sha256": "ac4c0c324dcfe1069a6b222430cb49ea1e66cace7279370f393170e2d8269859",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/summaries.ts",
+      "sha256": "88a036cf17900bc5084b3123a224ad9ba08c0f738c4097a4d9b61d0d884b620b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/tables.ts",
+      "sha256": "f405e752f9f4bab50d50e91755063728b5a99e69546a602dd7752c72194385f6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/src/types.ts",
+      "sha256": "34d5963bef9de46345d4fe068fcdf74767a1b5328f9512cb331118349e3aeeaa",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/bootstrap.test.ts",
+      "sha256": "af520eb08a32230cef0a6125b87552b25c8f1ae62aede8a82aa37ecbc9c8eff6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/clock.test.ts",
+      "sha256": "d55c48c00ea12c563bab4ad5046e00a0eab47383028fbdcdce16659bde7a849a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/context-links.test.ts",
+      "sha256": "1fe4f03a640a113203c3805412b5684e706d87555cf89caddbc72124304280cc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/context.test.ts",
+      "sha256": "b1750e9495ab6cc629ce614827b50818200df995e2fb06fe0620bcecd705393a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/discovery.test.ts",
+      "sha256": "5b6ab27f6e222c39f3ebea0cecf434b1e9fae5b44bf2dba0362b0d27ccb75f3e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/effects.test.ts",
+      "sha256": "4c7cd5cd1352b8585b50aa25e0d347c2788ec92c57fb07290bb2bd33f214e3bc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/ids.test.ts",
+      "sha256": "08977bfad2cce349ee2569d2d1ab9b36653852da90e2dc38f3341b2c3ccd5fb1",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/resources.test.ts",
+      "sha256": "424fcfbb942477675773d3729e6a08b399402ec79038656ac03fce1ec4e1f8e4",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/summaries.test.ts",
+      "sha256": "ee8f4d9ca4e3892902c25eccd500673c2a90b22a96509d4d130411d938f9ee09",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/test/types.test.ts",
+      "sha256": "0251d468278ba8e8b5adda669036dd878bcf6fbe23e5da1faa51a1e73a4e8766",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-schema/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/package.json",
+      "sha256": "db5df108fee5b9cae04e1c79109a309a63446f5276205f6d6a2f13a93788f170",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/commitments.ts",
+      "sha256": "38a0e2b1bec98a22450609cf57a57ac98000a99c5027503616636af70bb6a9fc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/context-packet.ts",
+      "sha256": "d01505bce59f517e19bc383ae900205baee5281f30c6d3484cbb937ac65616a8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/db.ts",
+      "sha256": "6d16278c2b4dc33e33e8ecd34c8eb4c6582baffb0700a0de761f548cf9e8d836",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/discovery.ts",
+      "sha256": "75b54e043a5af8539b66f908243a68a9a5dbe9d33c758682d339172ccf55ffe8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/doctor.ts",
+      "sha256": "433c82bf9348ce7b58be929c71b25a2da6ca507a1a98b27dde92303d574bbb4f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/index.ts",
+      "sha256": "2123502ce304723839ba11c156ba47743009c55646b560687c411ce8858a757a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/inspection.ts",
+      "sha256": "623fee3fd1a0820f1e7261b2201650102210acd4eb1688d30ddd96bb4b02211d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/inspector-index.ts",
+      "sha256": "1fe0f225f3639cb38925873bad9cec13d5c549c2613a54d3d564aab292deb91b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/kernel.ts",
+      "sha256": "79689701505bdfa004b75b735ea2665fd373fca35d9b8aa190b5765102d0d22e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0000_init.sql",
+      "sha256": "05d88e97ee566b3770dd0b906ffbf1eca4bd0c02fe3f6bad91dec2524633d838",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0001_subtasks.sql",
+      "sha256": "7ee42a927a5902d3a71ecfe816fc59c789f70a53f3a7ebca795892c69bd09b47",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0002_task_dependency.sql",
+      "sha256": "01b1fb121d8e74fff71c943b91ba49f10640d7e022b110eb175f41dc96a4b3f7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0003_recurrence.sql",
+      "sha256": "7078e3f6759a69b730e3768f239da6022b4507df27082c60ce71b10738315fac",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0004_event_sequence.sql",
+      "sha256": "c6d9f041f138750ee8d8c283460dc636b795ab3570f10ec0bc7c0ad4675f4ce0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0005_idempotency.sql",
+      "sha256": "93949a61e26bb4761f6c022129c925b8a0d4d1fd0b67721717216cae6cbf7431",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0006_agent_primitives.sql",
+      "sha256": "12cba60f4a9912d14259bbdc221b8e8a8d3f99aa78d81f1572e3a5710e5fcb21",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0007_agent_invariants.sql",
+      "sha256": "09839b5f0b54864a4b636eacc648a7f82f2e7bf5cd89b876acc2a7e698eb113b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0008_wait_condition.sql",
+      "sha256": "fe058e2415018f012d1b8950cd730151b871b12c2c3f386cd7b5712328a2cfa8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0009_observation.sql",
+      "sha256": "c706c86d8f4d4b631074487279e30681ef06f46dd4af996c893969a968a65703",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0010_reconciliation.sql",
+      "sha256": "e958d100a8c02a5454d45a1362562b7746d125098240ce36d25f3a358a6c668a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0011_deadline_fallback.sql",
+      "sha256": "af34cff2eacc2766b5b67c792b1769f52364fa6f6413f1062cf154adb32e7e5b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0012_extension_registry.sql",
+      "sha256": "928a8821701fa316e98b410066540168162bb80336395f556ef3ccbfe51d2aae",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0013_universal_collaboration.sql",
+      "sha256": "1656c56ceacb052a203c952eb019a8adaebe21a0887de7b70387116830d2cde8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0014_effect_ledger.sql",
+      "sha256": "e0f65e023e8b3e13e273d720172aba086ca04c2236d8865cf50a58a9280ee1b5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0015_effect_dispatch_gate.sql",
+      "sha256": "a0249740f4752446cc1816d20ecc0093dd002110c15584084e64bbf12aeeb739",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0016_effect_receipt.sql",
+      "sha256": "8eac9fca3a6dbb8e90741258a58388ad0177cc6cba24bef1635a2a1410bf0903",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0017_transactional_outbox.sql",
+      "sha256": "3515e58a31797cfaf4663c748c66d1cd987d6bcab17f51f29b82e472811838da",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0018_scoped_idempotency.sql",
+      "sha256": "ae1b6885a594456efa0fb50780a2c2226790233b952eb1849ddc1b98a69e05f7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0019_replication.sql",
+      "sha256": "af7ce45c1d2c5660ad14c8bfa90e09bef2c8167aeda1e5870d69f2b3e5a4a2ff",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0020_coordination_space.sql",
+      "sha256": "eb68d3b4f7c105ae33a6d05c14851c9d26a89a4afd826774b5a56d0d2cc9dd48",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0021_resource_leases.sql",
+      "sha256": "5ba4f78b2dc977fa2ffa0cf9471019d786197e9dd7c360875dc50a04ed2b0ffb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0022_replication_recovery.sql",
+      "sha256": "79bd80ab3c0a36249d8964ea5bdf8f6c8db930cdb32ae55905c4bc5eb8bd1ecb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0023_commitment_summaries.sql",
+      "sha256": "56a335076188448ca3b695f12c3ba7b83a4d47e0de61ad9d973de61c8ae11b08",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/0024_external_context_links.sql",
+      "sha256": "6ddcff812d197c63f172f0fbb2743b308e33cb9b092642719641196795dcd2cb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/compat.ts",
+      "sha256": "67c42be49a652544d3b92ed451706444628b9c31932a9fc9ebd1bdb53d724679",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/migrations/index.ts",
+      "sha256": "85cd8f452c07cc7320121982f61973657214f8ca60158d7a07dd89d6e6d6ff9d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/prioritizer.ts",
+      "sha256": "b1c560c57888e3d92531205a1c02742c9429041af43fb304c63f76065e6a852d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/projection/markdown.ts",
+      "sha256": "9280d096441481105d8995bc21f1efade891a2d8eb4b1be09766160d314c1de8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/agentic.ts",
+      "sha256": "cdc19577ad15b6fa41bdde935703f770566690563e0473b91e94d9e1f1e713b6",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/areas.ts",
+      "sha256": "1af2f546b2d71f37468748db4aa6953cffd7e1f1e2b1bb7261851ae7aff1fc6f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/collaboration.ts",
+      "sha256": "d0673bc26dd128c59e8e312e1507c892ab03547c6b9f42cf5129352f5a38c530",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/context-links.ts",
+      "sha256": "e9f3fc8e55f0ec07e2455258521bafaf6a389d3822db3665bf503da59cd2ed48",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/context.ts",
+      "sha256": "f2831c5791f6bbd21c70fabf2093d52e2861fbe406600ccabb32d8a1ba058519",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/deadlines.ts",
+      "sha256": "33dd45756db204c99602237172499e4bc4eeb09b1d39a851d94b408db2cb0047",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/delivery.ts",
+      "sha256": "a4cc25baaf22a852eeb392f34914097fca9b7b63e4eff35d8f6a1bc349d3b977",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/dependencies.ts",
+      "sha256": "30fd90290d970dbc46a3b0da20140be182eb92a9b7af7ad3aa5e177d914b620e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/effects.ts",
+      "sha256": "0dfa2d360099941f630a08f700d454cd81640e74914b1959efc4203353053f92",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/events.ts",
+      "sha256": "e6d398d1c4d93447f3f476121177e300faa878fcd012ce0334aadd673d00dafd",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/extensions.ts",
+      "sha256": "4551c216accad2799b37c134986413e56921f3c80c25e41f492019de6f691042",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/goals.ts",
+      "sha256": "80775100585561185de2375383a2f981e5f2b80aacfdbb04bb52ae637b6f7fd7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/idempotency.ts",
+      "sha256": "709f97918d66af12a457de67d21644cf6f44a8354b82826eec373087d1549068",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/life-deadlines.ts",
+      "sha256": "da52e2f8d5eb9e5e6f4dde35c84410a8c426037aad31e0bd0c410a5d84c5ba80",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/life-task-policy.ts",
+      "sha256": "a5b700f4fae68ea13b0892b22b136df26b4695254a8a2d08b85175b6eb337eb2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/life-tasks.ts",
+      "sha256": "778c12e6c0778c4cd68a2bf1b122b5fb286dc3386f63384d33348d816bc11b7f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/matchers.ts",
+      "sha256": "b43fbf74bb9582c1f430c0d920940d87db7895a18f88c84c21fc3536baf12013",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/observations.ts",
+      "sha256": "652baa78d0910980e086e086697e0e0e6ed8fc54aaf5efbeb2457c585b4df651",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/principals.ts",
+      "sha256": "ba5fc06e2c8847487c7fdef0c4f3a178f81ed68f421113d66ac45faa1b1377ba",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/progress.ts",
+      "sha256": "a4a202703c3bc4520159d32923fa856db0031f7620a5f97cbc74dc17fac44857",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/projects.ts",
+      "sha256": "6d21adec7e427db4acfab763c5fff85051024a6be951c9265a044e8ad0ad6bf2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/reconciliation.ts",
+      "sha256": "60f5f508772ce1a1017f226b04579c714f6abeb37e418106161d692ba0e93937",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/recurrence.ts",
+      "sha256": "25fa0675c1f1244dc3f00034d11861fa2cc9d4ad1d314c2c63c1b30b289afd06",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/recurring-tasks.ts",
+      "sha256": "df27f5a8969a072b9d9512ec9329054bd8fea2c4c32abd509aa73486b1ebbf2d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/reference-runtime.ts",
+      "sha256": "97c279e216c7b4b6368031101623d7236c3b9435137767da481addbc00c939db",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/replication.ts",
+      "sha256": "0d54e22242b582a36804f9b274c8cf61df0c5d89b152cc8d0060d09e927e9a6d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/resources.ts",
+      "sha256": "34b70788b6008e5a698a9a976b9bb069ac53c7f118b548584bf38e417e678165",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/spaces.ts",
+      "sha256": "3d855395880537c20b8445fc60fe29c914ca5b183343e8f366ff90b3ef607a1e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/summaries.ts",
+      "sha256": "00371e9189b9f15b48964651cd3fbe77f86dd12723d21f2f5c1bfd71cde733bf",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/tasks.ts",
+      "sha256": "31756bef3f3d7e67d5d6713f3fe3c6abea00689e0ee085aa0ac2d27ebb871968",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/service/waits.ts",
+      "sha256": "b29fcd95b9ae82a199d96fbc8356d21ad157c085059d43d6e9ed2f5e884e773e",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/util/canonical-json.ts",
+      "sha256": "fb2be290278e44809e1076c44bd6d323f0057ceb87bde8bda88c9df42691a28b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/util/clock.ts",
+      "sha256": "c2848bcaa565eecf0d4069e3d3ad818261cd9485dca3882e2e6815cdc22da4cf",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/util/diff.ts",
+      "sha256": "4ccfb087df873a19c095b2c4456eeafe6687dad81dc2df726102f6eade4442d9",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/src/util/row.ts",
+      "sha256": "d413f00f5cd80bb3204e3b29a9af0fdce0ad63bd3ba9f023838bf000218e17ba",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/agentic.test.ts",
+      "sha256": "7dc1aad5f0435e8b3ac828aca44bc8d2293620377ae329e377b0a9310ded1181",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/atomic-mutation.test.ts",
+      "sha256": "8a13c18f7cf8f1d8fdf0f348fa6c01efa1bbf1484eea6dafa9dd4020c813a75b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/clock.test.ts",
+      "sha256": "f94b1a7fbd44c56afeeab0ca536cb02deb7f9cb2494aae5afe61ab2611c57434",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/collaboration.test.ts",
+      "sha256": "3d4ced15e9047ce4d7593f99571cc3f27d7f5e940b6b1a7fb762d26cc64042a2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/commitment-summaries.test.ts",
+      "sha256": "6aeb0eaab48512b85410ddbcc135f39c9954c8d0720b946954519f2c762cf0e0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/context-links.test.ts",
+      "sha256": "5896e3ebf9279a46647740fcfacb6de2e75e9603a2f303a8e514aab119ab729d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/context-packet.test.ts",
+      "sha256": "2d659fa29078ddbc8f81f471d9a171efada211d94c11b393440cacb7f1a545cb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/deadlines.test.ts",
+      "sha256": "1b36fcba85999fa92f2fd93205938f411dd7e7ae5b5f2019db9225a4c5dfbf0d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/delivery.test.ts",
+      "sha256": "d47acdf7f48112bbcfc98b50d241e1c7e5be9925295ad52e8780ca86cd8a3ebe",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/dependencies.test.ts",
+      "sha256": "2df714df194c5ac17bbc404dd129b60a2134b12c2eb2dff70e9e96107fd8f21a",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/discovery.test.ts",
+      "sha256": "e8b8b6c9904dfd86857bc7a7ab023893751549567cc0e0396ff5c4023b0160a8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/effects.test.ts",
+      "sha256": "5a04973d3b4f6658df4223b9d70a708ec312e0dadb4bcfdb6bc93b1e41e8ccfb",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/extensions.test.ts",
+      "sha256": "0ec0cd7391d4b3f3669bfa670ed85e421a0634a7a53f0b3a00516b92036865f5",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/fixtures/0000-populated.sql",
+      "sha256": "9cee1faa4b28f2d6b5bcc013f3bc81cabe1d415f7da6a2f81901b32b75824cc3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/fixtures/minimal-kernel-boot.ts",
+      "sha256": "b24264fb99ecc5c8e9b6667f2007ba3eea6fd7601d87cc40b442e3cc9e3f0bc0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/fixtures/pre-0006-populated.sql",
+      "sha256": "e099907286c185620aa0035499699d333d1dc543ac671924820a1feb70fafdf1",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/idempotency.test.ts",
+      "sha256": "46b5ee35724b348f048f749cfde2537f805fa4d0a9b9381adee3d1c9f5925f5f",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/inspection.test.ts",
+      "sha256": "98eb721551af151dc1252e0bac2b1dd153d1455271517a5bf21385574f01c5f3",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/inspector-index.test.ts",
+      "sha256": "8e8baedb589c388a86fe46e77632b082df53a6a6fe49258ad93f8a7dd08f83e0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/integrity.test.ts",
+      "sha256": "ffec1129f91118a0d1dd67b6d36affa9e275beffd7fdc0447e57cc406c01c28d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/migrations-events.test.ts",
+      "sha256": "09f1fc462a3b3657c8c6b22d7bbb0de13ba298875b01f890e32ba74c422d2f9d",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/minimal-kernel.test.ts",
+      "sha256": "5842e9e2f0b0870cedb900f689153f7fb4cb15bf7a24660ed0aab1c5f5d2197b",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/observations.test.ts",
+      "sha256": "8225c26df6572b1be4829fa4e0c0c0dbfe35c46b984dce2321f89c0b656a33b0",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/prioritizer-projection.test.ts",
+      "sha256": "3ae5aca6f5cc121c328c9378b744163a8e23b2413999088a19e37b0626750c17",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/progress.test.ts",
+      "sha256": "9f43d2aeb7a361d7bdb7b399852c8c04bb905f420f39c5aed83efd8b787f11f8",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/reconciliation.test.ts",
+      "sha256": "b4452aba63c0ef83dc7eabfa4367a1eff9c70812f2c09dc2cbe80d030aefdb1c",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/recurrence.test.ts",
+      "sha256": "0d2d2a0345d3544a732bb1f74062ee2764b6dccc9ee20c05bba53c7ec612b459",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/replication.test.ts",
+      "sha256": "5ba6ffe013c2ff2a04d8b74822a0b75e050c01ea89cc5440b4e5a53ae87e73cc",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/resources.test.ts",
+      "sha256": "b7846e6d99b9341b393bb6d5128b3bcfd24e5a69a4228e18248a4bc073e5ebd7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/smoke.test.ts",
+      "sha256": "c1cd343ed7c5a75d5465517cb602384f19157f99370a64c8eaae9050024b0661",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/spaces.test.ts",
+      "sha256": "1ca2f4203b4d3a5fd5cc13941631cedffabb8072839cc352ba919a7589c92cf2",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/state-machines.test.ts",
+      "sha256": "6ec73b839f544e861477445c40b9e601e20a2236501fd7163dc7b034f0d48379",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/subtasks.test.ts",
+      "sha256": "8362bd61560fe15bb43d4092dded2d0ca59e3ff942e69524bfb3a36e1124b5ab",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/test/waits.test.ts",
+      "sha256": "c6891ce4f287f101b08a85cd91183620fe49d4a24c44fccfbb4e02840d3930a7",
+      "executable": false
+    },
+    {
+      "path": "packages/tasq-service/tsconfig.json",
+      "sha256": "e4ed044d99005d1d36c726849468ff721d4fd6ed12967cc420470a4d9f690004",
+      "executable": false
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "986da635121ca57092e81a0ccc8a30db8f12d61ef6f79df78f8e560fd6b35d15",
+      "executable": false
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "sha256": "65d5211c0bc761cea5c9c8bf7316bf06293a750c03d4e57debfdb6dc6e4fa7e3",
+      "executable": false
+    },
+    {
+      "path": "scripts/install-cli.sh",
+      "sha256": "85b23047a954c770ace45a5bb9324959675fea627cc796b7d066e8d92d98e9a1",
+      "executable": true
+    },
+    {
+      "path": "scripts/release/build-public-packages.ts",
+      "sha256": "a7ca5cfcea0975aec1073ec735ea5e950f1f8b25e61f12e4dd45ebd14e043aed",
+      "executable": true
+    },
+    {
+      "path": "scripts/release/build-public-release.ts",
+      "sha256": "87a00bc292caef2fe8d6777c059a928be4887ecf58a7362916fd526183a0f153",
+      "executable": true
+    },
+    {
+      "path": "scripts/release/deterministic-tar.ts",
+      "sha256": "bf4824130dd3e2a2d88c86e65161c7fb88d4c55bb25a970e0bfd9016b329cac5",
+      "executable": true
+    },
+    {
+      "path": "scripts/run-blind-agent-trials.ts",
+      "sha256": "a47a49d9df35390210616e0c78f03234620703791f0e08e5334beb73c51b7199",
+      "executable": true
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "12bb6a0261b9b02ab95b38dee5313cdcc1995a0eff68dec30f4f9a1aa4bd548d",
+      "executable": false
+    }
+  ]
+}

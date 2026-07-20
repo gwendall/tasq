@@ -1,0 +1,119 @@
+name: Protected release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  identity:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "gwendall/tasq"
+          test "$(git tag --points-at HEAD)" = "${GITHUB_REF_NAME}"
+          version="${GITHUB_REF_NAME#v}"
+          [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  cli:
+    needs: identity
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x64-gnu
+          - os: macos-14
+            target: darwin-arm64
+    runs-on: ${{ matrix.os }}
+    environment: release
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - run: pnpm install --frozen-lockfile
+      - name: Build deterministic CLI envelope
+        run: >-
+          bun scripts/release/build-public-release.ts
+          --version "${{ needs.identity.outputs.version }}"
+          --source-commit "${{ needs.identity.outputs.commit }}"
+          --target "${{ matrix.target }}"
+          --outdir "dist/${{ matrix.target }}"
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: "dist/${{ matrix.target }}/*"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "tasq-${{ matrix.target }}"
+          path: "dist/${{ matrix.target }}/*"
+          if-no-files-found: error
+
+  npm:
+    needs: [identity, cli]
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - run: pnpm install --frozen-lockfile
+      - name: Build package candidates
+        run: >-
+          bun scripts/release/build-public-packages.ts
+          --version "${{ needs.identity.outputs.version }}"
+          --source-commit "${{ needs.identity.outputs.commit }}"
+          --outdir dist/packages
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: "dist/packages/*"
+      - name: Publish through npm trusted publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          packages=(tasq-schema tasq-extension-sdk tasq-core tasq-protocol-adapters tasq-mcp tasq-console tasq-cli)
+          for name in "${packages[@]}"; do
+            npm publish "dist/packages/${name}-${{ needs.identity.outputs.version }}.tgz" --access public --provenance
+          done
+
+  github-release:
+    needs: [identity, cli, npm]
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

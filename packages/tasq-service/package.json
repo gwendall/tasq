@@ -1,0 +1,41 @@
+{
+  "name": "@tasq-internal/local-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "tasq-zero: the only write path. Open the DB, mutate via service functions (which emit events), read via query helpers. No SQL elsewhere.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./db": "./src/db.ts",
+    "./migrations": "./src/migrations/index.ts",
+    "./kernel": "./src/kernel.ts",
+    "./projection": "./src/projection/markdown.ts",
+    "./context-packet": "./src/context-packet.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/extension-sdk": "workspace:*",
+    "@tasq-internal/life-planning-profile": "workspace:*",
+    "@tasq-internal/reference-extension": "workspace:*",
+    "@tasq/schema": "workspace:*",
+    "@libsql/client": "^0.14.0",
+    "drizzle-orm": "^0.36.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-service"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme"
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@tasq/console",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Read-only local web inspector over canonical Tasq kernel projections.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "test:browser": "playwright test --config playwright.config.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\""
+  },
+  "dependencies": {
+    "@tasq/schema": "workspace:*",
+    "@tasq/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-inspector"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

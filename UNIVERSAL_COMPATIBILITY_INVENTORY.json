@@ -1,0 +1,496 @@
+{
+  "inventoryVersion": 1,
+  "contractVersion": "cli-json-v1",
+  "status": "accepted-uk-002",
+  "classifications": {
+    "kernel": "Retain the field's universal meaning in the kernel.",
+    "kernel_rename": "Retain the meaning behind a canonical universal name while preserving the v1 alias.",
+    "kernel_generalize": "Retain the invariant but migrate its representation to a generic kernel record or reference.",
+    "extension": "Move schema, routing or evaluator meaning to a versioned extension.",
+    "profile": "Move planning, scheduling or life-specific meaning to a bundled profile/policy.",
+    "surface": "Keep only in a deployment or interaction surface, outside kernel semantics.",
+    "internal": "Keep as a replaceable implementation detail, not a public semantic primitive.",
+    "compatibility": "Preserve only through the CLI/JSON v1 compatibility adapter."
+  },
+  "tables": {
+    "principal": {
+      "exportName": "principal",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "kind", "displayName", "status", "metadata", "revision", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId"],
+        "compatibility": ["localAlias"]
+      }
+    },
+    "coordination_space": {
+      "exportName": "coordinationSpace",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "createdByPrincipalId", "createdAt"]
+      }
+    },
+    "resource_lease": {
+      "exportName": "resourceLease",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "workspaceId", "resourceKey", "holderActor", "holderPrincipalId", "revision", "fence", "acquiredAt", "heartbeatAt", "expiresAt", "releasedAt", "releaseReason", "metadata", "createdAt", "updatedAt"]
+      }
+    },
+    "resource_event": {
+      "exportName": "resourceEvent",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["sequence", "id", "workspaceId", "resourceKey", "leaseId", "actor", "principalId", "eventType", "payload", "createdAt"]
+      }
+    },
+    "area": {
+      "exportName": "area",
+      "recordOwner": "profile",
+      "fieldGroups": {
+        "profile": ["id", "tenantId", "name", "slug", "importance", "cadenceTarget", "description", "metadata", "createdAt", "updatedAt", "deletedAt"]
+      }
+    },
+    "goal": {
+      "exportName": "goal",
+      "recordOwner": "profile",
+      "fieldGroups": {
+        "profile": ["id", "tenantId", "areaId", "title", "description", "horizon", "importance", "status", "targetDate", "metadata", "createdAt", "updatedAt", "deletedAt"]
+      }
+    },
+    "project": {
+      "exportName": "project",
+      "recordOwner": "profile",
+      "fieldGroups": {
+        "profile": ["id", "tenantId", "goalId", "areaId", "title", "description", "status", "metadata", "createdAt", "updatedAt", "deletedAt"]
+      }
+    },
+    "task": {
+      "exportName": "task",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "title", "description", "successCriteria", "completionMode", "status", "dueAt", "startedAt", "completedAt", "metadata", "revision", "createdAt", "updatedAt", "deletedAt"],
+        "kernel_rename": ["tenantId", "scheduledAt"],
+        "kernel_generalize": ["parentTaskId"],
+        "profile": ["projectId", "goalId", "areaId", "nextAction", "priority", "estimatedMinutes", "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak", "recurrenceParentId"]
+      }
+    },
+    "commitment_summary": {
+      "exportName": "commitmentSummary",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "supersedesSummaryId", "summary", "summaryDigest", "sourceRevision", "sourceStatus", "sourceEventSequence", "sourceDigest", "sourceRefs", "principalId", "createdAt"],
+        "kernel_rename": ["tenantId", "taskId", "actor"]
+      }
+    },
+    "event": {
+      "exportName": "event",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["sequence", "id", "principalId", "eventType", "payload", "occurredAt", "createdAt"],
+        "kernel_rename": ["tenantId", "actor"],
+        "kernel_generalize": ["entityType", "entityId"]
+      }
+    },
+    "delivery_sink": {
+      "exportName": "deliverySink",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["id", "tenantId", "kind", "configurationDigest", "status", "startAfterSequence", "createdAt", "updatedAt"]
+      }
+    },
+    "delivery_outbox": {
+      "exportName": "deliveryOutbox",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["id", "tenantId", "sinkId", "eventSequence", "eventId", "status", "attemptCount", "availableAt", "leaseOwner", "leaseExpiresAt", "lastError", "deliveredAt", "quarantinedAt", "createdAt", "updatedAt"]
+      }
+    },
+    "replication_authority": {
+      "exportName": "replicationAuthority",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "authorityReplicaId", "authorityEpoch", "currentSequence", "minimumRetainedSequence", "createdAt", "updatedAt"]
+      }
+    },
+    "replication_authority_recovery": {
+      "exportName": "replicationAuthorityRecovery",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "authorityEpoch", "authorityReplicaId", "priorAuthorityEpoch", "restoredSequence", "snapshotDigest", "reason", "recoveredAt"]
+      }
+    },
+    "replication_local_replica": {
+      "exportName": "replicationLocalReplica",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["workspaceId", "replicaId", "generationId", "nextCounter", "previousDigest", "authorityReplicaId", "authorityEpoch", "observedSequence", "pullCursor", "createdAt", "updatedAt"]
+      }
+    },
+    "replication_replica": {
+      "exportName": "replicationReplica",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "replicaId", "generationId", "status", "acceptedCounter", "acceptedDigest", "acknowledgedSequence", "registeredAt", "lastContactAt", "updatedAt"]
+      }
+    },
+    "replication_outgoing_operation": {
+      "exportName": "replicationOutgoing",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["workspaceId", "replicaId", "generationId", "counter", "operationDigest", "previousDigest", "operationJson", "status", "authoritySequence", "createdAt", "updatedAt"]
+      }
+    },
+    "replication_accepted_operation": {
+      "exportName": "replicationAccepted",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "authoritySequence", "replicaId", "generationId", "counter", "operationDigest", "operationJson", "disposition", "resultJson", "recordedAt"]
+      }
+    },
+    "replication_conflict": {
+      "exportName": "replicationConflict",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "workspaceId", "authoritySequence", "replicaId", "generationId", "counter", "operationDigest", "recordType", "recordId", "reason", "baseSnapshotJson", "authoritySnapshotJson", "incomingSnapshotJson", "principalId", "recordedAt", "resolvedByOperationDigest"]
+      }
+    },
+    "replication_retired_identity": {
+      "exportName": "replicationRetiredIdentity",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["workspaceId", "recordType", "recordId", "tombstoneDigest", "retiredAt"]
+      }
+    },
+    "replication_materialized_record": {
+      "exportName": "replicationMaterializedRecord",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["workspaceId", "recordType", "recordId", "stateDigest", "coveredSequence", "updatedAt"]
+      }
+    },
+    "task_dependency": {
+      "exportName": "taskDependency",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "createdAt", "updatedAt", "deletedAt"],
+        "kernel_rename": ["tenantId"],
+        "kernel_generalize": ["fromTaskId", "toTaskId", "type"]
+      }
+    },
+    "commitment_relation": {
+      "exportName": "commitmentRelation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "fromTaskId", "relationType", "toTaskId", "revision", "createdByPrincipalId", "createdAt", "endedByPrincipalId", "endedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "assignment": {
+      "exportName": "assignment",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "assignerPrincipalId", "assigneePrincipalId", "role", "status", "instructionsRef", "acceptedAt", "endedAt", "revision", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "idempotency_key": {
+      "exportName": "idempotencyKey",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["callerScope", "operation", "key", "digestVersion", "requestDigest", "resultType", "resultStatus", "resultRevision", "eventSequence", "retentionClass", "expiresAt", "createdAt"],
+        "kernel_rename": ["tenantId"],
+        "kernel_generalize": ["resultId"]
+      }
+    },
+    "external_ref": {
+      "exportName": "externalRef",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "recordType", "recordId", "system", "resourceType", "externalId", "url", "version", "digest", "metadata", "createdByPrincipalId", "createdAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "external_context_link": {
+      "exportName": "externalContextLink",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "purposeUri", "action", "supersedesLinkId", "system", "resourceType", "externalId", "url", "version", "digest", "principalId", "createdAt"],
+        "kernel_rename": ["tenantId", "taskId", "actor"]
+      }
+    },
+    "task_claim": {
+      "exportName": "taskClaim",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "principalId", "revision", "fence", "acquiredAt", "heartbeatAt", "expiresAt", "releasedAt", "releaseReason", "metadata", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId", "taskId", "actor"]
+      }
+    },
+    "task_attempt": {
+      "exportName": "taskAttempt",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "principalId", "revision", "claimId", "runtime", "externalId", "contextId", "status", "statusMessage", "startedAt", "endedAt", "metadata", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId", "taskId", "actor"]
+      }
+    },
+    "task_evidence": {
+      "exportName": "taskEvidence",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "principalId", "attemptId", "supersedesEvidenceId", "summary", "uri", "digest", "observedAt", "metadata", "createdAt"],
+        "kernel_rename": ["tenantId", "taskId", "actor"],
+        "kernel_generalize": ["kind", "source"]
+      }
+    },
+    "artifact": {
+      "exportName": "artifact",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "attemptId", "typeUri", "schemaVersion", "name", "mediaType", "uri", "digest", "inlineDataRef", "createdByPrincipalId", "metadata", "createdAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "completion_record": {
+      "exportName": "completionRecord",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "resultingRevision", "completionPolicyUri", "completionPolicyVersion", "policyInputDigest", "evidenceIds", "decidedByPrincipalId", "decidedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "extension_release": {
+      "exportName": "extensionRelease",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "version", "manifestDigest", "installedAt"],
+        "kernel_rename": ["tenantId", "installedBy"],
+        "extension": ["extensionUri", "manifestJson"]
+      }
+    },
+    "extension_type": {
+      "exportName": "extensionType",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "extensionReleaseId", "createdAt"],
+        "kernel_rename": ["tenantId"],
+        "extension": ["recordKind", "typeUri", "schemaVersion", "schemaJson", "schemaDigest"]
+      }
+    },
+    "extension_evaluator": {
+      "exportName": "extensionEvaluator",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "extensionReleaseId", "createdAt"],
+        "kernel_rename": ["tenantId"],
+        "extension": ["evaluatorUri", "evaluatorVersion", "conditionTypeUri", "conditionSchemaVersion", "acceptedObservationTypes", "implementationDigest"]
+      }
+    },
+    "wait_condition": {
+      "exportName": "waitCondition",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "status", "notBefore", "deadlineAt", "satisfiedAt", "expiredAt", "cancelledAt", "cancelReason", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId", "taskId"],
+        "kernel_generalize": ["fallbackKind", "fallbackSpec", "fallbackTargetTaskId", "fallbackResultTaskId", "supersedesConditionId", "satisfiedByObservationId"],
+        "extension": ["kind", "typeUri", "schemaVersion", "parameters", "evaluatorUri", "evaluatorVersion", "evaluatorImplementationDigest"]
+      }
+    },
+    "observation": {
+      "exportName": "observation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "source", "externalEventId", "occurredAt", "recordedAt", "verificationLevel", "verificationMethod", "rawRef", "digest", "metadata"],
+        "kernel_rename": ["tenantId", "recordedBy"],
+        "extension": ["kind", "typeUri", "schemaVersion", "subjectRef", "payload"]
+      }
+    },
+    "observation_route": {
+      "exportName": "observationRoute",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["observationId", "tenantId", "kind", "routeKey"]
+      }
+    },
+    "reconciliation": {
+      "exportName": "reconciliation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "conditionId", "observationId", "decision", "effect", "reasonCode", "explanation", "evidenceId", "reconciledAt"],
+        "kernel_rename": ["tenantId", "reconciledBy"],
+        "extension": ["matcherKind", "matcherVersion", "evaluatorUri", "evaluatorVersion", "evaluatorImplementationDigest"]
+      }
+    },
+    "effect": {
+      "exportName": "effect",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "attemptId", "canonicalRequest", "requestDigest", "requestProtocol", "canonicalization", "digestAlgorithm", "dispatchIdempotencyKey", "status", "authorizedByApprovalId", "outcomeReceiptId", "claimId", "fence", "supersedesEffectId", "compensationOfEffectId", "createdByPrincipalId", "revision", "authorizedAt", "executionStartedAt", "indeterminateAt", "resolvedAt", "cancelledAt", "cancelReason", "createdAt", "updatedAt"],
+        "kernel_rename": ["tenantId", "taskId"],
+        "extension": ["effectTypeUri", "effectSchemaVersion", "connectorOperationUri", "connectorOperationVersion", "connectorContractDigest", "connectorInstanceRef", "connectorBindingDigest"]
+      }
+    },
+    "effect_approval": {
+      "exportName": "effectApproval",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "effectId", "requestDigest", "approverPrincipalId", "decision", "scope", "limits", "validFrom", "expiresAt", "verificationLevel", "verificationMethod", "verification", "supersedesApprovalId", "decidedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "effect_receipt": {
+      "exportName": "effectReceipt",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "effectId", "taskId", "attemptId", "approvalId", "evidenceId", "canonicalReport", "receiptDigest", "externalReceiptId", "providerOperationId", "outcome", "resolvesReceiptId", "verificationLevel", "verificationMethod", "coverage", "verification", "recordedByPrincipalId", "occurredAt", "recordedAt"],
+        "kernel_rename": ["tenantId"],
+        "extension": ["connectorInstanceRef"]
+      }
+    }
+  },
+  "commands": {
+    "kernel": ["claim", "release", "attempt", "evidence", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
+    "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
+    "kernel_generalize": ["depend", "undepend"],
+    "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
+    "surface": ["onboard", "mcp", "web", "init", "config", "backup", "doctor", "journal", "help", "version"],
+    "compatibility": ["complete", "rm", "brief"]
+  },
+  "events": {
+    "openVocabulary": true,
+    "emitted": [
+      "attempt_cancelled", "attempt_failed", "attempt_input_required", "attempt_running", "attempt_started", "attempt_succeeded", "artifact_appended",
+      "assignment_accepted", "assignment_proposed", "assignment_rejected", "assignment_released", "assignment_revoked",
+      "blocked", "cancelled", "claim_acquired", "claim_released", "claim_renewed", "completed", "created", "deleted",
+      "commitment_summary_appended", "dependency_added", "dependency_removed", "effect_approval_recorded", "effect_authority_withdrawn", "effect_authorized", "effect_cancelled", "effect_execution_started", "effect_proposed", "effect_receipt_recorded", "evidence_added", "external_context_link_appended", "external_ref_appended", "instance_generated", "reconciliation_recorded", "relation_added", "relation_ended", "restored",
+      "scope_rederived", "started", "status_changed", "unblocked", "uncancelled", "updated", "wait_cancelled", "wait_created",
+      "wait_expired", "wait_fallback_activated", "wait_satisfied"
+    ],
+    "documentedReserved": ["linked", "note_added"],
+    "resourceEmitted": ["resource_lease_acquired", "resource_lease_renewed", "resource_lease_released", "resource_lease_expired"],
+    "target": "Event types stay an open kernel audit vocabulary; profile and extension publishers own the meaning of their namespaced additions."
+  },
+  "jsonRecords": {
+    "CoordinationSpaceV1": { "schema": "CoordinationSpace", "owner": "kernel", "fields": ["workspaceId", "createdByPrincipalId", "createdAt"] },
+    "ResourceLeaseV1": { "schema": "ResourceLease", "owner": "kernel", "fields": ["id", "workspaceId", "resourceKey", "holderActor", "holderPrincipalId", "revision", "fence", "acquiredAt", "heartbeatAt", "expiresAt", "releasedAt", "releaseReason", "metadata", "createdAt", "updatedAt"] },
+    "ResourceEventV1": { "schema": "ResourceEvent", "owner": "kernel", "fields": ["sequence", "id", "workspaceId", "resourceKey", "leaseId", "actor", "principalId", "eventType", "payload", "createdAt"] },
+    "AreaV1": { "schema": "Area", "owner": "profile", "fields": ["id", "tenantId", "name", "slug", "importance", "cadenceTarget", "description", "metadata", "createdAt", "updatedAt", "deletedAt"] },
+    "GoalV1": { "schema": "Goal", "owner": "profile", "fields": ["id", "tenantId", "areaId", "title", "description", "horizon", "importance", "status", "targetDate", "metadata", "createdAt", "updatedAt", "deletedAt"] },
+    "ProjectV1": { "schema": "Project", "owner": "profile", "fields": ["id", "tenantId", "goalId", "areaId", "title", "description", "status", "metadata", "createdAt", "updatedAt", "deletedAt"] },
+    "TaskV1": { "schema": "Task", "owner": "kernel_rename", "fields": ["id", "tenantId", "projectId", "goalId", "areaId", "parentTaskId", "title", "description", "nextAction", "successCriteria", "completionMode", "status", "priority", "estimatedMinutes", "scheduledAt", "dueAt", "startedAt", "completedAt", "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak", "recurrenceParentId", "metadata", "createdAt", "updatedAt", "deletedAt"] },
+    "TaskDependencyV1": { "schema": "TaskDependency", "owner": "kernel_generalize", "fields": ["id", "tenantId", "fromTaskId", "toTaskId", "type", "createdAt", "updatedAt", "deletedAt"] },
+    "TaskClaimV1": { "schema": "TaskClaim", "owner": "kernel_rename", "fields": ["id", "tenantId", "taskId", "actor", "fence", "acquiredAt", "heartbeatAt", "expiresAt", "releasedAt", "releaseReason", "metadata", "createdAt", "updatedAt"] },
+    "TaskAttemptV1": { "schema": "TaskAttempt", "owner": "kernel_rename", "fields": ["id", "tenantId", "taskId", "claimId", "actor", "runtime", "externalId", "contextId", "status", "statusMessage", "startedAt", "endedAt", "metadata", "createdAt", "updatedAt"] },
+    "TaskEvidenceV1": { "schema": "TaskEvidence", "owner": "kernel_generalize", "fields": ["id", "tenantId", "taskId", "attemptId", "supersedesEvidenceId", "actor", "kind", "summary", "uri", "digest", "source", "observedAt", "metadata", "createdAt"] },
+    "WaitConditionV1": { "schema": "WaitCondition", "owner": "kernel_generalize", "fields": ["id", "tenantId", "taskId", "kind", "schemaVersion", "parameters", "status", "notBefore", "deadlineAt", "fallbackKind", "fallbackSpec", "fallbackTargetTaskId", "fallbackResultTaskId", "supersedesConditionId", "satisfiedByObservationId", "satisfiedAt", "expiredAt", "cancelledAt", "cancelReason", "createdAt", "updatedAt"] },
+    "ObservationV1": { "schema": "Observation", "owner": "kernel_generalize", "fields": ["id", "tenantId", "source", "externalEventId", "kind", "schemaVersion", "subjectRef", "payload", "occurredAt", "recordedAt", "recordedBy", "verificationLevel", "verificationMethod", "rawRef", "digest", "metadata"] },
+    "ReconciliationV1": { "schema": "Reconciliation", "owner": "kernel_generalize", "fields": ["id", "tenantId", "conditionId", "observationId", "matcherKind", "matcherVersion", "decision", "effect", "reasonCode", "explanation", "evidenceId", "reconciledAt", "reconciledBy"] },
+    "EventV1": { "schema": "Event", "owner": "kernel_generalize", "fields": ["sequence", "id", "tenantId", "actor", "entityType", "entityId", "eventType", "payload", "occurredAt", "createdAt"] }
+  },
+  "jsonEnvelopes": {
+    "ResourceLeaseOperationV1": { "owner": "kernel", "fields": ["contractVersion", "disposition", "observedAt", "lease", "eventCursor"], "cursorFields": ["afterSequence"] },
+    "ResourceLeaseViewV1": { "owner": "kernel", "fields": ["status", "observedAt", "lease"] },
+    "ResourceWorldV1": { "owner": "kernel", "fields": ["contractVersion", "workspaceId", "observedAt", "leases", "eventCursor"], "cursorFields": ["afterSequence"] },
+    "ResourceEventPageV1": { "owner": "kernel", "fields": ["contractVersion", "workspaceId", "events", "nextCursor"], "cursorFields": ["afterSequence"] },
+    "ResourceFenceVerificationV1": { "owner": "kernel", "fields": ["contractVersion", "status", "workspaceId", "resourceKey", "leaseId", "fence", "holderPrincipalId", "verifiedAt", "expiresAt"] },
+    "ResourceProblemV1": { "owner": "surface", "fields": ["contractVersion", "status", "code", "message", "retryable", "workspaceId", "resourceKey", "currentLease", "nextActions"], "nextActionFields": ["kind", "description", "notBefore", "argvTemplate"] },
+    "ResourceSweepV1": { "owner": "kernel", "fields": ["contractVersion", "workspaceId", "observedAt", "expired", "eventCursor"], "cursorFields": ["afterSequence"] },
+    "AutonomousBootstrapV1": {
+      "owner": "surface",
+      "fields": ["contractVersion", "disposition", "space", "actor", "transportBoundary", "authority", "recipeCapabilities", "guide", "discovery", "recipes", "warnings"],
+      "spaceFields": ["workspaceId", "createdByPrincipalId", "createdAt"],
+      "actorFields": ["alias", "principalId", "authentication"],
+      "authorityFields": ["capabilityEnforcement", "effectAuthority", "explanation"],
+      "guideFields": ["contractVersion", "execution", "firstReadRecipeId", "journeys"],
+      "guideExecutionFields": ["argvPolicy", "pointerBindingPolicy", "argv0Invocation", "runtimeWrapperPolicy", "placeholderPolicy", "resultPolicy", "shellConcatenation"],
+      "journeyFields": ["id", "intent", "recipeIds", "invariants"],
+      "recipeFields": ["id", "version", "description", "requiredCapability", "mutates", "argvTemplate", "parameters", "outputContract"],
+      "recipeParameterFields": ["name", "placeholder", "description", "required"]
+    },
+    "AutonomousBootstrapProblemV1": {
+      "owner": "surface",
+      "fields": ["contractVersion", "status", "code", "message", "retryable", "nextActions"],
+      "nextActionFields": ["description", "argv"]
+    },
+    "CommitmentInspectionV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "inspectedAt", "workspaceId", "commitment", "principals", "assignments", "relations", "claims", "attempts", "artifacts", "effects", "effectApprovals", "effectReceipts", "evidence", "completionRecords", "conditions", "observations", "reconciliations", "externalRefs", "externalContextLinks", "events", "resumeCursor"],
+      "resumeCursorFields": ["afterEventSequence", "afterObservation"],
+      "observationCursorFields": ["recordedAt", "id"]
+    },
+    "InspectorIndexV1": {
+      "owner": "surface",
+      "fields": ["contractVersion", "inspectedAt", "workspaceId", "filter", "matched", "truncated", "items"],
+      "filterFields": ["status", "query", "limit"],
+      "itemFields": ["commitmentId", "title", "status", "revision", "priority", "dueAt", "updatedAt", "signals"],
+      "signalFields": ["waits", "waiting", "effects", "unresolvedEffects", "authorityDecisions", "receipts"]
+    },
+    "ContextPacketV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "generatedAt", "workspaceId", "requestingActor", "scope", "ordering", "budget", "selection", "items", "resumeCursor"],
+      "budgetFields": ["maxRecords", "maxTokens", "usedRecords", "usedTokens", "measuredUtf8Bytes", "tokenEstimator", "encoding", "hardLimitSatisfied"],
+      "selectionFields": ["eligibleRecords", "evaluatedRecords", "selectedRecords", "candidateScanLimit", "omitted"],
+      "resumeCursorFields": ["afterEventSequence"]
+    },
+    "CommitmentSummaryV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "id", "workspaceId", "commitmentId", "supersedesSummaryId", "summary", "summaryDigest", "source", "actorAlias", "principalId", "createdAt", "state", "staleReasons"],
+      "sourceFields": ["contractVersion", "commitmentRevision", "terminalStatus", "rawEventSequence", "digest", "refs"],
+      "sourceRefFields": ["inspect", "audit", "evidenceIds", "artifactIds", "completionRecordIds", "effectReceiptIds", "externalRefIds", "externalContextLinkIds"]
+    },
+    "CommitmentSummaryPageV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "items"]
+    },
+    "ExternalContextLinkV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "id", "workspaceId", "commitmentId", "purposeUri", "action", "supersedesLinkId", "target", "binding", "actorAlias", "principalId", "createdAt", "state"],
+      "targetFields": ["system", "resourceType", "externalId", "url", "version", "digest"]
+    },
+    "ExternalContextLinkPageV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "items", "selection"]
+    },
+    "DiscoveryDocumentV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "generatedAt", "expiresAt", "workspaceId", "transportBoundary", "protocol", "capabilities", "extensions", "cursors", "resources", "limits", "compatibilityDigest"]
+    },
+    "DiscoverySchemaResourceV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "resourceId", "recordKind", "typeUri", "schemaVersion", "schema", "schemaDigest", "schemaBytes"]
+    },
+    "OnboardingResponseV1": {
+      "owner": "kernel",
+      "fields": ["contractVersion", "status", "selectedProtocolVersion", "compatibilityDigest", "capabilities", "types", "cursors", "problems"]
+    },
+    "ProtocolAdapterManifestV1": {
+      "owner": "surface",
+      "fields": ["contractVersion", "adapterUri", "mappings", "completionAuthority", "requiresInjectedClock"]
+    },
+    "TaskCompositeV1": { "owner": "kernel_generalize", "base": "TaskV1", "fields": ["dependencies", "unresolvedBlockers", "claim", "attempts", "evidence"] },
+    "NextResultV1": { "owner": "profile", "fields": ["task", "goal", "area", "claim", "score"], "scoreFields": ["total", "leverage", "urgency", "avoidance", "active", "blocked", "actionabilityPenalty", "reasons"] },
+    "ProgressV1": { "owner": "profile", "fields": ["counts", "percentDone", "eta"], "countsFields": ["total", "open", "in_progress", "blocked", "done", "cancelled", "denominator"], "etaFields": ["meanCompletionIntervalMs", "remainingMs", "sampleSize", "estimatedCompletionAt"] },
+    "DeadlineSweepV1": { "owner": "kernel_generalize", "fields": ["sweepNow", "evaluated", "satisfied", "expired", "alreadyTerminal", "results", "errors"], "resultFields": ["condition", "outcome", "sweepNow", "reconciliations", "fallbackResultTaskId"], "errorFields": ["conditionId", "message"] },
+    "InitResultV1": { "owner": "surface", "fields": ["ok", "configPath", "dbPath", "projectionTarget", "tenantId"] },
+    "ConfigV1": { "owner": "surface", "fields": ["dbPath", "projectionTarget", "tenantId", "defaultActor", "eventJournalPath"], "dynamicForms": ["config get returns exactly the requested config key", "config set returns ok plus exactly the requested config key"] },
+    "BackupResultV1": { "owner": "surface", "fields": ["ok", "target", "sizeBytes", "verified", "eventCursor", "rotated"] },
+    "ProjectionResultV1": { "owner": "profile", "fields": ["ok", "target"] },
+    "AreaDeleteResultV1": { "owner": "profile", "fields": ["ok", "id"] },
+    "TaskDeleteResultV1": { "owner": "compatibility", "fields": ["ok", "id", "deleted"] },
+    "DependencyRemoveResultV1": { "owner": "kernel_generalize", "fields": ["ok", "fromTaskId", "toTaskId", "type", "removed"] },
+    "DoctorReportV1": {
+      "owner": "surface",
+      "fields": ["ok", "store", "journal", "permissionIssues", "permissionRepairs"],
+      "storeFields": ["ok", "sqliteIntegrity", "foreignKeyViolations", "issues"],
+      "issueFields": ["code", "entityType", "entityId", "message"],
+      "journalFields": ["checked", "path", "databaseEvents", "journalEvents", "databaseMaxSequence", "journalMaxSequence", "commonMaxSequence", "checkpoint", "checkpointIssues", "legacyUnsequencedEvents", "malformedLines", "duplicateEvents", "duplicateSequences", "sequenceMismatches", "journalOnly", "databaseOnly"],
+      "doctorCheckpointAdditionalFields": ["archiveVerified", "archiveSegments"],
+      "sequenceMismatchFields": ["id", "databaseSequence", "journalSequence"],
+      "permissionRepairFields": ["path", "before", "after"]
+    },
+    "JournalCheckpointV1": { "owner": "surface", "fields": ["recordType", "version", "tenantId", "databaseCursor", "databaseEventId", "previousSegment", "actor", "reason", "createdAt"], "segmentFields": ["path", "sha256", "sizeBytes"] },
+    "JournalDryRunV1": { "owner": "surface", "fields": ["ok", "dryRun", "journalPath", "databaseCursor", "databaseEventId", "reason"] },
+    "JournalResultV1": { "owner": "surface", "fields": ["ok", "journalPath", "checkpoint", "archivePath", "reused"] },
+    "SimpleMutationFormsV1": { "owner": "surface", "forms": ["entity record", "entity record array", "TaskV1 array for tree/search/inbox/list", "EventV1 array for event list", "text-only help/version/errors"] }
+  }
+}

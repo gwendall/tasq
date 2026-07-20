@@ -1,0 +1,158 @@
+{
+  "contractVersion": "tasq.public-release-policy.v1",
+  "status": "accepted-not-published",
+  "acceptedAt": "2026-07-20",
+  "identity": {
+    "productName": "Tasq",
+    "cliBinary": "tasq",
+    "npmScope": "@tasq",
+    "canonicalRepository": "https://github.com/gwendall/tasq",
+    "repositoryState": "standalone-export-ready-not-created",
+    "unscopedNpmPackage": {
+      "name": "tasq",
+      "ownership": "unrelated-third-party",
+      "mustNeverPublish": true
+    },
+    "preOneRename": {
+      "allowed": true,
+      "requiresAdr": true,
+      "requiresMigrationMap": true,
+      "requiresAliasOrActionableErrorRelease": true
+    }
+  },
+  "legal": {
+    "license": "Apache-2.0",
+    "licensePath": "LICENSE",
+    "contributionTerms": "DCO-1.1",
+    "copyrightModel": "contributor-retained-no-assignment",
+    "initialLicensor": "@gwendall",
+    "scope": "products/tasq subtree until public repository cutover"
+  },
+  "repository": {
+    "topology": "dedicated-public-monorepo",
+    "sourceRootBeforeCutover": "products/tasq",
+    "canonicalAfterCutover": "https://github.com/gwendall/tasq",
+    "privateMonorepoDirectionAfterCutover": "consume-release-or-one-way-generated-mirror",
+    "bidirectionalMirrorAllowed": false
+  },
+  "packages": [
+    {
+      "source": "packages/tasq-schema",
+      "publicName": "@tasq/schema",
+      "tier": "public-stable",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-service",
+      "publicName": "@tasq/core",
+      "tier": "public-stable-kernel-entrypoint-only",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-cli",
+      "publicName": "@tasq/cli",
+      "tier": "public-stable",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-mcp",
+      "publicName": "@tasq/mcp",
+      "tier": "public-stable-local-stdio",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-extension-sdk",
+      "publicName": "@tasq/extension-sdk",
+      "tier": "public-stable",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-protocol-adapters",
+      "publicName": "@tasq/protocol-adapters",
+      "tier": "public-stable-pure-adapters",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-inspector",
+      "publicName": "@tasq/console",
+      "tier": "public-stable-read-only-local",
+      "firstRelease": true
+    },
+    {
+      "source": "packages/tasq-filesystem-watcher",
+      "publicName": null,
+      "tier": "repository-example",
+      "firstRelease": false
+    },
+    {
+      "source": "packages/tasq-reference-extension",
+      "publicName": null,
+      "tier": "repository-example",
+      "firstRelease": false
+    },
+    {
+      "source": "packages/tasq-reference-connectors",
+      "publicName": null,
+      "tier": "repository-example",
+      "firstRelease": false
+    },
+    {
+      "source": "packages/tasq-life-planning-profile",
+      "publicName": null,
+      "tier": "repository-example-policy",
+      "firstRelease": false
+    },
+    {
+      "source": "packages/tasq-evals",
+      "publicName": null,
+      "tier": "repository-tooling",
+      "firstRelease": false
+    }
+  ],
+  "compatibility": {
+    "versioning": "semver",
+    "normalDeprecation": {
+      "minimumMinorReleases": 1,
+      "minimumDays": 90,
+      "rule": "whichever-is-longer"
+    },
+    "supportedMinorLines": {
+      "latest": "normal-fixes",
+      "previous": "critical-security-and-data-loss-for-90-days"
+    },
+    "minimumDirectUpgradeMinorLines": 2,
+    "downgrade": "restore-matching-verified-snapshot-and-binary",
+    "initialPackageRuntime": "bun>=1.3",
+    "nodeSupport": "not-certified"
+  },
+  "candidateCliTargets": [
+    "darwin-arm64",
+    "linux-x64-gnu"
+  ],
+  "governance": {
+    "model": "maintainer-led",
+    "initialMaintainer": "@gwendall",
+    "releaseOwner": "@gwendall",
+    "securityOwner": "@gwendall",
+    "fallbackSecurityEmail": "gwendall@metahood.xyz",
+    "supportSla": null
+  },
+  "provenance": {
+    "builder": "protected-github-actions-tag-workflow",
+    "checksums": "sha256",
+    "signing": "sigstore-keyless-or-github-artifact-attestation",
+    "sbom": "cyclonedx-json",
+    "provenance": "slsa-compatible",
+    "npmPublishing": "trusted-publishing-oidc-with-provenance",
+    "maintainerWorkstationArtifactsAllowed": false,
+    "mutableTagsAllowed": false
+  },
+  "externalPublicationPreconditions": [
+    "canonical_repository_control_verified",
+    "npm_scope_control_verified",
+    "trusted_publishing_configured",
+    "tag_protection_configured",
+    "license_and_third_party_notice_closure_verified",
+    "candidate_targets_clean_room_certified"
+  ]
+}

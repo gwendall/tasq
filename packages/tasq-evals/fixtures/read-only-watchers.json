@@ -1,0 +1,122 @@
+[
+  {
+    "id": "gmail-reply",
+    "condition": {
+      "kind": "gmail.thread_reply",
+      "parameters": { "connectorAccount": "work-inbox", "threadId": "thread-arkwood-42", "sender": "finance@arkwood.example" }
+    },
+    "observation": {
+      "source": "gmail-connector:work-inbox",
+      "externalEventId": "gmail-message-991",
+      "kind": "gmail.message",
+      "payload": { "connectorAccount": "work-inbox", "messageId": "message-991", "threadId": "thread-arkwood-42", "sender": "finance@arkwood.example" },
+      "occurredAt": 20000,
+      "verificationLevel": "provider_verified",
+      "verificationMethod": "gmail-history-api",
+      "rawRef": "urn:connector-record:gmail:message-991",
+      "digest": "sha256:gmail-message-991",
+      "metadata": { "fixture": "tq-108" }
+    },
+    "expected": {
+      "conditionTypeUri": "https://schemas.tasq.dev/conditions/gmail/thread-reply",
+      "observationTypeUri": "https://schemas.tasq.dev/observations/gmail/message",
+      "evaluatorUri": "https://schemas.tasq.dev/evaluators/gmail/thread-reply"
+    }
+  },
+  {
+    "id": "github-merge",
+    "condition": {
+      "kind": "github.pull_request_state",
+      "parameters": { "host": "github.com", "owner": "kami", "repository": "kernel", "pullRequestNumber": 481, "state": "merged", "mergeCommitSha": "fix481abc" }
+    },
+    "observation": {
+      "source": "github-app:kami",
+      "externalEventId": "github-delivery-481",
+      "kind": "github.pull_request",
+      "payload": { "host": "github.com", "owner": "kami", "repository": "kernel", "pullRequestNumber": 481, "state": "merged", "mergeCommitSha": "fix481abc" },
+      "occurredAt": 21000,
+      "verificationLevel": "authenticated_source",
+      "verificationMethod": "github-app-signature",
+      "rawRef": "urn:connector-record:github:delivery-481",
+      "digest": "sha256:github-delivery-481",
+      "metadata": { "fixture": "tq-108" }
+    },
+    "expected": {
+      "conditionTypeUri": "https://schemas.tasq.dev/conditions/github/pull-request-state",
+      "observationTypeUri": "https://schemas.tasq.dev/observations/github/pull-request",
+      "evaluatorUri": "https://schemas.tasq.dev/evaluators/github/pull-request-state"
+    }
+  },
+  {
+    "id": "mercury-settlement",
+    "condition": {
+      "kind": "mercury.transaction_state",
+      "parameters": { "connectorAccount": "operating", "transactionId": "txn-2026-481", "settlementState": "settled" }
+    },
+    "observation": {
+      "source": "mercury-connector:operating",
+      "externalEventId": "mercury-sync-txn-2026-481-settled",
+      "kind": "mercury.transaction",
+      "payload": { "connectorAccount": "operating", "transactionId": "txn-2026-481", "direction": "incoming", "currency": "USD", "minorUnits": 5800000, "counterparty": "Example Customer", "settlementState": "settled" },
+      "occurredAt": 22000,
+      "verificationLevel": "provider_verified",
+      "verificationMethod": "mercury-api",
+      "rawRef": "urn:connector-record:mercury:txn-2026-481",
+      "digest": "sha256:mercury-txn-2026-481",
+      "metadata": { "fixture": "tq-108" }
+    },
+    "expected": {
+      "conditionTypeUri": "https://schemas.tasq.dev/conditions/mercury/transaction-state",
+      "observationTypeUri": "https://schemas.tasq.dev/observations/mercury/transaction",
+      "evaluatorUri": "https://schemas.tasq.dev/evaluators/mercury/transaction-state"
+    }
+  },
+  {
+    "id": "filesystem-artifact",
+    "condition": {
+      "kind": "filesystem.artifact",
+      "parameters": { "connectorRoot": "build-output", "relativePath": "reports/release.json", "kind": "file", "sizeBytes": 481, "digest": "sha256:release-481" }
+    },
+    "observation": {
+      "source": "filesystem-watcher:build-output",
+      "externalEventId": "stat-reports-release-json-481",
+      "kind": "filesystem.stat",
+      "payload": { "connectorRoot": "build-output", "relativePath": "reports/release.json", "kind": "file", "sizeBytes": 481, "digest": "sha256:release-481" },
+      "occurredAt": 23000,
+      "verificationLevel": "authenticated_source",
+      "verificationMethod": "sandboxed-stat-and-sha256",
+      "rawRef": "urn:connector-record:filesystem:release-481",
+      "digest": "sha256:filesystem-stat-release-481",
+      "metadata": { "fixture": "tq-108" }
+    },
+    "expected": {
+      "conditionTypeUri": "https://schemas.tasq.dev/conditions/filesystem/artifact",
+      "observationTypeUri": "https://schemas.tasq.dev/observations/filesystem/stat",
+      "evaluatorUri": "https://schemas.tasq.dev/evaluators/filesystem/artifact"
+    }
+  },
+  {
+    "id": "http-health",
+    "condition": {
+      "kind": "http.response",
+      "parameters": { "url": "https://service.example/health/version", "method": "GET", "allowedStatuses": [200], "bodyDigest": "sha256:version-N" }
+    },
+    "observation": {
+      "source": "http-monitor:production",
+      "externalEventId": "health-version-N-200",
+      "kind": "http.check",
+      "payload": { "url": "https://service.example/health/version", "method": "GET", "statusCode": 200, "bodyDigest": "sha256:version-N" },
+      "occurredAt": 24000,
+      "verificationLevel": "authenticated_source",
+      "verificationMethod": "monitor-mtls",
+      "rawRef": "urn:connector-record:http:health-version-N-200",
+      "digest": "sha256:http-health-version-N-200",
+      "metadata": { "fixture": "tq-108" }
+    },
+    "expected": {
+      "conditionTypeUri": "https://schemas.tasq.dev/conditions/http/response",
+      "observationTypeUri": "https://schemas.tasq.dev/observations/http/check",
+      "evaluatorUri": "https://schemas.tasq.dev/evaluators/http/response"
+    }
+  }
+]

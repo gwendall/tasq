@@ -1,0 +1,25 @@
+name: Proposal
+description: Propose a product or protocol change
+title: "proposal: "
+labels: [proposal]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Coordination problem
+      description: Describe the irreducible problem before proposing a feature.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Why this belongs in Tasq
+      description: Explain why an adapter, extension, runtime, or application is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Observable acceptance test
+    validations:
+      required: true

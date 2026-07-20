@@ -1,0 +1,34 @@
+{
+  "name": "@tasq-internal/evals",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent-flow scenarios for tasq (see README.md). Not unit/integration tests — these validate the agent experience end-to-end.",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq/cli": "workspace:*",
+    "@tasq-internal/filesystem-watcher": "workspace:*",
+    "@tasq/mcp": "workspace:*",
+    "@tasq/extension-sdk": "workspace:*",
+    "@tasq/protocol-adapters": "workspace:*",
+    "@tasq-internal/reference-connectors": "workspace:*",
+    "@tasq/schema": "workspace:*",
+    "@tasq-internal/local-service": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@tasq/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-evals"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://github.com/gwendall/tasq#readme"
+}
