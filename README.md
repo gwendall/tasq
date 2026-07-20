@@ -86,7 +86,8 @@ from the protected tag workflow.
 Start with [CURRENT_STATE.md](CURRENT_STATE.md),
 [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
 [UNIVERSAL_KERNEL_SPEC.md](UNIVERSAL_KERNEL_SPEC.md), and
-[SECURITY.md](SECURITY.md). See [TESTING.md](TESTING.md) for the verification
+[BACKLOG.md](BACKLOG.md). See [SECURITY.md](SECURITY.md) for trust boundaries,
+[TESTING.md](TESTING.md) for the verification
 layers and [SUPPORT.md](SUPPORT.md) for current support claims.
 
 ## License

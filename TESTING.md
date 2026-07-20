@@ -313,6 +313,9 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   the claims guard with a candidate-only public install lifecycle while REST,
   remote MCP and self-host lifecycle remain explicitly absent. The machine
   certificate cannot claim published-byte completion before a release exists.
+- eval `public-roadmap.test.ts` — freezes the canonical public execution order,
+  closed task states, dependency closure, npm/publication blockers, remote
+  non-claims and the authority/clock invariants every future checkpoint keeps.
 
 See `packages/tasq-evals/README.md` for the rationale of evals vs tests.
 

@@ -36,6 +36,7 @@ packages/tasq-evals/
 ├── universal-from-scratch-onboarding.test.ts scenario: TQ-319 selection without recipe IDs + CLI/MCP peer interop
 ├── hosted-tenancy-design.test.ts scenario: ADR-004/TQ-505 machine guard for future authenticated hosting
 ├── product-consumption-design.test.ts scenario: TQ-601 product shapes, consumers and honest support states
+├── public-roadmap.test.ts              scenario: canonical execution order, dependencies and external gates
 ├── external-context-links.test.ts scenario: TQ-503 reusable external context without memory import
 ├── protocol-interoperability.test.ts scenario: UK-010 MCP/A2A execution without implicit completion
 ├── universal-kernel-acceptance.test.ts scenario: UK-011 unfamiliar extension, two runtimes and cursor restart
@@ -99,10 +100,11 @@ cross-workspace, revocation, delegation, key-rotation, sender-proof and
 injected-clock scenarios that a future adapter must execute before support is
 advertised.
 
-The TQ-601 product-consumption guard keeps Core, Local, Server and Cloud
-separate, requires an explicit path or missing dependency for every consumer,
-and prevents public installation, REST, remote MCP or self-hosting from being
-claimed merely because their inner kernel or design exists.
+The product-consumption and public-roadmap guards keep Core, Local, Server and
+Cloud separate, require an explicit path or missing dependency for every
+consumer, distinguish the certified-but-unpublished Local lifecycle, and
+prevent REST, remote MCP or self-hosting from being claimed merely because
+their inner kernel, ADR or backlog item exists.
 
 ## Adding a new eval
 

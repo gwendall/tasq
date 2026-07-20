@@ -1,0 +1,243 @@
+{
+  "contractVersion": "tasq.backlog.v1",
+  "status": "active",
+  "updatedAt": "2026-07-21",
+  "canonicalRepository": "https://github.com/gwendall/tasq",
+  "statusVocabulary": [
+    "done",
+    "in_progress_external_gate",
+    "candidate_done_publication_gate",
+    "pending"
+  ],
+  "invariants": [
+    "core_remains_profile_and_provider_neutral",
+    "runtime_success_never_implicitly_completes_a_commitment",
+    "authority_time_is_explicit_or_clock_injected",
+    "device_clock_is_read_only_by_systemClock_composition",
+    "local_console_remains_loopback_and_read_only",
+    "remote_surfaces_require_adr_004_guard",
+    "published_claims_require_external_evidence"
+  ],
+  "externalGates": {
+    "npmScopeControl": {
+      "state": "unverified",
+      "observation": "@tasq/schema is not published; this environment has no valid npm identity, which is not evidence of scope ownership"
+    },
+    "npmTrustedPublishing": {
+      "state": "unverified",
+      "requiredBinding": "gwendall/tasq:.github/workflows/release.yml:release"
+    },
+    "firstProtectedRelease": {
+      "state": "not_run",
+      "requires": ["npmScopeControl", "npmTrustedPublishing"]
+    },
+    "publishedLifecycleCertification": {
+      "state": "blocked_by_first_protected_release",
+      "candidateEvidence": "TQ-604_LIFECYCLE_CERTIFICATION.json"
+    }
+  },
+  "completedPrerequisites": [
+    "TQ-405",
+    "TQ-504",
+    "TQ-505",
+    "ADR-004"
+  ],
+  "decisions": [
+    {
+      "id": "ADR-005",
+      "status": "pending",
+      "blocks": ["TQ-906"],
+      "question": "Evidence trust, authenticity, supersession, revocation and retention"
+    }
+  ],
+  "executionOrder": [
+    "TQ-603",
+    "TQ-604",
+    "TQ-701",
+    "TQ-702",
+    "TQ-703",
+    "TQ-704",
+    "TQ-605",
+    "TQ-606",
+    "TQ-705",
+    "TQ-801",
+    "TQ-802",
+    "TQ-803",
+    "TQ-804",
+    "TQ-805",
+    "TQ-806",
+    "TQ-807",
+    "TQ-808",
+    "TQ-901",
+    "TQ-902",
+    "TQ-903",
+    "TQ-904",
+    "TQ-905",
+    "TQ-906"
+  ],
+  "items": [
+    {
+      "id": "TQ-603",
+      "status": "in_progress_external_gate",
+      "milestone": "public-distribution",
+      "dependsOn": [],
+      "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
+      "remaining": ["verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+    },
+    {
+      "id": "TQ-604",
+      "status": "candidate_done_publication_gate",
+      "milestone": "public-distribution",
+      "dependsOn": ["TQ-603"],
+      "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes",
+      "evidence": ["TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/pull/5"]
+    },
+    {
+      "id": "TQ-701",
+      "status": "pending",
+      "milestone": "local-console",
+      "dependsOn": ["TQ-504"],
+      "outcome": "Bounded canonical overview models for work, actors, coordination, effects, audit and health"
+    },
+    {
+      "id": "TQ-702",
+      "status": "pending",
+      "milestone": "local-console",
+      "dependsOn": ["TQ-701"],
+      "outcome": "Cursor-driven loopback SSE and bounded polling with reconnect, gap and backpressure semantics"
+    },
+    {
+      "id": "TQ-703",
+      "status": "pending",
+      "milestone": "local-console",
+      "dependsOn": ["TQ-701", "TQ-702"],
+      "outcome": "Accessible responsive navigation, filters, timelines and previewable redacted support bundles"
+    },
+    {
+      "id": "TQ-704",
+      "status": "pending",
+      "milestone": "local-console",
+      "dependsOn": ["TQ-603", "TQ-703"],
+      "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners"
+    },
+    {
+      "id": "TQ-605",
+      "status": "pending",
+      "milestone": "public-adoption",
+      "dependsOn": ["TQ-603"],
+      "outcome": "Next.js TypeScript Tailwind shadcn public product and docs app generated from versioned repository truth"
+    },
+    {
+      "id": "TQ-606",
+      "status": "pending",
+      "milestone": "public-adoption",
+      "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
+      "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate"
+    },
+    {
+      "id": "TQ-705",
+      "status": "pending",
+      "milestone": "local-console",
+      "dependsOn": ["TQ-704"],
+      "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification"
+    },
+    {
+      "id": "TQ-801",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-505", "ADR-004"],
+      "outcome": "Strict identity, subject binding, authorization decision and action registry"
+    },
+    {
+      "id": "TQ-802",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-801"],
+      "outcome": "Subject bindings, grants, audit and isolated storage routing"
+    },
+    {
+      "id": "TQ-803",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-802"],
+      "outcome": "Authenticated read-only REST, discovery and event metadata"
+    },
+    {
+      "id": "TQ-804",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-803"],
+      "outcome": "Guarded mutation REST with idempotency, revocation and injected authority time"
+    },
+    {
+      "id": "TQ-805",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-804"],
+      "outcome": "Remote MCP through the identical guard with REST capability parity"
+    },
+    {
+      "id": "TQ-806",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-802", "TQ-405"],
+      "outcome": "Authenticated replication transport, enrollment, recovery and authority rotation"
+    },
+    {
+      "id": "TQ-807",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-805", "TQ-806"],
+      "outcome": "Deployable server artifact with configuration, health, backup, restore and upgrade contracts"
+    },
+    {
+      "id": "TQ-808",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-807"],
+      "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-901",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-808"],
+      "outcome": "Tenant control plane and isolated workspace provisioning"
+    },
+    {
+      "id": "TQ-902",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-901"],
+      "outcome": "Same-origin hosted BFF sessions and authenticated Console integration"
+    },
+    {
+      "id": "TQ-903",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-901"],
+      "outcome": "Human-device and workload onboarding, recovery and revocation"
+    },
+    {
+      "id": "TQ-904",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-901"],
+      "outcome": "Quotas, retention, export/delete, incident, support and billing boundaries"
+    },
+    {
+      "id": "TQ-905",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-902", "TQ-903", "TQ-904"],
+      "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification"
+    },
+    {
+      "id": "TQ-906",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "dependsOn": ["TQ-905", "ADR-005"],
+      "outcome": "Remote effects only after independent evidence and authority review; disabled by default"
+    }
+  ]
+}
