@@ -76,7 +76,7 @@ The independent eval consumes only the package contract and models:
 
 ## Honest next boundary
 
-TQ-802 must persist bindings, principals, permission sets, grants,
-delegations, eligibility and append-only decisions; enforce optimistic
-authority revisions; and route to an isolated workspace store only after an
+TQ-802 now persists bindings, principals, permission sets, grants,
+delegations, eligibility and append-only decisions; enforces optimistic
+authority revisions; and routes to an isolated workspace store only after an
 allow. The transport verifier and remote routes remain later checkpoints.

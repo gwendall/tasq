@@ -17,6 +17,7 @@
     "@tasq/schema": "workspace:*",
     "@tasq-internal/local-service": "workspace:*",
     "@tasq-internal/authority": "workspace:*",
+    "@tasq-internal/server": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@tasq/core": "workspace:*"
   },

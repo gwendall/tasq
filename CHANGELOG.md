@@ -40,6 +40,9 @@ by ADR-008.
 - Add the pure hosted-authority foundation: strict verified identity, binding,
   grant, delegation and decision contracts; 16 digest-bound actions; and a
   deny-by-default injected-clock evaluator with clean-room client evals.
+- Add the durable hosted-authority control plane with checksum-pinned
+  migrations, CAS/idempotent lifecycle writes, append-only decisions/audit and
+  a host-configured opaque router that opens no foreign ledger before allow.
 
 ### Security
 

@@ -431,6 +431,7 @@
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
+    "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -496,7 +497,7 @@
     },
     {
       "id": "TQ-802",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "outcome": "Subject bindings, grants, audit and isolated storage routing"
     },
@@ -577,12 +578,12 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "adb4aff93310ef114b54de9bc10479300b839519b562cf739f9200d0fc7b42ac"
+      "sha256": "f294648009c6b78d8a7f445988b89eb16bdbba75002559478942cb8f12248943"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "f56bb6bcf52eca75d66baa6010a3b6f566238e53ab4ec785113becc5bd23fe83"
+      "sha256": "ed7eb4dcc7c3036f774f5e2cbcde3ee73d8978da6b273a98417e34c14f902c80"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",

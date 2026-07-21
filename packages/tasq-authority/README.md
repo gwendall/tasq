@@ -29,7 +29,8 @@ approval and connector dispatch also require distinct eligibility.
 
 - TLS, proxy trust and credential parsing/verification;
 - OIDC discovery, JWKS, introspection, DPoP replay and SPIFFE adapters;
-- subject/grant persistence, audit and workspace-store routing;
+- subject/grant persistence, audit and workspace-store routing (implemented by
+  the private TQ-802 Server foundation, still not part of this pure package);
 - REST, remote MCP, browser sessions and Tasq kernel calls;
 - exact effect permits, fences and receipts.
 

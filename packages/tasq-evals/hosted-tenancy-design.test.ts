@@ -38,7 +38,7 @@ describe("ADR-004 hosted-tenancy design guard", () => {
   test("separates every trust layer and keeps remote surfaces honestly planned", () => {
     expect(acceptance).toMatchObject({
       contractVersion: "tasq.hosted-tenancy-acceptance.v1",
-      status: "authority-foundation-implemented-no-remote-surface",
+      status: "authority-store-router-implemented-no-remote-surface",
       decision: "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
       criticalFailuresAreNonCompensable: true,
     });

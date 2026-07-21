@@ -67,7 +67,7 @@ HTTPS and redirect refusal, late secret resolution, exact permit/content
 binding, provider idempotency, stale fences, unknown-outcome lookup, complete
 HMAC receipts, hostile receipts and immutable verification-to-ledger binding.
 
-### 6. Hosted authority tests (`packages/tasq-authority/test/`)
+### 6. Hosted authority and Server-foundation tests (`packages/tasq-authority/test/`, `packages/tasq-server/test/`)
 
 **Question**: *Can a future authenticated adapter make one deterministic,
 deny-by-default decision without transport, persistence, kernel or device-time
@@ -81,9 +81,18 @@ one injected-clock capture. The separate clean-room eval exercises human,
 headless delegated-agent and SPIFFE service configurations without claiming a
 remote surface.
 
+The TQ-802 Server-foundation suite adds real SQLite migration races,
+CAS/idempotency conflicts, append-only SQL guards, persisted delegation and
+effect eligibility, stale-allow replay refusal, authority corruption and an
+instrumented opaque router that proves a foreign workspace opener is never
+called. Its eval repeats cold migration in separate processes and proves
+revocation across close/reopen boundaries.
+
 ```bash
 pnpm --filter @tasq-internal/authority test
+pnpm --filter @tasq-internal/server test
 pnpm --filter @tasq-internal/evals test -- hosted-authority-foundation.test.ts
+pnpm --filter @tasq-internal/evals test -- hosted-authority-store-router.test.ts
 ```
 
 ### 7. Service tests (`packages/tasq-service/test/`)
@@ -382,6 +391,10 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   through the pure guard; it checks transport normalization parity,
   issuer/workspace isolation, live revocation, privilege separation and a
   freeze/advance/rewind injected-clock matrix.
+- eval `hosted-authority-store-router.test.ts` — TQ-802 races two independent
+  cold migrators, restarts the authority store, routes one robotics workspace
+  only through its opaque host binding, then revokes/restarts and proves the
+  decoy ledger was never opened.
 - eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
   shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
   the claims guard with a candidate-only public install lifecycle while REST,
