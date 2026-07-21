@@ -17,6 +17,8 @@ The kernel and the product are deliberately distinct:
 ```text
 Tasq Cloud (future managed operation)
 └── Tasq Server (future authenticated REST/remote MCP/event transport)
+    ├── authority DTOs + pure guard (implemented internally, TQ-801)
+    ├── persistence/router/verifiers/transports (future, TQ-802+)
     └── Tasq Core (implemented embedded kernel)
 
 Tasq Local (implemented single-host reference product)
@@ -31,6 +33,12 @@ ADR-004 identity/routing/authorization guard, not fork state or expose current
 local listeners remotely. `PRODUCT_CONSUMPTION_SPEC.md` owns the product
 contract and `PRODUCT_SURFACE_MATRIX.json` owns its machine-readable support
 states.
+
+TQ-801 implements only the pure middle of that future guard in
+`@tasq-internal/authority`. Authentication adapters must construct a strict
+verified identity; a future TQ-802 authority store/router must supply current
+bindings and grants; and only an allowed decision may precede a kernel call.
+The package intentionally imports neither HTTP, persistence nor Core.
 
 ## At a glance
 
@@ -153,9 +161,16 @@ tasq-cli ──→ tasq-inspector ─┐
                   └──────────────────────→ tasq-schema
                   ↑
              tasq-evals
+
+future tasq-server ──→ tasq-authority ──→ tasq-schema
+       └───────────────────────────────→ tasq-core
 ```
 
 - `tasq-schema` is the foundation. Zero deps beyond zod + drizzle-orm.
+- `tasq-authority` is a private DB-free, transport-free sibling that turns a
+  verified identity and current authority snapshot into one digest-bound
+  decision at one injected timestamp. It does not authenticate credentials or
+  call the kernel.
 - `tasq-extension-sdk` is DB-free and provider-neutral. It binds immutable
   manifest identities to trusted runtime parsers/routes/evaluators.
 - `tasq-reference-extension` owns the five v1 domain modules. It has no DB or
@@ -492,9 +507,10 @@ sync. It is not a promise that the current schema is already identical to that
 future design. Evolution should remain additive where the invariants permit it;
 new surfaces are sibling adapters over the service layer, not alternate write
 paths. `ADR-004_AUTHENTICATED_HOSTED_TENANCY.md` is the accepted identity,
-authorization, store-isolation, revocation and clock design; its machine matrix
-is explicitly not a shipped transport. `CURRENT_STATE.md` is the implemented
-compatibility boundary.
+authorization, store-isolation, revocation and clock design. TQ-801 now
+implements its pure authority contracts and evaluator, while its machine
+matrix and all remote surfaces remain explicitly unshipped. `CURRENT_STATE.md`
+is the implemented compatibility boundary.
 
 ## File layout
 
@@ -513,6 +529,7 @@ compatibility boundary.
 │   ├── tasq-filesystem-watcher/ ── DB-free read-only connector + CLI
 │   ├── tasq-protocol-adapters/ ── version-pinned MCP Tasks/A2A import boundary
 │   ├── tasq-inspector/ ── loopback GET/HEAD HTML/JSON projection + browser tests
+│   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-service/   ── @tasq-internal/local-service   (service layer + tests)
 │   ├── tasq-cli/       ── @tasq/cli       (CLI + E2E tests)
 │   └── tasq-evals/     ── @tasq-internal/evals     (agent scenarios)

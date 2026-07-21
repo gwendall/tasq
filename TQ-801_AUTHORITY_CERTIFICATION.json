@@ -1,0 +1,50 @@
+{
+  "contractVersion": "tasq.authority-foundation-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-21",
+  "backlogItem": "TQ-801",
+  "package": "@tasq-internal/authority",
+  "policyId": "urn:tasq:policy:reference-authorizer:v1",
+  "policyImplementationDigest": "sha256:0cb10e959f75ad224ef96736b217fb3d71f263c8d3f2279062c486cd5568ba0d",
+  "contractVersions": [
+    "tasq.verified-identity.v1",
+    "tasq.authorization-request.v1",
+    "tasq.authorization-decision.v1"
+  ],
+  "registeredActionCount": 16,
+  "clock": {
+    "requiredInjection": true,
+    "capturesPerDecision": 1,
+    "deviceClockReads": false,
+    "validity": "not_before_inclusive_expires_at_exclusive"
+  },
+  "certifiedProperties": [
+    "strict_verified_identity",
+    "exact_issuer_subject_binding",
+    "immutable_action_registry",
+    "token_actions_are_upper_bounds_only",
+    "live_scoped_grants",
+    "delegated_subject_actor_intersection",
+    "sender_constraint_for_privileged_actions",
+    "effect_eligibility_separate_from_grants",
+    "complete_authority_snapshot_digest",
+    "deterministic_injected_clock_decision",
+    "deny_by_default"
+  ],
+  "cleanRoomProfiles": [
+    "browser_human",
+    "headless_human_delegated_agent",
+    "spiffe_connector_service"
+  ],
+  "implementedRemoteSurfaces": [],
+  "excludedLayers": [
+    "credential_verification",
+    "authority_persistence_and_audit",
+    "workspace_store_router",
+    "rest",
+    "remote_mcp",
+    "hosted_web_bff",
+    "deployable_server"
+  ],
+  "tq801Complete": true
+}

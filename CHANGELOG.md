@@ -37,6 +37,9 @@ by ADR-008.
 - Add cross-platform Local Console browser certification for empty, mature,
   hostile, corrupt and 2,501-commitment ledgers using fixed injected time,
   bounded pages, safe errors and real Chromium on Linux and macOS.
+- Add the pure hosted-authority foundation: strict verified identity, binding,
+  grant, delegation and decision contracts; 16 digest-bound actions; and a
+  deny-by-default injected-clock evaluator with clean-room client evals.
 
 ### Security
 

@@ -8,6 +8,16 @@ Tasq currently ships source for two local product shapes:
 Server, remote REST/MCP and Cloud are planned, not implemented. Provider
 connectors, domain policy and agent runtimes remain outside Core.
 
+TQ-801 implements Server's first internal building block:
+`@tasq-internal/authority` owns strict verified-identity, binding, principal,
+permission, grant, delegation, eligibility, request and decision contracts;
+16 exact action identities; and a pure deny-by-default evaluator. It consumes
+one injected clock snapshot and has no transport, credential verification,
+persistence, store routing or kernel dependency. Consequently it creates no
+new human or agent entrypoint and does not change the `not_implemented` Server,
+REST, remote MCP or hosted Console support claims. TQ-802 is the next
+executable checkpoint.
+
 This is the canonical public source repository. `main` requires pull requests
 and green Linux/macOS CI; release tags are immutable and the `release`
 environment accepts only `v*` tags. The repository contains seven public

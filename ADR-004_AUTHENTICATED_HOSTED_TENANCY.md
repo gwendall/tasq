@@ -1,8 +1,8 @@
 # ADR-004 / TQ-505 — Authenticated hosted tenancy
 
-> **Status:** accepted design (`accepted-design-not-executed`) — 2026-07-20
-> **Implementation:** not shipped; local CLI, stdio MCP and loopback inspector
-> remain the only deployed transports
+> **Status:** accepted design; TQ-801 pure authority foundation implemented — 2026-07-21
+> **Implementation:** strict internal DTOs, action registry and deterministic
+> evaluator exist; no remote transport, verifier, persistence or router ships
 > **Decision:** a hosted request crosses a transport authentication boundary,
 > maps an immutable external subject to a workspace principal, passes a live
 > deny-by-default authorization decision, and only then reaches the existing
@@ -70,6 +70,12 @@ existing Tasq kernel -> workspace store / effect gate
 No network route may call the raw kernel before the guard. Embedded hosts that
 intentionally call the kernel directly remain trusted compositions and must
 not describe that path as authenticated remote access.
+
+TQ-801 implements only the pure `credential verifier output -> live decision`
+contract in `@tasq-internal/authority`. TQ-802 must supply durable authority
+state and isolated routing, and later checkpoints must supply the verifier and
+remote surfaces. This partial implementation does not change the support state
+of Server, REST, remote MCP or hosted web.
 
 ## 3. Canonical identity
 
@@ -190,9 +196,11 @@ effect.propose, effect.approval.record, effect.dispatch
 replication.enroll, replication.push, replication.pull
 ```
 
-Exact public URIs are frozen only in the implementation ADR. Unknown actions
-fail closed. `read`, `propose` and `coordinate` in onboarding remain guidance
-capabilities and upper bounds; they are not grants.
+TQ-801 freezes the exact internal action identities as
+`urn:tasq:action:<name>`, version 1, each with an implementation digest.
+Unknown or altered identities fail closed. `read`, `propose` and `coordinate`
+in onboarding remain guidance capabilities and upper bounds; they are not
+grants.
 
 ### 5.2 Grants and permission sets
 

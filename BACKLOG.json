@@ -164,10 +164,11 @@
     },
     {
       "id": "TQ-801",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-505", "ADR-004"],
-      "outcome": "Strict identity, subject binding, authorization decision and action registry"
+      "outcome": "Strict identity, subject binding, authorization decision and action registry",
+      "evidence": ["TQ-801_HOSTED_AUTHORITY_FOUNDATION.md", "TQ-801_AUTHORITY_CERTIFICATION.json"]
     },
     {
       "id": "TQ-802",

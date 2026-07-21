@@ -430,6 +430,7 @@
     "public_site_is_built_but_not_deployed",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
+    "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -489,7 +490,7 @@
     },
     {
       "id": "TQ-801",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "outcome": "Strict identity, subject binding, authorization decision and action registry"
     },
@@ -576,12 +577,12 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "8da174c1b9b74b43a73b97d41e8b7113bac5248a9baedffbb8c850ba301b7f1e"
+      "sha256": "adb4aff93310ef114b54de9bc10479300b839519b562cf739f9200d0fc7b42ac"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "ba2bdb4d153fa245e2fd45d51e8688c81bc78eee7c4474796ebfee5f4fbee58b"
+      "sha256": "f56bb6bcf52eca75d66baa6010a3b6f566238e53ab4ec785113becc5bd23fe83"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",

@@ -103,8 +103,10 @@ later Local milestones.
 
 ### 4. Build self-hosted Tasq Server
 
-- **TQ-801:** strict identity, subject binding, live authorization decision and
-  action registry from ADR-004.
+- **TQ-801 — done:** strict verified-identity/binding/grant/decision contracts,
+  16 digest-bound actions and one pure injected-clock evaluator implement the
+  inner ADR-004 guard without claiming a remote surface. See
+  `TQ-801_HOSTED_AUTHORITY_FOUNDATION.md`.
 - **TQ-802:** subject bindings, grants, audit and isolated storage routing.
 - **TQ-803:** authenticated read-only REST, discovery and event metadata.
 - **TQ-804:** guarded mutation REST with idempotency, revocation and injected

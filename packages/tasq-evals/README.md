@@ -35,6 +35,7 @@ packages/tasq-evals/
 ├── agent-first-onboarding.test.ts scenario: TQ-318 executable support matrix + content-addressed semantic certificate
 ├── universal-from-scratch-onboarding.test.ts scenario: TQ-319 selection without recipe IDs + CLI/MCP peer interop
 ├── hosted-tenancy-design.test.ts scenario: ADR-004/TQ-505 machine guard for future authenticated hosting
+├── hosted-authority-foundation.test.ts scenario: TQ-801 pure authority across human/agent/workload profiles
 ├── product-consumption-design.test.ts scenario: TQ-601 product shapes, consumers and honest support states
 ├── public-roadmap.test.ts              scenario: canonical execution order, dependencies and external gates
 ├── console-browser-certification.test.ts scenario: TQ-705 five-state fixed-clock Linux/macOS Console gate
@@ -99,7 +100,9 @@ The hosted-tenancy design guard is intentionally not a runtime certification.
 It keeps REST, remote MCP and hosted web marked `planned` while freezing the
 cross-workspace, revocation, delegation, key-rotation, sender-proof and
 injected-clock scenarios that a future adapter must execute before support is
-advertised.
+advertised. TQ-801's separate foundation eval now executes the pure inner
+authorization slice across browser-human, delegated-agent and SPIFFE-service
+profiles; it still cannot certify a verifier, store/router or remote surface.
 
 The product-consumption and public-roadmap guards keep Core, Local, Server and
 Cloud separate, require an explicit path or missing dependency for every
