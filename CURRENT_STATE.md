@@ -24,9 +24,10 @@ paired with a matching snapshot for rollback, and uninstalled without touching
 The loopback Console has canonical TQ-701 overview, actor, claim, resource,
 wait, effect, redacted audit and bounded operational-health JSON contracts.
 TQ-702 adds lossless polling and SSE invalidation with exclusive cursors,
-typed recovery, bounded backpressure and injected time/scheduling. The current
-HTML remains the TQ-504 inspector; the complete visual operator product is
-TQ-703.
+typed recovery, bounded backpressure and injected time/scheduling. TQ-703 now
+provides the server-rendered responsive operator UI, live/stale presentation,
+bounded filters, audit timeline and previewable redacted support artifact. The
+original commitment graph remains available as a deep inspection surface.
 
 The shortest verified loop is:
 

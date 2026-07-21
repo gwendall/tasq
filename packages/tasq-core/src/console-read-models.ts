@@ -6,9 +6,11 @@ import {
   CONSOLE_HEALTH_CONTRACT_VERSION,
   CONSOLE_OVERVIEW_CONTRACT_VERSION,
   CONSOLE_PAGE_CONTRACT_VERSION,
+  CONSOLE_SUPPORT_BUNDLE_CONTRACT_VERSION,
   ConsoleHealth as ConsoleHealthSchema,
   ConsoleOverview as ConsoleOverviewSchema,
   ConsolePage as ConsolePageSchema,
+  ConsoleSupportBundle as ConsoleSupportBundleSchema,
   ConsoleSection,
   coordinationSpace,
   deliveryOutbox,
@@ -27,6 +29,7 @@ import {
   type ConsoleOperationalCounts,
   type ConsoleOverview,
   type ConsolePage,
+  type ConsoleSupportBundle,
   type ConsoleSection as ConsoleSectionT,
 } from "@tasq/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
@@ -44,6 +47,10 @@ export interface ConsolePageOptions extends ConsoleReadOptions {
   section: ConsoleSectionT;
   limit?: number;
   cursor?: string | null;
+}
+
+export interface ConsoleSupportBundleOptions extends ConsoleReadOptions {
+  limit?: number;
 }
 
 interface KeysetCursor {
@@ -390,3 +397,56 @@ export async function buildConsoleHealth(
   });
 }
 
+/**
+ * Build the exact locally previewable support artifact. Every constituent
+ * projection receives one shared injected-time snapshot and remains bounded;
+ * continuation cursors make omissions explicit rather than implying a full
+ * export or integrity proof.
+ */
+export async function buildConsoleSupportBundle(
+  db: TasqDb,
+  options: ConsoleSupportBundleOptions,
+): Promise<ConsoleSupportBundle> {
+  const { workspaceId, inspectedAt: generatedAt } = scope(options);
+  const limit = boundedLimit(options.limit ?? 100);
+  const [overview, health, work, actors, claims, resources, waits, effects, audit] = await Promise.all([
+    buildConsoleOverview(db, { workspaceId, now: generatedAt }),
+    buildConsoleHealth(db, { workspaceId, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "work", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "actors", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "claims", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "resources", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "waits", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "effects", limit, now: generatedAt }),
+    buildConsolePage(db, { workspaceId, section: "audit", limit, now: generatedAt }),
+  ]);
+  const sections = { work, actors, claims, resources, waits, effects, audit };
+  const completeness = Object.fromEntries(Object.entries(sections).map(([section, page]) => [section, {
+    truncated: page.hasMore,
+    continuationCursor: page.nextCursor,
+  }]));
+  return ConsoleSupportBundleSchema.parse({
+    contractVersion: CONSOLE_SUPPORT_BUNDLE_CONTRACT_VERSION,
+    workspaceId,
+    generatedAt,
+    source: {
+      product: "tasq-local-console",
+      authority: "canonical-local-ledger",
+      readOnly: true,
+    },
+    redaction: {
+      policy: "tasq.operator-support-redaction.v1",
+      omitted: [
+        "event_payloads",
+        "provider_bodies",
+        "effect_requests",
+        "secret_bindings",
+        "record_metadata",
+      ],
+    },
+    overview,
+    health,
+    sections,
+    completeness,
+  });
+}

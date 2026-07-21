@@ -98,4 +98,5 @@ repository CI matrix; larger product claims require new evidence.
 
 TQ-701 does not itself claim live updates, the complete visual Console,
 support bundles, installed-artifact startup or browser operator acceptance.
-Live transport is now TQ-702; the remaining gates are TQ-703 through TQ-705.
+Live transport is TQ-702 and the operator UI is TQ-703; installed lifecycle and
+cross-platform browser acceptance remain TQ-704 and TQ-705.

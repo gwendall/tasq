@@ -110,10 +110,11 @@
     },
     {
       "id": "TQ-703",
-      "status": "pending",
+      "status": "done",
       "milestone": "local-console",
       "dependsOn": ["TQ-701", "TQ-702"],
-      "outcome": "Accessible responsive navigation, filters, timelines and previewable redacted support bundles"
+      "outcome": "Accessible responsive navigation, filters, timelines and previewable redacted support bundles",
+      "evidence": ["TQ-703_OPERATOR_CONSOLE.md"]
     },
     {
       "id": "TQ-704",

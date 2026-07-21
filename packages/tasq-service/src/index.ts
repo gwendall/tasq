@@ -54,8 +54,9 @@ export {
   buildConsoleOverview,
   buildConsolePage,
   buildConsoleHealth,
+  buildConsoleSupportBundle,
 } from "./console-read-models.js";
-export type { ConsoleReadOptions, ConsolePageOptions } from "./console-read-models.js";
+export type { ConsoleReadOptions, ConsolePageOptions, ConsoleSupportBundleOptions } from "./console-read-models.js";
 
 export {
   buildConsoleEventBatch,

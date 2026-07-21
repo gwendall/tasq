@@ -82,14 +82,17 @@ not raw effect requests, evidence bodies or metadata.
 
 ## 5. Security contract
 
-Every response is `no-store` and sends a strict CSP with no script permission,
-no external origin, no framing, no base override and same-origin forms only.
-The surface also sends `nosniff`, no-referrer and same-origin resource policy.
+Every response is `no-store` and sends a strict CSP with self-hosted scripts,
+self connections plus the TQ-703 reviewed `blob:` download, no inline/evaluated
+script, no external origin, no framing, no base override and same-origin forms
+only. The legacy page loads no script; the shared policy now also serves the
+TQ-703 Console. The surface sends `nosniff`, no-referrer and same-origin
+resource policy.
 
 HTML uses one escaping function for every actor-controlled value. JSON is
 serialized by the runtime and never interpolated into executable markup.
-Search is a bounded read filter. There is no JavaScript bundle and no hidden
-POST/fetch path.
+Search is a bounded read filter. The TQ-504 legacy inspector has no JavaScript
+bundle and no hidden POST/fetch path.
 
 The listener rejects `0.0.0.0`, LAN addresses and public hostnames. Binding
 loopback is a deployment invariant, not a safe default that callers can

@@ -46,7 +46,9 @@ async function fresh() {
 function expectSecurityHeaders(response: Response): void {
   expect(response.headers.get("cache-control")).toBe("no-store");
   expect(response.headers.get("content-security-policy")).toContain("default-src 'none'");
-  expect(response.headers.get("content-security-policy")).not.toContain("script-src");
+  expect(response.headers.get("content-security-policy")).toContain("script-src 'self'");
+  expect(response.headers.get("content-security-policy")).not.toContain("'unsafe-inline'");
+  expect(response.headers.get("content-security-policy")).not.toContain("'unsafe-eval'");
   expect(response.headers.get("x-content-type-options")).toBe("nosniff");
   expect(response.headers.get("referrer-policy")).toBe("no-referrer");
   expect(response.headers.get("cross-origin-resource-policy")).toBe("same-origin");
@@ -82,7 +84,7 @@ describe("Tasq read-only inspector handler", () => {
     try {
       const handler = createTasqInspectorHandler(h);
       h.clock.set(61_000);
-      const page = await handler(new Request("http://127.0.0.1/"));
+      const page = await handler(new Request("http://127.0.0.1/inspector"));
       expect(page.status).toBe(200);
       expectSecurityHeaders(page);
       expect(page.headers.get("date")).toBe("Thu, 01 Jan 1970 00:01:01 GMT");
@@ -111,6 +113,57 @@ describe("Tasq read-only inspector handler", () => {
         workspaceId: h.workspaceId,
         commitment: { id: h.commitment.id },
       });
+    } finally {
+      await h.close();
+    }
+  });
+
+  it("renders the responsive operator Console and an exact preview-before-download support artifact", async () => {
+    const h = await fresh();
+    try {
+      const handler = createTasqInspectorHandler(h);
+      h.clock.set(64_000);
+      const page = await handler(new Request("http://localhost/?view=work"));
+      expect(page.status).toBe(200);
+      expectSecurityHeaders(page);
+      expect(page.headers.get("content-security-policy")).toContain("script-src 'self'");
+      expect(page.headers.get("content-security-policy")).toContain("connect-src 'self'");
+      const html = await page.text();
+      expect(html).toContain("<title>Tasq Console");
+      expect(html).toContain("Workspace overview");
+      expect(html).toContain("Redacted support bundle");
+      expect(html).toContain('src="/assets/console.js"');
+      expect(html).toContain("&lt;script&gt;alert(&quot;title&quot;)&lt;/script&gt;");
+      expect(html).not.toContain("Foreign workspace secret");
+      expect(html).not.toContain("<form");
+
+      const audit = await handler(new Request("http://localhost/?view=audit"));
+      expect(await audit.text()).toContain("audit-timeline");
+      const invalid = await handler(new Request("http://localhost/?view=secrets"));
+      expect(invalid.status).toBe(400);
+
+      const script = await handler(new Request("http://localhost/assets/console.js"));
+      expect(script.headers.get("content-type")).toBe("application/javascript; charset=utf-8");
+      const source = await script.text();
+      expect(source).toContain("new EventSource");
+      expect(source).not.toContain("Date.now");
+
+      const preview = await handler(new Request("http://localhost/api/console/support-bundle"));
+      expect(preview.status).toBe(200);
+      expect(preview.headers.get("content-disposition")).toBeNull();
+      const bundle = await preview.json() as any;
+      expect(bundle).toMatchObject({
+        contractVersion: "tasq.console-support-bundle.v1",
+        generatedAt: 64_000,
+        source: { authority: "canonical-local-ledger", readOnly: true },
+        redaction: { policy: "tasq.operator-support-redaction.v1" },
+      });
+      expect(JSON.stringify(bundle)).not.toContain("Foreign workspace secret");
+      expect(bundle.sections.audit.items.every((item: any) => item.payload.reason === "operator_index_redaction")).toBe(true);
+
+      const directDownload = await handler(new Request("http://localhost/api/console/support-bundle?download=1"));
+      expect(directDownload.status).toBe(400);
+      expect(await directDownload.json()).toMatchObject({ error: { code: "preview_required" } });
     } finally {
       await h.close();
     }

@@ -105,7 +105,7 @@ export function renderInspectorIndex(snapshot: InspectorIndex): string {
       <h1 id="page-title">Find the graph that needs inspection.</h1>
       <p>Choose a commitment, then audit waits, effects, authority, receipts and ordered events in one read.</p>
     </section>
-    <form class="filters" method="get" action="/" role="search">
+    <form class="filters" method="get" action="/inspector" role="search">
       <div class="field grow">
         <label for="query">Title contains</label>
         <input id="query" name="q" value="${escapeHtml(query)}" maxlength="200" autocomplete="off">
@@ -273,7 +273,7 @@ function auditSection(snapshot: CommitmentInspection): string {
 export function renderCommitmentPage(snapshot: CommitmentInspection): string {
   const commitment = snapshot.commitment;
   return shell(commitment.title, snapshot.workspaceId, `<main id="content" class="layout detail-layout">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Commitments</a><span>/</span><span aria-current="page">Inspection</span></nav>
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/inspector">Commitments</a><span>/</span><span aria-current="page">Inspection</span></nav>
     <header class="detail-header">
       <div>
         <div class="row-heading">${status(commitment.status)}<span class="revision">revision ${commitment.revision}</span></div>

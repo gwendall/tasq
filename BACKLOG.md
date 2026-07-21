@@ -62,9 +62,11 @@ later Local milestones.
   recovery, one-frame backpressure and exact overflow continuation. It creates
   no second truth and injects both authority time and transport scheduling. See
   `TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
-- **TQ-703:** build accessible responsive navigation, filters and timelines,
-  plus an explicit previewable redacted support bundle. The Console stays
-  read-only and unauthenticated only because it stays on loopback.
+- **TQ-703 — done:** the server-rendered operator Console now provides
+  accessible responsive navigation, bounded page filters, an audit timeline,
+  explicit live/stale states and a preview-before-download redacted support
+  bundle. It stays read-only and unauthenticated only because it stays on
+  loopback. See `TQ-703_OPERATOR_CONSOLE.md`.
 - **TQ-704:** make Console start, discovery and upgrade work from the installed
   Tasq Local artifact, without checkout-relative assets or hidden listeners.
 
