@@ -113,6 +113,11 @@ state-machine file is additionally split by Task/Goal/Project suite so Bun
 1.3.11 native-driver teardown cannot accumulate across all cases on the
 memory-bounded macOS arm64 CI runner. The same 52 tests remain mandatory.
 
+The eval runner applies the same file-level isolation. Its subprocess- and
+SQLite-heavy cold-start matrix otherwise accumulates enough native/JSC state
+for Bun 1.3.11 to crash during teardown on the macOS runner after all assertions
+in a file have passed. Every eval file remains mandatory and fail-fast.
+
 ### 7. Protocol adapter tests (`packages/tasq-protocol-adapters/test/`)
 
 **Question**: *Can untrusted MCP Tasks and A2A execution state be imported

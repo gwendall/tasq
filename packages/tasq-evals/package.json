@@ -4,7 +4,7 @@
   "private": true,
   "description": "Agent-flow scenarios for tasq (see README.md). Not unit/integration tests — these validate the agent experience end-to-end.",
   "scripts": {
-    "test": "bun test",
+    "test": "bun run ./scripts/test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
