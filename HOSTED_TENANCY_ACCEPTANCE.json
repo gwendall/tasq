@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.hosted-tenancy-acceptance.v1",
-  "status": "authority-foundation-implemented-no-remote-surface",
+  "status": "authority-store-router-implemented-no-remote-surface",
   "decision": "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
   "implementedSlices": [
     {
@@ -8,6 +8,13 @@
       "package": "@tasq-internal/authority",
       "evidence": "TQ-801_AUTHORITY_CERTIFICATION.json",
       "includes": ["strict_identity_dto", "subject_binding_dto", "action_registry", "live_authorization_evaluator"],
+      "remoteSurface": false
+    },
+    {
+      "id": "TQ-802",
+      "package": "@tasq-internal/server",
+      "evidence": "TQ-802_AUTHORITY_STORE_CERTIFICATION.json",
+      "includes": ["authority_migrations", "live_authority_store", "append_only_security_audit", "isolated_workspace_router"],
       "remoteSurface": false
     }
   ],

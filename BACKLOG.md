@@ -107,7 +107,10 @@ later Local milestones.
   16 digest-bound actions and one pure injected-clock evaluator implement the
   inner ADR-004 guard without claiming a remote surface. See
   `TQ-801_HOSTED_AUTHORITY_FOUNDATION.md`.
-- **TQ-802:** subject bindings, grants, audit and isolated storage routing.
+- **TQ-802 — done:** a checksum-migrated authority control plane now owns
+  revisioned/idempotent bindings, grants, delegation, eligibility, decisions
+  and append-only audit. The host-configured opaque router opens no workspace
+  ledger before an allow; see `TQ-802_AUTHORITY_STORE_ROUTER.md`.
 - **TQ-803:** authenticated read-only REST, discovery and event metadata.
 - **TQ-804:** guarded mutation REST with idempotency, revocation and injected
   authority time.

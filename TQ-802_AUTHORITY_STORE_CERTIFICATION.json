@@ -1,0 +1,43 @@
+{
+  "contractVersion": "tasq.authority-store-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-21",
+  "backlogItem": "TQ-802",
+  "package": "@tasq-internal/server",
+  "migrationDigest": "sha256:9c0b0ab1cd4b43a4293f2ff004938c65d90e97c3a437411d4cabf783449685c1",
+  "storageModel": {
+    "authorityControlPlane": "one_explicit_local_sqlite_database",
+    "workspaceLedgers": "separate_host_owned_bindings",
+    "routingKey": "opaque_storage_binding_id",
+    "workspaceIdDerivedPath": false,
+    "storedCredentials": false
+  },
+  "certifiedProperties": [
+    "checksum_pinned_concurrent_migrations",
+    "workspace_authority_revision_cas",
+    "durable_mutation_idempotency",
+    "append_only_security_audit",
+    "append_only_authorization_decisions",
+    "live_binding_grant_delegation_and_eligibility_snapshot",
+    "stale_allow_replay_cannot_route",
+    "foreign_workspace_opener_not_invoked",
+    "corrupt_authority_fails_closed",
+    "injected_clock_only"
+  ],
+  "processScenarios": [
+    "two_concurrent_cold_migrators",
+    "close_and_reopen_authority",
+    "allow_then_revoke_then_reopen",
+    "opaque_binding_with_decoy_route"
+  ],
+  "implementedRemoteSurfaces": [],
+  "excludedLayers": [
+    "credential_verification",
+    "rest",
+    "remote_mcp",
+    "hosted_web_bff",
+    "atomic_authority_and_domain_mutation",
+    "deployable_server"
+  ],
+  "tq802Complete": true
+}

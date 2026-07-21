@@ -273,6 +273,7 @@
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
+    "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

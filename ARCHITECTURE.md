@@ -18,7 +18,8 @@ The kernel and the product are deliberately distinct:
 Tasq Cloud (future managed operation)
 └── Tasq Server (future authenticated REST/remote MCP/event transport)
     ├── authority DTOs + pure guard (implemented internally, TQ-801)
-    ├── persistence/router/verifiers/transports (future, TQ-802+)
+    ├── authority control plane + opaque ledger router (implemented, TQ-802)
+    ├── verifiers/transports (future, TQ-803+)
     └── Tasq Core (implemented embedded kernel)
 
 Tasq Local (implemented single-host reference product)
@@ -36,9 +37,11 @@ states.
 
 TQ-801 implements only the pure middle of that future guard in
 `@tasq-internal/authority`. Authentication adapters must construct a strict
-verified identity; a future TQ-802 authority store/router must supply current
-bindings and grants; and only an allowed decision may precede a kernel call.
-The package intentionally imports neither HTTP, persistence nor Core.
+verified identity; the TQ-802 authority store/router supplies current bindings
+and grants; and only an allowed decision may precede a ledger/kernel call.
+The pure package intentionally imports neither HTTP, persistence nor Core.
+The private Server package owns persistence/routing but still imports no
+transport or kernel.
 
 ## At a glance
 
@@ -171,6 +174,10 @@ future tasq-server ──→ tasq-authority ──→ tasq-schema
   verified identity and current authority snapshot into one digest-bound
   decision at one injected timestamp. It does not authenticate credentials or
   call the kernel.
+- `tasq-server` currently owns only the TQ-802 authority SQLite store and
+  isolated workspace router. Storage bindings are opaque host configuration;
+  the requested workspace never becomes a filename. It opens no domain ledger
+  before an allow and exports no network listener.
 - `tasq-extension-sdk` is DB-free and provider-neutral. It binds immutable
   manifest identities to trusted runtime parsers/routes/evaluators.
 - `tasq-reference-extension` owns the five v1 domain modules. It has no DB or
@@ -530,6 +537,7 @@ is the implemented compatibility boundary.
 │   ├── tasq-protocol-adapters/ ── version-pinned MCP Tasks/A2A import boundary
 │   ├── tasq-inspector/ ── loopback GET/HEAD HTML/JSON projection + browser tests
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
+│   ├── tasq-server/ ── durable authority control plane + opaque ledger router
 │   ├── tasq-service/   ── @tasq-internal/local-service   (service layer + tests)
 │   ├── tasq-cli/       ── @tasq/cli       (CLI + E2E tests)
 │   └── tasq-evals/     ── @tasq-internal/evals     (agent scenarios)

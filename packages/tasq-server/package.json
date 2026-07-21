@@ -1,0 +1,25 @@
+{
+  "name": "@tasq-internal/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Future Tasq Server composition foundations; no remote surface is exported yet.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "@tasq-internal/authority": "workspace:*",
+    "@tasq/schema": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

@@ -172,10 +172,11 @@
     },
     {
       "id": "TQ-802",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-801"],
-      "outcome": "Subject bindings, grants, audit and isolated storage routing"
+      "outcome": "Subject bindings, grants, audit and isolated storage routing",
+      "evidence": ["TQ-802_AUTHORITY_STORE_ROUTER.md", "TQ-802_AUTHORITY_STORE_CERTIFICATION.json"]
     },
     {
       "id": "TQ-803",

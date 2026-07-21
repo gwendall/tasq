@@ -15,8 +15,16 @@ permission, grant, delegation, eligibility, request and decision contracts;
 one injected clock snapshot and has no transport, credential verification,
 persistence, store routing or kernel dependency. Consequently it creates no
 new human or agent entrypoint and does not change the `not_implemented` Server,
-REST, remote MCP or hosted Console support claims. TQ-802 is the next
-executable checkpoint.
+REST, remote MCP or hosted Console support claims.
+
+TQ-802 is now also implemented internally. `@tasq-internal/server` persists
+host/workspace routing, principals, issuer/subject bindings, immutable
+permission definitions, live grants/delegations/eligibility, idempotency,
+decisions and append-only security audit in a separate authority database.
+Its router resolves only a host-configured opaque storage binding after an
+allow, so a denied foreign-workspace probe invokes no domain-ledger opener.
+It still exports no listener or remote entrypoint. TQ-803 is next; atomic
+authority-plus-domain mutations remain explicitly TQ-804.
 
 This is the canonical public source repository. `main` requires pull requests
 and green Linux/macOS CI; release tags are immutable and the `release`

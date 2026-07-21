@@ -40,6 +40,11 @@ Release metadata is authoritative if it narrows that window.
   injected-clock-only, but it trusts that an upstream adapter already verified
   credentials and that a future authority store supplied a current snapshot.
   Calling it does not authenticate a request or create a safe remote route.
+- TQ-802's private control plane stores authority records and audit, not
+  credentials. Its router accepts only host-configured opaque storage binding
+  IDs and invokes no workspace opener before an allow. It is still not a safe
+  public listener, and TQ-804 must make live authority preconditions atomic
+  with domain mutations.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.
 - Runtime/provider success never grants commitment-completion authority.

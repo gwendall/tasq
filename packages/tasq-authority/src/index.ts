@@ -61,6 +61,11 @@ function digest(value: unknown): string {
   return `sha256:${createHash("sha256").update(canonical(value), "utf8").digest("hex")}`;
 }
 
+/** Canonical portable-JSON digest shared by authority persistence adapters. */
+export function digestAuthorityValue(value: unknown): string {
+  return digest(value);
+}
+
 export const ResourceKind = z.enum(["workspace", "commitment", "resource", "effect", "replica"]);
 export type ResourceKind = z.infer<typeof ResourceKind>;
 

@@ -1,8 +1,8 @@
 # ADR-004 / TQ-505 — Authenticated hosted tenancy
 
-> **Status:** accepted design; TQ-801 pure authority foundation implemented — 2026-07-21
-> **Implementation:** strict internal DTOs, action registry and deterministic
-> evaluator exist; no remote transport, verifier, persistence or router ships
+> **Status:** accepted design; TQ-801/TQ-802 internal foundations implemented — 2026-07-21
+> **Implementation:** strict DTOs/evaluator plus the durable authority control
+> plane and opaque ledger router exist; no remote transport or verifier ships
 > **Decision:** a hosted request crosses a transport authentication boundary,
 > maps an immutable external subject to a workspace principal, passes a live
 > deny-by-default authorization decision, and only then reaches the existing
@@ -72,10 +72,10 @@ intentionally call the kernel directly remain trusted compositions and must
 not describe that path as authenticated remote access.
 
 TQ-801 implements only the pure `credential verifier output -> live decision`
-contract in `@tasq-internal/authority`. TQ-802 must supply durable authority
-state and isolated routing, and later checkpoints must supply the verifier and
-remote surfaces. This partial implementation does not change the support state
-of Server, REST, remote MCP or hosted web.
+contract in `@tasq-internal/authority`. TQ-802 now supplies durable authority
+state and isolated routing in `@tasq-internal/server`; later checkpoints must
+supply the verifier and remote surfaces. These internal slices do not change
+the support state of Server, REST, remote MCP or hosted web.
 
 ## 3. Canonical identity
 
@@ -392,10 +392,12 @@ credential logging and device-clock authority fail the entire release.
 This ADR authorizes later implementation; it does not claim those surfaces
 exist.
 
-1. Freeze strict identity, binding, grant, permission-set and decision DTOs,
+1. **Completed by TQ-801:** freeze strict identity, binding, grant,
+   permission-set and decision DTOs,
    plus a pure injected-clock evaluator and threat vectors.
-2. Add authority-owned migrations and append-only security audit for bindings,
-   grants and permission-set activation.
+2. **Completed by TQ-802:** add authority-owned migrations and append-only
+   security audit for bindings, grants and permission-set activation, plus the
+   isolated opaque workspace router.
 3. Build a workspace storage router and a read-only authenticated HTTP adapter
    with RFC 9728 discovery.
 4. Add guarded mutation routes, browser BFF sessions and immediate revocation.
@@ -419,7 +421,7 @@ TQ-505 completes the design backlog only. It does not ship:
 
 - a hosted Tasq service, remote REST/MCP route or hosted inspector;
 - an identity provider, token issuer, SCIM server or credential store;
-- subject bindings, authorization grants or browser sessions;
+- remote binding/grant administration APIs or browser sessions;
 - multi-workspace shared-database isolation;
 - authenticated effect or approval endpoints;
 - ADR-005 evidence trust and high-stakes automatic completion.
