@@ -21,6 +21,20 @@ evidence justifies completion?
 Tasq Server, remote REST/MCP, and Tasq Cloud are roadmap products, not shipped
 surfaces.
 
+## Public site and docs
+
+The separate static product/docs app lives in `apps/site`. It renders support
+and release state from `PRODUCT_SURFACE_MATRIX.json`, `BACKLOG.json` and
+`PUBLIC_RELEASE_POLICY.json`, and exports the identical machine snapshot at
+`/product-truth.json`. It has no ledger access or API routes and is not the
+Local Console. The app is implemented and tested but not deployed.
+
+```bash
+pnpm build:site
+```
+
+The static output is written to `apps/site/out`.
+
 ## Agent entrypoint
 
 Once the `tasq` executable is installed, an agent can create or join a local

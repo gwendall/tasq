@@ -28,6 +28,9 @@ by ADR-008.
   listener announcement, proof-of-life `web status`, private crash-safe
   registration and full standalone/npm candidate upgrade coverage without
   checkout-relative assets or install-created listeners.
+- Add a statically exportable Next.js public product and documentation app
+  with consumer-specific guides, machine-derived support status, exact
+  `/product-truth.json`, synthetic-only visuals and adversarial browser gates.
 
 ### Security
 

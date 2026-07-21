@@ -93,6 +93,10 @@ describe("canonical public roadmap", () => {
         "https://github.com/gwendall/tasq/pull/5",
       ],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-605")).toMatchObject({
+      status: "done",
+      evidence: ["TQ-605_PUBLIC_SITE.md"],
+    });
   });
 
   test("preserves the authority, clock and product boundaries", () => {

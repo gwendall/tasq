@@ -6,9 +6,9 @@
 
 Run `bun test` for the current count. The suite covers schemas, transactional/concurrent invariants, migrations and cursors, the real CLI in subprocesses, and realistic agent flows. Counts are intentionally not copied into docs because they drift on every change.
 
-## Eleven layers of testing
+## Twelve layers of testing
 
-The codebase distinguishes **eleven test layers**, each living with its owning package:
+The codebase distinguishes **twelve test layers**, each living with its owning package:
 
 ### 1. Schema tests (`packages/tasq-schema/test/`)
 
@@ -236,7 +236,24 @@ bun test
 pnpm test:browser
 ```
 
-### 11. Evals (`packages/tasq-evals/`)
+### 11. Public site tests (`apps/site/`)
+
+**Question**: *Can an unfamiliar human or agent learn the real product without
+marketing drift, private data or an invented release path?*
+
+The generator validates three canonical machine contracts and writes identical
+application and public JSON snapshots with source digests. Bun tests reject
+stale truth, absent-surface entrypoints, unpublished install claims, API/Console
+coupling and ambient clock reads. The optimized Next.js static export must
+produce every consumer route. Playwright checks the homepage, documentation,
+machine status endpoint and 390px responsive path in a dedicated CI job.
+
+```bash
+pnpm --filter @tasq-internal/site test
+pnpm --filter @tasq-internal/site test:browser
+```
+
+### 12. Evals (`packages/tasq-evals/`)
 
 **Question** : *Is the agent's experience good?*
 
@@ -361,6 +378,7 @@ cd packages/tasq-evals && bun test
 cd products/tasq
 bun test
 pnpm --dir packages/tasq-inspector test:browser
+pnpm --dir apps/site test:browser
 ```
 
 Also run every TypeScript project check under `packages/*/tsconfig.json`.
@@ -386,6 +404,7 @@ Also run every TypeScript project check under `packages/*/tsconfig.json`.
 | A new status transition rule | `packages/tasq-service/test/state-machines.test.ts` |
 | A new CLI command | `packages/tasq-cli/test/e2e.test.ts` |
 | A new inspector route or view | `packages/tasq-inspector/test/` plus `browser/*.pw.ts` |
+| A public-site claim or consumer journey | `apps/site/test/` plus `apps/site/browser/` |
 | A hosted identity, authorization or route slice | `packages/tasq-evals/hosted-tenancy-design.test.ts` plus the real adapter's cross-workspace, revocation, rotation, surface-parity and injected-clock tests |
 | A product shape, consumption path or public support claim | `PRODUCT_SURFACE_MATRIX.json`, its spec and `packages/tasq-evals/product-consumption-design.test.ts` |
 | A new agent-facing capability | `packages/tasq-evals/` (new `*.test.ts` file) |

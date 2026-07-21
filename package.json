@@ -12,6 +12,8 @@
   "scripts": {
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm --workspace-concurrency=1 -r --if-present test",
+    "build:site": "pnpm --filter @tasq-internal/site build",
+    "test:site:browser": "pnpm --filter @tasq-internal/site test:browser",
     "build:cli": "bun packages/tasq-cli/scripts/build.ts --outdir dist/cli",
     "build:packages": "bun scripts/release/build-public-packages.ts",
     "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts"
