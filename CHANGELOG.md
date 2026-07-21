@@ -18,6 +18,9 @@ by ADR-008.
 - Add transport-neutral bounded Console overview, work, actor, claim,
   resource, wait, effect, redacted audit and honest operational-health read
   contracts with workspace-bound keyset cursors and injected authority time.
+- Add loopback polling and SSE over one redacted Console event-batch contract,
+  with exclusive reconnect, typed cursor recovery, one-frame backpressure,
+  deterministic overflow fallback and injected time/scheduling.
 
 ### Security
 

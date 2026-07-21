@@ -57,9 +57,11 @@ later Local milestones.
   effects, redacted audit and honest operational health. Pages use scoped
   keyset cursors and every read has one injected time snapshot. See
   `TQ-701_CONSOLE_READ_MODELS.md`.
-- **TQ-702:** add cursor-driven loopback SSE plus bounded polling fallback with
-  reconnect, gap, overflow and backpressure semantics. It creates no second
-  truth and never reads authority time implicitly.
+- **TQ-702 — done:** cursor-driven loopback SSE and bounded polling now share a
+  redacted event-batch contract with exclusive reconnect, typed gap/ahead
+  recovery, one-frame backpressure and exact overflow continuation. It creates
+  no second truth and injects both authority time and transport scheduling. See
+  `TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
 - **TQ-703:** build accessible responsive navigation, filters and timelines,
   plus an explicit previewable redacted support bundle. The Console stays
   read-only and unauthenticated only because it stays on loopback.

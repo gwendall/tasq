@@ -55,11 +55,14 @@ clean-room evidence are documented in
 [TQ-604_LIFECYCLE_CERTIFICATION.md](TQ-604_LIFECYCLE_CERTIFICATION.md). No
 download command is advertised until protected artifacts actually exist.
 
-The Local Console source already exposes bounded, versioned JSON read models
-at `/api/console/overview`, `/api/console/health` and
-`/api/console/{section}`. They are loopback-only, read-only, cursor-paginated,
-redacted and driven by an injected clock. See
-[TQ-701_CONSOLE_READ_MODELS.md](TQ-701_CONSOLE_READ_MODELS.md). The live and
+The Local Console source exposes bounded, versioned JSON read models at
+`/api/console/overview`, `/api/console/health` and
+`/api/console/{section}`. Lossless live invalidation is available through
+`/api/console/events` polling and `/api/console/stream` SSE. All are
+loopback-only, read-only, cursor-driven, redacted and use injected authority
+time; SSE cadence has a separate scheduler injection. See
+[TQ-701_CONSOLE_READ_MODELS.md](TQ-701_CONSOLE_READ_MODELS.md) and
+[TQ-702_CONSOLE_LIVE_TRANSPORT.md](TQ-702_CONSOLE_LIVE_TRANSPORT.md). The
 complete visual Console remains roadmap work.
 
 ## Build from source

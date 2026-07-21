@@ -201,9 +201,10 @@ cd packages/tasq-cli && bun test
 second truth or a hidden write/network/time boundary?*
 
 Bun tests cover HTML escaping, workspace isolation, constant-query bounded
-indexing, TQ-701 JSON routes and audit redaction, all non-read methods,
-malformed routes/filters/cursors, security headers, DNS-rebinding host refusal,
-internal errors, loopback binding and injected HTTP time. Playwright then runs
+indexing, TQ-701 JSON routes and audit redaction, TQ-702 polling/SSE reconnect,
+backpressure, overflow continuation and typed cursor recovery, all non-read
+methods, malformed routes/filters/cursors, security headers, DNS-rebinding host refusal,
+internal errors, loopback binding and injected HTTP time/scheduling. Playwright then runs
 four Chromium journeys over the real `tasq web`
 process: desktop/focus, filtering/detail navigation, 390px dark/reduced-motion
 layout and browser-context mutation refusal.

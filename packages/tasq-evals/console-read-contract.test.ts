@@ -5,6 +5,7 @@ import { join, resolve } from "node:path";
 import { createMutableClock } from "@tasq/schema";
 import {
   bootstrapCoordinationSpace,
+  buildConsoleEventBatch,
   buildConsoleHealth,
   buildConsoleOverview,
   buildConsolePage,
@@ -19,7 +20,7 @@ afterEach(() => {
   while (tmpDirs.length > 0) rmSync(tmpDirs.pop()!, { recursive: true, force: true });
 });
 
-describe("TQ-701 public Console read contract", () => {
+describe("TQ-701/TQ-702 public Console read and live contracts", () => {
   test("an unbriefed consumer can discover and traverse every bounded section from Core", async () => {
     const dir = mkdtempSync(join(tmpdir(), "tasq-console-eval-"));
     tmpDirs.push(dir);
@@ -64,6 +65,22 @@ describe("TQ-701 public Console read contract", () => {
         scope: "bounded_operational_signals",
         fullIntegrity: { checked: false, argv: ["tasq", "doctor", "--tenant", workspaceId] },
       });
+
+      const live = await buildConsoleEventBatch(handle.db, { workspaceId, clock });
+      expect(live).toMatchObject({
+        contractVersion: "tasq.console-event-batch.v1",
+        mode: "snapshot",
+        returned: 0,
+        snapshot: { contractVersion: "tasq.console-overview.v1" },
+      });
+      clock.advance(1);
+      await createCommitment(handle.db, { title: "After live snapshot" }, {
+        workspaceId, actor: "agent:new", principalId: actor.id, clock,
+      });
+      const resumed = await buildConsoleEventBatch(handle.db, {
+        workspaceId, cursor: live.nextCursor, limit: 1, clock,
+      });
+      expect(resumed).toMatchObject({ mode: "changes", returned: 1, hasMore: false });
     } finally {
       await handle.close();
     }
@@ -73,8 +90,12 @@ describe("TQ-701 public Console read contract", () => {
     const schema = readFileSync(resolve(root, "packages/tasq-schema/src/console.ts"), "utf8");
     const service = readFileSync(resolve(root, "packages/tasq-service/src/console-read-models.ts"), "utf8");
     const publicCore = readFileSync(resolve(root, "packages/tasq-core/src/console-read-models.ts"), "utf8");
+    const liveService = readFileSync(resolve(root, "packages/tasq-service/src/console-live.ts"), "utf8");
+    const livePublicCore = readFileSync(resolve(root, "packages/tasq-core/src/console-live.ts"), "utf8");
     const server = readFileSync(resolve(root, "packages/tasq-inspector/src/server.ts"), "utf8");
+    const scheduler = readFileSync(resolve(root, "packages/tasq-inspector/src/scheduler.ts"), "utf8");
     const docs = readFileSync(resolve(root, "TQ-701_CONSOLE_READ_MODELS.md"), "utf8");
+    const liveDocs = readFileSync(resolve(root, "TQ-702_CONSOLE_LIVE_TRANSPORT.md"), "utf8");
     const migration = readFileSync(resolve(root,
       "packages/tasq-core/src/migrations/0025_console_read_indexes.sql"), "utf8");
     const backlog = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
@@ -82,8 +103,11 @@ describe("TQ-701 public Console read contract", () => {
     };
 
     expect(publicCore.trimEnd()).toBe(service.trimEnd());
+    expect(livePublicCore.trimEnd()).toBe(liveService.trimEnd());
     expect(schema).toContain("tasq.console-page.v1");
+    expect(schema).toContain("tasq.console-event-batch.v1");
     expect(schema).toContain("operator_index_redaction");
+    expect(schema).toContain("operator_stream_redaction");
     expect(service).toContain("limit + 1");
     expect(service).toContain("value.length > 2048");
     for (const index of ["work", "actors", "claims", "resources", "waits", "effects"]) {
@@ -92,10 +116,17 @@ describe("TQ-701 public Console read contract", () => {
     for (const forbidden of ["Date.now(", "new Date(", "systemClock", "performance.now("]) {
       expect(service, forbidden).not.toContain(forbidden);
       expect(publicCore, forbidden).not.toContain(forbidden);
+      expect(liveService, forbidden).not.toContain(forbidden);
+      expect(livePublicCore, forbidden).not.toContain(forbidden);
+      expect(scheduler, forbidden).not.toContain(forbidden);
     }
     for (const route of ["overview", "health", "work", "actors", "claims", "resources", "waits", "effects", "audit"]) {
       expect(`${schema}\n${server}\n${docs}`).toContain(route);
     }
+    for (const route of ["/api/console/events", "/api/console/stream", "Last-Event-ID", "overflow", "cursor_expired"]) {
+      expect(`${schema}\n${server}\n${liveDocs}`).toContain(route);
+    }
     expect(backlog.items.find(({ id }) => id === "TQ-701")?.status).toBe("done");
+    expect(backlog.items.find(({ id }) => id === "TQ-702")?.status).toBe("done");
   });
 });

@@ -21,10 +21,12 @@ paired with a matching snapshot for rollback, and uninstalled without touching
 `TASQ_HOME`. This is not yet a published-download claim; see
 `TQ-604_LIFECYCLE_CERTIFICATION.md` for the remaining evidence gate.
 
-The loopback Console now has canonical TQ-701 overview, actor, claim, resource,
+The loopback Console has canonical TQ-701 overview, actor, claim, resource,
 wait, effect, redacted audit and bounded operational-health JSON contracts.
-The current HTML remains the TQ-504 inspector; live updates and the complete
-visual operator product remain TQ-702 and TQ-703.
+TQ-702 adds lossless polling and SSE invalidation with exclusive cursors,
+typed recovery, bounded backpressure and injected time/scheduling. The current
+HTML remains the TQ-504 inspector; the complete visual operator product is
+TQ-703.
 
 The shortest verified loop is:
 

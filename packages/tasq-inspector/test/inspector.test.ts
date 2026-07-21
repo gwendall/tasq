@@ -16,6 +16,7 @@ import {
   createTasqInspectorHandler,
   renderCommitmentPage,
   startTasqInspectorServer,
+  type ConsoleScheduler,
 } from "../src/index.js";
 
 const tmpDirs: string[] = [];
@@ -49,6 +50,30 @@ function expectSecurityHeaders(response: Response): void {
   expect(response.headers.get("x-content-type-options")).toBe("nosniff");
   expect(response.headers.get("referrer-policy")).toBe("no-referrer");
   expect(response.headers.get("cross-origin-resource-policy")).toBe("same-origin");
+}
+
+class ManualScheduler implements ConsoleScheduler {
+  waits = 0;
+  private releases: Array<() => void> = [];
+
+  wait(_delayMs: number, signal: AbortSignal): Promise<void> {
+    this.waits++;
+    return new Promise((resolve) => {
+      if (signal.aborted) return resolve();
+      this.releases.push(resolve);
+    });
+  }
+
+  release(): void {
+    this.releases.shift()?.();
+  }
+}
+
+function decodeSse(chunk: Uint8Array): { event: string | null; id: string | null; data: any } {
+  const text = new TextDecoder().decode(chunk);
+  const line = (name: string) => text.split("\n").find((candidate) => candidate.startsWith(`${name}: `))?.slice(name.length + 2) ?? null;
+  const data = line("data");
+  return { event: line("event"), id: line("id"), data: data ? JSON.parse(data) : null };
 }
 
 describe("Tasq read-only inspector handler", () => {
@@ -133,6 +158,166 @@ describe("Tasq read-only inspector handler", () => {
       const invalidCursor = await handler(new Request("http://localhost/api/console/work?cursor=not-json"));
       expect(invalidCursor.status).toBe(400);
       expect(await invalidCursor.json()).toMatchObject({ error: { code: "invalid_request" } });
+    } finally {
+      await h.close();
+    }
+  });
+
+  it("offers lossless polling and a backpressured SSE stream from the same redacted cursor", async () => {
+    const h = await fresh();
+    const scheduler = new ManualScheduler();
+    try {
+      const handler = createTasqInspectorHandler({ ...h, scheduler, livePollIntervalMs: 1 });
+      h.clock.set(70_000);
+      const initialResponse = await handler(new Request("http://localhost/api/console/events?limit=2"));
+      expect(initialResponse.status).toBe(200);
+      const initial = await initialResponse.json() as any;
+      expect(initial).toMatchObject({
+        contractVersion: "tasq.console-event-batch.v1",
+        mode: "snapshot",
+        inspectedAt: 70_000,
+        returned: 0,
+        snapshot: { contractVersion: "tasq.console-overview.v1" },
+      });
+
+      const streamResponse = await handler(new Request("http://localhost/api/console/stream?limit=2"));
+      expect(streamResponse.status).toBe(200);
+      expect(streamResponse.headers.get("content-type")).toBe("text/event-stream; charset=utf-8");
+      expect(streamResponse.headers.get("x-accel-buffering")).toBe("no");
+      expectSecurityHeaders(streamResponse);
+      const reader = streamResponse.body!.getReader();
+      const firstChunk = await reader.read();
+      const first = decodeSse(firstChunk.value!);
+      expect(first).toMatchObject({
+        event: "snapshot",
+        data: { contractVersion: "tasq.console-stream-envelope.v1", kind: "snapshot" },
+      });
+      expect(first.id).toBe(first.data.batch.nextCursor);
+
+      // The stream queues at most one frame. It only schedules another read
+      // once the consumer has accepted the previous chunk.
+      await Promise.resolve();
+      expect(scheduler.waits).toBe(1);
+      h.clock.set(71_000);
+      const created = await createCommitment(h.db, { title: "Live update secret body" }, {
+        workspaceId: h.workspaceId, actor: "runtime", clock: h.clock,
+      });
+      scheduler.release();
+      const changed = decodeSse((await reader.read()).value!);
+      expect(changed).toMatchObject({
+        event: "changes",
+        data: {
+          kind: "changes",
+          batch: { inspectedAt: 71_000, events: [{ entityId: created.id }] },
+        },
+      });
+      expect(JSON.stringify(changed)).not.toContain("Live update secret body");
+      await reader.cancel();
+
+      const resumed = await handler(new Request("http://localhost/api/console/events", {
+        headers: { "Last-Event-ID": changed.id! },
+      }));
+      expect(await resumed.json()).toMatchObject({ mode: "changes", returned: 0 });
+    } finally {
+      await h.close();
+    }
+  });
+
+  it("closes an overflowing stream with an exact bounded polling continuation", async () => {
+    const h = await fresh();
+    try {
+      const handler = createTasqInspectorHandler({ ...h, scheduler: new ManualScheduler() });
+      const initial = await (await handler(new Request("http://localhost/api/console/events"))).json() as any;
+      for (const title of ["One", "Two", "Three"]) {
+        h.clock.advance(1);
+        await createCommitment(h.db, { title }, {
+          workspaceId: h.workspaceId, actor: "runtime", clock: h.clock,
+        });
+      }
+      const stream = await handler(new Request(
+        `http://localhost/api/console/stream?limit=1&cursor=${encodeURIComponent(initial.nextCursor)}`,
+      ));
+      const reader = stream.body!.getReader();
+      const overflow = decodeSse((await reader.read()).value!);
+      expect(overflow).toMatchObject({
+        event: "overflow",
+        data: {
+          kind: "overflow",
+          batch: { returned: 1, hasMore: true },
+          recovery: { transport: "poll", href: "/api/console/events" },
+        },
+      });
+      expect(overflow.data.recovery.cursor).toBe(overflow.data.batch.nextCursor);
+      expect((await reader.read()).done).toBe(true);
+
+      const fallback = await handler(new Request(
+        `http://localhost/api/console/events?limit=2&cursor=${encodeURIComponent(overflow.data.recovery.cursor)}`,
+      ));
+      expect(await fallback.json()).toMatchObject({ mode: "changes", returned: 2, hasMore: false });
+
+      await h.client.execute({
+        sql: "DELETE FROM event WHERE tenant_id = ?",
+        args: [h.workspaceId],
+      });
+      const ahead = await handler(new Request(
+        `http://localhost/api/console/events?cursor=${encodeURIComponent(overflow.data.recovery.cursor)}`,
+      ));
+      expect(ahead.status).toBe(409);
+      expect(await ahead.json()).toMatchObject({
+        error: {
+          contractVersion: "tasq.console-live-problem.v1",
+          code: "cursor_ahead",
+          recovery: { action: "refresh_snapshot" },
+        },
+      });
+
+      const conflict = await handler(new Request("http://localhost/api/console/stream?cursor=query", {
+        headers: { "Last-Event-ID": "header" },
+      }));
+      expect(conflict.status).toBe(400);
+      const head = await handler(new Request("http://localhost/api/console/stream", { method: "HEAD" }));
+      expect(head.status).toBe(200);
+      expect(await head.text()).toBe("");
+    } finally {
+      await h.close();
+    }
+  });
+
+  it("emits a typed gap if retained history disappears after connection", async () => {
+    const h = await fresh();
+    const scheduler = new ManualScheduler();
+    try {
+      const handler = createTasqInspectorHandler({ ...h, scheduler, livePollIntervalMs: 1 });
+      const stream = await handler(new Request("http://localhost/api/console/stream"));
+      const reader = stream.body!.getReader();
+      expect(decodeSse((await reader.read()).value!).event).toBe("snapshot");
+
+      await createCommitment(h.db, { title: "Before pruning" }, {
+        workspaceId: h.workspaceId, actor: "runtime", clock: h.clock,
+      });
+      await Promise.resolve();
+      scheduler.release();
+      expect(decodeSse((await reader.read()).value!).event).toBe("changes");
+
+      await h.client.execute({
+        sql: "DELETE FROM event WHERE tenant_id = ?",
+        args: [h.workspaceId],
+      });
+      await createCommitment(h.db, { title: "After pruning" }, {
+        workspaceId: h.workspaceId, actor: "runtime", clock: h.clock,
+      });
+      await Promise.resolve();
+      scheduler.release();
+      const gap = decodeSse((await reader.read()).value!);
+      expect(gap).toMatchObject({
+        event: "gap",
+        id: null,
+        data: {
+          kind: "gap",
+          problem: { code: "cursor_expired", recovery: { action: "refresh_snapshot" } },
+        },
+      });
+      expect((await reader.read()).done).toBe(true);
     } finally {
       await h.close();
     }

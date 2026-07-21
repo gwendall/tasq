@@ -57,6 +57,12 @@ export {
 } from "./console-read-models.js";
 export type { ConsoleReadOptions, ConsolePageOptions } from "./console-read-models.js";
 
+export {
+  buildConsoleEventBatch,
+  ConsoleLiveCursorError,
+} from "./console-live.js";
+export type { ConsoleEventBatchOptions } from "./console-live.js";
+
 export { buildContextPacket } from "./context-packet.js";
 export type { BuildContextPacketOptions } from "./context-packet.js";
 
