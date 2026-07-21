@@ -66,7 +66,13 @@ time; SSE cadence has a separate scheduler injection. See
 server-rendered TQ-703 operator UI adds responsive section navigation, bounded
 filters, audit timelines, visible live/stale states and preview-before-download
 redacted support bundles; see
-[TQ-703_OPERATOR_CONSOLE.md](TQ-703_OPERATOR_CONSOLE.md).
+[TQ-703_OPERATOR_CONSOLE.md](TQ-703_OPERATOR_CONSOLE.md). Installed Tasq Local
+starts it as one explicit foreground process; `tasq web ... --json` emits a
+versioned listener announcement and `tasq web status ... --json` proves the
+saved identity against the live `/api/console/runtime` endpoint. The UI footer
+shows the installed version. Upgrade and uninstall
+create no hidden listener and preserve ledger data; see
+[TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md](TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md).
 
 ## Build from source
 

@@ -29,6 +29,9 @@ Release metadata is authoritative if it narrows that window.
 - Local MCP capabilities are selected and enforced by its host.
 - The Local Console is loopback-only and read-only; it is not safe to expose
   through a generic reverse proxy.
+- Console registration proves a specific foreground loopback listener is live;
+  its local descriptor and instance ID are discovery metadata, not credentials
+  or authorization. Install creates no listener or daemon.
 - REST, remote MCP, Tasq Server and Tasq Cloud are not currently shipped.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.

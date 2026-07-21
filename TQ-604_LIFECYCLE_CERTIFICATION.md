@@ -71,7 +71,9 @@ rollback.
 release assets in a hostile temporary directory. It verifies the envelope,
 installs v1, onboards two independent actors, races them for one resource,
 releases and reacquires with a higher fence, and opens the loopback Console on
-the same workspace. It then backs up, installs v2, runs `doctor`, restores the
+the same workspace. TQ-704 extends that step through the installed UI assets,
+versioned listener announcement, proof-of-life discovery, clean stop and a
+second same-ledger Console after v2 activation. It then backs up, installs v2, runs `doctor`, restores the
 snapshot with v1, and uninstalls both versions while proving both data homes
 remain present. Separate cases refuse tampering and unmanaged collisions.
 

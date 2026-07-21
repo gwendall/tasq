@@ -176,18 +176,34 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     expect(recovered.lease.fence).toBe(2);
 
     const web = Bun.spawn([
-      cli, "web", "--tenant", "lifecycle/team", "--host", "127.0.0.1", "--port", "0",
+      cli, "web", "--tenant", "lifecycle/team", "--host", "127.0.0.1", "--port", "0", "--json",
     ], { env: { PATH: process.env.PATH ?? "", TASQ_HOME: home }, stdout: "pipe", stderr: "pipe" });
     const webStderr = new Response(web.stderr).text();
     const startup = await firstLine(web.stdout);
-    const url = startup.line.match(/(http:\/\/127\.0\.0\.1:\d+)/)?.[1];
-    expect(url).toBeDefined();
+    const listener = JSON.parse(startup.line);
+    expect(listener).toMatchObject({
+      contractVersion: "tasq.console-listener.v1",
+      productVersion: "0.1.0",
+      workspaceId: "lifecycle/team",
+      endpoint: { scope: "loopback" },
+      process: { mode: "foreground", pid: web.pid },
+    });
+    const url = listener.endpoint.url as string;
+    const discovery = JSON.parse(await ok(cli, ["web", "status", "--tenant", "lifecycle/team", "--json"], { home }));
+    expect(discovery).toMatchObject({ state: "running", descriptor: { instanceId: listener.instanceId } });
     const index = await fetch(`${url}/api/index`).then((response) => response.json());
     expect(index).toMatchObject({ contractVersion: "tasq.inspector-index.v1", workspaceId: "lifecycle/team" });
+    const v1Console = await fetch(url).then((response) => response.text());
+    expect(v1Console).toContain("Lifecycle survives");
+    expect(v1Console).toContain("Tasq Local 0.1.0");
+    expect(await fetch(`${url}/assets/console.js`).then((response) => response.status)).toBe(200);
+    expect(await fetch(`${url}/api/console/runtime`).then((response) => response.json())).toEqual(listener);
     web.kill("SIGTERM");
     expect(await web.exited).toBe(0);
     await startup.reader.cancel();
     expect(await webStderr).toBe("");
+    expect(await run(cli, ["web", "status", "--tenant", "lifecycle/team", "--json"], { home }))
+      .toMatchObject({ exitCode: 1, stderr: "" });
 
     const snapshot = join(root, "v1.sqlite");
     await ok(cli, ["backup", snapshot, "--tenant", "lifecycle/team", "--actor", "alpha", "--json"], { home });
@@ -199,6 +215,21 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     ], { home }))).toMatchObject({ ok: true });
     const upgradedTasks = JSON.parse(await ok(cli, ["list", "--tenant", "lifecycle/team", "--actor", "alpha", "--json"], { home }));
     expect(upgradedTasks.map((task: { title: string }) => task.title)).toContain("Lifecycle survives");
+
+    const upgradedWeb = Bun.spawn([
+      cli, "web", "--tenant", "lifecycle/team", "--host", "127.0.0.1", "--port", "0", "--json",
+    ], { env: { PATH: process.env.PATH ?? "", TASQ_HOME: home }, stdout: "pipe", stderr: "pipe" });
+    const upgradedWebStderr = new Response(upgradedWeb.stderr).text();
+    const upgradedStartup = await firstLine(upgradedWeb.stdout);
+    const upgradedListener = JSON.parse(upgradedStartup.line);
+    expect(upgradedListener).toMatchObject({ productVersion: "0.2.0", workspaceId: "lifecycle/team" });
+    const v2Console = await fetch(upgradedListener.endpoint.url).then((response) => response.text());
+    expect(v2Console).toContain("Lifecycle survives");
+    expect(v2Console).toContain("Tasq Local 0.2.0");
+    upgradedWeb.kill("SIGTERM");
+    expect(await upgradedWeb.exited).toBe(0);
+    await upgradedStartup.reader.cancel();
+    expect(await upgradedWebStderr).toBe("");
 
     const restoredHome = join(root, "restored-data");
     await mkdir(restoredHome, { recursive: true, mode: 0o700 });

@@ -61,9 +61,10 @@ CLI, Markdown or the local console. Multiple processes rendezvous only when
 they use the same store and exact workspace. Actor labels are attribution, not
 authentication.
 
-**Current state:** behavior is implemented and release-artifact certified on
-Linux/macOS, but public installation, package publication and lifecycle are
-not yet productized.
+**Current state:** behavior and candidate install/upgrade/uninstall are
+certified on Linux/macOS, including foreground Console discovery from the
+installed artifact. Public package and native-release publication remain
+blocked on the external TQ-603 registry gate.
 
 ### 2.3 Tasq Server
 
@@ -103,7 +104,7 @@ product to be useful.
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
 | Embedded Core | `@tasq/core` | Implemented internally | TypeScript integration; private package |
-| Local Console | `tasq web --tenant <id>` | Implemented read-only | Loopback, manual refresh, no mutation |
+| Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
 | Protocol adapters | `@tasq/protocol-adapters` | Implemented internally | Mapping only; no transport or completion authority |
 | Extension SDK | `@tasq/extension-sdk` | Implemented internally | Trusted in-process code; no public registry distribution |
@@ -165,8 +166,8 @@ form-based task manager or mobile UI.
 **Need:** identify stuck work, active holders, failed attempts, uncertain
 effects, corrupt state and recovery points.
 
-**Path:** `tasq web`, `tasq inspect`, event cursors, `doctor`, backup and
-journal commands.
+**Path:** `tasq web`, proof-of-life `tasq web status --json`, `tasq inspect`,
+event cursors, `doctor`, backup and journal commands.
 
 **Support:** the Local Console provides live/stale workspace overview, bounded
 operational health, seven canonical views and previewable redacted support

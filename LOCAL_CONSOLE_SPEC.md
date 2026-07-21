@@ -23,7 +23,10 @@ loopback-only Console. It has bounded canonical section and commitment graph
 routes, strict Host checks, no write route, no-store responses and a self-only
 CSP. A small self-hosted client provides TQ-702 live invalidation, page-local
 filters and preview-before-download support bundles; the SSR baseline remains
-usable without it.
+usable without it. TQ-704 bundles this full surface into installed Tasq Local:
+`--json` emits one `tasq.console-listener.v1` NDJSON announcement and
+`tasq web status --tenant <space> --json` proves the saved identity against
+`/api/console/runtime`. The listener stays an explicit foreground process.
 
 The product has no cross-workspace overview or remediation flow. Full
 integrity remains an explicit CLI operation rather than a request-time claim.
@@ -143,7 +146,7 @@ injected clock once per batch. See `TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
 | TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
 | TQ-702 | Cursor-driven SSE plus polling fallback | Complete — reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
 | TQ-703 | Accessible responsive navigation, search and support bundle | Complete — SSR/no-JS baseline plus six real Chromium journeys |
-| TQ-704 | Release/install integration, stable URLs and lifecycle | Clean-room local install/upgrade/uninstall |
+| TQ-704 | Release/install integration, stable URLs and lifecycle | Candidate complete — standalone/npm artifact start, proof-of-life discovery, upgrade and uninstall; published-byte rerun pending TQ-603 |
 | TQ-705 | Operator acceptance | Unknown operator resolves staged incidents without repository knowledge |
 
 ## 9. Acceptance scenarios
@@ -161,6 +164,6 @@ The Local Console is product-complete only when a fresh user can:
 
 ## 10. Explicit non-claims
 
-This specification does not claim that the complete Console exists, that Tasq
-has remote browser access, that loopback is authentication, that a human can
+This specification does not claim that Tasq has remote browser access, that
+loopback is authentication, that a human can
 approve effects in the current UI, or that the Console replaces machine APIs.

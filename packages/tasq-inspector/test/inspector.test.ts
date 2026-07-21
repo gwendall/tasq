@@ -205,6 +205,10 @@ describe("Tasq read-only inspector handler", () => {
       expect(health.headers.get("date")).toBe("Thu, 01 Jan 1970 00:01:03 GMT");
       expect(await health.text()).toBe("");
 
+      const unavailableRuntime = await handler(new Request("http://localhost/api/console/runtime"));
+      expect(unavailableRuntime.status).toBe(404);
+      expect(await unavailableRuntime.json()).toMatchObject({ error: { code: "runtime_unavailable" } });
+
       const invalidSection = await handler(new Request("http://localhost/api/console/secrets"));
       expect(invalidSection.status).toBe(400);
       expect(await invalidSection.json()).toMatchObject({ error: { code: "invalid_console_section" } });
@@ -497,19 +501,41 @@ describe("Tasq inspector listener boundary", () => {
         expect(() => assertLoopbackHost(host)).toThrow(/only accepts a loopback host/);
       }
       expect(assertLoopbackHost("LOCALHOST")).toBe("localhost");
+      expect(() => startTasqInspectorServer({
+        db: h.db,
+        workspaceId: h.workspaceId,
+        clock: h.clock,
+        hostname: "127.0.0.1",
+        port: 0,
+        productVersion: "latest",
+      })).toThrow(/productVersion must be SemVer/);
       const server = startTasqInspectorServer({
         db: h.db,
         workspaceId: h.workspaceId,
         clock: h.clock,
         hostname: "127.0.0.1",
         port: 0,
+        productVersion: "1.2.3-test.1",
+        instanceId: "018f47a2-6ce4-4b90-8f43-111111111111",
+        processId: 42,
       });
       try {
         expect(server.port).toBeGreaterThan(0);
         expect(server.url).toBe(`http://127.0.0.1:${server.port}`);
+        expect(server.descriptor).toMatchObject({
+          contractVersion: "tasq.console-listener.v1",
+          instanceId: "018f47a2-6ce4-4b90-8f43-111111111111",
+          productVersion: "1.2.3-test.1",
+          workspaceId: h.workspaceId,
+          startedAt: h.clock.now(),
+          endpoint: { url: server.url, port: server.port, scope: "loopback" },
+          process: { mode: "foreground", pid: 42 },
+        });
         const response = await fetch(`${server.url}/api/index`);
         expect(response.status).toBe(200);
         expectSecurityHeaders(response);
+        expect(await fetch(`${server.url}/api/console/runtime`).then((value) => value.json()))
+          .toEqual(server.descriptor);
       } finally {
         await server.stop();
       }

@@ -15,7 +15,7 @@ the Local Console before the public website and remote products.
 The universal kernel, local CLI, local stdio MCP, extension and connector
 boundaries, protocol adapters, transactional delivery, explicit replication,
 autonomous onboarding, bounded context, external context links and current
-read-only loopback inspector are implemented and covered by the repository's
+read-only loopback Console are implemented and covered by the repository's
 tests and evals. TQ-601 froze the product shapes; TQ-602 froze the public legal,
 package and governance boundary.
 
@@ -67,8 +67,14 @@ later Local milestones.
   explicit live/stale states and a preview-before-download redacted support
   bundle. It stays read-only and unauthenticated only because it stays on
   loopback. See `TQ-703_OPERATOR_CONSOLE.md`.
-- **TQ-704:** make Console start, discovery and upgrade work from the installed
-  Tasq Local artifact, without checkout-relative assets or hidden listeners.
+- **TQ-704 — candidate complete, published-byte gate:** installed Tasq Local
+  now starts one explicit foreground Console, emits a versioned machine
+  announcement, proves live discovery with `web status`, cleans crash-safe
+  private registration, and preserves same-ledger Console behavior through
+  upgrade and uninstall. Standalone and npm candidates load the full UI without
+  checkout-relative assets or hidden listeners. See
+  `TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; downloaded-byte confirmation waits
+  for TQ-603.
 
 ### 3. Explain and validate the public product
 

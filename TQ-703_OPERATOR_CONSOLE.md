@@ -125,5 +125,6 @@ snapshot drives each HTML, support or API response. The TQ-702 injected
 - CI installs Chromium and runs the browser suite in addition to required
   Linux/macOS typecheck and full tests.
 
-Installed-artifact startup and upgrade remain TQ-704. Cross-platform empty,
-mature, hostile, corrupt and large-ledger browser certification remains TQ-705.
+Installed-artifact startup, discovery and upgrade are certified by TQ-704.
+Cross-platform empty, mature, hostile, corrupt and large-ledger browser
+certification remains TQ-705.

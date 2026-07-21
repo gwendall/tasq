@@ -28,6 +28,11 @@ typed recovery, bounded backpressure and injected time/scheduling. TQ-703 now
 provides the server-rendered responsive operator UI, live/stale presentation,
 bounded filters, audit timeline and previewable redacted support artifact. The
 original commitment graph remains available as a deep inspection surface.
+TQ-704 now bundles that full surface into installed Local artifacts and adds a
+versioned foreground-listener announcement plus proof-of-life `web status`
+discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
+are certified without a checkout or hidden service; published-byte evidence
+still depends on the first protected release.
 
 The shortest verified loop is:
 

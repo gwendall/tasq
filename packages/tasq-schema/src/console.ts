@@ -17,6 +17,8 @@ export const CONSOLE_EVENT_BATCH_CONTRACT_VERSION = "tasq.console-event-batch.v1
 export const CONSOLE_LIVE_PROBLEM_CONTRACT_VERSION = "tasq.console-live-problem.v1" as const;
 export const CONSOLE_STREAM_ENVELOPE_CONTRACT_VERSION = "tasq.console-stream-envelope.v1" as const;
 export const CONSOLE_SUPPORT_BUNDLE_CONTRACT_VERSION = "tasq.console-support-bundle.v1" as const;
+export const CONSOLE_LISTENER_CONTRACT_VERSION = "tasq.console-listener.v1" as const;
+export const CONSOLE_DISCOVERY_CONTRACT_VERSION = "tasq.console-discovery.v1" as const;
 
 const Count = z.number().int().nonnegative();
 const UnixMs = z.number().int().nonnegative();
@@ -349,3 +351,59 @@ export const ConsoleSupportBundle = z.object({
   }).strict(),
 }).strict();
 export type ConsoleSupportBundle = z.infer<typeof ConsoleSupportBundle>;
+
+const SemVer = z.string().regex(
+  /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/,
+  "productVersion must be SemVer",
+);
+
+/** Exact foreground-listener announcement written by Tasq Local and served back by that listener. */
+export const ConsoleListenerDescriptor = z.object({
+  contractVersion: z.literal(CONSOLE_LISTENER_CONTRACT_VERSION),
+  instanceId: z.string().uuid(),
+  productVersion: SemVer,
+  workspaceId: WorkspaceId,
+  startedAt: UnixMs,
+  endpoint: z.object({
+    url: z.string().url(),
+    hostname: z.enum(["127.0.0.1", "localhost", "::1"]),
+    port: z.number().int().min(1).max(65_535),
+    transport: z.literal("http"),
+    scope: z.literal("loopback"),
+  }).strict(),
+  access: z.object({
+    readOnly: z.literal(true),
+    authentication: z.literal("none"),
+  }).strict(),
+  process: z.object({
+    mode: z.literal("foreground"),
+    pid: z.number().int().positive(),
+    shutdownSignals: z.tuple([z.literal("SIGINT"), z.literal("SIGTERM")]),
+  }).strict(),
+}).strict().superRefine((value, context) => {
+  const host = value.endpoint.hostname === "::1" ? "[::1]" : value.endpoint.hostname;
+  if (value.endpoint.url !== `http://${host}:${value.endpoint.port}`) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["endpoint", "url"], message: "listener URL must exactly match its loopback host and port" });
+  }
+});
+export type ConsoleListenerDescriptor = z.infer<typeof ConsoleListenerDescriptor>;
+
+/** Result of proving whether a saved local listener descriptor still names the same live process. */
+export const ConsoleDiscovery = z.object({
+  contractVersion: z.literal(CONSOLE_DISCOVERY_CONTRACT_VERSION),
+  workspaceId: WorkspaceId,
+  state: z.enum(["running", "stopped", "stale"]),
+  descriptor: ConsoleListenerDescriptor.nullable(),
+  reason: z.enum(["not_registered", "descriptor_invalid", "listener_unreachable", "identity_mismatch"]).nullable(),
+}).strict().superRefine((value, context) => {
+  if (value.state === "running" && (value.descriptor === null || value.reason !== null)) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "running discovery requires a descriptor and no reason" });
+  }
+  if (value.state === "stopped" && (value.descriptor !== null || value.reason !== "not_registered")) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "stopped discovery is exactly an unregistered workspace" });
+  }
+  if (value.state === "stale" && (value.reason === null || value.reason === "not_registered")) {
+    context.addIssue({ code: z.ZodIssueCode.custom, message: "stale discovery requires a stale reason" });
+  }
+});
+export type ConsoleDiscovery = z.infer<typeof ConsoleDiscovery>;

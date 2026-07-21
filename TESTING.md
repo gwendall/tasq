@@ -182,13 +182,19 @@ checkout and performs real onboarding from only the shipped files.
 `public-lifecycle.test.ts` executes the complete target release lifecycle from
 outside the checkout: self/checksum/manifest verification, side-by-side
 install, autonomous onboarding, two-process resource contention and recovery,
-same-ledger Console inspection, backup, upgrade, `doctor`, matching
+same-ledger v1 Console announcement/discovery/UI inspection, backup, upgrade,
+v2 Console identity and unchanged-ledger inspection, `doctor`, matching
 snapshot/binary restore, and data-preserving uninstall. It also refuses a
 tampered archive and an unmanaged executable collision. CI runs it on both
 supported native targets.
-`web.test.ts` starts the real loopback listener on an ephemeral port, reads its
-JSON, sends `SIGTERM`, proves the socket and database close, and exercises
-missing tenant, JSON misuse and public-bind refusal.
+`artifact-smoke.test.ts` and `public-packages.test.ts` load the complete UI,
+self-hosted assets and runtime identity from standalone and npm candidate bytes
+outside the checkout. `web.test.ts` starts the real loopback listener on an
+ephemeral port, parses its versioned NDJSON announcement, proves it through a
+second `web status` process, refuses duplicate ownership, sends `SIGTERM` and
+proves the registration, socket and database close. `console-lifecycle.test.ts`
+freezes private atomic file ownership, stale-process recovery and fail-closed
+invalid or possibly-live registrations.
 
 Run :
 ```bash
@@ -205,7 +211,9 @@ indexing, TQ-701 JSON routes and audit redaction, TQ-702 polling/SSE reconnect,
 backpressure, overflow continuation and typed cursor recovery, all non-read
 methods, malformed routes/filters/cursors, security headers, DNS-rebinding host refusal,
 internal errors, loopback binding and injected HTTP time/scheduling. TQ-703
-adds support-bundle redaction/completeness and client asset checks. Playwright
+adds support-bundle redaction/completeness and client asset checks. TQ-704 adds
+the exact `tasq.console-listener.v1` runtime endpoint and deterministic injected
+listener identity. Playwright
 then runs six Chromium journeys over the real `tasq web` process: desktop
 focus/filtering, legacy detail navigation, 390px dark/reduced-motion layout,
 cross-process live invalidation, preview-before-download support and
