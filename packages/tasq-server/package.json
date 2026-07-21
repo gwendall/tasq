@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Private Tasq Server authority foundations and host-integrated authenticated read handler.",
+  "description": "Private Tasq Server authority foundations and host-integrated guarded HTTP handlers.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

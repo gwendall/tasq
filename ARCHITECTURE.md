@@ -20,7 +20,8 @@ Tasq Cloud (future managed operation)
     ├── authority DTOs + pure guard (implemented internally, TQ-801)
     ├── authority control plane + opaque ledger router (implemented, TQ-802)
     ├── host-integrated authenticated read REST handler (implemented, TQ-803)
-    ├── concrete verifiers/listener/mutations/MCP (future, TQ-804+)
+    ├── registered guarded mutation REST handler (implemented, TQ-804)
+    ├── concrete verifiers/listener/domain adapters/MCP (future, TQ-805+)
     └── Tasq Core (implemented embedded kernel)
 
 Tasq Local (implemented single-host reference product)
@@ -41,9 +42,10 @@ TQ-801 implements only the pure middle of that future guard in
 verified identity; the TQ-802 authority store/router supplies current bindings
 and grants; and only an allowed decision may precede a ledger/kernel call.
 The pure package intentionally imports neither HTTP, persistence nor Core.
-The private Server package owns persistence/routing and the TQ-803
-Fetch-compatible read adapter. It still owns no network listener, concrete
-credential verification or kernel composition.
+The private Server package owns persistence/routing and the TQ-803/TQ-804
+Fetch-compatible read and registered-mutation adapters. It still owns no
+network listener, concrete credential verification, bundled domain operation
+adapter or kernel composition.
 
 ## At a glance
 
@@ -177,10 +179,10 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
   decision at one injected timestamp. It does not authenticate credentials or
   call the kernel.
 - `tasq-server` owns the TQ-802 authority SQLite store and isolated workspace
-  router plus the TQ-803 host-integrated Fetch read handler. Storage bindings
+  router plus the TQ-803/TQ-804 host-integrated Fetch handlers. Storage bindings
   are opaque host configuration; the requested workspace never becomes a
   filename. It opens no domain ledger before an allow and exports no network
-  listener or concrete credential verifier.
+  listener, concrete credential verifier or bundled mutation implementation.
 - `tasq-extension-sdk` is DB-free and provider-neutral. It binds immutable
   manifest identities to trusted runtime parsers/routes/evaluators.
 - `tasq-reference-extension` owns the five v1 domain modules. It has no DB or
@@ -197,8 +199,8 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
 - `tasq-inspector` is a read-only sibling surface over the strict kernel. It
   owns no storage or policy, and kernel/service never import it.
 - `tasq-cli` is one of several possible interfaces. MCP, the local inspector
-  and the integration-required hosted read handler are current siblings;
-  mutation REST and hosted UI remain future adapters.
+  and the integration-required hosted REST handlers are current siblings;
+  remote MCP and hosted UI remain future adapters.
   ADR-004 now fixes their composition order: trusted transport -> verified
   issuer/subject -> workspace binding/router -> live authorization decision ->
   kernel. They may never expose the raw kernel first.

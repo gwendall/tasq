@@ -1,9 +1,9 @@
 # ADR-004 / TQ-505 — Authenticated hosted tenancy
 
-> **Status:** accepted design; TQ-801–TQ-803 internal foundations implemented — 2026-07-21
+> **Status:** accepted design; TQ-801–TQ-804 internal foundations implemented — 2026-07-21
 > **Implementation:** strict DTOs/evaluator plus the durable authority control
-> plane, opaque ledger router and host-integrated read handler exist; no
-> deployable transport or concrete verifier ships
+> plane, opaque ledger router and host-integrated read/mutation handlers exist;
+> no deployable transport, concrete verifier or bundled domain adapter ships
 > **Decision:** a hosted request crosses a transport authentication boundary,
 > maps an immutable external subject to a workspace principal, passes a live
 > deny-by-default authorization decision, and only then reaches the existing
@@ -79,6 +79,10 @@ Fetch-compatible read-only adapter and RFC 9728 discovery around those exact
 boundaries. A host must still supply a conforming credential verifier,
 workspace reader and listener. This changes REST-handler support to
 integration-required; it does not ship Tasq Server, remote MCP or hosted web.
+TQ-804 extends the adapter with host-registered mutation contracts and keeps a
+live authority writer gate through each durable idempotent workspace callback.
+Because authority and workspace ledgers remain separate, this is revocation
+serialization plus exact unknown-outcome recovery, not cross-database ACID.
 
 ## 3. Canonical identity
 
@@ -403,7 +407,9 @@ exist.
    isolated opaque workspace router.
 3. **Completed by TQ-803:** add a host-integrated read-only authenticated HTTP
    adapter with RFC 9728 discovery, bounded reads and event metadata.
-4. Add guarded mutation routes, browser BFF sessions and immediate revocation.
+4. **Completed in part by TQ-804:** add registered guarded mutation REST,
+   durable idempotency, immediate revocation serialization and unknown-outcome
+   recovery. Browser BFF sessions remain later work.
 5. Add headless device/workload onboarding and remote MCP over the same guard.
 6. Add replication enrollment/push authorization and hostile multi-workspace
    recovery tests.
@@ -420,7 +426,7 @@ matrix without pretending it has passed.
 
 ## 13. Deliberate non-claims
 
-The accepted design and completed TQ-801–TQ-803 slices do not ship:
+The accepted design and completed TQ-801–TQ-804 slices do not ship:
 
 - a hosted Tasq service, deployable REST endpoint, remote MCP route or hosted
   inspector;
@@ -430,5 +436,6 @@ The accepted design and completed TQ-801–TQ-803 slices do not ship:
 - authenticated effect or approval endpoints;
 - ADR-005 evidence trust and high-stakes automatic completion.
 
-Until an implementation slice passes its gate, discovery must continue to
-advertise remote authenticated access as unimplemented.
+Discovery may advertise only the host-integrated operations actually
+registered by the composition. It must not advertise a deployable Server,
+remote MCP, hosted web or any absent operation.

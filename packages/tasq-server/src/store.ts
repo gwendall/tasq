@@ -66,6 +66,11 @@ export interface WorkspaceAuthorizationResult {
   replayed: boolean;
 }
 
+export interface AuthorizedExecutionResult<T> {
+  authorization: WorkspaceAuthorizationResult;
+  execution: T | null;
+}
+
 export class AuthorityStoreError extends Error {
   constructor(
     readonly code:
@@ -73,6 +78,7 @@ export class AuthorityStoreError extends Error {
       | "already_exists"
       | "revision_conflict"
       | "idempotency_conflict"
+      | "authority_busy"
       | "workspace_disabled"
       | "authority_corrupt",
     message: string,
@@ -94,7 +100,45 @@ function mapAuthorityStoreError(error: unknown): unknown {
   if (/FOREIGN KEY constraint failed/i.test(message)) {
     return new AuthorityStoreError("not_found", "referenced authority record does not exist");
   }
+  if (/SQLITE_BUSY|database is locked/i.test(message)) {
+    return new AuthorityStoreError("authority_busy", "another authority writer currently owns the workspace gate");
+  }
   return error;
+}
+
+function isAuthorityBusy(error: unknown): boolean {
+  if (error instanceof AuthorityStoreError) return error.code === "authority_busy";
+  if (typeof error === "object" && error !== null && "code" in error
+    && String((error as { code: unknown }).code) === "SQLITE_BUSY") return true;
+  return /SQLITE_BUSY|database is locked/i.test(error instanceof Error ? error.message : String(error));
+}
+
+const COLD_START_BUSY_RETRIES = 256;
+
+async function initializeAuthorityClient(client: Client, url: string, appliedAt: number): Promise<void> {
+  for (let attempt = 0; attempt < COLD_START_BUSY_RETRIES; attempt += 1) {
+    try {
+      await client.execute("PRAGMA busy_timeout = 30000");
+      if (url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
+      await client.execute("PRAGMA foreign_keys = ON");
+      await client.execute("PRAGMA synchronous = NORMAL");
+      await migrateAuthorityStore(client, appliedAt);
+      return;
+    } catch (error) {
+      if (!isAuthorityBusy(error) || attempt === COLD_START_BUSY_RETRIES - 1) throw error;
+      // Yield without consulting wall time. Cold initialization is idempotent,
+      // and another process can finish the SQLite mode/migration transition.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    }
+  }
+}
+
+async function beginAuthorityWrite(client: Client): Promise<Transaction> {
+  try {
+    return await client.transaction("write");
+  } catch (error) {
+    throw mapAuthorityStoreError(error);
+  }
 }
 
 function requiredClockNow(clock: Clock): number {
@@ -213,7 +257,7 @@ export class AuthorityStore {
       context,
       request: input.request,
     });
-    const transaction = await this.client.transaction("write");
+    const transaction = await beginAuthorityWrite(this.client);
     try {
       const replay = await this.findIdempotent(transaction, context.operationId, requestDigest);
       if (replay) {
@@ -281,7 +325,7 @@ export class AuthorityStore {
     const context = AuthorityMutationContext.parse({ ...input.context, expectedAuthorityRevision: null });
     const now = requiredClockNow(this.clock);
     const requestDigest = digestAuthorityValue({ operation: "host_tenant.provision", id, context });
-    const transaction = await this.client.transaction("write");
+    const transaction = await beginAuthorityWrite(this.client);
     try {
       const replay = await this.findIdempotent(transaction, context.operationId, requestDigest);
       if (replay) { await transaction.commit(); return replay; }
@@ -327,7 +371,7 @@ export class AuthorityStore {
     const requestDigest = digestAuthorityValue({
       operation: "workspace.provision", workspaceId, hostTenantId, storageBindingId, context,
     });
-    const transaction = await this.client.transaction("write");
+    const transaction = await beginAuthorityWrite(this.client);
     try {
       const replay = await this.findIdempotent(transaction, context.operationId, requestDigest);
       if (replay) { await transaction.commit(); return replay; }
@@ -863,11 +907,26 @@ export class AuthorityStore {
 
   /** Trusted composition seam for one request-wide injected clock snapshot. */
   async authorizeAt(input: WorkspaceAuthorizationInput, evaluatedAt: number): Promise<WorkspaceAuthorizationResult> {
+    return (await this.authorizeAndExecuteAt(input, evaluatedAt, async () => undefined)).authorization;
+  }
+
+  /**
+   * Serialize a guarded side effect with authority mutations. The callback is
+   * invoked only for an allow while the BEGIN IMMEDIATE authority transaction
+   * remains open, so a concurrent revocation cannot commit between the live
+   * decision and callback completion. The callback must be durably idempotent:
+   * authority and workspace stores are intentionally separate databases.
+   */
+  async authorizeAndExecuteAt<T>(
+    input: WorkspaceAuthorizationInput,
+    evaluatedAt: number,
+    execute: (authorization: WorkspaceAuthorizationResult) => Promise<T>,
+  ): Promise<AuthorizedExecutionResult<T>> {
     const now = UnixMs.parse(evaluatedAt);
     const requestId = Id.parse(input.requestId);
     const workspaceId = WorkspaceId.parse(input.workspaceId);
     const envelopeDigest = digestAuthorityValue(input);
-    const transaction = await this.client.transaction("write");
+    const transaction = await beginAuthorityWrite(this.client);
     try {
       const previous = await transaction.execute({
         sql: `SELECT envelope_digest, decision_json, authority_revision
@@ -875,6 +934,7 @@ export class AuthorityStore {
         args: [workspaceId, requestId],
       });
       const previousRow = previous.rows[0] as Record<string, unknown> | undefined;
+      let authorization: WorkspaceAuthorizationResult;
       if (previousRow) {
         if (text(previousRow, "envelope_digest") !== envelopeDigest) {
           throw new AuthorityStoreError("idempotency_conflict", `request ${requestId} was reused with different input`);
@@ -896,57 +956,55 @@ export class AuthorityStore {
           );
         }
         const storageBindingId = routeStillLive ? text(currentWorkspace!, "storage_binding_id") : null;
-        await transaction.commit();
-        return {
+        authorization = {
           decision,
           authorityRevision: previousRevision,
           storageBindingId,
           replayed: true,
         };
-      }
-
-      const workspaceResult = await transaction.execute({
-        sql: "SELECT workspace_id, storage_binding_id, status, authority_revision FROM hosted_workspace WHERE workspace_id = ?",
-        args: [workspaceId],
-      });
-      const workspaceRow = workspaceResult.rows[0] as Record<string, unknown> | undefined;
-      const workspace = workspaceRow ? workspaceFromRow(workspaceRow) : null;
-      const authorityEnabled = workspace?.status === "enabled";
-      const subject = authorityEnabled
-        ? await this.loadBoundPrincipal(transaction, workspaceId, input.identity.issuer, input.identity.subject)
-        : null;
-      const actor = authorityEnabled && input.identity.actor
-        ? await this.loadBoundPrincipal(transaction, workspaceId, input.identity.actor.issuer, input.identity.actor.subject)
-        : null;
-      const permissionSets = authorityEnabled ? await this.loadPermissionSets(transaction, workspaceId) : [];
-      const subjectGrants = await this.loadGrants(transaction, workspaceId, subject?.principal.id ?? null);
-      const actorGrants = await this.loadGrants(transaction, workspaceId, actor?.principal.id ?? null);
-      const delegation = await this.loadDelegation(
-        transaction, workspaceId, subject?.principal.id ?? null, actor?.principal.id ?? null,
-        input.action, input.resource, now,
-      );
-      const effectivePrincipalId = input.identity.actor ? actor?.principal.id ?? null : subject?.principal.id ?? null;
-      const eligibilities = await this.loadEligibilities(transaction, workspaceId, effectivePrincipalId);
-      const request = AuthorizationRequest.parse({
-        contractVersion: "tasq.authorization-request.v1",
-        requestId,
-        workspaceId,
-        serviceAudience: input.serviceAudience,
-        action: input.action,
-        resource: input.resource,
-        identity: input.identity,
-        subject,
-        actor,
-        permissionSets,
-        subjectGrants,
-        actorGrants,
-        delegation,
-        eligibilities,
-      });
-      const decision = evaluateAuthorization(request, { now: () => now });
-      const authorityRevision = workspace?.authorityRevision ?? null;
-      await transaction.execute({
-        sql: `INSERT INTO authorization_decision(
+      } else {
+        const workspaceResult = await transaction.execute({
+          sql: "SELECT workspace_id, storage_binding_id, status, authority_revision FROM hosted_workspace WHERE workspace_id = ?",
+          args: [workspaceId],
+        });
+        const workspaceRow = workspaceResult.rows[0] as Record<string, unknown> | undefined;
+        const workspace = workspaceRow ? workspaceFromRow(workspaceRow) : null;
+        const authorityEnabled = workspace?.status === "enabled";
+        const subject = authorityEnabled
+          ? await this.loadBoundPrincipal(transaction, workspaceId, input.identity.issuer, input.identity.subject)
+          : null;
+        const actor = authorityEnabled && input.identity.actor
+          ? await this.loadBoundPrincipal(transaction, workspaceId, input.identity.actor.issuer, input.identity.actor.subject)
+          : null;
+        const permissionSets = authorityEnabled ? await this.loadPermissionSets(transaction, workspaceId) : [];
+        const subjectGrants = await this.loadGrants(transaction, workspaceId, subject?.principal.id ?? null);
+        const actorGrants = await this.loadGrants(transaction, workspaceId, actor?.principal.id ?? null);
+        const delegation = await this.loadDelegation(
+          transaction, workspaceId, subject?.principal.id ?? null, actor?.principal.id ?? null,
+          input.action, input.resource, now,
+        );
+        const effectivePrincipalId = input.identity.actor ? actor?.principal.id ?? null : subject?.principal.id ?? null;
+        const eligibilities = await this.loadEligibilities(transaction, workspaceId, effectivePrincipalId);
+        const request = AuthorizationRequest.parse({
+          contractVersion: "tasq.authorization-request.v1",
+          requestId,
+          workspaceId,
+          serviceAudience: input.serviceAudience,
+          action: input.action,
+          resource: input.resource,
+          identity: input.identity,
+          subject,
+          actor,
+          permissionSets,
+          subjectGrants,
+          actorGrants,
+          delegation,
+          eligibilities,
+        });
+        const decision = evaluateAuthorization(request, { now: () => now });
+        const authorityRevision = workspace?.authorityRevision ?? null;
+        await transaction.execute({
+          sql: `INSERT INTO authorization_decision(
                 decision_id, request_id, workspace_id, evaluated_at, decision, reason_code,
                 subject_principal_id, actor_principal_id, action_uri, resource_kind, resource_id,
                 authority_revision, envelope_digest, request_digest, policy_digest, decision_json
@@ -955,9 +1013,9 @@ export class AuthorityStore {
           decision.decision, decision.reasonCode, decision.subjectPrincipalId, decision.actorPrincipalId,
           decision.actionUri, decision.resourceKind, decision.resourceId, authorityRevision, envelopeDigest,
           decision.requestDigest, decision.policyImplementationDigest, portableJson(decision)],
-      });
-      await transaction.execute({
-        sql: `INSERT INTO authority_audit(
+        });
+        await transaction.execute({
+          sql: `INSERT INTO authority_audit(
                 event_id, workspace_id, occurred_at, actor_principal_id, event_type,
                 target_type, target_id, authority_revision, request_digest, reason, payload_json
               ) VALUES (?, ?, ?, ?, ?, 'authorization_decision', ?, ?, ?, ?, ?)`,
@@ -965,13 +1023,21 @@ export class AuthorityStore {
           decision.actorPrincipalId, `authorization.${decision.decision}`, decision.decisionId,
           authorityRevision, decision.requestDigest, decision.reasonCode,
           portableJson({ requestId, actionUri: decision.actionUri, resourceKind: decision.resourceKind })],
-      });
+        });
+        authorization = {
+          decision,
+          authorityRevision,
+          storageBindingId: decision.decision === "allow" ? workspace!.storageBindingId : null,
+          replayed: false,
+        };
+      }
+      const execution = authorization.decision.decision === "allow" && authorization.storageBindingId !== null
+        ? await execute(authorization)
+        : null;
       await transaction.commit();
       return {
-        decision,
-        authorityRevision,
-        storageBindingId: decision.decision === "allow" ? workspace!.storageBindingId : null,
-        replayed: false,
+        authorization,
+        execution,
       };
     } catch (error) {
       await rollback(transaction);
@@ -1014,11 +1080,7 @@ export async function openAuthorityStore(input: { url: string; clock: Clock }): 
   const client = createClient({ url: input.url });
   const prior = initializationChains.get(input.url) ?? Promise.resolve();
   const initialization = prior.catch(() => {}).then(async () => {
-    await client.execute("PRAGMA busy_timeout = 30000");
-    if (input.url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
-    await client.execute("PRAGMA foreign_keys = ON");
-    await client.execute("PRAGMA synchronous = NORMAL");
-    await migrateAuthorityStore(client, requiredClockNow(input.clock));
+    await initializeAuthorityClient(client, input.url, requiredClockNow(input.clock));
   });
   initializationChains.set(input.url, initialization);
   try {

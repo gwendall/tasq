@@ -74,8 +74,8 @@ observes the denial and audit without touching the decoy opener.
 ## Honest next boundary
 
 TQ-803 adds credential-verifier output plumbing, public authentication
-discovery and authenticated read-only REST around this guard. TQ-804 must add
-guarded mutations with a protocol that makes the authority revision
-precondition and domain write commit together or fail retryably. TQ-802 does
-not claim that opening a store alone solves that later cross-boundary mutation
-race.
+discovery and authenticated read-only REST around this guard. TQ-804 adds
+registered guarded mutations by holding the authority writer gate through a
+durable idempotent domain callback and making cross-database uncertainty
+retryable. TQ-802 itself does not claim that opening a store alone solves that
+later cross-boundary mutation race.

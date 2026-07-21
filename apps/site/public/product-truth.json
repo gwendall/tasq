@@ -175,8 +175,8 @@
       "id": "rest",
       "support": "implemented_integration_required",
       "transport": "host_integrated_fetch_request_response",
-      "entrypoint": "@tasq-internal/server createHostedReadHandler",
-      "mutations": false,
+      "entrypoint": "@tasq-internal/server createHostedReadHandler; createHostedHttpHandler",
+      "mutations": true,
       "authorityBoundary": "host_verified_identity_plus_live_adr_004_guard"
     },
     {
@@ -435,6 +435,8 @@
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
     "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
+    "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
+    "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -512,7 +514,7 @@
     },
     {
       "id": "TQ-804",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "outcome": "Guarded mutation REST with idempotency, revocation and injected authority time"
     },
@@ -581,12 +583,12 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "0eefcb2d46d7b5f61dfe3e9c15baccb9e1f8225ad7d0abed829d509819b607e9"
+      "sha256": "ce4431b97c72c3e1782307567181cebb6be85d92f9d5914232e88082fe637651"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "b0c107abd1b351f7c1d0317c9e5d4fc366b97d14711c231e8d43cc202a6deb85"
+      "sha256": "190ad8f28436f71ed534e90c00ab678dd909a1cda4e73f38c5378cdd6a44e9f1"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",

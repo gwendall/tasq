@@ -135,8 +135,8 @@ describe("TQ-601 product consumption design", () => {
     });
     expect(byId(matrix.surfaces, "rest")).toMatchObject({
       support: "implemented_integration_required",
-      entrypoint: "@tasq-internal/server createHostedReadHandler",
-      mutations: false,
+      entrypoint: "@tasq-internal/server createHostedReadHandler; createHostedHttpHandler",
+      mutations: true,
     });
     for (const id of ["remote_mcp", "hosted_console"]) {
       expect(byId(matrix.surfaces, id)).toMatchObject({

@@ -1,6 +1,7 @@
 import type { AuthorizationDecision } from "@tasq-internal/authority";
 import type {
   AuthorityStore,
+  WorkspaceAuthorizationResult,
   WorkspaceAuthorizationInput,
 } from "./store.js";
 
@@ -15,6 +16,13 @@ export interface RoutedWorkspace<T> {
   authorityRevision: number | null;
   replayedDecision: boolean;
   workspace: T | null;
+}
+
+export interface RoutedExecution<T> {
+  decision: AuthorizationDecision;
+  authorityRevision: number | null;
+  replayedDecision: boolean;
+  execution: T | null;
 }
 
 /**
@@ -45,6 +53,29 @@ export class IsolatedWorkspaceRouter<T> {
 
   async authorizeAndOpenAt(input: WorkspaceAuthorizationInput, evaluatedAt: number): Promise<RoutedWorkspace<T>> {
     return this.route(input, await this.authority.authorizeAt(input, evaluatedAt));
+  }
+
+  /** Keep the authority write lock through the host's durable mutation commit. */
+  async authorizeAndExecuteAt<R>(
+    input: WorkspaceAuthorizationInput,
+    evaluatedAt: number,
+    execute: (workspace: T, authorization: WorkspaceAuthorizationResult) => Promise<R>,
+  ): Promise<RoutedExecution<R>> {
+    const result = await this.authority.authorizeAndExecuteAt(input, evaluatedAt, async (authorization) => {
+      const binding = authorization.storageBindingId === null
+        ? null
+        : this.bindings.get(authorization.storageBindingId);
+      if (!binding || binding.workspaceId !== input.workspaceId) {
+        throw new Error("authorized workspace has no exact host storage binding");
+      }
+      return execute(await binding.open(), authorization);
+    });
+    return {
+      decision: result.authorization.decision,
+      authorityRevision: result.authorization.authorityRevision,
+      replayedDecision: result.authorization.replayed,
+      execution: result.execution,
+    };
   }
 
   private async route(

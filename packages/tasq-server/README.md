@@ -11,8 +11,12 @@ provides:
   allow.
 - a TQ-803 Fetch-compatible authenticated read-only handler with RFC 9728
   discovery, bounded commitment reads and payload-free event metadata.
+- a TQ-804 combined handler with a state-free registered-operation catalog,
+  mandatory durable idempotency and a live authority writer gate held through
+  the host workspace commit.
 
-It exports no listener, concrete credential verifier, session, mutation route,
-remote MCP surface or deployable server. The host must integrate the handler,
-verified-identity adapter and workspace reader. Host storage bindings are
-opaque IDs; workspace input never becomes a filename, URL or credential.
+It exports no listener, concrete credential verifier, session, bundled domain
+operation, remote MCP surface or deployable server. The host must integrate
+the handler, verified-identity adapter and durable workspace operations. Host
+storage bindings are opaque IDs; workspace input never becomes a filename,
+URL or credential.

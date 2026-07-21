@@ -5,8 +5,8 @@ Tasq currently ships source for two local product shapes:
 - **Core:** an embeddable, profile-neutral coordination kernel;
 - **Local:** the CLI, local stdio MCP transport and read-only loopback Console.
 
-Server, remote MCP and Cloud are planned, not implemented. A host-integrated,
-read-only REST handler now exists, but no deployable endpoint ships. Provider
+Server, remote MCP and Cloud are planned, not implemented. Host-integrated
+read and registered-mutation REST handlers exist, but no deployable endpoint ships. Provider
 connectors, domain policy and agent runtimes remain outside Core.
 
 TQ-801 implements Server's first internal building block:
@@ -30,7 +30,16 @@ credential verifier, authorizes every request live, supports bounded
 commitment reads and payload-free event metadata, and captures one injected
 clock snapshot per request. It is an integration entrypoint, not a listener or
 deployable Server; concrete OIDC/JWKS/introspection adapters are not yet
-provided. Atomic authority-plus-domain mutations remain explicitly TQ-804.
+provided.
+
+TQ-804 adds a public state-free operation catalog and host-integrated guarded
+mutation handler. Every mutation requires caller-scoped durable idempotency,
+one registered action and one injected request timestamp. The authority store
+holds a `BEGIN IMMEDIATE` writer gate through the host's domain commit, so a
+concurrent revocation cannot cross an admitted mutation. The separate
+databases are honestly serialized rather than described as cross-database
+ACID; a lost boundary returns typed unknown outcome and exact-retry recovery.
+No bundled operation adapter, listener or deployable Server exists yet.
 
 This is the canonical public source repository. `main` requires pull requests
 and green Linux/macOS CI; release tags are immutable and the `release`

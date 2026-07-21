@@ -115,8 +115,10 @@ later Local milestones.
   discovery, strict verifier boundary, live authorization, bounded commitment
   reads and payload-free event metadata. It has no listener or concrete
   credential adapter; see `TQ-803_HOSTED_READ_REST.md`.
-- **TQ-804:** guarded mutation REST with idempotency, revocation and injected
-  authority time.
+- **TQ-804 — done:** registered mutation REST now requires caller-scoped
+  idempotency and holds the live authority writer gate through the host's
+  durable domain commit. Cross-database loss becomes typed exact recovery, not
+  fake ACID; see `TQ-804_GUARDED_MUTATION_REST.md`.
 - **TQ-805:** remote MCP behind the identical guard, with REST/MCP parity.
 - **TQ-806:** authenticated replication transport, enrollment, recovery and
   authority rotation.

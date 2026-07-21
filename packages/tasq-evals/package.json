@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "@tasq/cli": "workspace:*",
     "@tasq-internal/filesystem-watcher": "workspace:*",
     "@tasq/mcp": "workspace:*",

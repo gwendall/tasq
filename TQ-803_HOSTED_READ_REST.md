@@ -89,7 +89,7 @@ test fixtures.
 
 ## Honest next boundary
 
-TQ-804 adds mutation REST. It must couple live authority preconditions,
-idempotency and domain mutation so a revocation race cannot turn an old allow
-into a write. TQ-805 adds remote MCP through the same guard. TQ-807 is the
-first checkpoint allowed to claim a deployable Server product.
+TQ-804 now adds registered mutation REST, durable idempotency and revocation
+serialization without claiming cross-database ACID. TQ-805 adds remote MCP
+through the same guard. TQ-807 is the first checkpoint allowed to claim a
+deployable Server product.

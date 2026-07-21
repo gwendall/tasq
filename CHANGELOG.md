@@ -47,6 +47,10 @@ by ADR-008.
   discovery, strict verifier and live-authority boundaries, bounded commitment
   reads, payload-free event metadata and one injected clock snapshot per
   request.
+- Add registered guarded mutation REST with a state-free operation catalog,
+  mandatory caller-scoped durable idempotency, live revocation serialization,
+  bounded portable envelopes and exact recovery for unknown cross-database
+  commit outcomes.
 
 ### Security
 

@@ -91,6 +91,9 @@ opaque workspace router. TQ-803 provides a host-integrated Fetch handler for
 authenticated read-only REST. An integrator must still supply a conforming
 credential verifier, workspace reader, HTTPS listener and operations. This
 entrypoint therefore does not make Server a usable or self-hostable release.
+TQ-804 also supplies the registered mutation protocol and authority/domain
+serialization gate; the integrator supplies each durable idempotent operation
+implementation.
 
 ### 2.4 Tasq Cloud
 
@@ -117,7 +120,7 @@ product to be useful.
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
-| Read-only REST handler | `@tasq-internal/server` `createHostedReadHandler` | Implemented; host integration required | Host supplies verifier, listener and workspace reader; no mutations |
+| REST handlers | `@tasq-internal/server` `createHostedReadHandler`, `createHostedHttpHandler` | Implemented; host integration required | Host supplies verifier, listener, readers and durable registered mutations |
 | Self-hosted server | none | Not implemented | No daemon, image, auth or operator contract |
 | Managed service | none | Not implemented | ADR-004 is design, not deployment |
 
@@ -319,9 +322,9 @@ deploy -> configure issuer -> create workspace -> bind principal -> grant
 
 No deployable step in that second journey is currently advertised as
 implemented. TQ-801/TQ-802 implement the internal identity/authority contracts,
-store and router. TQ-803 adds the read-only handler that a host may integrate,
-but does not expose deployment, concrete issuer configuration or a running
-connection surface.
+store and router. TQ-803/TQ-804 add read and registered mutation handlers that
+a host may integrate, but do not expose deployment, concrete issuer
+configuration or a running connection surface.
 
 ## 9. Documentation contract
 

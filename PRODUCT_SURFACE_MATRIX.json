@@ -129,8 +129,8 @@
       "id": "rest",
       "support": "implemented_integration_required",
       "transport": "host_integrated_fetch_request_response",
-      "entrypoint": "@tasq-internal/server createHostedReadHandler",
-      "mutations": false,
+      "entrypoint": "@tasq-internal/server createHostedReadHandler; createHostedHttpHandler",
+      "mutations": true,
       "authorityBoundary": "host_verified_identity_plus_live_adr_004_guard"
     },
     {
@@ -275,6 +275,8 @@
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
     "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
+    "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
+    "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }
