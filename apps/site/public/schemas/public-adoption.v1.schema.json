@@ -13,11 +13,16 @@
     "distribution": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mode", "published", "repository", "sourceRef", "sourceRefMutable", "integrity"],
+      "required": ["mode", "published", "repository", "repositoryAccess", "preconditions", "sourceRef", "sourceRefMutable", "integrity"],
       "properties": {
         "mode": { "const": "source_build" },
         "published": { "const": false },
         "repository": { "type": "string", "format": "uri" },
+        "repositoryAccess": { "const": "authorized_private_prelaunch" },
+        "preconditions": {
+          "type": "array",
+          "const": ["authorized_repository_access"]
+        },
         "sourceRef": { "type": "string", "minLength": 1 },
         "sourceRefMutable": { "const": true },
         "integrity": {
@@ -62,7 +67,7 @@
       "required": ["path", "primaryAction"],
       "properties": {
         "path": { "const": "/docs/getting-started/" },
-        "primaryAction": { "const": "build_from_source" }
+        "primaryAction": { "const": "request_access_then_build" }
       }
     },
     "agent": {

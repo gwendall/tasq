@@ -2,13 +2,13 @@
 
 > **Status:** candidate certified; publication and independent-human evidence pending — 2026-07-21
 > **Machine certificate:** `TQ-606_ADOPTION_CERTIFICATION.json`
-> **Public pointers:** `/docs/getting-started/`, `/adopt.json` and
+> **Candidate pointers:** `/docs/getting-started/`, `/adopt.json` and
 > `/product-truth.json`
 
 ## 1. Question
 
-Can a consumer with no repository-specific briefing get from the public
-product entrypoint to useful collaboration between two independent actors,
+Can a consumer with no repository-specific briefing get from the product
+entrypoint to useful collaboration between two independent actors,
 recover contention and inspect the same ledger in the installed Console?
 
 This is an adoption test, not another kernel unit test. Passing requires a
@@ -22,10 +22,13 @@ has an executable pointer. Before TQ-606, the site gave a human source-build
 commands but gave a machine only product status. A machine could know that no
 release existed without knowing the safe next argv.
 
-The static site now publishes `tasq.public-adoption.v1` at `/adopt.json`. The
-contract includes:
+The static site candidate now generates `tasq.public-adoption.v1` at
+`/adopt.json`. The canonical repository and this site remain private before
+launch, so the contract explicitly requires authorized repository access. It
+includes:
 
-- the honest current distribution mode and mutable-source warning;
+- the honest private-prelaunch access precondition, current distribution mode
+  and mutable-source warning;
 - exact Node, Bun and pnpm requirements from the root manifest;
 - source acquisition, dependency, verification and CLI-build argv arrays;
 - distinct working-directory placeholders;
@@ -71,7 +74,8 @@ repository or consults a device clock. The test itself uses no ambient clock.
 
 ## 4. What this proves
 
-- the site has a machine-actionable path before `tasq onboard`;
+- authorized repository consumers have a machine-actionable path before
+  `tasq onboard`;
 - human and agent consumers converge after one explicit store/workspace handoff;
 - output/parameter metadata is sufficient for recipe selection;
 - contention is actionable data rather than a generic error;
@@ -82,16 +86,18 @@ repository or consults a device clock. The test itself uses no ambient clock.
 ## 5. What remains external
 
 The automated human-shell proxy proves that every documented step is complete
-and executable. It cannot prove that a real unfamiliar person understands the
-language, notices the warnings or chooses correctly. That claim requires an
-independent blind human session with no maintainer assistance.
+and executable for an authorized repository consumer. It cannot prove that a
+real unfamiliar person understands the language, notices the warnings or
+chooses correctly. That claim requires an independent blind human session with
+no maintainer assistance after public-source launch.
 
 The install also uses generated candidate bytes because TQ-603 has no published
-release. Final TQ-606 closure therefore requires both:
+release. Final TQ-606 closure therefore requires all three:
 
-1. rerunning the journey from the first protected, attested release bytes;
-2. recording one independent unbriefed-human completion from the public
+1. explicit authorization of public-source launch;
+2. rerunning the journey from the first protected, attested release bytes;
+3. recording one independent unbriefed-human completion from the public
    entrypoint, including interventions and failure points.
 
-Until both exist, the machine certificate keeps `tq606Complete: false` and the
+Until all three exist, the machine certificate keeps `tq606Complete: false` and the
 backlog uses an external-gate candidate status.

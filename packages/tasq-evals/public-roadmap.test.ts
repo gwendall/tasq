@@ -8,6 +8,7 @@ const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) 
   contractVersion: string;
   status: string;
   canonicalRepository: string;
+  repositoryVisibility: string;
   statusVocabulary: string[];
   invariants: string[];
   externalGates: Record<string, { state: string; observation?: string }>;
@@ -25,12 +26,13 @@ const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) 
   }>;
 };
 
-describe("canonical public roadmap", () => {
+describe("canonical Tasq roadmap", () => {
   test("has one closed status vocabulary and one exact execution order", () => {
     expect(roadmap).toMatchObject({
       contractVersion: "tasq.backlog.v1",
       status: "active",
       canonicalRepository: "https://github.com/gwendall/tasq",
+      repositoryVisibility: "private_prelaunch",
       statusVocabulary: [
         "done",
         "in_progress_external_gate",
@@ -76,6 +78,12 @@ describe("canonical public roadmap", () => {
       status: "done",
       evidence: ["TQ-804_GUARDED_MUTATION_REST.md", "TQ-804_MUTATION_REST_CERTIFICATION.json"],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-320")).toMatchObject({
+      status: "pending",
+      milestone: "runtime-consumers",
+      dependsOn: ["TQ-603", "TQ-304", "TQ-501"],
+      evidence: ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"],
+    });
     for (const item of roadmap.items.filter(({ milestone, id }) => (
       (milestone === "self-hosted-server" || milestone === "managed-cloud") && !["TQ-801", "TQ-802", "TQ-803", "TQ-804"].includes(id)
     ))) {
@@ -83,8 +91,11 @@ describe("canonical public roadmap", () => {
     }
   });
 
-  test("states the two real publication blockers without inventing ownership", () => {
+  test("states the real publication blockers without inventing ownership", () => {
     expect(roadmap.externalGates).toMatchObject({
+      publicSourceLaunch: {
+        state: "private_prelaunch",
+      },
       npmScopeControl: {
         state: "unverified",
         observation: expect.stringContaining("not evidence of scope ownership"),
@@ -99,6 +110,8 @@ describe("canonical public roadmap", () => {
       id: "TQ-603",
       status: "in_progress_external_gate",
       remaining: [
+        "authorize-public-source-launch",
+        "restore-and-verify-repository-protections",
         "verify-npm-scope-control",
         "configure-npm-trusted-publishing",
         "publish-first-protected-release",
@@ -118,7 +131,11 @@ describe("canonical public roadmap", () => {
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-606")).toMatchObject({
       status: "candidate_done_external_gate",
-      remaining: ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      remaining: [
+        "authorize-public-source-launch",
+        "rerun-from-first-published-release",
+        "record-independent-unbriefed-human-session",
+      ],
       evidence: ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"],
     });
   });

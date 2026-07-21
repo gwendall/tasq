@@ -197,7 +197,27 @@ completion.
 **Support:** implemented internally. Public package compatibility,
 installation and support policy remain uncommitted.
 
-### 4.6 Connector author
+### 4.6 Interactive agent runtime or control-plane integrator
+
+**Need:** accept durable work into a system that owns machines, conversations,
+terminals or agent runs without creating a second commitment truth.
+
+**Path:** read bounded context, inspect one commitment, accept assignment,
+claim before autonomous work, and map each stable external run to one attempt.
+Keep the resumable conversation in `contextId`, the individual run in
+`externalId`, and machine/session/repository identities in `external_ref`.
+Publish artifacts or evidence separately and never complete from runtime
+success alone.
+
+**Support:** the required kernel records and embedded/CLI/local-MCP integration
+surfaces exist. TQ-304 certifies durable workflow runtimes; the distinct
+interactive conversation/run shape is not yet certified. TQ-320 owns that
+conformance gate, motivated by a Denshin-style consumer.
+
+**Non-claim:** Tasq does not launch the agent, stream its terminal, own its
+conversation, choose its machine or authenticate a remote control plane.
+
+### 4.7 Connector author
 
 **Need:** observe an external system or perform one authorized provider effect.
 
@@ -208,7 +228,7 @@ verified receipt or honest indeterminate outcome.
 **Support:** SDK and reference examples exist. General Gmail, Mercury,
 calendar, GitHub or deployment products do not.
 
-### 4.7 Extension author
+### 4.8 Extension author
 
 **Need:** add typed conditions, observations and deterministic evaluators for
 an unfamiliar domain.
@@ -219,7 +239,7 @@ keep provider I/O and human policy outside the extension evaluator.
 **Support:** implemented internally; executable loading, signatures,
 sandboxing and a public extension registry are not implemented.
 
-### 4.8 Remote agent, remote human or another machine
+### 4.9 Remote agent, remote human or another machine
 
 **Need:** reach one shared authority over a network.
 
@@ -230,18 +250,21 @@ services, but that integration is not a supported Tasq Server.
 not rendezvous. Setting an arbitrary database URL is not a remote support
 claim.
 
-### 4.9 Prospective adopter or evaluator
+### 4.10 Prospective adopter or evaluator
 
 **Need:** understand the product, select the correct integration path and
 verify what is actually available without reading implementation chronology.
 
-**Path:** use the static public site or its `/product-truth.json` export. Follow
-the consumer-specific guide to the canonical CLI, local MCP, Console or
-embedded path. Check the displayed repository-contract digests when exact
-support provenance matters.
+**Path:** before launch, use authorized repository access to build the static
+site or inspect its `/product-truth.json` export. After an explicit launch,
+use the deployed site or visible canonical repository. Follow the
+consumer-specific guide to the canonical CLI, local MCP, Console or embedded
+path. Check the displayed repository-contract digests when exact support
+provenance matters.
 
 **Support:** the static application and export are implemented and tested in
-the canonical repository. No public deployment or domain is claimed.
+the canonical private pre-launch repository. No public repository access,
+deployment or domain is currently claimed.
 
 **Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
 MCP endpoint or evidence that packages have been published.
@@ -256,6 +279,7 @@ is explicitly mutable source-build guidance, not a protected-release claim.
 | Use case | Kernel fit | Product readiness | Missing outer layer |
 |---|---|---|---|
 | Local coding-agent handoff | Excellent | Ready locally | Public install and templates |
+| Interactive agent control plane | Excellent | Integration primitives ready | TQ-320 consumer adapter and conformance |
 | Multi-agent contention on one host | Excellent | Ready locally | Operator overview polish |
 | Robotics resource coordination | Excellent | Kernel/CLI ready | Robot adapter and fence enforcement |
 | Research with human acceptance | Excellent | Kernel ready | Domain UI and evidence policy |
@@ -309,9 +333,10 @@ learn -> install -> verify -> create/join workspace -> connect first agent
 
 Today, behavior from `create/join workspace` onward is substantially proven.
 ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq/*` package
-boundary and dedicated repository. Public installation, upgrade, uninstall
-and independent package consumption are still absent; TQ-603–TQ-606 close
-that product gap.
+boundary and dedicated repository. That repository is intentionally private
+before launch. Public source visibility, installation, upgrade, uninstall and
+independent package consumption are still absent; TQ-603–TQ-606 close that
+product gap only after explicit launch authorization.
 
 The later server journey is:
 

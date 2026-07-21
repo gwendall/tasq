@@ -53,7 +53,7 @@ snapshot-and-binary rollback and data-preserving uninstall. See
 pending because no public release exists yet.
 
 A local output is always an **unpublishable candidate**. Only the protected tag
-workflow in the canonical public repository may attach GitHub/Sigstore build
+workflow in the canonical repository may attach GitHub/Sigstore build
 provenance and publish it. The attestation binds the artifact digest to the
 repository, workflow and commit; it does not assert that the software is bug
 free. Consumers must verify both checksums and attestation.
@@ -82,9 +82,14 @@ The pipeline must refuse a public release until all of these facts are true:
    dependency or private path (immutable historical SQL comments may retain an
    old internal identifier without creating a dependency);
 7. every shipped component has a declared license and SBOM identity.
+8. public source launch and repository visibility have been explicitly
+   authorized.
 
-The canonical public repository and both clean-room CI targets now satisfy
-gates 1 and 5, while the repository rules, release environment and immutable
-tag policy enforce the corresponding source boundary. Gates 3 and 4 remain
-blocked until npm `@tasq` scope control and trusted publishing are observed
-directly. Therefore this checkpoint does not claim that Tasq is published.
+The canonical private repository and both clean-room CI targets now satisfy
+gates 1 and 5. The tag-scoped release environment exists, but GitHub branch and
+ruleset enforcement is unavailable for this private repository under the
+current plan. Repository protections must be restored and verified alongside
+gates 3, 4 and 8 before release. Those gates remain blocked until npm `@tasq`
+scope control, trusted publishing and explicit launch authorization are
+observed directly. Therefore this checkpoint does not claim that Tasq source
+or artifacts are public.

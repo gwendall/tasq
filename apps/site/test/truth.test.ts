@@ -19,9 +19,10 @@ describe("public site truth", () => {
     expect(unimplemented.every((entry) => entry.entrypoint === null)).toBe(true);
   });
 
-  test("keeps the unpublished release on the source-build path", () => {
+  test("keeps the private unpublished release behind explicit repository access", () => {
     expect(productTruth.release.published).toBe(false);
-    expect(productTruth.release.installAction).toBe("build_from_source");
+    expect(productTruth.release.installAction).toBe("request_access_then_build");
+    expect(productTruth.release.repositoryState).toBe("private-canonical-unprotected-prelaunch");
     expect(productTruth.release.publicPackages).toHaveLength(7);
     expect(productTruth.productShapes.every((entry) => !entry.publiclyDistributed)).toBe(true);
   });

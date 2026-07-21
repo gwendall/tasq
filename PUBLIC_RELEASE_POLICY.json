@@ -1,13 +1,13 @@
 {
   "contractVersion": "tasq.public-release-policy.v1",
-  "status": "canonical-repository-live-not-published",
+  "status": "canonical-private-repository-not-published",
   "acceptedAt": "2026-07-20",
   "identity": {
     "productName": "Tasq",
     "cliBinary": "tasq",
     "npmScope": "@tasq",
     "canonicalRepository": "https://github.com/gwendall/tasq",
-    "repositoryState": "public-canonical-protected",
+    "repositoryState": "private-canonical-unprotected-prelaunch",
     "unscopedNpmPackage": {
       "name": "tasq",
       "ownership": "unrelated-third-party",
@@ -26,10 +26,10 @@
     "contributionTerms": "DCO-1.1",
     "copyrightModel": "contributor-retained-no-assignment",
     "initialLicensor": "@gwendall",
-    "scope": "canonical public repository; private monorepo siblings excluded"
+    "scope": "canonical Tasq repository; private monorepo siblings excluded"
   },
   "repository": {
-    "topology": "dedicated-public-monorepo",
+    "topology": "dedicated-private-prelaunch-monorepo",
     "sourceRootBeforeCutover": "products/tasq",
     "canonicalAfterCutover": "https://github.com/gwendall/tasq",
     "privateMonorepoDirectionAfterCutover": "consume-release-or-one-way-generated-mirror",
@@ -149,6 +149,7 @@
   },
   "externalPublicationPreconditions": [
     "canonical_repository_control_verified",
+    "public_source_launch_authorized",
     "npm_scope_control_verified",
     "trusted_publishing_configured",
     "tag_protection_configured",
@@ -156,24 +157,28 @@
     "candidate_targets_clean_room_certified"
   ],
   "externalPublicationGateStatus": {
-    "canonical_repository_control_verified": true,
+    "canonical_repository_control_verified": false,
+    "public_source_launch_authorized": false,
     "npm_scope_control_verified": false,
     "trusted_publishing_configured": false,
-    "tag_protection_configured": true,
+    "tag_protection_configured": false,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true
   },
   "repositoryControls": {
-    "requiredPullRequest": true,
-    "requiredChecks": [
+    "enforcementState": "unavailable-on-private-repository-current-plan",
+    "requiredPullRequest": false,
+    "requiredChecks": [],
+    "desiredRequiredChecks": [
       "verify (macos-14)",
       "verify (ubuntu-latest)"
     ],
-    "mainDeletionAllowed": false,
-    "mainNonFastForwardAllowed": false,
+    "mainDeletionAllowed": null,
+    "mainNonFastForwardAllowed": true,
     "releaseTagPattern": "v*",
-    "releaseTagsMutable": false,
+    "releaseTagsMutable": true,
     "releaseEnvironment": "release",
-    "privateVulnerabilityReporting": true
+    "releaseEnvironmentTagPolicyVerified": true,
+    "privateVulnerabilityReporting": false
   }
 }

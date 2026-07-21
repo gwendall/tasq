@@ -172,6 +172,18 @@ describe("TQ-601 product consumption design", () => {
         "tasq_executable", "workspace_id", "actor_label", "capabilities", "task_intent",
       ],
     });
+    expect(byId(matrix.consumers, "runtime_integrator")).toMatchObject({
+      irreducibleInputs: [
+        "runtime_identity_mapping",
+        "stable_execution_id",
+        "stable_context_id",
+        "external_reference_mapping",
+        "completion_authority_none",
+        "store",
+        "clock",
+        "credential_verifier_for_rest",
+      ],
+    });
     expect(byId(matrix.consumers, "remote_agent")).toMatchObject({
       supportedSurfaces: [],
       irreducibleInputs: ["hosted_authenticated_transport"],
@@ -182,7 +194,7 @@ describe("TQ-601 product consumption design", () => {
     });
     expect(byId(matrix.consumers, "prospective_adopter")).toMatchObject({
       supportedSurfaces: ["public_site"],
-      irreducibleInputs: ["canonical_repository_or_deployed_static_site"],
+      irreducibleInputs: ["authorized_repository_access_or_deployed_static_site"],
     });
   });
 
@@ -193,7 +205,7 @@ describe("TQ-601 product consumption design", () => {
       .toBe("implemented_candidate_not_published");
     expect(byId(matrix.journeys, "public_product_discovery")).toMatchObject({
       support: "implemented_candidate_not_published",
-      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"],
+      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "request_authorized_repository_access", "build_from_source"],
     });
     for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
@@ -210,7 +222,8 @@ describe("TQ-601 product consumption design", () => {
       "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
-      "public_package_sources_are_open_but_registry_artifacts_are_not_published",
+      "canonical_source_repository_is_private_until_explicit_launch_authorization",
+      "public_package_sources_are_canonical_but_not_yet_publicly_available",
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_built_but_not_deployed",
@@ -221,23 +234,27 @@ describe("TQ-601 product consumption design", () => {
     }
   });
 
-  test("separates canonical public source from unpublished registry artifacts", () => {
+  test("keeps the canonical source private until explicit launch authorization", () => {
     expect(releasePolicy).toMatchObject({
-      status: "canonical-repository-live-not-published",
-      identity: { repositoryState: "public-canonical-protected" },
+      status: "canonical-private-repository-not-published",
+      identity: { repositoryState: "private-canonical-unprotected-prelaunch" },
       repositoryControls: {
-        requiredPullRequest: true,
-        requiredChecks: ["verify (macos-14)", "verify (ubuntu-latest)"],
-        releaseTagsMutable: false,
+        enforcementState: "unavailable-on-private-repository-current-plan",
+        requiredPullRequest: false,
+        requiredChecks: [],
+        desiredRequiredChecks: ["verify (macos-14)", "verify (ubuntu-latest)"],
+        releaseTagsMutable: true,
         releaseEnvironment: "release",
-        privateVulnerabilityReporting: true,
+        releaseEnvironmentTagPolicyVerified: true,
+        privateVulnerabilityReporting: false,
       },
     });
     expect(releasePolicy.externalPublicationGateStatus).toMatchObject({
-      canonical_repository_control_verified: true,
+      canonical_repository_control_verified: false,
+      public_source_launch_authorized: false,
       npm_scope_control_verified: false,
       trusted_publishing_configured: false,
-      tag_protection_configured: true,
+      tag_protection_configured: false,
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_candidate_not_published");

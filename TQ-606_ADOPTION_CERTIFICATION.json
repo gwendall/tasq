@@ -2,6 +2,11 @@
   "contractVersion": "tasq.public-adoption-certification.v1",
   "status": "candidate-certified-external-gates-pending",
   "updatedAt": "2026-07-21",
+  "repositoryAccess": {
+    "state": "private-prelaunch",
+    "requiredPrecondition": "authorized_repository_access",
+    "publicSourceLaunchAuthorized": false
+  },
   "publicEntrypoints": {
     "human": "/docs/getting-started/",
     "agent": "/adopt.json",
@@ -29,7 +34,7 @@
   },
   "publishedArtifactEvidence": {
     "status": "not-run-no-public-release-exists",
-    "blockedBy": "TQ-603"
+    "blockedBy": "TQ-603-public-source-launch-and-release"
   },
   "independentHumanEvidence": {
     "status": "not-run-automated-path-only",

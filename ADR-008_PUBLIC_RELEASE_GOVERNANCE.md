@@ -9,8 +9,9 @@
 ## 1. Context
 
 Tasq Core and Tasq Local originated inside a larger private monorepo. Their
-standalone public source now lives in the canonical Tasq repository; npm
-packages remain unpublished. Publishing directly from the original monorepo
+standalone source now lives in the canonical Tasq repository, which remains
+private until an explicit launch decision; npm packages remain unpublished.
+Publishing directly from the original monorepo
 would blur ownership, expose unrelated history and make the public build
 impossible to reproduce independently.
 
@@ -24,7 +25,8 @@ package identity must remain separate.
 
 - Product and executable: `Tasq` / `tasq`.
 - Public npm namespace: `@tasq/*`.
-- Initial canonical public repository: `https://github.com/gwendall/tasq`.
+- Intended public and current canonical private pre-launch repository:
+  `https://github.com/gwendall/tasq`.
 - The current `@kami/*` package names are implementation coordinates, never
   public aliases or compatibility promises.
 - TQ-603 must prove control of the npm scope and repository before publishing.
@@ -81,9 +83,9 @@ consumer demand, a support owner and its own compatibility gate.
 
 ### 2.4 Repository topology
 
-The public project is a dedicated monorepo rooted at the repository root, not
-a public view of the whole Kami monorepo and not a per-package repository
-fleet.
+The project is a dedicated monorepo rooted at the repository root, not a view
+of the whole Kami monorepo and not a per-package repository fleet. It remains
+private during pre-launch preparation.
 
 The cutover has two phases:
 

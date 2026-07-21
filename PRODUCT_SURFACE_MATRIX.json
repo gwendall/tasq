@@ -179,7 +179,7 @@
     {
       "id": "runtime_integrator",
       "supportedSurfaces": ["embedded_typescript", "protocol_adapters", "mcp_stdio", "rest"],
-      "irreducibleInputs": ["runtime_identity_mapping", "store", "clock", "credential_verifier_for_rest"]
+      "irreducibleInputs": ["runtime_identity_mapping", "stable_execution_id", "stable_context_id", "external_reference_mapping", "completion_authority_none", "store", "clock", "credential_verifier_for_rest"]
     },
     {
       "id": "extension_author",
@@ -194,7 +194,7 @@
     {
       "id": "prospective_adopter",
       "supportedSurfaces": ["public_site"],
-      "irreducibleInputs": ["canonical_repository_or_deployed_static_site"]
+      "irreducibleInputs": ["authorized_repository_access_or_deployed_static_site"]
     },
     {
       "id": "remote_agent",
@@ -241,7 +241,7 @@
     {
       "id": "public_product_discovery",
       "support": "implemented_candidate_not_published",
-      "steps": ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"]
+      "steps": ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "request_authorized_repository_access", "build_from_source"]
     },
     {
       "id": "remote_multi_user_collaboration",
@@ -265,7 +265,8 @@
     "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
-    "public_package_sources_are_open_but_registry_artifacts_are_not_published",
+    "canonical_source_repository_is_private_until_explicit_launch_authorization",
+    "public_package_sources_are_canonical_but_not_yet_publicly_available",
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",

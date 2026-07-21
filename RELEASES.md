@@ -25,8 +25,9 @@ bun scripts/release/build-public-release.ts \
 
 Use `linux-x64-gnu` on the supported Linux runner. Inputs are explicit and no
 build timestamp is recorded. The output is deterministic, but remains
-unpublishable until protected CI in the canonical public repository attests
-it. See `TQ-603_RELEASE_CONTRACT.md` for files, verification and refusal gates.
+unpublishable until explicit launch authorization and protected CI in the
+canonical repository attest it. See `TQ-603_RELEASE_CONTRACT.md` for files,
+verification and refusal gates.
 
 Each target envelope also contains a target-named `.install.ts` lifecycle
 tool. It verifies itself, the manifest and archive against `SHA256SUMS`, then
