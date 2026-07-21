@@ -108,6 +108,10 @@ cd packages/tasq-service && bun test
 ```
 
 **Test isolation** : each test creates its own temp file SQLite via `mkdtempSync` and cleans up in `afterEach`. No shared state, no flakiness from in-memory cache leakage.
+The package runner gives every file a fresh Bun process; the 52-case historical
+state-machine file is additionally split by Task/Goal/Project suite so Bun
+1.3.11 native-driver teardown cannot accumulate across all cases on the
+memory-bounded macOS arm64 CI runner. The same 52 tests remain mandatory.
 
 ### 7. Protocol adapter tests (`packages/tasq-protocol-adapters/test/`)
 

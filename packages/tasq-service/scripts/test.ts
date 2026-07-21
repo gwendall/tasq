@@ -17,13 +17,24 @@ const tests = (await readdir(resolve(packageRoot, "test")))
 if (tests.length === 0) throw new Error("No Tasq service tests found");
 
 for (const test of tests) {
-  const child = Bun.spawn([process.execPath, "test", `test/${test}`], {
-    cwd: packageRoot,
-    env: process.env,
-    stdin: "ignore",
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-  const exitCode = await child.exited;
-  if (exitCode !== 0) process.exit(exitCode);
+  // This one historical file creates 52 independent SQLite stores. On the
+  // 7.5 GiB GitHub macOS arm64 runner, Bun 1.3.11 can reproducibly segfault
+  // in native-driver teardown after ~51 cases. Preserve every case and its
+  // fail-fast semantics while giving each entity suite fresh native state.
+  const patterns = test === "state-machines.test.ts"
+    ? ["^Task state machine", "^Goal state machine", "^Project state machine"]
+    : [null];
+  for (const pattern of patterns) {
+    const args = [process.execPath, "test", `test/${test}`];
+    if (pattern) args.push("--test-name-pattern", pattern);
+    const child = Bun.spawn(args, {
+      cwd: packageRoot,
+      env: process.env,
+      stdin: "ignore",
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    const exitCode = await child.exited;
+    if (exitCode !== 0) process.exit(exitCode);
+  }
 }
