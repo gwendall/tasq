@@ -201,6 +201,12 @@ proves the registration, socket and database close. `console-lifecycle.test.ts`
 freezes private atomic file ownership, stale-process recovery and fail-closed
 invalid or possibly-live registrations.
 
+The CLI runner executes test files sequentially in fresh Bun processes. The
+release, npm and lifecycle files each build or install real artifacts; running
+them concurrently causes builder/native-driver contention and nondeterministic
+180-second teardown timeouts on the macOS CI runner. File-level isolation keeps
+all 125 cases mandatory and fail-fast.
+
 Run :
 ```bash
 cd packages/tasq-cli && bun test
