@@ -96,6 +96,6 @@ repository CI matrix; larger product claims require new evidence.
 - `packages/tasq-evals/console-read-contract.test.ts`: public export, docs,
   route completeness, bounds and ambient-clock prohibition.
 
-TQ-701 does not claim live updates, the complete visual Console, support
-bundles, installed-artifact startup or browser operator acceptance. Those
-remain TQ-702 through TQ-705.
+TQ-701 does not itself claim live updates, the complete visual Console,
+support bundles, installed-artifact startup or browser operator acceptance.
+Live transport is now TQ-702; the remaining gates are TQ-703 through TQ-705.

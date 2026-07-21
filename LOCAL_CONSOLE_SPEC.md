@@ -131,13 +131,17 @@ most `limit + 1`, accepts cursors up to 2,048 characters and certifies a
 overview regression ceiling. See `TQ-701_CONSOLE_READ_MODELS.md`; the ceiling
 is evidence guardrail, not a production latency SLO.
 
+TQ-702 uses the same 50/100 event bounds and `limit + 1` reads. SSE queues one
+frame, closes on overflow with an exact polling continuation and samples the
+injected clock once per batch. See `TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
+
 ## 8. Delivery phases
 
 | Phase | Scope | Gate |
 |---|---|---|
 | Existing baseline | TQ-504 read-first inspector | Already certified |
 | TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
-| TQ-702 | Cursor-driven SSE plus polling fallback | Restart, disconnect, gap, expiry and injected-clock tests |
+| TQ-702 | Cursor-driven SSE plus polling fallback | Complete — reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
 | TQ-703 | Accessible responsive navigation, search and support bundle | Browser and accessibility certification |
 | TQ-704 | Release/install integration, stable URLs and lifecycle | Clean-room local install/upgrade/uninstall |
 | TQ-705 | Operator acceptance | Unknown operator resolves staged incidents without repository knowledge |

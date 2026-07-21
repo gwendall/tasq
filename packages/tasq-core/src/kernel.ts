@@ -45,6 +45,12 @@ export {
 export type { ConsoleReadOptions, ConsolePageOptions } from "./console-read-models.js";
 
 export {
+  buildConsoleEventBatch,
+  ConsoleLiveCursorError,
+} from "./console-live.js";
+export type { ConsoleEventBatchOptions } from "./console-live.js";
+
+export {
   createCommitment,
   getCommitment,
   listCommitments,

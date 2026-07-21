@@ -102,10 +102,11 @@
     },
     {
       "id": "TQ-702",
-      "status": "pending",
+      "status": "done",
       "milestone": "local-console",
       "dependsOn": ["TQ-701"],
-      "outcome": "Cursor-driven loopback SSE and bounded polling with reconnect, gap and backpressure semantics"
+      "outcome": "Cursor-driven loopback SSE and bounded polling with reconnect, gap and backpressure semantics",
+      "evidence": ["TQ-702_CONSOLE_LIVE_TRANSPORT.md"]
     },
     {
       "id": "TQ-703",

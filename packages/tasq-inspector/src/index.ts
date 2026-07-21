@@ -3,6 +3,8 @@ export {
   inspectorSecurityHeaders,
 } from "./server.js";
 export type { TasqInspectorHandlerOptions } from "./server.js";
+export { systemConsoleScheduler } from "./scheduler.js";
+export type { ConsoleScheduler } from "./scheduler.js";
 
 export {
   assertLoopbackHost,

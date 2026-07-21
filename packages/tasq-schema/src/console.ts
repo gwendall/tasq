@@ -13,6 +13,9 @@ import { EffectStatus } from "./effects.js";
 export const CONSOLE_PAGE_CONTRACT_VERSION = "tasq.console-page.v1" as const;
 export const CONSOLE_OVERVIEW_CONTRACT_VERSION = "tasq.console-overview.v1" as const;
 export const CONSOLE_HEALTH_CONTRACT_VERSION = "tasq.console-health.v1" as const;
+export const CONSOLE_EVENT_BATCH_CONTRACT_VERSION = "tasq.console-event-batch.v1" as const;
+export const CONSOLE_LIVE_PROBLEM_CONTRACT_VERSION = "tasq.console-live-problem.v1" as const;
+export const CONSOLE_STREAM_ENVELOPE_CONTRACT_VERSION = "tasq.console-stream-envelope.v1" as const;
 
 const Count = z.number().int().nonnegative();
 const UnixMs = z.number().int().nonnegative();
@@ -218,3 +221,79 @@ export const ConsoleHealth = z.object({
   attention: ConsoleOverview.shape.attention,
 }).strict();
 export type ConsoleHealth = z.infer<typeof ConsoleHealth>;
+
+/**
+ * The live transport is an invalidation/audit feed, never a second state
+ * store. Event payloads remain omitted; consumers re-read the canonical
+ * projections identified by the event when they need current state.
+ */
+export const ConsoleLiveEvent = ConsoleAuditItem.extend({
+  payload: z.object({ omitted: z.literal(true), reason: z.literal("operator_stream_redaction") }).strict(),
+}).strict();
+export type ConsoleLiveEvent = z.infer<typeof ConsoleLiveEvent>;
+
+export const ConsoleEventBatch = z.object({
+  contractVersion: z.literal(CONSOLE_EVENT_BATCH_CONTRACT_VERSION),
+  workspaceId: WorkspaceId,
+  inspectedAt: UnixMs,
+  mode: z.enum(["snapshot", "changes"]),
+  requestedLimit: z.number().int().min(1).max(100),
+  returned: Count,
+  hasMore: z.boolean(),
+  nextCursor: OpaqueCursor,
+  events: z.array(ConsoleLiveEvent).max(100),
+  snapshot: ConsoleOverview.nullable(),
+}).strict().superRefine((value, context) => {
+  if (value.returned !== value.events.length) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["returned"], message: "returned must equal events.length" });
+  }
+  if ((value.mode === "snapshot") !== (value.snapshot !== null)) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["snapshot"], message: "only snapshot batches contain a snapshot" });
+  }
+  if (value.mode === "snapshot" && (value.events.length !== 0 || value.hasMore)) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["events"], message: "snapshot batches start at the captured high-water cursor" });
+  }
+});
+export type ConsoleEventBatch = z.infer<typeof ConsoleEventBatch>;
+
+export const ConsoleLiveProblem = z.object({
+  contractVersion: z.literal(CONSOLE_LIVE_PROBLEM_CONTRACT_VERSION),
+  code: z.enum(["cursor_expired", "cursor_ahead"]),
+  workspaceId: WorkspaceId,
+  inspectedAt: UnixMs,
+  message: z.string().min(1).max(500),
+  recovery: z.object({
+    action: z.literal("refresh_snapshot"),
+    href: z.literal("/api/console/events"),
+  }).strict(),
+}).strict();
+export type ConsoleLiveProblem = z.infer<typeof ConsoleLiveProblem>;
+
+const StreamEnvelopeBase = {
+  contractVersion: z.literal(CONSOLE_STREAM_ENVELOPE_CONTRACT_VERSION),
+  workspaceId: WorkspaceId,
+};
+
+export const ConsoleStreamEnvelope = z.discriminatedUnion("kind", [
+  z.object({
+    ...StreamEnvelopeBase,
+    kind: z.enum(["snapshot", "changes"]),
+    batch: ConsoleEventBatch,
+  }).strict(),
+  z.object({
+    ...StreamEnvelopeBase,
+    kind: z.literal("overflow"),
+    batch: ConsoleEventBatch,
+    recovery: z.object({
+      transport: z.literal("poll"),
+      href: z.literal("/api/console/events"),
+      cursor: OpaqueCursor,
+    }).strict(),
+  }).strict(),
+  z.object({
+    ...StreamEnvelopeBase,
+    kind: z.literal("gap"),
+    problem: ConsoleLiveProblem,
+  }).strict(),
+]);
+export type ConsoleStreamEnvelope = z.infer<typeof ConsoleStreamEnvelope>;
