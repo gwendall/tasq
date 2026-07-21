@@ -88,11 +88,19 @@ instrumented opaque router that proves a foreign workspace opener is never
 called. Its eval repeats cold migration in separate processes and proves
 revocation across close/reopen boundaries.
 
+The TQ-803 suite drives real Fetch requests through a host verifier, the live
+authority database and an instrumented workspace reader. It covers RFC 9728
+discovery, challenge and outage semantics, encoded workspace IDs, issuer
+collision, invalid-input short circuiting, bounded/redacted reads, foreign
+workspace probes, next-request revocation and strict host-output failure. One
+request-wide injected clock value reaches verification, authority and output.
+
 ```bash
 pnpm --filter @tasq-internal/authority test
 pnpm --filter @tasq-internal/server test
 pnpm --filter @tasq-internal/evals test -- hosted-authority-foundation.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-authority-store-router.test.ts
+pnpm --filter @tasq-internal/evals test -- hosted-read-rest.test.ts
 ```
 
 ### 7. Service tests (`packages/tasq-service/test/`)
@@ -381,8 +389,9 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   fail before storage, and caller-defined context bounds run without argv
   reconstruction. The content-addressed blind runner adds Codex, Claude Code
   and OpenCode under pointer-only natural-language intent.
-- eval `hosted-tenancy-design.test.ts` — ADR-004/TQ-505 keeps every future
-  remote surface marked planned, freezes the six trust layers, three identity
+- eval `hosted-tenancy-design.test.ts` — ADR-004/TQ-505 distinguishes the
+  integration-required read handler from future remote surfaces, freezes the
+  six trust layers, three identity
   classes, hostile cross-workspace/revocation/delegation/key/clock scenarios,
   non-compensable failures and state-based release evidence. It validates a
   design matrix, not a hosted implementation certificate.
@@ -395,6 +404,10 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   cold migrators, restarts the authority store, routes one robotics workspace
   only through its opaque host binding, then revokes/restarts and proves the
   decoy ledger was never opened.
+- eval `hosted-read-rest.test.ts` — TQ-803 independently composes a protected
+  resource under a non-root path, verified agent identity, fresh authority
+  store and opaque robotics ledger, then proves discovery, isolation,
+  payload-free reads and immediate revocation.
 - eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
   shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
   the claims guard with a candidate-only public install lifecycle while REST,

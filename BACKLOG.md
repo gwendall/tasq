@@ -111,7 +111,10 @@ later Local milestones.
   revisioned/idempotent bindings, grants, delegation, eligibility, decisions
   and append-only audit. The host-configured opaque router opens no workspace
   ledger before an allow; see `TQ-802_AUTHORITY_STORE_ROUTER.md`.
-- **TQ-803:** authenticated read-only REST, discovery and event metadata.
+- **TQ-803 — done:** host-integrated Fetch REST handler with RFC 9728
+  discovery, strict verifier boundary, live authorization, bounded commitment
+  reads and payload-free event metadata. It has no listener or concrete
+  credential adapter; see `TQ-803_HOSTED_READ_REST.md`.
 - **TQ-804:** guarded mutation REST with idempotency, revocation and injected
   authority time.
 - **TQ-805:** remote MCP behind the identical guard, with REST/MCP parity.

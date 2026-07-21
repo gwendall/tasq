@@ -68,8 +68,12 @@ describe("canonical public roadmap", () => {
       status: "done",
       evidence: ["TQ-802_AUTHORITY_STORE_ROUTER.md", "TQ-802_AUTHORITY_STORE_CERTIFICATION.json"],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-803")).toMatchObject({
+      status: "done",
+      evidence: ["TQ-803_HOSTED_READ_REST.md", "TQ-803_READ_REST_CERTIFICATION.json"],
+    });
     for (const item of roadmap.items.filter(({ milestone, id }) => (
-      (milestone === "self-hosted-server" || milestone === "managed-cloud") && !["TQ-801", "TQ-802"].includes(id)
+      (milestone === "self-hosted-server" || milestone === "managed-cloud") && !["TQ-801", "TQ-802", "TQ-803"].includes(id)
     ))) {
       expect(item.status, `${item.id}: remote roadmap overstated`).toBe("pending");
     }

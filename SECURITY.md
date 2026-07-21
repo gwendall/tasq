@@ -35,7 +35,8 @@ Release metadata is authoritative if it narrows that window.
 - Console registration proves a specific foreground loopback listener is live;
   its local descriptor and instance ID are discovery metadata, not credentials
   or authorization. Install creates no listener or daemon.
-- REST, remote MCP, Tasq Server and Tasq Cloud are not currently shipped.
+- A host-integrated authenticated read-only REST handler exists, but no REST
+  endpoint, remote MCP, Tasq Server release or Tasq Cloud service is shipped.
 - The internal TQ-801 authority evaluator is deny-by-default and
   injected-clock-only, but it trusts that an upstream adapter already verified
   credentials and that a future authority store supplied a current snapshot.
@@ -45,6 +46,11 @@ Release metadata is authoritative if it narrows that window.
   IDs and invokes no workspace opener before an allow. It is still not a safe
   public listener, and TQ-804 must make live authority preconditions atomic
   with domain mutations.
+- TQ-803 accepts identity only from an injected verifier, rejects malformed
+  inputs before that verifier or any workspace opener, and uses the live
+  TQ-802 guard. The host is responsible for correct issuer, audience, token
+  type, lifetime, key and sender-binding verification; Tasq currently ships no
+  concrete verifier adapter.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.
 - Runtime/provider success never grants commitment-completion authority.

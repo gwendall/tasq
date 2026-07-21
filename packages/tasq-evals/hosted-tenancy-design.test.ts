@@ -38,7 +38,7 @@ describe("ADR-004 hosted-tenancy design guard", () => {
   test("separates every trust layer and keeps remote surfaces honestly planned", () => {
     expect(acceptance).toMatchObject({
       contractVersion: "tasq.hosted-tenancy-acceptance.v1",
-      status: "authority-store-router-implemented-no-remote-surface",
+      status: "host-integrated-read-rest-implemented-no-deployable-server",
       decision: "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
       criticalFailuresAreNonCompensable: true,
     });
@@ -47,12 +47,12 @@ describe("ADR-004 hosted-tenancy design guard", () => {
       "kernel", "effect_gate",
     ]);
     expect(acceptance.surfaces.map(({ id, status }) => [id, status])).toEqual([
-      ["rest", "planned"],
+      ["rest", "implemented_integration_required_read_only"],
       ["remote_mcp", "planned"],
       ["hosted_web_bff", "planned"],
       ["local_cli_stdio_loopback", "implemented_local_only"],
     ]);
-    for (const surface of acceptance.surfaces.filter(({ status }) => status === "planned")) {
+    for (const surface of acceptance.surfaces.filter(({ status }) => status !== "implemented_local_only")) {
       expect(surface.sharedGuard).toBe(true);
     }
   });

@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.hosted-tenancy-acceptance.v1",
-  "status": "authority-store-router-implemented-no-remote-surface",
+  "status": "host-integrated-read-rest-implemented-no-deployable-server",
   "decision": "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
   "implementedSlices": [
     {
@@ -16,6 +16,13 @@
       "evidence": "TQ-802_AUTHORITY_STORE_CERTIFICATION.json",
       "includes": ["authority_migrations", "live_authority_store", "append_only_security_audit", "isolated_workspace_router"],
       "remoteSurface": false
+    },
+    {
+      "id": "TQ-803",
+      "package": "@tasq-internal/server",
+      "evidence": "TQ-803_READ_REST_CERTIFICATION.json",
+      "includes": ["rfc_9728_discovery", "credential_verifier_boundary", "guarded_read_handler", "bounded_event_metadata"],
+      "remoteSurface": "host_integration_required"
     }
   ],
   "criticalFailuresAreNonCompensable": true,
@@ -50,7 +57,7 @@
   "surfaces": [
     {
       "id": "rest",
-      "status": "planned",
+      "status": "implemented_integration_required_read_only",
       "sharedGuard": true
     },
     {

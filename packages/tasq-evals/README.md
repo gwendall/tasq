@@ -37,6 +37,7 @@ packages/tasq-evals/
 ├── hosted-tenancy-design.test.ts scenario: ADR-004/TQ-505 machine guard for future authenticated hosting
 ├── hosted-authority-foundation.test.ts scenario: TQ-801 pure authority across human/agent/workload profiles
 ├── hosted-authority-store-router.test.ts scenario: TQ-802 process restart, revocation and isolated routing
+├── hosted-read-rest.test.ts          scenario: TQ-803 clean-room discovery, guarded read and revocation
 ├── product-consumption-design.test.ts scenario: TQ-601 product shapes, consumers and honest support states
 ├── public-roadmap.test.ts              scenario: canonical execution order, dependencies and external gates
 ├── console-browser-certification.test.ts scenario: TQ-705 five-state fixed-clock Linux/macOS Console gate
@@ -97,22 +98,23 @@ The release-artifact certification also runs on Linux and macOS in
 `.github/workflows/tasq-onboarding-certification.yml`. A platform is not a
 supported cold-start target merely because the TypeScript compiles there.
 
-The hosted-tenancy design guard is intentionally not a runtime certification.
-It keeps REST, remote MCP and hosted web marked `planned` while freezing the
+The hosted-tenancy design guard distinguishes the integration-required TQ-803
+read handler from still-planned remote MCP and hosted web while freezing the
 cross-workspace, revocation, delegation, key-rotation, sender-proof and
 injected-clock scenarios that a future adapter must execute before support is
 advertised. TQ-801's separate foundation eval now executes the pure inner
 authorization slice across browser-human, delegated-agent and SPIFFE-service
 profiles; it still cannot certify a verifier, store/router or remote surface.
 TQ-802's store/router eval certifies the durable inner control-plane boundary
-and separate-process recovery, while continuing to leave every network surface
-unimplemented.
+and separate-process recovery. TQ-803's clean-room eval composes the exported
+Fetch handler with a verifier and reader and certifies the read protocol, but
+does not claim a listener, concrete OIDC adapter or deployable Server.
 
 The product-consumption and public-roadmap guards keep Core, Local, Server and
 Cloud separate, require an explicit path or missing dependency for every
 consumer, distinguish the certified-but-unpublished Local lifecycle, and
-prevent REST, remote MCP or self-hosting from being claimed merely because
-their inner kernel, ADR or backlog item exists.
+prevent the integration-required REST handler from being confused with a
+deployed endpoint, remote MCP or self-hosting.
 
 ## Adding a new eval
 

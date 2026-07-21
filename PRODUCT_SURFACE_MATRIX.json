@@ -127,11 +127,11 @@
     },
     {
       "id": "rest",
-      "support": "not_implemented",
-      "transport": "https",
-      "entrypoint": null,
+      "support": "implemented_integration_required",
+      "transport": "host_integrated_fetch_request_response",
+      "entrypoint": "@tasq-internal/server createHostedReadHandler",
       "mutations": false,
-      "authorityBoundary": "adr_004_required"
+      "authorityBoundary": "host_verified_identity_plus_live_adr_004_guard"
     },
     {
       "id": "remote_mcp",
@@ -178,8 +178,8 @@
     },
     {
       "id": "runtime_integrator",
-      "supportedSurfaces": ["embedded_typescript", "protocol_adapters", "mcp_stdio"],
-      "irreducibleInputs": ["runtime_identity_mapping", "store", "clock"]
+      "supportedSurfaces": ["embedded_typescript", "protocol_adapters", "mcp_stdio", "rest"],
+      "irreducibleInputs": ["runtime_identity_mapping", "store", "clock", "credential_verifier_for_rest"]
     },
     {
       "id": "extension_author",
@@ -262,7 +262,7 @@
     "mcp_is_local_stdio_not_remote",
     "local_console_is_read_only_not_an_agent_api",
     "local_console_is_explicit_foreground_not_an_installed_daemon",
-    "rest_is_not_implemented",
+    "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
     "public_package_sources_are_open_but_registry_artifacts_are_not_published",
@@ -274,6 +274,7 @@
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
     "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
+    "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

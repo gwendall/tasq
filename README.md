@@ -18,14 +18,17 @@ evidence justifies completion?
 - Extension and connector contracts for domain-specific logic and external
   effects.
 
-Tasq Server, remote REST/MCP, and Tasq Cloud are roadmap products, not shipped
-surfaces. The first Server building block now exists as the private
+Tasq Server, remote MCP, and Tasq Cloud are roadmap products, not shipped
+surfaces. The first Server building block exists as the private
 `@tasq-internal/authority` package: strict identity/authority contracts and a
 pure injected-clock decision evaluator. TQ-802 adds a private durable authority
 control plane and opaque isolated-ledger router in `@tasq-internal/server`.
-Neither is a credential verifier or network endpoint; see
+TQ-803 additionally exports a host-integrated authenticated read-only REST
+handler with RFC 9728 discovery. It is neither a credential verifier nor a
+network endpoint: a host must supply both, plus the workspace reader. See
 [TQ-801_HOSTED_AUTHORITY_FOUNDATION.md](TQ-801_HOSTED_AUTHORITY_FOUNDATION.md)
-and [TQ-802_AUTHORITY_STORE_ROUTER.md](TQ-802_AUTHORITY_STORE_ROUTER.md).
+and [TQ-802_AUTHORITY_STORE_ROUTER.md](TQ-802_AUTHORITY_STORE_ROUTER.md), then
+[TQ-803_HOSTED_READ_REST.md](TQ-803_HOSTED_READ_REST.md).
 
 ## Public site and docs
 

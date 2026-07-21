@@ -1,8 +1,9 @@
 # ADR-004 / TQ-505 — Authenticated hosted tenancy
 
-> **Status:** accepted design; TQ-801/TQ-802 internal foundations implemented — 2026-07-21
+> **Status:** accepted design; TQ-801–TQ-803 internal foundations implemented — 2026-07-21
 > **Implementation:** strict DTOs/evaluator plus the durable authority control
-> plane and opaque ledger router exist; no remote transport or verifier ships
+> plane, opaque ledger router and host-integrated read handler exist; no
+> deployable transport or concrete verifier ships
 > **Decision:** a hosted request crosses a transport authentication boundary,
 > maps an immutable external subject to a workspace principal, passes a live
 > deny-by-default authorization decision, and only then reaches the existing
@@ -71,11 +72,13 @@ No network route may call the raw kernel before the guard. Embedded hosts that
 intentionally call the kernel directly remain trusted compositions and must
 not describe that path as authenticated remote access.
 
-TQ-801 implements only the pure `credential verifier output -> live decision`
-contract in `@tasq-internal/authority`. TQ-802 now supplies durable authority
-state and isolated routing in `@tasq-internal/server`; later checkpoints must
-supply the verifier and remote surfaces. These internal slices do not change
-the support state of Server, REST, remote MCP or hosted web.
+TQ-801 implements the pure `credential verifier output -> live decision`
+contract in `@tasq-internal/authority`. TQ-802 supplies durable authority state
+and isolated routing in `@tasq-internal/server`. TQ-803 adds the
+Fetch-compatible read-only adapter and RFC 9728 discovery around those exact
+boundaries. A host must still supply a conforming credential verifier,
+workspace reader and listener. This changes REST-handler support to
+integration-required; it does not ship Tasq Server, remote MCP or hosted web.
 
 ## 3. Canonical identity
 
@@ -398,8 +401,8 @@ exist.
 2. **Completed by TQ-802:** add authority-owned migrations and append-only
    security audit for bindings, grants and permission-set activation, plus the
    isolated opaque workspace router.
-3. Build a workspace storage router and a read-only authenticated HTTP adapter
-   with RFC 9728 discovery.
+3. **Completed by TQ-803:** add a host-integrated read-only authenticated HTTP
+   adapter with RFC 9728 discovery, bounded reads and event metadata.
 4. Add guarded mutation routes, browser BFF sessions and immediate revocation.
 5. Add headless device/workload onboarding and remote MCP over the same guard.
 6. Add replication enrollment/push authorization and hostile multi-workspace
@@ -417,9 +420,10 @@ matrix without pretending it has passed.
 
 ## 13. Deliberate non-claims
 
-TQ-505 completes the design backlog only. It does not ship:
+The accepted design and completed TQ-801–TQ-803 slices do not ship:
 
-- a hosted Tasq service, remote REST/MCP route or hosted inspector;
+- a hosted Tasq service, deployable REST endpoint, remote MCP route or hosted
+  inspector;
 - an identity provider, token issuer, SCIM server or credential store;
 - remote binding/grant administration APIs or browser sessions;
 - multi-workspace shared-database isolation;

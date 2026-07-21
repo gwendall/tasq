@@ -173,11 +173,11 @@
     },
     {
       "id": "rest",
-      "support": "not_implemented",
-      "transport": "https",
-      "entrypoint": null,
+      "support": "implemented_integration_required",
+      "transport": "host_integrated_fetch_request_response",
+      "entrypoint": "@tasq-internal/server createHostedReadHandler",
       "mutations": false,
-      "authorityBoundary": "adr_004_required"
+      "authorityBoundary": "host_verified_identity_plus_live_adr_004_guard"
     },
     {
       "id": "remote_mcp",
@@ -262,12 +262,14 @@
       "supportedSurfaces": [
         "embedded_typescript",
         "protocol_adapters",
-        "mcp_stdio"
+        "mcp_stdio",
+        "rest"
       ],
       "irreducibleInputs": [
         "runtime_identity_mapping",
         "store",
-        "clock"
+        "clock",
+        "credential_verifier_for_rest"
       ]
     },
     {
@@ -420,7 +422,7 @@
     "mcp_is_local_stdio_not_remote",
     "local_console_is_read_only_not_an_agent_api",
     "local_console_is_explicit_foreground_not_an_installed_daemon",
-    "rest_is_not_implemented",
+    "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
     "public_package_sources_are_open_but_registry_artifacts_are_not_published",
@@ -432,6 +434,7 @@
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
     "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
+    "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -503,7 +506,7 @@
     },
     {
       "id": "TQ-803",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "outcome": "Authenticated read-only REST, discovery and event metadata"
     },
@@ -578,12 +581,12 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "f294648009c6b78d8a7f445988b89eb16bdbba75002559478942cb8f12248943"
+      "sha256": "0eefcb2d46d7b5f61dfe3e9c15baccb9e1f8225ad7d0abed829d509819b607e9"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "ed7eb4dcc7c3036f774f5e2cbcde3ee73d8978da6b273a98417e34c14f902c80"
+      "sha256": "b0c107abd1b351f7c1d0317c9e5d4fc366b97d14711c231e8d43cc202a6deb85"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",
