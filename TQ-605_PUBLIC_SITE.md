@@ -1,13 +1,13 @@
 # TQ-605 — Public product and documentation site
 
-> **Status:** implemented and repository-certified — 2026-07-21
+> **Status:** implemented and certified inside the private pre-launch repository — 2026-07-21
 > **Deployment status:** not deployed; no public URL or published-install claim
 > **Authority:** `PRODUCT_SURFACE_MATRIX.json`, `BACKLOG.json` and
 > `PUBLIC_RELEASE_POLICY.json`, never hand-authored website state
 
 ## 1. Outcome
 
-Tasq now has a distinct public product and documentation application in
+Tasq now has a distinct public product and documentation application candidate in
 `apps/site`. It is a Next.js App Router application written in TypeScript,
 styled with Tailwind CSS and repository-owned shadcn/ui components. Its
 production output is static HTML, CSS, JavaScript and JSON.
@@ -83,7 +83,7 @@ truth snapshot displays the versioned `updatedAt` from its source contract.
 Source scans reject `Date.now`, `new Date` and `performance.now` in application
 and generation code.
 
-The app contains only synthetic diagrams and public repository facts. It has
+The app contains only synthetic diagrams and versioned product facts. It has
 no user ledger, secret, credential, form submission, analytics SDK or server
 action. Static export creates no listener; hosting is an independent later
 deployment decision.
@@ -113,9 +113,10 @@ pnpm --filter @tasq-internal/site test:browser
 
 ## 7. Honest remaining boundary
 
-TQ-605 certifies the versioned application in the repository. It does not
-claim a domain, production deployment, uptime, analytics, search indexing or a
-published Tasq package. TQ-603 remains the authority for the first protected
-release. A future site deployment must publish an immutable build from the
-canonical repository and record its URL/commit as external evidence before
-`public_site` may become a published support claim.
+TQ-605 certifies the versioned application in the private pre-launch
+repository. It does not claim anonymous source access, a domain, production
+deployment, uptime, analytics, search indexing or a published Tasq package.
+TQ-603 remains the authority for explicit public-source launch and the first
+protected release. A future site deployment must publish an immutable build
+from the canonical repository and record its URL/commit as external evidence
+before `public_site` may become a published support claim.

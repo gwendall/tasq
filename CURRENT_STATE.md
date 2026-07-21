@@ -41,12 +41,16 @@ databases are honestly serialized rather than described as cross-database
 ACID; a lost boundary returns typed unknown outcome and exact-retry recovery.
 No bundled operation adapter, listener or deployable Server exists yet.
 
-This is the canonical public source repository. `main` requires pull requests
-and green Linux/macOS CI; release tags are immutable and the `release`
-environment accepts only `v*` tags. The repository contains seven public
-package sources and private compatibility, example and eval workspaces. A
-package is not available merely because its source exists here; npm
-availability starts only after a protected attested release.
+This is the canonical source repository. It is intentionally private before
+launch; no public source-availability claim is current. `main` requires pull
+requests by contributor policy, but GitHub cannot enforce branch protection
+on this private repository under the current plan. The `release` environment
+accepts only `v*` tags, while immutable branch/tag enforcement must be restored
+at public launch or after a plan upgrade. The repository contains seven intended
+public package sources and private compatibility, example and eval workspaces.
+A package is not available merely because its source exists here; npm
+availability starts only after an explicitly authorized protected attested
+release.
 
 The Local release lifecycle now exists as a certified candidate. Generated
 target assets can be verified and installed outside the checkout, upgraded,
@@ -86,6 +90,12 @@ corrupt and 2,501-commitment states. Pagination stays bounded, hostile content
 stays inert, support metadata stays redacted and corrupt canonical state fails
 with a generic operator-safe error. This is a Local browser gate, not a hosted
 Console or broad browser-engine claim.
+
+TQ-320 is accepted backlog scope, not implemented behavior. It will certify an
+interactive agent control plane that owns machines, conversations, terminals
+and runs while Tasq owns commitment coordination. Existing records appear
+sufficient; no new Core entity or handoff packet is authorized before the
+black-box consumer trial demonstrates a concrete gap.
 
 The shortest verified loop is:
 

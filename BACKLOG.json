@@ -3,6 +3,7 @@
   "status": "active",
   "updatedAt": "2026-07-21",
   "canonicalRepository": "https://github.com/gwendall/tasq",
+  "repositoryVisibility": "private_prelaunch",
   "statusVocabulary": [
     "done",
     "in_progress_external_gate",
@@ -20,6 +21,10 @@
     "published_claims_require_external_evidence"
   ],
   "externalGates": {
+    "publicSourceLaunch": {
+      "state": "private_prelaunch",
+      "requiredAction": "change repository visibility only after explicit launch authorization"
+    },
     "npmScopeControl": {
       "state": "unverified",
       "observation": "@tasq/schema is not published; this environment has no valid npm identity, which is not evidence of scope ownership"
@@ -30,7 +35,7 @@
     },
     "firstProtectedRelease": {
       "state": "not_run",
-      "requires": ["npmScopeControl", "npmTrustedPublishing"]
+      "requires": ["publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
     },
     "publishedLifecycleCertification": {
       "state": "blocked_by_first_protected_release",
@@ -50,7 +55,9 @@
     }
   },
   "completedPrerequisites": [
+    "TQ-304",
     "TQ-405",
+    "TQ-501",
     "TQ-504",
     "TQ-505",
     "ADR-004"
@@ -66,6 +73,7 @@
   "executionOrder": [
     "TQ-603",
     "TQ-604",
+    "TQ-320",
     "TQ-701",
     "TQ-702",
     "TQ-703",
@@ -95,7 +103,7 @@
       "milestone": "public-distribution",
       "dependsOn": [],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+      "remaining": ["authorize-public-source-launch", "restore-and-verify-repository-protections", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
     },
     {
       "id": "TQ-604",
@@ -104,6 +112,14 @@
       "dependsOn": ["TQ-603"],
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes",
       "evidence": ["TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/pull/5"]
+    },
+    {
+      "id": "TQ-320",
+      "status": "pending",
+      "milestone": "runtime-consumers",
+      "dependsOn": ["TQ-603", "TQ-304", "TQ-501"],
+      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
+      "evidence": ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"]
     },
     {
       "id": "TQ-701",
@@ -151,7 +167,7 @@
       "milestone": "public-adoption",
       "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
-      "remaining": ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      "remaining": ["authorize-public-source-launch", "rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
       "evidence": ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"]
     },
     {

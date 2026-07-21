@@ -66,6 +66,7 @@ type ReleasePolicy = {
     cliBinary: string;
     npmScope: string;
     canonicalRepository: string;
+    repositoryState: string;
   };
   legal: { license: string; contributionTerms: string };
   packages: Array<{ publicName: string | null; firstRelease: boolean }>;
@@ -119,6 +120,7 @@ for (const surface of matrix.surfaces) {
 }
 
 const published = policy.status === "published";
+const privatePrelaunch = policy.identity.repositoryState === "private-canonical-unprotected-prelaunch";
 if (!published && matrix.productShapes.some((shape) => shape.publiclyDistributed)) {
   throw new Error("A product shape cannot be publicly distributed before release policy is published");
 }
@@ -131,8 +133,13 @@ const truth = {
   release: {
     status: policy.status,
     published,
-    installAction: published ? "install_release" : "build_from_source",
+    installAction: published
+      ? "install_release"
+      : privatePrelaunch
+        ? "request_access_then_build"
+        : "build_from_source",
     repository: policy.identity.canonicalRepository,
+    repositoryState: policy.identity.repositoryState,
     cliBinary: policy.identity.cliBinary,
     npmScope: policy.identity.npmScope,
     license: policy.legal.license,
@@ -190,6 +197,8 @@ const adoption = {
     mode: "source_build",
     published: false,
     repository: policy.identity.canonicalRepository,
+    repositoryAccess: privatePrelaunch ? "authorized_private_prelaunch" : "public",
+    preconditions: privatePrelaunch ? ["authorized_repository_access"] : [],
     sourceRef: "main",
     sourceRefMutable: true,
     integrity: {
@@ -204,7 +213,7 @@ const adoption = {
   ],
   human: {
     path: "/docs/getting-started/",
-    primaryAction: "build_from_source",
+    primaryAction: privatePrelaunch ? "request_access_then_build" : "build_from_source",
   },
   agent: {
     acquisition: [
@@ -248,6 +257,7 @@ const adoption = {
     "same_workspace_requires_the_same_store",
     "device_time_is_not_authority",
     "runtime_success_does_not_complete_a_commitment",
+    ...(privatePrelaunch ? ["private_prelaunch_repository_requires_authorized_access"] : []),
     "unpublished_source_ref_is_mutable_and_not_a_release_attestation",
   ],
 };

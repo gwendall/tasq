@@ -3,10 +3,11 @@
   "sourceUpdatedAt": "2026-07-21",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
-    "status": "canonical-repository-live-not-published",
+    "status": "canonical-private-repository-not-published",
     "published": false,
-    "installAction": "build_from_source",
+    "installAction": "request_access_then_build",
     "repository": "https://github.com/gwendall/tasq",
+    "repositoryState": "private-canonical-unprotected-prelaunch",
     "cliBinary": "tasq",
     "npmScope": "@tasq",
     "license": "Apache-2.0",
@@ -25,10 +26,11 @@
       "linux-x64-gnu"
     ],
     "gates": {
-      "canonical_repository_control_verified": true,
+      "canonical_repository_control_verified": false,
+      "public_source_launch_authorized": false,
       "npm_scope_control_verified": false,
       "trusted_publishing_configured": false,
-      "tag_protection_configured": true,
+      "tag_protection_configured": false,
       "license_and_third_party_notice_closure_verified": true,
       "candidate_targets_clean_room_certified": true
     }
@@ -267,6 +269,10 @@
       ],
       "irreducibleInputs": [
         "runtime_identity_mapping",
+        "stable_execution_id",
+        "stable_context_id",
+        "external_reference_mapping",
+        "completion_authority_none",
         "store",
         "clock",
         "credential_verifier_for_rest"
@@ -304,7 +310,7 @@
         "public_site"
       ],
       "irreducibleInputs": [
-        "canonical_repository_or_deployed_static_site"
+        "authorized_repository_access_or_deployed_static_site"
       ]
     },
     {
@@ -388,6 +394,7 @@
         "choose_consumer_path",
         "inspect_support_truth",
         "read_adoption_manifest",
+        "request_authorized_repository_access",
         "build_from_source"
       ]
     },
@@ -425,7 +432,8 @@
     "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
-    "public_package_sources_are_open_but_registry_artifacts_are_not_published",
+    "canonical_source_repository_is_private_until_explicit_launch_authorization",
+    "public_package_sources_are_canonical_but_not_yet_publicly_available",
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",
@@ -451,6 +459,12 @@
       "status": "candidate_done_publication_gate",
       "milestone": "public-distribution",
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes"
+    },
+    {
+      "id": "TQ-320",
+      "status": "pending",
+      "milestone": "runtime-consumers",
+      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
     {
       "id": "TQ-701",
@@ -583,17 +597,17 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "ce4431b97c72c3e1782307567181cebb6be85d92f9d5914232e88082fe637651"
+      "sha256": "4175b9888f00526b6dc63c20577899f2f0cc495fd1398b1645b740e0fd9d58c1"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "190ad8f28436f71ed534e90c00ab678dd909a1cda4e73f38c5378cdd6a44e9f1"
+      "sha256": "fd207a55551a9554e785556d2a4946d7d7505b32deacc00bd521d4b68f0c37e1"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "f684b3858699784040b8c7f48aaa261de096502871ece121812b587f1296817a"
+      "sha256": "bb36a06b60cfa559a711813a6238aae407cd394ffac37edf06b834ccbc429b27"
     }
   ]
 }

@@ -7,8 +7,9 @@ never turns planned work into shipped behavior.
 
 **Updated:** 2026-07-21  
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** finish the external first-release gate while continuing
-the blind adoption and hostile-browser certification before remote products.
+**Current priority:** keep the canonical source private until an explicit
+launch decision, then finish the external first-release gate before expanding
+remote products or consumer claims.
 
 ## What is already proven
 
@@ -24,10 +25,15 @@ rendered support states and `/product-truth.json` are generated from canonical
 machine contracts. It is repository-certified but not deployed, and therefore
 does not create a public URL or release claim.
 
-The canonical public repository and protected Linux/macOS CI are live. Release
-archives and seven `@tasq/*` package candidates are deterministic and clean-room
-tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and certified the
-candidate install/upgrade/restore/uninstall lifecycle on both native targets.
+The dedicated canonical repository and Linux/macOS CI are live. The repository
+is intentionally private before launch; repository visibility is not release
+evidence and must change only after explicit authorization. GitHub branch and
+tag protections are unavailable for this private repository on the current
+plan, so they must be restored and verified at launch or after a plan upgrade.
+Release archives and seven `@tasq/*` package candidates are deterministic and
+clean-room tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and
+certified the candidate install/upgrade/restore/uninstall lifecycle on both
+native targets.
 
 ## Current gates
 
@@ -35,9 +41,11 @@ candidate install/upgrade/restore/uninstall lifecycle on both native targets.
   published. This environment has no valid npm identity, so it cannot prove
   ownership of the `@tasq` scope or configure npm trusted publishing. The next
   authorized registry operator must verify scope/package control, bind the
-  canonical release workflow through npm OIDC, then create the first immutable
-  protected SemVer tag. Workstation publishing and long-lived npm tokens are
-  forbidden.
+  canonical release workflow through npm OIDC, obtain an explicit public-launch
+  authorization for repository visibility, restore and verify repository
+  protections, then create the first immutable protected SemVer tag.
+  Workstation publishing, implicit visibility changes and long-lived npm
+  tokens are forbidden.
 - **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
   passes from generated release assets on macOS arm64 and Linux x64. Final
   closure requires downloading the first protected release, verifying every
@@ -50,8 +58,9 @@ later Local milestones.
 
 ### 1. Finish Local distribution
 
-- **TQ-603:** verify npm scope control, configure repository-bound trusted
-  publishing, publish and attest the first release.
+- **TQ-603:** obtain explicit source-launch authorization, restore repository
+  protections, verify npm scope control, configure repository-bound trusted
+  publishing, then publish and attest the first release.
 - **TQ-604:** certify the downloaded release on both supported targets and
   record release URL, version, commit and digests in the lifecycle certificate.
 
@@ -101,7 +110,17 @@ later Local milestones.
   escaping/redaction, bounded keyset pages, responsive operation and HTTP
   read-only behavior; see `TQ-705_CONSOLE_BROWSER_CERTIFICATION.md`.
 
-### 4. Build self-hosted Tasq Server
+### 4. Certify external interactive runtimes
+
+- **TQ-320 — pending after TQ-603:** certify a Denshin-shaped interactive
+  runtime consumer without adding Machine, terminal, conversation or provider
+  ontology to Core. The gate must cover stable conversation/run identity,
+  assignment, claim/fence, attempt lifecycle, `input_required`, multi-run
+  resume, artifacts/evidence, explicit completion and crash-safe retry through
+  existing public surfaces first. See
+  `TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md`.
+
+### 5. Build self-hosted Tasq Server
 
 - **TQ-801 — done:** strict verified-identity/binding/grant/decision contracts,
   16 digest-bound actions and one pure injected-clock evaluator implement the
@@ -130,7 +149,7 @@ later Local milestones.
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
 
-### 5. Build managed Tasq Cloud
+### 6. Build managed Tasq Cloud
 
 - **TQ-901:** tenant control plane and isolated workspace provisioning.
 - **TQ-902:** same-origin hosted BFF sessions and authenticated Console.
@@ -152,7 +171,7 @@ Every checkpoint must have:
 4. state-based tests plus adversarial evals for concurrency, trust, persistence
    or onboarding changes;
 5. updated human and machine product truth with honest non-claims;
-6. a DCO-signed commit, public PR, green required Linux/macOS checks and merge;
+6. a DCO-signed commit, reviewed PR, green Linux/macOS CI evidence and merge;
 7. external evidence when the claim concerns a registry, published artifact or
    deployed service.
 

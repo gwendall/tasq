@@ -37,6 +37,11 @@ databases are one ACID transaction; unknown commit boundaries require an exact
 same-key retry. See
 [TQ-804_GUARDED_MUTATION_REST.md](TQ-804_GUARDED_MUTATION_REST.md).
 
+The canonical repository is intentionally private before launch. Source
+visibility, npm publication and downloadable releases are not current product
+claims. Making the repository public requires a separate explicit launch
+decision; repository visibility alone would still not make a release.
+
 ## Public site and docs
 
 The separate static product/docs app lives in `apps/site`. It renders support
@@ -83,6 +88,11 @@ argv recipes. Actor labels are attribution, not authentication or authority.
 
 The packages are release candidates until the first protected, attested public
 release is published. Do not infer npm availability from this source tree.
+
+Interactive agent control planes can already map conversations and runs to
+Tasq attempts and external references. TQ-320 will certify that consumer shape
+against a Denshin-style lifecycle before Tasq claims it as a supported
+integration recipe; it does not add machine or terminal ownership to Core.
 
 The release-candidate lifecycle is implemented: target artifacts include a
 checksummed standalone installer, side-by-side activation and data-preserving

@@ -71,10 +71,17 @@ describe("public site boundary", () => {
     expect(adoption).toMatchObject({
       contractVersion: "tasq.public-adoption.v1",
       support: "implemented_candidate_not_published",
-      distribution: { mode: "source_build", published: false, sourceRefMutable: true },
-      human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
+      distribution: {
+        mode: "source_build",
+        published: false,
+        repositoryAccess: "authorized_private_prelaunch",
+        preconditions: ["authorized_repository_access"],
+        sourceRefMutable: true,
+      },
+      human: { path: "/docs/getting-started/", primaryAction: "request_access_then_build" },
       agent: { executableRelativePath: "dist/cli/index.js" },
     });
+    expect(adoption.invariants).toContain("private_prelaunch_repository_requires_authorized_access");
     const declared = new Set<string>(adoption.agent.placeholders as string[]);
     const serializedVectors = JSON.stringify([
       ...adoption.agent.acquisition.flatMap((step: { cwd: string; argv: string[] }) => [step.cwd, ...step.argv]),
