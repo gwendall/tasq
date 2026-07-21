@@ -31,6 +31,12 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   const response = await page.request.get("/product-truth.json");
   expect(response.ok()).toBe(true);
   expect((await response.json()).contractVersion).toBe("tasq.public-site-truth.v1");
+  const adoption = await page.request.get("/adopt.json");
+  expect(adoption.ok()).toBe(true);
+  expect(await adoption.json()).toMatchObject({
+    contractVersion: "tasq.public-adoption.v1",
+    distribution: { mode: "source_build", published: false },
+  });
 });
 
 test("mobile layout stays within the viewport and exposes navigation", async ({ page }) => {

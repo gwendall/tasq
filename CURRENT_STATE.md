@@ -40,6 +40,13 @@ support/release status from the repository's machine contracts. The same exact
 snapshot is exported at `/product-truth.json`. The app is repository-certified
 but not deployed; it is neither the Local Console nor an agent/ledger API.
 
+TQ-606 adds the fail-closed `/adopt.json` pre-executable contract and a complete
+candidate adoption journey across a human-shell proxy, a package-independent
+agent, typed contention/recovery, evidence completion and installed same-ledger
+Console inspection. Published-byte replay and an independent real-human blind
+session remain external gates; no human-usability completion is inferred from
+the automated proxy.
+
 The shortest verified loop is:
 
 ```text

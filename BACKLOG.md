@@ -88,9 +88,13 @@ later Local milestones.
   support and release gates from versioned repository truth, exports the same
   machine JSON and uses only synthetic illustrations. It is not deployed. See
   `TQ-605_PUBLIC_SITE.md`.
-- **TQ-606:** give an unbriefed human and agent only the public entrypoint. They
-  must install, onboard two actors, survive contention/recovery and inspect the
-  same ledger in Console without undocumented help.
+- **TQ-606 — candidate complete, external gates:** `/adopt.json` now closes the
+  machine path before the executable. Package-independent Python/Node consumers
+  install candidate bytes outside the checkout, onboard two actors, recover
+  typed contention with a higher fence, complete with evidence and inspect the
+  same ledger through installed Console. Final closure requires the first
+  published bytes and one independent unbriefed human session; see
+  `TQ-606_PUBLIC_ADOPTION.md`.
 - **TQ-705:** certify empty, mature, hostile, corrupt and large-ledger Console
   journeys in real browsers on both supported platforms.
 

@@ -81,6 +81,9 @@ export default function StatusPage() {
           <Button asChild variant="outline" size="sm" className="mt-5">
             <a href="/product-truth.json"><Braces className="size-3.5" /> Read the same truth as JSON</a>
           </Button>
+          <Button asChild variant="outline" size="sm" className="mt-5 ml-2">
+            <a href="/adopt.json"><Braces className="size-3.5" /> Agent adoption manifest</a>
+          </Button>
         </section>
 
         <div className="mt-16 flex flex-col justify-between gap-5 border border-[var(--line-strong)] bg-[var(--signal-soft)] p-6 sm:flex-row sm:items-center">

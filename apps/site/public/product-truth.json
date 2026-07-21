@@ -383,6 +383,7 @@
         "discover_product",
         "choose_consumer_path",
         "inspect_support_truth",
+        "read_adoption_manifest",
         "build_from_source"
       ]
     },
@@ -425,6 +426,7 @@
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_built_but_not_deployed",
+    "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -472,7 +474,7 @@
     },
     {
       "id": "TQ-606",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "public-adoption",
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate"
     },
@@ -571,12 +573,12 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "895ef4f96fe0a0deac18386311c84f1275d5c38b8e138424c099166ca7bdafdb"
+      "sha256": "3c58a135574e03c3065ad165ebac086ae1ecf2e22dd5288482535a07c9dec17a"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "5541db1025553996c7440a90e36e7109215dc2d958bfebf3c87d1845c4201bc9"
+      "sha256": "e1aab71de6f446eaa9a2204be98b04816c60816bd371e42c39edf2bd3731c556"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",

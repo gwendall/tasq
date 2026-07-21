@@ -188,7 +188,7 @@ describe("TQ-601 product consumption design", () => {
       .toBe("implemented_candidate_not_published");
     expect(byId(matrix.journeys, "public_product_discovery")).toMatchObject({
       support: "implemented_candidate_not_published",
-      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "build_from_source"],
+      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"],
     });
     for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
@@ -209,6 +209,7 @@ describe("TQ-601 product consumption design", () => {
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_built_but_not_deployed",
+      "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);

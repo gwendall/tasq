@@ -149,7 +149,7 @@ Failures block release. Repository-local success is not a substitute.
 | TQ-603 | Reproducible public artifacts and package publication |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
 | TQ-605 | DONE — versioned static public docs and product app; deployment not claimed |
-| TQ-606 | Blind human-plus-agent adoption gate |
+| TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful
 local open-source release, and open-sourcing Core/Local does not make those
