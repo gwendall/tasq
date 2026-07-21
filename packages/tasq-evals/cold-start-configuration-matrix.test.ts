@@ -345,7 +345,7 @@ describe("TQ-316 release artifact across cold configurations", () => {
     expect(native.sha256).toBe(sha256(join(
       release, "node_modules", "@libsql", native.target, "index.node",
     )));
-    expect(manifest.migrations.at(-1)?.name).toBe("0024_external_context_links.sql");
+    expect(manifest.migrations.at(-1)?.name).toBe("0025_console_read_indexes.sql");
     for (const migration of manifest.migrations) {
       expect(existsSync(join(release, migration.name)), migration.name).toBe(true);
       expect(migration.sha256).toBe(sha256(join(release, migration.name)));

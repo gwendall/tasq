@@ -96,6 +96,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
         "./summaries": "./src/summaries.ts",
         "./clock": "./src/clock.ts",
         "./ids": "./src/ids.ts",
+        "./console": "./src/console.ts",
       },
       dependencies: await selectedDependencies("tasq-schema", ["drizzle-orm", "zod"]),
       copyMode: "all-source",

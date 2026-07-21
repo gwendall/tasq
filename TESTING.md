@@ -98,6 +98,9 @@ HMAC receipts, hostile receipts and immutable verification-to-ledger binding.
   exact effects, approval histories and outcome receipts
 - `inspector-index.test.ts` — hard bounds, literal search, coordination signal
   aggregates, status filtering and mandatory injected time
+- `console-read-models.test.ts` — missing/empty, mature, hostile and
+  2,501-commitment views; scoped keyset cursors, redaction, injected expiry,
+  honest health scope and coarse request budgets
 
 Run :
 ```bash
@@ -105,6 +108,10 @@ cd packages/tasq-service && bun test
 ```
 
 **Test isolation** : each test creates its own temp file SQLite via `mkdtempSync` and cleans up in `afterEach`. No shared state, no flakiness from in-memory cache leakage.
+The package runner gives every file a fresh Bun process; the 52-case historical
+state-machine file is additionally split by Task/Goal/Project suite so Bun
+1.3.11 native-driver teardown cannot accumulate across all cases on the
+memory-bounded macOS arm64 CI runner. The same 52 tests remain mandatory.
 
 ### 7. Protocol adapter tests (`packages/tasq-protocol-adapters/test/`)
 
@@ -194,9 +201,10 @@ cd packages/tasq-cli && bun test
 second truth or a hidden write/network/time boundary?*
 
 Bun tests cover HTML escaping, workspace isolation, constant-query bounded
-indexing, all non-read methods, malformed routes/filters, security headers,
-DNS-rebinding host refusal, internal errors, loopback binding and injected HTTP
-time. Playwright then runs four Chromium journeys over the real `tasq web`
+indexing, TQ-701 JSON routes and audit redaction, all non-read methods,
+malformed routes/filters/cursors, security headers, DNS-rebinding host refusal,
+internal errors, loopback binding and injected HTTP time. Playwright then runs
+four Chromium journeys over the real `tasq web`
 process: desktop/focus, filtering/detail navigation, 390px dark/reduced-motion
 layout and browser-context mutation refusal.
 

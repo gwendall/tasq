@@ -50,6 +50,13 @@ export type { InspectCommitmentOptions, CommitmentInspection } from "./inspectio
 export { buildInspectorIndex } from "./inspector-index.js";
 export type { BuildInspectorIndexOptions } from "./inspector-index.js";
 
+export {
+  buildConsoleOverview,
+  buildConsolePage,
+  buildConsoleHealth,
+} from "./console-read-models.js";
+export type { ConsoleReadOptions, ConsolePageOptions } from "./console-read-models.js";
+
 export { buildContextPacket } from "./context-packet.js";
 export type { BuildContextPacketOptions } from "./context-packet.js";
 

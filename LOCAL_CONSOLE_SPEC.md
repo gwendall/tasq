@@ -1,7 +1,7 @@
 # TQ-601 — Tasq Local Console product specification
 
 > **Status:** accepted design baseline — 2026-07-20
-> **Current implementation:** TQ-504 read-only inspector only
+> **Current implementation:** TQ-504 inspector plus TQ-701 canonical read models
 > **Product contract:** `PRODUCT_CONSUMPTION_SPEC.md`
 
 ## 1. Purpose
@@ -23,9 +23,10 @@ loopback-only inspector. It has bounded index and commitment graph routes,
 JSON variants, strict Host checks, no JavaScript, no write route, no-store
 responses and a script-free content security policy. Refresh is manual.
 
-That inspector is useful and certified, but it is not yet the complete Local
-Console described below. In particular it has no live stream, cross-workspace
-overview, fleet health, approval inbox, support bundle or remediation flow.
+That inspector plus the TQ-701 JSON routes now provide bounded workspace-level
+overview, actor, claim, resource, wait, effect, audit and operational-health
+read models. The product still has no live stream, cross-workspace overview,
+visual navigation, support bundle or remediation flow.
 
 ## 3. Users and jobs
 
@@ -124,15 +125,18 @@ read models, not the unauthenticated loopback trust boundary.
 - Live updates coalesce invalidations; they do not resend the complete world
   for every event.
 
-Exact numeric budgets are frozen with TQ-701 after representative fixture
-measurement; this document does not invent unevidenced targets.
+TQ-701 freezes the default/maximum page sizes at 50/100 records, fetches at
+most `limit + 1`, accepts cursors up to 2,048 characters and certifies a
+2,501-active-commitment fixture under a deliberately coarse 2,000 ms page plus
+overview regression ceiling. See `TQ-701_CONSOLE_READ_MODELS.md`; the ceiling
+is evidence guardrail, not a production latency SLO.
 
 ## 8. Delivery phases
 
 | Phase | Scope | Gate |
 |---|---|---|
 | Existing baseline | TQ-504 read-first inspector | Already certified |
-| TQ-701 | Canonical bounded overview/read models | Empty, mature, hostile and large fixtures |
+| TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
 | TQ-702 | Cursor-driven SSE plus polling fallback | Restart, disconnect, gap, expiry and injected-clock tests |
 | TQ-703 | Accessible responsive navigation, search and support bundle | Browser and accessibility certification |
 | TQ-704 | Release/install integration, stable URLs and lifecycle | Clean-room local install/upgrade/uninstall |

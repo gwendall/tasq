@@ -17,7 +17,8 @@
     "./context": "./src/context.ts",
     "./summaries": "./src/summaries.ts",
     "./clock": "./src/clock.ts",
-    "./ids": "./src/ids.ts"
+    "./ids": "./src/ids.ts",
+    "./console": "./src/console.ts"
   },
   "scripts": {
     "test": "bun test",
