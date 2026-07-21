@@ -24,6 +24,10 @@ by ADR-008.
 - Add the responsive, keyboard-accessible Local operator Console with seven
   canonical views, bounded filters, explicit live/stale states, audit timeline
   and preview-before-download redacted support bundles.
+- Add installed Local Console lifecycle contracts: a versioned foreground
+  listener announcement, proof-of-life `web status`, private crash-safe
+  registration and full standalone/npm candidate upgrade coverage without
+  checkout-relative assets or install-created listeners.
 
 ### Security
 

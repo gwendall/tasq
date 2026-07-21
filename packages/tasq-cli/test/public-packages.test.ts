@@ -24,14 +24,26 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((path) => rm(path, { recursive: true, force: true })));
 });
 
-async function run(command: string[], cwd: string) {
-  const child = Bun.spawn(command, { cwd, stdout: "pipe", stderr: "pipe", env: { ...process.env } });
+async function run(command: string[], cwd: string, env: Record<string, string> = {}) {
+  const child = Bun.spawn(command, { cwd, stdout: "pipe", stderr: "pipe", env: { ...process.env, ...env } });
   const [exitCode, stdout, stderr] = await Promise.all([
     child.exited,
     new Response(child.stdout).text(),
     new Response(child.stderr).text(),
   ]);
   return { exitCode, stdout, stderr };
+}
+
+async function firstLine(stream: ReadableStream<Uint8Array>) {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  while (!text.includes("\n")) {
+    const chunk = await reader.read();
+    if (chunk.done) throw new Error(`Console process ended before startup: ${text}`);
+    text += decoder.decode(chunk.value, { stream: true });
+  }
+  return { line: text.slice(0, text.indexOf("\n")), reader };
 }
 
 async function build(outdir: string) {
@@ -202,6 +214,7 @@ describe("Tasq public npm package candidates", () => {
 
     const cli = join(consumer, "node_modules", ".bin", "tasq");
     expect(await run([cli, "--version"], consumer)).toMatchObject({ exitCode: 0, stdout: `${version}\n`, stderr: "" });
+    const packageHome = join(root, "package-home");
     const onboard = await run([
       cli,
       "onboard",
@@ -210,13 +223,37 @@ describe("Tasq public npm package candidates", () => {
       "--actor",
       "agent:fresh",
       "--json",
-    ], consumer);
+    ], consumer, { TASQ_HOME: packageHome });
     expect(onboard.exitCode, onboard.stderr).toBe(0);
     expect(JSON.parse(onboard.stdout)).toMatchObject({
       contractVersion: "tasq.autonomous-bootstrap.v1",
       space: { workspaceId: "package-clean-room" },
       actor: { alias: "agent:fresh" },
     });
+
+    const consoleProcess = Bun.spawn([
+      cli, "web", "--tenant", "package-clean-room", "--host", "127.0.0.1", "--port", "0", "--json",
+    ], {
+      cwd: tmpdir(),
+      env: { PATH: process.env.PATH ?? "", TASQ_HOME: packageHome },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const consoleStderr = new Response(consoleProcess.stderr).text();
+    const startup = await firstLine(consoleProcess.stdout);
+    const descriptor = JSON.parse(startup.line);
+    expect(descriptor).toMatchObject({
+      contractVersion: "tasq.console-listener.v1",
+      productVersion: version,
+      workspaceId: "package-clean-room",
+    });
+    expect(await fetch(descriptor.endpoint.url).then((response) => response.text())).toContain("Tasq Console");
+    expect(await fetch(`${descriptor.endpoint.url}/api/console/runtime`).then((response) => response.json()))
+      .toEqual(descriptor);
+    consoleProcess.kill("SIGTERM");
+    expect(await consoleProcess.exited).toBe(0);
+    await startup.reader.cancel();
+    expect(await consoleStderr).toBe("");
   });
 
   test("fails closed without explicit immutable release identity", async () => {

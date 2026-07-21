@@ -72,9 +72,11 @@ All forms require --tenant <space> --actor <stable-label>; agents should pass --
 export const MCP_USAGE = `mcp --tenant <space> --actor <stable-label> [--capabilities read,propose,coordinate]
 Start a capability-scoped local MCP JSON-RPC server on stdio. Generic stdio
 never grants effect dispatch authority.`;
-export const WEB_USAGE = `web --tenant <space> [--host 127.0.0.1|localhost|::1] [--port 4137]
-Start an unauthenticated read-only inspector on loopback. Port 0 selects an
-ephemeral port. Remote binding is rejected until authenticated hosting exists.`;
+export const WEB_USAGE = `web --tenant <space> [--host 127.0.0.1|localhost|::1] [--port 4137] [--json]
+web status --tenant <space> [--json]
+Start an explicit foreground, unauthenticated read-only Console on loopback, or
+prove whether its registered listener is live. Port 0 selects an ephemeral port.
+JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
 export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
 export const RELEASE_USAGE = "release <task-id> [--reason <text>] [--force]";
 export const ATTEMPT_USAGE = `attempt start <task-id> [--runtime <name>] [--external-id <id>]

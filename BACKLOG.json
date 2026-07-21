@@ -34,6 +34,10 @@
     "publishedLifecycleCertification": {
       "state": "blocked_by_first_protected_release",
       "candidateEvidence": "TQ-604_LIFECYCLE_CERTIFICATION.json"
+    },
+    "publishedConsoleLifecycleCertification": {
+      "state": "blocked_by_first_protected_release",
+      "candidateEvidence": "TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"
     }
   },
   "completedPrerequisites": [
@@ -118,10 +122,11 @@
     },
     {
       "id": "TQ-704",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "local-console",
       "dependsOn": ["TQ-603", "TQ-703"],
-      "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners"
+      "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners",
+      "evidence": ["TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"]
     },
     {
       "id": "TQ-605",

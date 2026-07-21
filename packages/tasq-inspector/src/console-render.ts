@@ -1,5 +1,6 @@
 import type {
   ConsoleHealth,
+  ConsoleListenerDescriptor,
   ConsoleOverview,
   ConsolePage,
   ConsoleSection,
@@ -10,6 +11,7 @@ export interface ConsoleDocument {
   health: ConsoleHealth;
   page: ConsolePage;
   liveCursor: string;
+  runtime?: ConsoleListenerDescriptor | null;
 }
 
 function escapeHtml(value: unknown): string {
@@ -144,7 +146,7 @@ function sum(values: Record<string, number>, excluded: string[] = []): number {
 }
 
 export function renderConsole(document: ConsoleDocument): string {
-  const { overview, health, page, liveCursor } = document;
+  const { overview, health, page, liveCursor, runtime } = document;
   const pageView = renderPage(page);
   const uniqueStates = [...new Set(pageView.states)].sort();
   const activeWork = sum(overview.counts.commitments, ["done", "cancelled"]);
@@ -234,7 +236,9 @@ export function renderConsole(document: ConsoleDocument): string {
         <noscript><p><a href="/api/console/support-bundle">Open the redacted JSON preview</a>. JavaScript is required only to enable reviewed download.</p></noscript>
       </section>
       <footer class="console-footer">
+        ${runtime ? `<span>Tasq Local ${escapeHtml(runtime.productVersion)}</span>` : ""}
         <span>Event cursor ${health.cursors.eventSequence}</span>
+        ${runtime ? `<a href="/api/console/runtime">Listener identity</a>` : ""}
         <a href="/api/console/overview">Overview JSON</a>
         <a href="/inspector">Legacy commitment index</a>
       </footer>

@@ -177,7 +177,9 @@ ${color.bold("AGENT COORDINATION")}
   mcp --tenant <space> --actor <label> [--capabilities read,coordinate]
                                  run a capability-scoped local MCP stdio server
   web --tenant <space> [--host 127.0.0.1] [--port 4137]
-                                 local unauthenticated read-only inspector
+                                 explicit foreground read-only Local Console
+  web status --tenant <space> --json
+                                 prove a registered Console listener is live
 
 ${color.bold("WAIT / OBSERVE / RECONCILE")}
   wait create <task> --kind <kind> --parameters <json> [--deadline <iso>]
@@ -295,7 +297,7 @@ export async function main(
       case "mcp":
         return await mcpCmd(args, clock);
       case "web":
-        return await webCmd(args, clock);
+        return await webCmd(args, clock, undefined, VERSION);
       case "config":
         return await configCmd(args);
 

@@ -6,6 +6,7 @@ import {
   UuidV7,
   type Clock,
   type ConsoleEventBatch,
+  type ConsoleListenerDescriptor,
   type ConsoleStreamEnvelope,
   type TaskStatus as TaskStatusT,
 } from "@tasq/schema";
@@ -39,6 +40,8 @@ export interface TasqInspectorHandlerOptions {
   scheduler?: ConsoleScheduler;
   livePollIntervalMs?: number;
   onError?: (error: unknown) => void;
+  /** Bound listener identity. A callback lets the server fill the ephemeral port after bind. */
+  runtime?: () => ConsoleListenerDescriptor | null;
 }
 
 export function inspectorSecurityHeaders(contentType: string): Headers {
@@ -321,7 +324,13 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
           }),
           buildConsoleEventBatch(options.db, { workspaceId, now: requestNow }),
         ]);
-        return finalize(html(renderConsole({ overview, health, page, liveCursor: live.nextCursor }), 200, head));
+        return finalize(html(renderConsole({
+          overview,
+          health,
+          page,
+          liveCursor: live.nextCursor,
+          runtime: options.runtime?.() ?? null,
+        }), 200, head));
       }
       if (pathname === "/inspector" || pathname === "/api/index") {
         const snapshot = await buildInspectorIndex(options.db, {
@@ -406,6 +415,13 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
           limit: 100,
         });
         return finalize(json(bundle, 200, head));
+      }
+      if (pathname === "/api/console/runtime") {
+        const runtime = options.runtime?.() ?? null;
+        if (!runtime) {
+          return finalize(errorResponse(pathname, 404, "runtime_unavailable", "Listener identity is unavailable.", head));
+        }
+        return finalize(json(runtime, 200, head));
       }
       if (pathname.startsWith("/api/console/")) {
         const parsedSection = ConsoleSection.safeParse(pathname.slice("/api/console/".length));

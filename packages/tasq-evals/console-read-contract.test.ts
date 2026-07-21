@@ -21,7 +21,7 @@ afterEach(() => {
   while (tmpDirs.length > 0) rmSync(tmpDirs.pop()!, { recursive: true, force: true });
 });
 
-describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
+describe("TQ-701 through TQ-704 public Console contracts", () => {
   test("an unbriefed consumer can discover and traverse every bounded section from Core", async () => {
     const dir = mkdtempSync(join(tmpdir(), "tasq-console-eval-"));
     tmpDirs.push(dir);
@@ -111,6 +111,13 @@ describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
     const docs = readFileSync(resolve(root, "TQ-701_CONSOLE_READ_MODELS.md"), "utf8");
     const liveDocs = readFileSync(resolve(root, "TQ-702_CONSOLE_LIVE_TRANSPORT.md"), "utf8");
     const operatorDocs = readFileSync(resolve(root, "TQ-703_OPERATOR_CONSOLE.md"), "utf8");
+    const installedDocs = readFileSync(resolve(root, "TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"), "utf8");
+    const lifecycle = readFileSync(resolve(root, "packages/tasq-cli/src/console-lifecycle.ts"), "utf8");
+    const webCommand = readFileSync(resolve(root, "packages/tasq-cli/src/commands/web.ts"), "utf8");
+    const listener = readFileSync(resolve(root, "packages/tasq-inspector/src/serve.ts"), "utf8");
+    const artifactTest = readFileSync(resolve(root, "packages/tasq-cli/test/artifact-smoke.test.ts"), "utf8");
+    const packageTest = readFileSync(resolve(root, "packages/tasq-cli/test/public-packages.test.ts"), "utf8");
+    const lifecycleTest = readFileSync(resolve(root, "packages/tasq-cli/test/public-lifecycle.test.ts"), "utf8");
     const migration = readFileSync(resolve(root,
       "packages/tasq-core/src/migrations/0025_console_read_indexes.sql"), "utf8");
     const backlog = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
@@ -122,6 +129,8 @@ describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
     expect(schema).toContain("tasq.console-page.v1");
     expect(schema).toContain("tasq.console-event-batch.v1");
     expect(schema).toContain("tasq.console-support-bundle.v1");
+    expect(schema).toContain("tasq.console-listener.v1");
+    expect(schema).toContain("tasq.console-discovery.v1");
     expect(schema).toContain("operator_index_redaction");
     expect(schema).toContain("operator_stream_redaction");
     expect(service).toContain("limit + 1");
@@ -136,6 +145,8 @@ describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
       expect(livePublicCore, forbidden).not.toContain(forbidden);
       expect(scheduler, forbidden).not.toContain(forbidden);
       expect(consoleClient, forbidden).not.toContain(forbidden);
+      expect(lifecycle, forbidden).not.toContain(forbidden);
+      expect(listener, forbidden).not.toContain(forbidden);
     }
     for (const route of ["overview", "health", "work", "actors", "claims", "resources", "waits", "effects", "audit"]) {
       expect(`${schema}\n${server}\n${docs}`).toContain(route);
@@ -149,6 +160,23 @@ describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
     ]) {
       expect(`${schema}\n${server}\n${consoleRender}\n${consoleClient}\n${consoleStyle}\n${operatorDocs}`).toContain(marker);
     }
+    for (const marker of [
+      "/api/console/runtime", "web status", "foreground", "instanceId",
+      "TASQ_HOME/run/console", "published-byte confirmation",
+    ]) {
+      expect(`${schema}\n${server}\n${listener}\n${lifecycle}\n${webCommand}\n${installedDocs}`).toContain(marker);
+    }
+    expect(lifecycle).toContain('mode: 0o700');
+    expect(lifecycle).toContain('mode: 0o600');
+    expect(lifecycle).toContain('process.kill(pid, 0)');
+    expect(lifecycle).not.toMatch(/Bun\.serve|node:http|createServer/);
+    for (const evidence of [artifactTest, packageTest, lifecycleTest]) {
+      expect(evidence).toContain("tasq.console-listener.v1");
+    }
+    expect(artifactTest).toContain("Tasq Console");
+    expect(packageTest).toContain("Tasq Console");
+    expect(lifecycleTest).toContain("Lifecycle survives");
+    expect(lifecycleTest).toContain("/api/console/runtime");
     expect(consoleRender).not.toContain("<form");
     for (const mutationMethod of ['method: "POST"', 'method: "PUT"', 'method: "PATCH"', 'method: "DELETE"']) {
       expect(consoleClient).not.toContain(mutationMethod);
@@ -156,5 +184,6 @@ describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
     expect(backlog.items.find(({ id }) => id === "TQ-701")?.status).toBe("done");
     expect(backlog.items.find(({ id }) => id === "TQ-702")?.status).toBe("done");
     expect(backlog.items.find(({ id }) => id === "TQ-703")?.status).toBe("done");
+    expect(backlog.items.find(({ id }) => id === "TQ-704")?.status).toBe("candidate_done_publication_gate");
   });
 });

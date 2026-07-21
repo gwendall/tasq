@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "bun run ./src/index.ts",
     "build": "bun run ./scripts/build.ts",
-    "test": "bun test",
+    "test": "bun run ./scripts/test.ts",
     "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\"",
     "typecheck": "tsc --noEmit"
   },

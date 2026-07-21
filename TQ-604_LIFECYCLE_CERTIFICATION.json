@@ -43,8 +43,10 @@
       "autonomous-onboard",
       "two-agent-contention-and-recovery",
       "inspect-same-ledger-through-console",
+      "prove-foreground-console-listener-identity",
       "backup",
       "direct-upgrade",
+      "inspect-same-ledger-through-upgraded-console",
       "doctor-and-read-after-upgrade",
       "restore-snapshot-with-matching-binary",
       "uninstall-all-binaries-with-data-preserved"

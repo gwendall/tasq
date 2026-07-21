@@ -73,9 +73,9 @@
       "id": "local_console",
       "support": "implemented_local_only",
       "transport": "loopback_http",
-      "entrypoint": "tasq web --tenant <id>",
+      "entrypoint": "tasq web --tenant <id>; tasq web status --tenant <id> --json",
       "mutations": false,
-      "authorityBoundary": "unauthenticated_loopback_read_only"
+      "authorityBoundary": "unauthenticated_loopback_read_only_foreground_proof_of_life"
     },
     {
       "id": "markdown_projection",
@@ -243,6 +243,7 @@
     "same_workspace_text_does_not_bridge_isolated_stores",
     "mcp_is_local_stdio_not_remote",
     "local_console_is_read_only_not_an_agent_api",
+    "local_console_is_explicit_foreground_not_an_installed_daemon",
     "rest_is_not_implemented",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",

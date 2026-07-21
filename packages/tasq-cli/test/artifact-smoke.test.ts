@@ -13,6 +13,21 @@ afterEach(async () => {
   await Promise.all(temporaryPaths.splice(0).map((path) => rm(path, { recursive: true, force: true })));
 });
 
+async function firstLine(stream: ReadableStream<Uint8Array>): Promise<{
+  line: string;
+  reader: ReadableStreamDefaultReader<Uint8Array>;
+}> {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  while (!text.includes("\n")) {
+    const chunk = await reader.read();
+    if (chunk.done) throw new Error(`Console process ended before startup: ${text}`);
+    text += decoder.decode(chunk.value, { stream: true });
+  }
+  return { line: text.slice(0, text.indexOf("\n")), reader };
+}
+
 describe("released CLI artifact", () => {
   test("boots from the artifact alone with its declared native binding", async () => {
     const root = await mkdtemp(join(tmpdir(), "tasq-cli-artifact-"));
@@ -105,5 +120,38 @@ describe("released CLI artifact", () => {
     expect(webStdout).toBe("");
     expect(webStderr).toContain("loopback");
     expect(webStderr).not.toContain("Cannot find package");
+
+    const consoleProcess = Bun.spawn([
+      join(artifact, "index.js"),
+      "web",
+      "--tenant",
+      "artifact-smoke",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "0",
+      "--json",
+    ], {
+      cwd: root,
+      env: { PATH: process.env.PATH ?? "", TASQ_HOME: tasqHome },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const consoleStderr = new Response(consoleProcess.stderr).text();
+    const startup = await firstLine(consoleProcess.stdout);
+    const descriptor = JSON.parse(startup.line);
+    expect(descriptor).toMatchObject({
+      contractVersion: "tasq.console-listener.v1",
+      workspaceId: "artifact-smoke",
+      endpoint: { scope: "loopback" },
+    });
+    expect(await fetch(descriptor.endpoint.url).then((response) => response.text())).toContain("Tasq Console");
+    expect(await fetch(`${descriptor.endpoint.url}/assets/console.css`).then((response) => response.status)).toBe(200);
+    expect(await fetch(`${descriptor.endpoint.url}/api/console/runtime`).then((response) => response.json()))
+      .toEqual(descriptor);
+    consoleProcess.kill("SIGTERM");
+    expect(await consoleProcess.exited).toBe(0);
+    await startup.reader.cancel();
+    expect(await consoleStderr).toBe("");
   });
 });
