@@ -94,10 +94,11 @@
     },
     {
       "id": "TQ-701",
-      "status": "pending",
+      "status": "done",
       "milestone": "local-console",
       "dependsOn": ["TQ-504"],
-      "outcome": "Bounded canonical overview models for work, actors, coordination, effects, audit and health"
+      "outcome": "Bounded canonical overview models for work, actors, coordination, effects, audit and health",
+      "evidence": ["TQ-701_CONSOLE_READ_MODELS.md"]
     },
     {
       "id": "TQ-702",

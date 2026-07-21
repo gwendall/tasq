@@ -52,10 +52,11 @@ later Local milestones.
 
 ### 2. Complete the Local Console
 
-- **TQ-701:** audit the existing inspector first, then add only missing bounded
-  canonical read models for active commitments, actors, claims, resources,
-  waits, effects, audit and health. Every read has explicit limits/cursors and
-  an injected time snapshot.
+- **TQ-701 — done:** the audited inspector now shares bounded canonical JSON
+  read models for active commitments, actors, claims, resources, waits,
+  effects, redacted audit and honest operational health. Pages use scoped
+  keyset cursors and every read has one injected time snapshot. See
+  `TQ-701_CONSOLE_READ_MODELS.md`.
 - **TQ-702:** add cursor-driven loopback SSE plus bounded polling fallback with
   reconnect, gap, overflow and backpressure semantics. It creates no second
   truth and never reads authority time implicitly.

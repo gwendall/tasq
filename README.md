@@ -55,6 +55,13 @@ clean-room evidence are documented in
 [TQ-604_LIFECYCLE_CERTIFICATION.md](TQ-604_LIFECYCLE_CERTIFICATION.md). No
 download command is advertised until protected artifacts actually exist.
 
+The Local Console source already exposes bounded, versioned JSON read models
+at `/api/console/overview`, `/api/console/health` and
+`/api/console/{section}`. They are loopback-only, read-only, cursor-paginated,
+redacted and driven by an injected clock. See
+[TQ-701_CONSOLE_READ_MODELS.md](TQ-701_CONSOLE_READ_MODELS.md). The live and
+complete visual Console remains roadmap work.
+
 ## Build from source
 
 Requirements: Bun 1.3+, Node.js 22+, and pnpm 10.29+.

@@ -91,6 +91,53 @@ describe("Tasq read-only inspector handler", () => {
     }
   });
 
+  it("exposes only bounded redacted Console read routes under the same loopback boundary", async () => {
+    const h = await fresh();
+    try {
+      const handler = createTasqInspectorHandler(h);
+      h.clock.set(63_000);
+      const overview = await handler(new Request("http://localhost/api/console/overview"));
+      expect(overview.status).toBe(200);
+      expectSecurityHeaders(overview);
+      expect(await overview.json()).toMatchObject({
+        contractVersion: "tasq.console-overview.v1",
+        workspaceId: h.workspaceId,
+        inspectedAt: 63_000,
+      });
+
+      const work = await handler(new Request("http://127.0.0.1/api/console/work?limit=1"));
+      expect(work.status).toBe(200);
+      const workBody = await work.json() as Record<string, unknown>;
+      expect(workBody).toMatchObject({
+        contractVersion: "tasq.console-page.v1",
+        section: "work",
+        requestedLimit: 1,
+        returned: 1,
+      });
+      expect(JSON.stringify(workBody)).not.toContain("Foreign workspace secret");
+
+      const audit = await handler(new Request("http://[::1]/api/console/audit?limit=100"));
+      expect(audit.status).toBe(200);
+      const auditBody = await audit.json() as { items: Array<Record<string, unknown>> };
+      expect(auditBody.items.every((item) => JSON.stringify(item.payload) ===
+        JSON.stringify({ omitted: true, reason: "operator_index_redaction" }))).toBe(true);
+
+      const health = await handler(new Request("http://localhost/api/console/health", { method: "HEAD" }));
+      expect(health.status).toBe(200);
+      expect(health.headers.get("date")).toBe("Thu, 01 Jan 1970 00:01:03 GMT");
+      expect(await health.text()).toBe("");
+
+      const invalidSection = await handler(new Request("http://localhost/api/console/secrets"));
+      expect(invalidSection.status).toBe(400);
+      expect(await invalidSection.json()).toMatchObject({ error: { code: "invalid_console_section" } });
+      const invalidCursor = await handler(new Request("http://localhost/api/console/work?cursor=not-json"));
+      expect(invalidCursor.status).toBe(400);
+      expect(await invalidCursor.json()).toMatchObject({ error: { code: "invalid_request" } });
+    } finally {
+      await h.close();
+    }
+  });
+
   it("rejects mutation methods, foreign hosts and malformed inputs without changing the ledger", async () => {
     const h = await fresh();
     try {

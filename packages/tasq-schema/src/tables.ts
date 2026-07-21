@@ -40,6 +40,7 @@ export const principal = sqliteTable(
   (t) => ({
     localAliasUniq: uniqueIndex("uniq_principal_local_alias").on(t.tenantId, t.localAlias),
     statusIdx: index("idx_principal_status").on(t.tenantId, t.status, t.updatedAt),
+    consoleIdx: index("idx_console_actors").on(t.tenantId, t.createdAt, t.id),
     kindCheck: check("principal_kind_check", sql`${t.kind} IN ('human','agent','service','runtime')`),
     statusCheck: check("principal_status_check", sql`${t.status} IN ('enabled','disabled')`),
     revisionCheck: check("principal_revision_check", sql`${t.revision} > 0`),
@@ -96,6 +97,8 @@ export const resourceLease = sqliteTable(
       .where(sql`${t.releasedAt} IS NULL`),
     fenceUniq: uniqueIndex("uniq_resource_lease_fence").on(t.workspaceId, t.resourceKey, t.fence),
     worldIdx: index("idx_resource_lease_world").on(t.workspaceId, t.releasedAt, t.resourceKey),
+    consoleActiveIdx: index("idx_console_resources").on(t.workspaceId, t.acquiredAt, t.id)
+      .where(sql`${t.releasedAt} IS NULL`),
     holderIdx: index("idx_resource_lease_holder").on(t.workspaceId, t.holderPrincipalId, t.expiresAt),
     chronologyCheck: check("resource_lease_chronology_check",
       sql`${t.heartbeatAt} >= ${t.acquiredAt} AND ${t.expiresAt} > ${t.heartbeatAt}`),
@@ -270,6 +273,8 @@ export const task = sqliteTable(
   },
   (t) => ({
     statusIdx: index("idx_task_status").on(t.tenantId, t.status, t.deletedAt),
+    consoleActiveIdx: index("idx_console_work").on(t.tenantId, t.createdAt, t.id)
+      .where(sql`${t.deletedAt} IS NULL AND ${t.status} NOT IN ('done','cancelled')`),
     goalIdx: index("idx_task_goal").on(t.tenantId, t.goalId, t.status),
     areaIdx: index("idx_task_area").on(t.tenantId, t.areaId, t.status),
     projectIdx: index("idx_task_project").on(t.tenantId, t.projectId, t.status),
@@ -436,6 +441,7 @@ export const deliveryOutbox = sqliteTable(
       t.availableAt,
       t.eventSequence,
     ),
+    statusIdx: index("idx_console_delivery_status").on(t.tenantId, t.status),
     eventIdx: index("idx_delivery_outbox_event").on(t.tenantId, t.eventSequence),
     statusCheck: check(
       "delivery_outbox_status_check",
@@ -709,6 +715,8 @@ export const taskClaim = sqliteTable(
   (t) => ({
     activeUniq: uniqueIndex("uniq_task_claim_active")
       .on(t.tenantId, t.taskId)
+      .where(sql`${t.releasedAt} IS NULL`),
+    consoleActiveIdx: index("idx_console_claims").on(t.tenantId, t.acquiredAt, t.id)
       .where(sql`${t.releasedAt} IS NULL`),
     fenceUniq: uniqueIndex("uniq_task_claim_fence").on(t.tenantId, t.taskId, t.fence),
     actorIdx: index("idx_task_claim_actor").on(t.tenantId, t.actor, t.expiresAt),
@@ -988,6 +996,8 @@ export const waitCondition = sqliteTable(
       t.status,
       t.createdAt,
     ),
+    consoleWaitingIdx: index("idx_console_waits").on(t.tenantId, t.createdAt, t.id)
+      .where(sql`${t.status} = 'waiting'`),
     dueIdx: index("idx_wait_condition_due").on(t.tenantId, t.status, t.deadlineAt),
     candidateIdx: index("idx_wait_condition_kind").on(
       t.tenantId,
@@ -1220,6 +1230,8 @@ export const effect = sqliteTable(
   (t) => ({
     taskIdx: index("idx_effect_task").on(t.tenantId, t.taskId, t.createdAt),
     statusIdx: index("idx_effect_status").on(t.tenantId, t.status, t.updatedAt),
+    consoleUnresolvedIdx: index("idx_console_effects").on(t.tenantId, t.createdAt, t.id)
+      .where(sql`${t.status} IN ('proposed','authorized','executing','indeterminate')`),
     digestIdx: index("idx_effect_digest").on(t.tenantId, t.requestDigest),
     dispatchUniq: uniqueIndex("uniq_effect_dispatch_key").on(t.tenantId, t.dispatchIdempotencyKey),
     supersedesUniq: uniqueIndex("uniq_effect_supersedes")
@@ -1489,6 +1501,7 @@ export const replicationOutgoing = sqliteTable(
     pendingIdx: index("idx_replication_outgoing_pending").on(
       t.workspaceId, t.replicaId, t.generationId, t.status, t.counter,
     ),
+    statusIdx: index("idx_console_replication_outgoing_status").on(t.workspaceId, t.status),
     counterCheck: check("replication_outgoing_counter_check", sql`${t.counter} > 0`),
     statusCheck: check(
       "replication_outgoing_status_check",

@@ -38,6 +38,13 @@ export { buildInspectorIndex } from "./inspector-index.js";
 export type { BuildInspectorIndexOptions } from "./inspector-index.js";
 
 export {
+  buildConsoleOverview,
+  buildConsolePage,
+  buildConsoleHealth,
+} from "./console-read-models.js";
+export type { ConsoleReadOptions, ConsolePageOptions } from "./console-read-models.js";
+
+export {
   createCommitment,
   getCommitment,
   listCommitments,

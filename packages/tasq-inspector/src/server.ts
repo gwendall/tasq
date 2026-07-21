@@ -1,5 +1,8 @@
-import { TaskStatus, UuidV7, type Clock, type TaskStatus as TaskStatusT } from "@tasq/schema";
+import { ConsoleSection, TaskStatus, UuidV7, type Clock, type TaskStatus as TaskStatusT } from "@tasq/schema";
 import {
+  buildConsoleHealth,
+  buildConsoleOverview,
+  buildConsolePage,
   buildInspectorIndex,
   inspectCommitment,
   type TasqDb,
@@ -150,6 +153,31 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
           ? json(snapshot, 200, head)
           : html(renderInspectorIndex(snapshot), 200, head));
       }
+      if (pathname === "/api/console/overview") {
+        return finalize(json(await buildConsoleOverview(options.db, {
+          workspaceId,
+          now: requestNow,
+        }), 200, head));
+      }
+      if (pathname === "/api/console/health") {
+        return finalize(json(await buildConsoleHealth(options.db, {
+          workspaceId,
+          now: requestNow,
+        }), 200, head));
+      }
+      if (pathname.startsWith("/api/console/")) {
+        const parsedSection = ConsoleSection.safeParse(pathname.slice("/api/console/".length));
+        if (!parsedSection.success) {
+          return finalize(errorResponse(pathname, 400, "invalid_console_section", "Console section is invalid.", head));
+        }
+        return finalize(json(await buildConsolePage(options.db, {
+          workspaceId,
+          section: parsedSection.data,
+          limit: parseLimit(url.searchParams.get("limit")),
+          cursor: url.searchParams.get("cursor"),
+          now: requestNow,
+        }), 200, head));
+      }
       const apiId = commitmentId(pathname, "/api/commitments/");
       const pageId = commitmentId(pathname, "/commitments/");
       const id = apiId ?? pageId;
@@ -173,7 +201,7 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
       options.onError?.(error);
       const message = error instanceof Error && (
         error.message.startsWith("limit ") || error.message.startsWith("query ") ||
-        error.message.startsWith("status ")
+        error.message.startsWith("status ") || error.message.startsWith("console ")
       ) ? error.message : "The inspector could not build this read projection.";
       const status = message === "The inspector could not build this read projection." ? 500 : 400;
       return finalize(errorResponse(pathname, status, status === 400 ? "invalid_request" : "internal_error", message, head));

@@ -15,6 +15,9 @@ by ADR-008.
   atomic activation and data-preserving uninstall, plus a clean-room lifecycle
   certificate covering onboarding, contention, Console, backup, upgrade and
   matching snapshot/binary restore.
+- Add transport-neutral bounded Console overview, work, actor, claim,
+  resource, wait, effect, redacted audit and honest operational-health read
+  contracts with workspace-bound keyset cursors and injected authority time.
 
 ### Security
 
