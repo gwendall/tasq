@@ -224,11 +224,14 @@ methods, malformed routes/filters/cursors, security headers, DNS-rebinding host 
 internal errors, loopback binding and injected HTTP time/scheduling. TQ-703
 adds support-bundle redaction/completeness and client asset checks. TQ-704 adds
 the exact `tasq.console-listener.v1` runtime endpoint and deterministic injected
-listener identity. Playwright
-then runs six Chromium journeys over the real `tasq web` process: desktop
-focus/filtering, legacy detail navigation, 390px dark/reduced-motion layout,
-cross-process live invalidation, preview-before-download support and
-browser-context mutation refusal. The public CI has a dedicated Chromium job.
+listener identity. TQ-705 Playwright tests start the production Console server
+over five fixed-clock, process-isolated stores: empty, mature, hostile, corrupt
+and 2,501 commitments with matching audit events. Nine Chromium journeys cover
+keyboard/filter behavior, deep navigation, active claim/resource inspection,
+390px dark/reduced-motion layout, cross-process live invalidation,
+preview-before-download support, HTTP mutation refusal, inert hostile markup,
+metadata redaction, safe corruption errors and bounded keyset pagination. The
+same suite runs in dedicated Ubuntu and macOS Chromium CI jobs.
 
 ```bash
 cd packages/tasq-inspector

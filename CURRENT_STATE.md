@@ -47,6 +47,13 @@ Console inspection. Published-byte replay and an independent real-human blind
 session remain external gates; no human-usability completion is inferred from
 the automated proxy.
 
+TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.
+Five fixed-clock, process-isolated ledgers cover empty, mature, hostile,
+corrupt and 2,501-commitment states. Pagination stays bounded, hostile content
+stays inert, support metadata stays redacted and corrupt canonical state fails
+with a generic operator-safe error. This is a Local browser gate, not a hosted
+Console or broad browser-engine claim.
+
 The shortest verified loop is:
 
 ```text

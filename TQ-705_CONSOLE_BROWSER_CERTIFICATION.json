@@ -1,0 +1,43 @@
+{
+  "contractVersion": "tasq.console-browser-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-21",
+  "surface": "local_read_only_console",
+  "browserEngine": "chromium",
+  "platformJobs": [
+    { "os": "linux", "runner": "ubuntu-latest", "job": "console-browser" },
+    { "os": "macos", "runner": "macos-14", "job": "console-browser-macos" }
+  ],
+  "scenarios": ["empty", "mature", "hostile", "corrupt", "large"],
+  "authority": {
+    "fixedUnixMs": 1735689600000,
+    "deviceClockReadInFixture": false,
+    "browserDurationIsAuthority": false
+  },
+  "largeLedger": {
+    "commitments": 2501,
+    "matchingAuditEvents": 2501,
+    "maximumPageRecords": 100,
+    "maximumInitialHtmlBytes": 262144,
+    "firstRenderRegressionCeilingMs": 5000,
+    "latencySla": false
+  },
+  "corruptState": {
+    "expectedHttpStatus": 500,
+    "maximumErrorHtmlBytes": 32768,
+    "lowLevelDetailsDisclosed": false
+  },
+  "invariants": [
+    "production_console_server",
+    "process_isolated_stores",
+    "injected_authority_clock",
+    "bounded_keyset_pages",
+    "page_local_filter_is_explicit",
+    "hostile_data_is_inert",
+    "support_metadata_is_redacted",
+    "corruption_fails_closed",
+    "http_surface_is_read_only",
+    "full_integrity_remains_explicit"
+  ],
+  "tq705Complete": true
+}

@@ -37,6 +37,7 @@ packages/tasq-evals/
 ├── hosted-tenancy-design.test.ts scenario: ADR-004/TQ-505 machine guard for future authenticated hosting
 ├── product-consumption-design.test.ts scenario: TQ-601 product shapes, consumers and honest support states
 ├── public-roadmap.test.ts              scenario: canonical execution order, dependencies and external gates
+├── console-browser-certification.test.ts scenario: TQ-705 five-state fixed-clock Linux/macOS Console gate
 ├── external-context-links.test.ts scenario: TQ-503 reusable external context without memory import
 ├── protocol-interoperability.test.ts scenario: UK-010 MCP/A2A execution without implicit completion
 ├── universal-kernel-acceptance.test.ts scenario: UK-011 unfamiliar extension, two runtimes and cursor restart

@@ -34,6 +34,9 @@ by ADR-008.
 - Add the fail-closed `/adopt.json` pre-executable contract and a candidate
   human-plus-agent adoption certificate covering installed-byte onboarding,
   typed contention/recovery and same-ledger Console inspection.
+- Add cross-platform Local Console browser certification for empty, mature,
+  hostile, corrupt and 2,501-commitment ledgers using fixed injected time,
+  bounded pages, safe errors and real Chromium on Linux and macOS.
 
 ### Security
 
