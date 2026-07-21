@@ -133,7 +133,12 @@ describe("TQ-601 product consumption design", () => {
       mutations: false,
       authorityBoundary: "versioned_repository_truth_no_ledger_access",
     });
-    for (const id of ["rest", "remote_mcp", "hosted_console"]) {
+    expect(byId(matrix.surfaces, "rest")).toMatchObject({
+      support: "implemented_integration_required",
+      entrypoint: "@tasq-internal/server createHostedReadHandler",
+      mutations: false,
+    });
+    for (const id of ["remote_mcp", "hosted_console"]) {
       expect(byId(matrix.surfaces, id)).toMatchObject({
         support: "not_implemented",
         entrypoint: null,
@@ -202,7 +207,7 @@ describe("TQ-601 product consumption design", () => {
       "same_workspace_text_does_not_bridge_isolated_stores",
       "mcp_is_local_stdio_not_remote",
       "local_console_is_read_only_not_an_agent_api",
-      "rest_is_not_implemented",
+      "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
       "public_package_sources_are_open_but_registry_artifacts_are_not_published",

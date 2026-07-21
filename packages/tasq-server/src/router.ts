@@ -40,7 +40,17 @@ export class IsolatedWorkspaceRouter<T> {
   }
 
   async authorizeAndOpen(input: WorkspaceAuthorizationInput): Promise<RoutedWorkspace<T>> {
-    const authorization = await this.authority.authorize(input);
+    return this.route(input, await this.authority.authorize(input));
+  }
+
+  async authorizeAndOpenAt(input: WorkspaceAuthorizationInput, evaluatedAt: number): Promise<RoutedWorkspace<T>> {
+    return this.route(input, await this.authority.authorizeAt(input, evaluatedAt));
+  }
+
+  private async route(
+    input: WorkspaceAuthorizationInput,
+    authorization: Awaited<ReturnType<AuthorityStore["authorize"]>>,
+  ): Promise<RoutedWorkspace<T>> {
     if (authorization.decision.decision !== "allow" || authorization.storageBindingId === null) {
       return {
         decision: authorization.decision,

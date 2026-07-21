@@ -5,7 +5,8 @@ Tasq currently ships source for two local product shapes:
 - **Core:** an embeddable, profile-neutral coordination kernel;
 - **Local:** the CLI, local stdio MCP transport and read-only loopback Console.
 
-Server, remote REST/MCP and Cloud are planned, not implemented. Provider
+Server, remote MCP and Cloud are planned, not implemented. A host-integrated,
+read-only REST handler now exists, but no deployable endpoint ships. Provider
 connectors, domain policy and agent runtimes remain outside Core.
 
 TQ-801 implements Server's first internal building block:
@@ -23,8 +24,13 @@ permission definitions, live grants/delegations/eligibility, idempotency,
 decisions and append-only security audit in a separate authority database.
 Its router resolves only a host-configured opaque storage binding after an
 allow, so a denied foreign-workspace probe invokes no domain-ledger opener.
-It still exports no listener or remote entrypoint. TQ-803 is next; atomic
-authority-plus-domain mutations remain explicitly TQ-804.
+TQ-803 wraps that boundary in a Fetch-compatible authenticated read handler.
+It publishes RFC 9728 discovery, accepts identity only from a host-supplied
+credential verifier, authorizes every request live, supports bounded
+commitment reads and payload-free event metadata, and captures one injected
+clock snapshot per request. It is an integration entrypoint, not a listener or
+deployable Server; concrete OIDC/JWKS/introspection adapters are not yet
+provided. Atomic authority-plus-domain mutations remain explicitly TQ-804.
 
 This is the canonical public source repository. `main` requires pull requests
 and green Linux/macOS CI; release tags are immutable and the `release`

@@ -85,10 +85,12 @@ share the ADR-004 authentication, workspace routing and live authorization
 guard. A server is not created by binding the current inspector or stdio MCP
 to a public interface.
 
-**Current product state:** not implemented. TQ-801/TQ-802 provide only its
-private inner authority evaluator, durable control plane and opaque workspace
-router. They expose no consumer entrypoint and therefore do not make Server a
-usable or self-hostable product.
+**Current product state:** not implemented as a runnable product. TQ-801 and
+TQ-802 provide its private authority evaluator, durable control plane and
+opaque workspace router. TQ-803 provides a host-integrated Fetch handler for
+authenticated read-only REST. An integrator must still supply a conforming
+credential verifier, workspace reader, HTTPS listener and operations. This
+entrypoint therefore does not make Server a usable or self-hostable release.
 
 ### 2.4 Tasq Cloud
 
@@ -114,8 +116,8 @@ product to be useful.
 | Extension SDK | `@tasq/extension-sdk` | Implemented internally | Trusted in-process code; no public registry distribution |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
-| Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No verifier, transport, kernel route or deployable artifact |
-| REST | none | Not implemented | Must not be inferred from Fetch-compatible inspector code |
+| Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
+| Read-only REST handler | `@tasq-internal/server` `createHostedReadHandler` | Implemented; host integration required | Host supplies verifier, listener and workspace reader; no mutations |
 | Self-hosted server | none | Not implemented | No daemon, image, auth or operator contract |
 | Managed service | none | Not implemented | ADR-004 is design, not deployment |
 
@@ -315,10 +317,11 @@ deploy -> configure issuer -> create workspace -> bind principal -> grant
        -> connect REST/MCP/web -> revoke/rotate -> backup/restore -> upgrade
 ```
 
-No remotely consumable step in that second journey is currently advertised as
+No deployable step in that second journey is currently advertised as
 implemented. TQ-801/TQ-802 implement the internal identity/authority contracts,
-store and router that later steps must use; they do not expose deployment,
-issuer configuration or connection surfaces.
+store and router. TQ-803 adds the read-only handler that a host may integrate,
+but does not expose deployment, concrete issuer configuration or a running
+connection surface.
 
 ## 9. Documentation contract
 

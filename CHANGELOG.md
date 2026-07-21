@@ -43,6 +43,10 @@ by ADR-008.
 - Add the durable hosted-authority control plane with checksum-pinned
   migrations, CAS/idempotent lifecycle writes, append-only decisions/audit and
   a host-configured opaque router that opens no foreign ledger before allow.
+- Add a host-integrated authenticated read-only REST handler with RFC 9728
+  discovery, strict verifier and live-authority boundaries, bounded commitment
+  reads, payload-free event metadata and one injected clock snapshot per
+  request.
 
 ### Security
 

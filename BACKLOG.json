@@ -180,10 +180,11 @@
     },
     {
       "id": "TQ-803",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-802"],
-      "outcome": "Authenticated read-only REST, discovery and event metadata"
+      "outcome": "Authenticated read-only REST, discovery and event metadata",
+      "evidence": ["TQ-803_HOSTED_READ_REST.md", "TQ-803_READ_REST_CERTIFICATION.json"]
     },
     {
       "id": "TQ-804",

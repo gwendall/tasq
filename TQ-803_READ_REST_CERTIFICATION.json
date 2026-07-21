@@ -1,0 +1,54 @@
+{
+  "contractVersion": "tasq.hosted-read-rest-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-21",
+  "backlogItem": "TQ-803",
+  "package": "@tasq-internal/server",
+  "implementationDigest": "sha256:2dcf59e06b012d7ce432bb02e9085561c4eed1f507e150b109d0459685920f8b",
+  "implementedSurface": "host_integrated_fetch_handler",
+  "protocol": {
+    "discovery": "RFC 9728",
+    "authentication": "host_supplied_credential_verifier",
+    "bearerMethods": ["header"],
+    "methods": ["GET"],
+    "pageDefault": 50,
+    "pageMaximum": 100
+  },
+  "certifiedProperties": [
+    "public_discovery_reveals_no_workspace_state",
+    "typed_bearer_challenge",
+    "discovery_advertises_read_scopes_only",
+    "one_injected_clock_snapshot_per_request",
+    "malformed_input_rejected_before_authentication_and_storage",
+    "exact_issuer_subject_binding",
+    "foreign_workspace_never_opened",
+    "encoded_opaque_workspace_identifier",
+    "live_revocation_on_next_request",
+    "commitment_output_workspace_bound",
+    "exact_commitment_identity_bound_to_route",
+    "returned_pages_cannot_exceed_requested_limit",
+    "event_cursor_is_exclusive_increasing_and_tail_bound",
+    "event_metadata_excludes_payload",
+    "strict_bounded_output_contracts",
+    "read_only_methods"
+  ],
+  "cleanRoomProfiles": [
+    "host_integrator_with_verified_agent_token",
+    "cross_workspace_probe",
+    "revoked_unexpired_token"
+  ],
+  "deployableServer": false,
+  "concreteCredentialAdapters": [],
+  "implementedMutationRoutes": [],
+  "implementedRemoteMcpTools": [],
+  "excludedLayers": [
+    "network_listener",
+    "tls_termination",
+    "oidc_jwks_or_introspection_adapter",
+    "mutation_rest",
+    "remote_mcp",
+    "replication_transport",
+    "deployable_server"
+  ],
+  "tq803Complete": true
+}

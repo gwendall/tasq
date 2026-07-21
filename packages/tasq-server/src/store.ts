@@ -858,7 +858,12 @@ export class AuthorityStore {
   }
 
   async authorize(input: WorkspaceAuthorizationInput): Promise<WorkspaceAuthorizationResult> {
-    const now = requiredClockNow(this.clock);
+    return this.authorizeAt(input, requiredClockNow(this.clock));
+  }
+
+  /** Trusted composition seam for one request-wide injected clock snapshot. */
+  async authorizeAt(input: WorkspaceAuthorizationInput, evaluatedAt: number): Promise<WorkspaceAuthorizationResult> {
+    const now = UnixMs.parse(evaluatedAt);
     const requestId = Id.parse(input.requestId);
     const workspaceId = WorkspaceId.parse(input.workspaceId);
     const envelopeDigest = digestAuthorityValue(input);
