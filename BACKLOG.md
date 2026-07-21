@@ -95,8 +95,11 @@ later Local milestones.
   same ledger through installed Console. Final closure requires the first
   published bytes and one independent unbriefed human session; see
   `TQ-606_PUBLIC_ADOPTION.md`.
-- **TQ-705:** certify empty, mature, hostile, corrupt and large-ledger Console
-  journeys in real browsers on both supported platforms.
+- **TQ-705 — done:** fixed-clock, process-isolated empty, mature, hostile,
+  corrupt and 2,501-commitment fixtures now run through the production Console
+  in real Chromium on Linux and macOS. The gate proves safe corruption failure,
+  escaping/redaction, bounded keyset pages, responsive operation and HTTP
+  read-only behavior; see `TQ-705_CONSOLE_BROWSER_CERTIFICATION.md`.
 
 ### 4. Build self-hosted Tasq Server
 

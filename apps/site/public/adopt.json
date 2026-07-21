@@ -14,11 +14,11 @@
       "sourceContracts": [
         {
           "path": "PRODUCT_SURFACE_MATRIX.json",
-          "sha256": "3c58a135574e03c3065ad165ebac086ae1ecf2e22dd5288482535a07c9dec17a"
+          "sha256": "8da174c1b9b74b43a73b97d41e8b7113bac5248a9baedffbb8c850ba301b7f1e"
         },
         {
           "path": "BACKLOG.json",
-          "sha256": "e1aab71de6f446eaa9a2204be98b04816c60816bd371e42c39edf2bd3731c556"
+          "sha256": "ba2bdb4d153fa245e2fd45d51e8688c81bc78eee7c4474796ebfee5f4fbee58b"
         },
         {
           "path": "PUBLIC_RELEASE_POLICY.json",

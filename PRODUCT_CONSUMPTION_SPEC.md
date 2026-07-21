@@ -172,8 +172,9 @@ event cursors, `doctor`, backup and journal commands.
 
 **Support:** the Local Console provides live/stale workspace overview, bounded
 operational health, seven canonical views and previewable redacted support
-bundles. Cross-workspace fleet health and remediation workflows are not
-implemented.
+bundles. Its empty, mature, hostile, corrupt and large-ledger browser paths are
+certified in Chromium on Linux and macOS with injected authority time.
+Cross-workspace fleet health and remediation workflows are not implemented.
 
 ### 4.5 TypeScript application or runtime integrator
 

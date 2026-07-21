@@ -93,6 +93,10 @@ saved identity against the live `/api/console/runtime` endpoint. The UI footer
 shows the installed version. Upgrade and uninstall
 create no hidden listener and preserve ledger data; see
 [TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md](TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md).
+The browser surface is additionally certified with fixed injected time over
+empty, mature, hostile, corrupt and 2,501-commitment stores in real Chromium
+on Linux and macOS; see
+[TQ-705_CONSOLE_BROWSER_CERTIFICATION.md](TQ-705_CONSOLE_BROWSER_CERTIFICATION.md).
 
 ## Build from source
 

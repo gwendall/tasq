@@ -156,10 +156,11 @@
     },
     {
       "id": "TQ-705",
-      "status": "pending",
+      "status": "done",
       "milestone": "local-console",
       "dependsOn": ["TQ-704"],
-      "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification"
+      "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification",
+      "evidence": ["TQ-705_CONSOLE_BROWSER_CERTIFICATION.md", "TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"]
     },
     {
       "id": "TQ-801",
