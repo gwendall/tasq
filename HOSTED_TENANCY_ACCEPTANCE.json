@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.hosted-tenancy-acceptance.v1",
-  "status": "host-integrated-read-rest-implemented-no-deployable-server",
+  "status": "host-integrated-read-write-rest-implemented-no-deployable-server",
   "decision": "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
   "implementedSlices": [
     {
@@ -22,6 +22,13 @@
       "package": "@tasq-internal/server",
       "evidence": "TQ-803_READ_REST_CERTIFICATION.json",
       "includes": ["rfc_9728_discovery", "credential_verifier_boundary", "guarded_read_handler", "bounded_event_metadata"],
+      "remoteSurface": "host_integration_required"
+    },
+    {
+      "id": "TQ-804",
+      "package": "@tasq-internal/server",
+      "evidence": "TQ-804_MUTATION_REST_CERTIFICATION.json",
+      "includes": ["operation_catalog", "guarded_mutation_handler", "durable_idempotency_contract", "revocation_serialization", "unknown_outcome_recovery"],
       "remoteSurface": "host_integration_required"
     }
   ],
@@ -57,7 +64,7 @@
   "surfaces": [
     {
       "id": "rest",
-      "status": "implemented_integration_required_read_only",
+      "status": "implemented_integration_required_read_write",
       "sharedGuard": true
     },
     {
@@ -150,7 +157,7 @@
       "id": "concurrent_revocation_and_mutation",
       "principles": ["atomic_authority", "optimistic_concurrency"],
       "surfaces": ["rest"],
-      "requiredOutcome": "mutation and authority preconditions commit together or deny retryably"
+      "requiredOutcome": "the live authority writer gate spans the durable idempotent domain commit; a competing writer fails retryably"
     },
     {
       "id": "effect_separation_of_duty",

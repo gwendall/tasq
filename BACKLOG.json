@@ -188,10 +188,11 @@
     },
     {
       "id": "TQ-804",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-803"],
-      "outcome": "Guarded mutation REST with idempotency, revocation and injected authority time"
+      "outcome": "Guarded mutation REST with idempotency, revocation and injected authority time",
+      "evidence": ["TQ-804_GUARDED_MUTATION_REST.md", "TQ-804_MUTATION_REST_CERTIFICATION.json"]
     },
     {
       "id": "TQ-805",

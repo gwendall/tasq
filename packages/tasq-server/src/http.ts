@@ -2,13 +2,16 @@ import { randomUUID } from "node:crypto";
 import type { Clock } from "@tasq/schema";
 import {
   ACTION_URIS,
+  ResourceRef,
   VerifiedIdentity,
   digestAuthorityValue,
   getRegisteredAction,
+  type AuthorizationDecision,
   type VerifiedIdentity as VerifiedIdentityValue,
 } from "@tasq-internal/authority";
 import { z } from "zod";
 import type { IsolatedWorkspaceRouter } from "./router.js";
+import { AuthorityStoreError } from "./store.js";
 
 export const HOSTED_READ_HTTP_CONTRACT_VERSION = "tasq.hosted-read-http.v1" as const;
 export const HOSTED_READ_HTTP_IMPLEMENTATION_DIGEST = digestAuthorityValue({
@@ -23,6 +26,19 @@ export const HOSTED_READ_HTTP_IMPLEMENTATION_DIGEST = digestAuthorityValue({
   bearerMethods: ["header"],
   workspacePath: "single_percent_encoded_segment",
   authorization: "live_tq802_guard_after_verification",
+  clock: "one_injected_snapshot_per_request",
+});
+export const HOSTED_MUTATION_HTTP_CONTRACT_VERSION = "tasq.hosted-mutation-http.v1" as const;
+export const HOSTED_MUTATION_HTTP_IMPLEMENTATION_DIGEST = digestAuthorityValue({
+  contractVersion: HOSTED_MUTATION_HTTP_CONTRACT_VERSION,
+  method: "POST",
+  route: "workspace_scoped_registered_operation",
+  discovery: "public_state_free_operation_catalog",
+  authorization: "begin_immediate_live_guard_held_through_durable_workspace_callback",
+  concurrency: "host_declared_revision_requirement_and_competing_authority_writer_typed_retry",
+  idempotency: "required_subject_actor_action_scoped_key_plus_semantic_request_digest",
+  uncertainty: "committed_domain_without_bound_outcome_requires_exact_retry",
+  bounds: { bodyBytes: 262_144, portableDepth: 32, portableNodes: 10_000 },
   clock: "one_injected_snapshot_per_request",
 });
 
@@ -82,7 +98,7 @@ export interface HostedReadWorkspace {
 export interface CredentialVerificationInput {
   authorization: string;
   dpopProof: string | null;
-  method: "GET";
+  method: "GET" | "POST";
   requestUrl: string;
   expectedAudience: string;
 }
@@ -106,6 +122,7 @@ export interface ProtectedResourceMetadata {
   scopes_supported: string[];
   resource_documentation?: string;
   dpop_signing_alg_values_supported?: string[];
+  tasq_operation_catalog?: string;
 }
 
 export interface HostedReadHttpOptions {
@@ -238,7 +255,10 @@ function parseQuery(url: URL, matched: ReadRoute): ParsedQuery | null {
   return afterSequence === null ? null : { kind: "events", afterSequence, limit };
 }
 
-export function createHostedReadHandler(options: HostedReadHttpOptions): (request: Request) => Promise<Response> {
+function createHostedReadHandlerWithExtensions(
+  options: HostedReadHttpOptions,
+  extension: { scopeUris?: string[]; operationCatalogUrl?: string } = {},
+): (request: Request) => Promise<Response> {
   const resourceValue = canonicalHttps(options.protectedResource, true);
   const resource = new URL(resourceValue);
   const authorizationServers = options.authorizationServers.map((value) => canonicalHttps(value, true));
@@ -252,11 +272,14 @@ export function createHostedReadHandler(options: HostedReadHttpOptions): (reques
     authorization_servers: [...authorizationServers].sort(),
     bearer_methods_supported: ["header"],
     resource_name: "Tasq hosted read API",
-    scopes_supported: [ACTION_URIS["commitment.read"], ACTION_URIS["workspace.read"]].sort(),
+    scopes_supported: [...new Set([
+      ACTION_URIS["commitment.read"], ACTION_URIS["workspace.read"], ...(extension.scopeUris ?? []),
+    ])].sort(),
     ...(options.resourceDocumentation ? { resource_documentation: canonicalHttps(options.resourceDocumentation, true) } : {}),
     ...(options.dpopSigningAlgorithms?.length
       ? { dpop_signing_alg_values_supported: [...new Set(options.dpopSigningAlgorithms)].sort() }
       : {}),
+    ...(extension.operationCatalogUrl ? { tasq_operation_catalog: extension.operationCatalogUrl } : {}),
   };
 
   return async (request) => {
@@ -388,6 +411,401 @@ export function createHostedReadHandler(options: HostedReadHttpOptions): (reques
       }, 200, now);
     } catch {
       return problem(500, "read_contract_violation", requestId, now, {}, routed.decision.decisionId);
+    }
+  };
+}
+
+export function createHostedReadHandler(options: HostedReadHttpOptions): (request: Request) => Promise<Response> {
+  return createHostedReadHandlerWithExtensions(options);
+}
+
+const OperationId = z.string().min(1).max(100).regex(/^[a-z][a-z0-9._-]*$/);
+const Digest = z.string().regex(/^sha256:[0-9a-f]{64}$/);
+const ContractIdentity = z.object({
+  uri: z.string().min(1).max(500).refine((value) => {
+    try {
+      const parsed = new URL(value);
+      return parsed.href === value && !parsed.username && !parsed.password;
+    } catch {
+      return false;
+    }
+  }),
+  version: z.number().int().positive(),
+  implementationDigest: Digest,
+}).strict();
+
+export const HostedMutationOperation = z.object({
+  id: OperationId,
+  actionUri: z.string().min(1).max(500),
+  summary: z.string().min(1).max(500),
+  inputContract: ContractIdentity,
+  outputContract: ContractIdentity,
+  requiresExpectedRevision: z.boolean(),
+}).strict();
+export type HostedMutationOperation = z.infer<typeof HostedMutationOperation>;
+
+const HostedMutationEnvelope = z.object({
+  contractVersion: z.literal("tasq.hosted-mutation-request.v1"),
+  resource: ResourceRef,
+  expectedRevision: z.number().int().positive().nullable().default(null),
+  input: z.unknown(),
+}).strict();
+
+const HostedMutationOutcomeSchema = z.object({
+  contractVersion: z.literal("tasq.hosted-mutation-outcome.v1"),
+  workspaceId: WorkspaceId,
+  operationId: OperationId,
+  requestDigest: Digest,
+  idempotencyKeyDigest: Digest,
+  resultType: Opaque,
+  resultId: Opaque,
+  resultRevision: z.number().int().positive().nullable(),
+  eventSequence: z.number().int().positive().nullable(),
+  replayed: z.boolean(),
+  result: z.unknown(),
+}).strict();
+export type HostedMutationOutcome = z.infer<typeof HostedMutationOutcomeSchema>;
+
+export interface HostedMutationCommand {
+  contractVersion: "tasq.hosted-mutation-command.v1";
+  operation: HostedMutationOperation;
+  workspaceId: string;
+  resource: z.infer<typeof ResourceRef>;
+  expectedRevision: number | null;
+  input: unknown;
+  requestDigest: string;
+  idempotencyKey: string;
+  idempotencyKeyDigest: string;
+  evaluatedAt: number;
+  authorityRevision: number;
+  decision: AuthorizationDecision;
+}
+
+export interface HostedMutationWorkspace extends HostedReadWorkspace {
+  executeMutation(command: HostedMutationCommand): Promise<HostedMutationOutcome>;
+}
+
+export class HostedMutationError extends Error {
+  constructor(readonly code: "invalid_input" | "not_found" | "conflict" | "indeterminate" | "unavailable") {
+    super(code);
+    this.name = "HostedMutationError";
+  }
+}
+
+export interface HostedHttpOptions extends Omit<HostedReadHttpOptions, "router"> {
+  router: IsolatedWorkspaceRouter<HostedMutationWorkspace>;
+  mutationOperations: HostedMutationOperation[];
+}
+
+type MutationRoute = { workspaceId: string; operationId: string } | null;
+const MAX_MUTATION_BODY_BYTES = 256 * 1024;
+const MAX_PORTABLE_NODES = 10_000;
+const MAX_PORTABLE_DEPTH = 32;
+
+function mutationRoute(url: URL, protectedResource: URL): MutationRoute {
+  const prefix = protectedResource.pathname === "/" ? "" : protectedResource.pathname.replace(/\/$/, "");
+  if (!url.pathname.startsWith(`${prefix}/v1/workspaces/`)) return null;
+  const remainder = url.pathname.slice(`${prefix}/v1/workspaces/`.length);
+  const parts = remainder.split("/");
+  if (parts.length !== 3 || parts[1] !== "operations") return null;
+  const workspaceId = parts[0] ? decodeWorkspaceSegment(parts[0]) : null;
+  const operationId = parts[2] ? decodeSegment(parts[2]) : null;
+  return workspaceId && operationId && OperationId.safeParse(operationId).success
+    ? { workspaceId, operationId }
+    : null;
+}
+
+function validatePortableValue(value: unknown): void {
+  const pending: Array<{ value: unknown; depth: number }> = [{ value, depth: 0 }];
+  let nodes = 0;
+  while (pending.length > 0) {
+    const current = pending.pop()!;
+    nodes += 1;
+    if (nodes > MAX_PORTABLE_NODES || current.depth > MAX_PORTABLE_DEPTH) {
+      throw new HostedMutationError("invalid_input");
+    }
+    if (current.value === null || typeof current.value === "boolean" || typeof current.value === "string") continue;
+    if (typeof current.value === "number") {
+      if (!Number.isSafeInteger(current.value)) throw new HostedMutationError("invalid_input");
+      continue;
+    }
+    if (Array.isArray(current.value)) {
+      for (const entry of current.value) pending.push({ value: entry, depth: current.depth + 1 });
+      continue;
+    }
+    if (typeof current.value === "object" && Object.getPrototypeOf(current.value) === Object.prototype) {
+      for (const entry of Object.values(current.value)) pending.push({ value: entry, depth: current.depth + 1 });
+      continue;
+    }
+    throw new HostedMutationError("invalid_input");
+  }
+}
+
+async function readMutationEnvelope(request: Request): Promise<z.infer<typeof HostedMutationEnvelope>> {
+  const contentType = request.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase();
+  if (contentType !== "application/json") throw new HostedMutationError("invalid_input");
+  const declaredLength = request.headers.get("content-length");
+  if (declaredLength !== null) {
+    const parsed = parseBoundedInteger(declaredLength, 0, 0, MAX_MUTATION_BODY_BYTES);
+    if (parsed === null) throw new HostedMutationError("invalid_input");
+  }
+  const reader = request.body?.getReader();
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let bytesRead = 0;
+  let body = "";
+  try {
+    if (reader) {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bytesRead += value.byteLength;
+        if (bytesRead > MAX_MUTATION_BODY_BYTES) {
+          await reader.cancel().catch(() => undefined);
+          throw new HostedMutationError("invalid_input");
+        }
+        body += decoder.decode(value, { stream: true });
+      }
+      body += decoder.decode();
+    }
+  } catch (error) {
+    if (error instanceof HostedMutationError) throw error;
+    throw new HostedMutationError("invalid_input");
+  }
+  let decoded: unknown;
+  try {
+    decoded = JSON.parse(body);
+  } catch {
+    throw new HostedMutationError("invalid_input");
+  }
+  const parsedEnvelope = HostedMutationEnvelope.safeParse(decoded);
+  if (!parsedEnvelope.success) throw new HostedMutationError("invalid_input");
+  const envelope = parsedEnvelope.data;
+  validatePortableValue(envelope.input);
+  return envelope;
+}
+
+function exactOutcome(
+  value: unknown,
+  expected: { workspaceId: string; operationId: string; requestDigest: string; idempotencyKeyDigest: string },
+): HostedMutationOutcome {
+  try {
+    const parsed = HostedMutationOutcomeSchema.parse(value);
+    if (parsed.workspaceId !== expected.workspaceId || parsed.operationId !== expected.operationId
+      || parsed.requestDigest !== expected.requestDigest || parsed.idempotencyKeyDigest !== expected.idempotencyKeyDigest) {
+      throw new Error("hosted mutation outcome binding mismatch");
+    }
+    validatePortableValue(parsed.result);
+    if (new TextEncoder().encode(JSON.stringify(parsed.result)).byteLength > MAX_MUTATION_BODY_BYTES) {
+      throw new Error("hosted mutation outcome exceeds the response bound");
+    }
+    return parsed;
+  } catch {
+    // The host may already have committed before returning a corrupt or lost
+    // receipt. Never recast that boundary as a safe client error.
+    throw new HostedMutationError("indeterminate");
+  }
+}
+
+function mutationProblem(error: unknown, requestId: string, now: number): Response {
+  if (error instanceof HostedMutationError) {
+    if (error.code === "invalid_input") return problem(400, "invalid_mutation", requestId, now);
+    if (error.code === "not_found") return problem(404, "not_found", requestId, now);
+    if (error.code === "conflict") return problem(409, "mutation_conflict", requestId, now);
+    if (error.code === "indeterminate") {
+      return problem(503, "mutation_outcome_unknown", requestId, now, { "retry-after": "0" });
+    }
+    return problem(503, "workspace_unavailable", requestId, now);
+  }
+  if (error instanceof AuthorityStoreError
+    && (error.code === "revision_conflict" || error.code === "idempotency_conflict")) {
+    return problem(409, "authority_changed", requestId, now);
+  }
+  if (error instanceof AuthorityStoreError && error.code === "authority_busy") {
+    return problem(503, "authority_busy", requestId, now, { "retry-after": "0" });
+  }
+  return problem(503, "authority_unavailable", requestId, now);
+}
+
+export function createHostedHttpHandler(options: HostedHttpOptions): (request: Request) => Promise<Response> {
+  const resourceValue = canonicalHttps(options.protectedResource, true);
+  const resource = new URL(resourceValue);
+  const requestIdFactory = options.requestIdFactory ?? randomUUID;
+  const operations = options.mutationOperations.map((value) => HostedMutationOperation.parse(value));
+  if (operations.length === 0 || operations.length > 64 || new Set(operations.map(({ id }) => id)).size !== operations.length) {
+    throw new Error("hosted HTTP requires between one and 64 unique mutation operations");
+  }
+  const registered = new Map(operations.map((operation) => {
+    const action = getRegisteredAction(operation.actionUri);
+    if (!action || action.uri === ACTION_URIS["workspace.read"] || action.uri === ACTION_URIS["commitment.read"]
+      || action.uri === ACTION_URIS["replication.pull"]) {
+      throw new Error(`hosted mutation operation ${operation.id} does not map to a registered mutation action`);
+    }
+    return [operation.id, { operation: Object.freeze({ ...operation }), action }] as const;
+  }));
+  const prefix = resource.pathname === "/" ? "" : resource.pathname.replace(/\/$/, "");
+  const catalogUrl = new URL(`${prefix}/v1/operations`, resource.origin).href;
+  const metadataUrl = new URL(metadataPath(resource), resource.origin).href;
+  const readHandler = createHostedReadHandlerWithExtensions(options, {
+    scopeUris: [...registered.values()].map(({ action }) => action.uri),
+    operationCatalogUrl: catalogUrl,
+  });
+  const catalog = {
+    contractVersion: "tasq.hosted-operation-catalog.v1",
+    operations: [...registered.values()].map(({ operation, action }) => ({
+      ...operation,
+      action: { uri: action.uri, version: action.version, implementationDigest: action.implementationDigest },
+      resourceKinds: action.resourceKinds,
+      senderConstraint: action.senderConstraint,
+      eligibility: action.eligibility,
+    })).sort((left, right) => left.id.localeCompare(right.id)),
+  };
+
+  return async (request) => {
+    const url = new URL(request.url);
+    if (request.method === "GET") {
+      if (url.origin === resource.origin && url.pathname === new URL(catalogUrl).pathname) {
+        const now = UnixMs.parse(options.clock.now());
+        const generated = Opaque.parse(requestIdFactory());
+        if (url.search !== "") return problem(400, "invalid_query", generated, now);
+        return jsonResponse(catalog, 200, now, { "cache-control": "public, max-age=300" });
+      }
+      return readHandler(request);
+    }
+
+    const now = UnixMs.parse(options.clock.now());
+    const suppliedRequestId = request.headers.get("x-tasq-request-id");
+    const parsedRequestId = suppliedRequestId === null ? null : Opaque.safeParse(suppliedRequestId);
+    const requestId = parsedRequestId?.success ? parsedRequestId.data : Opaque.parse(requestIdFactory());
+    if (parsedRequestId && !parsedRequestId.success) return problem(400, "invalid_request_id", requestId, now);
+    if (url.origin !== resource.origin) return problem(400, "invalid_resource_origin", requestId, now);
+    const matched = mutationRoute(url, resource);
+    if (!matched) return problem(404, "not_found", requestId, now);
+    if (request.method !== "POST") return problem(405, "method_not_allowed", requestId, now, { allow: "POST" });
+    if (url.search !== "") return problem(400, "invalid_query", requestId, now);
+    const selected = registered.get(matched.operationId);
+    if (!selected) return problem(404, "unknown_operation", requestId, now);
+
+    const authorization = request.headers.get("authorization");
+    const dpopProof = request.headers.get("dpop");
+    if (!authorization) {
+      return problem(401, "authentication_required", requestId, now, {
+        "www-authenticate": `Bearer resource_metadata="${metadataUrl}"`,
+      });
+    }
+    if (!CredentialHeader.safeParse(authorization).success || (dpopProof !== null && !CredentialHeader.safeParse(dpopProof).success)) {
+      return problem(400, "invalid_credential_envelope", requestId, now);
+    }
+    const rawIdempotencyKey = request.headers.get("idempotency-key");
+    const idempotencyKey = rawIdempotencyKey === null ? null : Opaque.safeParse(rawIdempotencyKey);
+    if (!idempotencyKey?.success) return problem(400, "idempotency_key_required", requestId, now);
+
+    let envelope: z.infer<typeof HostedMutationEnvelope>;
+    try {
+      envelope = await readMutationEnvelope(request);
+    } catch (error) {
+      return mutationProblem(error, requestId, now);
+    }
+    if (!selected.action.resourceKinds.includes(envelope.resource.kind)) {
+      return problem(400, "invalid_resource_kind", requestId, now);
+    }
+    if (selected.operation.requiresExpectedRevision && envelope.expectedRevision === null) {
+      return problem(400, "expected_revision_required", requestId, now);
+    }
+    if (envelope.resource.kind === "workspace" && envelope.resource.id !== matched.workspaceId) {
+      return problem(400, "workspace_binding_mismatch", requestId, now);
+    }
+
+    let identity: VerifiedIdentityValue;
+    try {
+      identity = VerifiedIdentity.parse(await options.verifier.verify({
+        authorization,
+        dpopProof,
+        method: "POST",
+        requestUrl: url.href,
+        expectedAudience: resourceValue,
+      }, { now: () => now }));
+    } catch (error) {
+      if (error instanceof CredentialVerificationError && error.code === "temporarily_unavailable") {
+        return problem(503, "authentication_unavailable", requestId, now);
+      }
+      return problem(401, "invalid_token", requestId, now, {
+        "www-authenticate": `Bearer error="invalid_token", resource_metadata="${metadataUrl}"`,
+      });
+    }
+    const idempotencyKeyDigest = digestAuthorityValue({
+      contractVersion: "tasq.hosted-idempotency-key.v1",
+      workspaceId: matched.workspaceId,
+      subject: { issuer: identity.issuer, subject: identity.subject },
+      actor: identity.actor,
+      action: {
+        uri: selected.action.uri,
+        version: selected.action.version,
+        implementationDigest: selected.action.implementationDigest,
+      },
+      key: idempotencyKey.data,
+    });
+    const requestDigest = digestAuthorityValue({
+      contractVersion: "tasq.hosted-mutation-request-digest.v1",
+      workspaceId: matched.workspaceId,
+      operation: selected.operation,
+      action: {
+        uri: selected.action.uri,
+        version: selected.action.version,
+        implementationDigest: selected.action.implementationDigest,
+      },
+      resource: envelope.resource,
+      expectedRevision: envelope.expectedRevision,
+      input: envelope.input,
+    });
+
+    try {
+      const routed = await options.router.authorizeAndExecuteAt({
+        requestId,
+        workspaceId: matched.workspaceId,
+        serviceAudience: resourceValue,
+        action: {
+          uri: selected.action.uri,
+          version: selected.action.version,
+          implementationDigest: selected.action.implementationDigest,
+        },
+        resource: envelope.resource,
+        identity,
+      }, now, async (workspace, authority) => {
+        if (authority.authorityRevision === null) throw new Error("allowed mutation has no authority revision");
+        const outcome = await workspace.executeMutation({
+          contractVersion: "tasq.hosted-mutation-command.v1",
+          operation: selected.operation,
+          workspaceId: matched.workspaceId,
+          resource: envelope.resource,
+          expectedRevision: envelope.expectedRevision,
+          input: envelope.input,
+          requestDigest,
+          idempotencyKey: idempotencyKey.data,
+          idempotencyKeyDigest,
+          evaluatedAt: now,
+          authorityRevision: authority.authorityRevision,
+          decision: authority.decision,
+        });
+        return exactOutcome(outcome, {
+          workspaceId: matched.workspaceId,
+          operationId: selected.operation.id,
+          requestDigest,
+          idempotencyKeyDigest,
+        });
+      });
+      if (routed.decision.decision !== "allow" || routed.execution === null) {
+        return problem(403, "access_denied", requestId, now, {}, routed.decision.decisionId);
+      }
+      return jsonResponse({
+        contractVersion: "tasq.hosted-mutation-response.v1",
+        requestId,
+        decisionId: routed.decision.decisionId,
+        evaluatedAt: now,
+        authorityRevision: routed.authorityRevision,
+        outcome: routed.execution,
+      }, 200, now);
+    } catch (error) {
+      return mutationProblem(error, requestId, now);
     }
   };
 }

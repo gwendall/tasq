@@ -30,6 +30,13 @@ network endpoint: a host must supply both, plus the workspace reader. See
 and [TQ-802_AUTHORITY_STORE_ROUTER.md](TQ-802_AUTHORITY_STORE_ROUTER.md), then
 [TQ-803_HOSTED_READ_REST.md](TQ-803_HOSTED_READ_REST.md).
 
+TQ-804 extends that composition with host-registered mutation operations,
+mandatory durable idempotency and a live authority writer gate held through
+the workspace commit. It does not pretend separate authority/workspace
+databases are one ACID transaction; unknown commit boundaries require an exact
+same-key retry. See
+[TQ-804_GUARDED_MUTATION_REST.md](TQ-804_GUARDED_MUTATION_REST.md).
+
 ## Public site and docs
 
 The separate static product/docs app lives in `apps/site`. It renders support

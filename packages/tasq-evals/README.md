@@ -38,6 +38,7 @@ packages/tasq-evals/
 ├── hosted-authority-foundation.test.ts scenario: TQ-801 pure authority across human/agent/workload profiles
 ├── hosted-authority-store-router.test.ts scenario: TQ-802 process restart, revocation and isolated routing
 ├── hosted-read-rest.test.ts          scenario: TQ-803 clean-room discovery, guarded read and revocation
+├── hosted-mutation-rest.test.ts      scenario: TQ-804 registered mutation, restart replay and revocation
 ├── product-consumption-design.test.ts scenario: TQ-601 product shapes, consumers and honest support states
 ├── public-roadmap.test.ts              scenario: canonical execution order, dependencies and external gates
 ├── console-browser-certification.test.ts scenario: TQ-705 five-state fixed-clock Linux/macOS Console gate
@@ -109,6 +110,10 @@ TQ-802's store/router eval certifies the durable inner control-plane boundary
 and separate-process recovery. TQ-803's clean-room eval composes the exported
 Fetch handler with a verifier and reader and certifies the read protocol, but
 does not claim a listener, concrete OIDC adapter or deployable Server.
+TQ-804's clean-room eval discovers a registered mutation without fixture
+knowledge, restarts its domain store, recovers the idempotent result and then
+proves revocation. Its certificate records serialization and unknown-outcome
+recovery, not impossible cross-database ACID.
 
 The product-consumption and public-roadmap guards keep Core, Local, Server and
 Cloud separate, require an explicit path or missing dependency for every

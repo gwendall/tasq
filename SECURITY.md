@@ -35,8 +35,9 @@ Release metadata is authoritative if it narrows that window.
 - Console registration proves a specific foreground loopback listener is live;
   its local descriptor and instance ID are discovery metadata, not credentials
   or authorization. Install creates no listener or daemon.
-- A host-integrated authenticated read-only REST handler exists, but no REST
-  endpoint, remote MCP, Tasq Server release or Tasq Cloud service is shipped.
+- Host-integrated authenticated read and registered-mutation REST handlers
+  exist, but no REST endpoint, remote MCP, Tasq Server release or Tasq Cloud
+  service is shipped.
 - The internal TQ-801 authority evaluator is deny-by-default and
   injected-clock-only, but it trusts that an upstream adapter already verified
   credentials and that a future authority store supplied a current snapshot.
@@ -44,13 +45,21 @@ Release metadata is authoritative if it narrows that window.
 - TQ-802's private control plane stores authority records and audit, not
   credentials. Its router accepts only host-configured opaque storage binding
   IDs and invokes no workspace opener before an allow. It is still not a safe
-  public listener, and TQ-804 must make live authority preconditions atomic
-  with domain mutations.
+  public listener. TQ-804 now holds that live authority writer gate through a
+  durable idempotent domain mutation without falsely claiming cross-database
+  ACID.
 - TQ-803 accepts identity only from an injected verifier, rejects malformed
   inputs before that verifier or any workspace opener, and uses the live
   TQ-802 guard. The host is responsible for correct issuer, audience, token
   type, lifetime, key and sender-binding verification; Tasq currently ships no
   concrete verifier adapter.
+- TQ-804 accepts only host-registered operation/action mappings and requires a
+  caller-scoped idempotency key. Its authority `BEGIN IMMEDIATE` gate remains
+  held through the host's durable domain callback, so concurrent revocation
+  either commits first or receives typed `authority_busy`; it cannot cross the
+  admitted write. Separate databases are not claimed as ACID. A lost or
+  corrupt post-commit receipt is `mutation_outcome_unknown` and must be retried
+  with the same key.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.
 - Runtime/provider success never grants commitment-completion authority.

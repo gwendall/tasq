@@ -95,12 +95,20 @@ collision, invalid-input short circuiting, bounded/redacted reads, foreign
 workspace probes, next-request revocation and strict host-output failure. One
 request-wide injected clock value reaches verification, authority and output.
 
+The TQ-804 suite adds a second real SQLite workspace database and a second
+authority connection. It proves registered catalog discovery, mandatory
+idempotency, exact replay/conflict, redaction, cross-workspace denial,
+`authority_busy` serialization against concurrent revocation, post-revocation
+denial and exact recovery after a domain commit returns a corrupt outcome.
+The certificate explicitly rejects a false cross-database ACID claim.
+
 ```bash
 pnpm --filter @tasq-internal/authority test
 pnpm --filter @tasq-internal/server test
 pnpm --filter @tasq-internal/evals test -- hosted-authority-foundation.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-authority-store-router.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-read-rest.test.ts
+pnpm --filter @tasq-internal/evals test -- hosted-mutation-rest.test.ts
 ```
 
 ### 7. Service tests (`packages/tasq-service/test/`)
@@ -408,6 +416,9 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   resource under a non-root path, verified agent identity, fresh authority
   store and opaque robotics ledger, then proves discovery, isolation,
   payload-free reads and immediate revocation.
+- eval `hosted-mutation-rest.test.ts` — TQ-804 lets a clean client select a
+  registered operation by action identity, commits it once, closes/reopens the
+  domain store, recovers the exact result and then observes live revocation.
 - eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
   shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
   the claims guard with a candidate-only public install lifecycle while REST,

@@ -1,0 +1,47 @@
+{
+  "contractVersion": "tasq.hosted-mutation-rest-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-21",
+  "backlogItem": "TQ-804",
+  "package": "@tasq-internal/server",
+  "implementationDigest": "sha256:78235c93a3da2af6cfcb9d362678021833b952394c4ad7f3f5dbf0662c2ad8e9",
+  "implementedSurface": "host_integrated_guarded_mutation_handler",
+  "atomicityModel": {
+    "authorityTransaction": "BEGIN IMMEDIATE held through durable workspace callback",
+    "workspaceTransaction": "host-owned durable idempotent commit",
+    "crossDatabaseAcid": false,
+    "concurrentAuthorityWriter": "typed authority_busy then exact retry",
+    "lostOrCorruptOutcome": "typed mutation_outcome_unknown then same-key retry"
+  },
+  "certifiedProperties": [
+    "public_state_free_operation_catalog",
+    "digest_bound_input_and_output_contracts",
+    "operation_declared_revision_precondition",
+    "registered_action_mapping_not_client_selected_authority",
+    "required_subject_actor_action_scoped_idempotency",
+    "semantic_request_digest_conflict_detection",
+    "one_injected_clock_snapshot_per_request",
+    "live_guard_held_through_workspace_commit",
+    "concurrent_revocation_cannot_cross_admitted_commit",
+    "foreign_workspace_never_opened",
+    "exact_retry_after_lost_or_corrupt_outcome",
+    "idempotency_key_absent_from_response_and_authority_audit",
+    "bounded_portable_input_and_output",
+    "strict_outcome_binding"
+  ],
+  "operationModel": "host_registered_contract_bound_operations",
+  "bundledDomainOperations": [],
+  "deployableServer": false,
+  "concreteCredentialAdapters": [],
+  "implementedRemoteMcpTools": [],
+  "excludedLayers": [
+    "network_listener",
+    "tls_termination",
+    "concrete_oidc_verifier",
+    "bundled_domain_operation_adapter",
+    "remote_mcp",
+    "replication_transport",
+    "deployable_server"
+  ],
+  "tq804Complete": true
+}
