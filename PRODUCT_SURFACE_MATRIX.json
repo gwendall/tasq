@@ -118,6 +118,14 @@
       "authorityBoundary": "one_authority_per_workspace_epoch"
     },
     {
+      "id": "public_site",
+      "support": "implemented_candidate_not_published",
+      "transport": "static_files",
+      "entrypoint": "pnpm build:site; /product-truth.json",
+      "mutations": false,
+      "authorityBoundary": "versioned_repository_truth_no_ledger_access"
+    },
+    {
       "id": "rest",
       "support": "not_implemented",
       "transport": "https",
@@ -184,6 +192,11 @@
       "irreducibleInputs": ["provider_binding", "credential_resolver", "clock", "receipt_verifier"]
     },
     {
+      "id": "prospective_adopter",
+      "supportedSurfaces": ["public_site"],
+      "irreducibleInputs": ["canonical_repository_or_deployed_static_site"]
+    },
+    {
       "id": "remote_agent",
       "supportedSurfaces": [],
       "irreducibleInputs": ["hosted_authenticated_transport"]
@@ -226,6 +239,11 @@
       "steps": ["start_console", "filter_commitments", "inspect_graph", "refresh"]
     },
     {
+      "id": "public_product_discovery",
+      "support": "implemented_candidate_not_published",
+      "steps": ["discover_product", "choose_consumer_path", "inspect_support_truth", "build_from_source"]
+    },
+    {
       "id": "remote_multi_user_collaboration",
       "support": "not_implemented",
       "steps": ["authenticate", "bind_subject", "authorize", "connect_surface", "revoke"]
@@ -250,6 +268,8 @@
     "public_package_sources_are_open_but_registry_artifacts_are_not_published",
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+    "public_site_is_static_docs_not_console_or_agent_api",
+    "public_site_is_built_but_not_deployed",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

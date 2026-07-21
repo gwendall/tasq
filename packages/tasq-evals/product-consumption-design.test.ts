@@ -127,6 +127,12 @@ describe("TQ-601 product consumption design", () => {
       support: "implemented_local_only",
       mutations: false,
     });
+    expect(byId(matrix.surfaces, "public_site")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      transport: "static_files",
+      mutations: false,
+      authorityBoundary: "versioned_repository_truth_no_ledger_access",
+    });
     for (const id of ["rest", "remote_mcp", "hosted_console"]) {
       expect(byId(matrix.surfaces, id)).toMatchObject({
         support: "not_implemented",
@@ -169,6 +175,10 @@ describe("TQ-601 product consumption design", () => {
       supportedSurfaces: [],
       irreducibleInputs: ["tasq_server_release"],
     });
+    expect(byId(matrix.consumers, "prospective_adopter")).toMatchObject({
+      supportedSurfaces: ["public_site"],
+      irreducibleInputs: ["canonical_repository_or_deployed_static_site"],
+    });
   });
 
   test("separates the certified candidate install from absent remote products", () => {
@@ -176,6 +186,10 @@ describe("TQ-601 product consumption design", () => {
       .toBe("implemented_certified");
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_candidate_not_published");
+    expect(byId(matrix.journeys, "public_product_discovery")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "build_from_source"],
+    });
     for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
     }
@@ -193,6 +207,8 @@ describe("TQ-601 product consumption design", () => {
       "hosted_design_is_not_hosted_behavior",
       "public_package_sources_are_open_but_registry_artifacts_are_not_published",
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+      "public_site_is_static_docs_not_console_or_agent_api",
+      "public_site_is_built_but_not_deployed",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);

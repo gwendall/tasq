@@ -34,6 +34,12 @@ discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
 are certified without a checkout or hidden service; published-byte evidence
 still depends on the first protected release.
 
+TQ-605 adds a separate static public product and documentation application in
+`apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
+support/release status from the repository's machine contracts. The same exact
+snapshot is exported at `/product-truth.json`. The app is repository-certified
+but not deployed; it is neither the Local Console nor an agent/ledger API.
+
 The shortest verified loop is:
 
 ```text

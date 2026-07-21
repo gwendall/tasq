@@ -148,7 +148,7 @@ Failures block release. Repository-local success is not a substitute.
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
 | TQ-603 | Reproducible public artifacts and package publication |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
-| TQ-605 | Versioned public docs and marketing site |
+| TQ-605 | DONE — versioned static public docs and product app; deployment not claimed |
 | TQ-606 | Blind human-plus-agent adoption gate |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful

@@ -130,10 +130,11 @@
     },
     {
       "id": "TQ-605",
-      "status": "pending",
+      "status": "done",
       "milestone": "public-adoption",
-      "dependsOn": ["TQ-603"],
-      "outcome": "Next.js TypeScript Tailwind shadcn public product and docs app generated from versioned repository truth"
+      "dependsOn": [],
+      "outcome": "Next.js TypeScript Tailwind shadcn public product and docs app generated from versioned repository truth",
+      "evidence": ["TQ-605_PUBLIC_SITE.md"]
     },
     {
       "id": "TQ-606",

@@ -7,8 +7,8 @@ never turns planned work into shipped behavior.
 
 **Updated:** 2026-07-21  
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** finish the first protected public release, then complete
-the Local Console before the public website and remote products.
+**Current priority:** finish the external first-release gate while continuing
+the blind adoption and hostile-browser certification before remote products.
 
 ## What is already proven
 
@@ -18,6 +18,11 @@ autonomous onboarding, bounded context, external context links and current
 read-only loopback Console are implemented and covered by the repository's
 tests and evals. TQ-601 froze the product shapes; TQ-602 froze the public legal,
 package and governance boundary.
+
+The repository also contains the TQ-605 static public product/docs app. Its
+rendered support states and `/product-truth.json` are generated from canonical
+machine contracts. It is repository-certified but not deployed, and therefore
+does not create a public URL or release claim.
 
 The canonical public repository and protected Linux/macOS CI are live. Release
 archives and seven `@tasq/*` package candidates are deterministic and clean-room
@@ -78,9 +83,11 @@ later Local milestones.
 
 ### 3. Explain and validate the public product
 
-- **TQ-605:** build a distinct Next.js + TypeScript + Tailwind + shadcn/ui
-  website from versioned repository truth. It covers each consumer journey,
-  renders support states honestly, and uses only synthetic demo data.
+- **TQ-605 — done:** the distinct static Next.js + TypeScript + Tailwind +
+  shadcn/ui product/docs app covers every current consumer journey, renders
+  support and release gates from versioned repository truth, exports the same
+  machine JSON and uses only synthetic illustrations. It is not deployed. See
+  `TQ-605_PUBLIC_SITE.md`.
 - **TQ-606:** give an unbriefed human and agent only the public entrypoint. They
   must install, onboard two actors, survive contention/recovery and inspect the
   same ledger in Console without undocumented help.

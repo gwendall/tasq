@@ -105,6 +105,7 @@ product to be useful.
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
 | Embedded Core | `@tasq/core` | Implemented internally | TypeScript integration; private package |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
+| Public product/docs site | `pnpm build:site`; `/product-truth.json` | Static app implemented and repository-certified | Not deployed; no ledger or agent API |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
 | Protocol adapters | `@tasq/protocol-adapters` | Implemented internally | Mapping only; no transport or completion authority |
 | Extension SDK | `@tasq/extension-sdk` | Implemented internally | Trusted in-process code; no public registry distribution |
@@ -218,6 +219,22 @@ services, but that integration is not a supported Tasq Server.
 **Support:** not implemented. Same workspace text on two isolated stores is
 not rendezvous. Setting an arbitrary database URL is not a remote support
 claim.
+
+### 4.9 Prospective adopter or evaluator
+
+**Need:** understand the product, select the correct integration path and
+verify what is actually available without reading implementation chronology.
+
+**Path:** use the static public site or its `/product-truth.json` export. Follow
+the consumer-specific guide to the canonical CLI, local MCP, Console or
+embedded path. Check the displayed repository-contract digests when exact
+support provenance matters.
+
+**Support:** the static application and export are implemented and tested in
+the canonical repository. No public deployment or domain is claimed.
+
+**Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
+MCP endpoint or evidence that packages have been published.
 
 ## 5. Use-case map
 

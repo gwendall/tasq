@@ -1,0 +1,587 @@
+{
+  "contractVersion": "tasq.public-site-truth.v1",
+  "sourceUpdatedAt": "2026-07-21",
+  "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
+  "release": {
+    "status": "canonical-repository-live-not-published",
+    "published": false,
+    "installAction": "build_from_source",
+    "repository": "https://github.com/gwendall/tasq",
+    "cliBinary": "tasq",
+    "npmScope": "@tasq",
+    "license": "Apache-2.0",
+    "contributionTerms": "DCO-1.1",
+    "publicPackages": [
+      "@tasq/schema",
+      "@tasq/core",
+      "@tasq/cli",
+      "@tasq/mcp",
+      "@tasq/extension-sdk",
+      "@tasq/protocol-adapters",
+      "@tasq/console"
+    ],
+    "candidateTargets": [
+      "darwin-arm64",
+      "linux-x64-gnu"
+    ],
+    "gates": {
+      "canonical_repository_control_verified": true,
+      "npm_scope_control_verified": false,
+      "trusted_publishing_configured": false,
+      "tag_protection_configured": true,
+      "license_and_third_party_notice_closure_verified": true,
+      "candidate_targets_clean_room_certified": true
+    }
+  },
+  "productShapes": [
+    {
+      "id": "core",
+      "support": "implemented_integration_required",
+      "entrypoints": [
+        "embedded_typescript",
+        "extension_sdk",
+        "protocol_adapters",
+        "replication_kernel"
+      ],
+      "consumers": [
+        "typescript_application",
+        "runtime_integrator",
+        "extension_author",
+        "connector_author"
+      ],
+      "publiclyDistributed": false
+    },
+    {
+      "id": "local",
+      "support": "implemented_certified",
+      "entrypoints": [
+        "cli_json",
+        "mcp_stdio",
+        "local_console",
+        "markdown_projection"
+      ],
+      "consumers": [
+        "local_shell_agent",
+        "local_mcp_agent",
+        "human_local_user",
+        "human_operator"
+      ],
+      "publiclyDistributed": false
+    },
+    {
+      "id": "server",
+      "support": "not_implemented",
+      "entrypoints": [],
+      "consumers": [
+        "remote_agent",
+        "remote_human",
+        "self_host_operator"
+      ],
+      "publiclyDistributed": false
+    },
+    {
+      "id": "cloud",
+      "support": "accepted_design_not_executed",
+      "entrypoints": [],
+      "consumers": [
+        "multi_user_team",
+        "managed_service_operator"
+      ],
+      "publiclyDistributed": false
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "cli_json",
+      "support": "implemented_certified",
+      "transport": "local_process",
+      "entrypoint": "tasq onboard --space <id> --actor <label> --json",
+      "mutations": true,
+      "authorityBoundary": "local_process_self_asserted"
+    },
+    {
+      "id": "mcp_stdio",
+      "support": "implemented_local_only",
+      "transport": "stdio",
+      "entrypoint": "tasq mcp --tenant <id> --actor <label> --capabilities <set>",
+      "mutations": true,
+      "authorityBoundary": "host_bound_capabilities"
+    },
+    {
+      "id": "embedded_typescript",
+      "support": "implemented_integration_required",
+      "transport": "in_process",
+      "entrypoint": "@tasq/core",
+      "mutations": true,
+      "authorityBoundary": "integrator_owned"
+    },
+    {
+      "id": "local_console",
+      "support": "implemented_local_only",
+      "transport": "loopback_http",
+      "entrypoint": "tasq web --tenant <id>; tasq web status --tenant <id> --json",
+      "mutations": false,
+      "authorityBoundary": "unauthenticated_loopback_read_only_foreground_proof_of_life"
+    },
+    {
+      "id": "markdown_projection",
+      "support": "implemented_local_only",
+      "transport": "filesystem_projection",
+      "entrypoint": "tasq projection",
+      "mutations": false,
+      "authorityBoundary": "read_only_projection"
+    },
+    {
+      "id": "extension_sdk",
+      "support": "implemented_integration_required",
+      "transport": "in_process",
+      "entrypoint": "@tasq/extension-sdk",
+      "mutations": false,
+      "authorityBoundary": "trusted_runtime_code_no_provider_authority"
+    },
+    {
+      "id": "protocol_adapters",
+      "support": "implemented_integration_required",
+      "transport": "in_process",
+      "entrypoint": "@tasq/protocol-adapters",
+      "mutations": true,
+      "authorityBoundary": "no_completion_authority"
+    },
+    {
+      "id": "reference_connectors",
+      "support": "reference_only",
+      "transport": "in_process_https_adapter",
+      "entrypoint": "@tasq-internal/reference-connectors",
+      "mutations": true,
+      "authorityBoundary": "permit_and_receipt_required"
+    },
+    {
+      "id": "replication_kernel",
+      "support": "implemented_integration_required",
+      "transport": "integrator_supplied",
+      "entrypoint": "@tasq/core replication APIs",
+      "mutations": true,
+      "authorityBoundary": "one_authority_per_workspace_epoch"
+    },
+    {
+      "id": "public_site",
+      "support": "implemented_candidate_not_published",
+      "transport": "static_files",
+      "entrypoint": "pnpm build:site; /product-truth.json",
+      "mutations": false,
+      "authorityBoundary": "versioned_repository_truth_no_ledger_access"
+    },
+    {
+      "id": "rest",
+      "support": "not_implemented",
+      "transport": "https",
+      "entrypoint": null,
+      "mutations": false,
+      "authorityBoundary": "adr_004_required"
+    },
+    {
+      "id": "remote_mcp",
+      "support": "not_implemented",
+      "transport": "streamable_http",
+      "entrypoint": null,
+      "mutations": false,
+      "authorityBoundary": "adr_004_required"
+    },
+    {
+      "id": "hosted_console",
+      "support": "not_implemented",
+      "transport": "https_bff",
+      "entrypoint": null,
+      "mutations": false,
+      "authorityBoundary": "adr_004_required"
+    }
+  ],
+  "consumers": [
+    {
+      "id": "local_shell_agent",
+      "supportedSurfaces": [
+        "cli_json"
+      ],
+      "irreducibleInputs": [
+        "tasq_executable",
+        "workspace_id",
+        "actor_label",
+        "capabilities",
+        "task_intent"
+      ]
+    },
+    {
+      "id": "local_mcp_agent",
+      "supportedSurfaces": [
+        "mcp_stdio"
+      ],
+      "irreducibleInputs": [
+        "mcp_host",
+        "host_injected_workspace",
+        "host_injected_actor",
+        "host_selected_capabilities"
+      ]
+    },
+    {
+      "id": "human_local_user",
+      "supportedSurfaces": [
+        "cli_json",
+        "local_console",
+        "markdown_projection"
+      ],
+      "irreducibleInputs": [
+        "tasq_installation",
+        "workspace_id"
+      ]
+    },
+    {
+      "id": "human_operator",
+      "supportedSurfaces": [
+        "cli_json",
+        "local_console"
+      ],
+      "irreducibleInputs": [
+        "local_store_access",
+        "workspace_id"
+      ]
+    },
+    {
+      "id": "typescript_application",
+      "supportedSurfaces": [
+        "embedded_typescript"
+      ],
+      "irreducibleInputs": [
+        "store",
+        "workspace_id",
+        "identity",
+        "clock"
+      ]
+    },
+    {
+      "id": "runtime_integrator",
+      "supportedSurfaces": [
+        "embedded_typescript",
+        "protocol_adapters",
+        "mcp_stdio"
+      ],
+      "irreducibleInputs": [
+        "runtime_identity_mapping",
+        "store",
+        "clock"
+      ]
+    },
+    {
+      "id": "extension_author",
+      "supportedSurfaces": [
+        "extension_sdk",
+        "embedded_typescript"
+      ],
+      "irreducibleInputs": [
+        "immutable_manifest_identity",
+        "runtime_binding",
+        "clock"
+      ]
+    },
+    {
+      "id": "connector_author",
+      "supportedSurfaces": [
+        "extension_sdk",
+        "reference_connectors",
+        "embedded_typescript"
+      ],
+      "irreducibleInputs": [
+        "provider_binding",
+        "credential_resolver",
+        "clock",
+        "receipt_verifier"
+      ]
+    },
+    {
+      "id": "prospective_adopter",
+      "supportedSurfaces": [
+        "public_site"
+      ],
+      "irreducibleInputs": [
+        "canonical_repository_or_deployed_static_site"
+      ]
+    },
+    {
+      "id": "remote_agent",
+      "supportedSurfaces": [],
+      "irreducibleInputs": [
+        "hosted_authenticated_transport"
+      ]
+    },
+    {
+      "id": "remote_human",
+      "supportedSurfaces": [],
+      "irreducibleInputs": [
+        "hosted_authenticated_transport",
+        "browser_session"
+      ]
+    },
+    {
+      "id": "self_host_operator",
+      "supportedSurfaces": [],
+      "irreducibleInputs": [
+        "tasq_server_release"
+      ]
+    },
+    {
+      "id": "multi_user_team",
+      "supportedSurfaces": [],
+      "irreducibleInputs": [
+        "managed_tenant",
+        "authenticated_clients"
+      ]
+    },
+    {
+      "id": "managed_service_operator",
+      "supportedSurfaces": [],
+      "irreducibleInputs": [
+        "tasq_cloud_control_plane"
+      ]
+    }
+  ],
+  "journeys": [
+    {
+      "id": "local_agent_from_executable",
+      "support": "implemented_certified",
+      "steps": [
+        "onboard",
+        "bounded_read",
+        "select_operation",
+        "coordinate",
+        "resume_cursor"
+      ]
+    },
+    {
+      "id": "public_install_to_first_agent",
+      "support": "implemented_candidate_not_published",
+      "steps": [
+        "discover_product",
+        "install",
+        "verify",
+        "onboard",
+        "connect_agent"
+      ]
+    },
+    {
+      "id": "human_local_monitoring",
+      "support": "implemented_local_only",
+      "steps": [
+        "start_console",
+        "filter_commitments",
+        "inspect_graph",
+        "refresh"
+      ]
+    },
+    {
+      "id": "public_product_discovery",
+      "support": "implemented_candidate_not_published",
+      "steps": [
+        "discover_product",
+        "choose_consumer_path",
+        "inspect_support_truth",
+        "build_from_source"
+      ]
+    },
+    {
+      "id": "remote_multi_user_collaboration",
+      "support": "not_implemented",
+      "steps": [
+        "authenticate",
+        "bind_subject",
+        "authorize",
+        "connect_surface",
+        "revoke"
+      ]
+    },
+    {
+      "id": "self_host_lifecycle",
+      "support": "not_implemented",
+      "steps": [
+        "install_server",
+        "configure_identity",
+        "backup",
+        "upgrade",
+        "restore"
+      ]
+    }
+  ],
+  "criticalTruths": [
+    "tasq_is_not_only_a_cli",
+    "cli_is_the_most_complete_current_composition",
+    "from_scratch_starts_after_executable_or_transport_handoff",
+    "same_workspace_text_does_not_bridge_isolated_stores",
+    "mcp_is_local_stdio_not_remote",
+    "local_console_is_read_only_not_an_agent_api",
+    "local_console_is_explicit_foreground_not_an_installed_daemon",
+    "rest_is_not_implemented",
+    "self_hosted_server_is_not_implemented",
+    "hosted_design_is_not_hosted_behavior",
+    "public_package_sources_are_open_but_registry_artifacts_are_not_published",
+    "public_identity_and_license_are_selected_but_no_artifact_is_published",
+    "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+    "public_site_is_static_docs_not_console_or_agent_api",
+    "public_site_is_built_but_not_deployed",
+    "device_time_is_only_read_by_the_system_clock_adapter"
+  ],
+  "backlog": [
+    {
+      "id": "TQ-603",
+      "status": "in_progress_external_gate",
+      "milestone": "public-distribution",
+      "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations"
+    },
+    {
+      "id": "TQ-604",
+      "status": "candidate_done_publication_gate",
+      "milestone": "public-distribution",
+      "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes"
+    },
+    {
+      "id": "TQ-701",
+      "status": "done",
+      "milestone": "local-console",
+      "outcome": "Bounded canonical overview models for work, actors, coordination, effects, audit and health"
+    },
+    {
+      "id": "TQ-702",
+      "status": "done",
+      "milestone": "local-console",
+      "outcome": "Cursor-driven loopback SSE and bounded polling with reconnect, gap and backpressure semantics"
+    },
+    {
+      "id": "TQ-703",
+      "status": "done",
+      "milestone": "local-console",
+      "outcome": "Accessible responsive navigation, filters, timelines and previewable redacted support bundles"
+    },
+    {
+      "id": "TQ-704",
+      "status": "candidate_done_publication_gate",
+      "milestone": "local-console",
+      "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners"
+    },
+    {
+      "id": "TQ-605",
+      "status": "done",
+      "milestone": "public-adoption",
+      "outcome": "Next.js TypeScript Tailwind shadcn public product and docs app generated from versioned repository truth"
+    },
+    {
+      "id": "TQ-606",
+      "status": "pending",
+      "milestone": "public-adoption",
+      "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate"
+    },
+    {
+      "id": "TQ-705",
+      "status": "pending",
+      "milestone": "local-console",
+      "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification"
+    },
+    {
+      "id": "TQ-801",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Strict identity, subject binding, authorization decision and action registry"
+    },
+    {
+      "id": "TQ-802",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Subject bindings, grants, audit and isolated storage routing"
+    },
+    {
+      "id": "TQ-803",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Authenticated read-only REST, discovery and event metadata"
+    },
+    {
+      "id": "TQ-804",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Guarded mutation REST with idempotency, revocation and injected authority time"
+    },
+    {
+      "id": "TQ-805",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Remote MCP through the identical guard with REST capability parity"
+    },
+    {
+      "id": "TQ-806",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Authenticated replication transport, enrollment, recovery and authority rotation"
+    },
+    {
+      "id": "TQ-807",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Deployable server artifact with configuration, health, backup, restore and upgrade contracts"
+    },
+    {
+      "id": "TQ-808",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-901",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Tenant control plane and isolated workspace provisioning"
+    },
+    {
+      "id": "TQ-902",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Same-origin hosted BFF sessions and authenticated Console integration"
+    },
+    {
+      "id": "TQ-903",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Human-device and workload onboarding, recovery and revocation"
+    },
+    {
+      "id": "TQ-904",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Quotas, retention, export/delete, incident, support and billing boundaries"
+    },
+    {
+      "id": "TQ-905",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification"
+    },
+    {
+      "id": "TQ-906",
+      "status": "pending",
+      "milestone": "managed-cloud",
+      "outcome": "Remote effects only after independent evidence and authority review; disabled by default"
+    }
+  ],
+  "sourceContracts": [
+    {
+      "path": "PRODUCT_SURFACE_MATRIX.json",
+      "contractVersion": "tasq.product-surface-matrix.v1",
+      "sha256": "895ef4f96fe0a0deac18386311c84f1275d5c38b8e138424c099166ca7bdafdb"
+    },
+    {
+      "path": "BACKLOG.json",
+      "contractVersion": "tasq.backlog.v1",
+      "sha256": "5541db1025553996c7440a90e36e7109215dc2d958bfebf3c87d1845c4201bc9"
+    },
+    {
+      "path": "PUBLIC_RELEASE_POLICY.json",
+      "contractVersion": "tasq.public-release-policy.v1",
+      "sha256": "f684b3858699784040b8c7f48aaa261de096502871ece121812b587f1296817a"
+    }
+  ]
+}
