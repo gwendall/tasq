@@ -106,6 +106,33 @@ function mapAuthorityStoreError(error: unknown): unknown {
   return error;
 }
 
+function isAuthorityBusy(error: unknown): boolean {
+  if (error instanceof AuthorityStoreError) return error.code === "authority_busy";
+  if (typeof error === "object" && error !== null && "code" in error
+    && String((error as { code: unknown }).code) === "SQLITE_BUSY") return true;
+  return /SQLITE_BUSY|database is locked/i.test(error instanceof Error ? error.message : String(error));
+}
+
+const COLD_START_BUSY_RETRIES = 256;
+
+async function initializeAuthorityClient(client: Client, url: string, appliedAt: number): Promise<void> {
+  for (let attempt = 0; attempt < COLD_START_BUSY_RETRIES; attempt += 1) {
+    try {
+      await client.execute("PRAGMA busy_timeout = 30000");
+      if (url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
+      await client.execute("PRAGMA foreign_keys = ON");
+      await client.execute("PRAGMA synchronous = NORMAL");
+      await migrateAuthorityStore(client, appliedAt);
+      return;
+    } catch (error) {
+      if (!isAuthorityBusy(error) || attempt === COLD_START_BUSY_RETRIES - 1) throw error;
+      // Yield without consulting wall time. Cold initialization is idempotent,
+      // and another process can finish the SQLite mode/migration transition.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+    }
+  }
+}
+
 async function beginAuthorityWrite(client: Client): Promise<Transaction> {
   try {
     return await client.transaction("write");
@@ -1053,11 +1080,7 @@ export async function openAuthorityStore(input: { url: string; clock: Clock }): 
   const client = createClient({ url: input.url });
   const prior = initializationChains.get(input.url) ?? Promise.resolve();
   const initialization = prior.catch(() => {}).then(async () => {
-    await client.execute("PRAGMA busy_timeout = 30000");
-    if (input.url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
-    await client.execute("PRAGMA foreign_keys = ON");
-    await client.execute("PRAGMA synchronous = NORMAL");
-    await migrateAuthorityStore(client, requiredClockNow(input.clock));
+    await initializeAuthorityClient(client, input.url, requiredClockNow(input.clock));
   });
   initializationChains.set(input.url, initialization);
   try {
