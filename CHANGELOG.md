@@ -31,6 +31,9 @@ by ADR-008.
 - Add a statically exportable Next.js public product and documentation app
   with consumer-specific guides, machine-derived support status, exact
   `/product-truth.json`, synthetic-only visuals and adversarial browser gates.
+- Add the fail-closed `/adopt.json` pre-executable contract and a candidate
+  human-plus-agent adoption certificate covering installed-byte onboarding,
+  typed contention/recovery and same-ledger Console inspection.
 
 ### Security
 

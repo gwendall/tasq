@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tasq:schema:public-adoption.v1",
+  "title": "Tasq public adoption manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "contractVersion", "product", "support", "distribution", "requirements", "human", "agent", "invariants"],
+  "properties": {
+    "$schema": { "const": "/schemas/public-adoption.v1.schema.json" },
+    "contractVersion": { "const": "tasq.public-adoption.v1" },
+    "product": { "const": "Tasq Local" },
+    "support": { "const": "implemented_candidate_not_published" },
+    "distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "published", "repository", "sourceRef", "sourceRefMutable", "integrity"],
+      "properties": {
+        "mode": { "const": "source_build" },
+        "published": { "const": false },
+        "repository": { "type": "string", "format": "uri" },
+        "sourceRef": { "type": "string", "minLength": 1 },
+        "sourceRefMutable": { "const": true },
+        "integrity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "sourceContracts"],
+          "properties": {
+            "kind": { "const": "repository-contract-digests" },
+            "sourceContracts": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "sha256"],
+                "properties": {
+                  "path": { "type": "string", "minLength": 1 },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["runtime", "version"],
+        "properties": {
+          "runtime": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "human": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "primaryAction"],
+      "properties": {
+        "path": { "const": "/docs/getting-started/" },
+        "primaryAction": { "const": "build_from_source" }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acquisition", "executableRelativePath", "onboardArgvTemplate", "placeholders"],
+      "properties": {
+        "acquisition": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "cwd", "argv", "mutatesHost"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z]+(?:[.-][a-z]+)*$" },
+              "cwd": { "type": "string", "minLength": 1 },
+              "argv": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "mutatesHost": { "type": "boolean" }
+            }
+          }
+        },
+        "executableRelativePath": { "const": "dist/cli/index.js" },
+        "onboardArgvTemplate": { "type": "array", "minItems": 8, "items": { "type": "string" } },
+        "placeholders": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string", "pattern": "^\\{[A-Za-z]+\\}$" } }
+      }
+    },
+    "invariants": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  }
+}

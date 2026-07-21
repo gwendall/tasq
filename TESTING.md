@@ -360,6 +360,12 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   the claims guard with a candidate-only public install lifecycle while REST,
   remote MCP and self-host lifecycle remain explicitly absent. The machine
   certificate cannot claim published-byte completion before a release exists.
+- eval `public-adoption.test.ts` — TQ-606 installs a real candidate outside the
+  checkout, then sends a human-shell proxy and a package-independent Node agent
+  from the public adoption contract through semantic recipe selection,
+  contention, higher-fence recovery, evidence completion and same-ledger
+  installed Console inspection. The harness and clients contain no Tasq import
+  or device-clock read; published bytes and a real blind human remain external.
 - eval `public-roadmap.test.ts` — freezes the canonical public execution order,
   closed task states, dependency closure, npm/publication blockers, remote
   non-claims and the authority/clock invariants every future checkpoint keeps.

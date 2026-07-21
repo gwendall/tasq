@@ -35,6 +35,12 @@ pnpm build:site
 
 The static output is written to `apps/site/out`.
 
+Machine consumers can start at `/adopt.json`. It gives the current acquisition
+steps as argv arrays and then hands off to `tasq onboard`; it never asks an
+agent to reconstruct a shell command. Because no protected release exists yet,
+the current contract says `source_build`, marks `main` mutable and refuses to
+claim release attestations. See [TQ-606_PUBLIC_ADOPTION.md](TQ-606_PUBLIC_ADOPTION.md).
+
 ## Agent entrypoint
 
 Once the `tasq` executable is installed, an agent can create or join a local

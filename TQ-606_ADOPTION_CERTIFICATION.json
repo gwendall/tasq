@@ -1,0 +1,39 @@
+{
+  "contractVersion": "tasq.public-adoption-certification.v1",
+  "status": "candidate-certified-external-gates-pending",
+  "updatedAt": "2026-07-21",
+  "publicEntrypoints": {
+    "human": "/docs/getting-started/",
+    "agent": "/adopt.json",
+    "machineTruth": "/product-truth.json"
+  },
+  "candidateEvidence": {
+    "requiredCiTargets": ["verify (macos-14)", "verify (ubuntu-latest)"],
+    "browserJob": "public-site-browser",
+    "journey": [
+      "install-candidate-outside-checkout",
+      "human-proxy-discovers-and-creates",
+      "package-independent-agent-discovers-semantically",
+      "same-resource-contention-is-typed",
+      "explicit-release-and-higher-fence-recovery",
+      "evidence-bound-explicit-completion",
+      "same-ledger-installed-console-inspection",
+      "foreground-console-stop-and-clean-discovery"
+    ],
+    "authority": {
+      "rawDeviceClockRead": false,
+      "actorLabelsAreAuthentication": false,
+      "runtimeSuccessImplicitlyCompletes": false,
+      "agentImportsTasqPackages": false
+    }
+  },
+  "publishedArtifactEvidence": {
+    "status": "not-run-no-public-release-exists",
+    "blockedBy": "TQ-603"
+  },
+  "independentHumanEvidence": {
+    "status": "not-run-automated-path-only",
+    "required": "An unbriefed external human receives only the deployed or locally served public entrypoint and completes the journey without undocumented help"
+  },
+  "tq606Complete": false
+}

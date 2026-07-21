@@ -30,7 +30,7 @@ export const docPages: DocPage[] = [
         code:
           "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
         callout:
-          "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq.",
+          "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same source-build path as argv arrays.",
       },
       {
         title: "Give an agent the minimum causal pointer",

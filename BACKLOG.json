@@ -7,6 +7,7 @@
     "done",
     "in_progress_external_gate",
     "candidate_done_publication_gate",
+    "candidate_done_external_gate",
     "pending"
   ],
   "invariants": [
@@ -38,6 +39,14 @@
     "publishedConsoleLifecycleCertification": {
       "state": "blocked_by_first_protected_release",
       "candidateEvidence": "TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"
+    },
+    "publishedAdoptionCertification": {
+      "state": "blocked_by_first_protected_release",
+      "candidateEvidence": "TQ-606_ADOPTION_CERTIFICATION.json"
+    },
+    "independentBlindHumanAdoption": {
+      "state": "not_run",
+      "requiredEvidence": "Unbriefed external human completes from only the public entrypoint with interventions recorded"
     }
   },
   "completedPrerequisites": [
@@ -138,10 +147,12 @@
     },
     {
       "id": "TQ-606",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "public-adoption",
       "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
-      "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate"
+      "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
+      "remaining": ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      "evidence": ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"]
     },
     {
       "id": "TQ-705",

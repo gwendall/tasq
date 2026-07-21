@@ -60,4 +60,31 @@ describe("public site boundary", () => {
     ]);
     expect(publicAsset).toBe(internal);
   });
+
+  test("publishes a fail-closed pre-executable adoption contract", async () => {
+    const [internalRaw, publicRaw] = await Promise.all([
+      readFile(resolve(siteRoot, "src/generated/adopt.json"), "utf8"),
+      readFile(resolve(siteRoot, "public/adopt.json"), "utf8"),
+    ]);
+    expect(publicRaw).toBe(internalRaw);
+    const adoption = JSON.parse(publicRaw);
+    expect(adoption).toMatchObject({
+      contractVersion: "tasq.public-adoption.v1",
+      support: "implemented_candidate_not_published",
+      distribution: { mode: "source_build", published: false, sourceRefMutable: true },
+      human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
+      agent: { executableRelativePath: "dist/cli/index.js" },
+    });
+    const declared = new Set<string>(adoption.agent.placeholders as string[]);
+    const serializedVectors = JSON.stringify([
+      ...adoption.agent.acquisition.flatMap((step: { cwd: string; argv: string[] }) => [step.cwd, ...step.argv]),
+      ...adoption.agent.onboardArgvTemplate,
+    ]);
+    const used = new Set(serializedVectors.match(/\{[A-Za-z]+\}/g) ?? []);
+    expect(used).toEqual(declared);
+    for (const step of adoption.agent.acquisition) {
+      expect(step.argv).not.toContain("sh");
+      expect(step.argv.join(" ")).not.toMatch(/&&|\|\||[|;]/);
+    }
+  });
 });

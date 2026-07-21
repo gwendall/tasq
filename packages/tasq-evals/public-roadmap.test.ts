@@ -35,6 +35,7 @@ describe("canonical public roadmap", () => {
         "done",
         "in_progress_external_gate",
         "candidate_done_publication_gate",
+        "candidate_done_external_gate",
         "pending",
       ],
     });
@@ -75,6 +76,8 @@ describe("canonical public roadmap", () => {
       npmTrustedPublishing: { state: "unverified" },
       firstProtectedRelease: { state: "not_run" },
       publishedLifecycleCertification: { state: "blocked_by_first_protected_release" },
+      publishedAdoptionCertification: { state: "blocked_by_first_protected_release" },
+      independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items[0]).toMatchObject({
       id: "TQ-603",
@@ -96,6 +99,11 @@ describe("canonical public roadmap", () => {
     expect(roadmap.items.find(({ id }) => id === "TQ-605")).toMatchObject({
       status: "done",
       evidence: ["TQ-605_PUBLIC_SITE.md"],
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-606")).toMatchObject({
+      status: "candidate_done_external_gate",
+      remaining: ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      evidence: ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"],
     });
   });
 

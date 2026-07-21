@@ -73,11 +73,20 @@ type ReleasePolicy = {
   externalPublicationGateStatus: Record<string, boolean>;
 };
 
+type RootPackage = {
+  packageManager: string;
+  engines: { bun: string; node: string };
+};
+
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDirectory, "../../..");
-const outputPaths = [
+const truthOutputPaths = [
   resolve(repoRoot, "apps/site/src/generated/product-truth.json"),
   resolve(repoRoot, "apps/site/public/product-truth.json"),
+];
+const adoptionOutputPaths = [
+  resolve(repoRoot, "apps/site/src/generated/adopt.json"),
+  resolve(repoRoot, "apps/site/public/adopt.json"),
 ];
 
 async function readJson<T>(relativePath: string): Promise<{ raw: string; value: T }> {
@@ -85,10 +94,11 @@ async function readJson<T>(relativePath: string): Promise<{ raw: string; value: 
   return { raw, value: JSON.parse(raw) as T };
 }
 
-const [matrixFile, backlogFile, policyFile] = await Promise.all([
+const [matrixFile, backlogFile, policyFile, rootPackageFile] = await Promise.all([
   readJson<ProductMatrix>("PRODUCT_SURFACE_MATRIX.json"),
   readJson<Backlog>("BACKLOG.json"),
   readJson<ReleasePolicy>("PUBLIC_RELEASE_POLICY.json"),
+  readJson<RootPackage>("package.json"),
 ]);
 
 const matrix = matrixFile.value;
@@ -164,13 +174,100 @@ const truth = {
 };
 
 const serialized = `${JSON.stringify(truth, null, 2)}\n`;
-if (process.argv.includes("--check")) {
-  for (const outputPath of outputPaths) {
+if (published) {
+  throw new Error("The protected release requires a reviewed attested-release adoption manifest; source-build instructions fail closed");
+}
+const packageManager = rootPackageFile.value.packageManager.split("@");
+if (packageManager.length !== 2 || packageManager[0] !== "pnpm" || !packageManager[1]) {
+  throw new Error("The public adoption manifest requires one exact pnpm packageManager version");
+}
+const adoption = {
+  $schema: "/schemas/public-adoption.v1.schema.json",
+  contractVersion: "tasq.public-adoption.v1",
+  product: "Tasq Local",
+  support: "implemented_candidate_not_published",
+  distribution: {
+    mode: "source_build",
+    published: false,
+    repository: policy.identity.canonicalRepository,
+    sourceRef: "main",
+    sourceRefMutable: true,
+    integrity: {
+      kind: "repository-contract-digests",
+      sourceContracts: truth.sourceContracts.map(({ path, sha256 }) => ({ path, sha256 })),
+    },
+  },
+  requirements: [
+    { runtime: "node", version: rootPackageFile.value.engines.node },
+    { runtime: "bun", version: rootPackageFile.value.engines.bun },
+    { runtime: "pnpm", version: packageManager[1] },
+  ],
+  human: {
+    path: "/docs/getting-started/",
+    primaryAction: "build_from_source",
+  },
+  agent: {
+    acquisition: [
+      {
+        id: "source.clone",
+        cwd: "{parentDirectory}",
+        argv: ["git", "clone", policy.identity.canonicalRepository, "{checkoutPath}"],
+        mutatesHost: true,
+      },
+      {
+        id: "dependencies.install",
+        cwd: "{checkoutPath}",
+        argv: ["pnpm", "install", "--frozen-lockfile"],
+        mutatesHost: true,
+      },
+      {
+        id: "source.verify",
+        cwd: "{checkoutPath}",
+        argv: ["pnpm", "typecheck"],
+        mutatesHost: false,
+      },
+      {
+        id: "cli.build",
+        cwd: "{checkoutPath}",
+        argv: ["pnpm", "build:cli"],
+        mutatesHost: true,
+      },
+    ],
+    executableRelativePath: "dist/cli/index.js",
+    onboardArgvTemplate: [
+      "{tasqExecutable}", "onboard", "--space", "{workspaceId}", "--actor", "{actorLabel}",
+      "--capabilities", "read,propose,coordinate", "--json",
+    ],
+    placeholders: ["{parentDirectory}", "{checkoutPath}", "{tasqExecutable}", "{workspaceId}", "{actorLabel}"],
+  },
+  invariants: [
+    "execute_argv_without_shell_reconstruction",
+    "persist_one_executable_identity_for_the_session",
+    "read_before_mutation",
+    "actor_labels_are_attribution_not_authentication",
+    "same_workspace_requires_the_same_store",
+    "device_time_is_not_authority",
+    "runtime_success_does_not_complete_a_commitment",
+    "unpublished_source_ref_is_mutable_and_not_a_release_attestation",
+  ],
+};
+const adoptionSerialized = `${JSON.stringify(adoption, null, 2)}\n`;
+
+async function checkOutputs(paths: string[], expected: string): Promise<void> {
+  for (const outputPath of paths) {
     const current = await readFile(outputPath, "utf8").catch(() => "");
-    if (current !== serialized) {
+    if (current !== expected) {
       throw new Error("Generated public-site truth is stale; run `pnpm --filter @tasq-internal/site generate`");
     }
   }
+}
+
+if (process.argv.includes("--check")) {
+  await checkOutputs(truthOutputPaths, serialized);
+  await checkOutputs(adoptionOutputPaths, adoptionSerialized);
 } else {
-  await Promise.all(outputPaths.map((outputPath) => writeFile(outputPath, serialized, "utf8")));
+  await Promise.all([
+    ...truthOutputPaths.map((outputPath) => writeFile(outputPath, serialized, "utf8")),
+    ...adoptionOutputPaths.map((outputPath) => writeFile(outputPath, adoptionSerialized, "utf8")),
+  ]);
 }

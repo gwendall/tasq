@@ -236,6 +236,11 @@ the canonical repository. No public deployment or domain is claimed.
 **Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
 MCP endpoint or evidence that packages have been published.
 
+For a machine starting before it has an executable, `/adopt.json` is the
+versioned causal pointer. It returns acquisition argv, working-directory and
+placeholder contracts, then an onboarding argv template. The current contract
+is explicitly mutable source-build guidance, not a protected-release claim.
+
 ## 5. Use-case map
 
 | Use case | Kernel fit | Product readiness | Missing outer layer |
