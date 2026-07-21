@@ -21,6 +21,9 @@ by ADR-008.
 - Add loopback polling and SSE over one redacted Console event-batch contract,
   with exclusive reconnect, typed cursor recovery, one-frame backpressure,
   deterministic overflow fallback and injected time/scheduling.
+- Add the responsive, keyboard-accessible Local operator Console with seven
+  canonical views, bounded filters, explicit live/stale states, audit timeline
+  and preview-before-download redacted support bundles.
 
 ### Security
 

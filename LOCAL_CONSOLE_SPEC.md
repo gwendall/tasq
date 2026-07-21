@@ -18,15 +18,15 @@ canonical services those surfaces use.
 
 ## 2. Honest current baseline
 
-`tasq web --tenant <space>` currently starts a server-rendered, read-only,
-loopback-only inspector. It has bounded index and commitment graph routes,
-JSON variants, strict Host checks, no JavaScript, no write route, no-store
-responses and a script-free content security policy. Refresh is manual.
+`tasq web --tenant <space>` starts the TQ-703 server-rendered, read-only,
+loopback-only Console. It has bounded canonical section and commitment graph
+routes, strict Host checks, no write route, no-store responses and a self-only
+CSP. A small self-hosted client provides TQ-702 live invalidation, page-local
+filters and preview-before-download support bundles; the SSR baseline remains
+usable without it.
 
-That inspector plus the TQ-701 JSON routes now provide bounded workspace-level
-overview, actor, claim, resource, wait, effect, audit and operational-health
-read models. The product still has no live stream, cross-workspace overview,
-visual navigation, support bundle or remediation flow.
+The product has no cross-workspace overview or remediation flow. Full
+integrity remains an explicit CLI operation rather than a request-time claim.
 
 ## 3. Users and jobs
 
@@ -142,7 +142,7 @@ injected clock once per batch. See `TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
 | Existing baseline | TQ-504 read-first inspector | Already certified |
 | TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
 | TQ-702 | Cursor-driven SSE plus polling fallback | Complete — reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
-| TQ-703 | Accessible responsive navigation, search and support bundle | Browser and accessibility certification |
+| TQ-703 | Accessible responsive navigation, search and support bundle | Complete — SSR/no-JS baseline plus six real Chromium journeys |
 | TQ-704 | Release/install integration, stable URLs and lifecycle | Clean-room local install/upgrade/uninstall |
 | TQ-705 | Operator acceptance | Unknown operator resolves staged incidents without repository knowledge |
 

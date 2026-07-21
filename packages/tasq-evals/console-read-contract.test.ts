@@ -9,6 +9,7 @@ import {
   buildConsoleHealth,
   buildConsoleOverview,
   buildConsolePage,
+  buildConsoleSupportBundle,
   createCommitment,
   openDb,
   runKernelMigrations,
@@ -20,7 +21,7 @@ afterEach(() => {
   while (tmpDirs.length > 0) rmSync(tmpDirs.pop()!, { recursive: true, force: true });
 });
 
-describe("TQ-701/TQ-702 public Console read and live contracts", () => {
+describe("TQ-701/TQ-702/TQ-703 public Console contracts", () => {
   test("an unbriefed consumer can discover and traverse every bounded section from Core", async () => {
     const dir = mkdtempSync(join(tmpdir(), "tasq-console-eval-"));
     tmpDirs.push(dir);
@@ -81,6 +82,16 @@ describe("TQ-701/TQ-702 public Console read and live contracts", () => {
         workspaceId, cursor: live.nextCursor, limit: 1, clock,
       });
       expect(resumed).toMatchObject({ mode: "changes", returned: 1, hasMore: false });
+
+      const support = await buildConsoleSupportBundle(handle.db, { workspaceId, limit: 1, clock });
+      expect(support).toMatchObject({
+        contractVersion: "tasq.console-support-bundle.v1",
+        generatedAt: clock.now(),
+        source: { authority: "canonical-local-ledger", readOnly: true },
+        redaction: { policy: "tasq.operator-support-redaction.v1" },
+      });
+      expect(support.completeness.work.truncated).toBe(true);
+      expect(support.completeness.work.continuationCursor).not.toBeNull();
     } finally {
       await handle.close();
     }
@@ -94,8 +105,12 @@ describe("TQ-701/TQ-702 public Console read and live contracts", () => {
     const livePublicCore = readFileSync(resolve(root, "packages/tasq-core/src/console-live.ts"), "utf8");
     const server = readFileSync(resolve(root, "packages/tasq-inspector/src/server.ts"), "utf8");
     const scheduler = readFileSync(resolve(root, "packages/tasq-inspector/src/scheduler.ts"), "utf8");
+    const consoleRender = readFileSync(resolve(root, "packages/tasq-inspector/src/console-render.ts"), "utf8");
+    const consoleClient = readFileSync(resolve(root, "packages/tasq-inspector/src/console-client.ts"), "utf8");
+    const consoleStyle = readFileSync(resolve(root, "packages/tasq-inspector/src/console-style.ts"), "utf8");
     const docs = readFileSync(resolve(root, "TQ-701_CONSOLE_READ_MODELS.md"), "utf8");
     const liveDocs = readFileSync(resolve(root, "TQ-702_CONSOLE_LIVE_TRANSPORT.md"), "utf8");
+    const operatorDocs = readFileSync(resolve(root, "TQ-703_OPERATOR_CONSOLE.md"), "utf8");
     const migration = readFileSync(resolve(root,
       "packages/tasq-core/src/migrations/0025_console_read_indexes.sql"), "utf8");
     const backlog = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
@@ -106,6 +121,7 @@ describe("TQ-701/TQ-702 public Console read and live contracts", () => {
     expect(livePublicCore.trimEnd()).toBe(liveService.trimEnd());
     expect(schema).toContain("tasq.console-page.v1");
     expect(schema).toContain("tasq.console-event-batch.v1");
+    expect(schema).toContain("tasq.console-support-bundle.v1");
     expect(schema).toContain("operator_index_redaction");
     expect(schema).toContain("operator_stream_redaction");
     expect(service).toContain("limit + 1");
@@ -119,6 +135,7 @@ describe("TQ-701/TQ-702 public Console read and live contracts", () => {
       expect(liveService, forbidden).not.toContain(forbidden);
       expect(livePublicCore, forbidden).not.toContain(forbidden);
       expect(scheduler, forbidden).not.toContain(forbidden);
+      expect(consoleClient, forbidden).not.toContain(forbidden);
     }
     for (const route of ["overview", "health", "work", "actors", "claims", "resources", "waits", "effects", "audit"]) {
       expect(`${schema}\n${server}\n${docs}`).toContain(route);
@@ -126,7 +143,18 @@ describe("TQ-701/TQ-702 public Console read and live contracts", () => {
     for (const route of ["/api/console/events", "/api/console/stream", "Last-Event-ID", "overflow", "cursor_expired"]) {
       expect(`${schema}\n${server}\n${liveDocs}`).toContain(route);
     }
+    for (const marker of [
+      "/api/console/support-bundle", "preview-support", "audit-timeline",
+      "prefers-reduced-motion", "script-src 'self'", "operator-support-redaction",
+    ]) {
+      expect(`${schema}\n${server}\n${consoleRender}\n${consoleClient}\n${consoleStyle}\n${operatorDocs}`).toContain(marker);
+    }
+    expect(consoleRender).not.toContain("<form");
+    for (const mutationMethod of ['method: "POST"', 'method: "PUT"', 'method: "PATCH"', 'method: "DELETE"']) {
+      expect(consoleClient).not.toContain(mutationMethod);
+    }
     expect(backlog.items.find(({ id }) => id === "TQ-701")?.status).toBe("done");
     expect(backlog.items.find(({ id }) => id === "TQ-702")?.status).toBe("done");
+    expect(backlog.items.find(({ id }) => id === "TQ-703")?.status).toBe("done");
   });
 });

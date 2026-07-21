@@ -63,7 +63,10 @@ loopback-only, read-only, cursor-driven, redacted and use injected authority
 time; SSE cadence has a separate scheduler injection. See
 [TQ-701_CONSOLE_READ_MODELS.md](TQ-701_CONSOLE_READ_MODELS.md) and
 [TQ-702_CONSOLE_LIVE_TRANSPORT.md](TQ-702_CONSOLE_LIVE_TRANSPORT.md). The
-complete visual Console remains roadmap work.
+server-rendered TQ-703 operator UI adds responsive section navigation, bounded
+filters, audit timelines, visible live/stale states and preview-before-download
+redacted support bundles; see
+[TQ-703_OPERATOR_CONSOLE.md](TQ-703_OPERATOR_CONSOLE.md).
 
 ## Build from source
 

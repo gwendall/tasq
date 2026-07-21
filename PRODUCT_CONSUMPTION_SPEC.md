@@ -168,8 +168,10 @@ effects, corrupt state and recovery points.
 **Path:** `tasq web`, `tasq inspect`, event cursors, `doctor`, backup and
 journal commands.
 
-**Support:** strong audit primitives; the console does not yet provide live
-overview, fleet health, support bundles or remediation workflows.
+**Support:** the Local Console provides live/stale workspace overview, bounded
+operational health, seven canonical views and previewable redacted support
+bundles. Cross-workspace fleet health and remediation workflows are not
+implemented.
 
 ### 4.5 TypeScript application or runtime integrator
 

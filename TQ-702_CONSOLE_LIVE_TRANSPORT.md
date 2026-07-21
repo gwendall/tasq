@@ -106,6 +106,6 @@ typed `409`, `HEAD`, security headers and injected time/scheduling. The public
 eval imports the live reader only through `@tasq/core`, checks the Core/service
 mirror and rejects ambient clocks in both implementations.
 
-This checkpoint supplies transport contracts, not the complete visual Console.
-Accessible navigation, filters, timelines, disconnected states and support
-bundles are TQ-703.
+This checkpoint supplies transport contracts. TQ-703 now consumes them in the
+accessible operator UI with filters, timelines, disconnected states and
+support bundles.

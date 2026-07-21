@@ -9,6 +9,7 @@ import {
   buildConsoleHealth,
   buildConsoleOverview,
   buildConsolePage,
+  buildConsoleSupportBundle,
   bootstrapCoordinationSpace,
   createCommitment,
   createPrincipal,
@@ -175,6 +176,19 @@ describe("bounded Console read models", () => {
       });
       expect(audit.items.every((item) => item.payload.reason === "operator_index_redaction")).toBe(true);
 
+      const bundle = await buildConsoleSupportBundle(h.db, {
+        workspaceId: h.workspaceId, limit: 100, clock: h.clock,
+      });
+      expect(bundle).toMatchObject({
+        contractVersion: "tasq.console-support-bundle.v1",
+        generatedAt: h.clock.now(),
+        source: { authority: "canonical-local-ledger", readOnly: true },
+        redaction: { policy: "tasq.operator-support-redaction.v1" },
+        completeness: { work: { truncated: false, continuationCursor: null } },
+      });
+      expect(JSON.stringify(bundle)).not.toContain("secretBindings");
+      expect(JSON.stringify(bundle)).not.toContain(`\"ref\":\"${hostile}`);
+
       const first = await buildConsolePage(h.db, {
         workspaceId: h.workspaceId, section: "work", limit: 1, clock: h.clock,
       });
@@ -246,9 +260,15 @@ describe("bounded Console read models", () => {
         workspaceId: h.workspaceId, section: "work", limit: 100, now: 99_000,
       });
       const overview = await buildConsoleOverview(h.db, { workspaceId: h.workspaceId, now: 99_000 });
+      const bundle = await buildConsoleSupportBundle(h.db, {
+        workspaceId: h.workspaceId, limit: 100, now: 99_000,
+      });
       const elapsedMs = performance.now() - started;
       expect(page).toMatchObject({ returned: 100, hasMore: true, inspectedAt: 99_000 });
       expect(overview.counts.commitments.open).toBe(2_501);
+      expect(bundle.completeness.work).toMatchObject({ truncated: true });
+      expect(bundle.completeness.work.continuationCursor).not.toBeNull();
+      expect(bundle.sections.work.items).toHaveLength(100);
       // This is deliberately a generous regression ceiling, not a latency SLO.
       expect(elapsedMs).toBeLessThan(2_000);
     } finally {

@@ -204,10 +204,12 @@ Bun tests cover HTML escaping, workspace isolation, constant-query bounded
 indexing, TQ-701 JSON routes and audit redaction, TQ-702 polling/SSE reconnect,
 backpressure, overflow continuation and typed cursor recovery, all non-read
 methods, malformed routes/filters/cursors, security headers, DNS-rebinding host refusal,
-internal errors, loopback binding and injected HTTP time/scheduling. Playwright then runs
-four Chromium journeys over the real `tasq web`
-process: desktop/focus, filtering/detail navigation, 390px dark/reduced-motion
-layout and browser-context mutation refusal.
+internal errors, loopback binding and injected HTTP time/scheduling. TQ-703
+adds support-bundle redaction/completeness and client asset checks. Playwright
+then runs six Chromium journeys over the real `tasq web` process: desktop
+focus/filtering, legacy detail navigation, 390px dark/reduced-motion layout,
+cross-process live invalidation, preview-before-download support and
+browser-context mutation refusal. The public CI has a dedicated Chromium job.
 
 ```bash
 cd packages/tasq-inspector

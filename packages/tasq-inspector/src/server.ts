@@ -14,6 +14,7 @@ import {
   buildConsoleHealth,
   buildConsoleOverview,
   buildConsolePage,
+  buildConsoleSupportBundle,
   buildInspectorIndex,
   ConsoleLiveCursorError,
   inspectCommitment,
@@ -27,6 +28,9 @@ import {
 } from "./render.js";
 import { isLoopbackHost } from "./loopback.js";
 import { systemConsoleScheduler, type ConsoleScheduler } from "./scheduler.js";
+import { renderConsole } from "./console-render.js";
+import { CONSOLE_CSS } from "./console-style.js";
+import { CONSOLE_JS } from "./console-client.js";
 
 export interface TasqInspectorHandlerOptions {
   db: TasqDb;
@@ -40,7 +44,7 @@ export interface TasqInspectorHandlerOptions {
 export function inspectorSecurityHeaders(contentType: string): Headers {
   return new Headers({
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'none'; style-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "Content-Security-Policy": "default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self' blob:; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
     "Content-Type": contentType,
     "Cross-Origin-Opener-Policy": "same-origin",
     "Cross-Origin-Resource-Policy": "same-origin",
@@ -293,7 +297,33 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
       if (pathname === "/assets/inspector.css") {
         return finalize(response(INSPECTOR_CSS, 200, "text/css; charset=utf-8", head));
       }
-      if (pathname === "/" || pathname === "/api/index") {
+      if (pathname === "/assets/console.css") {
+        return finalize(response(CONSOLE_CSS, 200, "text/css; charset=utf-8", head));
+      }
+      if (pathname === "/assets/console.js") {
+        return finalize(response(CONSOLE_JS, 200, "application/javascript; charset=utf-8", head));
+      }
+      if (pathname === "/") {
+        const parsedSection = ConsoleSection.safeParse(url.searchParams.get("view") ?? "work");
+        if (!parsedSection.success) {
+          return finalize(errorResponse(pathname, 400, "invalid_console_section", "Console view is invalid.", head));
+        }
+        const limit = parseLimit(url.searchParams.get("limit"));
+        const [overview, health, page, live] = await Promise.all([
+          buildConsoleOverview(options.db, { workspaceId, now: requestNow }),
+          buildConsoleHealth(options.db, { workspaceId, now: requestNow }),
+          buildConsolePage(options.db, {
+            workspaceId,
+            section: parsedSection.data,
+            limit,
+            cursor: url.searchParams.get("cursor"),
+            now: requestNow,
+          }),
+          buildConsoleEventBatch(options.db, { workspaceId, now: requestNow }),
+        ]);
+        return finalize(html(renderConsole({ overview, health, page, liveCursor: live.nextCursor }), 200, head));
+      }
+      if (pathname === "/inspector" || pathname === "/api/index") {
         const snapshot = await buildInspectorIndex(options.db, {
           workspaceId,
           status: parseStatus(url.searchParams.get("status")),
@@ -359,6 +389,23 @@ export function createTasqInspectorHandler(options: TasqInspectorHandlerOptions)
           }
           throw error;
         }
+      }
+      if (pathname === "/api/console/support-bundle") {
+        if (url.searchParams.has("download")) {
+          return finalize(errorResponse(
+            pathname,
+            400,
+            "preview_required",
+            "Download is created from the exact JSON reviewed in the Console preview.",
+            head,
+          ));
+        }
+        const bundle = await buildConsoleSupportBundle(options.db, {
+          workspaceId,
+          now: requestNow,
+          limit: 100,
+        });
+        return finalize(json(bundle, 200, head));
       }
       if (pathname.startsWith("/api/console/")) {
         const parsedSection = ConsoleSection.safeParse(pathname.slice("/api/console/".length));

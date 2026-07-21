@@ -16,6 +16,7 @@ export const CONSOLE_HEALTH_CONTRACT_VERSION = "tasq.console-health.v1" as const
 export const CONSOLE_EVENT_BATCH_CONTRACT_VERSION = "tasq.console-event-batch.v1" as const;
 export const CONSOLE_LIVE_PROBLEM_CONTRACT_VERSION = "tasq.console-live-problem.v1" as const;
 export const CONSOLE_STREAM_ENVELOPE_CONTRACT_VERSION = "tasq.console-stream-envelope.v1" as const;
+export const CONSOLE_SUPPORT_BUNDLE_CONTRACT_VERSION = "tasq.console-support-bundle.v1" as const;
 
 const Count = z.number().int().nonnegative();
 const UnixMs = z.number().int().nonnegative();
@@ -297,3 +298,54 @@ export const ConsoleStreamEnvelope = z.discriminatedUnion("kind", [
   }).strict(),
 ]);
 export type ConsoleStreamEnvelope = z.infer<typeof ConsoleStreamEnvelope>;
+
+const ConsoleBundleSectionState = z.object({
+  truncated: z.boolean(),
+  continuationCursor: OpaqueCursor.nullable(),
+}).strict().superRefine((value, context) => {
+  if (value.truncated !== (value.continuationCursor !== null)) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["continuationCursor"], message: "truncated sections disclose a continuation cursor" });
+  }
+});
+
+export const ConsoleSupportBundle = z.object({
+  contractVersion: z.literal(CONSOLE_SUPPORT_BUNDLE_CONTRACT_VERSION),
+  workspaceId: WorkspaceId,
+  generatedAt: UnixMs,
+  source: z.object({
+    product: z.literal("tasq-local-console"),
+    authority: z.literal("canonical-local-ledger"),
+    readOnly: z.literal(true),
+  }).strict(),
+  redaction: z.object({
+    policy: z.literal("tasq.operator-support-redaction.v1"),
+    omitted: z.tuple([
+      z.literal("event_payloads"),
+      z.literal("provider_bodies"),
+      z.literal("effect_requests"),
+      z.literal("secret_bindings"),
+      z.literal("record_metadata"),
+    ]),
+  }).strict(),
+  overview: ConsoleOverview,
+  health: ConsoleHealth,
+  sections: z.object({
+    work: ConsoleWorkPage,
+    actors: ConsoleActorPage,
+    claims: ConsoleClaimPage,
+    resources: ConsoleResourcePage,
+    waits: ConsoleWaitPage,
+    effects: ConsoleEffectPage,
+    audit: ConsoleAuditPage,
+  }).strict(),
+  completeness: z.object({
+    work: ConsoleBundleSectionState,
+    actors: ConsoleBundleSectionState,
+    claims: ConsoleBundleSectionState,
+    resources: ConsoleBundleSectionState,
+    waits: ConsoleBundleSectionState,
+    effects: ConsoleBundleSectionState,
+    audit: ConsoleBundleSectionState,
+  }).strict(),
+}).strict();
+export type ConsoleSupportBundle = z.infer<typeof ConsoleSupportBundle>;
