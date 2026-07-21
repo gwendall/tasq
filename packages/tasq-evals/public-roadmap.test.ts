@@ -49,7 +49,7 @@ describe("canonical public roadmap", () => {
     }
   });
 
-  test("keeps every dependency resolvable and every remote product pending", () => {
+  test("keeps every dependency resolvable without equating an internal slice to a remote product", () => {
     const known = new Set([
       ...roadmap.executionOrder,
       ...roadmap.completedPrerequisites,
@@ -60,8 +60,12 @@ describe("canonical public roadmap", () => {
         expect(known.has(dependency), `${item.id}: unknown dependency ${dependency}`).toBe(true);
       }
     }
-    for (const item of roadmap.items.filter(({ milestone }) => (
-      milestone === "self-hosted-server" || milestone === "managed-cloud"
+    expect(roadmap.items.find(({ id }) => id === "TQ-801")).toMatchObject({
+      status: "done",
+      evidence: ["TQ-801_HOSTED_AUTHORITY_FOUNDATION.md", "TQ-801_AUTHORITY_CERTIFICATION.json"],
+    });
+    for (const item of roadmap.items.filter(({ milestone, id }) => (
+      (milestone === "self-hosted-server" || milestone === "managed-cloud") && id !== "TQ-801"
     ))) {
       expect(item.status, `${item.id}: remote roadmap overstated`).toBe("pending");
     }

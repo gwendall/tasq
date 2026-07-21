@@ -36,6 +36,10 @@ Release metadata is authoritative if it narrows that window.
   its local descriptor and instance ID are discovery metadata, not credentials
   or authorization. Install creates no listener or daemon.
 - REST, remote MCP, Tasq Server and Tasq Cloud are not currently shipped.
+- The internal TQ-801 authority evaluator is deny-by-default and
+  injected-clock-only, but it trusts that an upstream adapter already verified
+  credentials and that a future authority store supplied a current snapshot.
+  Calling it does not authenticate a request or create a safe remote route.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.
 - Runtime/provider success never grants commitment-completion authority.

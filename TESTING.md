@@ -6,9 +6,9 @@
 
 Run `bun test` for the current count. The suite covers schemas, transactional/concurrent invariants, migrations and cursors, the real CLI in subprocesses, and realistic agent flows. Counts are intentionally not copied into docs because they drift on every change.
 
-## Twelve layers of testing
+## Thirteen layers of testing
 
-The codebase distinguishes **twelve test layers**, each living with its owning package:
+The codebase distinguishes **thirteen test layers**, each living with its owning package:
 
 ### 1. Schema tests (`packages/tasq-schema/test/`)
 
@@ -67,7 +67,26 @@ HTTPS and redirect refusal, late secret resolution, exact permit/content
 binding, provider idempotency, stale fences, unknown-outcome lookup, complete
 HMAC receipts, hostile receipts and immutable verification-to-ledger binding.
 
-### 6. Service tests (`packages/tasq-service/test/`)
+### 6. Hosted authority tests (`packages/tasq-authority/test/`)
+
+**Question**: *Can a future authenticated adapter make one deterministic,
+deny-by-default decision without transport, persistence, kernel or device-time
+coupling?*
+
+The TQ-801 suite freezes strict identity/binding/grant/delegation/decision
+contracts and 16 exact action identities. It covers live revocation, complete
+snapshot digests, two-issuer subject collision, delegated subject/actor
+intersection, sender constraints, effect eligibility, corrupt snapshots and
+one injected-clock capture. The separate clean-room eval exercises human,
+headless delegated-agent and SPIFFE service configurations without claiming a
+remote surface.
+
+```bash
+pnpm --filter @tasq-internal/authority test
+pnpm --filter @tasq-internal/evals test -- hosted-authority-foundation.test.ts
+```
+
+### 7. Service tests (`packages/tasq-service/test/`)
 
 **Question** : *Does the service layer enforce the contract?*
 
@@ -118,7 +137,7 @@ SQLite-heavy cold-start matrix otherwise accumulates enough native/JSC state
 for Bun 1.3.11 to crash during teardown on the macOS runner after all assertions
 in a file have passed. Every eval file remains mandatory and fail-fast.
 
-### 7. Protocol adapter tests (`packages/tasq-protocol-adapters/test/`)
+### 8. Protocol adapter tests (`packages/tasq-protocol-adapters/test/`)
 
 **Question**: *Can untrusted MCP Tasks and A2A execution state be imported
 without contaminating or completing the commitment kernel?*
@@ -129,7 +148,7 @@ artifact content binding and the no-implicit-completion invariant. The CLI
 architecture test enforces the one-way adapter-to-kernel dependency and scans
 the adapter for ambient clock reads.
 
-### 8. MCP transport tests (`packages/tasq-mcp/test/`)
+### 9. MCP transport tests (`packages/tasq-mcp/test/`)
 
 **Question**: *Does transport-level capability separation remain a real
 security boundary while preserving kernel semantics?*
@@ -140,7 +159,7 @@ effect authority, host-bound identity, injected time and a complete attempt
 flow that cannot implicitly complete its commitment. The eval suite adds a
 cold-start runtime that discovers the surface without repository knowledge.
 
-### 9. CLI E2E tests (`packages/tasq-cli/test/`)
+### 10. CLI E2E tests (`packages/tasq-cli/test/`)
 
 **Question** : *Does the actual command-line surface work the way an agent or user would invoke it?*
 
@@ -212,7 +231,7 @@ Run :
 cd packages/tasq-cli && bun test
 ```
 
-### 10. Local inspector tests (`packages/tasq-inspector/`)
+### 11. Local inspector tests (`packages/tasq-inspector/`)
 
 **Question**: *Can a human audit canonical state locally without creating a
 second truth or a hidden write/network/time boundary?*
@@ -239,7 +258,7 @@ bun test
 pnpm test:browser
 ```
 
-### 11. Public site tests (`apps/site/`)
+### 12. Public site tests (`apps/site/`)
 
 **Question**: *Can an unfamiliar human or agent learn the real product without
 marketing drift, private data or an invented release path?*
@@ -256,7 +275,7 @@ pnpm --filter @tasq-internal/site test
 pnpm --filter @tasq-internal/site test:browser
 ```
 
-### 12. Evals (`packages/tasq-evals/`)
+### 13. Evals (`packages/tasq-evals/`)
 
 **Question** : *Is the agent's experience good?*
 
@@ -358,6 +377,11 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   classes, hostile cross-workspace/revocation/delegation/key/clock scenarios,
   non-compensable failures and state-based release evidence. It validates a
   design matrix, not a hosted implementation certificate.
+- eval `hosted-authority-foundation.test.ts` — TQ-801 independently composes
+  browser-human, delegated headless-agent and SPIFFE connector-service inputs
+  through the pure guard; it checks transport normalization parity,
+  issuer/workspace isolation, live revocation, privilege separation and a
+  freeze/advance/rewind injected-clock matrix.
 - eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
   shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
   the claims guard with a candidate-only public install lifecycle while REST,
