@@ -10,6 +10,7 @@ routes readers by purpose; it does not replace the authoritative documents.
 | Understand the product | `README.md` → `CURRENT_STATE.md` → `PRODUCT_CONSUMPTION_SPEC.md` |
 | Modify the repository | `AGENTS.md` → `DEVELOPMENT.md` → owning package README |
 | Operate a ledger as an agent | `SKILL.md` → `tasq onboard ... --json` |
+| Install into Codex or Claude Code | `AGENT_INTEGRATIONS.md` → `AGENT_INTEGRATIONS.json` |
 | Find current work | `BACKLOG.json` for machine order; `BACKLOG.md` for explanation |
 | Evaluate support | `PRODUCT_SURFACE_MATRIX.json` and `PUBLIC_RELEASE_POLICY.json` |
 | Report a security issue | `SECURITY.md` |

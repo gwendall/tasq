@@ -1,0 +1,57 @@
+{
+  "contractVersion": "tasq.agent-plugin-certification.v1",
+  "revision": 1,
+  "status": "candidate-native-lifecycle-passed-blind-behavior-pending",
+  "testedAt": "2026-07-22",
+  "source": {
+    "kind": "local-checkout",
+    "repository": "https://github.com/gwendall/tasq",
+    "ref": "candidate-worktree",
+    "sha256": {
+      "AGENT_INTEGRATIONS.json": "8ff1c60e8fb72e8764e82ebf55eb20583883a1ec82c775e271a7273e3e5dd452",
+      ".agents/plugins/marketplace.json": "1fedf441fa239b6fefd80bc40f45fc1ab05f326c931405b90302fb2858b8765b",
+      ".claude-plugin/marketplace.json": "d50a82ef49e0538d76f21a11605fd12a83676527fe21316eeda4f8b306d64c61",
+      "plugins/tasq/.codex-plugin/plugin.json": "1b9f5f7964659d76a8095be7e34df4a59957f3d8063fa2a6d51c005dafd39e4c",
+      "plugins/tasq/.claude-plugin/plugin.json": "bfa0bfdf294eca9babeae0446821fce52ab0db40b7f189b0e4a91dfba2a9a517",
+      "plugins/tasq/skills/tasq/SKILL.md": "2d3838dc28594b46e436f8922479b76b2aa0dab2164ed97e375459307d7dbc2e"
+    }
+  },
+  "isolation": {
+    "cleanTemporaryHomes": true,
+    "userConfigurationTouched": false,
+    "tasqHomeTouched": false,
+    "ledgerTouched": false
+  },
+  "hosts": [
+    {
+      "id": "codex",
+      "version": "0.144.4",
+      "marketplaceDiscovery": "passed",
+      "install": "passed",
+      "installedList": "passed",
+      "uninstall": "passed",
+      "marketplaceRemoval": "passed"
+    },
+    {
+      "id": "claude-code",
+      "version": "2.1.217",
+      "manifestStrictValidation": "passed",
+      "marketplaceDiscovery": "passed",
+      "install": "passed",
+      "installedList": "passed",
+      "uninstall": "passed",
+      "marketplaceRemoval": "passed"
+    }
+  ],
+  "sharedSkill": {
+    "skillCreatorValidation": "passed",
+    "pluginCreatorValidation": "passed",
+    "structuralEval": "packages/tasq-evals/agent-plugin-integration.test.ts"
+  },
+  "remaining": [
+    "remote-main-install-replay",
+    "blind-codex-behavioral-matrix",
+    "blind-claude-code-behavioral-matrix"
+  ],
+  "tq321Complete": false
+}

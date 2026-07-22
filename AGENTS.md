@@ -30,6 +30,9 @@ Read the matching contract before changing host integrations or store format.
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
 `tasq onboard`; they do not reconstruct workflows from repository prose.
+Agents arriving through Codex or Claude Code use the native plugin paths in
+[AGENT_INTEGRATIONS.md](AGENT_INTEGRATIONS.md) and the machine contract in
+`AGENT_INTEGRATIONS.json`.
 
 ## Non-negotiable rules
 

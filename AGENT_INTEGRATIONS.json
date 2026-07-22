@@ -1,0 +1,64 @@
+{
+  "contractVersion": "tasq.agent-integrations.v1",
+  "revision": 1,
+  "integrationVersion": "0.1.0",
+  "sourceRepository": "https://github.com/gwendall/tasq",
+  "executable": {
+    "command": "tasq",
+    "minimumVersion": "0.1.0",
+    "acquisitionManifest": "https://raw.githubusercontent.com/gwendall/tasq/main/apps/site/public/adopt.json",
+    "unscopedNpmPackageAllowed": false
+  },
+  "rendezvous": {
+    "required": ["space", "actor", "capabilities"],
+    "spaceInference": "forbidden",
+    "actorInference": "forbidden",
+    "defaultCapabilities": ["read", "propose", "coordinate"]
+  },
+  "hosts": [
+    {
+      "id": "codex",
+      "minimumVersion": "0.144.4",
+      "marketplace": ".agents/plugins/marketplace.json",
+      "plugin": "plugins/tasq/.codex-plugin/plugin.json",
+      "skill": "plugins/tasq/skills/tasq/SKILL.md",
+      "install": [
+        ["codex", "plugin", "marketplace", "add", "gwendall/tasq", "--ref", "main"],
+        ["codex", "plugin", "add", "tasq@tasq"]
+      ],
+      "uninstall": [
+        ["codex", "plugin", "remove", "tasq@tasq"],
+        ["codex", "plugin", "marketplace", "remove", "tasq"]
+      ],
+      "activation": "start-new-session",
+      "invocation": "$tasq"
+    },
+    {
+      "id": "claude-code",
+      "minimumVersion": "2.1.217",
+      "marketplace": ".claude-plugin/marketplace.json",
+      "plugin": "plugins/tasq/.claude-plugin/plugin.json",
+      "skill": "plugins/tasq/skills/tasq/SKILL.md",
+      "install": [
+        ["claude", "plugin", "marketplace", "add", "gwendall/tasq", "--scope", "user"],
+        ["claude", "plugin", "install", "tasq@tasq", "--scope", "user"]
+      ],
+      "uninstall": [
+        ["claude", "plugin", "uninstall", "tasq@tasq", "--scope", "user"],
+        ["claude", "plugin", "marketplace", "remove", "tasq", "--scope", "user"]
+      ],
+      "activation": "start-new-session-or-reload-plugins",
+      "invocation": "/tasq:tasq"
+    }
+  ],
+  "mcp": {
+    "staticRegistrationShipped": false,
+    "reason": "Space, actor and capabilities must be host-bound explicitly.",
+    "discoveryTool": "tasq_discover",
+    "registrationSource": "tasq onboard transport.mcp.stdio"
+  },
+  "ownership": {
+    "adapterRoot": "plugins/tasq",
+    "uninstallPreserves": ["TASQ_HOME", "ledger", "database", "backups"]
+  }
+}

@@ -47,10 +47,11 @@ repository-only architecture.
 
 - **Public source alpha — live.** Anonymous users can clone, inspect and build
   `main`. npm packages and downloadable artifacts remain unpublished.
-- **TQ-321 — next, zero-context agent integration.** Ship native Codex and
-  Claude Code discovery/install paths over the existing MCP and CLI contract,
-  retain each runtime's private scratchpad, provide uninstall, and pass a blind
-  agent certification.
+- **TQ-321 — in progress, zero-context agent integration.** Native Codex and
+  Claude Code marketplace install/uninstall paths and one shared safety skill
+  now pass clean-home lifecycle smoke tests. The remaining gate is the full
+  blind-agent behavioral certification over contention, restart, cursor and
+  evidence flows.
 - **TQ-608 — next, migration hardening.** Add explicit schema read/write
   compatibility, verified pre-migration backup receipts, newer-schema
   fail-closed behavior, post-migration doctor checks, portable export and
@@ -85,8 +86,9 @@ breadth is intentionally lower priority even when technically unblocked.
 
 ### 1. Harden the public alpha
 
-- **TQ-321:** make a zero-context Codex or Claude Code session discover and use
-  Tasq through native instructions, MCP where available and CLI JSON fallback.
+- **TQ-321:** run the full blind Codex and Claude Code behavioral matrix against
+  the implemented native plugins, host-bound MCP where available and CLI JSON
+  fallback.
 - **TQ-608:** close the durable-data migration envelope before strangers entrust
   work ledgers to alpha builds.
 
