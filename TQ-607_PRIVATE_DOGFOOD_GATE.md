@@ -27,6 +27,13 @@ possible decision date is recorded in the machine status.
 The program is executed in this order; later phases do not erase evidence or
 restart the ledger from an easier state:
 
+The repository-owned status must be changed through `pnpm dogfood`, not by
+hand. Every mutation requires the current `--expected-revision` plus an
+explicit UTC `--at`, writes atomically and refuses a concurrent stale update.
+Run `pnpm --silent dogfood status --json` for the current progress and next
+action. The tool records evidence coordinates only; it never opens or mutates
+an adopter ledger.
+
 1. **Baseline and activation — 2026-07-22 onward.** Record the exact candidate
    version/commit, take and verify the first isolated backup, and activate all
    three consumer tracks. The immediate next action is to record that baseline

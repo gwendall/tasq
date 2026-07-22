@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Add a revision-guarded, atomic TQ-607 dogfood tracker for baselines, active
+  use, consumer journeys, resilience drills, friction, critical failures and
+  the final `go`, `extend` or `no_go` decision.
 - Add machine-readable coding-agent preflight, one-command handoff verification,
   a documentation map, an executable onboarding eval and a safety-focused pull
   request template.

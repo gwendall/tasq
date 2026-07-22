@@ -1,9 +1,12 @@
 {
   "contractVersion": "tasq.private-dogfood.v1",
+  "revision": 1,
   "status": "program-open-evidence-pending",
   "startedAt": "2026-07-22",
   "minimumCalendarDays": 30,
   "earliestDecisionAt": "2026-08-21",
+  "initialEarliestDecisionAt": "2026-08-21",
+  "baseline": null,
   "currentPhase": "baseline_and_activation",
   "nextAction": "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.",
   "phases": [
@@ -34,6 +37,13 @@
       "state": "not_started",
       "requiredActiveUseDays": 20,
       "recordedActiveUseDays": 0,
+      "activeUseDates": [],
+      "requiredJourneys": [
+        "open-blocked-resumed-evidence-completed",
+        "replacement-agent-cursor-restart",
+        "no-direct-store-repair"
+      ],
+      "completedJourneys": [],
       "evidence": []
     },
     {
@@ -45,6 +55,7 @@
         "crash-expiry-reclaim",
         "observable-evidence"
       ],
+      "completedJourneys": [],
       "evidence": []
     },
     {
@@ -56,19 +67,28 @@
         "lost-response-recovery",
         "explicit-evidence-completion"
       ],
+      "completedJourneys": [],
       "evidence": []
     }
   ],
   "crossCuttingEvidence": {
     "requiredForwardUpgradeDrills": 2,
     "completedForwardUpgradeDrills": 0,
+    "forwardUpgradeEvidence": [],
     "backupRestoreCompleted": false,
+    "backupRestoreEvidence": [],
     "replacementActorRecoveryCompleted": false,
+    "replacementActorRecoveryEvidence": [],
     "coldAgentOnboardingCompleted": false,
-    "supportBundleReviewCompleted": false
+    "coldAgentOnboardingEvidence": [],
+    "supportBundleReviewCompleted": false,
+    "supportBundleReviewEvidence": []
   },
   "frictionLog": [],
   "unresolvedCriticalFailures": [],
+  "resolvedCriticalFailures": [],
+  "audit": [],
   "publicLaunchDecision": "undecided",
+  "decisionRecord": null,
   "tq607Complete": false
 }

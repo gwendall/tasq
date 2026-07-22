@@ -6,6 +6,7 @@ const root = resolve(import.meta.dir, "../..");
 const markdown = readFileSync(resolve(root, "BACKLOG.md"), "utf8");
 const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
   contractVersion: string;
+  revision: number;
   status: string;
   canonicalRepository: string;
   repositoryVisibility: string;
@@ -202,6 +203,7 @@ describe("canonical Tasq roadmap", () => {
   test("makes dogfood a time-bounded three-consumer product gate, not prose", () => {
     expect(dogfood).toMatchObject({
       contractVersion: "tasq.private-dogfood.v1",
+      revision: 1,
       status: "program-open-evidence-pending",
       startedAt: "2026-07-22",
       minimumCalendarDays: 30,
