@@ -3,6 +3,8 @@
   "observedAt": "2026-07-22T13:07:05Z",
   "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
   "adopterCommit": "907d3a2365121d4fd462a72feb5ccfee66c267db",
+  "mergedCommit": "d13c097ef2caf783bd24c1ed92f99d8ffee6e2d3",
+  "pullRequest": "https://github.com/gwendall/kira-monorepo/pull/2242",
   "candidateInstallation": "clean-room-installed-tarball",
   "tenant": "robotics/team-a",
   "commitmentId": "019f89eb-28a8-7579-99fe-23768e4977ee",

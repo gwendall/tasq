@@ -14,8 +14,8 @@ cursor and bounded observable results.
 |---|---|
 | `baseline-2026-07-22.json` | exact candidate, clean-room install and verified live backup/isolated restore |
 | `clean-room-install-friction-2026-07-22.json` | first discovered package-install friction and resolution |
-| `denshin-journey-2026-07-22.json` | attempt lifecycle, restart recovery, two runs and separate completion authority |
-| `kami-robotics-journey-2026-07-22.json` | contention, expiry/reclaim, stale-fence rejection and observable receipt |
+| `denshin-journey-2026-07-22.json` | attempt lifecycle, restart recovery, two runs, separate completion authority and run/rebase/merge provenance |
+| `kami-robotics-journey-2026-07-22.json` | contention, expiry/reclaim, stale-fence rejection, observable receipt and merged-adopter provenance |
 | `life-pilot-activation-2026-07-22.json` | explicit live-space onboarding without private content |
 | `journal-checkpoint-2026-07-22.json` | audited legacy parity finding and preserved forensic checkpoint |
 | `cold-agent-onboarding-2026-07-22.json` | clean repository preflight from documented entrypoints |
