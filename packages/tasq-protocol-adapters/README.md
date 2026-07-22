@@ -13,5 +13,5 @@ pnpm --filter @tasq/protocol-adapters typecheck
 pnpm --filter @tasq/protocol-adapters test
 ```
 
-See [`../../ADR-007_PROTOCOL_TASK_ADAPTERS.md`](../../ADR-007_PROTOCOL_TASK_ADAPTERS.md)
-and [`../../TQ-307_SURFACE_COMPATIBILITY.md`](../../TQ-307_SURFACE_COMPATIBILITY.md).
+See [`../../ADR-007_PROTOCOL_TASK_ADAPTERS.md`](../../docs/decisions/ADR-007_PROTOCOL_TASK_ADAPTERS.md)
+and [`../../TQ-307_SURFACE_COMPATIBILITY.md`](../../docs/contracts/TQ-307_SURFACE_COMPATIBILITY.md).

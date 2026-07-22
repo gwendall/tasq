@@ -1,0 +1,219 @@
+{
+  "contractVersion": "tasq.hosted-tenancy-acceptance.v1",
+  "status": "host-integrated-read-write-rest-implemented-no-deployable-server",
+  "decision": "docs/decisions/ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
+  "implementedSlices": [
+    {
+      "id": "TQ-801",
+      "package": "@tasq-internal/authority",
+      "evidence": "docs/contracts/TQ-801_AUTHORITY_CERTIFICATION.json",
+      "includes": ["strict_identity_dto", "subject_binding_dto", "action_registry", "live_authorization_evaluator"],
+      "remoteSurface": false
+    },
+    {
+      "id": "TQ-802",
+      "package": "@tasq-internal/server",
+      "evidence": "docs/contracts/TQ-802_AUTHORITY_STORE_CERTIFICATION.json",
+      "includes": ["authority_migrations", "live_authority_store", "append_only_security_audit", "isolated_workspace_router"],
+      "remoteSurface": false
+    },
+    {
+      "id": "TQ-803",
+      "package": "@tasq-internal/server",
+      "evidence": "docs/contracts/TQ-803_READ_REST_CERTIFICATION.json",
+      "includes": ["rfc_9728_discovery", "credential_verifier_boundary", "guarded_read_handler", "bounded_event_metadata"],
+      "remoteSurface": "host_integration_required"
+    },
+    {
+      "id": "TQ-804",
+      "package": "@tasq-internal/server",
+      "evidence": "docs/contracts/TQ-804_MUTATION_REST_CERTIFICATION.json",
+      "includes": ["operation_catalog", "guarded_mutation_handler", "durable_idempotency_contract", "revocation_serialization", "unknown_outcome_recovery"],
+      "remoteSurface": "host_integration_required"
+    }
+  ],
+  "criticalFailuresAreNonCompensable": true,
+  "layers": [
+    "transport",
+    "authentication",
+    "subject_binding",
+    "authorization",
+    "kernel",
+    "effect_gate"
+  ],
+  "identityMethods": [
+    {
+      "id": "oidc_oauth_access_token",
+      "subjects": ["human", "agent", "service"],
+      "requiredClaims": ["issuer", "subject", "audience", "expires_at"],
+      "notes": "ID tokens are not API access tokens; live grants remain authoritative."
+    },
+    {
+      "id": "oauth_introspection",
+      "subjects": ["human", "agent", "service"],
+      "requiredClaims": ["issuer", "subject", "audience", "expires_at", "active"],
+      "notes": "The resource server authenticates introspection and still performs live grant checks."
+    },
+    {
+      "id": "spiffe_workload",
+      "subjects": ["agent", "service", "runtime"],
+      "requiredClaims": ["issuer", "subject", "audience", "expires_at", "credential_binding"],
+      "notes": "Optional workload adapter; never a human membership or authorization system."
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "rest",
+      "status": "implemented_integration_required_read_write",
+      "sharedGuard": true
+    },
+    {
+      "id": "remote_mcp",
+      "status": "planned",
+      "sharedGuard": true
+    },
+    {
+      "id": "hosted_web_bff",
+      "status": "planned",
+      "sharedGuard": true
+    },
+    {
+      "id": "local_cli_stdio_loopback",
+      "status": "implemented_local_only",
+      "sharedGuard": false
+    }
+  ],
+  "dimensions": {
+    "subject": ["human", "agent", "service", "runtime"],
+    "credential": ["jwt_access_token", "opaque_introspected_token", "dpop", "mtls_spiffe"],
+    "workspaceState": ["member", "not_member", "binding_disabled", "grant_revoked", "principal_disabled"],
+    "surface": ["rest", "remote_mcp", "hosted_web_bff"],
+    "time": ["frozen", "exact_expiry", "advanced", "rewound"],
+    "topology": ["one_workspace", "two_workspaces_one_tenant", "two_tenants", "replica_and_authority"],
+    "failure": ["none", "unknown_key", "metadata_outage", "token_replay", "lost_response", "concurrent_revocation"]
+  },
+  "scenarios": [
+    {
+      "id": "protected_resource_discovery_no_data",
+      "principles": ["discoverable_authentication", "no_unauthenticated_workspace_data"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "public metadata and typed 401 reveal no workspace state"
+    },
+    {
+      "id": "issuer_subject_collision",
+      "principles": ["issuer_subject_identity", "no_email_identity"],
+      "surfaces": ["rest"],
+      "requiredOutcome": "same subject from two issuers maps to distinct bindings"
+    },
+    {
+      "id": "cross_workspace_read_probe",
+      "principles": ["store_isolation", "live_authorization"],
+      "surfaces": ["rest", "remote_mcp", "hosted_web_bff"],
+      "requiredOutcome": "deny before the foreign workspace store is read"
+    },
+    {
+      "id": "revoked_grant_unexpired_token",
+      "principles": ["token_scope_is_upper_bound", "immediate_revocation"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "next request denies from the live grant state"
+    },
+    {
+      "id": "disabled_binding_unexpired_token",
+      "principles": ["subject_binding_is_live", "immediate_revocation"],
+      "surfaces": ["rest", "hosted_web_bff"],
+      "requiredOutcome": "next request denies without rewriting history"
+    },
+    {
+      "id": "delegated_agent_intersection",
+      "principles": ["subject_actor_separation", "least_privilege_delegation"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "authority is the intersection of subject actor token and delegation"
+    },
+    {
+      "id": "surface_switch_no_widening",
+      "principles": ["one_guard", "one_ledger"],
+      "surfaces": ["rest", "remote_mcp", "hosted_web_bff"],
+      "requiredOutcome": "the same identity action and resource produce the same decision"
+    },
+    {
+      "id": "privileged_token_replay",
+      "principles": ["sender_constraint", "replay_detection"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "stolen or repeated sender proof cannot administer approve or dispatch"
+    },
+    {
+      "id": "unknown_key_rotation",
+      "principles": ["pinned_issuer", "fail_closed_rotation"],
+      "surfaces": ["rest", "hosted_web_bff"],
+      "requiredOutcome": "one bounded refresh succeeds only for a key from the pinned issuer"
+    },
+    {
+      "id": "metadata_outage",
+      "principles": ["fail_closed_rotation", "bounded_cache"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "unknown credentials deny and never downgrade to actor text"
+    },
+    {
+      "id": "concurrent_revocation_and_mutation",
+      "principles": ["atomic_authority", "optimistic_concurrency"],
+      "surfaces": ["rest"],
+      "requiredOutcome": "the live authority writer gate spans the durable idempotent domain commit; a competing writer fails retryably"
+    },
+    {
+      "id": "effect_separation_of_duty",
+      "principles": ["authorization_is_not_approval", "exact_effect_gate"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "workspace admin alone cannot approve or dispatch an effect"
+    },
+    {
+      "id": "headless_device_authorization",
+      "principles": ["honest_bootstrap", "human_consent"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "agent receives typed device instructions and no authority before approval"
+    },
+    {
+      "id": "workload_attestation_rotation",
+      "principles": ["workload_identity_adapter", "short_lived_credentials"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "rotated workload identity retains subject continuity without stored private keys"
+    },
+    {
+      "id": "replica_revocation",
+      "principles": ["authority_required_sync", "no_stale_reactivation"],
+      "surfaces": ["rest"],
+      "requiredOutcome": "revoked replica cannot push enroll or self-reactivate"
+    },
+    {
+      "id": "injected_clock_matrix",
+      "principles": ["injected_authority_time", "time_is_not_order"],
+      "surfaces": ["rest", "remote_mcp", "hosted_web_bff"],
+      "requiredOutcome": "freeze advance and rewind affect only explicit validity boundaries"
+    },
+    {
+      "id": "lost_response_retry",
+      "principles": ["durable_idempotency", "decision_audit"],
+      "surfaces": ["rest", "remote_mcp"],
+      "requiredOutcome": "exact retry reuses one accepted result and one authority decision identity"
+    }
+  ],
+  "criticalFailures": [
+    "cross_workspace_disclosure",
+    "unauthenticated_mutation",
+    "authority_widening",
+    "subject_actor_conflation",
+    "token_scope_used_without_live_grant",
+    "effect_dispatch_without_exact_gate",
+    "credential_or_secret_logged",
+    "device_clock_authority",
+    "remote_route_bypasses_guard",
+    "revoked_replica_reactivated"
+  ],
+  "releaseRequirements": {
+    "platforms": ["linux", "macos"],
+    "minimumIssuers": 2,
+    "minimumConsecutiveBlindPassesPerFamilyAndScenario": 3,
+    "humanInterventionsDuringAutonomousTrials": 0,
+    "requiredClients": ["browser_human", "headless_human_delegated_agent", "workload_agent"],
+    "requiredEvidence": ["transport_transcript", "authorization_decisions", "ledger_state", "provider_invocation_count", "clock_trace"]
+  }
+}

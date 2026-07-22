@@ -24,7 +24,7 @@ const ISSUER = "https://issuer-clean-room.example/";
 const sha = (c: string) => `sha256:${c.repeat(64)}`;
 const roots: string[] = [];
 const certificate = JSON.parse(readFileSync(
-  resolve(import.meta.dir, "../..", "TQ-802_AUTHORITY_STORE_CERTIFICATION.json"),
+  resolve(import.meta.dir, "../..", "docs/contracts/TQ-802_AUTHORITY_STORE_CERTIFICATION.json"),
   "utf8",
 )) as {
   status: string;

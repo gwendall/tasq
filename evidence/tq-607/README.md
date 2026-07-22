@@ -5,7 +5,9 @@ for the private multi-application dogfood gate. It never contains adopter
 databases, private commitment prose, full support bundles or workstation
 paths.
 
-The machine status in `TQ-607_DOGFOOD_STATUS.json` is updated only through
+The machine status in
+[`docs/contracts/TQ-607_DOGFOOD_STATUS.json`](../../docs/contracts/TQ-607_DOGFOOD_STATUS.json)
+is updated only through
 `pnpm dogfood`. The retained databases, installed candidate and backup remain
 outside every adopter checkout; these files record their version, digest,
 cursor and bounded observable results.

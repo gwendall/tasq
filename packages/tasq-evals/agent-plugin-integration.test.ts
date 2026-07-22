@@ -9,7 +9,7 @@ const skillPath = "plugins/tasq/skills/tasq/SKILL.md";
 
 describe("zero-context agent integration candidate", () => {
   test("keeps both native adapters on one versioned semantic core", () => {
-    const contract = readJson("AGENT_INTEGRATIONS.json");
+    const contract = readJson("docs/integrations/AGENT_INTEGRATIONS.json");
     const codexMarketplace = readJson(".agents/plugins/marketplace.json");
     const claudeMarketplace = readJson(".claude-plugin/marketplace.json");
     const codexPlugin = readJson("plugins/tasq/.codex-plugin/plugin.json");
@@ -73,7 +73,7 @@ describe("zero-context agent integration candidate", () => {
   });
 
   test("publishes exact native install and symmetric uninstall argv", () => {
-    const contract = readJson("AGENT_INTEGRATIONS.json");
+    const contract = readJson("docs/integrations/AGENT_INTEGRATIONS.json");
     const byId = new Map(contract.hosts.map((host: { id: string }) => [host.id, host]));
     expect(byId.get("codex")).toMatchObject({
       install: [
@@ -99,7 +99,7 @@ describe("zero-context agent integration candidate", () => {
   });
 
   test("records native lifecycle evidence without overstating blind support", () => {
-    const certificate = readJson("TQ-321_AGENT_PLUGIN_CERTIFICATION.json");
+    const certificate = readJson("docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json");
     expect(certificate).toMatchObject({
       contractVersion: "tasq.agent-plugin-certification.v1",
       status: "candidate-public-native-lifecycle-passed-blind-behavior-pending",
@@ -120,8 +120,15 @@ describe("zero-context agent integration candidate", () => {
       "blind-codex-behavioral-matrix",
       "blind-claude-code-behavioral-matrix",
     ]);
+    const currentPathByCertifiedPath: Record<string, string> = {
+      // The certificate is bound to the pre-reorganization source commit. Keep
+      // its historical path intact while checking the same bytes at their
+      // current repository location.
+      "AGENT_INTEGRATIONS.json": "docs/integrations/AGENT_INTEGRATIONS.json",
+    };
     for (const [path, expected] of Object.entries(certificate.source.sha256 as Record<string, string>)) {
-      const actual = createHash("sha256").update(readFileSync(resolve(root, path))).digest("hex");
+      const currentPath = currentPathByCertifiedPath[path] ?? path;
+      const actual = createHash("sha256").update(readFileSync(resolve(root, currentPath))).digest("hex");
       expect(actual, `${path}: stale lifecycle certificate`).toBe(expected);
     }
   });

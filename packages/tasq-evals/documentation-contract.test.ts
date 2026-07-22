@@ -95,17 +95,48 @@ describe("standalone documentation contract", () => {
     expect(missing).toEqual([]);
   });
 
+  test("keeps the repository root focused on public and agent entrypoints", () => {
+    const allowedRootMarkdown = new Set([
+      "AGENTS.md",
+      "CHANGELOG.md",
+      "CODE_OF_CONDUCT.md",
+      "CONTRIBUTING.md",
+      "GOVERNANCE.md",
+      "README.md",
+      "SECURITY.md",
+      "SKILL.md",
+      "SUPPORT.md",
+    ]);
+    const rootMarkdown = readdirSync(repositoryRoot)
+      .filter((name) => extname(name).toLowerCase() === ".md")
+      .sort();
+    expect(rootMarkdown).toEqual([...allowedRootMarkdown].sort());
+
+    for (const directory of [
+      "concepts",
+      "contracts",
+      "decisions",
+      "guides",
+      "integrations",
+      "reference",
+      "releases",
+      "roadmap",
+    ]) {
+      expect(existsSync(join(repositoryRoot, "docs", directory, "README.md"))).toBe(true);
+    }
+  });
+
   test("root onboarding identifies the canonical repository and safe work loop", () => {
     const agents = read("AGENTS.md");
     const skill = read("SKILL.md");
-    const development = read("DEVELOPMENT.md");
+    const development = read("docs/guides/DEVELOPMENT.md");
     const contributing = read("CONTRIBUTING.md");
     const rootPackage = JSON.parse(read("package.json")) as {
       scripts: Record<string, string>;
     };
 
     expect(agents).toContain("https://github.com/gwendall/tasq");
-    expect(agents).toContain("DEVELOPMENT.md");
+    expect(agents).toContain("docs/guides/DEVELOPMENT.md");
     expect(agents).toContain("pnpm docs:check");
     expect(agents).toContain("pnpm typecheck");
     expect(agents).toContain("pnpm test");
@@ -127,9 +158,9 @@ describe("standalone documentation contract", () => {
     for (const path of [
       "AGENTS.md",
       "CONTRIBUTING.md",
-      "DEVELOPMENT.md",
+      "docs/guides/DEVELOPMENT.md",
       "README.md",
-      "TESTING.md",
+      "docs/guides/TESTING.md",
     ]) {
       const content = read(path);
       expect(content).not.toContain("cd products/tasq");

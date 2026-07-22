@@ -16,6 +16,6 @@ pnpm --filter @tasq-internal/filesystem-watcher typecheck
 pnpm --filter @tasq-internal/filesystem-watcher test
 ```
 
-See [`../../WATCHER_RECIPES.md`](../../WATCHER_RECIPES.md) for executable
-fixture flows and [`../../TQ-305_CONNECTOR_CONFORMANCE.md`](../../TQ-305_CONNECTOR_CONFORMANCE.md)
+See [`../../WATCHER_RECIPES.md`](../../docs/reference/WATCHER_RECIPES.md) for executable
+fixture flows and [`../../TQ-305_CONNECTOR_CONFORMANCE.md`](../../docs/contracts/TQ-305_CONNECTOR_CONFORMANCE.md)
 for the reusable contract.

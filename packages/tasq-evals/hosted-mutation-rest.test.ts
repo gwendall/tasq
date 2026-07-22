@@ -33,7 +33,7 @@ const roots: string[] = [];
 let operationNumber = 0;
 
 const certificate = JSON.parse(readFileSync(
-  resolve(import.meta.dir, "../..", "TQ-804_MUTATION_REST_CERTIFICATION.json"),
+  resolve(import.meta.dir, "../..", "docs/contracts/TQ-804_MUTATION_REST_CERTIFICATION.json"),
   "utf8",
 )) as {
   status: string;

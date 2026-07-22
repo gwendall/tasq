@@ -17,5 +17,5 @@ pnpm --filter @tasq-internal/site test:browser
 ```
 
 Generated truth must be refreshed through the generator, not edited by hand.
-See [`../../TQ-605_PUBLIC_SITE.md`](../../TQ-605_PUBLIC_SITE.md) and
-[`../../PRODUCT_CONSUMPTION_SPEC.md`](../../PRODUCT_CONSUMPTION_SPEC.md).
+See [`../../TQ-605_PUBLIC_SITE.md`](../../docs/contracts/TQ-605_PUBLIC_SITE.md) and
+[`../../PRODUCT_CONSUMPTION_SPEC.md`](../../docs/concepts/PRODUCT_CONSUMPTION_SPEC.md).

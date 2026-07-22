@@ -6,7 +6,7 @@ import { resolve } from "node:path";
 
 const product = resolve(import.meta.dir, "../..");
 const matrix = JSON.parse(readFileSync(
-  resolve(product, "PRODUCT_SURFACE_MATRIX.json"),
+  resolve(product, "docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
   "utf8",
 )) as {
   contractVersion: string;
@@ -36,7 +36,7 @@ const matrix = JSON.parse(readFileSync(
   criticalTruths: string[];
 };
 const releasePolicy = JSON.parse(readFileSync(
-  resolve(product, "PUBLIC_RELEASE_POLICY.json"),
+  resolve(product, "docs/releases/PUBLIC_RELEASE_POLICY.json"),
   "utf8",
 )) as {
   status: string;
@@ -51,7 +51,7 @@ const releasePolicy = JSON.parse(readFileSync(
   };
 };
 const lifecycle = JSON.parse(readFileSync(
-  resolve(product, "TQ-604_LIFECYCLE_CERTIFICATION.json"),
+  resolve(product, "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json"),
   "utf8",
 )) as {
   contractVersion: string;

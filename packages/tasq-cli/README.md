@@ -21,7 +21,7 @@ not authentication.
 - `runtime.ts` owns the Local composition, database open/migration and injected
   `systemClock` boundary.
 - Stable agent JSON follows
-  [`../../CLI_JSON_CONTRACT.md`](../../CLI_JSON_CONTRACT.md).
+  [`../../CLI_JSON_CONTRACT.md`](../../docs/reference/CLI_JSON_CONTRACT.md).
 - `tasq web` is explicit foreground loopback inspection, not a daemon or hosted
   service.
 - Source and candidate artifacts are not published-release authority.

@@ -96,9 +96,9 @@ async function readJson<T>(relativePath: string): Promise<{ raw: string; value: 
 }
 
 const [matrixFile, backlogFile, policyFile, rootPackageFile] = await Promise.all([
-  readJson<ProductMatrix>("PRODUCT_SURFACE_MATRIX.json"),
-  readJson<Backlog>("BACKLOG.json"),
-  readJson<ReleasePolicy>("PUBLIC_RELEASE_POLICY.json"),
+  readJson<ProductMatrix>("docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
+  readJson<Backlog>("docs/roadmap/BACKLOG.json"),
+  readJson<ReleasePolicy>("docs/releases/PUBLIC_RELEASE_POLICY.json"),
   readJson<RootPackage>("package.json"),
 ]);
 
@@ -163,17 +163,17 @@ const truth = {
   })),
   sourceContracts: [
     {
-      path: "PRODUCT_SURFACE_MATRIX.json",
+      path: "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       contractVersion: matrix.contractVersion,
       sha256: sourceDigest(matrixFile.raw),
     },
     {
-      path: "BACKLOG.json",
+      path: "docs/roadmap/BACKLOG.json",
       contractVersion: backlog.contractVersion,
       sha256: sourceDigest(backlogFile.raw),
     },
     {
-      path: "PUBLIC_RELEASE_POLICY.json",
+      path: "docs/releases/PUBLIC_RELEASE_POLICY.json",
       contractVersion: policy.contractVersion,
       sha256: sourceDigest(policyFile.raw),
     },

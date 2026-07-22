@@ -27,7 +27,7 @@ import { CONFIG_KEYS } from "../src/config.js";
 
 const productRoot = resolve(import.meta.dir, "../../..");
 const inventory = JSON.parse(
-  readFileSync(resolve(productRoot, "UNIVERSAL_COMPATIBILITY_INVENTORY.json"), "utf8"),
+  readFileSync(resolve(productRoot, "docs/contracts/UNIVERSAL_COMPATIBILITY_INVENTORY.json"), "utf8"),
 ) as Inventory;
 
 type Classification =

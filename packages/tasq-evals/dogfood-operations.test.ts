@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 const root = resolve(import.meta.dir, "../..");
 const temporary = mkdtempSync(join(tmpdir(), "tasq-dogfood-operations-"));
 const statusPath = join(temporary, "status.json");
-const fixture = JSON.parse(readFileSync(resolve(root, "TQ-607_DOGFOOD_STATUS.json"), "utf8"));
+const fixture = JSON.parse(readFileSync(resolve(root, "docs/contracts/TQ-607_DOGFOOD_STATUS.json"), "utf8"));
 fixture.revision = 1;
 fixture.status = "program-open-evidence-pending";
 fixture.earliestDecisionAt = fixture.initialEarliestDecisionAt;

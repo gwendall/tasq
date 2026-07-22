@@ -617,17 +617,17 @@
   ],
   "sourceContracts": [
     {
-      "path": "PRODUCT_SURFACE_MATRIX.json",
+      "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "4f661fa728d60b89f96060e1e53fd65b6602670b18a9007772b120af4fe3bfa0"
+      "sha256": "40e0ed6a4741123f4c6484a5fd50ee9c6423f4927a3c820b88a9603d61ba7b96"
     },
     {
-      "path": "BACKLOG.json",
+      "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "1ce8e01fcfda745c8c4be32ce1bed142e551d5d658f99d4b6481ca5c85478237"
+      "sha256": "a2fa915e7b941cc60b338e7e051e56cdf063395099c0c6fca4810417f7bd0a1d"
     },
     {
-      "path": "PUBLIC_RELEASE_POLICY.json",
+      "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
       "sha256": "0c758c5e8207adc825a75671850f8d59f4347c47cc2acc223fb0dced1ab7bc06"
     }

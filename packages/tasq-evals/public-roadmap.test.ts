@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "../..");
-const markdown = readFileSync(resolve(root, "BACKLOG.md"), "utf8");
-const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
+const markdown = readFileSync(resolve(root, "docs/roadmap/BACKLOG.md"), "utf8");
+const roadmap = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8")) as {
   contractVersion: string;
   revision: number;
   status: string;
@@ -27,7 +27,7 @@ const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) 
   }>;
 };
 const dogfood = JSON.parse(readFileSync(
-  resolve(root, "TQ-607_DOGFOOD_STATUS.json"),
+  resolve(root, "docs/contracts/TQ-607_DOGFOOD_STATUS.json"),
   "utf8",
 )) as {
   contractVersion: string;
@@ -97,19 +97,19 @@ describe("canonical Tasq roadmap", () => {
     }
     expect(roadmap.items.find(({ id }) => id === "TQ-801")).toMatchObject({
       status: "done",
-      evidence: ["TQ-801_HOSTED_AUTHORITY_FOUNDATION.md", "TQ-801_AUTHORITY_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-801_HOSTED_AUTHORITY_FOUNDATION.md", "docs/contracts/TQ-801_AUTHORITY_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-802")).toMatchObject({
       status: "done",
-      evidence: ["TQ-802_AUTHORITY_STORE_ROUTER.md", "TQ-802_AUTHORITY_STORE_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-802_AUTHORITY_STORE_ROUTER.md", "docs/contracts/TQ-802_AUTHORITY_STORE_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-803")).toMatchObject({
       status: "done",
-      evidence: ["TQ-803_HOSTED_READ_REST.md", "TQ-803_READ_REST_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-803_HOSTED_READ_REST.md", "docs/contracts/TQ-803_READ_REST_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-804")).toMatchObject({
       status: "done",
-      evidence: ["TQ-804_GUARDED_MUTATION_REST.md", "TQ-804_MUTATION_REST_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-804_GUARDED_MUTATION_REST.md", "docs/contracts/TQ-804_MUTATION_REST_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-320")).toMatchObject({
       status: "candidate_done_publication_gate",
@@ -117,8 +117,8 @@ describe("canonical Tasq roadmap", () => {
       dependsOn: ["TQ-603", "TQ-304", "TQ-501"],
       remaining: ["rerun-from-first-published-release"],
       evidence: [
-        "TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md",
-        "TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
+        "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md",
+        "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
       ],
     });
     for (const item of roadmap.items.filter(({ milestone, id }) => (
@@ -152,10 +152,10 @@ describe("canonical Tasq roadmap", () => {
       milestone: "runtime-consumers",
       remaining: ["run-blind-agent-certification"],
       evidence: [
-        "TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md",
-        "TQ-321_AGENT_PLUGIN_CERTIFICATION.json",
-        "AGENT_INTEGRATIONS.md",
-        "AGENT_INTEGRATIONS.json",
+        "docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md",
+        "docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json",
+        "docs/integrations/AGENT_INTEGRATIONS.md",
+        "docs/integrations/AGENT_INTEGRATIONS.json",
         "plugins/tasq/skills/tasq/SKILL.md",
       ],
     });
@@ -167,7 +167,7 @@ describe("canonical Tasq roadmap", () => {
         "add-exact-protected-n-minus-two-lines-once-they-exist",
       ],
       evidence: expect.arrayContaining([
-        "TQ-608_MIGRATION_CERTIFICATION.json",
+        "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json",
         "packages/tasq-service/test/data-safety.test.ts",
       ]),
     });
@@ -185,8 +185,8 @@ describe("canonical Tasq roadmap", () => {
         "record-go-extend-or-no-go-decision",
       ],
       evidence: [
-        "TQ-607_PRIVATE_DOGFOOD_GATE.md",
-        "TQ-607_DOGFOOD_STATUS.json",
+        "docs/contracts/TQ-607_PRIVATE_DOGFOOD_GATE.md",
+        "docs/contracts/TQ-607_DOGFOOD_STATUS.json",
         "evidence/tq-607/README.md",
       ],
     });
@@ -206,13 +206,13 @@ describe("canonical Tasq roadmap", () => {
       id: "TQ-604",
       status: "candidate_done_publication_gate",
       evidence: [
-        "TQ-604_LIFECYCLE_CERTIFICATION.json",
+        "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
         "https://github.com/gwendall/tasq/pull/5",
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-605")).toMatchObject({
       status: "done",
-      evidence: ["TQ-605_PUBLIC_SITE.md"],
+      evidence: ["docs/contracts/TQ-605_PUBLIC_SITE.md"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-606")).toMatchObject({
       status: "candidate_done_external_gate",
@@ -220,7 +220,7 @@ describe("canonical Tasq roadmap", () => {
         "rerun-from-first-published-release",
         "record-independent-unbriefed-human-session",
       ],
-      evidence: ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"],
     });
   });
 

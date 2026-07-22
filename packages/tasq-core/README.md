@@ -22,5 +22,5 @@ pnpm --filter @tasq/core typecheck
 
 Kernel behavior is exercised primarily through the service, surface and eval
 suites in the root `pnpm test` run. See
-[`../../UNIVERSAL_KERNEL_SPEC.md`](../../UNIVERSAL_KERNEL_SPEC.md) and
-[`../../ARCHITECTURE.md`](../../ARCHITECTURE.md).
+[`../../UNIVERSAL_KERNEL_SPEC.md`](../../docs/concepts/UNIVERSAL_KERNEL_SPEC.md) and
+[`../../ARCHITECTURE.md`](../../docs/concepts/ARCHITECTURE.md).
