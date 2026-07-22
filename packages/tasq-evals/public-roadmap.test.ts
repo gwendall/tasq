@@ -196,7 +196,7 @@ describe("canonical Tasq roadmap", () => {
       dependsOn: ["TQ-321", "TQ-608", "TQ-607"],
       remaining: [
         "complete-agent-integration-certification",
-        "complete-migration-hardening",
+        "complete-private-dogfood-go",
         "verify-npm-scope-control",
         "configure-npm-trusted-publishing",
         "publish-first-protected-release",
