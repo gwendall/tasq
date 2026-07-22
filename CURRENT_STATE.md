@@ -116,8 +116,9 @@ its read/write/direct-migration ranges appear in executable and release
 metadata. Existing-store upgrades are serialized, snapshot-verified,
 receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
-round-trip pass on filesystem databases. Exact first protected release bytes,
-future N-2 protected lines and a quota/device `ENOSPC` environment remain
+round-trip pass on filesystem databases, and a real file-size quota fails
+before schema mutation while retaining only a private diagnostic partial.
+Exact first protected release bytes and future N-2 protected lines remain
 external replay boundaries; see `DATA_SAFETY.md` and the TQ-608 certificate.
 
 TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.

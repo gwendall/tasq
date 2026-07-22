@@ -31,6 +31,9 @@ After commit, Tasq verifies SQLite integrity, foreign keys, the exact schema
 format and service invariants. A crash-left pending receipt is reconciled on
 the next open. Failed post-checks retain the snapshot and return
 `tasq.migration-safety-problem.v1`; they never report the upgrade as successful.
+Quota exhaustion during snapshot creation leaves the source schema unchanged;
+any partial diagnostic file remains inside the private recovery directory,
+mode 0600, and never receives a successful migration receipt.
 
 ## Create and verify a recovery snapshot
 

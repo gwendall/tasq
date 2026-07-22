@@ -165,7 +165,6 @@ describe("canonical Tasq roadmap", () => {
       remaining: [
         "replay-first-protected-release-bytes",
         "add-exact-protected-n-minus-two-lines-once-they-exist",
-        "run-quota-or-device-enospc-environment",
       ],
       evidence: expect.arrayContaining([
         "TQ-608_MIGRATION_CERTIFICATION.json",
