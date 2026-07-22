@@ -88,7 +88,9 @@ reconstruct it from prose.
 ## Current certification boundary
 
 Both manifests, both native marketplace flows and the shared skill are checked
-in the repository. Full TQ-321 certification remains open until clean-home
-Codex and Claude sessions independently complete the blind contention,
-restart, cursor, evidence and uninstall matrix. The integration is therefore a
-source-alpha candidate, not a promise that every host version is supported.
+in the repository. Clean-home Codex 0.144.4 and Claude Code 2.1.218 sessions
+independently pass the blind contention, restart, cursor, evidence and
+uninstall matrix. The exact certificate is
+`../../evidence/tq-321/latest.json`. This certifies only the host versions and
+capability boundary recorded there; it is not a promise that every host
+version is supported.

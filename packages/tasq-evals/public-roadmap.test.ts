@@ -148,12 +148,13 @@ describe("canonical Tasq roadmap", () => {
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
-      status: "in_progress_implementation",
+      status: "done",
       milestone: "runtime-consumers",
-      remaining: ["run-blind-agent-certification"],
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md",
         "docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json",
+        "evidence/tq-321/latest.json",
         "docs/integrations/AGENT_INTEGRATIONS.md",
         "docs/integrations/AGENT_INTEGRATIONS.json",
         "plugins/tasq/skills/tasq/SKILL.md",
@@ -195,7 +196,6 @@ describe("canonical Tasq roadmap", () => {
       status: "pending",
       dependsOn: ["TQ-321", "TQ-608", "TQ-607"],
       remaining: [
-        "complete-agent-integration-certification",
         "complete-private-dogfood-go",
         "verify-npm-scope-control",
         "configure-npm-trusted-publishing",

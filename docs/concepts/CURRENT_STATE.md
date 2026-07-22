@@ -103,14 +103,16 @@ Console inspection. Published-byte replay and an independent real-human blind
 session remain external gates; no human-usability completion is inferred from
 the automated proxy.
 
-TQ-321 now has a native integration candidate for Codex and Claude Code. Both
-host marketplaces install the same versioned safety skill and pass isolated
-clean-home install/list/uninstall smoke tests. The skill obtains an absent
+TQ-321 now certifies native integrations for Codex and Claude Code. Both host
+marketplaces install the same versioned safety skill and pass isolated
+clean-home install, two-process behavioral and uninstall trials. The skill obtains an absent
 executable through `/adopt.json`, requires an explicit space and stable actor,
 uses already host-bound MCP when present and otherwise starts with CLI JSON
-onboarding. It never mirrors a runtime scratchpad. Full blind behavioral
-certification across both hosts remains open, so this is not yet a completed
-host-support claim.
+onboarding. It never mirrors a runtime scratchpad. Both blind agents read before
+mutation, resumed the same attempt after restart, continued from an exclusive
+event cursor, rejected stale resource authority, attached evidence, completed
+explicitly and preserved the ledger byte-for-byte through native uninstall.
+The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 now implements the source data-safety candidate. Store format 25 and
 its read/write/direct-migration ranges appear in executable and release

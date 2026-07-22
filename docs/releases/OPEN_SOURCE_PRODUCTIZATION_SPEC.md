@@ -26,9 +26,9 @@ agent runtime.
 TQ-607 closes only with real upgrade/recovery/onboarding evidence and an
 explicit `go`, `extend` or `no_go` decision. Source visibility was separately
 authorized on 2026-07-22; a TQ-607 `go` remains necessary for package
-publication. TQ-603 is paused until that decision, TQ-321 and the external
-registry gates; the TQ-608 source candidate is passed and awaits protected-byte
-replay.
+publication. TQ-321 is passed. TQ-603 is paused until the TQ-607 decision and
+the external registry gates; the TQ-608 source candidate is passed and awaits
+protected-byte replay.
 
 ## 2. Decisions required before release
 
@@ -161,11 +161,11 @@ Failures block release. Repository-local success is not a substitute.
 
 | Item | Outcome |
 |---|---|
-| TQ-321 | Zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and blind certification |
+| TQ-321 | DONE — zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
 | TQ-608 | SOURCE CANDIDATE PASSED — data-preserving migration envelope, verified backup/doctor, real process-kill recovery and portable import; protected-byte/N-2 replay pending |
 | TQ-607 | Three-consumer retained-data dogfood and explicit package-release decision |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | After TQ-321, TQ-607 `go` and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
+| TQ-603 | After TQ-607 `go` and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
 | TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq-five.vercel.app`; custom domain pending |
 | TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |

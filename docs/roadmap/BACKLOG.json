@@ -78,6 +78,7 @@
     "TQ-501",
     "TQ-504",
     "TQ-505",
+    "TQ-321",
     "ADR-004"
   ],
   "decisions": [
@@ -120,12 +121,12 @@
   "items": [
     {
       "id": "TQ-321",
-      "status": "in_progress_implementation",
+      "status": "done",
       "milestone": "runtime-consumers",
       "dependsOn": ["TQ-311", "TQ-312", "TQ-318"],
       "outcome": "Let a zero-context Codex or Claude Code agent discover, install and use Tasq through native instructions, MCP where available and a CLI fallback without replacing the runtime's private scratchpad",
-      "remaining": ["run-blind-agent-certification"],
-      "evidence": ["docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md", "docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json", "docs/integrations/AGENT_INTEGRATIONS.md", "docs/integrations/AGENT_INTEGRATIONS.json", "plugins/tasq/skills/tasq/SKILL.md"]
+      "remaining": [],
+      "evidence": ["docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md", "docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json", "evidence/tq-321/latest.json", "docs/integrations/AGENT_INTEGRATIONS.md", "docs/integrations/AGENT_INTEGRATIONS.json", "plugins/tasq/skills/tasq/SKILL.md"]
     },
     {
       "id": "TQ-608",
@@ -151,7 +152,7 @@
       "milestone": "public-distribution",
       "dependsOn": ["TQ-321", "TQ-608", "TQ-607"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["complete-agent-integration-certification", "complete-private-dogfood-go", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+      "remaining": ["complete-private-dogfood-go", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
     },
     {
       "id": "TQ-604",

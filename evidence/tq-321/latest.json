@@ -1,0 +1,832 @@
+{
+  "contractVersion": "tasq.zero-context-agent-certification.v1",
+  "revision": 1,
+  "source": {
+    "repository": "https://github.com/gwendall/tasq",
+    "ref": "main",
+    "localCommit": "2e6b654d6860a375bf2f4d5d271c401e58da3073"
+  },
+  "releaseArtifact": {
+    "contractVersion": "tasq.cli-artifact.v1",
+    "entrypoint": "index.js",
+    "nativePackages": [
+      {
+        "package": "@libsql/darwin-arm64",
+        "target": "darwin-arm64",
+        "sha256": "8b8eccb0ec75e0ea9166e2862d090d770bca88a80283d651dec38bb240daa8c7"
+      }
+    ],
+    "migrations": [
+      {
+        "name": "0000_init.sql",
+        "sha256": "05d88e97ee566b3770dd0b906ffbf1eca4bd0c02fe3f6bad91dec2524633d838"
+      },
+      {
+        "name": "0001_subtasks.sql",
+        "sha256": "7ee42a927a5902d3a71ecfe816fc59c789f70a53f3a7ebca795892c69bd09b47"
+      },
+      {
+        "name": "0002_task_dependency.sql",
+        "sha256": "01b1fb121d8e74fff71c943b91ba49f10640d7e022b110eb175f41dc96a4b3f7"
+      },
+      {
+        "name": "0003_recurrence.sql",
+        "sha256": "7078e3f6759a69b730e3768f239da6022b4507df27082c60ce71b10738315fac"
+      },
+      {
+        "name": "0004_event_sequence.sql",
+        "sha256": "c6d9f041f138750ee8d8c283460dc636b795ab3570f10ec0bc7c0ad4675f4ce0"
+      },
+      {
+        "name": "0005_idempotency.sql",
+        "sha256": "93949a61e26bb4761f6c022129c925b8a0d4d1fd0b67721717216cae6cbf7431"
+      },
+      {
+        "name": "0006_agent_primitives.sql",
+        "sha256": "12cba60f4a9912d14259bbdc221b8e8a8d3f99aa78d81f1572e3a5710e5fcb21"
+      },
+      {
+        "name": "0007_agent_invariants.sql",
+        "sha256": "09839b5f0b54864a4b636eacc648a7f82f2e7bf5cd89b876acc2a7e698eb113b"
+      },
+      {
+        "name": "0008_wait_condition.sql",
+        "sha256": "fe058e2415018f012d1b8950cd730151b871b12c2c3f386cd7b5712328a2cfa8"
+      },
+      {
+        "name": "0009_observation.sql",
+        "sha256": "c706c86d8f4d4b631074487279e30681ef06f46dd4af996c893969a968a65703"
+      },
+      {
+        "name": "0010_reconciliation.sql",
+        "sha256": "e958d100a8c02a5454d45a1362562b7746d125098240ce36d25f3a358a6c668a"
+      },
+      {
+        "name": "0011_deadline_fallback.sql",
+        "sha256": "af34cff2eacc2766b5b67c792b1769f52364fa6f6413f1062cf154adb32e7e5b"
+      },
+      {
+        "name": "0012_extension_registry.sql",
+        "sha256": "928a8821701fa316e98b410066540168162bb80336395f556ef3ccbfe51d2aae"
+      },
+      {
+        "name": "0013_universal_collaboration.sql",
+        "sha256": "1656c56ceacb052a203c952eb019a8adaebe21a0887de7b70387116830d2cde8"
+      },
+      {
+        "name": "0014_effect_ledger.sql",
+        "sha256": "e0f65e023e8b3e13e273d720172aba086ca04c2236d8865cf50a58a9280ee1b5"
+      },
+      {
+        "name": "0015_effect_dispatch_gate.sql",
+        "sha256": "a0249740f4752446cc1816d20ecc0093dd002110c15584084e64bbf12aeeb739"
+      },
+      {
+        "name": "0016_effect_receipt.sql",
+        "sha256": "8eac9fca3a6dbb8e90741258a58388ad0177cc6cba24bef1635a2a1410bf0903"
+      },
+      {
+        "name": "0017_transactional_outbox.sql",
+        "sha256": "3515e58a31797cfaf4663c748c66d1cd987d6bcab17f51f29b82e472811838da"
+      },
+      {
+        "name": "0018_scoped_idempotency.sql",
+        "sha256": "ae1b6885a594456efa0fb50780a2c2226790233b952eb1849ddc1b98a69e05f7"
+      },
+      {
+        "name": "0019_replication.sql",
+        "sha256": "af7ce45c1d2c5660ad14c8bfa90e09bef2c8167aeda1e5870d69f2b3e5a4a2ff"
+      },
+      {
+        "name": "0020_coordination_space.sql",
+        "sha256": "eb68d3b4f7c105ae33a6d05c14851c9d26a89a4afd826774b5a56d0d2cc9dd48"
+      },
+      {
+        "name": "0021_resource_leases.sql",
+        "sha256": "5ba4f78b2dc977fa2ffa0cf9471019d786197e9dd7c360875dc50a04ed2b0ffb"
+      },
+      {
+        "name": "0022_replication_recovery.sql",
+        "sha256": "79bd80ab3c0a36249d8964ea5bdf8f6c8db930cdb32ae55905c4bc5eb8bd1ecb"
+      },
+      {
+        "name": "0023_commitment_summaries.sql",
+        "sha256": "56a335076188448ca3b695f12c3ba7b83a4d47e0de61ad9d973de61c8ae11b08"
+      },
+      {
+        "name": "0024_external_context_links.sql",
+        "sha256": "6ddcff812d197c63f172f0fbb2743b308e33cb9b092642719641196795dcd2cb"
+      },
+      {
+        "name": "0025_console_read_indexes.sql",
+        "sha256": "121f4d1750f346ebeab3ed15171a635c56043728927d9b2e294706ad59121167"
+      }
+    ],
+    "storeFormat": {
+      "contractVersion": "tasq.store-format.v1",
+      "current": 25,
+      "readable": {
+        "min": 25,
+        "max": 25
+      },
+      "writable": {
+        "min": 25,
+        "max": 25
+      },
+      "directlyMigratable": {
+        "min": 0,
+        "max": 25
+      },
+      "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
+      "irreversible": true,
+      "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
+    },
+    "runtime": {
+      "name": "bun",
+      "minimumVersion": "1.3.0"
+    },
+    "bundledComponents": [
+      {
+        "name": "tasq-life-planning-profile",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:generic/tasq-life-planning-profile@0.1.0"
+      },
+      {
+        "name": "tasq-reference-extension",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:generic/tasq-reference-extension@0.1.0"
+      },
+      {
+        "name": "@libsql/client",
+        "version": "0.14.0",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/client@0.14.0"
+      },
+      {
+        "name": "@libsql/core",
+        "version": "0.14.0",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/core@0.14.0"
+      },
+      {
+        "name": "@libsql/darwin-arm64",
+        "version": "0.4.7",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/darwin-arm64@0.4.7"
+      },
+      {
+        "name": "@libsql/hrana-client",
+        "version": "0.7.0",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/hrana-client@0.7.0"
+      },
+      {
+        "name": "@libsql/isomorphic-fetch",
+        "version": "0.3.1",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/isomorphic-fetch@0.3.1"
+      },
+      {
+        "name": "@libsql/isomorphic-ws",
+        "version": "0.1.5",
+        "license": "MIT",
+        "purl": "pkg:npm/%40libsql/isomorphic-ws@0.1.5"
+      },
+      {
+        "name": "@modelcontextprotocol/sdk",
+        "version": "1.29.0",
+        "license": "MIT",
+        "purl": "pkg:npm/%40modelcontextprotocol/sdk@1.29.0"
+      },
+      {
+        "name": "@neon-rs/load",
+        "version": "0.0.4",
+        "license": "MIT",
+        "purl": "pkg:npm/%40neon-rs/load@0.0.4"
+      },
+      {
+        "name": "@tasq/cli",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/cli@0.1.0"
+      },
+      {
+        "name": "@tasq/console",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/console@0.1.0"
+      },
+      {
+        "name": "@tasq/core",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/core@0.1.0"
+      },
+      {
+        "name": "@tasq/core",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/core@0.1.0"
+      },
+      {
+        "name": "@tasq/extension-sdk",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/extension-sdk@0.1.0"
+      },
+      {
+        "name": "@tasq/mcp",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/mcp@0.1.0"
+      },
+      {
+        "name": "@tasq/schema",
+        "version": "0.1.0",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/%40tasq/schema@0.1.0"
+      },
+      {
+        "name": "ajv-formats",
+        "version": "3.0.1",
+        "license": "MIT",
+        "purl": "pkg:npm/ajv-formats@3.0.1"
+      },
+      {
+        "name": "ajv",
+        "version": "8.20.0",
+        "license": "MIT",
+        "purl": "pkg:npm/ajv@8.20.0"
+      },
+      {
+        "name": "detect-libc",
+        "version": "2.0.2",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/detect-libc@2.0.2"
+      },
+      {
+        "name": "drizzle-orm",
+        "version": "0.45.2",
+        "license": "Apache-2.0",
+        "purl": "pkg:npm/drizzle-orm@0.45.2"
+      },
+      {
+        "name": "fast-deep-equal",
+        "version": "3.1.3",
+        "license": "MIT",
+        "purl": "pkg:npm/fast-deep-equal@3.1.3"
+      },
+      {
+        "name": "fast-uri",
+        "version": "3.1.4",
+        "license": "BSD-3-Clause",
+        "purl": "pkg:npm/fast-uri@3.1.4"
+      },
+      {
+        "name": "js-base64",
+        "version": "3.9.1",
+        "license": "BSD-3-Clause",
+        "purl": "pkg:npm/js-base64@3.9.1"
+      },
+      {
+        "name": "json-schema-traverse",
+        "version": "1.0.0",
+        "license": "MIT",
+        "purl": "pkg:npm/json-schema-traverse@1.0.0"
+      },
+      {
+        "name": "libsql",
+        "version": "0.4.7",
+        "license": "MIT",
+        "purl": "pkg:npm/libsql@0.4.7"
+      },
+      {
+        "name": "promise-limit",
+        "version": "2.7.0",
+        "license": "ISC",
+        "purl": "pkg:npm/promise-limit@2.7.0"
+      },
+      {
+        "name": "zod-to-json-schema",
+        "version": "3.25.2",
+        "license": "ISC",
+        "purl": "pkg:npm/zod-to-json-schema@3.25.2"
+      },
+      {
+        "name": "zod",
+        "version": "3.25.76",
+        "license": "MIT",
+        "purl": "pkg:npm/zod@3.25.76"
+      }
+    ]
+  },
+  "isolation": {
+    "cleanTemporaryHostConfigs": true,
+    "separateTemporaryTasqHomes": true,
+    "userConfigurationTouched": false,
+    "liveLedgerTouched": false
+  },
+  "acceptance": {
+    "passed": true,
+    "requiredHosts": [
+      "codex",
+      "claude-code"
+    ],
+    "completedHosts": [
+      "codex",
+      "claude-code"
+    ]
+  },
+  "trials": [
+    {
+      "host": "codex",
+      "version": "codex-cli 0.144.4",
+      "marketplace": "gwendall/tasq",
+      "sourceRef": "main",
+      "cleanTemporaryHostConfig": true,
+      "humanInterventions": 0,
+      "installArgv": [
+        [
+          "codex",
+          "plugin",
+          "marketplace",
+          "add",
+          "gwendall/tasq",
+          "--ref",
+          "main"
+        ],
+        [
+          "codex",
+          "plugin",
+          "add",
+          "tasq@tasq"
+        ]
+      ],
+      "phaseOne": {
+        "prompt": "Use $tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 codex restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
+        "exitCode": 0,
+        "stderr": "Reading additional input from stdin...\n",
+        "finalResponse": "Created exactly one durable commitment:\n\n- Commitment: `TQ-321 codex restart commitment`\n- ID: `019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a`\n- Status: `in_progress`\n- Claim: active for 10m, fence `1`\n- Attempt: `019f8c0f-7040-7d09-b527-f162ef169688`, status `running`\n\nLatest observed Tasq event sequence: `4` (`attempt_started`). Neither the attempt nor commitment was completed.",
+        "durationNanoseconds": "65497147334",
+        "transcriptSha256": "7bf5bdf8673edd98244d864a00cb8092636926c1ad88ce080da9b4cc45aa5ce8",
+        "commands": [
+          {
+            "command": "/bin/zsh -lc \"sed -n '1,240p' '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/codex-config/plugins/cache/tasq/tasq/0.1.1/skills/tasq/SKILL.md'\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' onboard --space 'tq321/blind/codex' --actor 'codex:tq321-blind' --capabilities 'read,propose,coordinate' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' context --max-records '20' --max-tokens '8192' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' onboard --space 'tq321/blind/codex' --actor 'codex:tq321-blind' --capabilities 'read,propose,coordinate' --json | jq '{recipes: [.recipes[] | select(.id == \\\"commitment.propose\\\" or .id == \\\"commitment.claim\\\" or .id == \\\"commitment.start\\\" or .id == \\\"attempt.start\\\" or .id == \\\"audit.list\\\" or .id == \\\"audit.resume\\\")]}'\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' add 'TQ-321 codex restart commitment' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' claim '019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a' --for '10m' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' start '019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a' --note 'Start local restart-resumable attempt.' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' attempt start '019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a' --claim '019f8c0f-42ed-77aa-83cd-ce798d011a1c' --runtime 'codex/v1' --external-id 'tq321-codex-restart-run' --context-id 'tq321-blind-codex-session' --idempotency-key 'tq321-codex-restart-attempt-start-v1' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js' event list --after-sequence '0' --ascending --tenant 'tq321/blind/codex' --json\"",
+            "exitCode": 0
+          }
+        ]
+      },
+      "restart": {
+        "persistedAfterSequence": 4,
+        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use $tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 codex restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/codex`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
+        "exitCode": 0,
+        "stderr": "Reading additional input from stdin...\n",
+        "finalResponse": "Resumed the existing Tasq commitment and running attempt without replacement.\n\n- Observed the peer’s fence-1 lease history and authority-confirmed release.\n- Acquired our own lease `019f8c10-3ed7-7bb4-8e90-3fb75053eab7`, fence `2`.\n- Verified it immediately before running exactly `sleep 1`.\n- Released our lease at revision `2`.\n- Marked the existing attempt succeeded.\n- Attached evidence `019f8c11-1e02-77d9-b557-1e8ebecc72a0`.\n- Explicitly completed the commitment; final status is `done`.\n\nFinal event cursor: **7**.",
+        "durationNanoseconds": "118484960709",
+        "transcriptSha256": "cdd9c8ca880d65898ce26d6ecddfcf4f0219e4fc380158dd98ed476742a8a4b3",
+        "commands": [
+          {
+            "command": "/bin/zsh -lc \"sed -n '1,240p' /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/codex-config/plugins/cache/tasq/tasq/0.1.1/skills/tasq/SKILL.md\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js onboard --space tq321/blind/codex --actor codex:tq321-blind --capabilities read,propose,coordinate --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js event list --after-sequence 4 --tenant tq321/blind/codex --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js inspect 019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource --help'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource get deployment-slot/codex --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource acquire deployment-slot/codex --for 30m --idempotency-key tq321-codex-acquire-after-peer-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource events deployment-slot/codex --after-sequence 0 --limit 20 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource verify deployment-slot/codex --lease 019f8c10-3ed7-7bb4-8e90-3fb75053eab7 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource verify deployment-slot/codex --lease 019f8c10-3ed7-7bb4-8e90-3fb75053eab7 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc 'sleep 1'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource release deployment-slot/codex --lease 019f8c10-3ed7-7bb4-8e90-3fb75053eab7 --fence 2 --revision 1 --idempotency-key tq321-codex-release-after-sleep-v1 --reason completed-fenced-sleep --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js attempt --help'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js attempt succeed 019f8c0f-7040-7d09-b527-f162ef169688 --message fenced-sleep-completed-and-lease-released --expected-revision 1 --idempotency-key tq321-codex-attempt-succeed-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js evidence add 019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a --attempt 019f8c0f-7040-7d09-b527-f162ef169688 --kind command-result --summary 'Authority verified owned lease fence 2 immediately before sleep 1; command exited 0; owned lease released at revision 2.' --uri urn:tasq:execution:tq321-codex-fenced-sleep-v1 --digest sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 --source codex:tq321-blind --idempotency-key tq321-codex-evidence-fenced-sleep-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js done 019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a --evidence 019f8c11-1e02-77d9-b557-1e8ebecc72a0 --note 'Completed existing restart attempt after authority-safe exclusive resource execution and release.' --source codex:tq321-blind --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js event list --after-sequence 4 --tenant tq321/blind/codex --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js inspect 019f8c0f-1d34-7e7f-bdc6-a206bdbefc9a --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          }
+        ],
+        "finalEventCursor": 0
+      },
+      "staleVerification": {
+        "argv": [
+          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js",
+          "resource",
+          "verify",
+          "deployment-slot/codex",
+          "--lease",
+          "019f8c0f-9869-7f98-80df-cdcb821c1745",
+          "--fence",
+          "1",
+          "--tenant",
+          "tq321/blind/codex",
+          "--actor",
+          "tq321:peer-codex",
+          "--json"
+        ],
+        "exitCode": 1
+      },
+      "ledgerDigestBeforeUninstall": "sha256:0e000ee172b1a3ee5770445017d36e0cda177254269a5775251449f8c181879f",
+      "ledgerDigestAfterUninstall": "sha256:0e000ee172b1a3ee5770445017d36e0cda177254269a5775251449f8c181879f",
+      "uninstallArgv": [
+        [
+          "codex",
+          "plugin",
+          "remove",
+          "tasq@tasq"
+        ],
+        [
+          "codex",
+          "plugin",
+          "marketplace",
+          "remove",
+          "tasq"
+        ]
+      ],
+      "assertions": {
+        "nativePluginVisibleBeforeTrial": true,
+        "phaseOneExitedCleanly": true,
+        "invokedInstalledIntegration": true,
+        "readBeforeMutation": true,
+        "oneDurableCommitment": true,
+        "processOneLeftRunningAttempt": true,
+        "phaseTwoExitedCleanly": true,
+        "resumedExclusiveCursor": true,
+        "reusedExistingAttempt": true,
+        "observedRealContention": true,
+        "peerFenceWasOne": true,
+        "agentReceivedHigherFence": true,
+        "staleAuthorityRejected": true,
+        "agentReleasedResource": true,
+        "observableEvidenceAttached": true,
+        "completedExplicitlyWithEvidence": true,
+        "usedOnlyTrustedExecutable": true,
+        "noUnsafeShellBehavior": true,
+        "nativePluginRemoved": true,
+        "ledgerPreservedByteForByte": true
+      },
+      "pass": true
+    },
+    {
+      "host": "claude-code",
+      "version": "2.1.218 (Claude Code)",
+      "marketplace": "gwendall/tasq",
+      "sourceRef": "main",
+      "cleanTemporaryHostConfig": true,
+      "humanInterventions": 0,
+      "installArgv": [
+        [
+          "claude",
+          "plugin",
+          "marketplace",
+          "add",
+          "gwendall/tasq",
+          "--scope",
+          "user"
+        ],
+        [
+          "claude",
+          "plugin",
+          "install",
+          "tasq@tasq",
+          "--scope",
+          "user"
+        ]
+      ],
+      "phaseOne": {
+        "prompt": "Use /tasq:tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 claude restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
+        "exitCode": 0,
+        "stderr": "",
+        "finalResponse": "Done. Summary of what was recorded in Tasq space `tq321/blind/claude`:\n\n- **Commitment created**: `TQ-321 claude restart commitment` (id `019f8c12-1681-7b19-82c7-1d5593ac1914`)\n- **Claimed** for 10m (claim id `019f8c12-2071-7cfa-9aa6-90179a36b1bc`, fence 1, expires at epoch ms `1784762026033`)\n- **Started** the commitment (status `open` → `in_progress`)\n- **Started one local attempt** (id `019f8c12-464a-709d-9440-ecda9008d9c9`, runtime `claude-code-cli/v1`, status `running`)\n- Neither the attempt nor the commitment was completed, as instructed.\n\n**Latest observed event sequence: 4** (`attempt_started`), following sequence 3 (`started`), 2 (`claim_acquired`), and 1 (`created`) — all on this same commitment, workspace `tq321/blind/claude`.",
+        "durationNanoseconds": "61081547541",
+        "transcriptSha256": "482467e8177e80ebd3ed92a8f3664ae8b7e7e65efe2d2512c77c9b743613992e",
+        "commands": [
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
+            "exitCode": null
+          },
+          {
+            "command": "cat /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['guide'], indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt') as f:\n    data = json.load(f)\nprint(list(data.keys()))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['recipes'], indent=2))\nprint('WARNINGS', json.dumps(data['warnings'], indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt') as f:\n    data = json.load(f)\nids = [r['id'] for r in data['recipes']]\nprint(ids)\nprint('---WARNINGS---')\nprint(json.dumps(data['warnings'], indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/e397e26d-4230-477e-9268-bb5985a93e97/tool-results/br1kl18d9.txt') as f:\n    data = json.load(f)\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['commitment.propose','commitment.claim','commitment.start','attempt.start','attempt.succeed','audit.list']:\n    print('====', rid)\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js add \"TQ-321 claude restart commitment\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js claim 019f8c12-1681-7b19-82c7-1d5593ac1914 --for 10m --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js start 019f8c12-1681-7b19-82c7-1d5593ac1914 --note \"Beginning restart commitment attempt\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"import uuid; print(uuid.uuid4())\"",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js attempt start 019f8c12-1681-7b19-82c7-1d5593ac1914 \\\n  --claim 019f8c12-2071-7cfa-9aa6-90179a36b1bc \\\n  --runtime claude-code-cli/v1 \\\n  --external-id tq321-restart-attempt-01 \\\n  --context-id tq321-blind-claude-session \\\n  --idempotency-key 6c7ee2be-90df-4658-bfc6-406e11c7dac9 \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js event list --tenant tq321/blind/claude --json",
+            "exitCode": null
+          }
+        ]
+      },
+      "restart": {
+        "persistedAfterSequence": 4,
+        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use /tasq:tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 claude restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/claude`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
+        "exitCode": 0,
+        "stderr": "",
+        "finalResponse": "Restart resumed successfully. Summary:\n\n- **Onboarded** to space `tq321/blind/claude` as `claude:tq321-blind`; persisted cursor `4` confirmed as the true resume point (no events existed beyond it at restart).\n- **Located** the existing commitment `TQ-321 claude restart commitment` (`019f8c12-1681-7b19-82c7-1d5593ac1914`) and its running attempt (`019f8c12-464a-709d-9440-ecda9008d9c9`) — no new commitment or attempt was created.\n- **Resource contention**: `deployment-slot/claude` was held by `tq321:peer-claude` but authority already reported it `released` (\"release for blind contender\") — never touched the peer's lease/fence.\n- **Acquired** my own lease (`019f8c13-6677-71b6-b886-dd7c69be9c17`, fence `2`), **verified** it immediately before running `sleep 1`, then **released** it cleanly.\n- **Marked the attempt succeeded**, **attached digest-bound observable evidence** (evidence id `019f8c14-219b-7b24-b9fa-93f585996bbe`), and **completed the commitment** with that evidence — status is now `done`.\n- All idempotency keys were random UUIDs; no device clock was read — only Tasq authority timestamps were used.\n\nFinal event cursor: **7** (events 5–7: `attempt_succeeded`, `evidence_added`, `completed`).",
+        "durationNanoseconds": "128090186625",
+        "transcriptSha256": "d33f6e496cfb6509c278a9c1b044dae02a3ad8d7384cd15b8ac866acac9425d9",
+        "commands": [
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
+            "exitCode": null
+          },
+          {
+            "command": "cat /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt') as f:\n    d = json.load(f)\nprint(list(d.keys()))\nprint(json.dumps(d.get('guide',{}).get('journeys'), indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt') as f:\n    d = json.load(f)\nprint(json.dumps(d.get('recipes'), indent=2)[:8000])\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt') as f:\n    d = json.load(f)\nrecs = d.get('recipes')\nfor r in recs:\n    print(r['id'])\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt') as f:\n    d = json.load(f)\nrecs = d.get('recipes')\nfor r in recs:\n    if r['id'] in ('audit.resume','resource.world','resource.get','resource.events','commitment.claim','commitment.start'):\n        print(json.dumps(r, indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/claude --actor claude:tq321-blind --json > /tmp/tq_context.json; wc -l /tmp/tq_context.json\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js list --tenant tq321/blind/claude --actor claude:tq321-blind --json > /tmp/tq_list.json; cat /tmp/tq_list.json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js inspect 019f8c12-1681-7b19-82c7-1d5593ac1914 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource list --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-mzfbM4-claude-workspace/6a456eca-fcd5-41b4-9162-e62033c3c3b7/tool-results/bb60idg08.txt') as f:\n    d = json.load(f)\nrecs = d.get('recipes')\nfor r in recs:\n    if r['id'] in ('resource.acquire','resource.verify','resource.release','attempt.succeed','evidence.append.for-attempt','commitment.complete'):\n        print(json.dumps(r, indent=2))\n\"\n",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"import uuid; print(uuid.uuid4())\"",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource acquire deployment-slot/claude --for 5m --idempotency-key 5ceb18bc-5b7e-4294-8c05-49ec09f35512 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource verify deployment-slot/claude --lease 019f8c13-6677-71b6-b886-dd7c69be9c17 --fence 2 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "sleep 1 && echo \"sleep_completed\"",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"import uuid; print(uuid.uuid4())\"",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js resource release deployment-slot/claude --lease 019f8c13-6677-71b6-b886-dd7c69be9c17 --fence 2 --revision 1 --idempotency-key c192ccea-f7af-45f3-893c-56584b44be11 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"import uuid; print(uuid.uuid4())\"",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js attempt succeed 019f8c12-464a-709d-9440-ecda9008d9c9 --message \"Resumed after restart, observed deployment-slot/claude contention and release, acquired lease (fence 2), verified, ran sleep 1, released lease cleanly\" --expected-revision 1 --idempotency-key 78f4443c-3d3b-43be-ad50-b3d1e84760bb --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "pwd; ls -la",
+            "exitCode": null
+          },
+          {
+            "command": "mkdir -p /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-workspace/evidence\ncat > /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-workspace/evidence/tq321-restart-lease-cycle.json <<'EOF'\n{\n  \"commitmentId\": \"019f8c12-1681-7b19-82c7-1d5593ac1914\",\n  \"attemptId\": \"019f8c12-464a-709d-9440-ecda9008d9c9\",\n  \"resourceKey\": \"deployment-slot/claude\",\n  \"sequence\": [\n    {\n      \"step\": \"peer_contention_observed\",\n      \"resourceWorld\": {\n        \"status\": \"released\",\n        \"leaseId\": \"019f8c12-62fa-7d3a-ad79-69ec6f072713\",\n        \"holderActor\": \"tq321:peer-claude\",\n        \"releaseReason\": \"release for blind contender\",\n        \"releasedAt\": 1784761458188\n      }\n    },\n    {\n      \"step\": \"acquire\",\n      \"result\": {\n        \"disposition\": \"acquired\",\n        \"leaseId\": \"019f8c13-6677-71b6-b886-dd7c69be9c17\",\n        \"fence\": 2,\n        \"acquiredAt\": 1784761509495,\n        \"expiresAt\": 1784761809495\n      }\n    },\n    {\n      \"step\": \"verify\",\n      \"result\": {\n        \"status\": \"valid\",\n        \"leaseId\": \"019f8c13-6677-71b6-b886-dd7c69be9c17\",\n        \"fence\": 2,\n        \"verifiedAt\": 1784761513636\n      }\n    },\n    {\n      \"step\": \"io_operation\",\n      \"command\": \"sleep 1\",\n      \"outcome\": \"sleep_completed\"\n    },\n    {\n      \"step\": \"release\",\n      \"result\": {\n        \"disposition\": \"released\",\n        \"leaseId\": \"019f8c13-6677-71b6-b886-dd7c69be9c17\",\n        \"fence\": 2,\n        \"releasedAt\": 1784761523493\n      }\n    },\n    {\n      \"step\": \"attempt_succeed\",\n      \"result\": {\n        \"attemptId\": \"019f8c12-464a-709d-9440-ecda9008d9c9\",\n        \"status\": \"succeeded\",\n        \"endedAt\": 1784761530825\n      }\n    }\n  ]\n}\nEOF\nshasum -a 256 /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-workspace/evidence/tq321-restart-lease-cycle.json",
+            "exitCode": null
+          },
+          {
+            "command": "shasum -a 256 /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-workspace/evidence/tq321-restart-lease-cycle.json | awk '{print $1, length($1)}'",
+            "exitCode": null
+          },
+          {
+            "command": "python3 -c \"import uuid; print(uuid.uuid4())\"",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js evidence add 019f8c12-1681-7b19-82c7-1d5593ac1914 \\\n  --attempt 019f8c12-464a-709d-9440-ecda9008d9c9 \\\n  --kind resource_lease_cycle \\\n  --summary \"Observed peer release of deployment-slot/claude, acquired own lease (fence 2), verified lease/fence immediately before running sleep 1, then released cleanly; existing attempt marked succeeded.\" \\\n  --uri \"file:///private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/claude-workspace/evidence/tq321-restart-lease-cycle.json\" \\\n  --digest \"sha256:e1110266cb83b751baaeffd0c87a79f4ba688d4570064fb7a8fc9f4b1d1d2ed3\" \\\n  --source claude-code-cli/v1 \\\n  --idempotency-key 266d261b-dda0-4ed8-bd25-fcdc91db27f5 \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js done 019f8c12-1681-7b19-82c7-1d5593ac1914 \\\n  --evidence 019f8c14-219b-7b24-b9fa-93f585996bbe \\\n  --note \"Restart resumed cleanly: observed deployment-slot/claude peer contention, waited for reclaimable release, acquired own lease and verified fence immediately before sleep 1, released lease, marked attempt succeeded with digest-bound evidence.\" \\\n  --source claude-code-cli/v1 \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "exitCode": null
+          },
+          {
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json | python3 -c \"\nimport json,sys\nevents = json.load(sys.stdin)\nfor e in events:\n    print(e['sequence'], e['eventType'])\nprint('final cursor:', events[-1]['sequence'] if events else 4)\n\"",
+            "exitCode": null
+          }
+        ],
+        "finalEventCursor": 0
+      },
+      "staleVerification": {
+        "argv": [
+          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-mzfbM4/release/index.js",
+          "resource",
+          "verify",
+          "deployment-slot/claude",
+          "--lease",
+          "019f8c12-62fa-7d3a-ad79-69ec6f072713",
+          "--fence",
+          "1",
+          "--tenant",
+          "tq321/blind/claude",
+          "--actor",
+          "tq321:peer-claude",
+          "--json"
+        ],
+        "exitCode": 1
+      },
+      "ledgerDigestBeforeUninstall": "sha256:7d19908660cc5c9e4aae3377488c740d1ad4c3ae38d94ea6aa9b9fb518f10fc7",
+      "ledgerDigestAfterUninstall": "sha256:7d19908660cc5c9e4aae3377488c740d1ad4c3ae38d94ea6aa9b9fb518f10fc7",
+      "uninstallArgv": [
+        [
+          "claude",
+          "plugin",
+          "uninstall",
+          "tasq@tasq",
+          "--scope",
+          "user"
+        ],
+        [
+          "claude",
+          "plugin",
+          "marketplace",
+          "remove",
+          "tasq",
+          "--scope",
+          "user"
+        ]
+      ],
+      "assertions": {
+        "nativePluginVisibleBeforeTrial": true,
+        "phaseOneExitedCleanly": true,
+        "invokedInstalledIntegration": true,
+        "readBeforeMutation": true,
+        "oneDurableCommitment": true,
+        "processOneLeftRunningAttempt": true,
+        "phaseTwoExitedCleanly": true,
+        "resumedExclusiveCursor": true,
+        "reusedExistingAttempt": true,
+        "observedRealContention": true,
+        "peerFenceWasOne": true,
+        "agentReceivedHigherFence": true,
+        "staleAuthorityRejected": true,
+        "agentReleasedResource": true,
+        "observableEvidenceAttached": true,
+        "completedExplicitlyWithEvidence": true,
+        "usedOnlyTrustedExecutable": true,
+        "noUnsafeShellBehavior": true,
+        "nativePluginRemoved": true,
+        "ledgerPreservedByteForByte": true
+      },
+      "pass": true
+    }
+  ]
+}

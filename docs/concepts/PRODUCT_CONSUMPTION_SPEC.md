@@ -64,9 +64,10 @@ authentication.
 
 **Current state:** behavior and candidate install/upgrade/uninstall are
 certified on Linux/macOS, including foreground Console discovery from the
-installed artifact. Public package and native-release publication are paused
-behind TQ-321 agent integration, TQ-608 migration hardening, the TQ-607 dogfood
-decision and the external TQ-603 registry gate.
+installed artifact, and TQ-321 zero-context Codex/Claude integration is
+certified. Public package and native-release publication are paused behind the
+TQ-607 dogfood decision and the external TQ-603 registry gate; the TQ-608
+source migration candidate is passed and awaits protected-byte replay.
 
 ### 2.3 Tasq Server
 
