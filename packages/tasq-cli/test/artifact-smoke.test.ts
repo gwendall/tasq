@@ -50,6 +50,7 @@ describe("released CLI artifact", () => {
       contractVersion: string;
       nativePackages: Array<{ package: string; target: string; sha256: string }>;
       migrations: Array<{ name: string; sha256: string }>;
+      storeFormat: { contractVersion: string; current: number; directlyMigratable: { min: number; max: number } };
     };
     expect(manifest.contractVersion).toBe("tasq.cli-artifact.v1");
     expect(manifest.nativePackages).toHaveLength(1);
@@ -57,6 +58,11 @@ describe("released CLI artifact", () => {
     expect(manifest.nativePackages[0]?.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.migrations.length).toBeGreaterThan(20);
     expect(manifest.migrations.at(-1)?.name).toMatch(/^\d{4}_.+\.sql$/);
+    expect(manifest.storeFormat).toMatchObject({
+      contractVersion: "tasq.store-format.v1",
+      current: 25,
+      directlyMigratable: { min: 0, max: 25 },
+    });
 
     const tasqHome = join(root, "home");
     const run = Bun.spawn([

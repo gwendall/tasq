@@ -174,8 +174,34 @@ export type {
 } from "./service/effects.js";
 
 // Migrations
-export { runMigrations } from "./migrations/compat.js";
-export type { MigrationResult, MigrationOptions } from "./migrations/compat.js";
+export {
+  runMigrations,
+  STORE_FORMAT_COMPATIBILITY,
+  StoreCompatibilityError,
+  MigrationSafetyError,
+} from "./migrations/compat.js";
+
+export {
+  PORTABLE_EXPORT_CONTRACT_VERSION,
+  PORTABLE_EXPORT_OMISSIONS,
+  exportPortableStore,
+  validatePortableExport,
+  importPortableStore,
+} from "@tasq/core/internal/portable";
+export type {
+  PortableTable,
+  PortableExportDocument,
+  PortableExportResult,
+  PortableExportOptions,
+  PortableImportResult,
+} from "@tasq/core/internal/portable";
+export type {
+  MigrationResult,
+  MigrationOptions,
+  MigrationReceiptSummary,
+  MigrationPostCheck,
+  MigrationSafetyBoundary,
+} from "./migrations/compat.js";
 
 // Service: events
 export { recordEvent, listEvents, getEvent, setEventListener } from "./service/events.js";

@@ -1,6 +1,6 @@
 # TQ-608 — Migration and data-safety envelope
 
-**Status:** accepted next work; compatibility implementation and hostile proof pending  
+**Status:** source candidate implemented and hostile source matrix passed; protected-release N-2 replay pending
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
 **Blocks:** first protected package release in TQ-603
 
@@ -11,7 +11,7 @@ means their ledger survived. Every persisted format has an explicit
 compatibility envelope, every forward migration produces a verified recovery
 point and receipt, and an older binary fails closed when it sees a newer store.
 
-## Current baseline
+## Historical baseline before this candidate
 
 The migration runner already serializes concurrent upgrades, checksum-pins
 immutable SQL files and creates a mode-0600 `VACUUM INTO` snapshot before
@@ -24,6 +24,19 @@ The missing public contract is visibility and enforcement: there is no single
 store-format version/range response, no durable receipt binding the automatic
 snapshot to before/after verification, no explicit newer-schema diagnostic and
 no portable user export contract.
+
+That paragraph is the historical pre-implementation baseline. The source
+candidate now implements all four contracts. `tasq version --json`, CLI
+artifact metadata and public release manifests share `tasq.store-format.v1`.
+The runner fails closed on unknown, newer, partial and checksum-drifted
+histories, serializes existing-store upgrades with a crash-reclaimable private
+lock, creates a verified mode-0600 snapshot and atomic receipt, runs database
+plus service post-checks, and reconciles a pending receipt on restart.
+
+`tasq backup --json` now binds digest, cursor, store format and rollback rule.
+`tasq export` and create-only `tasq import` implement the bounded portable
+workspace contract and declared omissions. Operator instructions live in
+`DATA_SAFETY.md`; stable JSON shapes live in `CLI_JSON_CONTRACT.md`.
 
 ## Required compatibility contract
 
@@ -83,3 +96,23 @@ For every supported direct upgrade, and at minimum N-2 through current:
 No public package release passes TQ-608 on synthetic in-memory databases alone.
 The certificate must identify exact old/new artifacts, database and export
 digests, injected fault boundaries and retained recovery files.
+
+## Candidate acceptance result
+
+`packages/tasq-service/test/data-safety.test.ts` uses real filesystem LibSQL
+databases. It proves populated format-5 upgrade receipts, concurrent first
+open, typed newer-store refusal, corrupt snapshot refusal, failed post-check
+restore guidance and portable round-trip. Five separate child processes are
+actually killed with `SIGKILL` before snapshot, after verified snapshot, during
+DDL, after commit and before receipt finalization; the next process reconciles
+each file without leaving a pending receipt. The existing migration suite also
+upgrades populated format-0 and format-5 fixtures and rejects checksum drift or
+non-contiguous history.
+
+The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Before protected
+release lines exist, the bootstrap matrix is every extant protected release
+(currently none) plus the historical populated fixtures. Once three protected
+minor lines exist, exact N-2 binaries and published bytes are mandatory and
+the certificate must be revised. The first protected release and a true
+quota/device `ENOSPC` run remain external-environment replay gates; neither is
+falsely inferred from source tests.

@@ -54,7 +54,10 @@ shell string or insert a runtime wrapper.
 
 Never read or write the live SQLite database directly, delete the ledger, or
 edit the JSONL journal. Use CLI/service operations for mutations, `tasq doctor`
-for integrity and `tasq backup` for recovery snapshots. Tests and experiments
+for integrity and `tasq backup` for recovery snapshots. Use `tasq export` only
+for bounded workspace portability; it is not a backup. Import only into the
+new explicit database path required by the command and execute its returned
+doctor argv before use. Tests and experiments
 must use an isolated `TASQ_HOME` or temporary database URL.
 
 The Local Console is loopback-only and read-only. It is for human inspection,

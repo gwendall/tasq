@@ -353,7 +353,7 @@
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
-    "surface": ["onboard", "mcp", "web", "init", "config", "backup", "doctor", "journal", "help", "version"],
+    "surface": ["onboard", "mcp", "web", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
     "compatibility": ["complete", "rm", "brief"]
   },
   "events": {
@@ -473,7 +473,10 @@
     "DeadlineSweepV1": { "owner": "kernel_generalize", "fields": ["sweepNow", "evaluated", "satisfied", "expired", "alreadyTerminal", "results", "errors"], "resultFields": ["condition", "outcome", "sweepNow", "reconciliations", "fallbackResultTaskId"], "errorFields": ["conditionId", "message"] },
     "InitResultV1": { "owner": "surface", "fields": ["ok", "configPath", "dbPath", "projectionTarget", "tenantId"] },
     "ConfigV1": { "owner": "surface", "fields": ["dbPath", "projectionTarget", "tenantId", "defaultActor", "eventJournalPath"], "dynamicForms": ["config get returns exactly the requested config key", "config set returns ok plus exactly the requested config key"] },
-    "BackupResultV1": { "owner": "surface", "fields": ["ok", "target", "sizeBytes", "verified", "eventCursor", "rotated"] },
+    "ExecutableVersionV1": { "owner": "surface", "fields": ["contractVersion", "version", "storeFormat"] },
+    "BackupResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "sizeBytes", "sha256", "verified", "eventCursor", "storeFormat", "rollbackRule", "rotated"] },
+    "PortableExportResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "workspaceId", "storeFormat", "recordCount", "sizeBytes", "sha256", "omissions", "import"] },
+    "PortableImportResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "workspaceId", "recordCount", "sourceSha256", "verification", "next"] },
     "ProjectionResultV1": { "owner": "profile", "fields": ["ok", "target"] },
     "AreaDeleteResultV1": { "owner": "profile", "fields": ["ok", "id"] },
     "TaskDeleteResultV1": { "owner": "compatibility", "fields": ["ok", "id", "deleted"] },

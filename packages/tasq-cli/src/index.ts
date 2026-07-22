@@ -13,10 +13,17 @@
  *   4 config error
  */
 
-import { committedMutationCount, systemClock, type Clock } from "@tasq-internal/local-service";
+import {
+  committedMutationCount,
+  MigrationSafetyError,
+  STORE_FORMAT_COMPATIBILITY,
+  StoreCompatibilityError,
+  systemClock,
+  type Clock,
+} from "@tasq-internal/local-service";
 import { parseArgs } from "./args.js";
 import { errorMatches, errorMessage } from "./errors.js";
-import { color, printError, printInfo } from "./output/format.js";
+import { color, printError, printInfo, printJson } from "./output/format.js";
 import { configCmd, init } from "./commands/init.js";
 import { areaCmd } from "./commands/area.js";
 import { goalCmd, projectCmd } from "./commands/goal-project.js";
@@ -51,6 +58,7 @@ import { contextCmd } from "./commands/context.js";
 import { summaryCmd } from "./commands/summary.js";
 import { contextLinkCmd } from "./commands/context-link.js";
 import { webCmd } from "./commands/web.js";
+import { portableExportCmd, portableImportCmd } from "./commands/portable.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -98,6 +106,8 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
+    export: ["max-records", "max-bytes"],
+    import: ["db"],
     doctor: ["fix-permissions", "repair-outbox"],
     journal: ["accept-database", "reason", "dry-run"],
     claim: ["for", "until", "metadata", "idempotency-key"],
@@ -222,6 +232,9 @@ ${color.bold("PROJECTION")}
 ${color.bold("DURABILITY")}
   backup [<path>] [--rotate N]   snapshot DB to ~/.tasq/snapshots/db-<ts>.sqlite
                                  (keeps last N snapshots if --rotate is set)
+  export [<path>]                bounded portable workspace export (not a backup)
+  import <export.json> --db <new-db-path>
+                                 validate fully, then create one new store
   doctor [--fix-permissions] [--repair-outbox]
                                 verify/repair delivery, journal and private modes
   journal checkpoint --accept-database --reason <text>
@@ -260,7 +273,15 @@ export async function main(
     return 0;
   }
   if (command === "version" || command === "--version" || command === "-v") {
-    printInfo(VERSION);
+    if (rest.some((value) => value === "--json" || value === "-j" || value === "--json=true")) {
+      printJson({
+        contractVersion: "tasq.executable-version.v1",
+        version: VERSION,
+        storeFormat: STORE_FORMAT_COMPATIBILITY,
+      });
+    } else {
+      printInfo(VERSION);
+    }
     return 0;
   }
 
@@ -377,6 +398,10 @@ export async function main(
       // Durability
       case "backup":
         return await backupCmd(args);
+      case "export":
+        return await portableExportCmd(args, clock);
+      case "import":
+        return await portableImportCmd(args, clock);
       case "doctor":
         return await doctorCmd(args);
       case "journal":
@@ -411,6 +436,10 @@ export async function main(
 
       // Zod errors are common ; surface them cleanly
       const message = errorMessage(err);
+      if ((err instanceof StoreCompatibilityError || err instanceof MigrationSafetyError) && args.bool("json", "j")) {
+        printJson(err.toJSON());
+        return 3;
+      }
       const isZod = err.name === "ZodError";
       const isFK = errorMatches(err, /FOREIGN KEY|REFERENCES/);
       const isUnique = errorMatches(err, /UNIQUE constraint/);

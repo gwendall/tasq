@@ -28,3 +28,13 @@ export async function runMigrations(
 }
 
 export type { KernelMigrationOptions, MigrationResult };
+export {
+  STORE_FORMAT_COMPATIBILITY,
+  StoreCompatibilityError,
+  MigrationSafetyError,
+} from "./index.js";
+export type {
+  MigrationReceiptSummary,
+  MigrationPostCheck,
+  MigrationSafetyBoundary,
+} from "./index.js";

@@ -55,6 +55,10 @@ export const PROJECTION_USAGE =
   "projection [--target <path>]   regenerate markdown projection";
 export const BACKUP_USAGE =
   "backup [<path>] [--rotate N]   snapshot DB to ~/.tasq/snapshots/";
+export const EXPORT_USAGE =
+  "export [<path>] [--max-records N] [--max-bytes N]   bounded portable workspace export; not a recovery snapshot";
+export const IMPORT_USAGE =
+  "import <export.json> --db <new-db-path>   validate fully, then create a new store; never merges";
 export const DOCTOR_USAGE = "doctor [--fix-permissions] [--repair-outbox]   verify/repair DB, delivery, journal and private modes";
 export const JOURNAL_USAGE =
   "journal checkpoint --accept-database --reason <text> [--dry-run]   archive the current segment and accept the DB cursor baseline";
@@ -191,6 +195,10 @@ export function commandUsage(command: string): string | undefined {
       return PROJECTION_USAGE;
     case "backup":
       return BACKUP_USAGE;
+    case "export":
+      return EXPORT_USAGE;
+    case "import":
+      return IMPORT_USAGE;
     case "doctor":
       return DOCTOR_USAGE;
     case "journal":

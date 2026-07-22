@@ -13,6 +13,7 @@ import {
   completeDelivery,
   failDelivery,
   getEvent,
+  diagnoseStore,
   type OpenedDb,
   type ServiceContext,
 } from "@tasq-internal/local-service";
@@ -100,6 +101,13 @@ export async function openRuntime(
     // Historical embedders may still opt into the bundled compatibility
     // extension through runMigrations(..., { installReferenceExtension: true }).
     installReferenceExtension: options.installReferenceExtension ?? false,
+    postMigrationCheck: async () => {
+      const report = await diagnoseStore(handle.db, handle.client, config.tenantId);
+      return {
+        ok: report.ok,
+        issues: report.issues.map((issue) => `${issue.code}: ${issue.message}`),
+      };
+    },
   });
   // Creation must be private even under a permissive process umask. Existing
   // mode drift is intentionally left untouched for report-only `doctor` and

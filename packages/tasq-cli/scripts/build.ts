@@ -23,6 +23,16 @@ interface NativeArtifactManifest {
     name: string;
     sha256: string;
   }>;
+  storeFormat: {
+    contractVersion: "tasq.store-format.v1";
+    current: number;
+    readable: { min: number; max: number };
+    writable: { min: number; max: number };
+    directlyMigratable: { min: number; max: number };
+    oldestDirectlyTestedSource: string;
+    irreversible: boolean;
+    rollback: string;
+  };
   runtime: {
     name: "bun";
     minimumVersion: "1.3.0";
@@ -249,6 +259,7 @@ async function main(): Promise<void> {
     migrations.push({ name, sha256: await sha256(destination) });
   }
   if (migrations.length === 0) throw new Error("No Tasq SQL migrations found for the release artifact");
+  const currentStoreFormat = Number.parseInt(migrations.at(-1)!.name.slice(0, 4), 10);
 
   const manifest: NativeArtifactManifest = {
     contractVersion: "tasq.cli-artifact.v1",
@@ -259,6 +270,16 @@ async function main(): Promise<void> {
       sha256: await sha256(nativeEntrypoint),
     }],
     migrations,
+    storeFormat: {
+      contractVersion: "tasq.store-format.v1",
+      current: currentStoreFormat,
+      readable: { min: currentStoreFormat, max: currentStoreFormat },
+      writable: { min: currentStoreFormat, max: currentStoreFormat },
+      directlyMigratable: { min: 0, max: currentStoreFormat },
+      oldestDirectlyTestedSource: "tasq-zero-populated-fixture",
+      irreversible: true,
+      rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
+    },
     runtime: {
       name: "bun",
       minimumVersion: "1.3.0",

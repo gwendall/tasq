@@ -1,0 +1,68 @@
+{
+  "contractVersion": "tasq.migration-certification.v1",
+  "revision": 1,
+  "status": "source-candidate-passed-protected-release-replay-pending",
+  "testedAt": "2026-07-22",
+  "storeFormat": {
+    "contractVersion": "tasq.store-format.v1",
+    "current": 25,
+    "readable": { "min": 25, "max": 25 },
+    "writable": { "min": 25, "max": 25 },
+    "directlyMigratable": { "min": 0, "max": 25 },
+    "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
+    "irreversible": true,
+    "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
+  },
+  "historicalInputs": [
+    {
+      "format": 0,
+      "path": "packages/tasq-service/test/fixtures/0000-populated.sql",
+      "sha256": "9cee1faa4b28f2d6b5bcc013f3bc81cabe1d415f7da6a2f81901b32b75824cc3"
+    },
+    {
+      "format": 5,
+      "path": "packages/tasq-service/test/fixtures/pre-0006-populated.sql",
+      "sha256": "e099907286c185620aa0035499699d333d1dc543ac671924820a1feb70fafdf1"
+    }
+  ],
+  "migrationSet": {
+    "first": "0000_init.sql",
+    "last": "0025_console_read_indexes.sql",
+    "count": 26,
+    "orderedDigestManifestSha256": "d2fe6e6fa8969917244c9a5f1d4dc9180cdbfe985d337a2189786cb7bd337f00"
+  },
+  "passed": {
+    "verifiedPrivateSnapshotAndReceipt": true,
+    "postMigrationDatabaseAndServiceChecks": true,
+    "typedNewerStoreNoWrite": true,
+    "checksumAndPartialHistoryFailClosed": true,
+    "concurrentFirstOpenSerialized": true,
+    "realProcessKillBoundaries": [
+      "before_snapshot",
+      "after_snapshot_verified",
+      "after_ddl_before_commit",
+      "after_commit_before_postcheck",
+      "before_receipt_finalization"
+    ],
+    "corruptSnapshotRefused": true,
+    "failedPostcheckRetainsRestorePoint": true,
+    "portableFreshStoreRoundTrip": true,
+    "portableHostileInputRejectedBeforeTargetCreation": true,
+    "importedStorePrivateMode": true,
+    "isolatedDoctorDoesNotReadConfiguredLiveJournal": true
+  },
+  "evidenceRoutes": [
+    "packages/tasq-service/test/data-safety.test.ts",
+    "packages/tasq-service/test/migrations-events.test.ts",
+    "packages/tasq-cli/test/e2e.test.ts",
+    "packages/tasq-cli/test/artifact-smoke.test.ts",
+    "packages/tasq-cli/test/public-release.test.ts"
+  ],
+  "remainingExternalReplay": [
+    "first-protected-release-exact-bytes-and-attestation",
+    "exact-protected-n-minus-two-binaries-once-three-lines-exist",
+    "quota-or-device-enospc-environment"
+  ],
+  "tq608SourceCandidateComplete": true,
+  "publishedByteCertificationComplete": false
+}

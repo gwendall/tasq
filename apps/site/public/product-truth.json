@@ -26,6 +26,8 @@
       "linux-x64-gnu"
     ],
     "gates": {
+      "data_safety_source_candidate": true,
+      "data_safety_published_byte_replay": false,
       "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": true,
       "public_source_launch_authorized": true,
@@ -458,7 +460,7 @@
     },
     {
       "id": "TQ-608",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "public-distribution",
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export"
     },
@@ -622,12 +624,12 @@
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "2baff73aaf535005bf286f869e7d9f7b6d6b94456deb8401dab5175f465750c7"
+      "sha256": "405fd00714614fa2ddf769b631de56b4d09ca8b1a2443a4b62d3a1e177da8433"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "847b7a39fceb29b41ffbbd551a17b3c3e3158594fc65a3723ccfe6c756751e2a"
+      "sha256": "0c758c5e8207adc825a75671850f8d59f4347c47cc2acc223fb0dced1ab7bc06"
     }
   ]
 }

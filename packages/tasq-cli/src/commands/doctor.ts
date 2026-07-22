@@ -1,6 +1,7 @@
 import { chmodSync, existsSync, lstatSync, readFileSync } from "node:fs";
 import {
   diagnoseStore,
+  STORE_FORMAT_COMPATIBILITY,
   listEvents,
   listDeliveryOutbox,
   repairDelivery,
@@ -38,7 +39,13 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     const dbIdBySequence = new Map(events.map((event) => [event.sequence, event.id]));
     const databaseMaxSequence = events.at(-1)?.sequence ?? 0;
 
-    const journalPath = process.env.TASQ_EVENT_JOURNAL_PATH ?? rt.config.eventJournalPath;
+    const isolatedWithoutJournal = Boolean(process.env.TASQ_DB_URL) && !process.env.TASQ_EVENT_JOURNAL_PATH;
+    // An explicit database override is an isolated store unless its caller also
+    // supplies an explicit journal. Never inspect the user's configured live
+    // journal while diagnosing an imported, restored, or test database.
+    const journalPath = isolatedWithoutJournal
+      ? null
+      : process.env.TASQ_EVENT_JOURNAL_PATH ?? rt.config.eventJournalPath;
     const journalEventIds = new Set<string>();
     const journalSequenceById = new Map<string, number>();
     const journalSequenceIds = new Map<number, string>();
@@ -160,7 +167,6 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     const permissionIssues: string[] = [];
     for (const target of permissionTargets) checkMode(target.path, target.expected, permissionIssues);
 
-    const isolatedWithoutJournal = Boolean(process.env.TASQ_DB_URL) && !process.env.TASQ_EVENT_JOURNAL_PATH;
     const outbox = rt.journal
       ? await listDeliveryOutbox(rt.db, {
         tenantId: rt.config.tenantId,
@@ -185,6 +191,7 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     const ok = store.ok && journalOk && permissionIssues.length === 0;
     const report = {
       ok,
+      storeFormat: STORE_FORMAT_COMPATIBILITY,
       store,
       journal: {
         checked: !isolatedWithoutJournal,

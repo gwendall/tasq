@@ -1,6 +1,6 @@
 # TQ-603 public release contract
 
-**Status:** public source alpha; package publication paused behind TQ-321, TQ-608, TQ-607 and external registry gates
+**Status:** public source alpha; package publication paused behind TQ-321, TQ-607 and external registry gates; TQ-608 source candidate passed
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
 ## Outcome
@@ -85,13 +85,15 @@ The pipeline must refuse a public release until all of these facts are true:
 8. every shipped component has a declared license and SBOM identity;
 9. public source launch and repository visibility have been explicitly
    authorized;
-10. TQ-321 zero-context agent integration and TQ-608 migration hardening are
-    certified.
+10. TQ-321 zero-context agent integration is certified and the TQ-608 source
+    candidate is passed; its published-byte replay remains part of the first
+    protected lifecycle certificate.
 
 The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
 `v*` tags, the tag-scoped release environment, secret scanning, push protection
-and private vulnerability reporting are active. Gate 1 plus TQ-321 and TQ-608
-are the current product-hardening priority. npm `@tasq` scope control and trusted
+and private vulnerability reporting are active. Gate 1 plus TQ-321 are the
+current product-hardening priority; TQ-608's source candidate is passed. npm
+`@tasq` scope control and trusted
 publishing remain external blockers. Therefore source is public alpha, while
 packages and downloadable artifacts are not published.

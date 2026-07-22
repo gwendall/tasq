@@ -61,21 +61,21 @@ async function freshDb() {
 }
 
 /**
- * Recreate the `event` table after a `DROP TABLE event` injection so we can
- * read state back. The `event` table + its indexes live in the first
- * migration (`0000_init.sql`), whose statements are all `IF NOT EXISTS`.
- * We clear ONLY that migration's ledger row and re-run: the runner re-applies
- * 0000 (recreating just the dropped `event` table — every other object
- * already exists and is skipped) while leaving the non-idempotent
- * `ALTER TABLE` in 0001 marked-applied and untouched.
+ * Capture and recreate the exact current `event` table after fault injection.
+ * Migration history is immutable: a test must not punch holes in `_migration`
+ * to coerce a partial replay.
  */
-async function restoreEventTable(client: Parameters<typeof runMigrations>[0]) {
-  await client.execute(
-    "DELETE FROM _migration WHERE name IN ('0000_init.sql', '0004_event_sequence.sql')",
-  );
-  await runMigrations(client);
-  await client.execute("ALTER TABLE event ADD COLUMN principal_id TEXT REFERENCES principal(id)");
-  await client.execute("CREATE INDEX idx_event_principal ON event (tenant_id, principal_id, sequence)");
+async function captureEventSchema(client: Parameters<typeof runMigrations>[0]): Promise<string[]> {
+  const schema = await client.execute(`
+    SELECT sql FROM sqlite_master
+    WHERE (name = 'event' OR tbl_name = 'event') AND sql IS NOT NULL
+    ORDER BY CASE type WHEN 'table' THEN 0 WHEN 'index' THEN 1 ELSE 2 END, name
+  `);
+  return schema.rows.map((row) => String(row.sql));
+}
+
+async function restoreEventTable(client: Parameters<typeof runMigrations>[0], schema: string[]) {
+  for (const statement of schema) await client.execute(statement);
 }
 
 describe("Atomic mutation + event", () => {
@@ -86,6 +86,7 @@ describe("Atomic mutation + event", () => {
 
       // Break the event insert: the row insert inside the tx will still run,
       // but recordEvent's insert into `event` throws → whole tx rolls back.
+      const eventSchema = await captureEventSchema(client);
       await client.execute("DROP TABLE event");
 
       await expect(
@@ -93,7 +94,7 @@ describe("Atomic mutation + event", () => {
       ).rejects.toThrow();
 
       // Recreate the event table so we can read state back.
-      await restoreEventTable(client);
+      await restoreEventTable(client, eventSchema);
 
       // No task row landed (row write rolled back with the failed event).
       const tasks = await listTasks(db);
@@ -117,13 +118,14 @@ describe("Atomic mutation + event", () => {
         areaId: area.id,
       });
 
+      const eventSchema = await captureEventSchema(client);
       await client.execute("DROP TABLE event");
 
       await expect(
         updateTask(db, t.id, { title: "mutated title", nextAction: "mutated next" }),
       ).rejects.toThrow();
 
-      await restoreEventTable(client);
+      await restoreEventTable(client, eventSchema);
 
       // The UPDATE rolled back with the failed event — fields are untouched.
       // (The task row survived because only `event` was dropped, and the
@@ -151,11 +153,12 @@ describe("Atomic mutation + event", () => {
       const t = await createTask(db, { title: "t", areaId: area.id });
       expect(t.status).toBe("open");
 
+      const eventSchema = await captureEventSchema(client);
       await client.execute("DROP TABLE event");
 
       await expect(startTask(db, t.id)).rejects.toThrow();
 
-      await restoreEventTable(client);
+      await restoreEventTable(client, eventSchema);
 
       const after = await getTask(db, t.id);
       expect(after!.status).toBe("open"); // never moved to in_progress
@@ -215,9 +218,10 @@ describe("Atomic mutation + event", () => {
       expect(journaled.map((e) => e.eventType)).toEqual(["created", "created", "started"]);
 
       // Now force a rollback and assert the listener does NOT fire for it.
+      const eventSchema = await captureEventSchema(client);
       await client.execute("DROP TABLE event");
       await expect(updateTask(db, t.id, { title: "nope" })).rejects.toThrow();
-      await restoreEventTable(client);
+      await restoreEventTable(client, eventSchema);
 
       // Still 3 — the rolled-back mutation never journaled.
       expect(journaled).toHaveLength(3);
@@ -350,13 +354,14 @@ describe("Atomic mutation + event", () => {
     try {
       const area = await createArea(db, { name: "Keep", slug: "keep", importance: 3 });
 
+      const eventSchema = await captureEventSchema(client);
       await client.execute("DROP TABLE event");
 
       // Each create must reject AND leave nothing behind.
       await expect(createGoal(db, { areaId: area.id, title: "G" })).rejects.toThrow();
       await expect(createProject(db, { title: "P", areaId: area.id })).rejects.toThrow();
 
-      await restoreEventTable(client);
+      await restoreEventTable(client, eventSchema);
 
       // The pre-existing area is still there ; the failed creates left nothing.
       expect(await getArea(db, area.id)).not.toBeNull();
