@@ -102,9 +102,10 @@ describe("zero-context agent integration candidate", () => {
     const certificate = readJson("TQ-321_AGENT_PLUGIN_CERTIFICATION.json");
     expect(certificate).toMatchObject({
       contractVersion: "tasq.agent-plugin-certification.v1",
-      status: "candidate-native-lifecycle-passed-blind-behavior-pending",
+      status: "candidate-public-native-lifecycle-passed-blind-behavior-pending",
       isolation: {
         cleanTemporaryHomes: true,
+        remoteCloneViaHttps: true,
         userConfigurationTouched: false,
         tasqHomeTouched: false,
         ledgerTouched: false,
@@ -116,7 +117,6 @@ describe("zero-context agent integration candidate", () => {
       expect.objectContaining({ id: "claude-code", install: "passed", uninstall: "passed" }),
     ]);
     expect(certificate.remaining).toEqual([
-      "remote-main-install-replay",
       "blind-codex-behavioral-matrix",
       "blind-claude-code-behavioral-matrix",
     ]);

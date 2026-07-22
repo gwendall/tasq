@@ -1,12 +1,12 @@
 {
   "contractVersion": "tasq.agent-plugin-certification.v1",
   "revision": 1,
-  "status": "candidate-native-lifecycle-passed-blind-behavior-pending",
+  "status": "candidate-public-native-lifecycle-passed-blind-behavior-pending",
   "testedAt": "2026-07-22",
   "source": {
-    "kind": "local-checkout",
+    "kind": "public-main",
     "repository": "https://github.com/gwendall/tasq",
-    "ref": "candidate-worktree",
+    "ref": "0ed9a652c3092c016c3027b62182c87bad8abe9c",
     "sha256": {
       "AGENT_INTEGRATIONS.json": "8ff1c60e8fb72e8764e82ebf55eb20583883a1ec82c775e271a7273e3e5dd452",
       ".agents/plugins/marketplace.json": "1fedf441fa239b6fefd80bc40f45fc1ab05f326c931405b90302fb2858b8765b",
@@ -18,6 +18,7 @@
   },
   "isolation": {
     "cleanTemporaryHomes": true,
+    "remoteCloneViaHttps": true,
     "userConfigurationTouched": false,
     "tasqHomeTouched": false,
     "ledgerTouched": false
@@ -49,7 +50,6 @@
     "structuralEval": "packages/tasq-evals/agent-plugin-integration.test.ts"
   },
   "remaining": [
-    "remote-main-install-replay",
     "blind-codex-behavioral-matrix",
     "blind-claude-code-behavioral-matrix"
   ],
