@@ -1,7 +1,7 @@
 # TQ-601/TQ-602 — Open-source productization specification
 
-> **Status:** accepted productization and governance boundary, not released — 2026-07-20
-> **Current truth:** source is canonical but intentionally private before launch; npm packages and release artifacts are not published
+> **Status:** public-source alpha; packages and artifacts not released — 2026-07-22
+> **Current truth:** canonical source is public; npm packages and release artifacts are not published
 > **Product contract:** `PRODUCT_CONSUMPTION_SPEC.md`
 > **Binding decision:** `ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
 > `PUBLIC_RELEASE_POLICY.json`
@@ -14,19 +14,19 @@ Cloud. Open source is not achieved by making a repository visible: an unknown
 person and an unknown agent must be able to obtain a versioned artifact,
 verify it, start safely, upgrade it and understand its support boundary.
 
-## 1.1 Private dogfood before public launch
+## 1.1 Public alpha plus retained-data dogfood
 
 Open-source engineering discipline begins before source visibility. TQ-607
 keeps the standalone repository, public/private package boundary, DCO, CI,
 documentation, deterministic artifacts and machine truth at public quality
-while Tasq remains private. It then requires at least 30 days of retained-data
+before and after source visibility. It requires at least 30 days of retained-data
 operation through the personal life-pilot, Kami Robotics and an interactive
 agent runtime.
 
 TQ-607 closes only with real upgrade/recovery/onboarding evidence and an
-explicit `go`, `extend` or `no_go` decision. A `go` permits the maintainer to
-authorize public-source launch separately; it does not itself change
-visibility or publish a package. TQ-603 is paused until that decision.
+explicit `go`, `extend` or `no_go` decision. Source visibility was separately
+authorized on 2026-07-22; a TQ-607 `go` remains necessary for package
+publication. TQ-603 is paused until that decision and the TQ-321/TQ-608 gates.
 
 ## 2. Decisions required before release
 
@@ -110,12 +110,11 @@ opens a network listener or migrates an unrelated/live store.
 
 The selected repository is `https://github.com/gwendall/tasq`, a dedicated
 monorepo initially exported from the private `products/tasq` subtree. The
-source-authority cutover is complete: this private pre-launch repository is the
-source, tag, issue and security authority. It becomes publicly visible only
-after explicit launch authorization. The private monorepo may consume releases
+source-authority cutover is complete: this public alpha repository is the
+source, tag, issue and security authority. The private monorepo may consume releases
 or a one-way generated mirror, never a permanent bidirectional fork.
 
-Before public announcement the chosen repository contains, at minimum:
+At public-source launch the chosen repository contains, at minimum:
 
 - `LICENSE`, `README`, `CONTRIBUTING`, `CODE_OF_CONDUCT`, `SECURITY` and
   governance/maintainer policy;
@@ -160,9 +159,11 @@ Failures block release. Repository-local success is not a substitute.
 
 | Item | Outcome |
 |---|---|
-| TQ-607 | Private three-consumer dogfood and explicit launch decision |
+| TQ-321 | Zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and blind certification |
+| TQ-608 | Data-preserving migration envelope, verified backup/doctor and hostile upgrade proof |
+| TQ-607 | Three-consumer retained-data dogfood and explicit package-release decision |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | After TQ-607 `go`, reproducible public artifacts and package publication |
+| TQ-603 | After TQ-321, TQ-608 and TQ-607 `go`, reproducible public artifacts and package publication |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
 | TQ-605 | DONE — versioned static public docs and product app; deployment not claimed |
 | TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |

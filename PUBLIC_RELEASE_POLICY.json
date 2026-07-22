@@ -1,13 +1,13 @@
 {
   "contractVersion": "tasq.public-release-policy.v1",
-  "status": "canonical-private-repository-not-published",
+  "status": "public-alpha-source-not-published",
   "acceptedAt": "2026-07-20",
   "identity": {
     "productName": "Tasq",
     "cliBinary": "tasq",
     "npmScope": "@tasq",
     "canonicalRepository": "https://github.com/gwendall/tasq",
-    "repositoryState": "private-canonical-unprotected-prelaunch",
+    "repositoryState": "public-alpha-source",
     "unscopedNpmPackage": {
       "name": "tasq",
       "ownership": "unrelated-third-party",
@@ -29,7 +29,7 @@
     "scope": "canonical Tasq repository; private monorepo siblings excluded"
   },
   "repository": {
-    "topology": "dedicated-private-prelaunch-monorepo",
+    "topology": "dedicated-public-alpha-monorepo",
     "sourceRootBeforeCutover": "products/tasq",
     "canonicalAfterCutover": "https://github.com/gwendall/tasq",
     "privateMonorepoDirectionAfterCutover": "consume-release-or-one-way-generated-mirror",
@@ -159,28 +159,31 @@
   ],
   "externalPublicationGateStatus": {
     "private_multi_app_dogfood_accepted": false,
-    "canonical_repository_control_verified": false,
-    "public_source_launch_authorized": false,
+    "canonical_repository_control_verified": true,
+    "public_source_launch_authorized": true,
     "npm_scope_control_verified": false,
     "trusted_publishing_configured": false,
-    "tag_protection_configured": false,
+    "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true
   },
   "repositoryControls": {
-    "enforcementState": "unavailable-on-private-repository-current-plan",
-    "requiredPullRequest": false,
-    "requiredChecks": [],
+    "enforcementState": "active-public-repository",
+    "requiredPullRequest": true,
+    "requiredChecks": [
+      "verify (macos-14)",
+      "verify (ubuntu-latest)"
+    ],
     "desiredRequiredChecks": [
       "verify (macos-14)",
       "verify (ubuntu-latest)"
     ],
-    "mainDeletionAllowed": null,
-    "mainNonFastForwardAllowed": true,
+    "mainDeletionAllowed": false,
+    "mainNonFastForwardAllowed": false,
     "releaseTagPattern": "v*",
-    "releaseTagsMutable": true,
+    "releaseTagsMutable": false,
     "releaseEnvironment": "release",
     "releaseEnvironmentTagPolicyVerified": true,
-    "privateVulnerabilityReporting": false
+    "privateVulnerabilityReporting": true
   }
 }

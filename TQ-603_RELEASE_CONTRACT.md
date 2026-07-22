@@ -1,6 +1,6 @@
 # TQ-603 public release contract
 
-**Status:** candidates implemented; publication paused behind TQ-607 private dogfood and external gates
+**Status:** public source alpha; package publication paused behind TQ-321, TQ-608, TQ-607 and external registry gates
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
 ## Outcome
@@ -84,14 +84,14 @@ The pipeline must refuse a public release until all of these facts are true:
    old internal identifier without creating a dependency);
 8. every shipped component has a declared license and SBOM identity;
 9. public source launch and repository visibility have been explicitly
-   authorized.
+   authorized;
+10. TQ-321 zero-context agent integration and TQ-608 migration hardening are
+    certified.
 
-The canonical private repository and both clean-room CI targets now satisfy
-gates 2 and 6. The tag-scoped release environment exists, but GitHub branch and
-ruleset enforcement is unavailable for this private repository under the
-current plan. Repository protections must be restored and verified alongside
-gates 4, 5 and 9 before release. Gate 1 is the current product-learning
-priority. The remaining external gates stay blocked until npm `@tasq` scope
-control, trusted publishing and explicit launch authorization are observed
-directly. Therefore this checkpoint does not claim that Tasq source or
-artifacts are public.
+The public canonical repository and both clean-room CI targets satisfy gates 2,
+6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
+`v*` tags, the tag-scoped release environment, secret scanning, push protection
+and private vulnerability reporting are active. Gate 1 plus TQ-321 and TQ-608
+are the current product-hardening priority. npm `@tasq` scope control and trusted
+publishing remain external blockers. Therefore source is public alpha, while
+packages and downloadable artifacts are not published.

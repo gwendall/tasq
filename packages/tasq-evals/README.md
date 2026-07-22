@@ -4,7 +4,7 @@ Realistic, cross-layer agent and product journeys. Evals answer “does an
 independent consumer experience the intended semantics?” rather than “does one
 function return the expected value?”.
 
-This is a private repository workspace and is never published.
+This workspace is private to the monorepo package graph and is never published.
 
 ## What belongs here
 

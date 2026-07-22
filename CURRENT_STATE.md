@@ -43,24 +43,24 @@ databases are honestly serialized rather than described as cross-database
 ACID; a lost boundary returns typed unknown outcome and exact-retry recovery.
 No bundled operation adapter, listener or deployable Server exists yet.
 
-This is the canonical source repository. It is intentionally private before
-launch; no public source-availability claim is current. `main` requires pull
-requests by contributor policy, but GitHub cannot enforce branch protection
-on this private repository under the current plan. The `release` environment
-accepts only `v*` tags, while immutable branch/tag enforcement must be restored
-at public launch or after a plan upgrade. The repository contains seven intended
+This is the public canonical source repository. `main` requires pull requests,
+green macOS and Linux verification, conversation resolution and linear history;
+deletion and non-fast-forward updates are blocked. `v*` tags are immutable,
+the `release` environment accepts only `v*`, secret scanning and push protection
+are enabled, and private vulnerability reporting is active. The repository contains seven intended
 public package sources and private compatibility, example and eval workspaces.
 A package is not available merely because its source exists here; npm
 availability starts only after an explicitly authorized protected attested
 release.
 
-Public launch is now deliberately preceded by TQ-607 private dogfood. The
+Public source launch occurred on 2026-07-22 as an explicitly bounded alpha.
+TQ-607 private dogfood remains the package-release gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Repository quality remains public-grade;
-repository visibility and package publication remain blocked during the gate.
+`go`, `extend` or `no_go` decision. Early users may build from source and file
+issues; package publication remains blocked during the gate.
 
 The retained baseline and isolated restore are verified. Kami and the
 interactive runtime have completed every required journey; cold onboarding,

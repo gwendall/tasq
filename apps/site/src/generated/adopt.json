@@ -7,10 +7,8 @@
     "mode": "source_build",
     "published": false,
     "repository": "https://github.com/gwendall/tasq",
-    "repositoryAccess": "authorized_private_prelaunch",
-    "preconditions": [
-      "authorized_repository_access"
-    ],
+    "repositoryAccess": "public",
+    "preconditions": [],
     "sourceRef": "main",
     "sourceRefMutable": true,
     "integrity": {
@@ -18,15 +16,15 @@
       "sourceContracts": [
         {
           "path": "PRODUCT_SURFACE_MATRIX.json",
-          "sha256": "360c4db8850865438324465e1e34c6f37335e80f468903d2faaafa3adbd915f6"
+          "sha256": "4f661fa728d60b89f96060e1e53fd65b6602670b18a9007772b120af4fe3bfa0"
         },
         {
           "path": "BACKLOG.json",
-          "sha256": "a7ab5c1eb2c94e32a7a31886c9902f2b25d4bab3c2eb2b2221b3206bb077f079"
+          "sha256": "ed2b91e15e69b2d0e15e58c5ed247939c17e71dc1c6102ca1315365b83594268"
         },
         {
           "path": "PUBLIC_RELEASE_POLICY.json",
-          "sha256": "a6b90b4900f56a59713a9f1a4e58c64b38aaa03ccf2a9c308aa295fed7d0d628"
+          "sha256": "847b7a39fceb29b41ffbbd551a17b3c3e3158594fc65a3723ccfe6c756751e2a"
         }
       ]
     }
@@ -47,7 +45,7 @@
   ],
   "human": {
     "path": "/docs/getting-started/",
-    "primaryAction": "request_access_then_build"
+    "primaryAction": "build_from_source"
   },
   "agent": {
     "acquisition": [
@@ -119,7 +117,6 @@
     "same_workspace_requires_the_same_store",
     "device_time_is_not_authority",
     "runtime_success_does_not_complete_a_commitment",
-    "private_prelaunch_repository_requires_authorized_access",
     "unpublished_source_ref_is_mutable_and_not_a_release_attestation"
   ]
 }

@@ -2,13 +2,13 @@
 
 > **Status:** accepted and in progress — 2026-07-22
 > **Machine status:** `TQ-607_DOGFOOD_STATUS.json`
-> **Unlocks:** the explicit public-source launch decision and TQ-603
+> **Unlocks:** TQ-603 package publication after the other release gates
 
 ## Outcome
 
-Use Tasq as a real operating dependency before turning repository visibility
-or package publication into a public promise. The program keeps the repository
-at open-source quality while it remains private, and tests whether Tasq is
+Use Tasq as a real operating dependency before turning package publication
+into a stable public promise. The program keeps the public repository
+at open-source quality and tests whether Tasq is
 useful and natural across unrelated applications rather than merely correct in
 repository fixtures.
 
@@ -130,7 +130,7 @@ authority.
 
 ## Critical failures
 
-The public-launch decision cannot be `go` while any of these remain unresolved:
+The package-release decision cannot be `go` while any of these remain unresolved:
 
 - data loss or an unrecoverable ledger;
 - a cross-workspace isolation failure;
@@ -146,12 +146,12 @@ The public-launch decision cannot be `go` while any of these remain unresolved:
 
 At or after the minimum date, the maintainer records one explicit decision:
 
-- `go` — TQ-607 closes, public-source launch may be separately authorized and
-  TQ-603 becomes active;
+- `go` — TQ-607 closes and TQ-603 may become active after TQ-321, TQ-608 and
+  the external registry gates;
 - `extend` — dogfood continues with named missing evidence and a new review
   date;
-- `no_go` — public launch remains blocked and only the failed product boundary
-  is reopened.
+- `no_go` — package publication remains blocked and only the failed product
+  boundary is reopened.
 
 The decision must summarize observed value as well as correctness. Passing
 tests without repeated useful operation across the three consumers is not a

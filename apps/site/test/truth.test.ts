@@ -19,10 +19,10 @@ describe("public site truth", () => {
     expect(unimplemented.every((entry) => entry.entrypoint === null)).toBe(true);
   });
 
-  test("keeps the private unpublished release behind explicit repository access", () => {
+  test("keeps the public source alpha distinct from a published release", () => {
     expect(productTruth.release.published).toBe(false);
-    expect(productTruth.release.installAction).toBe("request_access_then_build");
-    expect(productTruth.release.repositoryState).toBe("private-canonical-unprotected-prelaunch");
+    expect(productTruth.release.installAction).toBe("build_from_source");
+    expect(productTruth.release.repositoryState).toBe("public-alpha-source");
     expect(productTruth.release.publicPackages).toHaveLength(7);
     expect(productTruth.productShapes.every((entry) => !entry.publiclyDistributed)).toBe(true);
   });

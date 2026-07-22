@@ -63,7 +63,7 @@ describe("canonical Tasq roadmap", () => {
       contractVersion: "tasq.backlog.v1",
       status: "active",
       canonicalRepository: "https://github.com/gwendall/tasq",
-      repositoryVisibility: "private_prelaunch",
+      repositoryVisibility: "public_alpha",
       statusVocabulary: [
         "done",
         "in_progress_dogfood",
@@ -133,7 +133,7 @@ describe("canonical Tasq roadmap", () => {
         state: "in_progress",
       },
       publicSourceLaunch: {
-        state: "blocked_by_private_dogfood_decision",
+        state: "complete_public_alpha",
       },
       npmScopeControl: {
         state: "unverified",
@@ -146,7 +146,15 @@ describe("canonical Tasq roadmap", () => {
       publishedInteractiveRuntimeCertification: { state: "blocked_by_first_protected_release" },
       independentBlindHumanAdoption: { state: "not_run" },
     });
-    expect(roadmap.items[0]).toMatchObject({
+    expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
+      status: "pending",
+      milestone: "runtime-consumers",
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
+      status: "pending",
+      milestone: "public-distribution",
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-607")).toMatchObject({
       id: "TQ-607",
       status: "in_progress_dogfood",
       milestone: "private-dogfood",
@@ -165,19 +173,19 @@ describe("canonical Tasq roadmap", () => {
         "evidence/tq-607/README.md",
       ],
     });
-    expect(roadmap.items[1]).toMatchObject({
+    expect(roadmap.items.find(({ id }) => id === "TQ-603")).toMatchObject({
       id: "TQ-603",
       status: "pending",
-      dependsOn: ["TQ-607"],
+      dependsOn: ["TQ-321", "TQ-608", "TQ-607"],
       remaining: [
-        "authorize-public-source-launch",
-        "restore-and-verify-repository-protections",
+        "complete-agent-integration-certification",
+        "complete-migration-hardening",
         "verify-npm-scope-control",
         "configure-npm-trusted-publishing",
         "publish-first-protected-release",
       ],
     });
-    expect(roadmap.items[2]).toMatchObject({
+    expect(roadmap.items.find(({ id }) => id === "TQ-604")).toMatchObject({
       id: "TQ-604",
       status: "candidate_done_publication_gate",
       evidence: [
@@ -192,7 +200,6 @@ describe("canonical Tasq roadmap", () => {
     expect(roadmap.items.find(({ id }) => id === "TQ-606")).toMatchObject({
       status: "candidate_done_external_gate",
       remaining: [
-        "authorize-public-source-launch",
         "rerun-from-first-published-release",
         "record-independent-unbriefed-human-session",
       ],
@@ -208,7 +215,7 @@ describe("canonical Tasq roadmap", () => {
       "device_clock_is_read_only_by_systemClock_composition",
       "local_console_remains_loopback_and_read_only",
       "remote_surfaces_require_adr_004_guard",
-      "public_launch_requires_private_multi_app_dogfood",
+      "stable_package_release_requires_operational_hardening_and_external_evidence",
       "published_claims_require_external_evidence",
     ]) {
       expect(roadmap.invariants).toContain(invariant);

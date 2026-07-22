@@ -74,14 +74,14 @@ describe("public site boundary", () => {
       distribution: {
         mode: "source_build",
         published: false,
-        repositoryAccess: "authorized_private_prelaunch",
-        preconditions: ["authorized_repository_access"],
+        repositoryAccess: "public",
+        preconditions: [],
         sourceRefMutable: true,
       },
-      human: { path: "/docs/getting-started/", primaryAction: "request_access_then_build" },
+      human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
       agent: { executableRelativePath: "dist/cli/index.js" },
     });
-    expect(adoption.invariants).toContain("private_prelaunch_repository_requires_authorized_access");
+    expect(adoption.invariants).not.toContain("private_prelaunch_repository_requires_authorized_access");
     const declared = new Set<string>(adoption.agent.placeholders as string[]);
     const serializedVectors = JSON.stringify([
       ...adoption.agent.acquisition.flatMap((step: { cwd: string; argv: string[] }) => [step.cwd, ...step.argv]),

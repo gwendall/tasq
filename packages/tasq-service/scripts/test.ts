@@ -25,7 +25,11 @@ for (const test of tests) {
     ? ["^Task state machine", "^Goal state machine", "^Project state machine"]
     : [null];
   for (const pattern of patterns) {
-    const args = [process.execPath, "test", `test/${test}`];
+    // Real LibSQL files, WAL negotiation and native-driver teardown can exceed
+    // Bun's implicit five-second per-test limit on loaded CI hosts. Keep one
+    // explicit package-wide ceiling high enough for I/O variance while every
+    // assertion and the fail-fast process boundary remain unchanged.
+    const args = [process.execPath, "test", "--timeout", "15000", `test/${test}`];
     if (pattern) args.push("--test-name-pattern", pattern);
     const child = Bun.spawn(args, {
       cwd: packageRoot,

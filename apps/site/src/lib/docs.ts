@@ -18,19 +18,19 @@ export const docPages: DocPage[] = [
   {
     slug: "getting-started",
     eyebrow: "Start here",
-    title: "One ledger. Two actors. Explicit access.",
+    title: "One ledger. Two actors. Start from source.",
     summary:
-      "With authorized repository access, build Tasq Local from the canonical source, create a workspace, then hand any shell-capable agent a bounded onboarding response.",
+      "Clone and build Tasq Local from the public canonical source, create a workspace, then hand any shell-capable agent a bounded onboarding response.",
     sections: [
       {
         title: "Current installation path",
         body: [
-          "Tasq has no published package or downloadable release yet, and its canonical repository is private before launch. Authorized collaborators can use the deterministic source-build path below; anonymous acquisition is not available yet.",
+          "Tasq is public alpha source. There is no published npm package or downloadable release yet, so clone the canonical repository and use the deterministic source-build path below.",
         ],
         code:
           "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
         callout:
-          "Repository authentication is a required precondition. Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same conditional source-build path as argv arrays.",
+          "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
       },
       {
         title: "Give an agent the minimum causal pointer",
@@ -157,7 +157,7 @@ export const docPages: DocPage[] = [
         code:
           "const tasq = createTasqService({\n  store,\n  workspaceId,\n  identity,\n  clock,\n})",
         callout:
-          "Package source exists in the private canonical repository, but @tasq/core is not published yet. Public compatibility starts with the first protected release, not with a source-tree import.",
+          "Package source is public, but @tasq/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
       },
       {
         title: "Extensions and connectors stay outside Core",

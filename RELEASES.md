@@ -9,7 +9,7 @@ or attestations, CycloneDX SBOMs, SLSA-compatible provenance, compatibility
 metadata, migration/rollback instructions and clean-room evidence.
 
 npm packages use trusted publishing with provenance. Long-lived maintainer
-tokens and locally built release artifacts are forbidden. Public support does
+tokens and locally built release artifacts are forbidden. Published-package support does
 not begin until TQ-607 records a private-dogfood `go`, TQ-603 publishes
 artifacts and TQ-604 certifies their complete lifecycle without a repository
 checkout.
@@ -26,7 +26,7 @@ bun scripts/release/build-public-release.ts \
 
 Use `linux-x64-gnu` on the supported Linux runner. Inputs are explicit and no
 build timestamp is recorded. The output is deterministic, but remains
-unpublishable until explicit launch authorization and protected CI in the
+unpublishable until the remaining package gates pass and protected CI in the
 canonical repository attest it. See `TQ-603_RELEASE_CONTRACT.md` for files,
 verification and refusal gates.
 

@@ -70,13 +70,13 @@ export default function HomePage() {
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href={productTruth.release.repository}>
-                  <GitBranch aria-hidden="true" className="size-4" /> Source (private)
+                  <GitBranch aria-hidden="true" className="size-4" /> Source
                 </a>
               </Button>
             </div>
             <p className="mt-5 flex items-start gap-2 font-mono text-[0.7rem] leading-5 uppercase tracking-[0.07em] text-[var(--ink-faint)]">
               <Clock3 aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-              Repository access is private before launch. Package and lifecycle candidates are certified.
+              Public source alpha. Packages and downloadable releases are not published.
             </p>
           </div>
 

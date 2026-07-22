@@ -8,10 +8,10 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-22
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** keep the canonical source private and operate Tasq for at
-least 30 days across the personal life-pilot, Kami Robotics and an interactive
-agent runtime. Make the public-launch decision from that evidence before
-publishing packages or expanding remote products.
+**Current priority:** use the public-source alpha to harden zero-context agent
+integration and data-preserving migrations while continuing 30-day dogfood
+across the personal life-pilot, Kami Robotics and an interactive agent runtime.
+Do not publish packages or expand remote products before those gates close.
 
 ## What is already proven
 
@@ -27,24 +27,34 @@ rendered support states and `/product-truth.json` are generated from canonical
 machine contracts. It is repository-certified but not deployed, and therefore
 does not create a public URL or release claim.
 
-The dedicated canonical repository and Linux/macOS CI are live. The repository
-is intentionally private before launch; repository visibility is not release
-evidence and must change only after explicit authorization. GitHub branch and
-tag protections are unavailable for this private repository on the current
-plan, so they must be restored and verified at launch or after a plan upgrade.
+The dedicated canonical repository is public and Linux/macOS CI is live.
+Pull requests, both verification checks, linear history, immutable `v*` tags,
+secret scanning, push protection and private vulnerability reporting are
+platform-enforced. Repository visibility is still not release evidence.
 Release archives and seven `@tasq/*` package candidates are deterministic and
 clean-room tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and
 certified the candidate install/upgrade/restore/uninstall lifecycle on both
 native targets.
 
-The repository follows open-source engineering discipline while remaining
-private: standalone source authority, public/private package boundaries, DCO,
+The repository follows open-source engineering discipline as a public alpha:
+standalone source authority, public/private package boundaries, DCO,
 reproducible setup, Linux/macOS CI, complete onboarding and versioned machine
 truth. TQ-607 separates that engineering readiness from product readiness. The
 next proof is repeated useful operation through three real adopters, not more
 repository-only architecture.
 
 ## Current gates
+
+- **Public source alpha — live.** Anonymous users can clone, inspect and build
+  `main`. npm packages and downloadable artifacts remain unpublished.
+- **TQ-321 — next, zero-context agent integration.** Ship native Codex and
+  Claude Code discovery/install paths over the existing MCP and CLI contract,
+  retain each runtime's private scratchpad, provide uninstall, and pass a blind
+  agent certification.
+- **TQ-608 — next, migration hardening.** Add explicit schema read/write
+  compatibility, verified pre-migration backup receipts, newer-schema
+  fail-closed behavior, post-migration doctor checks, portable export and
+  hostile N-2 upgrade evidence.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -58,11 +68,9 @@ repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — paused behind TQ-607, then external registry gate.**
-  `@tasq/schema` is not published. A TQ-607 `go` permits a separate launch
-  authorization; it does not grant it automatically. The authorized registry
-  operator must then verify scope/package control, bind the release workflow
-  through npm OIDC, restore repository protections and create the first
+- **TQ-603 — paused behind TQ-321, TQ-608 and TQ-607, then external registry gate.**
+  `@tasq/schema` is not published. The authorized registry operator must verify
+  scope/package control, bind the release workflow through npm OIDC and create the first
   immutable protected SemVer tag. Workstation publishing, implicit visibility
   changes and long-lived npm tokens remain forbidden.
 - **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
@@ -75,7 +83,14 @@ breadth is intentionally lower priority even when technically unblocked.
 
 ## Ordered checkpoints
 
-### 1. Prove private product value
+### 1. Harden the public alpha
+
+- **TQ-321:** make a zero-context Codex or Claude Code session discover and use
+  Tasq through native instructions, MCP where available and CLI JSON fallback.
+- **TQ-608:** close the durable-data migration envelope before strangers entrust
+  work ledgers to alpha builds.
+
+### 2. Prove retained product value
 
 - **TQ-607:** run the three-consumer dogfood program, preserve real ledgers,
   classify every material workaround, complete the cross-cutting recovery
@@ -85,7 +100,7 @@ breadth is intentionally lower priority even when technically unblocked.
   calendar duration. Passing repository tests without repeated useful
   operation is insufficient.
 
-### 2. Finish Local distribution
+### 3. Finish Local distribution
 
 - **TQ-603:** only after a TQ-607 `go`, obtain explicit source-launch
   authorization, restore repository protections, verify npm scope control,

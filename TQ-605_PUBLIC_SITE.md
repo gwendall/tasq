@@ -1,6 +1,6 @@
 # TQ-605 — Public product and documentation site
 
-> **Status:** implemented and certified inside the private pre-launch repository — 2026-07-21
+> **Status:** implemented and certified in the public source repository — 2026-07-22
 > **Deployment status:** not deployed; no public URL or published-install claim
 > **Authority:** `PRODUCT_SURFACE_MATRIX.json`, `BACKLOG.json` and
 > `PUBLIC_RELEASE_POLICY.json`, never hand-authored website state
@@ -113,10 +113,10 @@ pnpm --filter @tasq-internal/site test:browser
 
 ## 7. Honest remaining boundary
 
-TQ-605 certifies the versioned application in the private pre-launch
-repository. It does not claim anonymous source access, a domain, production
+TQ-605 certifies the versioned application in the public source
+repository. It does not claim a domain, production
 deployment, uptime, analytics, search indexing or a published Tasq package.
-TQ-603 remains the authority for explicit public-source launch and the first
-protected release. A future site deployment must publish an immutable build
+TQ-603 remains the authority for the first protected package and artifact
+release. A future site deployment must publish an immutable build
 from the canonical repository and record its URL/commit as external evidence
 before `public_site` may become a published support claim.

@@ -2,9 +2,9 @@
 
 ## Reporting a vulnerability
 
-Do not open an issue for a suspected vulnerability. The canonical repository
-is currently private before launch. Use a private GitHub Security Advisory when
-available; otherwise email `gwendall@metahood.xyz`.
+Do not open an issue for a suspected vulnerability. Use the repository's
+private vulnerability reporting flow to open a private GitHub Security
+Advisory; if that is unavailable, email `gwendall@metahood.xyz`.
 
 Include the affected version or commit, entrypoint, reproduction, impact and
 whether secrets or a real ledger were involved. Do not include live

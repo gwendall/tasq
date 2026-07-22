@@ -56,15 +56,15 @@ databases are one ACID transaction; unknown commit boundaries require an exact
 same-key retry. See
 [TQ-804_GUARDED_MUTATION_REST.md](TQ-804_GUARDED_MUTATION_REST.md).
 
-The canonical repository is intentionally private before launch. Source
-visibility, npm publication and downloadable releases are not current product
-claims. Making the repository public requires a separate explicit launch
-decision; repository visibility alone would still not make a release.
+The canonical repository is now public alpha source at
+`https://github.com/gwendall/tasq`. npm packages and downloadable releases are
+not published; repository visibility alone is not a release or compatibility
+attestation.
 
-The current pre-launch priority is TQ-607: operate Tasq for at least 30 days
+The current product-hardening priority is TQ-607: operate Tasq for at least 30 days
 across the personal life-pilot, Kami Robotics and an interactive agent runtime
-while keeping open-source engineering discipline. A recorded `go` decision
-from that evidence is required before TQ-603 publication work resumes; see
+while accepting early source users and feedback. A recorded `go` decision
+from that evidence is still required before TQ-603 package publication; see
 [TQ-607_PRIVATE_DOGFOOD_GATE.md](TQ-607_PRIVATE_DOGFOOD_GATE.md).
 
 ```bash
@@ -121,7 +121,7 @@ syntax to that machine response so it cannot become a second command manual.
 | `@tasq/protocol-adapters` | Pure MCP Tasks and A2A execution mappings |
 | `@tasq/console` | Read-only loopback Local Console |
 
-The packages are release candidates until the first protected, attested public
+The packages are source-visible release candidates until the first protected, attested public
 release is published. Do not infer npm availability from this source tree.
 
 Interactive agent control planes can map conversations and runs to Tasq

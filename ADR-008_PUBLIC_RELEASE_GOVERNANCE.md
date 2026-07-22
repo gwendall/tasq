@@ -9,8 +9,8 @@
 ## 1. Context
 
 Tasq Core and Tasq Local originated inside a larger private monorepo. Their
-standalone source now lives in the canonical Tasq repository, which remains
-private until an explicit launch decision; npm packages remain unpublished.
+standalone source now lives in the public canonical Tasq repository; npm
+packages remain unpublished.
 Publishing directly from the original monorepo
 would blur ownership, expose unrelated history and make the public build
 impossible to reproduce independently.
@@ -25,7 +25,7 @@ package identity must remain separate.
 
 - Product and executable: `Tasq` / `tasq`.
 - Public npm namespace: `@tasq/*`.
-- Intended public and current canonical private pre-launch repository:
+- Public canonical repository:
   `https://github.com/gwendall/tasq`.
 - The current `@kami/*` package names are implementation coordinates, never
   public aliases or compatibility promises.
@@ -182,9 +182,9 @@ a long-lived npm token is not a release design.
 
 ## 4. Consequences and gates
 
-TQ-602 is a decision checkpoint, not a release. Core and Local remain private
-and `PRODUCT_SURFACE_MATRIX.json` remains unchanged until TQ-603 publishes
-verifiable artifacts. TQ-603 must stop before publication if repository or npm
+TQ-602 is a decision checkpoint, not a release. Core and Local source are now
+public alpha, while `PRODUCT_SURFACE_MATRIX.json` keeps their packages
+unpublished until TQ-603 produces verifiable artifacts. TQ-603 must stop before publication if repository or npm
 ownership, trusted publishing, artifact attestation, license closure or target
 certification is absent.
 

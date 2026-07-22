@@ -3,7 +3,7 @@
   "status": "active",
   "updatedAt": "2026-07-22",
   "canonicalRepository": "https://github.com/gwendall/tasq",
-  "repositoryVisibility": "private_prelaunch",
+  "repositoryVisibility": "public_alpha",
   "statusVocabulary": [
     "done",
     "in_progress_dogfood",
@@ -19,7 +19,7 @@
     "device_clock_is_read_only_by_systemClock_composition",
     "local_console_remains_loopback_and_read_only",
     "remote_surfaces_require_adr_004_guard",
-    "public_launch_requires_private_multi_app_dogfood",
+    "stable_package_release_requires_operational_hardening_and_external_evidence",
     "published_claims_require_external_evidence"
   ],
   "externalGates": {
@@ -29,8 +29,10 @@
       "requiredDecision": "go_extend_or_no_go_at_or_after_minimum_duration"
     },
     "publicSourceLaunch": {
-      "state": "blocked_by_private_dogfood_decision",
-      "requiredAction": "after a TQ-607 go decision, change repository visibility only with separate explicit launch authorization"
+      "state": "complete_public_alpha",
+      "completedAt": "2026-07-22",
+      "evidence": "https://github.com/gwendall/tasq",
+      "boundary": "source is public; npm packages and downloadable releases remain unpublished"
     },
     "npmScopeControl": {
       "state": "unverified",
@@ -67,6 +69,10 @@
   },
   "completedPrerequisites": [
     "TQ-304",
+    "TQ-311",
+    "TQ-312",
+    "TQ-318",
+    "TQ-403",
     "TQ-405",
     "TQ-501",
     "TQ-504",
@@ -82,6 +88,8 @@
     }
   ],
   "executionOrder": [
+    "TQ-321",
+    "TQ-608",
     "TQ-607",
     "TQ-603",
     "TQ-604",
@@ -110,11 +118,29 @@
   ],
   "items": [
     {
+      "id": "TQ-321",
+      "status": "pending",
+      "milestone": "runtime-consumers",
+      "dependsOn": ["TQ-311", "TQ-312", "TQ-318"],
+      "outcome": "Let a zero-context Codex or Claude Code agent discover, install and use Tasq through native instructions, MCP where available and a CLI fallback without replacing the runtime's private scratchpad",
+      "remaining": ["ship-install-and-uninstall-paths", "ship-codex-and-claude-adapters", "run-blind-agent-certification"],
+      "evidence": ["TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md"]
+    },
+    {
+      "id": "TQ-608",
+      "status": "pending",
+      "milestone": "public-distribution",
+      "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
+      "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
+      "remaining": ["implement-schema-compatibility-envelope", "implement-verified-migration-receipts", "add-portable-export-and-recovery-docs", "certify-hostile-n-minus-two-upgrades"],
+      "evidence": ["TQ-608_MIGRATION_AND_DATA_SAFETY.md"]
+    },
+    {
       "id": "TQ-607",
       "status": "in_progress_dogfood",
       "milestone": "private-dogfood",
       "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
-      "outcome": "Operate Tasq privately for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a public-launch decision",
+      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a package-release decision",
       "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
       "evidence": ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
     },
@@ -122,9 +148,9 @@
       "id": "TQ-603",
       "status": "pending",
       "milestone": "public-distribution",
-      "dependsOn": ["TQ-607"],
+      "dependsOn": ["TQ-321", "TQ-608", "TQ-607"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["authorize-public-source-launch", "restore-and-verify-repository-protections", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+      "remaining": ["complete-agent-integration-certification", "complete-migration-hardening", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
     },
     {
       "id": "TQ-604",
@@ -180,7 +206,7 @@
       "milestone": "public-adoption",
       "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
-      "remaining": ["authorize-public-source-launch", "rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      "remaining": ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
       "evidence": ["TQ-606_PUBLIC_ADOPTION.md", "TQ-606_ADOPTION_CERTIFICATION.json"]
     },
     {

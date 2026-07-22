@@ -65,8 +65,8 @@ authentication.
 **Current state:** behavior and candidate install/upgrade/uninstall are
 certified on Linux/macOS, including foreground Console discovery from the
 installed artifact. Public package and native-release publication are paused
-behind the TQ-607 private dogfood decision, then the external TQ-603 registry
-gate.
+behind TQ-321 agent integration, TQ-608 migration hardening, the TQ-607 dogfood
+decision and the external TQ-603 registry gate.
 
 ### 2.3 Tasq Server
 
@@ -113,12 +113,12 @@ product to be useful.
 | Local CLI | `tasq ...` | Implemented and tested | Public installer/release channel missing |
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
-| Embedded Core | `@tasq/core` | Implemented internally | TypeScript integration; private package |
+| Embedded Core | `@tasq/core` | Public source, release candidate | TypeScript integration; package unpublished |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `pnpm build:site`; `/product-truth.json` | Static app implemented and repository-certified | Not deployed; no ledger or agent API |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
-| Protocol adapters | `@tasq/protocol-adapters` | Implemented internally | Mapping only; no transport or completion authority |
-| Extension SDK | `@tasq/extension-sdk` | Implemented internally | Trusted in-process code; no public registry distribution |
+| Protocol adapters | `@tasq/protocol-adapters` | Public source, release candidate | Mapping only; no transport or completion authority |
+| Extension SDK | `@tasq/extension-sdk` | Public source, release candidate | Trusted in-process code; no public registry distribution |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
@@ -261,16 +261,15 @@ claim.
 **Need:** understand the product, select the correct integration path and
 verify what is actually available without reading implementation chronology.
 
-**Path:** before launch, use authorized repository access to build the static
-site or inspect its `/product-truth.json` export. After an explicit launch,
-use the deployed site or visible canonical repository. Follow the
+**Path:** use the public canonical repository to build the static site or
+inspect its `/product-truth.json` export. Follow the
 consumer-specific guide to the canonical CLI, local MCP, Console or embedded
 path. Check the displayed repository-contract digests when exact support
 provenance matters.
 
 **Support:** the static application and export are implemented and tested in
-the canonical private pre-launch repository. No public repository access,
-deployment or domain is currently claimed.
+the public canonical repository. No production deployment or domain is
+currently claimed.
 
 **Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
 MCP endpoint or evidence that packages have been published.
@@ -340,12 +339,11 @@ learn -> install -> verify -> create/join workspace -> connect first agent
 Today, behavior from `create/join workspace` onward is substantially proven,
 and candidate acquisition/install/upgrade/uninstall is clean-room tested.
 ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq/*` package
-boundary and dedicated repository. That repository is intentionally private
-before launch. TQ-607 now requires private retained-data use across three real
-consumers and an explicit launch decision before publication work resumes.
-Protected public source/release distribution and independent published-byte
-validation are still absent; TQ-603–TQ-606 close that product gap only after a
-TQ-607 `go` and separate explicit launch authorization.
+boundary and dedicated repository. That repository is now a public-source
+alpha. TQ-607 still requires retained-data use across three real consumers and
+an explicit decision before package publication resumes. Protected release
+distribution and independent published-byte validation are still absent;
+TQ-603–TQ-606 close that product gap after TQ-321, TQ-608 and a TQ-607 `go`.
 
 The later server journey is:
 
