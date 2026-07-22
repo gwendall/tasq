@@ -9,7 +9,7 @@ never turns planned work into shipped behavior.
 
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** use the public-source alpha to harden zero-context agent
-integration and data-preserving migrations while continuing 30-day dogfood
+integration while continuing 30-day dogfood
 across the personal life-pilot, Kami Robotics and an interactive agent runtime.
 Do not publish packages or expand remote products before those gates close.
 
@@ -52,10 +52,12 @@ repository-only architecture.
   now pass clean-home lifecycle smoke tests. The remaining gate is the full
   blind-agent behavioral certification over contention, restart, cursor and
   evidence flows.
-- **TQ-608 — next, migration hardening.** Add explicit schema read/write
-  compatibility, verified pre-migration backup receipts, newer-schema
-  fail-closed behavior, post-migration doctor checks, portable export and
-  hostile N-2 upgrade evidence.
+- **TQ-608 — source candidate complete; protected-byte replay pending.** The
+  executable and release manifests declare store compatibility; existing-store
+  upgrades create verified private snapshots and durable receipts, fail closed
+  on ambiguous/newer history, reconcile real process kills, run post-checks and
+  support bounded create-only portable import. Exact first-release/N-2 bytes
+  and a quota/device `ENOSPC` environment remain external replay evidence.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -69,7 +71,7 @@ repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — paused behind TQ-321, TQ-608 and TQ-607, then external registry gate.**
+- **TQ-603 — paused behind TQ-321 and TQ-607, then external registry gate.**
   `@tasq/schema` is not published. The authorized registry operator must verify
   scope/package control, bind the release workflow through npm OIDC and create the first
   immutable protected SemVer tag. Workstation publishing, implicit visibility
@@ -89,8 +91,8 @@ breadth is intentionally lower priority even when technically unblocked.
 - **TQ-321:** run the full blind Codex and Claude Code behavioral matrix against
   the implemented native plugins, host-bound MCP where available and CLI JSON
   fallback.
-- **TQ-608:** close the durable-data migration envelope before strangers entrust
-  work ledgers to alpha builds.
+- **TQ-608:** replay the implemented durable-data envelope from the first
+  protected release bytes; add exact N-2 lines when those releases exist.
 
 ### 2. Prove retained product value
 

@@ -160,8 +160,17 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
-      status: "pending",
+      status: "candidate_done_external_gate",
       milestone: "public-distribution",
+      remaining: [
+        "replay-first-protected-release-bytes",
+        "add-exact-protected-n-minus-two-lines-once-they-exist",
+        "run-quota-or-device-enospc-environment",
+      ],
+      evidence: expect.arrayContaining([
+        "TQ-608_MIGRATION_CERTIFICATION.json",
+        "packages/tasq-service/test/data-safety.test.ts",
+      ]),
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-607")).toMatchObject({
       id: "TQ-607",

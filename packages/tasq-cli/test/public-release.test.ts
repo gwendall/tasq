@@ -69,6 +69,17 @@ describe.skipIf(target === null)("Tasq public release envelope", () => {
       version: "0.1.0",
       source: { commit: sourceCommit },
       target,
+      compatibility: {
+        directUpgradeFromMinorLines: 2,
+        storeFormat: {
+          contractVersion: "tasq.store-format.v1",
+          current: 25,
+          readable: { min: 25, max: 25 },
+          writable: { min: 25, max: 25 },
+          directlyMigratable: { min: 0, max: 25 },
+        },
+        oldestDirectlyTestedSourceRelease: null,
+      },
       provenance: { localArtifactsPublishable: false },
     });
     expect(JSON.stringify(release)).not.toMatch(/generatedAt|createdAt|timestamp/);

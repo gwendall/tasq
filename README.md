@@ -21,6 +21,7 @@ evidence justifies completion?
 | Installing Tasq into Codex or Claude Code | [AGENT_INTEGRATIONS.md](AGENT_INTEGRATIONS.md) |
 | Integrating Core, MCP, an extension or connector | The matching package README, then [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
+| Backing up, upgrading or transferring a ledger | [DATA_SAFETY.md](DATA_SAFETY.md) |
 | Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
 
 The compact [documentation map](DOCS.md) separates active product truth,
@@ -140,6 +141,14 @@ uninstall. The complete install/upgrade/restore contract and its executable
 clean-room evidence are documented in
 [TQ-604_LIFECYCLE_CERTIFICATION.md](TQ-604_LIFECYCLE_CERTIFICATION.md). No
 download command is advertised until protected artifacts actually exist.
+
+Tasq declares its executable store compatibility through `tasq version
+--json`. Existing-store upgrades create a verified private snapshot and durable
+receipt before schema mutation, fail closed on newer or ambiguous history, and
+run post-migration doctor checks. `tasq export` and create-only `tasq import`
+provide bounded workspace portability without being confused with recovery
+backups. Exact recovery and rollback rules are in
+[DATA_SAFETY.md](DATA_SAFETY.md).
 
 The Local Console source exposes bounded, versioned JSON read models at
 `/api/console/overview`, `/api/console/health` and

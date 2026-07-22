@@ -135,6 +135,22 @@ describe("CLI meta commands", () => {
     expect(r.stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
+  it("version --json declares the executable store compatibility envelope", async () => {
+    const home = await freshHome();
+    const result = JSON.parse((await runOk(home, ["version", "--json"])).stdout);
+    expect(result).toMatchObject({
+      contractVersion: "tasq.executable-version.v1",
+      storeFormat: {
+        contractVersion: "tasq.store-format.v1",
+        current: 25,
+        readable: { min: 25, max: 25 },
+        writable: { min: 25, max: 25 },
+        directlyMigratable: { min: 0, max: 25 },
+        irreversible: true,
+      },
+    });
+  });
+
   it("help prints usage", async () => {
     const home = await freshHome();
     const r = await runOk(home, ["help"]);
@@ -2043,6 +2059,10 @@ describe("durability", () => {
     const result = await runOk(home, ["doctor", "--json"]);
     const report = JSON.parse(result.stdout);
     expect(report.ok).toBe(true);
+    expect(report.storeFormat).toMatchObject({
+      contractVersion: "tasq.store-format.v1",
+      current: 25,
+    });
     expect(report.store.sqliteIntegrity).toBe("ok");
     expect(report.journal.databaseOnly).toEqual([]);
     expect(report.journal.databaseMaxSequence).toBe(1);
@@ -2305,9 +2325,54 @@ describe("durability", () => {
     const result = JSON.parse(r.stdout);
     expect(result.ok).toBe(true);
     expect(result.target).toBe(target);
+    expect(result.contractVersion).toBe("tasq.backup-receipt.v1");
+    expect(result.sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(result.verified).toBe(true);
+    expect(result.storeFormat).toBe(25);
     expect(result.sizeBytes).toBeGreaterThan(0);
     expect(result.eventCursor).toBe(2);
     expect(existsSync(target)).toBe(true);
+  });
+
+  it("exports and imports one workspace without consulting the live journal", async () => {
+    const home = await freshHome();
+    await runOk(home, ["init"]);
+    await runOk(home, ["add", "portable from CLI"]);
+    const exportPath = join(home, "portable.json");
+    const exported = JSON.parse((await runOk(home, ["export", exportPath, "--json"])).stdout);
+    expect(exported).toMatchObject({
+      contractVersion: "tasq.portable-export-result.v1",
+      ok: true,
+      target: exportPath,
+      workspaceId: "gwendall",
+      storeFormat: 25,
+    });
+    expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
+
+    const importedPath = join(home, "portable-import.sqlite");
+    const imported = JSON.parse((await runOk(home, [
+      "import", exportPath, "--db", importedPath, "--json",
+    ])).stdout);
+    expect(imported).toMatchObject({
+      contractVersion: "tasq.portable-import-result.v1",
+      ok: true,
+      target: importedPath,
+      workspaceId: "gwendall",
+      verification: { ok: true, eventCursor: 1 },
+      next: {
+        doctor: ["env", `TASQ_DB_URL=file:${importedPath}`, "tasq", "doctor", "--tenant", "gwendall", "--actor", "<stable-label>", "--json"],
+      },
+    });
+    expect(statSync(importedPath).mode & 0o777).toBe(0o600);
+
+    const doctor = await runCli(home, ["doctor", "--tenant", "gwendall", "--actor", "test", "--json"], {
+      env: { TASQ_DB_URL: `file:${importedPath}` },
+    });
+    expect(doctor.exitCode, doctor.stderr).toBe(0);
+    expect(JSON.parse(doctor.stdout)).toMatchObject({
+      ok: true,
+      journal: { checked: false, path: null, databaseMaxSequence: 1 },
+    });
   });
 
   it("restores a snapshot into an isolated home and verifies the journal cursor", async () => {

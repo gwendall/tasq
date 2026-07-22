@@ -9,6 +9,16 @@ interface CliArtifact {
   entrypoint: string;
   nativePackages: Array<{ package: string; target: string; sha256: string }>;
   bundledComponents: Array<{ name: string; version: string; license: string; purl: string }>;
+  storeFormat: {
+    contractVersion: "tasq.store-format.v1";
+    current: number;
+    readable: { min: number; max: number };
+    writable: { min: number; max: number };
+    directlyMigratable: { min: number; max: number };
+    oldestDirectlyTestedSource: string;
+    irreversible: boolean;
+    rollback: string;
+  };
 }
 
 interface ReleaseInputs {
@@ -162,6 +172,8 @@ async function main(): Promise<void> {
     compatibility: {
       directUpgradeFromMinorLines: 2,
       rollback: "restore-matching-verified-snapshot-and-binary",
+      storeFormat: artifact.storeFormat,
+      oldestDirectlyTestedSourceRelease: null,
     },
     files: [
       { name: archiveName, mediaType: "application/gzip", sha256: await sha256File(archivePath) },

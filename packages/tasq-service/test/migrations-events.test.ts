@@ -24,6 +24,7 @@ import {
   getEvent,
   recordEvent,
   diagnoseStore,
+  StoreCompatibilityError,
   type Event,
 } from "../src/index.js";
 
@@ -341,7 +342,7 @@ describe("Migration runner", () => {
     }
   });
 
-  it("backfills primary and Mercury secondary routes for pre-0010 observations", async () => {
+  it("fails closed on a non-contiguous migration history instead of guessing", async () => {
     const { client, close } = await freshDb();
     try {
       await runMigrations(client);
@@ -371,15 +372,11 @@ describe("Migration runner", () => {
         1000, 1100, 'watcher:mercury', 'unverified', '{}'
       )`);
 
-      const result = await runMigrations(client);
-      expect(result.applied).toEqual(["0010_reconciliation.sql"]);
-      const routes = await client.execute(
-        "SELECT route_key FROM observation_route ORDER BY route_key",
+      await expect(runMigrations(client)).rejects.toBeInstanceOf(StoreCompatibilityError);
+      const migration = await client.execute(
+        "SELECT name FROM _migration WHERE name='0010_reconciliation.sql'",
       );
-      expect(routes.rows.map((row) => row["route_key"])).toEqual([
-        '["mercury.transaction","mercury:kami","tx-1"]',
-        '["mercury.transaction.match","mercury:kami","outgoing","USD",10000]',
-      ]);
+      expect(migration.rows).toHaveLength(0);
     } finally {
       await close();
     }

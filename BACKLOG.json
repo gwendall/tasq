@@ -129,12 +129,12 @@
     },
     {
       "id": "TQ-608",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
-      "remaining": ["implement-schema-compatibility-envelope", "implement-verified-migration-receipts", "add-portable-export-and-recovery-docs", "certify-hostile-n-minus-two-upgrades"],
-      "evidence": ["TQ-608_MIGRATION_AND_DATA_SAFETY.md"]
+      "remaining": ["replay-first-protected-release-bytes", "add-exact-protected-n-minus-two-lines-once-they-exist", "run-quota-or-device-enospc-environment"],
+      "evidence": ["TQ-608_MIGRATION_AND_DATA_SAFETY.md", "TQ-608_MIGRATION_CERTIFICATION.json", "DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts"]
     },
     {
       "id": "TQ-607",

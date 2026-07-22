@@ -122,6 +122,16 @@
     },
     "minimumDirectUpgradeMinorLines": 2,
     "downgrade": "restore-matching-verified-snapshot-and-binary",
+    "storeFormat": {
+      "contractVersion": "tasq.store-format.v1",
+      "current": 25,
+      "readable": { "min": 25, "max": 25 },
+      "writable": { "min": 25, "max": 25 },
+      "directlyMigratable": { "min": 0, "max": 25 },
+      "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
+      "irreversible": true,
+      "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
+    },
     "initialPackageRuntime": "bun>=1.3",
     "nodeSupport": "not-certified"
   },
@@ -158,6 +168,8 @@
     "candidate_targets_clean_room_certified"
   ],
   "externalPublicationGateStatus": {
+    "data_safety_source_candidate": true,
+    "data_safety_published_byte_replay": false,
     "private_multi_app_dogfood_accepted": false,
     "canonical_repository_control_verified": true,
     "public_source_launch_authorized": true,

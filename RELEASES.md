@@ -8,6 +8,12 @@ GitHub Actions workflows. Each release publishes SHA-256 checksums, signatures
 or attestations, CycloneDX SBOMs, SLSA-compatible provenance, compatibility
 metadata, migration/rollback instructions and clean-room evidence.
 
+Every CLI artifact and release manifest declares `tasq.store-format.v1`.
+Existing-store migration creates a verified pre-migration snapshot and durable
+receipt, while an unsupported newer store fails before mutation. Operator
+backup, rollback and portable create-only import are documented in
+`DATA_SAFETY.md`.
+
 npm packages use trusted publishing with provenance. Long-lived maintainer
 tokens and locally built release artifacts are forbidden. Published-package support does
 not begin until TQ-607 records a private-dogfood `go`, TQ-603 publishes

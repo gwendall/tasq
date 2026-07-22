@@ -14,6 +14,7 @@ routes readers by purpose; it does not replace the authoritative documents.
 | Find current work | `BACKLOG.json` for machine order; `BACKLOG.md` for explanation |
 | Evaluate support | `PRODUCT_SURFACE_MATRIX.json` and `PUBLIC_RELEASE_POLICY.json` |
 | Report a security issue | `SECURITY.md` |
+| Back up, upgrade, restore or transfer data | `DATA_SAFETY.md` → `TQ-608_MIGRATION_AND_DATA_SAFETY.md` |
 
 ## Active product contracts
 
@@ -31,8 +32,9 @@ routes readers by purpose; it does not replace the authoritative documents.
   private product-learning program.
 - `TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md` — next Codex/Claude discovery,
   install, MCP/CLI and blind-agent contract.
-- `TQ-608_MIGRATION_AND_DATA_SAFETY.md` — next store compatibility, verified
-  migration receipt, recovery and portable-export contract.
+- `DATA_SAFETY.md` and `TQ-608_MIGRATION_AND_DATA_SAFETY.md` — implemented
+  store compatibility, verified receipts, recovery and portable export, plus
+  the remaining protected-release replay boundary.
 - `BACKLOG.md` and `BACKLOG.json` — ordered checkpoints and dependencies.
 - `OPEN_SOURCE_PRODUCTIZATION_SPEC.md`, `RELEASES.md` and
   `PUBLIC_RELEASE_POLICY.json` — public distribution gates.

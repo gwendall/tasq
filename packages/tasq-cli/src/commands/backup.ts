@@ -16,13 +16,14 @@
  * removing the WAL sidecars).
  */
 
-import { chmodSync, mkdirSync, readdirSync, statSync, unlinkSync } from "node:fs";
+import { chmodSync, mkdirSync, readFileSync, readdirSync, statSync, unlinkSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { openRuntime } from "../runtime.js";
 import { color, printError, printInfo, printJson } from "../output/format.js";
 import type { ParsedArgs } from "../args.js";
 import { configDir } from "../config.js";
-import { verifyDatabaseFile } from "@tasq-internal/local-service";
+import { STORE_FORMAT_COMPATIBILITY, verifyDatabaseFile } from "@tasq-internal/local-service";
 
 export async function backupCmd(args: ParsedArgs): Promise<number> {
   const json = args.bool("json", "j");
@@ -55,20 +56,26 @@ export async function backupCmd(args: ParsedArgs): Promise<number> {
     chmodSync(target, 0o600);
 
     const sizeBytes = statSync(target).size;
+    const sha256 = createHash("sha256").update(readFileSync(target)).digest("hex");
     const rotated = rotate != null ? rotateBackups(rotate) : [];
 
     if (json) {
       printJson({
+        contractVersion: "tasq.backup-receipt.v1",
         ok: true,
         target,
         sizeBytes,
+        sha256,
         verified: true,
         eventCursor: verification.eventCursor,
+        storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+        rollbackRule: STORE_FORMAT_COMPATIBILITY.rollback,
         rotated,
       });
     } else {
       printInfo(color.green("✓") + ` backup written to ${target}`);
       printInfo(`  size: ${formatBytes(sizeBytes)}`);
+      printInfo(`  sha256: ${sha256}`);
       printInfo(`  event cursor: ${verification.eventCursor ?? "unavailable"}`);
       if (rotated.length > 0) {
         printInfo(`  rotated ${rotated.length} old snapshot(s)`);

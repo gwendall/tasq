@@ -105,6 +105,36 @@ that would duplicate domain data and break the existing raw-object interface.
 If an incompatible v2 is ever required, it must be opt-in through a new CLI
 surface before the v1 surface is retired.
 
+## Executable, backup and portability envelopes
+
+These additive operational surfaces are independently versioned:
+
+- `tasq version --json` returns `tasq.executable-version.v1` with `version` and
+  `storeFormat`. The latter is `tasq.store-format.v1` and declares `current`,
+  `readable`, `writable`, `directlyMigratable`,
+  `oldestDirectlyTestedSource`, `irreversible` and `rollback`.
+- `tasq backup ... --json` returns `tasq.backup-receipt.v1` with `ok`, `target`,
+  `sizeBytes`, lowercase SHA-256, `verified`, `eventCursor`, `storeFormat`,
+  `rollbackRule` and `rotated`.
+- `tasq export ... --json` returns `tasq.portable-export-result.v1` with the
+  target, workspace, format, bounded record/byte counts, digest, declared
+  omissions and an import argv. The file itself is
+  `tasq.portable-export.v1`.
+- `tasq import <export> --db <new-path> --json` returns
+  `tasq.portable-import-result.v1`, verification results and exact isolated
+  doctor/onboarding argv arrays. Import refuses an existing target and never
+  merges.
+- `tasq doctor --json` additively includes the executable `storeFormat`.
+
+When a JSON invocation opens an unsupported store, stdout contains
+`tasq.store-compatibility-problem.v1` and the process exits 3. Its code is one
+of `store_format_newer_than_executable`, `store_format_unrecognized`,
+`store_migration_history_partial` or `store_migration_checksum_drift`; it also
+contains `detectedFormat`, `supported`, `mutationPerformed: false` and
+`message`. A committed migration whose post-check failed instead returns
+`tasq.migration-safety-problem.v1`, the failed receipt summary and an explicit
+matching-snapshot restore plan, also with exit 3.
+
 ## Generic resource coordination
 
 `resource acquire|renew|release` returns `tasq.resource-operation.v1` with
