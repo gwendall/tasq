@@ -14,6 +14,8 @@ describe("TQ-321 zero-context behavioral harness", () => {
     expect(source).toContain('Claude Code-credentials');
     expect(source).toContain('cleanTemporaryHostConfig: true');
     expect(source).toContain('humanInterventions: 0');
+    expect(source).toContain('claudeInvokedTasqSkill');
+    expect(source).not.toContain('"claude", "--safe-mode"');
     expect(source).toContain('ledgerPreservedByteForByte');
     expect(source).toContain('staleAuthorityRejected');
     expect(source).toContain('resumedExclusiveCursor');

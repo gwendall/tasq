@@ -194,6 +194,23 @@ function finalClaudeResponse(transcript: string): string {
   return "";
 }
 
+function claudeInvokedTasqSkill(transcript: string): boolean {
+  for (const line of transcript.trim().split("\n")) {
+    try {
+      const event = JSON.parse(line);
+      if (event.type !== "assistant" || !Array.isArray(event.message?.content)) continue;
+      for (const item of event.message.content) {
+        if (item?.type !== "tool_use" || item.name !== "Skill") continue;
+        const skill = item.input?.skill ?? item.input?.name ?? item.input?.command;
+        if (typeof skill === "string" && /^(?:tasq|tasq:tasq)$/.test(skill)) return true;
+      }
+    } catch {
+      // Ignore malformed lines; the ledger assertions still fail closed.
+    }
+  }
+  return false;
+}
+
 async function runAgent(input: {
   host: HostEnvironment;
   cwd: string;
@@ -209,7 +226,7 @@ async function runAgent(input: {
         "--add-dir", input.tasqHome, "-C", input.cwd, "-o", finalPath, input.prompt,
       ]
     : [
-        "claude", "--safe-mode", "--setting-sources", "user", "--tools", "Bash,Skill",
+        "claude", "--setting-sources", "user", "--tools", "Bash,Skill",
         "--permission-mode", "bypassPermissions", "--no-session-persistence",
         "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}',
         "--output-format", "stream-json", "--verbose", "-p", input.prompt,
@@ -335,8 +352,8 @@ async function runHostTrial(input: {
 
   const invocation = input.host.id === "codex" ? "$tasq" : "/tasq:tasq";
   const phaseOnePrompt = [
-    `Use ${invocation}. The exact trusted Tasq executable is \`${input.entrypoint}\`; execute it directly without node or bun and never substitute a global binary or another checkout.`,
-    `Explicit trusted rendezvous: executable \`${input.entrypoint}\`; space \`${space}\`; actor \`${actor}\`; capabilities \`read,propose,coordinate\`.`,
+    `Use ${invocation}. This is a synthetic integration evaluation.`,
+    `Explicit Tasq rendezvous packet: executable \`${input.entrypoint}\` (directly executable without node or bun); space \`${space}\`; actor \`${actor}\`; capabilities \`read,propose,coordinate\`.`,
     "Start from the installed Tasq integration and read before any mutation.",
     `Create exactly one durable commitment titled \`${taskTitle}\`, claim it for 10m, and start one local attempt.`,
     "Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq.",
@@ -384,8 +401,8 @@ async function runHostTrial(input: {
   if (!lease) throw new Error(`Peer lease setup failed for ${input.host.id}`);
 
   const phaseTwoPrompt = [
-    `This is a fresh process restart. Use ${invocation}. The exact trusted Tasq executable remains \`${input.entrypoint}\`; execute it directly without node or bun and never substitute a global binary or another checkout.`,
-    `Explicit trusted rendezvous: executable \`${input.entrypoint}\`; space \`${space}\`; actor \`${actor}\`; capabilities \`read,propose,coordinate\`.`,
+    `This is a fresh process restart in the same synthetic integration evaluation. Use ${invocation}.`,
+    `Explicit Tasq rendezvous packet: executable \`${input.entrypoint}\` (directly executable without node or bun); space \`${space}\`; actor \`${actor}\`; capabilities \`read,propose,coordinate\`.`,
     `The persisted exclusive cursor from the previous process is \`${cursor}\`. Resume with event list after that exact sequence.`,
     `Locate the existing commitment \`${taskTitle}\` and its running attempt; do not create a replacement.`,
     `A peer temporarily holds \`${resourceKey}\`. Inspect live authority, observe contention, and never use the peer's lease or fence.`,
@@ -459,8 +476,7 @@ async function runHostTrial(input: {
     invokedInstalledIntegration: input.host.id === "codex"
       ? phaseOne.commands.some(({ command }) =>
           command.includes(`${input.host.configDirectory}/plugins/`) && command.includes("SKILL.md"))
-      : /"name"\s*:\s*"Skill"[\s\S]*tasq|tasq:tasq[\s\S]*"type"\s*:\s*"tool_use"/i
-          .test(phaseOne.stdout),
+      : claudeInvokedTasqSkill(phaseOne.stdout) && claudeInvokedTasqSkill(phaseTwo.stdout),
     readBeforeMutation: phaseOneRead !== -1 && phaseOneMutation !== -1 && phaseOneRead < phaseOneMutation,
     oneDurableCommitment: (commitments.json ?? []).filter((item: any) => item.title === taskTitle).length === 1,
     processOneLeftRunningAttempt: phaseOneInspection.json?.attempts?.length === 1 &&
