@@ -222,41 +222,41 @@ describe("TQ-601 product consumption design", () => {
       "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
-      "canonical_source_repository_is_private_until_explicit_launch_authorization",
-      "public_package_sources_are_canonical_but_not_yet_publicly_available",
+      "canonical_source_repository_is_public_alpha",
+      "public_package_sources_are_visible_but_not_yet_published",
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_built_but_not_deployed",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
-      "public_launch_requires_private_multi_app_dogfood_and_explicit_go_decision",
+      "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);
     }
   });
 
-  test("keeps the canonical source private until explicit launch authorization", () => {
+  test("keeps public source distinct from package publication", () => {
     expect(releasePolicy).toMatchObject({
-      status: "canonical-private-repository-not-published",
-      identity: { repositoryState: "private-canonical-unprotected-prelaunch" },
+      status: "public-alpha-source-not-published",
+      identity: { repositoryState: "public-alpha-source" },
       repositoryControls: {
-        enforcementState: "unavailable-on-private-repository-current-plan",
-        requiredPullRequest: false,
-        requiredChecks: [],
+        enforcementState: "active-public-repository",
+        requiredPullRequest: true,
+        requiredChecks: ["verify (macos-14)", "verify (ubuntu-latest)"],
         desiredRequiredChecks: ["verify (macos-14)", "verify (ubuntu-latest)"],
-        releaseTagsMutable: true,
+        releaseTagsMutable: false,
         releaseEnvironment: "release",
         releaseEnvironmentTagPolicyVerified: true,
-        privateVulnerabilityReporting: false,
+        privateVulnerabilityReporting: true,
       },
     });
     expect(releasePolicy.externalPublicationGateStatus).toMatchObject({
       private_multi_app_dogfood_accepted: false,
-      canonical_repository_control_verified: false,
-      public_source_launch_authorized: false,
+      canonical_repository_control_verified: true,
+      public_source_launch_authorized: true,
       npm_scope_control_verified: false,
       trusted_publishing_configured: false,
-      tag_protection_configured: false,
+      tag_protection_configured: true,
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_candidate_not_published");

@@ -28,6 +28,10 @@ routes readers by purpose; it does not replace the authoritative documents.
 
 - `TQ-607_PRIVATE_DOGFOOD_GATE.md` and `TQ-607_DOGFOOD_STATUS.json` — current
   private product-learning program.
+- `TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md` — next Codex/Claude discovery,
+  install, MCP/CLI and blind-agent contract.
+- `TQ-608_MIGRATION_AND_DATA_SAFETY.md` — next store compatibility, verified
+  migration receipt, recovery and portable-export contract.
 - `BACKLOG.md` and `BACKLOG.json` — ordered checkpoints and dependencies.
 - `OPEN_SOURCE_PRODUCTIZATION_SPEC.md`, `RELEASES.md` and
   `PUBLIC_RELEASE_POLICY.json` — public distribution gates.

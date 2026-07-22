@@ -18,10 +18,10 @@
         "mode": { "const": "source_build" },
         "published": { "const": false },
         "repository": { "type": "string", "format": "uri" },
-        "repositoryAccess": { "const": "authorized_private_prelaunch" },
+        "repositoryAccess": { "const": "public" },
         "preconditions": {
           "type": "array",
-          "const": ["authorized_repository_access"]
+          "const": []
         },
         "sourceRef": { "type": "string", "minLength": 1 },
         "sourceRefMutable": { "const": true },
@@ -67,7 +67,7 @@
       "required": ["path", "primaryAction"],
       "properties": {
         "path": { "const": "/docs/getting-started/" },
-        "primaryAction": { "const": "request_access_then_build" }
+        "primaryAction": { "const": "build_from_source" }
       }
     },
     "agent": {

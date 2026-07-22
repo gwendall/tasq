@@ -23,12 +23,12 @@ commands but gave a machine only product status. A machine could know that no
 release existed without knowing the safe next argv.
 
 The static site candidate now generates `tasq.public-adoption.v1` at
-`/adopt.json`. The canonical repository and this site remain private before
-launch, so the contract explicitly requires authorized repository access. It
+`/adopt.json`. The canonical repository is public, so the contract permits
+anonymous source acquisition. It
 includes:
 
-- the honest private-prelaunch access precondition, current distribution mode
-  and mutable-source warning;
+- the public repository access state, current distribution mode and
+  mutable-source warning;
 - exact Node, Bun and pnpm requirements from the root manifest;
 - source acquisition, dependency, verification and CLI-build argv arrays;
 - distinct working-directory placeholders;
@@ -74,7 +74,7 @@ repository or consults a device clock. The test itself uses no ambient clock.
 
 ## 4. What this proves
 
-- authorized repository consumers have a machine-actionable path before
+- public source consumers have a machine-actionable path before
   `tasq onboard`;
 - human and agent consumers converge after one explicit store/workspace handoff;
 - output/parameter metadata is sufficient for recipe selection;
@@ -86,18 +86,17 @@ repository or consults a device clock. The test itself uses no ambient clock.
 ## 5. What remains external
 
 The automated human-shell proxy proves that every documented step is complete
-and executable for an authorized repository consumer. It cannot prove that a
+and executable for a public source consumer. It cannot prove that a
 real unfamiliar person understands the language, notices the warnings or
 chooses correctly. That claim requires an independent blind human session with
 no maintainer assistance after public-source launch.
 
 The install also uses generated candidate bytes because TQ-603 has no published
-release. Final TQ-606 closure therefore requires all three:
+release. Final TQ-606 closure therefore requires both:
 
-1. explicit authorization of public-source launch;
-2. rerunning the journey from the first protected, attested release bytes;
-3. recording one independent unbriefed-human completion from the public
+1. rerunning the journey from the first protected, attested release bytes;
+2. recording one independent unbriefed-human completion from the public
    entrypoint, including interventions and failure points.
 
-Until all three exist, the machine certificate keeps `tq606Complete: false` and the
+Until both exist, the machine certificate keeps `tq606Complete: false` and the
 backlog uses an external-gate candidate status.

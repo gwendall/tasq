@@ -22,6 +22,11 @@ also read [CURRENT_STATE.md](CURRENT_STATE.md),
 `BACKLOG.json` is the machine-readable execution authority; planned status
 never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
 
+The next release-blocking implementation contracts are
+[TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md](TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md)
+and [TQ-608_MIGRATION_AND_DATA_SAFETY.md](TQ-608_MIGRATION_AND_DATA_SAFETY.md).
+Read the matching contract before changing host integrations or store format.
+
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
 `tasq onboard`; they do not reconstruct workflows from repository prose.

@@ -265,8 +265,8 @@
     "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
-    "canonical_source_repository_is_private_until_explicit_launch_authorization",
-    "public_package_sources_are_canonical_but_not_yet_publicly_available",
+    "canonical_source_repository_is_public_alpha",
+    "public_package_sources_are_visible_but_not_yet_published",
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",
@@ -278,7 +278,7 @@
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
-    "public_launch_requires_private_multi_app_dogfood_and_explicit_go_decision",
+    "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

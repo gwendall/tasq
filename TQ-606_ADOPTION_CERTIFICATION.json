@@ -1,11 +1,11 @@
 {
   "contractVersion": "tasq.public-adoption-certification.v1",
   "status": "candidate-certified-external-gates-pending",
-  "updatedAt": "2026-07-21",
+  "updatedAt": "2026-07-22",
   "repositoryAccess": {
-    "state": "private-prelaunch",
-    "requiredPrecondition": "authorized_repository_access",
-    "publicSourceLaunchAuthorized": false
+    "state": "public-alpha",
+    "requiredPrecondition": null,
+    "publicSourceLaunchAuthorized": true
   },
   "publicEntrypoints": {
     "human": "/docs/getting-started/",
@@ -34,7 +34,7 @@
   },
   "publishedArtifactEvidence": {
     "status": "not-run-no-public-release-exists",
-    "blockedBy": "TQ-603-public-source-launch-and-release"
+    "blockedBy": "TQ-603-first-protected-release"
   },
   "independentHumanEvidence": {
     "status": "not-run-automated-path-only",

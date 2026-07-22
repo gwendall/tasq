@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignored Next.js build and development caches"
+paths = ['''^apps/site/\.next/''']

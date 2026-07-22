@@ -4,7 +4,7 @@ test("homepage explains the product and the unpublished boundary", async ({ page
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("shared truth");
   await expect(page.getByRole("link", { name: "Build Tasq Local" })).toBeVisible();
-  await expect(page.getByText("Repository access is private before launch")).toBeVisible();
+  await expect(page.getByText("Public source alpha")).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Not built");
   await expect(page.locator("body")).not.toContainText("npm install @tasq/");
@@ -13,7 +13,7 @@ test("homepage explains the product and the unpublished boundary", async ({ page
 test("documentation gives a complete causal onboarding path", async ({ page }) => {
   await page.goto("/docs/getting-started/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("One ledger");
-  await expect(page.getByText("canonical repository is private before launch", { exact: false })).toBeVisible();
+  await expect(page.getByText("public alpha source", { exact: false })).toBeVisible();
   await expect(page.getByText("onboard", { exact: false }).first()).toBeVisible();
   await page.getByRole("link", { name: "For agents" }).click();
   await expect(page).toHaveURL(/\/docs\/agents\/?$/);
@@ -38,7 +38,7 @@ test("status page is traceable to machine contracts", async ({ page }) => {
     distribution: {
       mode: "source_build",
       published: false,
-      repositoryAccess: "authorized_private_prelaunch",
+      repositoryAccess: "public",
     },
   });
 });
