@@ -1,6 +1,6 @@
 # TQ-603 public release contract
 
-**Status:** artifact, package and standalone repository candidates implemented; external publication remains gated
+**Status:** candidates implemented; publication paused behind TQ-607 private dogfood and external gates
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
 ## Outcome
@@ -72,24 +72,26 @@ modules are absent.
 
 The pipeline must refuse a public release until all of these facts are true:
 
-1. the workflow runs from `gwendall/tasq`, not the private monorepo;
-2. the immutable tag exactly matches the declared version;
-3. the `@tasq` npm scope and every intended package are controlled;
-4. npm trusted publishing names the canonical repository, workflow and
+1. TQ-607 records a `go` decision after its minimum private dogfood evidence;
+2. the workflow runs from `gwendall/tasq`, not the private monorepo;
+3. the immutable tag exactly matches the declared version;
+4. the `@tasq` npm scope and every intended package are controlled;
+5. npm trusted publishing names the canonical repository, workflow and
    protected environment;
-5. macOS arm64 and Linux x64 clean-room jobs pass;
-6. package manifests and executable source contain no `@kami/*`, workspace
+6. macOS arm64 and Linux x64 clean-room jobs pass;
+7. package manifests and executable source contain no `@kami/*`, workspace
    dependency or private path (immutable historical SQL comments may retain an
    old internal identifier without creating a dependency);
-7. every shipped component has a declared license and SBOM identity.
-8. public source launch and repository visibility have been explicitly
+8. every shipped component has a declared license and SBOM identity;
+9. public source launch and repository visibility have been explicitly
    authorized.
 
 The canonical private repository and both clean-room CI targets now satisfy
-gates 1 and 5. The tag-scoped release environment exists, but GitHub branch and
+gates 2 and 6. The tag-scoped release environment exists, but GitHub branch and
 ruleset enforcement is unavailable for this private repository under the
 current plan. Repository protections must be restored and verified alongside
-gates 3, 4 and 8 before release. Those gates remain blocked until npm `@tasq`
-scope control, trusted publishing and explicit launch authorization are
-observed directly. Therefore this checkpoint does not claim that Tasq source
-or artifacts are public.
+gates 4, 5 and 9 before release. Gate 1 is the current product-learning
+priority. The remaining external gates stay blocked until npm `@tasq` scope
+control, trusted publishing and explicit launch authorization are observed
+directly. Therefore this checkpoint does not claim that Tasq source or
+artifacts are public.

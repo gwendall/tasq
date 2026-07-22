@@ -228,6 +228,7 @@ describe("TQ-601 product consumption design", () => {
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_built_but_not_deployed",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
+      "public_launch_requires_private_multi_app_dogfood_and_explicit_go_decision",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);
@@ -250,6 +251,7 @@ describe("TQ-601 product consumption design", () => {
       },
     });
     expect(releasePolicy.externalPublicationGateStatus).toMatchObject({
+      private_multi_app_dogfood_accepted: false,
       canonical_repository_control_verified: false,
       public_source_launch_authorized: false,
       npm_scope_control_verified: false,

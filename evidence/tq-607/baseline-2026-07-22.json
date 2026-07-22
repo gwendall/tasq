@@ -1,0 +1,51 @@
+{
+  "contractVersion": "tasq.private-dogfood-baseline-evidence.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "candidate": {
+    "version": "0.1.0-private.1",
+    "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+    "cliPackageSha256": "415b5892238c720ea9614853aac58e45182109b04d0abddd65909a27735a6cb3",
+    "artifactManifestSha256": "0821c598874010e489efe4a713d7f1a2fd4701526d817b79831ce23070535971",
+    "installation": "npm-install-from-local-candidate-tarball-with-optional-native-package",
+    "installedOutsideAdopterCheckouts": true
+  },
+  "liveLedgerBeforeActivation": {
+    "sqliteIntegrity": "ok",
+    "foreignKeyViolations": 0,
+    "permissionsRepaired": [
+      "database-0644-to-0600",
+      "journal-0644-to-0600"
+    ],
+    "databaseEventCursor": 220,
+    "journalParityBeforeCheckpoint": {
+      "state": "historical-review-completed",
+      "legacyUnsequencedEvents": 231,
+      "journalOnlyEvents": 11,
+      "databaseOnlyEvents": 0,
+      "directRepairPerformed": false
+    },
+    "journalParityAfterCheckpoint": {
+      "doctorOk": true,
+      "legacyUnsequencedEvents": 0,
+      "journalOnlyEvents": 0,
+      "databaseOnlyEvents": 0,
+      "archiveVerified": true,
+      "archiveSha256": "9705441077bcac4fbbc815ce5ba258a9797232fd0f16f039b3aa57ffd78e6451"
+    }
+  },
+  "backup": {
+    "method": "candidate-cli-vacuum-into",
+    "verified": true,
+    "sha256": "65d93fe7f62d76a1b99c1a22db81c98d978fc47fce807f5e0760e21bf0a763ab",
+    "sizeBytes": 1167360,
+    "eventCursor": 220,
+    "mode": "0600"
+  },
+  "isolatedRestore": {
+    "liveLedgerReplaced": false,
+    "sqliteIntegrity": "ok",
+    "foreignKeyViolations": 0,
+    "permissionIssues": [],
+    "restoredCommitmentCount": 82
+  }
+}

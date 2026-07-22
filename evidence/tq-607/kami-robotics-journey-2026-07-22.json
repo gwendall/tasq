@@ -1,0 +1,27 @@
+{
+  "contractVersion": "kami.robotics-tasq-dogfood-evidence.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+  "adopterCommit": "907d3a2365121d4fd462a72feb5ccfee66c267db",
+  "candidateInstallation": "clean-room-installed-tarball",
+  "tenant": "robotics/team-a",
+  "commitmentId": "019f89eb-28a8-7579-99fe-23768e4977ee",
+  "resourceKey": "robotics/cell-a/arm:left",
+  "independentActors": [
+    "agent:robotics-a",
+    "agent:robotics-b"
+  ],
+  "contentionCode": "contended",
+  "firstFence": 1,
+  "reclaimedFence": 2,
+  "staleFenceRejected": true,
+  "staleFenceActuatorCalls": 0,
+  "authorisedActuatorCalls": 1,
+  "receipt": {
+    "receiptVersion": "kami.robotics-hardware-faithful-receipt.v1",
+    "operationId": "arm-left-fence-2",
+    "simulatorAccepted": true
+  },
+  "evidenceId": "019f89eb-41af-7f98-a59c-1a5cac2e9a70",
+  "physicalRobotClaimed": false
+}

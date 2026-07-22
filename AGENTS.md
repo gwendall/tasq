@@ -11,6 +11,9 @@ git remote get-url origin
 git status --short --branch
 ```
 
+Then run `pnpm --silent agent:preflight --json` for one machine-readable repository,
+toolchain, worktree and active-backlog check.
+
 Read [DEVELOPMENT.md](DEVELOPMENT.md) first. Before changing a public contract,
 also read [CURRENT_STATE.md](CURRENT_STATE.md),
 [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
@@ -18,6 +21,10 @@ also read [CURRENT_STATE.md](CURRENT_STATE.md),
 [BACKLOG.md](BACKLOG.md), and [SECURITY.md](SECURITY.md).
 `BACKLOG.json` is the machine-readable execution authority; planned status
 never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
+
+Agents operating a Tasq ledger rather than modifying this repository use the
+short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
+`tasq onboard`; they do not reconstruct workflows from repository prose.
 
 ## Non-negotiable rules
 
@@ -52,7 +59,8 @@ pnpm test
 ```
 
 Use the focused package command while iterating, then run the root checks
-before handoff. Update the owning contract, human docs and machine truth in the
-same change when a public surface or support state changes. The repository map,
-change routing, test matrix and pull-request checklist are in
+before handoff, or execute the same gate with `pnpm verify:handoff`. Update the
+owning contract, human docs and machine truth in the same change when a public
+surface or support state changes. The repository map, change routing, test
+matrix and pull-request checklist are in
 [DEVELOPMENT.md](DEVELOPMENT.md).

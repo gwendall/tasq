@@ -1,0 +1,13 @@
+{
+  "contractVersion": "tasq.private-dogfood-friction-evidence.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "consumer": "interactive-agent-runtime",
+  "affectedVersion": "0.1.0-private.1",
+  "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+  "symptom": "Executing an extracted CLI tarball without installing its optional native LibSQL package failed on first storage access. A first Kami run succeeded only because its monorepo cwd accidentally supplied a compatible native package, while Denshin exposed the missing clean-room dependency.",
+  "risk": "none",
+  "dataOrAuthorityAffected": false,
+  "intervention": "Discarded both results as conformance evidence, installed the exact local candidate tarball with npm in a separate prefix, then reran both adopters from new isolated homes.",
+  "resolution": "All retained evidence uses the package-manager-installed candidate. Adopter docs require an explicit installed candidate executable; extracted bytes and ambient workspace dependencies do not qualify.",
+  "liveLedgerTouched": false
+}

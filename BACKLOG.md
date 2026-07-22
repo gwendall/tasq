@@ -8,9 +8,10 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-22
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** keep the canonical source private until an explicit
-launch decision, then finish the external first-release gate before expanding
-remote products or consumer claims.
+**Current priority:** keep the canonical source private and operate Tasq for at
+least 30 days across the personal life-pilot, Kami Robotics and an interactive
+agent runtime. Make the public-launch decision from that evidence before
+publishing packages or expanding remote products.
 
 ## What is already proven
 
@@ -36,36 +37,64 @@ clean-room tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and
 certified the candidate install/upgrade/restore/uninstall lifecycle on both
 native targets.
 
+The repository follows open-source engineering discipline while remaining
+private: standalone source authority, public/private package boundaries, DCO,
+reproducible setup, Linux/macOS CI, complete onboarding and versioned machine
+truth. TQ-607 separates that engineering readiness from product readiness. The
+next proof is repeated useful operation through three real adopters, not more
+repository-only architecture.
+
 ## Current gates
 
-- **TQ-603 — in progress, external registry gate.** `@tasq/schema` is not
-  published. This environment has no valid npm identity, so it cannot prove
-  ownership of the `@tasq` scope or configure npm trusted publishing. The next
-  authorized registry operator must verify scope/package control, bind the
-  canonical release workflow through npm OIDC, obtain an explicit public-launch
-  authorization for repository visibility, restore and verify repository
-  protections, then create the first immutable protected SemVer tag.
-  Workstation publishing, implicit visibility changes and long-lived npm
-  tokens are forbidden.
+- **TQ-607 — in progress, private multi-application dogfood.** The program must
+  span at least 30 calendar days, including at least 20 active personal-use
+  days, real Kami resource contention/fence/reclaim, and a Denshin-shaped or
+  equivalent interactive-runtime lifecycle. It also requires two retained-data
+  upgrades, backup/restore, replacement-agent recovery, cold onboarding and an
+  explicit `go`, `extend` or `no_go` decision. See
+  `TQ-607_PRIVATE_DOGFOOD_GATE.md` and `TQ-607_DOGFOOD_STATUS.json`. The
+  baseline, Kami and interactive-runtime journeys, backup/restore,
+  replacement-agent recovery, cold onboarding, support review and first
+  forward upgrade are retained. The personal track is at 1/20 active days and
+  1/3 required journeys; run `pnpm --silent dogfood status --json` for the
+  authoritative live counters and next action.
+- **TQ-603 — paused behind TQ-607, then external registry gate.**
+  `@tasq/schema` is not published. A TQ-607 `go` permits a separate launch
+  authorization; it does not grant it automatically. The authorized registry
+  operator must then verify scope/package control, bind the release workflow
+  through npm OIDC, restore repository protections and create the first
+  immutable protected SemVer tag. Workstation publishing, implicit visibility
+  changes and long-lived npm tokens remain forbidden.
 - **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
   passes from generated release assets on macOS arm64 and Linux x64. Final
   closure requires downloading the first protected release, verifying every
   GitHub attestation, and rerunning the same journey from those exact bytes.
 
-The absence of npm authentication blocks publication, not safe engineering on
-later Local milestones.
+During TQ-607, fixes discovered by real adopters are in scope. New Server/Cloud
+breadth is intentionally lower priority even when technically unblocked.
 
 ## Ordered checkpoints
 
-### 1. Finish Local distribution
+### 1. Prove private product value
 
-- **TQ-603:** obtain explicit source-launch authorization, restore repository
-  protections, verify npm scope control, configure repository-bound trusted
-  publishing, then publish and attest the first release.
+- **TQ-607:** run the three-consumer dogfood program, preserve real ledgers,
+  classify every material workaround, complete the cross-cutting recovery
+  drills and record the launch decision. The remaining execution is repeated
+  personal use on the retained ledger, the open/blocked/resumed/evidence path,
+  the no-direct-store-repair proof, one more forward upgrade and the minimum
+  calendar duration. Passing repository tests without repeated useful
+  operation is insufficient.
+
+### 2. Finish Local distribution
+
+- **TQ-603:** only after a TQ-607 `go`, obtain explicit source-launch
+  authorization, restore repository protections, verify npm scope control,
+  configure repository-bound trusted publishing, then publish and attest the
+  first release.
 - **TQ-604:** certify the downloaded release on both supported targets and
   record release URL, version, commit and digests in the lifecycle certificate.
 
-### 2. Complete the Local Console
+### 3. Complete the Local Console
 
 - **TQ-701 — done:** the audited inspector now shares bounded canonical JSON
   read models for active commitments, actors, claims, resources, waits,
@@ -91,7 +120,7 @@ later Local milestones.
   `TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; downloaded-byte confirmation waits
   for TQ-603.
 
-### 3. Explain and validate the public product
+### 4. Explain and validate the public product
 
 - **TQ-605 — done:** the distinct static Next.js + TypeScript + Tailwind +
   shadcn/ui product/docs app covers every current consumer journey, renders
@@ -111,7 +140,7 @@ later Local milestones.
   escaping/redaction, bounded keyset pages, responsive operation and HTTP
   read-only behavior; see `TQ-705_CONSOLE_BROWSER_CERTIFICATION.md`.
 
-### 4. Certify external interactive runtimes
+### 5. Certify external interactive runtimes
 
 - **TQ-320 — pending after TQ-603:** certify a Denshin-shaped interactive
   runtime consumer without adding Machine, terminal, conversation or provider
@@ -121,7 +150,11 @@ later Local milestones.
   existing public surfaces first. See
   `TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md`.
 
-### 5. Build self-hosted Tasq Server
+  TQ-607 first exercises this shape privately to discover friction. TQ-320 is
+  the stricter public-byte, package-independent conformance claim; private
+  dogfood does not complete it.
+
+### 6. Build self-hosted Tasq Server
 
 - **TQ-801 — done:** strict verified-identity/binding/grant/decision contracts,
   16 digest-bound actions and one pure injected-clock evaluator implement the
@@ -150,7 +183,7 @@ later Local milestones.
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
 
-### 6. Build managed Tasq Cloud
+### 7. Build managed Tasq Cloud
 
 - **TQ-901:** tenant control plane and isolated workspace provisioning.
 - **TQ-902:** same-origin hosted BFF sessions and authenticated Console.
@@ -175,6 +208,10 @@ Every checkpoint must have:
 6. a DCO-signed commit, reviewed PR, green Linux/macOS CI evidence and merge;
 7. external evidence when the claim concerns a registry, published artifact or
    deployed service.
+
+TQ-607 additionally requires retained real-use evidence: a synthetic eval may
+verify a fix but cannot replace the dogfood duration, adopter journeys or
+maintainer launch decision.
 
 ## Decisions still required
 

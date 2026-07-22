@@ -1,0 +1,40 @@
+{
+  "contractVersion": "tasq.private-dogfood-forward-upgrade-evidence.v1",
+  "observedAt": "2026-07-22T13:21:51Z",
+  "upgradeNumber": 1,
+  "from": {
+    "version": "0.1.0-private.1",
+    "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9"
+  },
+  "to": {
+    "version": "0.1.0-private.2",
+    "sourceCommit": "f6ee451f72237790c29ddc988b908be331777b6b",
+    "cliPackageSha256": "15944174a814a773418d0be1a911b43323460c48490ae3aeb2d72125b04133fb",
+    "artifactManifestSha256": "0821c598874010e489efe4a713d7f1a2fd4701526d817b79831ce23070535971",
+    "installation": "npm-install-from-local-candidate-tarball-with-optional-native-package"
+  },
+  "preUpgradeBackup": {
+    "verified": true,
+    "sha256": "c099deebb91c62a5a238a5cc66ae51024377138b588fc284287a7af7da8334ca",
+    "sizeBytes": 1167360,
+    "eventCursor": 220
+  },
+  "sameLedger": true,
+  "doctorAfterUpgrade": {
+    "ok": true,
+    "sqliteIntegrity": "ok",
+    "foreignKeyViolations": 0,
+    "journalOnlyEvents": 0,
+    "databaseOnlyEvents": 0,
+    "permissionIssues": []
+  },
+  "fixedJourney": {
+    "recipe": "audit.list",
+    "actorFilterPresent": false,
+    "boundedEventCount": 50,
+    "distinctActorsObserved": 3,
+    "maximumSequence": 220,
+    "workspace": "gwendall"
+  },
+  "privateProseIncluded": false
+}

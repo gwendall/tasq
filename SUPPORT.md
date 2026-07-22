@@ -2,7 +2,8 @@
 
 Tasq support claims are machine-readable in `PRODUCT_SURFACE_MATRIX.json`.
 Current source behavior includes Core embedding and Tasq Local; public
-installation is not supported until TQ-603 and TQ-604 pass.
+installation is not supported until TQ-607 records a `go` decision and TQ-603
+and TQ-604 pass.
 
 Use public issues for reproducible bugs and bounded feature proposals after
 the public repository opens. Use the private channel in `SECURITY.md` for

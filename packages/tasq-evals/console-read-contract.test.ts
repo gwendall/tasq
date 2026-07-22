@@ -99,10 +99,10 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
 
   test("keeps the public surface, route set, bounds and no-ambient-clock rule reviewable", () => {
     const schema = readFileSync(resolve(root, "packages/tasq-schema/src/console.ts"), "utf8");
-    const service = readFileSync(resolve(root, "packages/tasq-service/src/console-read-models.ts"), "utf8");
-    const publicCore = readFileSync(resolve(root, "packages/tasq-core/src/console-read-models.ts"), "utf8");
-    const liveService = readFileSync(resolve(root, "packages/tasq-service/src/console-live.ts"), "utf8");
-    const livePublicCore = readFileSync(resolve(root, "packages/tasq-core/src/console-live.ts"), "utf8");
+    const serviceCompatibility = readFileSync(resolve(root, "packages/tasq-service/src/console-read-models.ts"), "utf8");
+    const coreService = readFileSync(resolve(root, "packages/tasq-core/src/console-read-models.ts"), "utf8");
+    const liveServiceCompatibility = readFileSync(resolve(root, "packages/tasq-service/src/console-live.ts"), "utf8");
+    const liveCoreService = readFileSync(resolve(root, "packages/tasq-core/src/console-live.ts"), "utf8");
     const server = readFileSync(resolve(root, "packages/tasq-inspector/src/server.ts"), "utf8");
     const scheduler = readFileSync(resolve(root, "packages/tasq-inspector/src/scheduler.ts"), "utf8");
     const consoleRender = readFileSync(resolve(root, "packages/tasq-inspector/src/console-render.ts"), "utf8");
@@ -124,8 +124,10 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
       items: Array<{ id: string; status: string }>;
     };
 
-    expect(publicCore.trimEnd()).toBe(service.trimEnd());
-    expect(livePublicCore.trimEnd()).toBe(liveService.trimEnd());
+    expect(serviceCompatibility).toContain("Canonical implementation: packages/tasq-core/src/console-read-models.ts");
+    expect(serviceCompatibility).toContain('export * from "@tasq/core/internal/console-read-models"');
+    expect(liveServiceCompatibility).toContain("Canonical implementation: packages/tasq-core/src/console-live.ts");
+    expect(liveServiceCompatibility).toContain('export * from "@tasq/core/internal/console-live"');
     expect(schema).toContain("tasq.console-page.v1");
     expect(schema).toContain("tasq.console-event-batch.v1");
     expect(schema).toContain("tasq.console-support-bundle.v1");
@@ -133,16 +135,16 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     expect(schema).toContain("tasq.console-discovery.v1");
     expect(schema).toContain("operator_index_redaction");
     expect(schema).toContain("operator_stream_redaction");
-    expect(service).toContain("limit + 1");
-    expect(service).toContain("value.length > 2048");
+    expect(coreService).toContain("limit + 1");
+    expect(coreService).toContain("value.length > 2048");
     for (const index of ["work", "actors", "claims", "resources", "waits", "effects"]) {
       expect(migration).toContain(`idx_console_${index}`);
     }
     for (const forbidden of ["Date.now(", "new Date(", "systemClock", "performance.now("]) {
-      expect(service, forbidden).not.toContain(forbidden);
-      expect(publicCore, forbidden).not.toContain(forbidden);
-      expect(liveService, forbidden).not.toContain(forbidden);
-      expect(livePublicCore, forbidden).not.toContain(forbidden);
+      expect(coreService, forbidden).not.toContain(forbidden);
+      expect(serviceCompatibility, forbidden).not.toContain(forbidden);
+      expect(liveCoreService, forbidden).not.toContain(forbidden);
+      expect(liveServiceCompatibility, forbidden).not.toContain(forbidden);
       expect(scheduler, forbidden).not.toContain(forbidden);
       expect(consoleClient, forbidden).not.toContain(forbidden);
       expect(lifecycle, forbidden).not.toContain(forbidden);

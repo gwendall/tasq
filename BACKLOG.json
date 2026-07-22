@@ -1,11 +1,12 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-07-21",
+  "updatedAt": "2026-07-22",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "repositoryVisibility": "private_prelaunch",
   "statusVocabulary": [
     "done",
+    "in_progress_dogfood",
     "in_progress_external_gate",
     "candidate_done_publication_gate",
     "candidate_done_external_gate",
@@ -18,12 +19,18 @@
     "device_clock_is_read_only_by_systemClock_composition",
     "local_console_remains_loopback_and_read_only",
     "remote_surfaces_require_adr_004_guard",
+    "public_launch_requires_private_multi_app_dogfood",
     "published_claims_require_external_evidence"
   ],
   "externalGates": {
+    "privateMultiAppDogfood": {
+      "state": "in_progress",
+      "requiredEvidence": "TQ-607_DOGFOOD_STATUS.json",
+      "requiredDecision": "go_extend_or_no_go_at_or_after_minimum_duration"
+    },
     "publicSourceLaunch": {
-      "state": "private_prelaunch",
-      "requiredAction": "change repository visibility only after explicit launch authorization"
+      "state": "blocked_by_private_dogfood_decision",
+      "requiredAction": "after a TQ-607 go decision, change repository visibility only with separate explicit launch authorization"
     },
     "npmScopeControl": {
       "state": "unverified",
@@ -35,7 +42,7 @@
     },
     "firstProtectedRelease": {
       "state": "not_run",
-      "requires": ["publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
+      "requires": ["privateMultiAppDogfood", "publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
     },
     "publishedLifecycleCertification": {
       "state": "blocked_by_first_protected_release",
@@ -71,9 +78,9 @@
     }
   ],
   "executionOrder": [
+    "TQ-607",
     "TQ-603",
     "TQ-604",
-    "TQ-320",
     "TQ-701",
     "TQ-702",
     "TQ-703",
@@ -81,6 +88,7 @@
     "TQ-605",
     "TQ-606",
     "TQ-705",
+    "TQ-320",
     "TQ-801",
     "TQ-802",
     "TQ-803",
@@ -98,10 +106,19 @@
   ],
   "items": [
     {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
+      "outcome": "Operate Tasq privately for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a public-launch decision",
+      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
+      "evidence": ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
+    },
+    {
       "id": "TQ-603",
-      "status": "in_progress_external_gate",
+      "status": "pending",
       "milestone": "public-distribution",
-      "dependsOn": [],
+      "dependsOn": ["TQ-607"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
       "remaining": ["authorize-public-source-launch", "restore-and-verify-repository-protections", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
     },
@@ -112,14 +129,6 @@
       "dependsOn": ["TQ-603"],
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes",
       "evidence": ["TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/pull/5"]
-    },
-    {
-      "id": "TQ-320",
-      "status": "pending",
-      "milestone": "runtime-consumers",
-      "dependsOn": ["TQ-603", "TQ-304", "TQ-501"],
-      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
-      "evidence": ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"]
     },
     {
       "id": "TQ-701",
@@ -177,6 +186,14 @@
       "dependsOn": ["TQ-704"],
       "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification",
       "evidence": ["TQ-705_CONSOLE_BROWSER_CERTIFICATION.md", "TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"]
+    },
+    {
+      "id": "TQ-320",
+      "status": "pending",
+      "milestone": "runtime-consumers",
+      "dependsOn": ["TQ-603", "TQ-304", "TQ-501"],
+      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
+      "evidence": ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"]
     },
     {
       "id": "TQ-801",

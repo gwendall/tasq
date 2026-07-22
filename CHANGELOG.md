@@ -6,8 +6,29 @@ by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- Keep the autonomous onboarding `audit.list` recipe unfiltered across the
+  workspace. `event list --actor` is an event-producer filter, so the recipe
+  now omits it and preserves lossless multi-actor cursor resume.
+
 ### Added
 
+- Add a revision-guarded, atomic TQ-607 dogfood tracker for baselines, active
+  use, consumer journeys, resilience drills, friction, critical failures and
+  the final `go`, `extend` or `no_go` decision.
+- Add machine-readable coding-agent preflight, one-command handoff verification,
+  a documentation map, an executable onboarding eval and a safety-focused pull
+  request template.
+- Add a concise standalone `SKILL.md` that delegates exact agent workflows to
+  the versioned `tasq onboard` guide and remove installed-help references to
+  repository files that may not exist beside the executable.
+- Make `packages/tasq-core` the single neutral source authority, replace the
+  Local compatibility mirror with forwarding modules and build the public
+  `@tasq/core` candidate from its real source directory.
+- Add TQ-607, a machine-tracked private dogfood gate requiring at least 30
+  days across the personal life-pilot, Kami Robotics and an interactive agent
+  runtime before an explicit public-launch decision.
 - Add standalone human/agent development onboarding, audience routing and a
   local README for every workspace, plus an executable documentation contract
   that rejects broken links, stale checkout commands, missing ownership docs

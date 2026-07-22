@@ -236,7 +236,7 @@ ${color.bold("FLAGS")}
   --actor <name>                 override default actor
   --tenant <id>                  override default tenant (rare)
 
-${color.dim("Docs: CURRENT_STATE.md, SKILL.md, BACKLOG.md")}`);
+${color.dim("Agent start: tasq onboard --space <id> --actor <label> --json")}`);
 }
 
 export async function main(

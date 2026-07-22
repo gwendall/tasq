@@ -142,10 +142,14 @@ describe("UK-002 universal compatibility inventory", () => {
   });
 
   test("every currently emitted or reserved event type is frozen", () => {
-    const serviceDir = resolve(productRoot, "packages/tasq-service/src/service");
-    const serviceSource = readdirSync(serviceDir)
-      .filter((name) => name.endsWith(".ts"))
-      .map((name) => readFileSync(resolve(serviceDir, name), "utf8"))
+    const serviceDirs = [
+      resolve(productRoot, "packages/tasq-core/src/service"),
+      resolve(productRoot, "packages/tasq-service/src/service"),
+    ];
+    const serviceSource = serviceDirs
+      .flatMap((serviceDir) => readdirSync(serviceDir)
+        .filter((name) => name.endsWith(".ts"))
+        .map((name) => readFileSync(resolve(serviceDir, name), "utf8")))
       .join("\n");
     const literals = [...serviceSource.matchAll(/eventType:\s*"([a-z_]+)"/g)]
       .map((match) => match[1]!);

@@ -11,8 +11,10 @@ plane.
 
 This directory is canonical source, not a generated mirror. It was
 materialized during the completed standalone-repository cutover and all
-current changes land here first. Compatibility-only life planning and bundled
-provider types remain in private sibling packages.
+current neutral changes land only here. The private Local service imports Core
+and keeps exact forwarding modules solely for compatibility with its existing
+internal paths. Compatibility-only life planning and bundled provider types
+remain in private sibling packages.
 
 ```bash
 pnpm --filter @tasq/core typecheck

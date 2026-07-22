@@ -97,6 +97,7 @@ describe("standalone documentation contract", () => {
 
   test("root onboarding identifies the canonical repository and safe work loop", () => {
     const agents = read("AGENTS.md");
+    const skill = read("SKILL.md");
     const development = read("DEVELOPMENT.md");
     const contributing = read("CONTRIBUTING.md");
     const rootPackage = JSON.parse(read("package.json")) as {
@@ -109,6 +110,11 @@ describe("standalone documentation contract", () => {
     expect(agents).toContain("pnpm typecheck");
     expect(agents).toContain("pnpm test");
     expect(agents).toContain("Never publish packages");
+    expect(skill).toContain("tasq onboard --space <explicit-context-id> --actor <stable-label> --json");
+    expect(skill).toContain("Attempt success never completes");
+    expect(skill).toContain("Never read or write the live SQLite database directly");
+    expect(skill).not.toContain("@kami/");
+    expect(skill).not.toContain("/Users/");
     expect(development).toContain("Repository map and change routing");
     expect(development).toContain("Do not publish, tag, deploy");
     expect(contributing).toContain("pnpm docs:check");

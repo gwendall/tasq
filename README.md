@@ -17,9 +17,13 @@ evidence justifies completion?
 | Evaluating the product | This README, then [CURRENT_STATE.md](CURRENT_STATE.md) and [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md) |
 | Building from source | [DEVELOPMENT.md](DEVELOPMENT.md), then the root verification commands below |
 | A coding agent | [AGENTS.md](AGENTS.md), which routes into the same development contract |
+| An agent operating a Tasq ledger | [SKILL.md](SKILL.md), then `tasq onboard --space <id> --actor <label> --json` |
 | Integrating Core, MCP, an extension or connector | The matching package README, then [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
 | Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
+
+The compact [documentation map](DOCS.md) separates active product truth,
+contributor guidance and subsystem evidence.
 
 This standalone repository is the canonical source authority. References to a
 former `products/tasq` subtree describe export history only; current changes
@@ -57,6 +61,20 @@ visibility, npm publication and downloadable releases are not current product
 claims. Making the repository public requires a separate explicit launch
 decision; repository visibility alone would still not make a release.
 
+The current pre-launch priority is TQ-607: operate Tasq for at least 30 days
+across the personal life-pilot, Kami Robotics and an interactive agent runtime
+while keeping open-source engineering discipline. A recorded `go` decision
+from that evidence is required before TQ-603 publication work resumes; see
+[TQ-607_PRIVATE_DOGFOOD_GATE.md](TQ-607_PRIVATE_DOGFOOD_GATE.md).
+
+```bash
+pnpm --silent dogfood status --json
+```
+
+That command is the authoritative progress summary and gives the next
+evidence-producing action. Do not infer completion from repository tests or
+edit the dogfood status by hand.
+
 ## Public site and docs
 
 The separate static product/docs app lives in `apps/site`. It renders support
@@ -88,6 +106,8 @@ tasq onboard --space robotics/team-a --actor agent:planner --json
 
 The versioned response describes implemented capabilities and returns bounded
 argv recipes. Actor labels are attribution, not authentication or authority.
+The repository [SKILL.md](SKILL.md) is deliberately short and delegates exact
+syntax to that machine response so it cannot become a second command manual.
 
 ## Packages
 

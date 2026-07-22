@@ -218,7 +218,7 @@ describe("Markdown projection snapshot", () => {
   });
 
   it("status icon legend stays stable", async () => {
-    // Lock in the icon set the agent has been told to expect in SKILL.md
+    // Lock in the human projection icon set; agents consume canonical JSON.
     const { db, close } = await freshDb();
     try {
       const a = await createArea(db, { name: "X", slug: "x", importance: 3 });

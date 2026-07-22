@@ -10,6 +10,10 @@
     "node": ">=22"
   },
   "scripts": {
+    "agent:preflight": "bun scripts/agent-preflight.ts",
+    "dogfood": "bun scripts/dogfood.ts",
+    "verify:quick": "bun scripts/verify-handoff.ts --quick",
+    "verify:handoff": "bun scripts/verify-handoff.ts",
     "docs:check": "bun test packages/tasq-evals/documentation-contract.test.ts",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm --workspace-concurrency=1 -r --if-present test",

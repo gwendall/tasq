@@ -1,14 +1,2 @@
-import {
-  clockNow,
-  systemClock,
-  type Clock,
-} from "@tasq/schema";
-
-export interface ClockOptions {
-  clock?: Clock;
-}
-
-/** Service boundary for wall-clock reads. */
-export function serviceNow(options: ClockOptions = {}, explicit?: number): number {
-  return clockNow(options.clock ?? systemClock, explicit);
-}
+/** Forwarding compatibility module. Canonical implementation: packages/tasq-core/src/util/clock.ts. */
+export * from "@tasq/core/internal/util/clock";

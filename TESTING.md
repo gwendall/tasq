@@ -435,8 +435,9 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   installed Console inspection. The harness and clients contain no Tasq import
   or device-clock read; published bytes and a real blind human remain external.
 - eval `public-roadmap.test.ts` — freezes the canonical public execution order,
-  closed task states, dependency closure, npm/publication blockers, remote
-  non-claims and the authority/clock invariants every future checkpoint keeps.
+  closed task states, dependency closure, the machine-tracked TQ-607 dogfood
+  gate, npm/publication blockers, remote non-claims and the authority/clock
+  invariants every future checkpoint keeps.
 - eval `documentation-contract.test.ts` — verifies relative documentation
   links, workspace READMEs, canonical root commands, onboarding/release
   guardrails and public/private package metadata.
