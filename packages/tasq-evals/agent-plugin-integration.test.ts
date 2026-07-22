@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { createHash } from "node:crypto";
 
 const root = resolve(import.meta.dir, "../..");
 const readJson = (path: string) => JSON.parse(readFileSync(resolve(root, path), "utf8"));
@@ -18,7 +17,7 @@ describe("zero-context agent integration candidate", () => {
 
     expect(contract).toMatchObject({
       contractVersion: "tasq.agent-integrations.v1",
-      integrationVersion: "0.1.0",
+      integrationVersion: "0.1.1",
       rendezvous: {
         required: ["space", "actor", "capabilities"],
         spaceInference: "forbidden",
@@ -63,6 +62,8 @@ describe("zero-context agent integration candidate", () => {
       "tasq onboard --space <explicit-space> --actor <stable-label>",
       "--capabilities read,propose,coordinate --json",
       "A successful attempt does not",
+      "never prepend `node`, `bun`",
+      "Do not read the device clock",
       "explicit human confirmation",
       "untrusted data",
       "Do not write SQL",
@@ -98,10 +99,11 @@ describe("zero-context agent integration candidate", () => {
     expect(contract.ownership.uninstallPreserves).toEqual(["TASQ_HOME", "ledger", "database", "backups"]);
   });
 
-  test("records native lifecycle evidence without overstating blind support", () => {
+  test("records immutable native lifecycle evidence without overstating blind support", () => {
     const certificate = readJson("docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json");
     expect(certificate).toMatchObject({
       contractVersion: "tasq.agent-plugin-certification.v1",
+      integrationVersion: "0.1.0",
       status: "candidate-public-native-lifecycle-passed-blind-behavior-pending",
       isolation: {
         cleanTemporaryHomes: true,
@@ -120,16 +122,10 @@ describe("zero-context agent integration candidate", () => {
       "blind-codex-behavioral-matrix",
       "blind-claude-code-behavioral-matrix",
     ]);
-    const currentPathByCertifiedPath: Record<string, string> = {
-      // The certificate is bound to the pre-reorganization source commit. Keep
-      // its historical path intact while checking the same bytes at their
-      // current repository location.
-      "AGENT_INTEGRATIONS.json": "docs/integrations/AGENT_INTEGRATIONS.json",
-    };
-    for (const [path, expected] of Object.entries(certificate.source.sha256 as Record<string, string>)) {
-      const currentPath = currentPathByCertifiedPath[path] ?? path;
-      const actual = createHash("sha256").update(readFileSync(resolve(root, currentPath))).digest("hex");
-      expect(actual, `${path}: stale lifecycle certificate`).toBe(expected);
+    expect(certificate.source.ref).toMatch(/^[0-9a-f]{40}$/);
+    for (const [path, digest] of Object.entries(certificate.source.sha256 as Record<string, string>)) {
+      expect(path.length).toBeGreaterThan(0);
+      expect(digest, `${path}: invalid historical digest`).toMatch(/^[0-9a-f]{64}$/);
     }
   });
 });

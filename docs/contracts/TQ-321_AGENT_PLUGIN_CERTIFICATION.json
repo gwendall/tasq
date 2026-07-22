@@ -1,6 +1,7 @@
 {
   "contractVersion": "tasq.agent-plugin-certification.v1",
   "revision": 1,
+  "integrationVersion": "0.1.0",
   "status": "candidate-public-native-lifecycle-passed-blind-behavior-pending",
   "testedAt": "2026-07-22",
   "source": {

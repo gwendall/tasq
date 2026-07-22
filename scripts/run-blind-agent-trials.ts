@@ -105,7 +105,7 @@ interface TrialDraft {
 }
 
 const PRODUCT_ROOT = resolve(import.meta.dir, "..");
-const CLI_ARTIFACT = join(PRODUCT_ROOT, "packages", "tasq-cli", "dist");
+const CLI_ARTIFACT = join(PRODUCT_ROOT, "dist", "cli");
 const DEFAULT_EVIDENCE_ROOT = join(PRODUCT_ROOT, "evidence", "tq-315");
 const POINTER_PREFIX = "Coordination between actors here happens via tasq; discover with";
 

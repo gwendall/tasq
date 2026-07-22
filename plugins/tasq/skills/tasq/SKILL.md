@@ -30,7 +30,9 @@ Fetch the public acquisition manifest:
 Select one declared acquisition method. Execute its argv arrays exactly, in the
 declared working directory, and resolve only placeholders the manifest explicitly
 declares. Ask the user for any unresolved required placeholder. Do not reconstruct
-shell commands from prose.
+shell commands from prose. Treat a supplied Tasq executable or manifest entrypoint
+as directly executable; never prepend `node`, `bun`, or another runtime unless the
+selected argv recipe explicitly includes it.
 
 ## Start from machine discovery
 
@@ -64,6 +66,11 @@ their argv arrays without converting them to shell strings. Use
    involving an opaque shared resource.
 7. Leave high-stakes effects—money, important communications, signatures—to
    explicit human confirmation.
+
+Use Tasq's returned authority timestamps and lease disposition for coordination.
+Do not read the device clock to decide lease validity, construct idempotency keys,
+or embellish evidence; use stable semantic keys or random UUIDs when a unique
+caller key is required.
 
 ## Preserve the trust boundary
 
