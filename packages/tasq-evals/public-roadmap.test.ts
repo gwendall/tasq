@@ -31,16 +31,27 @@ const dogfood = JSON.parse(readFileSync(
   "utf8",
 )) as {
   contractVersion: string;
+  revision: number;
   status: string;
   startedAt: string;
   minimumCalendarDays: number;
   earliestDecisionAt: string;
+  baseline: {
+    candidateVersion: string;
+    sourceCommit: string;
+  };
   currentPhase: string;
   nextAction: string;
   phases: Array<{ id: string; state: string }>;
-  consumers: Array<{ id: string; state: string; evidence: unknown[] }>;
+  consumers: Array<{
+    id: string;
+    state: string;
+    recordedActiveUseDays?: number;
+    completedJourneys: Array<{ id: string }>;
+    evidence: unknown[];
+  }>;
   crossCuttingEvidence: Record<string, unknown>;
-  frictionLog: unknown[];
+  frictionLog: Array<{ id: string }>;
   unresolvedCriticalFailures: unknown[];
   publicLaunchDecision: string;
   tq607Complete: boolean;
@@ -136,13 +147,18 @@ describe("canonical Tasq roadmap", () => {
       milestone: "private-dogfood",
       dependsOn: ["TQ-304", "TQ-501", "TQ-504"],
       remaining: [
+        "complete-19-more-personal-active-use-days",
+        "complete-personal-open-blocked-resumed-evidence-journey",
+        "complete-personal-no-direct-store-repair-journey",
+        "complete-second-live-ledger-upgrade",
         "complete-minimum-duration",
-        "complete-three-consumer-journeys",
-        "complete-two-live-ledger-upgrades",
-        "complete-backup-restore-and-crash-recovery",
         "record-go-extend-or-no-go-decision",
       ],
-      evidence: ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json"],
+      evidence: [
+        "TQ-607_PRIVATE_DOGFOOD_GATE.md",
+        "TQ-607_DOGFOOD_STATUS.json",
+        "evidence/tq-607/README.md",
+      ],
     });
     expect(roadmap.items[1]).toMatchObject({
       id: "TQ-603",
@@ -207,7 +223,7 @@ describe("canonical Tasq roadmap", () => {
       startedAt: "2026-07-22",
       minimumCalendarDays: 30,
       earliestDecisionAt: "2026-08-21",
-      currentPhase: "first_complete_journeys",
+      currentPhase: "repeated_operation",
       publicLaunchDecision: "undecided",
       tq607Complete: false,
     });
@@ -218,8 +234,8 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(dogfood.phases).toEqual([
       { id: "baseline_and_activation", state: "complete" },
-      { id: "first_complete_journeys", state: "in_progress" },
-      { id: "repeated_operation", state: "pending" },
+      { id: "first_complete_journeys", state: "complete" },
+      { id: "repeated_operation", state: "in_progress" },
       { id: "resilience_drills", state: "pending" },
       { id: "decision_review", state: "blocked_until_2026-08-21" },
     ]);
@@ -229,18 +245,19 @@ describe("canonical Tasq roadmap", () => {
       "interactive-agent-runtime",
     ]);
     expect(dogfood.consumers.map(({ id, state }) => ({ id, state }))).toEqual([
-      { id: "personal-life-pilot", state: "not_started" },
+      { id: "personal-life-pilot", state: "in_progress" },
       { id: "kami-robotics", state: "complete" },
       { id: "interactive-agent-runtime", state: "complete" },
     ]);
-    expect(dogfood.consumers[0].recordedActiveUseDays).toBe(0);
+    expect(dogfood.consumers[0].recordedActiveUseDays).toBe(1);
+    expect(dogfood.consumers[0].completedJourneys).toHaveLength(1);
     expect(dogfood.consumers[1].completedJourneys).toHaveLength(4);
     expect(dogfood.consumers[2].completedJourneys).toHaveLength(4);
     expect(dogfood.crossCuttingEvidence).toMatchObject({
       requiredForwardUpgradeDrills: 2,
-      completedForwardUpgradeDrills: 0,
+      completedForwardUpgradeDrills: 1,
       backupRestoreCompleted: true,
-      replacementActorRecoveryCompleted: false,
+      replacementActorRecoveryCompleted: true,
       coldAgentOnboardingCompleted: true,
       supportBundleReviewCompleted: true,
     });

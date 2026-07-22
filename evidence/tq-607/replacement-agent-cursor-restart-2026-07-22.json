@@ -1,0 +1,37 @@
+{
+  "contractVersion": "tasq.replacement-agent-cursor-restart-evidence.v1",
+  "observedAt": "2026-07-22T13:25:24Z",
+  "candidateVersion": "0.1.0-private.2",
+  "sourceCommit": "f6ee451f72237790c29ddc988b908be331777b6b",
+  "replacementActor": "claude-code:replacement",
+  "persistedCursor": {
+    "afterEventSequence": 220,
+    "source": "verified baseline backup evidence"
+  },
+  "delta": {
+    "count": 4,
+    "sequences": [
+      221,
+      222,
+      223,
+      224
+    ],
+    "eventTypes": [
+      "claim_acquired",
+      "started",
+      "evidence_added",
+      "completed"
+    ],
+    "distinctCommitments": 1
+  },
+  "inspection": {
+    "commitmentId": "019e91d9-d392-7e9a-93f1-8d841c9d5cda",
+    "status": "done",
+    "evidenceCount": 1,
+    "completionRecordCount": 1,
+    "resumeAfterEventSequence": 224
+  },
+  "fullPrivateStateDumped": false,
+  "directSql": false,
+  "privateCommitmentProseIncluded": false
+}

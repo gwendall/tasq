@@ -62,6 +62,14 @@ backup/restore, crash recovery, cold onboarding and an explicit maintainer
 `go`, `extend` or `no_go` decision. Repository quality remains public-grade;
 repository visibility and package publication remain blocked during the gate.
 
+The retained baseline and isolated restore are verified. Kami and the
+interactive runtime have completed every required journey; cold onboarding,
+support review and replacement-agent cursor recovery also pass. The personal
+track has one real active-use day and one of three journeys, and one of two
+same-ledger forward upgrades is complete. No critical failure is open. These
+figures are a 2026-07-22 checkpoint only; `TQ-607_DOGFOOD_STATUS.json` and
+`pnpm --silent dogfood status --json` are the authoritative current state.
+
 The Local release lifecycle now exists as a certified candidate. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching

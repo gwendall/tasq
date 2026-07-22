@@ -52,7 +52,12 @@ repository-only architecture.
   equivalent interactive-runtime lifecycle. It also requires two retained-data
   upgrades, backup/restore, replacement-agent recovery, cold onboarding and an
   explicit `go`, `extend` or `no_go` decision. See
-  `TQ-607_PRIVATE_DOGFOOD_GATE.md` and `TQ-607_DOGFOOD_STATUS.json`.
+  `TQ-607_PRIVATE_DOGFOOD_GATE.md` and `TQ-607_DOGFOOD_STATUS.json`. The
+  baseline, Kami and interactive-runtime journeys, backup/restore,
+  replacement-agent recovery, cold onboarding, support review and first
+  forward upgrade are retained. The personal track is at 1/20 active days and
+  1/3 required journeys; run `pnpm --silent dogfood status --json` for the
+  authoritative live counters and next action.
 - **TQ-603 — paused behind TQ-607, then external registry gate.**
   `@tasq/schema` is not published. A TQ-607 `go` permits a separate launch
   authorization; it does not grant it automatically. The authorized registry
@@ -74,8 +79,11 @@ breadth is intentionally lower priority even when technically unblocked.
 
 - **TQ-607:** run the three-consumer dogfood program, preserve real ledgers,
   classify every material workaround, complete the cross-cutting recovery
-  drills and record the launch decision. Passing repository tests without
-  repeated useful operation is insufficient.
+  drills and record the launch decision. The remaining execution is repeated
+  personal use on the retained ledger, the open/blocked/resumed/evidence path,
+  the no-direct-store-repair proof, one more forward upgrade and the minimum
+  calendar duration. Passing repository tests without repeated useful
+  operation is insufficient.
 
 ### 2. Finish Local distribution
 

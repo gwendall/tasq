@@ -111,8 +111,8 @@
       "milestone": "private-dogfood",
       "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
       "outcome": "Operate Tasq privately for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a public-launch decision",
-      "remaining": ["complete-minimum-duration", "complete-three-consumer-journeys", "complete-two-live-ledger-upgrades", "complete-backup-restore-and-crash-recovery", "record-go-extend-or-no-go-decision"],
-      "evidence": ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json"]
+      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
+      "evidence": ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
     },
     {
       "id": "TQ-603",

@@ -20,3 +20,6 @@ cursor and bounded observable results.
 | `journal-checkpoint-2026-07-22.json` | audited legacy parity finding and preserved forensic checkpoint |
 | `cold-agent-onboarding-2026-07-22.json` | clean repository preflight from documented entrypoints |
 | `support-bundle-review-2026-07-22.json` | bounded review of redaction, completeness and preview-only download |
+| `forward-upgrade-01-2026-07-22.json` | same-ledger upgrade to the first dogfood fix and multi-actor audit proof |
+| `personal-use-day-01-2026-07-22.json` | first real live-ledger decision: reconcile a stale shipped commitment with source evidence |
+| `replacement-agent-cursor-restart-2026-07-22.json` | replacement actor resumes one real commitment from the persisted baseline cursor |

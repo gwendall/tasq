@@ -67,6 +67,14 @@ while keeping open-source engineering discipline. A recorded `go` decision
 from that evidence is required before TQ-603 publication work resumes; see
 [TQ-607_PRIVATE_DOGFOOD_GATE.md](TQ-607_PRIVATE_DOGFOOD_GATE.md).
 
+```bash
+pnpm --silent dogfood status --json
+```
+
+That command is the authoritative progress summary and gives the next
+evidence-producing action. Do not infer completion from repository tests or
+edit the dogfood status by hand.
+
 ## Public site and docs
 
 The separate static product/docs app lives in `apps/site`. It renders support
