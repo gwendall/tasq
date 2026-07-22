@@ -1,12 +1,54 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { copyFileSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 const root = resolve(import.meta.dir, "../..");
 const temporary = mkdtempSync(join(tmpdir(), "tasq-dogfood-operations-"));
 const statusPath = join(temporary, "status.json");
-copyFileSync(resolve(root, "TQ-607_DOGFOOD_STATUS.json"), statusPath);
+const fixture = JSON.parse(readFileSync(resolve(root, "TQ-607_DOGFOOD_STATUS.json"), "utf8"));
+fixture.revision = 1;
+fixture.status = "program-open-evidence-pending";
+fixture.earliestDecisionAt = fixture.initialEarliestDecisionAt;
+fixture.baseline = null;
+fixture.currentPhase = "baseline_and_activation";
+fixture.nextAction = "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.";
+fixture.phases = [
+  { id: "baseline_and_activation", state: "in_progress" },
+  { id: "first_complete_journeys", state: "pending" },
+  { id: "repeated_operation", state: "pending" },
+  { id: "resilience_drills", state: "pending" },
+  { id: "decision_review", state: `blocked_until_${fixture.initialEarliestDecisionAt}` },
+];
+for (const consumer of fixture.consumers) {
+  consumer.state = "not_started";
+  consumer.completedJourneys = [];
+  consumer.evidence = [];
+  if (consumer.id === "personal-life-pilot") {
+    consumer.activeUseDates = [];
+    consumer.recordedActiveUseDays = 0;
+  }
+}
+Object.assign(fixture.crossCuttingEvidence, {
+  completedForwardUpgradeDrills: 0,
+  forwardUpgradeEvidence: [],
+  backupRestoreCompleted: false,
+  backupRestoreEvidence: [],
+  replacementActorRecoveryCompleted: false,
+  replacementActorRecoveryEvidence: [],
+  coldAgentOnboardingCompleted: false,
+  coldAgentOnboardingEvidence: [],
+  supportBundleReviewCompleted: false,
+  supportBundleReviewEvidence: [],
+});
+fixture.frictionLog = [];
+fixture.unresolvedCriticalFailures = [];
+fixture.resolvedCriticalFailures = [];
+fixture.audit = [];
+fixture.publicLaunchDecision = "undecided";
+fixture.decisionRecord = null;
+fixture.tq607Complete = false;
+writeFileSync(statusPath, `${JSON.stringify(fixture, null, 2)}\n`, "utf8");
 
 afterAll(() => rmSync(temporary, { recursive: true, force: true }));
 

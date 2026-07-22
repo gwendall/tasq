@@ -203,20 +203,22 @@ describe("canonical Tasq roadmap", () => {
   test("makes dogfood a time-bounded three-consumer product gate, not prose", () => {
     expect(dogfood).toMatchObject({
       contractVersion: "tasq.private-dogfood.v1",
-      revision: 1,
       status: "program-open-evidence-pending",
       startedAt: "2026-07-22",
       minimumCalendarDays: 30,
       earliestDecisionAt: "2026-08-21",
-      currentPhase: "baseline_and_activation",
-      nextAction:
-        "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.",
+      currentPhase: "first_complete_journeys",
       publicLaunchDecision: "undecided",
       tq607Complete: false,
     });
+    expect(dogfood.revision).toBeGreaterThan(1);
+    expect(dogfood.baseline).toMatchObject({
+      candidateVersion: "0.1.0-private.1",
+      sourceCommit: "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+    });
     expect(dogfood.phases).toEqual([
-      { id: "baseline_and_activation", state: "in_progress" },
-      { id: "first_complete_journeys", state: "pending" },
+      { id: "baseline_and_activation", state: "complete" },
+      { id: "first_complete_journeys", state: "in_progress" },
       { id: "repeated_operation", state: "pending" },
       { id: "resilience_drills", state: "pending" },
       { id: "decision_review", state: "blocked_until_2026-08-21" },
@@ -226,19 +228,23 @@ describe("canonical Tasq roadmap", () => {
       "kami-robotics",
       "interactive-agent-runtime",
     ]);
-    for (const consumer of dogfood.consumers) {
-      expect(consumer.state, consumer.id).toBe("not_started");
-      expect(consumer.evidence, consumer.id).toEqual([]);
-    }
+    expect(dogfood.consumers.map(({ id, state }) => ({ id, state }))).toEqual([
+      { id: "personal-life-pilot", state: "not_started" },
+      { id: "kami-robotics", state: "complete" },
+      { id: "interactive-agent-runtime", state: "complete" },
+    ]);
+    expect(dogfood.consumers[0].recordedActiveUseDays).toBe(0);
+    expect(dogfood.consumers[1].completedJourneys).toHaveLength(4);
+    expect(dogfood.consumers[2].completedJourneys).toHaveLength(4);
     expect(dogfood.crossCuttingEvidence).toMatchObject({
       requiredForwardUpgradeDrills: 2,
       completedForwardUpgradeDrills: 0,
-      backupRestoreCompleted: false,
+      backupRestoreCompleted: true,
       replacementActorRecoveryCompleted: false,
-      coldAgentOnboardingCompleted: false,
-      supportBundleReviewCompleted: false,
+      coldAgentOnboardingCompleted: true,
+      supportBundleReviewCompleted: true,
     });
-    expect(dogfood.frictionLog).toEqual([]);
+    expect(dogfood.frictionLog.map(({ id }) => id)).toEqual(["TQ607-FR-001", "TQ607-FR-002"]);
     expect(dogfood.unresolvedCriticalFailures).toEqual([]);
   });
 });

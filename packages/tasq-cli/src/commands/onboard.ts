@@ -148,8 +148,10 @@ function recipes(
     },
     {
       id: "audit.list", version: 1, requiredCapability: "read", mutates: false,
-      description: "Read ordered audit events; use --after-sequence separately to resume from a cursor.",
-      argvTemplate: [executable, "event", "list", ...scope], parameters: [],
+      description: "Read the unfiltered ordered workspace audit stream; use --after-sequence separately to resume from a cursor. The event command reserves --actor for an optional event-producer filter, so this recipe intentionally omits it.",
+      argvTemplate: [
+        executable, "event", "list", "--tenant", workspaceId, "--json",
+      ], parameters: [],
       outputContract: "tasq.cli-json.v1/EventV1[]",
     },
     {

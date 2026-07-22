@@ -1,0 +1,22 @@
+{
+  "contractVersion": "tasq.cold-agent-onboarding-evidence.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "preflightContract": "tasq.agent-preflight.v1",
+  "preflightOk": true,
+  "canonicalRepository": true,
+  "origin": "https://github.com/gwendall/tasq.git",
+  "branch": "codex/private-dogfood-and-agent-dx",
+  "workingTreeCleanAtPreflight": true,
+  "activeBacklogItem": "TQ-607",
+  "readFirst": [
+    "AGENTS.md",
+    "DEVELOPMENT.md",
+    "CURRENT_STATE.md",
+    "BACKLOG.json"
+  ],
+  "quickVerification": [
+    "pnpm docs:check",
+    "pnpm typecheck"
+  ],
+  "undocumentedMaintainerKnowledgeRequired": false
+}

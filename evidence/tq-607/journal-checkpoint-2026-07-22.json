@@ -1,0 +1,37 @@
+{
+  "contractVersion": "tasq.private-dogfood-journal-checkpoint-evidence.v1",
+  "observedAt": "2026-07-22T13:11:01.895Z",
+  "candidateVersion": "0.1.0-private.1",
+  "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+  "before": {
+    "databaseEvents": 220,
+    "legacyUnsequencedEvents": 231,
+    "journalOnlyEvents": 11,
+    "databaseOnlyEvents": 0,
+    "journalOnlyEntityCount": 6,
+    "currentEntityMatches": 0,
+    "lifecycleHistogram": {
+      "created_and_deleted": 5,
+      "created_only": 1
+    }
+  },
+  "action": {
+    "command": "tasq journal checkpoint --accept-database",
+    "directSql": false,
+    "databaseCursor": 220,
+    "previousSegmentSha256": "9705441077bcac4fbbc815ce5ba258a9797232fd0f16f039b3aa57ffd78e6451",
+    "previousSegmentSizeBytes": 94908,
+    "archiveRetained": true
+  },
+  "after": {
+    "doctorOk": true,
+    "sqliteIntegrity": "ok",
+    "foreignKeyViolations": 0,
+    "legacyUnsequencedEvents": 0,
+    "journalOnlyEvents": 0,
+    "databaseOnlyEvents": 0,
+    "archiveVerified": true,
+    "permissionIssues": []
+  },
+  "privateProseIncluded": false
+}

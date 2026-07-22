@@ -1,0 +1,35 @@
+{
+  "contractVersion": "tasq.support-bundle-review-evidence.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "candidateVersion": "0.1.0-private.1",
+  "workspace": "gwendall",
+  "bundleContractVersion": "tasq.console-support-bundle.v1",
+  "source": {
+    "product": "tasq-local-console",
+    "authority": "canonical-local-ledger",
+    "readOnly": true
+  },
+  "redactionPolicy": "tasq.operator-support-redaction.v1",
+  "omitted": [
+    "event_payloads",
+    "provider_bodies",
+    "effect_requests",
+    "secret_bindings",
+    "record_metadata"
+  ],
+  "auditPayloadsRedacted": true,
+  "forbiddenFieldPathsFound": 0,
+  "directDownloadStatus": 400,
+  "boundedSections": {
+    "work": 36,
+    "actors": 7,
+    "claims": 0,
+    "resources": 0,
+    "waits": 0,
+    "effects": 0,
+    "audit": 100
+  },
+  "auditTruncatedWithContinuation": true,
+  "fullBundleCommitted": false,
+  "privateVisibleFieldsRetainedLocallyForReview": true
+}

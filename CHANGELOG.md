@@ -6,6 +6,12 @@ by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- Keep the autonomous onboarding `audit.list` recipe unfiltered across the
+  workspace. `event list --actor` is an event-producer filter, so the recipe
+  now omits it and preserves lossless multi-actor cursor resume.
+
 ### Added
 
 - Add a revision-guarded, atomic TQ-607 dogfood tracker for baselines, active

@@ -1,22 +1,28 @@
 {
   "contractVersion": "tasq.private-dogfood.v1",
-  "revision": 1,
+  "revision": 15,
   "status": "program-open-evidence-pending",
   "startedAt": "2026-07-22",
   "minimumCalendarDays": 30,
   "earliestDecisionAt": "2026-08-21",
   "initialEarliestDecisionAt": "2026-08-21",
-  "baseline": null,
-  "currentPhase": "baseline_and_activation",
-  "nextAction": "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.",
+  "baseline": {
+    "candidateVersion": "0.1.0-private.1",
+    "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+    "backupEvidence": "evidence/tq-607/baseline-2026-07-22.json",
+    "backupDigest": "sha256:65d93fe7f62d76a1b99c1a22db81c98d978fc47fce807f5e0760e21bf0a763ab",
+    "recordedAt": "2026-07-22T13:07:10Z"
+  },
+  "currentPhase": "first_complete_journeys",
+  "nextAction": "Complete and record the first required journey for every dogfood consumer.",
   "phases": [
     {
       "id": "baseline_and_activation",
-      "state": "in_progress"
+      "state": "complete"
     },
     {
       "id": "first_complete_journeys",
-      "state": "pending"
+      "state": "in_progress"
     },
     {
       "id": "repeated_operation",
@@ -48,46 +54,194 @@
     },
     {
       "id": "kami-robotics",
-      "state": "not_started",
+      "state": "complete",
       "requiredJourneys": [
         "two-actor-resource-contention",
         "final-io-fence-verification",
         "crash-expiry-reclaim",
         "observable-evidence"
       ],
-      "completedJourneys": [],
-      "evidence": []
+      "completedJourneys": [
+        {
+          "id": "crash-expiry-reclaim",
+          "evidence": "evidence/tq-607/kami-robotics-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:14Z"
+        },
+        {
+          "id": "final-io-fence-verification",
+          "evidence": "evidence/tq-607/kami-robotics-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:13Z"
+        },
+        {
+          "id": "observable-evidence",
+          "evidence": "evidence/tq-607/kami-robotics-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:15Z"
+        },
+        {
+          "id": "two-actor-resource-contention",
+          "evidence": "evidence/tq-607/kami-robotics-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:12Z"
+        }
+      ],
+      "evidence": [
+        "evidence/tq-607/kami-robotics-journey-2026-07-22.json"
+      ]
     },
     {
       "id": "interactive-agent-runtime",
-      "state": "not_started",
+      "state": "complete",
       "requiredJourneys": [
         "input-required-resume",
         "multiple-runs-one-conversation",
         "lost-response-recovery",
         "explicit-evidence-completion"
       ],
-      "completedJourneys": [],
-      "evidence": []
+      "completedJourneys": [
+        {
+          "id": "explicit-evidence-completion",
+          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:19Z"
+        },
+        {
+          "id": "input-required-resume",
+          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:16Z"
+        },
+        {
+          "id": "lost-response-recovery",
+          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:18Z"
+        },
+        {
+          "id": "multiple-runs-one-conversation",
+          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
+          "completedAt": "2026-07-22T13:07:17Z"
+        }
+      ],
+      "evidence": [
+        "evidence/tq-607/denshin-journey-2026-07-22.json"
+      ]
     }
   ],
   "crossCuttingEvidence": {
     "requiredForwardUpgradeDrills": 2,
     "completedForwardUpgradeDrills": 0,
     "forwardUpgradeEvidence": [],
-    "backupRestoreCompleted": false,
-    "backupRestoreEvidence": [],
+    "backupRestoreCompleted": true,
+    "backupRestoreEvidence": [
+      "evidence/tq-607/baseline-2026-07-22.json"
+    ],
     "replacementActorRecoveryCompleted": false,
     "replacementActorRecoveryEvidence": [],
-    "coldAgentOnboardingCompleted": false,
-    "coldAgentOnboardingEvidence": [],
-    "supportBundleReviewCompleted": false,
-    "supportBundleReviewEvidence": []
+    "coldAgentOnboardingCompleted": true,
+    "coldAgentOnboardingEvidence": [
+      "evidence/tq-607/cold-agent-onboarding-2026-07-22.json"
+    ],
+    "supportBundleReviewCompleted": true,
+    "supportBundleReviewEvidence": [
+      "evidence/tq-607/support-bundle-review-2026-07-22.json"
+    ]
   },
-  "frictionLog": [],
+  "frictionLog": [
+    {
+      "id": "TQ607-FR-001",
+      "consumer": "interactive-agent-runtime",
+      "category": "product_ergonomics",
+      "symptom": "An extracted CLI tarball failed without its optional native package and one monorepo cwd masked the dependency",
+      "intervention": "Discarded both first results, installed the exact tarball in a clean prefix, and reran from fresh isolated homes",
+      "affectedVersion": "0.1.0-private.1",
+      "risk": "none",
+      "resolution": "Only package-manager-installed candidate bytes qualify; adopter docs require an explicit installed executable",
+      "evidence": "evidence/tq-607/clean-room-install-friction-2026-07-22.json",
+      "recordedAt": "2026-07-22T13:07:11Z"
+    },
+    {
+      "id": "TQ607-FR-002",
+      "consumer": "personal-life-pilot",
+      "category": "product_ergonomics",
+      "symptom": "Doctor found a legacy unsequenced journal segment with 11 journal-only create/delete events and historical public permissions",
+      "intervention": "Repaired modes with doctor, verified a canonical backup, audited all journal-only entities, dry-ran then recorded a forensic-preserving checkpoint",
+      "affectedVersion": "0.1.0-private.1",
+      "risk": "data",
+      "resolution": "Doctor is fully green; the previous segment is retained and digest-verified, with no direct SQL or current entity loss",
+      "evidence": "evidence/tq-607/journal-checkpoint-2026-07-22.json",
+      "recordedAt": "2026-07-22T13:11:02Z"
+    }
+  ],
   "unresolvedCriticalFailures": [],
   "resolvedCriticalFailures": [],
-  "audit": [],
+  "audit": [
+    {
+      "revision": 2,
+      "action": "baseline",
+      "at": "2026-07-22T13:07:10Z"
+    },
+    {
+      "revision": 3,
+      "action": "friction",
+      "at": "2026-07-22T13:07:11Z"
+    },
+    {
+      "revision": 4,
+      "action": "journey",
+      "at": "2026-07-22T13:07:12Z"
+    },
+    {
+      "revision": 5,
+      "action": "journey",
+      "at": "2026-07-22T13:07:13Z"
+    },
+    {
+      "revision": 6,
+      "action": "journey",
+      "at": "2026-07-22T13:07:14Z"
+    },
+    {
+      "revision": 7,
+      "action": "journey",
+      "at": "2026-07-22T13:07:15Z"
+    },
+    {
+      "revision": 8,
+      "action": "journey",
+      "at": "2026-07-22T13:07:16Z"
+    },
+    {
+      "revision": 9,
+      "action": "journey",
+      "at": "2026-07-22T13:07:17Z"
+    },
+    {
+      "revision": 10,
+      "action": "journey",
+      "at": "2026-07-22T13:07:18Z"
+    },
+    {
+      "revision": 11,
+      "action": "journey",
+      "at": "2026-07-22T13:07:19Z"
+    },
+    {
+      "revision": 12,
+      "action": "drill",
+      "at": "2026-07-22T13:07:20Z"
+    },
+    {
+      "revision": 13,
+      "action": "drill",
+      "at": "2026-07-22T13:07:21Z"
+    },
+    {
+      "revision": 14,
+      "action": "drill",
+      "at": "2026-07-22T13:07:22Z"
+    },
+    {
+      "revision": 15,
+      "action": "friction",
+      "at": "2026-07-22T13:11:02Z"
+    }
+  ],
   "publicLaunchDecision": "undecided",
   "decisionRecord": null,
   "tq607Complete": false

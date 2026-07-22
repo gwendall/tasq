@@ -1,0 +1,21 @@
+{
+  "contractVersion": "tasq.life-pilot-dogfood-activation.v1",
+  "observedAt": "2026-07-22T13:07:05Z",
+  "sourceCommit": "8763e4e60159c2b7de5c2454e3b472492e85d8e9",
+  "adopterCommit": "14c9a0714082e74340c4a6d5943075f4f80b039c",
+  "eventResumeFixCommit": "5fd50677b9beb13a0701c9a21df4d4f5e40264cb",
+  "candidateInstallation": "clean-room-installed-tarball",
+  "onboarding": {
+    "contractVersion": "tasq.autonomous-bootstrap.v1",
+    "disposition": "created",
+    "space": "gwendall",
+    "actor": "claude-code",
+    "recipeCount": 28
+  },
+  "firstRead": {
+    "contractVersion": "tasq.context-packet.v1",
+    "privatePayloadRetainedLocally": true
+  },
+  "activeUseDayClaimed": false,
+  "reason": "Activation and recovery setup alone do not count as a real decision, handoff or commitment-state use day."
+}

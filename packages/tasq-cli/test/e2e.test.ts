@@ -278,8 +278,13 @@ describe("autonomous zero-integrator bootstrap", () => {
     for (const recipe of created.recipes) {
       expect(recipe.argvTemplate).toContain("--tenant");
       expect(recipe.argvTemplate).toContain("robotics/team-a");
-      expect(recipe.argvTemplate).toContain("--actor");
-      expect(recipe.argvTemplate).toContain("cold-agent");
+      if (recipe.id === "audit.list") {
+        expect(recipe.argvTemplate).not.toContain("--actor");
+        expect(recipe.description).toContain("unfiltered ordered workspace audit stream");
+      } else {
+        expect(recipe.argvTemplate).toContain("--actor");
+        expect(recipe.argvTemplate).toContain("cold-agent");
+      }
     }
     const contextRecipe = created.recipes.find((recipe: any) => recipe.id === "context.read");
     expect(contextRecipe).toMatchObject({
@@ -307,6 +312,15 @@ describe("autonomous zero-integrator bootstrap", () => {
     expect(executed.exitCode).toBe(0);
     const commitment = JSON.parse(executed.stdout);
     expect(commitment).toMatchObject({ title: "Calibrate arm", tenantId: "robotics/team-a" });
+
+    await runOk(home, [
+      "add", "Peer commitment", "--tenant", "robotics/team-a", "--actor", "peer-agent", "--json",
+    ]);
+    const auditRecipe = created.recipes.find((recipe: any) => recipe.id === "audit.list");
+    const audit = JSON.parse((await runCli(home, auditRecipe.argvTemplate.slice(1))).stdout);
+    expect(new Set(audit.map((event: any) => event.actor))).toEqual(
+      new Set(["cold-agent", "peer-agent"]),
+    );
 
     const executeRecipe = async (id: string, replacements: Record<string, string>) => {
       const recipe = created.recipes.find((item: any) => item.id === id);
