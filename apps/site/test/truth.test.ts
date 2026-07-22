@@ -39,9 +39,9 @@ describe("public site truth", () => {
 
   test("binds visible truth to the three canonical repository contracts", () => {
     expect(productTruth.sourceContracts.map((entry) => entry.path)).toEqual([
-      "PRODUCT_SURFACE_MATRIX.json",
-      "BACKLOG.json",
-      "PUBLIC_RELEASE_POLICY.json",
+      "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
+      "docs/roadmap/BACKLOG.json",
+      "docs/releases/PUBLIC_RELEASE_POLICY.json",
     ]);
     for (const source of productTruth.sourceContracts) expect(source.sha256).toMatch(/^[a-f0-9]{64}$/);
   });

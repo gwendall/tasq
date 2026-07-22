@@ -115,7 +115,7 @@ describe("TQ-320 interactive runtime candidate", () => {
   test("keeps the external fixture checkout-independent and authority-time neutral", async () => {
     const [source, certificate] = await Promise.all([
       readFile(join(import.meta.dir, "fixtures/interactive-runtime-client.ts"), "utf8"),
-      readFile(join(productRoot, "TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"), "utf8"),
+      readFile(join(productRoot, "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"), "utf8"),
     ]);
     expect(source).not.toContain("packages/tasq");
     expect(source).not.toContain("Denshin");

@@ -24,7 +24,7 @@ const AUDIENCE = "https://server.tasq.example/";
 const sha = (c: string) => `sha256:${c.repeat(64)}`;
 const clock = (now: number) => ({ now: () => now });
 const certificate = JSON.parse(readFileSync(
-  resolve(import.meta.dir, "../..", "TQ-801_AUTHORITY_CERTIFICATION.json"),
+  resolve(import.meta.dir, "../..", "docs/contracts/TQ-801_AUTHORITY_CERTIFICATION.json"),
   "utf8",
 )) as {
   status: string;

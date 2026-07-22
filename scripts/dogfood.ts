@@ -13,7 +13,7 @@ import {
 import { dirname, isAbsolute, resolve } from "node:path";
 
 const repositoryRoot = resolve(import.meta.dir, "..");
-const defaultStatusPath = resolve(repositoryRoot, "TQ-607_DOGFOOD_STATUS.json");
+const defaultStatusPath = resolve(repositoryRoot, "docs/contracts/TQ-607_DOGFOOD_STATUS.json");
 const consumerIds = new Set([
   "personal-life-pilot",
   "kami-robotics",

@@ -18,6 +18,6 @@ pnpm --filter @tasq/console test
 pnpm --filter @tasq/console test:browser
 ```
 
-Start with [`../../LOCAL_CONSOLE_SPEC.md`](../../LOCAL_CONSOLE_SPEC.md) and the
+Start with [`../../LOCAL_CONSOLE_SPEC.md`](../../docs/concepts/LOCAL_CONSOLE_SPEC.md) and the
 TQ-701 through TQ-705 contracts for read models, transport, UI and installed
 lifecycle.

@@ -9,7 +9,7 @@ const load = (path: string) => readFile(resolve(root, path), "utf8");
 
 describe("TQ-705 Local Console browser certification", () => {
   test("binds all five states to bounded, fixed-clock browser evidence", async () => {
-    const certificate = JSON.parse(await load("TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"));
+    const certificate = JSON.parse(await load("docs/contracts/TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"));
     expect(certificate).toMatchObject({
       contractVersion: "tasq.console-browser-certification.v1",
       status: "certified",
@@ -36,7 +36,7 @@ describe("TQ-705 Local Console browser certification", () => {
       load("packages/tasq-inspector/browser/console-fixture.ts"),
       load("packages/tasq-inspector/browser/inspector.pw.ts"),
       load(".github/workflows/ci.yml"),
-      load("BACKLOG.json").then(JSON.parse),
+      load("docs/roadmap/BACKLOG.json").then(JSON.parse),
     ]);
     for (const forbidden of ["Date.now(", "new Date(", "systemClock", "performance.now("]) {
       expect(fixture).not.toContain(forbidden);
@@ -50,7 +50,7 @@ describe("TQ-705 Local Console browser certification", () => {
     expect(workflow).toMatch(/console-browser-macos:\n\s+runs-on: macos-14/);
     expect(backlog.items.find((item: { id: string }) => item.id === "TQ-705")).toMatchObject({
       status: "done",
-      evidence: ["TQ-705_CONSOLE_BROWSER_CERTIFICATION.md", "TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"],
+      evidence: ["docs/contracts/TQ-705_CONSOLE_BROWSER_CERTIFICATION.md", "docs/contracts/TQ-705_CONSOLE_BROWSER_CERTIFICATION.json"],
     });
   });
 });

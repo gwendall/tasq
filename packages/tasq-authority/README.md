@@ -35,7 +35,7 @@ approval and connector dispatch also require distinct eligibility.
 - exact effect permits, fences and receipts.
 
 Those layers must wrap this package in the order fixed by
-`ADR-004_AUTHENTICATED_HOSTED_TENANCY.md`. No remote route exists merely
+`../../docs/decisions/ADR-004_AUTHENTICATED_HOSTED_TENANCY.md`. No remote route exists merely
 because this evaluator exists.
 
 Run its focused checks with:

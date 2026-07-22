@@ -23,8 +23,8 @@ test("documentation gives a complete causal onboarding path", async ({ page }) =
 test("status page is traceable to machine contracts", async ({ page }) => {
   await page.goto("/status/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("pretend it shipped");
-  await expect(page.getByText("PRODUCT_SURFACE_MATRIX.json")).toBeVisible();
-  await expect(page.getByText("PUBLIC_RELEASE_POLICY.json")).toBeVisible();
+  await expect(page.getByText("docs/concepts/PRODUCT_SURFACE_MATRIX.json")).toBeVisible();
+  await expect(page.getByText("docs/releases/PUBLIC_RELEASE_POLICY.json")).toBeVisible();
   const surfaces = page.getByRole("table");
   await expect(surfaces).toContainText("Rest");
   await expect(surfaces).toContainText("none");

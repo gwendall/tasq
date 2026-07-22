@@ -71,5 +71,5 @@ recipe or observable product gap; do not bypass the service through SQL,
 Markdown edits or hidden provider-specific state.
 
 For repository development, follow [AGENTS.md](AGENTS.md) and
-[DEVELOPMENT.md](DEVELOPMENT.md). Stable JSON compatibility is documented in
-[CLI_JSON_CONTRACT.md](CLI_JSON_CONTRACT.md).
+[DEVELOPMENT.md](docs/guides/DEVELOPMENT.md). Stable JSON compatibility is documented in
+[CLI_JSON_CONTRACT.md](docs/reference/CLI_JSON_CONTRACT.md).

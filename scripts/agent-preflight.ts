@@ -30,8 +30,8 @@ const remote = run(["git", "remote", "get-url", "origin"]);
 const branch = run(["git", "branch", "--show-current"]);
 const status = run(["git", "status", "--porcelain=v1"]);
 const pnpm = run(["pnpm", "--version"]);
-const backlog = readJson("BACKLOG.json");
-const dogfood = readJson("TQ-607_DOGFOOD_STATUS.json");
+const backlog = readJson("docs/roadmap/BACKLOG.json");
+const dogfood = readJson("docs/contracts/TQ-607_DOGFOOD_STATUS.json");
 const active = backlog.items.find((item: any) => ![
   "done",
   "candidate_done_publication_gate",
@@ -68,7 +68,7 @@ const result = {
       nextAction: dogfood.nextAction,
     },
   },
-  readFirst: ["AGENTS.md", "DEVELOPMENT.md", "CURRENT_STATE.md", "BACKLOG.json"],
+  readFirst: ["AGENTS.md", "docs/guides/DEVELOPMENT.md", "docs/concepts/CURRENT_STATE.md", "docs/roadmap/BACKLOG.json"],
   verification: {
     quick: [["pnpm", "docs:check"], ["pnpm", "typecheck"]],
     handoff: [["pnpm", "verify:handoff"]],

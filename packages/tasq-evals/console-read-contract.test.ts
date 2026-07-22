@@ -108,10 +108,10 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     const consoleRender = readFileSync(resolve(root, "packages/tasq-inspector/src/console-render.ts"), "utf8");
     const consoleClient = readFileSync(resolve(root, "packages/tasq-inspector/src/console-client.ts"), "utf8");
     const consoleStyle = readFileSync(resolve(root, "packages/tasq-inspector/src/console-style.ts"), "utf8");
-    const docs = readFileSync(resolve(root, "TQ-701_CONSOLE_READ_MODELS.md"), "utf8");
-    const liveDocs = readFileSync(resolve(root, "TQ-702_CONSOLE_LIVE_TRANSPORT.md"), "utf8");
-    const operatorDocs = readFileSync(resolve(root, "TQ-703_OPERATOR_CONSOLE.md"), "utf8");
-    const installedDocs = readFileSync(resolve(root, "TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"), "utf8");
+    const docs = readFileSync(resolve(root, "docs/contracts/TQ-701_CONSOLE_READ_MODELS.md"), "utf8");
+    const liveDocs = readFileSync(resolve(root, "docs/contracts/TQ-702_CONSOLE_LIVE_TRANSPORT.md"), "utf8");
+    const operatorDocs = readFileSync(resolve(root, "docs/contracts/TQ-703_OPERATOR_CONSOLE.md"), "utf8");
+    const installedDocs = readFileSync(resolve(root, "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"), "utf8");
     const lifecycle = readFileSync(resolve(root, "packages/tasq-cli/src/console-lifecycle.ts"), "utf8");
     const webCommand = readFileSync(resolve(root, "packages/tasq-cli/src/commands/web.ts"), "utf8");
     const listener = readFileSync(resolve(root, "packages/tasq-inspector/src/serve.ts"), "utf8");
@@ -120,7 +120,7 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     const lifecycleTest = readFileSync(resolve(root, "packages/tasq-cli/test/public-lifecycle.test.ts"), "utf8");
     const migration = readFileSync(resolve(root,
       "packages/tasq-core/src/migrations/0025_console_read_indexes.sql"), "utf8");
-    const backlog = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) as {
+    const backlog = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8")) as {
       items: Array<{ id: string; status: string }>;
     };
 

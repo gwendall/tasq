@@ -14,26 +14,28 @@ git status --short --branch
 Then run `pnpm --silent agent:preflight --json` for one machine-readable repository,
 toolchain, worktree and active-backlog check.
 
-Read [DEVELOPMENT.md](DEVELOPMENT.md) first. Before changing a public contract,
-also read [CURRENT_STATE.md](CURRENT_STATE.md),
-[PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
-[UNIVERSAL_KERNEL_SPEC.md](UNIVERSAL_KERNEL_SPEC.md),
-[BACKLOG.md](BACKLOG.md), and [SECURITY.md](SECURITY.md).
-`BACKLOG.json` is the machine-readable execution authority; planned status
-never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
+Read [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md) first. Before changing a public contract,
+also read [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md),
+[PRODUCT_CONSUMPTION_SPEC.md](docs/concepts/PRODUCT_CONSUMPTION_SPEC.md),
+[UNIVERSAL_KERNEL_SPEC.md](docs/concepts/UNIVERSAL_KERNEL_SPEC.md),
+[BACKLOG.md](docs/roadmap/BACKLOG.md), and [SECURITY.md](SECURITY.md).
+[`docs/roadmap/BACKLOG.json`](docs/roadmap/BACKLOG.json) is the machine-readable
+execution authority; planned status never overrides
+[`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](docs/concepts/PRODUCT_SURFACE_MATRIX.json)
+support truth.
 
 The remaining release-blocking integration contract is
-[TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md](TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md)
+[TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md](docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md)
 and its blind host matrix. TQ-608's source candidate is implemented; read
-[TQ-608_MIGRATION_AND_DATA_SAFETY.md](TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
-[DATA_SAFETY.md](DATA_SAFETY.md) before changing store format or recovery.
+[TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
+[DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
 `tasq onboard`; they do not reconstruct workflows from repository prose.
 Agents arriving through Codex or Claude Code use the native plugin paths in
-[AGENT_INTEGRATIONS.md](AGENT_INTEGRATIONS.md) and the machine contract in
-`AGENT_INTEGRATIONS.json`.
+[AGENT_INTEGRATIONS.md](docs/integrations/AGENT_INTEGRATIONS.md) and the machine contract in
+[`docs/integrations/AGENT_INTEGRATIONS.json`](docs/integrations/AGENT_INTEGRATIONS.json).
 
 ## Non-negotiable rules
 
@@ -72,4 +74,4 @@ before handoff, or execute the same gate with `pnpm verify:handoff`. Update the
 owning contract, human docs and machine truth in the same change when a public
 surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
-[DEVELOPMENT.md](DEVELOPMENT.md).
+[DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).

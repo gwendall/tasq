@@ -14,5 +14,5 @@ coordinate surface includes acquire, renew, verify-fence, release and expiry
 sweep. Resource contention is returned as structured
 `tasq.resource-problem.v1`, including current holder, fence and expiry.
 
-See [`../../TQ-302_MCP_SERVER.md`](../../TQ-302_MCP_SERVER.md) for the authority,
+See [`../../TQ-302_MCP_SERVER.md`](../../docs/contracts/TQ-302_MCP_SERVER.md) for the authority,
 clock and deployment boundary.

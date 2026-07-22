@@ -441,7 +441,7 @@ describe.skipIf(target === null)("TQ-606 blind public adoption", () => {
     const [testSource, clientSource, certificateRaw] = await Promise.all([
       readFile(import.meta.filename, "utf8"),
       readFile(join(import.meta.dir, "fixtures/public-adoption-client.mjs"), "utf8"),
-      readFile(join(productRoot, "TQ-606_ADOPTION_CERTIFICATION.json"), "utf8"),
+      readFile(join(productRoot, "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"), "utf8"),
     ]);
     for (const source of [testSource, clientSource]) {
       expect(source).not.toMatch(/from\s+["']@tasq\//);

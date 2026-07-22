@@ -10,8 +10,8 @@ deterministic coordination logic; provider credentials and I/O remain in
 connectors outside Core.
 
 Executable loading, signatures, sandboxing and a public extension registry are
-not implemented. See [`../../EXTENSION_SDK.md`](../../EXTENSION_SDK.md) and
-[`../../TQ-305_CONNECTOR_CONFORMANCE.md`](../../TQ-305_CONNECTOR_CONFORMANCE.md).
+not implemented. See [`../../EXTENSION_SDK.md`](../../docs/integrations/EXTENSION_SDK.md) and
+[`../../TQ-305_CONNECTOR_CONFORMANCE.md`](../../docs/contracts/TQ-305_CONNECTOR_CONFORMANCE.md).
 
 ```bash
 pnpm --filter @tasq/extension-sdk typecheck

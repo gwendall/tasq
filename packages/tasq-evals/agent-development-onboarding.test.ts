@@ -18,7 +18,7 @@ describe("coding-agent onboarding and handoff", () => {
     const result = run([process.execPath, "scripts/agent-preflight.ts", "--json"]);
     expect(result.exitCode, result.stderr).toBe(0);
     const preflight = JSON.parse(result.stdout);
-    const dogfood = JSON.parse(readFileSync(resolve(root, "TQ-607_DOGFOOD_STATUS.json"), "utf8"));
+    const dogfood = JSON.parse(readFileSync(resolve(root, "docs/contracts/TQ-607_DOGFOOD_STATUS.json"), "utf8"));
     expect(preflight).toMatchObject({
       contractVersion: "tasq.agent-preflight.v1",
       ok: true,
@@ -33,7 +33,7 @@ describe("coding-agent onboarding and handoff", () => {
           earliestDecisionAt: dogfood.earliestDecisionAt,
         },
       },
-      readFirst: ["AGENTS.md", "DEVELOPMENT.md", "CURRENT_STATE.md", "BACKLOG.json"],
+      readFirst: ["AGENTS.md", "docs/guides/DEVELOPMENT.md", "docs/concepts/CURRENT_STATE.md", "docs/roadmap/BACKLOG.json"],
       verification: { handoff: [["pnpm", "verify:handoff"]] },
     });
     expect(preflight.repository.origin).toMatch(/^https:\/\/github\.com\/gwendall\/tasq(?:\.git)?$/);
@@ -45,8 +45,8 @@ describe("coding-agent onboarding and handoff", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stdout).toContain("Agent start: tasq onboard --space <id> --actor <label> --json");
     expect(result.stdout).not.toContain("SKILL.md");
-    expect(result.stdout).not.toContain("CURRENT_STATE.md");
-    expect(result.stdout).not.toContain("BACKLOG.md");
+    expect(result.stdout).not.toContain("docs/concepts/CURRENT_STATE.md");
+    expect(result.stdout).not.toContain("docs/roadmap/BACKLOG.md");
   });
 
   test("root scripts and handoff template expose one complete path", () => {

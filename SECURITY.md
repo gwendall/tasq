@@ -67,6 +67,7 @@ Release metadata is authoritative if it narrows that window.
 - Kernel time is host-injected. Raw device time is isolated to the system
   clock adapter and cannot decide replicated ordering or authority by itself.
 
-See `TQ-201_EFFECT_AUTHORITY_THREAT_MODEL.md`,
-`ADR-004_AUTHENTICATED_HOSTED_TENANCY.md` and `CURRENT_STATE.md` for the exact
-implemented and unimplemented boundaries.
+See the [effect threat model](docs/contracts/TQ-201_EFFECT_AUTHORITY_THREAT_MODEL.md),
+[hosted-tenancy decision](docs/decisions/ADR-004_AUTHENTICATED_HOSTED_TENANCY.md),
+and [current state](docs/concepts/CURRENT_STATE.md) for the exact implemented
+and unimplemented boundaries.

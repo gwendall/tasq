@@ -6,7 +6,7 @@ import { resolve } from "node:path";
 
 const product = resolve(import.meta.dir, "../..");
 const acceptance = JSON.parse(readFileSync(
-  resolve(product, "HOSTED_TENANCY_ACCEPTANCE.json"),
+  resolve(product, "docs/contracts/HOSTED_TENANCY_ACCEPTANCE.json"),
   "utf8",
 )) as {
   contractVersion: string;
@@ -39,7 +39,7 @@ describe("ADR-004 hosted-tenancy design guard", () => {
     expect(acceptance).toMatchObject({
       contractVersion: "tasq.hosted-tenancy-acceptance.v1",
       status: "host-integrated-read-write-rest-implemented-no-deployable-server",
-      decision: "ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
+      decision: "docs/decisions/ADR-004_AUTHENTICATED_HOSTED_TENANCY.md",
       criticalFailuresAreNonCompensable: true,
     });
     expect(acceptance.layers).toEqual([

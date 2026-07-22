@@ -3,13 +3,13 @@
 Tasq welcomes focused bug fixes, documentation improvements, conformance
 vectors and primitives backed by real cross-domain failures.
 
-Start with [DEVELOPMENT.md](DEVELOPMENT.md). It contains the canonical checkout
+Start with [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md). It contains the canonical checkout
 check, repository map, task-selection rules, focused commands and definition of
 done. Agents must also follow [AGENTS.md](AGENTS.md).
 
 Before changing code:
 
-1. Read [CURRENT_STATE.md](CURRENT_STATE.md) and the contract or ADR that owns
+1. Read [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md) and the contract or ADR that owns
    the behavior.
 2. Classify the failure as kernel invariant, policy, connector, runtime,
    product surface or presentation work.
