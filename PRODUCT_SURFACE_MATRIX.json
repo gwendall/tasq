@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.product-surface-matrix.v1",
   "status": "accepted-product-contract",
-  "updatedAt": "2026-07-21",
+  "updatedAt": "2026-07-22",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "publicReleasePolicy": "PUBLIC_RELEASE_POLICY.json",
   "supportLevels": [
@@ -278,6 +278,7 @@
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
+    "public_launch_requires_private_multi_app_dogfood_and_explicit_go_decision",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

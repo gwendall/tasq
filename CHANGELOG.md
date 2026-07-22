@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Add TQ-607, a machine-tracked private dogfood gate requiring at least 30
+  days across the personal life-pilot, Kami Robotics and an interactive agent
+  runtime before an explicit public-launch decision.
 - Add standalone human/agent development onboarding, audience routing and a
   local README for every workspace, plus an executable documentation contract
   that rejects broken links, stale checkout commands, missing ownership docs

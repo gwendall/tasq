@@ -1,0 +1,74 @@
+{
+  "contractVersion": "tasq.private-dogfood.v1",
+  "status": "program-open-evidence-pending",
+  "startedAt": "2026-07-22",
+  "minimumCalendarDays": 30,
+  "earliestDecisionAt": "2026-08-21",
+  "currentPhase": "baseline_and_activation",
+  "nextAction": "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.",
+  "phases": [
+    {
+      "id": "baseline_and_activation",
+      "state": "in_progress"
+    },
+    {
+      "id": "first_complete_journeys",
+      "state": "pending"
+    },
+    {
+      "id": "repeated_operation",
+      "state": "pending"
+    },
+    {
+      "id": "resilience_drills",
+      "state": "pending"
+    },
+    {
+      "id": "decision_review",
+      "state": "blocked_until_2026-08-21"
+    }
+  ],
+  "consumers": [
+    {
+      "id": "personal-life-pilot",
+      "state": "not_started",
+      "requiredActiveUseDays": 20,
+      "recordedActiveUseDays": 0,
+      "evidence": []
+    },
+    {
+      "id": "kami-robotics",
+      "state": "not_started",
+      "requiredJourneys": [
+        "two-actor-resource-contention",
+        "final-io-fence-verification",
+        "crash-expiry-reclaim",
+        "observable-evidence"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "interactive-agent-runtime",
+      "state": "not_started",
+      "requiredJourneys": [
+        "input-required-resume",
+        "multiple-runs-one-conversation",
+        "lost-response-recovery",
+        "explicit-evidence-completion"
+      ],
+      "evidence": []
+    }
+  ],
+  "crossCuttingEvidence": {
+    "requiredForwardUpgradeDrills": 2,
+    "completedForwardUpgradeDrills": 0,
+    "backupRestoreCompleted": false,
+    "replacementActorRecoveryCompleted": false,
+    "coldAgentOnboardingCompleted": false,
+    "supportBundleReviewCompleted": false
+  },
+  "frictionLog": [],
+  "unresolvedCriticalFailures": [],
+  "publicLaunchDecision": "undecided",
+  "tq607Complete": false
+}

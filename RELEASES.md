@@ -10,8 +10,9 @@ metadata, migration/rollback instructions and clean-room evidence.
 
 npm packages use trusted publishing with provenance. Long-lived maintainer
 tokens and locally built release artifacts are forbidden. Public support does
-not begin until TQ-603 publishes artifacts and TQ-604 certifies their complete
-lifecycle without a repository checkout.
+not begin until TQ-607 records a private-dogfood `go`, TQ-603 publishes
+artifacts and TQ-604 certifies their complete lifecycle without a repository
+checkout.
 
 The implemented candidate builder is:
 

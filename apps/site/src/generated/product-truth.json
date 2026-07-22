@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.public-site-truth.v1",
-  "sourceUpdatedAt": "2026-07-21",
+  "sourceUpdatedAt": "2026-07-22",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
     "status": "canonical-private-repository-not-published",
@@ -26,6 +26,7 @@
       "linux-x64-gnu"
     ],
     "gates": {
+      "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": false,
       "public_source_launch_authorized": false,
       "npm_scope_control_verified": false,
@@ -445,12 +446,19 @@
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
+    "public_launch_requires_private_multi_app_dogfood_and_explicit_go_decision",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
     {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "outcome": "Operate Tasq privately for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a public-launch decision"
+    },
+    {
       "id": "TQ-603",
-      "status": "in_progress_external_gate",
+      "status": "pending",
       "milestone": "public-distribution",
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations"
     },
@@ -459,12 +467,6 @@
       "status": "candidate_done_publication_gate",
       "milestone": "public-distribution",
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes"
-    },
-    {
-      "id": "TQ-320",
-      "status": "pending",
-      "milestone": "runtime-consumers",
-      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
     {
       "id": "TQ-701",
@@ -507,6 +509,12 @@
       "status": "done",
       "milestone": "local-console",
       "outcome": "Real-browser empty, mature, hostile, corrupt and large-ledger operator certification"
+    },
+    {
+      "id": "TQ-320",
+      "status": "pending",
+      "milestone": "runtime-consumers",
+      "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
     {
       "id": "TQ-801",
@@ -597,17 +605,17 @@
     {
       "path": "PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "4175b9888f00526b6dc63c20577899f2f0cc495fd1398b1645b740e0fd9d58c1"
+      "sha256": "360c4db8850865438324465e1e34c6f37335e80f468903d2faaafa3adbd915f6"
     },
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "fd207a55551a9554e785556d2a4946d7d7505b32deacc00bd521d4b68f0c37e1"
+      "sha256": "7e6a2df02994ee84eabac45ec5247b3a600bf1add0962ab3bb9062413c3eb282"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "bb36a06b60cfa559a711813a6238aae407cd394ffac37edf06b834ccbc429b27"
+      "sha256": "a6b90b4900f56a59713a9f1a4e58c64b38aaa03ccf2a9c308aa295fed7d0d628"
     }
   ]
 }

@@ -101,7 +101,8 @@ plan; the API returns an upgrade-or-public response. Required checks,
 non-fast-forward protection, immutable tags and private vulnerability reporting
 must therefore be re-enabled and independently verified before publication.
 
-The remaining external blockers are explicit public-launch authorization,
-restored repository protections, npm `@tasq` scope control and trusted
-publisher configuration. No local artifact, private source visibility or
-untagged GitHub build is publishable authority.
+The current pre-public blocker is a TQ-607 `go` decision from private
+multi-application dogfood. After that, the remaining external blockers are
+explicit public-launch authorization, restored repository protections, npm
+`@tasq` scope control and trusted publisher configuration. No local artifact,
+private source visibility or untagged GitHub build is publishable authority.

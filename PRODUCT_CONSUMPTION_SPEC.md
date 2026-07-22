@@ -64,8 +64,9 @@ authentication.
 
 **Current state:** behavior and candidate install/upgrade/uninstall are
 certified on Linux/macOS, including foreground Console discovery from the
-installed artifact. Public package and native-release publication remain
-blocked on the external TQ-603 registry gate.
+installed artifact. Public package and native-release publication are paused
+behind the TQ-607 private dogfood decision, then the external TQ-603 registry
+gate.
 
 ### 2.3 Tasq Server
 
@@ -337,9 +338,11 @@ Today, behavior from `create/join workspace` onward is substantially proven,
 and candidate acquisition/install/upgrade/uninstall is clean-room tested.
 ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq/*` package
 boundary and dedicated repository. That repository is intentionally private
-before launch. Protected public source/release distribution and independent
-published-byte validation are still absent; TQ-603–TQ-606 close that product
-gap only after explicit launch authorization.
+before launch. TQ-607 now requires private retained-data use across three real
+consumers and an explicit launch decision before publication work resumes.
+Protected public source/release distribution and independent published-byte
+validation are still absent; TQ-603–TQ-606 close that product gap only after a
+TQ-607 `go` and separate explicit launch authorization.
 
 The later server journey is:
 

@@ -57,6 +57,12 @@ visibility, npm publication and downloadable releases are not current product
 claims. Making the repository public requires a separate explicit launch
 decision; repository visibility alone would still not make a release.
 
+The current pre-launch priority is TQ-607: operate Tasq for at least 30 days
+across the personal life-pilot, Kami Robotics and an interactive agent runtime
+while keeping open-source engineering discipline. A recorded `go` decision
+from that evidence is required before TQ-603 publication work resumes; see
+[TQ-607_PRIVATE_DOGFOOD_GATE.md](TQ-607_PRIVATE_DOGFOOD_GATE.md).
+
 ## Public site and docs
 
 The separate static product/docs app lives in `apps/site`. It renders support

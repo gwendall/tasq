@@ -25,6 +25,25 @@ const roadmap = JSON.parse(readFileSync(resolve(root, "BACKLOG.json"), "utf8")) 
     evidence?: string[];
   }>;
 };
+const dogfood = JSON.parse(readFileSync(
+  resolve(root, "TQ-607_DOGFOOD_STATUS.json"),
+  "utf8",
+)) as {
+  contractVersion: string;
+  status: string;
+  startedAt: string;
+  minimumCalendarDays: number;
+  earliestDecisionAt: string;
+  currentPhase: string;
+  nextAction: string;
+  phases: Array<{ id: string; state: string }>;
+  consumers: Array<{ id: string; state: string; evidence: unknown[] }>;
+  crossCuttingEvidence: Record<string, unknown>;
+  frictionLog: unknown[];
+  unresolvedCriticalFailures: unknown[];
+  publicLaunchDecision: string;
+  tq607Complete: boolean;
+};
 
 describe("canonical Tasq roadmap", () => {
   test("has one closed status vocabulary and one exact execution order", () => {
@@ -35,6 +54,7 @@ describe("canonical Tasq roadmap", () => {
       repositoryVisibility: "private_prelaunch",
       statusVocabulary: [
         "done",
+        "in_progress_dogfood",
         "in_progress_external_gate",
         "candidate_done_publication_gate",
         "candidate_done_external_gate",
@@ -93,8 +113,11 @@ describe("canonical Tasq roadmap", () => {
 
   test("states the real publication blockers without inventing ownership", () => {
     expect(roadmap.externalGates).toMatchObject({
+      privateMultiAppDogfood: {
+        state: "in_progress",
+      },
       publicSourceLaunch: {
-        state: "private_prelaunch",
+        state: "blocked_by_private_dogfood_decision",
       },
       npmScopeControl: {
         state: "unverified",
@@ -107,8 +130,23 @@ describe("canonical Tasq roadmap", () => {
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items[0]).toMatchObject({
+      id: "TQ-607",
+      status: "in_progress_dogfood",
+      milestone: "private-dogfood",
+      dependsOn: ["TQ-304", "TQ-501", "TQ-504"],
+      remaining: [
+        "complete-minimum-duration",
+        "complete-three-consumer-journeys",
+        "complete-two-live-ledger-upgrades",
+        "complete-backup-restore-and-crash-recovery",
+        "record-go-extend-or-no-go-decision",
+      ],
+      evidence: ["TQ-607_PRIVATE_DOGFOOD_GATE.md", "TQ-607_DOGFOOD_STATUS.json"],
+    });
+    expect(roadmap.items[1]).toMatchObject({
       id: "TQ-603",
-      status: "in_progress_external_gate",
+      status: "pending",
+      dependsOn: ["TQ-607"],
       remaining: [
         "authorize-public-source-launch",
         "restore-and-verify-repository-protections",
@@ -117,7 +155,7 @@ describe("canonical Tasq roadmap", () => {
         "publish-first-protected-release",
       ],
     });
-    expect(roadmap.items[1]).toMatchObject({
+    expect(roadmap.items[2]).toMatchObject({
       id: "TQ-604",
       status: "candidate_done_publication_gate",
       evidence: [
@@ -148,6 +186,7 @@ describe("canonical Tasq roadmap", () => {
       "device_clock_is_read_only_by_systemClock_composition",
       "local_console_remains_loopback_and_read_only",
       "remote_surfaces_require_adr_004_guard",
+      "public_launch_requires_private_multi_app_dogfood",
       "published_claims_require_external_evidence",
     ]) {
       expect(roadmap.invariants).toContain(invariant);
@@ -158,5 +197,46 @@ describe("canonical Tasq roadmap", () => {
       blocks: ["TQ-906"],
       question: "Evidence trust, authenticity, supersession, revocation and retention",
     });
+  });
+
+  test("makes dogfood a time-bounded three-consumer product gate, not prose", () => {
+    expect(dogfood).toMatchObject({
+      contractVersion: "tasq.private-dogfood.v1",
+      status: "program-open-evidence-pending",
+      startedAt: "2026-07-22",
+      minimumCalendarDays: 30,
+      earliestDecisionAt: "2026-08-21",
+      currentPhase: "baseline_and_activation",
+      nextAction:
+        "Record the exact candidate version and commit, then verify the first isolated backup and attach its evidence.",
+      publicLaunchDecision: "undecided",
+      tq607Complete: false,
+    });
+    expect(dogfood.phases).toEqual([
+      { id: "baseline_and_activation", state: "in_progress" },
+      { id: "first_complete_journeys", state: "pending" },
+      { id: "repeated_operation", state: "pending" },
+      { id: "resilience_drills", state: "pending" },
+      { id: "decision_review", state: "blocked_until_2026-08-21" },
+    ]);
+    expect(dogfood.consumers.map(({ id }) => id)).toEqual([
+      "personal-life-pilot",
+      "kami-robotics",
+      "interactive-agent-runtime",
+    ]);
+    for (const consumer of dogfood.consumers) {
+      expect(consumer.state, consumer.id).toBe("not_started");
+      expect(consumer.evidence, consumer.id).toEqual([]);
+    }
+    expect(dogfood.crossCuttingEvidence).toMatchObject({
+      requiredForwardUpgradeDrills: 2,
+      completedForwardUpgradeDrills: 0,
+      backupRestoreCompleted: false,
+      replacementActorRecoveryCompleted: false,
+      coldAgentOnboardingCompleted: false,
+      supportBundleReviewCompleted: false,
+    });
+    expect(dogfood.frictionLog).toEqual([]);
+    expect(dogfood.unresolvedCriticalFailures).toEqual([]);
   });
 });

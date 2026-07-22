@@ -136,6 +136,12 @@ checkout-only dependency. It precedes any generic claim that interactive agent
 control planes are certified consumers; it does not block internal TQ-805
 Server work.
 
+TQ-607 first runs the same identity/lifecycle shape as a private dogfood
+consumer to discover product friction before publication. That source-built or
+candidate-byte use is learning evidence, not TQ-320 completion: this contract
+still requires the first protected public bytes and a package-independent
+black-box consumer.
+
 ## Definition of done
 
 - the human and machine product contracts describe the interactive-runtime

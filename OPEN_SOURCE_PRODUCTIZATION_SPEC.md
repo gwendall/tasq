@@ -14,6 +14,20 @@ Cloud. Open source is not achieved by making a repository visible: an unknown
 person and an unknown agent must be able to obtain a versioned artifact,
 verify it, start safely, upgrade it and understand its support boundary.
 
+## 1.1 Private dogfood before public launch
+
+Open-source engineering discipline begins before source visibility. TQ-607
+keeps the standalone repository, public/private package boundary, DCO, CI,
+documentation, deterministic artifacts and machine truth at public quality
+while Tasq remains private. It then requires at least 30 days of retained-data
+operation through the personal life-pilot, Kami Robotics and an interactive
+agent runtime.
+
+TQ-607 closes only with real upgrade/recovery/onboarding evidence and an
+explicit `go`, `extend` or `no_go` decision. A `go` permits the maintainer to
+authorize public-source launch separately; it does not itself change
+visibility or publish a package. TQ-603 is paused until that decision.
+
 ## 2. Decisions required before release
 
 TQ-602 and ADR-008 freeze:
@@ -146,8 +160,9 @@ Failures block release. Repository-local success is not a substitute.
 
 | Item | Outcome |
 |---|---|
+| TQ-607 | Private three-consumer dogfood and explicit launch decision |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | Reproducible public artifacts and package publication |
+| TQ-603 | After TQ-607 `go`, reproducible public artifacts and package publication |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
 | TQ-605 | DONE — versioned static public docs and product app; deployment not claimed |
 | TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |

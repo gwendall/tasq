@@ -148,6 +148,7 @@
     "mutableTagsAllowed": false
   },
   "externalPublicationPreconditions": [
+    "private_multi_app_dogfood_accepted",
     "canonical_repository_control_verified",
     "public_source_launch_authorized",
     "npm_scope_control_verified",
@@ -157,6 +158,7 @@
     "candidate_targets_clean_room_certified"
   ],
   "externalPublicationGateStatus": {
+    "private_multi_app_dogfood_accepted": false,
     "canonical_repository_control_verified": false,
     "public_source_launch_authorized": false,
     "npm_scope_control_verified": false,
