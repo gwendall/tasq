@@ -113,6 +113,7 @@ The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Before protected
 release lines exist, the bootstrap matrix is every extant protected release
 (currently none) plus the historical populated fixtures. Once three protected
 minor lines exist, exact N-2 binaries and published bytes are mandatory and
-the certificate must be revised. The first protected release and a true
-quota/device `ENOSPC` run remain external-environment replay gates; neither is
-falsely inferred from source tests.
+the certificate must be revised. A real POSIX file-size quota additionally
+proves that snapshot exhaustion leaves the source format unchanged and any
+partial snapshot private. The first protected release remains an external
+replay gate and is not falsely inferred from source tests.

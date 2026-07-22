@@ -199,6 +199,59 @@ describe("migration data-safety envelope", () => {
     }
   });
 
+  it("fails closed under a real file-size quota before schema mutation", async () => {
+    const root = temporaryRoot();
+    const seeded = await openFixture(root);
+    await seeded.close();
+    const serviceModule = pathToFileURL(fileURLToPath(new URL("../src/index.ts", import.meta.url))).href;
+    const runner = join(root, "quota-migration.ts");
+    writeFileSync(runner, `
+      import { openDb, runMigrations } from ${JSON.stringify(serviceModule)};
+      const opened = await openDb({ url: \`file:\${process.env.DB_PATH}\`, wal: false });
+      await runMigrations(opened.client, { installReferenceExtension: false });
+      await opened.close();
+    `);
+    const child = Bun.spawn([
+      "/bin/sh",
+      "-c",
+      'ulimit -f 1; exec "$BUN_EXEC" "$RUNNER"',
+    ], {
+      env: {
+        ...process.env,
+        BUN_EXEC: process.execPath,
+        RUNNER: runner,
+        DB_PATH: seeded.path,
+      },
+      stdout: "ignore",
+      stderr: "pipe",
+    });
+    const [exitCode, stderr] = await Promise.all([
+      child.exited,
+      new Response(child.stderr).text(),
+    ]);
+    expect(exitCode, stderr).not.toBe(0);
+
+    const afterFailure = await openDb({ url: `file:${seeded.path}`, wal: false });
+    try {
+      expect((await afterFailure.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(6);
+      const recoveryDirectory = `${seeded.path}.tasq-migrations`;
+      expect(receiptDocuments(seeded.path)).toEqual([]);
+      const partials = readdirSync(recoveryDirectory)
+        .filter((name) => name.endsWith(".sqlite"))
+        .map((name) => join(recoveryDirectory, name));
+      expect(partials.length).toBeGreaterThan(0);
+      expect(partials.every((path) => (statSync(path).mode & 0o777) === 0o600)).toBe(true);
+
+      const resumed = await runMigrations(afterFailure.client, {
+        now: 1_700_000_000_176,
+        installReferenceExtension: false,
+      });
+      expect(resumed).toMatchObject({ afterFormat: 25, receipt: { status: "complete" } });
+    } finally {
+      await afterFailure.close();
+    }
+  });
+
   it("finalizes a committed receipt left pending by a process stop", async () => {
     const opened = await openFixture(temporaryRoot());
     try {

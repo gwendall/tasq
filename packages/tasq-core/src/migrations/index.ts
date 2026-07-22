@@ -583,7 +583,14 @@ async function createVerifiedRecoveryPoint(
   chmodSync(recoveryDir, 0o700);
   const id = `${now}-${randomUUID()}`;
   const snapshotPath = join(recoveryDir, `${basename(sourcePath)}.format-${sourceFormat}.${id}.sqlite`);
-  await client.execute({ sql: "VACUUM INTO ?", args: [snapshotPath] });
+  try {
+    await client.execute({ sql: "VACUUM INTO ?", args: [snapshotPath] });
+  } catch (error) {
+    // A quota/device failure may leave a partial SQLite file. It is never a
+    // recovery point and gets no receipt, but keep it private for diagnosis.
+    if (existsSync(snapshotPath)) chmodSync(snapshotPath, 0o600);
+    throw error;
+  }
   chmodSync(snapshotPath, 0o600);
   const verification = await verifyDatabaseFile(snapshotPath);
   if (!verification.ok) {

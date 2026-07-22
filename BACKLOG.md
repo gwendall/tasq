@@ -56,8 +56,9 @@ repository-only architecture.
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
-  support bounded create-only portable import. Exact first-release/N-2 bytes
-  and a quota/device `ENOSPC` environment remain external replay evidence.
+  support bounded create-only portable import. A real file-size quota proves
+  snapshot failure before schema mutation. Exact first-release/N-2 bytes remain
+  external replay evidence.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use

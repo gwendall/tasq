@@ -45,6 +45,8 @@
       "before_receipt_finalization"
     ],
     "corruptSnapshotRefused": true,
+    "realFileSizeQuotaFailsBeforeSchemaMutation": true,
+    "quotaPartialSnapshotPrivateAndUnreceipted": true,
     "failedPostcheckRetainsRestorePoint": true,
     "portableFreshStoreRoundTrip": true,
     "portableHostileInputRejectedBeforeTargetCreation": true,
@@ -60,8 +62,7 @@
   ],
   "remainingExternalReplay": [
     "first-protected-release-exact-bytes-and-attestation",
-    "exact-protected-n-minus-two-binaries-once-three-lines-exist",
-    "quota-or-device-enospc-environment"
+    "exact-protected-n-minus-two-binaries-once-three-lines-exist"
   ],
   "tq608SourceCandidateComplete": true,
   "publishedByteCertificationComplete": false
