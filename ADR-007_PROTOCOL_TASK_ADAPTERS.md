@@ -165,4 +165,4 @@ UK-010 is complete only when executable tests prove:
 
 UK-011 subsequently composed these adapters with UK-009 discovery and proved
 two unfamiliar runtimes can cold-start, coordinate, disconnect and resume; see
-`UK-011_UNIVERSAL_ACCEPTANCE.md`.
+`packages/tasq-evals/universal-kernel-acceptance.test.ts`.

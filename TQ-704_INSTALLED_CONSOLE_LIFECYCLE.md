@@ -98,8 +98,10 @@ does not determine ledger or listener authority.
   upgrade on the same ledger, stop and data-preserving uninstall.
 - `packages/tasq-inspector/test/inspector.test.ts`: exact runtime endpoint and
   injected deterministic listener identity.
-- `packages/tasq-evals/console-installed-contract.test.ts`: reviewable public
-  lifecycle, no hidden listener and no ambient-clock regression guard.
+- `packages/tasq-evals/public-adoption.test.ts` and
+  `packages/tasq-evals/console-read-contract.test.ts`: installed public
+  adoption, same-ledger inspection, no hidden write surface and no
+  ambient-clock regression guard.
 
 Linux x64 and macOS arm64 run the release lifecycle in CI. Real Chromium
 journeys remain a separate required Console job.

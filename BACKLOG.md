@@ -5,7 +5,8 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`PRODUCT_SURFACE_MATRIX.json`](PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-07-21  
+**Updated:** 2026-07-22
+
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** keep the canonical source private until an explicit
 launch decision, then finish the external first-release gate before expanding

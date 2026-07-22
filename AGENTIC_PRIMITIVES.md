@@ -209,8 +209,9 @@ projection/cursor work, and TQ-107 delivered the canonical inspection graph.
 `UNIVERSAL_KERNEL_SPEC.md` defines the target coordination algebra, namespaced
 extension/evaluator contract, additive migration, protocol mappings and three
 cross-domain conformance scenarios. UK-001–UK-011 now pass, including the
-unfamiliar-extension/two-runtime proof in `UK-011_UNIVERSAL_ACCEPTANCE.md`. No
-provider kind or life policy should be added to core.
+unfamiliar-extension/two-runtime proof in
+`packages/tasq-evals/universal-kernel-acceptance.test.ts`. No provider kind or
+life policy should be added to core.
 
 ### Delivered: authority, effects and adapters
 

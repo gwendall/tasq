@@ -1,7 +1,9 @@
 # TQ-312 — Neutral self-service bootstrap
 
 **Status:** Implemented and executable — 2026-07-19  
-**Depends on:** `TQ-311_AUTONOMOUS_ONBOARDING_ACCEPTANCE.md`  
+**Depends on:** the completed TQ-311 autonomous-onboarding acceptance gate;
+its private trial transcript was not exported to the standalone repository
+
 **Next:** TQ-313 generic resource leases and one-shot fence verification
 
 ## Outcome

@@ -1,7 +1,7 @@
 {
   "name": "@tasq/cli",
   "version": "0.1.0",
-  "description": "tasq-zero CLI — the Bun `tasq` package binary. Consumes @tasq-internal/local-service.",
+  "description": "Tasq Local CLI, autonomous onboarding entrypoint and Bun executable.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "bin": {

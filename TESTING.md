@@ -4,7 +4,11 @@
 
 ## Coverage at a glance
 
-Run `bun test` for the current count. The suite covers schemas, transactional/concurrent invariants, migrations and cursors, the real CLI in subprocesses, and realistic agent flows. Counts are intentionally not copied into docs because they drift on every change.
+Run `pnpm test` from the canonical repository root for the complete workspace
+suite. It covers schemas, transactional/concurrent invariants, migrations and
+cursors, the real CLI in subprocesses, documentation consistency and realistic
+agent flows. Counts are intentionally not copied into docs because they drift
+on every change.
 
 ## Thirteen layers of testing
 
@@ -388,7 +392,7 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   also continues through raw MCP and rejects corrupt storage, unsafe modes,
   truncated/unknown/malformed contracts. GitHub Actions executes this built
   artifact gate on Linux and macOS from a frozen filtered install.
-- eval `universal-from-scratch-onboarding.test.ts` — TQ-319 makes operation
+- eval `cold-start-configuration-matrix.test.ts` — TQ-316 through TQ-319 make operation
   selection observable instead of handing deterministic clients a recipe ID.
   Python, Node and POSIX+jq select by advertised mutation/output/input metadata;
   a raw MCP client selects by annotations, description and input schema.
@@ -433,6 +437,9 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
 - eval `public-roadmap.test.ts` — freezes the canonical public execution order,
   closed task states, dependency closure, npm/publication blockers, remote
   non-claims and the authority/clock invariants every future checkpoint keeps.
+- eval `documentation-contract.test.ts` — verifies relative documentation
+  links, workspace READMEs, canonical root commands, onboarding/release
+  guardrails and public/private package metadata.
 
 See `packages/tasq-evals/README.md` for the rationale of evals vs tests.
 
@@ -444,14 +451,15 @@ cd packages/tasq-evals && bun test
 ## Running everything
 
 ```bash
-# From the tasq product root
-cd products/tasq
-bun test
-pnpm --dir packages/tasq-inspector test:browser
-pnpm --dir apps/site test:browser
-```
+# From the canonical repository root
+pnpm docs:check
+pnpm typecheck
+pnpm test
 
-Also run every TypeScript project check under `packages/*/tsconfig.json`.
+# Required additionally for Console or site UI changes
+pnpm --filter @tasq/console test:browser
+pnpm --filter @tasq-internal/site test:browser
+```
 
 ## What's NOT tested (intentionally)
 

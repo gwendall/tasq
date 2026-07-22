@@ -64,8 +64,7 @@ bun test packages/tasq-evals/surface-compatibility.test.ts
 The normal Tasq test command also includes it:
 
 ```bash
-cd products/tasq
-bun test
+pnpm test
 ```
 
 ## Honest limits

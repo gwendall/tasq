@@ -42,8 +42,9 @@ The profile-neutral embedded TypeScript kernel:
 Core owns no network listener, login, browser session, provider credential,
 workflow runtime, human policy or hosted control plane.
 
-**Current state:** implemented inside the monorepo; packages are private and
-not yet a public SDK distribution.
+**Current state:** implemented in the canonical standalone repository; the
+seven `@tasq/*` packages are release candidates, not yet a published public
+SDK distribution.
 
 ### 2.2 Tasq Local
 
@@ -194,8 +195,9 @@ identity.
 services, and map external runtime tasks to attempts/artifacts rather than
 completion.
 
-**Support:** implemented internally. Public package compatibility,
-installation and support policy remain uncommitted.
+**Support:** implemented and clean-room tested from candidate package bytes.
+Compatibility, installation and support policy are defined, but no protected
+public package release exists yet.
 
 ### 4.6 Interactive agent runtime or control-plane integrator
 
@@ -278,9 +280,9 @@ is explicitly mutable source-build guidance, not a protected-release claim.
 
 | Use case | Kernel fit | Product readiness | Missing outer layer |
 |---|---|---|---|
-| Local coding-agent handoff | Excellent | Ready locally | Public install and templates |
+| Local coding-agent handoff | Excellent | Ready locally | Protected public release channel |
 | Interactive agent control plane | Excellent | Integration primitives ready | TQ-320 consumer adapter and conformance |
-| Multi-agent contention on one host | Excellent | Ready locally | Operator overview polish |
+| Multi-agent contention on one host | Excellent | Ready locally | Protected public release channel |
 | Robotics resource coordination | Excellent | Kernel/CLI ready | Robot adapter and fence enforcement |
 | Research with human acceptance | Excellent | Kernel ready | Domain UI and evidence policy |
 | Deployment operations | Excellent | Kernel/reference connector ready | Production connector and credentials |
@@ -331,12 +333,13 @@ learn -> install -> verify -> create/join workspace -> connect first agent
       -> upgrade -> backup/restore -> uninstall without data loss
 ```
 
-Today, behavior from `create/join workspace` onward is substantially proven.
+Today, behavior from `create/join workspace` onward is substantially proven,
+and candidate acquisition/install/upgrade/uninstall is clean-room tested.
 ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq/*` package
 boundary and dedicated repository. That repository is intentionally private
-before launch. Public source visibility, installation, upgrade, uninstall and
-independent package consumption are still absent; TQ-603–TQ-606 close that
-product gap only after explicit launch authorization.
+before launch. Protected public source/release distribution and independent
+published-byte validation are still absent; TQ-603–TQ-606 close that product
+gap only after explicit launch authorization.
 
 The later server journey is:
 
@@ -353,7 +356,8 @@ configuration or a running connection surface.
 
 ## 9. Documentation contract
 
-Public documentation is organized by consumer, not implementation chronology:
+The future public site information architecture is organized by consumer, not
+implementation chronology:
 
 ```text
 concepts/       commitments, execution, evidence, effects, authority
@@ -365,8 +369,10 @@ self-hosting/   explicitly future until Tasq Server ships
 reference/      contracts, CLI, schemas, ADRs and historical TQ evidence
 ```
 
-The TQ/ADR documents remain engineering evidence. They are not the default
-learning path for an adopter.
+In this source repository, `README.md` routes each audience,
+`DEVELOPMENT.md` onboards contributors, and package READMEs own local
+boundaries. The TQ/ADR documents remain engineering contracts and evidence;
+they are not the default learning path for an adopter.
 
 ## 10. Acceptance of this contract
 

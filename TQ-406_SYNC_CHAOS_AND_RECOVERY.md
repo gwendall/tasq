@@ -113,7 +113,7 @@ snapshot into place remains an operator action, not an autonomous-agent tool.
 
 ## Evidence
 
-Run from `products/tasq`:
+Run from the canonical repository root:
 
 ```bash
 bun test packages/tasq-service/test/replication.test.ts \

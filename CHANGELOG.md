@@ -8,6 +8,10 @@ by ADR-008.
 
 ### Added
 
+- Add standalone human/agent development onboarding, audience routing and a
+  local README for every workspace, plus an executable documentation contract
+  that rejects broken links, stale checkout commands, missing ownership docs
+  and public/private package-metadata drift.
 - Add canonical human and machine-readable public backlogs so a fresh human or
   agent can distinguish the next executable checkpoint, external publication
   gates and unimplemented remote products without private-repository context.

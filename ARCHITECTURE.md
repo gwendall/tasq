@@ -4,11 +4,11 @@
 
 This document describes the implemented architecture. The accepted universal
 target lives in `UNIVERSAL_KERNEL_SPEC.md`; UK-002's exhaustive map lives in
-`UNIVERSAL_COMPATIBILITY_INVENTORY.md`. UK-003's additive universal registry is
-implemented and UK-004 moved provider schemas/evaluator code into a reference
-extension package. UK-005 is complete: life prioritization, projection,
-recurrence and planning ancestry live in the DB-free bundled profile, while a
-minimal `@tasq/core` composition boots without loading it.
+`UNIVERSAL_COMPATIBILITY_INVENTORY.json`. UK-003's additive universal registry
+is implemented and UK-004 moved provider schemas/evaluator code into a
+reference extension package. UK-005 is complete: life prioritization,
+projection, recurrence and planning ancestry live in the DB-free bundled
+profile, while a minimal `@tasq/core` composition boots without loading it.
 
 ## Product composition
 
@@ -513,13 +513,14 @@ an append-only commitment-to-external-identity link. Content, retrieval,
 credentials and authority remain owned by external systems; links are exposed
 consistently through the embedded kernel, CLI, MCP, discovery and inspection.
 
-## Forward compat with the v0.9 vision
+## Forward compatibility
 
-`SPEC.md` describes a multi-tenant cloud-synced direction with MCP / REST /
-sync. It is not a promise that the current schema is already identical to that
-future design. Evolution should remain additive where the invariants permit it;
-new surfaces are sibling adapters over the service layer, not alternate write
-paths. `ADR-004_AUTHENTICATED_HOSTED_TENANCY.md` is the accepted identity,
+The historical pre-kernel vision described a multi-tenant cloud-synced
+direction with MCP, REST and sync. It is not a promise that the current schema
+is already identical to that future design. Evolution should remain additive
+where the invariants permit it; new surfaces are sibling adapters over the
+service layer, not alternate write paths.
+`ADR-004_AUTHENTICATED_HOSTED_TENANCY.md` is the accepted identity,
 authorization, store-isolation, revocation and clock design. TQ-801 now
 implements its pure authority contracts and evaluator, while its machine
 matrix and all remote surfaces remain explicitly unshipped. `CURRENT_STATE.md`
@@ -529,12 +530,14 @@ is the implemented compatibility boundary.
 
 ```
 
-├── README.md / AGENTS.md / CURRENT_STATE.md / UNIVERSAL_KERNEL_SPEC.md
-├── UNIVERSAL_COMPATIBILITY_INVENTORY.md + .json
-├── SKILL.md / RECIPES.md / EXTENSION_SDK.md
-├── ARCHITECTURE.md / CLI_JSON_CONTRACT.md / ADR-*.md / BACKLOG.md
-├── SPEC.md / TASQ_ZERO.md / ATLAS.md / DOGFOOD_*.md  (history/strategy)
+├── README.md / AGENTS.md / DEVELOPMENT.md / CURRENT_STATE.md
+├── PRODUCT_CONSUMPTION_SPEC.md / PRODUCT_SURFACE_MATRIX.json
+├── UNIVERSAL_KERNEL_SPEC.md / UNIVERSAL_COMPATIBILITY_INVENTORY.json
+├── ARCHITECTURE.md / EXTENSION_SDK.md / CLI_JSON_CONTRACT.md
+├── ADR-*.md / TQ-*.md / BACKLOG.md + BACKLOG.json
+├── apps/site/         ── static, ledger-free product/docs app
 ├── packages/
+│   ├── tasq-core/      ── @tasq/core      (neutral kernel + migrations)
 │   ├── tasq-schema/    ── @tasq/schema    (types/tables/ids/effect identity + tests)
 │   ├── tasq-extension-sdk/ ── runtime contract + connector conformance + tests
 │   ├── tasq-life-planning-profile/ ── DB-free bundled policy + tests
@@ -548,7 +551,7 @@ is the implemented compatibility boundary.
 │   ├── tasq-cli/       ── @tasq/cli       (CLI + E2E tests)
 │   └── tasq-evals/     ── @tasq-internal/evals     (agent scenarios)
 └── scripts/
-    ├── install-cli.sh           install ~/.local/bin/tasq launcher
-    ├── migrate-from-life.ts     one-shot _life/TASKS.md → tasq DB
-    └── dogfood-life-watcher.ts  isolated real-input TQ-109 proof
+    ├── install-cli.sh  ── source-checkout development launcher
+    ├── run-blind-agent-trials.ts ── optional authenticated external trial runner
+    └── release/        ── deterministic candidate/release tooling
 ```
