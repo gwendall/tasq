@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.agent-integrations.v1",
   "revision": 1,
-  "integrationVersion": "0.1.0",
+  "integrationVersion": "0.1.1",
   "sourceRepository": "https://github.com/gwendall/tasq",
   "executable": {
     "command": "tasq",

@@ -92,8 +92,9 @@ still depends on the first protected release.
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
 support/release status from the repository's machine contracts. The same exact
-snapshot is exported at `/product-truth.json`. The app is repository-certified
-but not deployed; it is neither the Local Console nor an agent/ledger API.
+snapshot is exported at `/product-truth.json`. The app is deployed from public
+`main` at <https://tasq-five.vercel.app>; it is neither the Local Console nor an
+agent/ledger API. A custom domain is still pending.
 
 TQ-606 adds the fail-closed `/adopt.json` pre-executable contract and a complete
 candidate adoption journey across a human-shell proxy, a package-independent

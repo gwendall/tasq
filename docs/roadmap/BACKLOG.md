@@ -24,8 +24,9 @@ package and governance boundary.
 
 The repository also contains the TQ-605 static public product/docs app. Its
 rendered support states and `/product-truth.json` are generated from canonical
-machine contracts. It is repository-certified but not deployed, and therefore
-does not create a public URL or release claim.
+machine contracts. It is repository-certified and deployed from public `main`
+at <https://tasq-five.vercel.app>. This URL is not a package-release claim; a
+custom domain is still pending.
 
 The dedicated canonical repository is public and Linux/macOS CI is live.
 Pull requests, both verification checks, linear history, immutable `v*` tags,
@@ -145,7 +146,8 @@ breadth is intentionally lower priority even when technically unblocked.
 - **TQ-605 — done:** the distinct static Next.js + TypeScript + Tailwind +
   shadcn/ui product/docs app covers every current consumer journey, renders
   support and release gates from versioned repository truth, exports the same
-  machine JSON and uses only synthetic illustrations. It is not deployed. See
+  machine JSON and uses only synthetic illustrations. It is deployed from
+  public `main` at <https://tasq-five.vercel.app>. See
   `../contracts/TQ-605_PUBLIC_SITE.md`.
 - **TQ-606 — candidate complete, external gates:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers

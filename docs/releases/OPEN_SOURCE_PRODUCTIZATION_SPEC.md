@@ -167,7 +167,7 @@ Failures block release. Repository-local success is not a substitute.
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
 | TQ-603 | After TQ-321, TQ-607 `go` and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
-| TQ-605 | DONE — versioned static public docs and product app; deployment not claimed |
+| TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq-five.vercel.app`; custom domain pending |
 | TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful

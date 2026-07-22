@@ -6,6 +6,8 @@
 
 **Blocks:** first protected package release in TQ-603
 
+**Executable harness:** `../../scripts/run-zero-context-agent-certification.ts`
+
 ## Outcome
 
 A fresh Codex or Claude Code session that knows neither Tasq nor this repository
@@ -96,6 +98,25 @@ The certificate records host/version, install mode, interventions, every argv
 or MCP call, final event cursor and ledger digest. Missing recipes, prose-based
 authority, implicit workspace inference, direct SQLite access or host-specific
 state leaking into Core are critical failures.
+
+Run the full native-host matrix after building the deterministic CLI artifact:
+
+```bash
+pnpm build:cli
+pnpm certify:agents
+```
+
+The harness creates isolated Codex and Claude Code configuration directories,
+installs the public `main` marketplace through each native CLI, gives the model
+only an executable plus explicit rendezvous/work packet, and evaluates the
+authoritative ledger rather than the model's final prose. It runs two distinct
+processes per host, carries an exclusive event cursor across the restart,
+creates real resource contention, proves rejection of the stale fence, and
+uninstalls the plugin before checking that the ledger digest is unchanged.
+Authentication is injected only for the model call; user configuration and the
+live Tasq home are never modified. Synthetic prompts and executed argv are
+recorded in the generated certificate, while raw transcripts are represented
+by SHA-256 digests.
 
 ## Non-goals
 
