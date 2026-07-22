@@ -23,7 +23,6 @@ describe("coding-agent onboarding and handoff", () => {
       contractVersion: "tasq.agent-preflight.v1",
       ok: true,
       repository: {
-        origin: "https://github.com/gwendall/tasq.git",
         canonical: true,
       },
       work: {
@@ -37,6 +36,7 @@ describe("coding-agent onboarding and handoff", () => {
       readFirst: ["AGENTS.md", "DEVELOPMENT.md", "CURRENT_STATE.md", "BACKLOG.json"],
       verification: { handoff: [["pnpm", "verify:handoff"]] },
     });
+    expect(preflight.repository.origin).toMatch(/^https:\/\/github\.com\/gwendall\/tasq(?:\.git)?$/);
     expect(preflight.work.dogfood.nextAction).toBeTruthy();
   });
 
