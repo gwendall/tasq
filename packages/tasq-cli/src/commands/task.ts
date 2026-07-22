@@ -42,7 +42,7 @@ import {
   printJson,
   shortId,
 } from "../output/format.js";
-import { enumArg, parseDateArg, type ParsedArgs } from "../args.js";
+import { enumArg, parseDateArg, positiveIntegerArg, type ParsedArgs } from "../args.js";
 import { resolveGoalIdOrError, resolveProjectIdOrError, resolveTaskIdOrError } from "./_resolve.js";
 import { ADD_USAGE, SHOW_USAGE, UPDATE_USAGE, transitionUsage } from "./usage.js";
 
@@ -477,6 +477,8 @@ export async function transitionCmd(verb: Transition, args: ParsedArgs): Promise
     }
     const result: Task = await fn(rt.db, resolved, {
       ...rt.ctx,
+      idempotencyKey: args.string("idempotency-key"),
+      expectedRevision: positiveIntegerArg(args, "expected-revision"),
       reason: args.string("reason"),
       note: args.string("note"),
       source: args.string("source"),

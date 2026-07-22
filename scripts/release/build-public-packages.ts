@@ -273,10 +273,34 @@ async function coreGraph(sourceRoot: string): Promise<string[]> {
   return [...seen].sort();
 }
 
+function packageUsage(definition: PublicPackage): string {
+  const install = `npm install ${definition.name}`;
+  switch (definition.name) {
+    case "@tasq/cli":
+      return `## Start\n\n\`\`\`bash\n${install}\nnpx tasq onboard --space my-context --actor agent:local --json\n\`\`\`\n\nExecute the returned argument-vector recipes directly. Read before mutating, persist numeric event sequences, claim before autonomous work and keep attempt success distinct from commitment completion.`;
+    case "@tasq/core":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nOpen an explicit store, run checksum-pinned kernel migrations, inject a \`Clock\`, install only trusted provider-neutral extension manifests, and pass explicit \`workspaceId\`, actor and retry identity to every mutation. Core owns commitments, collaboration, claims, attempts, evidence, resources, audit and replication; the embedding runtime owns execution, credentials, provider policy and transport.`;
+    case "@tasq/schema":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nImport portable records, validators, identifiers and clock contracts from \`@tasq/schema\`. These schemas describe coordination data; they do not grant authentication, effect authority or provider access.`;
+    case "@tasq/mcp":
+      return `## Start\n\n\`\`\`bash\n${install}\nnpx tasq-mcp --help\n\`\`\`\n\nEmbed \`createTasqMcpServer()\` when the host owns the store and injected identity, or launch the local stdio composition returned by \`tasq onboard\`. Generic stdio exposes only host-selected capabilities and never grants effect dispatch authority.`;
+    case "@tasq/extension-sdk":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nUse \`defineExtensionRuntime()\` and the connector conformance helpers to declare immutable provider-neutral types and evaluators. Credentials, network I/O and domain policy stay in the host or connector, never in Core.`;
+    case "@tasq/protocol-adapters":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nUse the pure MCP Tasks and A2A mappings to import external execution state as attempts and artifacts. Remote success never becomes commitment completion without a separate evidence-aware decision.`;
+    case "@tasq/console":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nEmbed the bounded read models and loopback Console server in a trusted local composition. The Console is read-only, foreground and loopback-only; it is not an authenticated hosted UI or an agent API.`;
+    default:
+      throw new Error(`Missing public package README guidance for ${definition.name}`);
+  }
+}
+
 async function writeReadme(stage: string, definition: PublicPackage): Promise<void> {
   const text = `# ${definition.name}\n\n${definition.description}\n\n` +
-    "This package is generated from the canonical Tasq source tree. Bun 1.3 or newer is the initial supported runtime.\n" +
-    "See https://github.com/gwendall/tasq for documentation, source, security policy and provenance.\n";
+    `${packageUsage(definition)}\n\n` +
+    "## Runtime and support\n\nBun 1.3 or newer is the initial certified runtime; Node.js support is not yet certified. " +
+    "This package is generated deterministically from the canonical Tasq source tree.\n\n" +
+    "Source, full documentation, security policy and release provenance: https://github.com/gwendall/tasq\n";
   await writeFile(join(stage, "README.md"), text, "utf8");
 }
 

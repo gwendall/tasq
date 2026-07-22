@@ -148,10 +148,23 @@ function recipes(
     },
     {
       id: "audit.list", version: 1, requiredCapability: "read", mutates: false,
-      description: "Read the unfiltered ordered workspace audit stream; use --after-sequence separately to resume from a cursor. The event command reserves --actor for an optional event-producer filter, so this recipe intentionally omits it.",
+      description: "Read the unfiltered ordered workspace audit stream; use audit.resume after persisting a cursor. The event command reserves --actor for an optional event-producer filter, so this recipe intentionally omits it.",
       argvTemplate: [
         executable, "event", "list", "--tenant", workspaceId, "--json",
       ], parameters: [],
+      outputContract: "tasq.cli-json.v1/EventV1[]",
+    },
+    {
+      id: "audit.resume", version: 1, requiredCapability: "read", mutates: false,
+      description: "Resume the unfiltered ordered workspace audit stream strictly after one persisted numeric sequence.",
+      argvTemplate: [
+        executable, "event", "list", "--after-sequence", "{afterSequence}",
+        "--ascending", "--tenant", workspaceId, "--json",
+      ],
+      parameters: [parameter(
+        "afterSequence",
+        "Last fully processed numeric event sequence; the result begins strictly after it.",
+      )],
       outputContract: "tasq.cli-json.v1/EventV1[]",
     },
     {
@@ -199,6 +212,73 @@ function recipes(
         parameter("startNote", "Concise description of the work that is starting."),
       ],
       outputContract: "tasq.cli-json.v1/TaskV1",
+    },
+    {
+      id: "attempt.start", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Start one runtime execution with stable run, conversation and retry identities.",
+      argvTemplate: [
+        executable, "attempt", "start", "{commitmentId}", "--claim", "{claimId}",
+        "--runtime", "{runtime}", "--external-id", "{externalId}",
+        "--context-id", "{contextId}", "--idempotency-key", "{idempotencyKey}",
+        ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Claimed commitment identifier."),
+        parameter("claimId", "Exact active claim identifier returned by commitment.claim."),
+        parameter("runtime", "Versioned runtime family, never a host name or process identifier."),
+        parameter("externalId", "Stable external run identity; reuse it when recovering the same run."),
+        parameter("contextId", "Stable external conversation or resumable session identity."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact attempt start."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskAttemptV1",
+    },
+    {
+      id: "attempt.input-required", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Pause the same attempt for human input without fabricating a replacement run.",
+      argvTemplate: [
+        executable, "attempt", "wait", "{attemptId}", "--message", "{message}",
+        "--expected-revision", "{expectedRevision}", "--idempotency-key", "{idempotencyKey}",
+        ...scope,
+      ],
+      parameters: [
+        parameter("attemptId", "Attempt identifier to pause."),
+        parameter("message", "Bounded human-readable reason input is required."),
+        parameter("expectedRevision", "Exact current attempt revision."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact pause transition."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskAttemptV1",
+    },
+    {
+      id: "attempt.resume", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Resume the same input-required attempt with compare-and-swap and retry identity.",
+      argvTemplate: [
+        executable, "attempt", "resume", "{attemptId}", "--message", "{message}",
+        "--expected-revision", "{expectedRevision}", "--idempotency-key", "{idempotencyKey}",
+        ...scope,
+      ],
+      parameters: [
+        parameter("attemptId", "Input-required attempt identifier to resume."),
+        parameter("message", "Bounded human-readable resume basis."),
+        parameter("expectedRevision", "Exact current attempt revision."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact resume transition."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskAttemptV1",
+    },
+    {
+      id: "attempt.succeed", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Close one attempt successfully without completing its commitment.",
+      argvTemplate: [
+        executable, "attempt", "succeed", "{attemptId}", "--message", "{message}",
+        "--expected-revision", "{expectedRevision}", "--idempotency-key", "{idempotencyKey}",
+        ...scope,
+      ],
+      parameters: [
+        parameter("attemptId", "Attempt identifier to close."),
+        parameter("message", "Bounded human-readable runtime outcome."),
+        parameter("expectedRevision", "Exact current attempt revision."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact success transition."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskAttemptV1",
     },
     {
       id: "resource.acquire", version: 1, requiredCapability: "coordinate", mutates: true,
@@ -264,6 +344,27 @@ function recipes(
         parameter("commitmentId", "Commitment identifier."),
         parameter("kind", "Evidence kind chosen by the producer."),
         parameter("summary", "Concise description of the observable evidence."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskEvidenceV1",
+    },
+    {
+      id: "evidence.append.for-attempt", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Append digest-bound observable evidence for one terminal attempt with retry identity.",
+      argvTemplate: [
+        executable, "evidence", "add", "{commitmentId}", "--attempt", "{attemptId}",
+        "--kind", "{kind}", "--summary", "{summary}", "--uri", "{uri}",
+        "--digest", "{digest}", "--source", "{source}",
+        "--idempotency-key", "{idempotencyKey}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment identifier that owns the attempt."),
+        parameter("attemptId", "Terminal attempt identifier that produced the evidence."),
+        parameter("kind", "Evidence kind chosen by the verifier."),
+        parameter("summary", "Concise observable result; never raw terminal or transcript content."),
+        parameter("uri", "External artifact or observation URI without credentials."),
+        parameter("digest", "Content digest binding the referenced observable output."),
+        parameter("source", "Stable evidence-producing runtime or observer identity."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact evidence append."),
       ],
       outputContract: "tasq.cli-json.v1/TaskEvidenceV1",
     },
@@ -390,6 +491,23 @@ function guide(selectedRecipes: readonly BootstrapRecipe[]) {
       invariants: [
         "A successful attempt does not complete its commitment.",
         "Completion consumes evidence identifiers and atomically releases active commitment claims.",
+      ],
+    },
+    {
+      id: "run-interactive-attempt",
+      intent: "Coordinate a resumable external runtime attempt and complete only after digest-bound evidence.",
+      recipeIds: [
+        "context.read", "commitment.inspect", "commitment.claim",
+        "commitment.start", "attempt.start", "attempt.input-required",
+        "attempt.resume", "attempt.succeed", "evidence.append.for-attempt",
+        "commitment.complete", "audit.resume",
+      ],
+      invariants: [
+        "Reuse stable externalId, contextId and idempotency keys after lost responses or process restart.",
+        "Re-inspect before each compare-and-swap transition; frozen compatibility JSON omits revisions.",
+        "input_required and resume mutate the same attempt; a new run requires a new externalId and attempt.",
+        "Attempt success leaves the commitment incomplete until digest-bound evidence is explicitly accepted.",
+        "Persist numeric event sequences and resume strictly after the last fully processed sequence.",
       ],
     },
   ];

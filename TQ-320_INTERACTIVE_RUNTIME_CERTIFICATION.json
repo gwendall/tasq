@@ -1,0 +1,49 @@
+{
+  "contractVersion": "tasq.interactive-runtime-certification.v1",
+  "status": "candidate-certified-publication-gate-pending",
+  "candidate": {
+    "source": "generated-public-package-tarballs",
+    "packageIndependent": true,
+    "checkoutRelativeImports": false,
+    "authorityTime": "injected-clock-only",
+    "fixture": "packages/tasq-evals/fixtures/interactive-runtime-client.ts",
+    "eval": "packages/tasq-evals/interactive-runtime-consumer.test.ts"
+  },
+  "acceptance": {
+    "assignmentAccepted": true,
+    "lostLaunchResponseDeduplicated": true,
+    "lostAttemptStartResponseDeduplicated": true,
+    "adapterRestartUsesSeparateProcesses": true,
+    "claimExpiryPreservesAttempt": true,
+    "replacementClaimUsesHigherFence": true,
+    "staleClaimCannotStartAnotherAttempt": true,
+    "staleClaimCannotAuthorizeProtectedEffect": true,
+    "staleFenceCannotAuthorizeProtectedEffect": true,
+    "inputRequiredResumesSameAttempt": true,
+    "terminalAttemptImmutable": true,
+    "attemptSuccessDoesNotCompleteCommitment": true,
+    "artifactDistinctFromEvidence": true,
+    "multipleRunsShareConversationWithoutIdentityCollision": true,
+    "cursorAndRuntimeLookupRecovery": true,
+    "machineAndSessionReferencesRemainOpaque": true,
+    "credentialsAndRawTerminalContentExcluded": true
+  },
+  "publicSurfaceChange": {
+    "kernelEntitiesAdded": false,
+    "providerOrRuntimeEnumsAdded": false,
+    "assignmentPacketAdded": false,
+    "onboardingRecipesAdded": [
+      "audit.resume",
+      "attempt.start",
+      "attempt.input-required",
+      "attempt.resume",
+      "attempt.succeed",
+      "evidence.append.for-attempt"
+    ]
+  },
+  "publishedArtifactEvidence": {
+    "status": "not-run-no-public-release-exists",
+    "blockedBy": "TQ-603-first-protected-release"
+  },
+  "tq320Complete": false
+}

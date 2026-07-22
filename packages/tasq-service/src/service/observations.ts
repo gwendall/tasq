@@ -17,7 +17,7 @@ import { OBSERVATION_KIND_TYPE_URIS } from "@tasq-internal/reference-extension";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { observationRouteKeys } from "./matchers.js";
-import { ensureBundledReferenceExtensionAvailable } from "./extensions.js";
+import { ensureBundledReferenceExtensionAvailable } from "./reference-extensions.js";
 import {
   deriveReferenceObservationSubjectRef,
   parseReferenceObservation,

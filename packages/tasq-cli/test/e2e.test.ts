@@ -158,6 +158,12 @@ describe("CLI meta commands", () => {
     const invalid = await runCli(home, ["add", "X", "--priority", "nope"]);
     expect(invalid.exitCode).toBe(2);
     expect(invalid.stderr).toContain("Invalid number");
+    const created = JSON.parse((await runOk(home, ["add", "CAS target", "--json"])).stdout);
+    const fractionalRevision = await runCli(home, [
+      "start", created.id, "--expected-revision", "1.5", "--json",
+    ]);
+    expect(fractionalRevision.exitCode).toBe(2);
+    expect(fractionalRevision.stderr).toContain("expected a positive integer");
   });
 
   // Subcommand help: `tasq <cmd> --help` used to fall through to dispatch
@@ -270,6 +276,7 @@ describe("autonomous zero-integrator bootstrap", () => {
       "propose-outcome",
       "coordinate-resource-effect",
       "complete-evidenced-work",
+      "run-interactive-attempt",
     ]);
     for (const journey of created.guide.journeys) {
       expect(journey.recipeIds.every((id: string) =>
@@ -278,7 +285,7 @@ describe("autonomous zero-integrator bootstrap", () => {
     for (const recipe of created.recipes) {
       expect(recipe.argvTemplate).toContain("--tenant");
       expect(recipe.argvTemplate).toContain("robotics/team-a");
-      if (recipe.id === "audit.list") {
+      if (recipe.id.startsWith("audit.")) {
         expect(recipe.argvTemplate).not.toContain("--actor");
         expect(recipe.description).toContain("unfiltered ordered workspace audit stream");
       } else {
@@ -413,6 +420,110 @@ describe("autonomous zero-integrator bootstrap", () => {
     expect(JSON.parse((await executeRecipe("summary.list", {
       "{commitmentId}": commitment.id,
     })).stdout).items).toHaveLength(2);
+
+    const runtimeCommitmentRun = await executeRecipe("commitment.propose", {
+      "{title}": "Resume one interactive runtime safely",
+    });
+    expect(runtimeCommitmentRun.exitCode).toBe(0);
+    const runtimeCommitment = JSON.parse(runtimeCommitmentRun.stdout);
+    const inspectRuntime = async () => JSON.parse((await executeRecipe("commitment.inspect", {
+      "{commitmentId}": runtimeCommitment.id,
+    })).stdout);
+    const initialRuntimeInspection = await inspectRuntime();
+    const claimCommand = [
+      "claim", runtimeCommitment.id, "--for", "30m",
+      "--idempotency-key", "interactive-claim-1",
+      "--tenant", "robotics/team-a", "--actor", "cold-agent", "--json",
+    ];
+    const runtimeClaim = JSON.parse((await runOk(home, claimCommand)).stdout);
+    const replayedClaim = JSON.parse((await runOk(home, claimCommand)).stdout);
+    expect(replayedClaim).toEqual(runtimeClaim);
+
+    const startCommand = [
+      "start", runtimeCommitment.id, "--note", "Starting resumable interactive work",
+      "--expected-revision", String(initialRuntimeInspection.commitment.revision),
+      "--idempotency-key", "interactive-commitment-start-1",
+      "--tenant", "robotics/team-a", "--actor", "cold-agent", "--json",
+    ];
+    const runtimeStarted = JSON.parse((await runOk(home, startCommand)).stdout);
+    expect(JSON.parse((await runOk(home, startCommand)).stdout)).toEqual(runtimeStarted);
+
+    const attemptStartInput = {
+      "{commitmentId}": runtimeCommitment.id,
+      "{claimId}": runtimeClaim.id,
+      "{runtime}": "interactive:fixture-v1",
+      "{externalId}": "run-001",
+      "{contextId}": "conversation-001",
+      "{idempotencyKey}": "interactive-attempt-start-1",
+    };
+    const attempt = JSON.parse((await executeRecipe("attempt.start", attemptStartInput)).stdout);
+    expect(JSON.parse((await executeRecipe("attempt.start", attemptStartInput)).stdout)).toEqual(attempt);
+    const runningInspection = await inspectRuntime();
+    const runningAttempt = runningInspection.attempts.find((item: any) => item.id === attempt.id);
+
+    const waitingInput = {
+      "{attemptId}": attempt.id,
+      "{message}": "Operator confirmation required",
+      "{expectedRevision}": String(runningAttempt.revision),
+      "{idempotencyKey}": "interactive-attempt-wait-1",
+    };
+    const waiting = JSON.parse((await executeRecipe("attempt.input-required", waitingInput)).stdout);
+    expect(waiting).toMatchObject({ id: attempt.id, status: "input_required" });
+    expect(JSON.parse((await executeRecipe("attempt.input-required", waitingInput)).stdout)).toEqual(waiting);
+    const waitingInspection = await inspectRuntime();
+    const waitingAttempt = waitingInspection.attempts.find((item: any) => item.id === attempt.id);
+
+    const resumed = JSON.parse((await executeRecipe("attempt.resume", {
+      "{attemptId}": attempt.id,
+      "{message}": "Operator confirmed",
+      "{expectedRevision}": String(waitingAttempt.revision),
+      "{idempotencyKey}": "interactive-attempt-resume-1",
+    })).stdout);
+    expect(resumed).toMatchObject({ id: attempt.id, status: "running" });
+    const resumedInspection = await inspectRuntime();
+    const resumedAttempt = resumedInspection.attempts.find((item: any) => item.id === attempt.id);
+    const succeeded = JSON.parse((await executeRecipe("attempt.succeed", {
+      "{attemptId}": attempt.id,
+      "{message}": "Runtime produced a digest-bound result",
+      "{expectedRevision}": String(resumedAttempt.revision),
+      "{idempotencyKey}": "interactive-attempt-succeed-1",
+    })).stdout);
+    expect(succeeded).toMatchObject({ id: attempt.id, status: "succeeded" });
+    const runtimeEvidenceInput = {
+      "{commitmentId}": runtimeCommitment.id,
+      "{attemptId}": attempt.id,
+      "{kind}": "runtime-result",
+      "{summary}": "Fixture output passed deterministic verification",
+      "{uri}": "https://runtime.example.invalid/artifacts/result-001",
+      "{digest}": `sha256:${"a".repeat(64)}`,
+      "{source}": "interactive:fixture-v1",
+      "{idempotencyKey}": "interactive-evidence-1",
+    };
+    const runtimeEvidence = JSON.parse((await executeRecipe(
+      "evidence.append.for-attempt", runtimeEvidenceInput,
+    )).stdout);
+    expect(JSON.parse((await executeRecipe(
+      "evidence.append.for-attempt", runtimeEvidenceInput,
+    )).stdout)).toEqual(runtimeEvidence);
+
+    const completionCommand = [
+      "done", runtimeCommitment.id, "--evidence", runtimeEvidence.id,
+      "--note", "Verified runtime output accepted", "--source", "interactive:fixture-v1",
+      "--expected-revision", String((await inspectRuntime()).commitment.revision),
+      "--idempotency-key", "interactive-completion-1",
+      "--tenant", "robotics/team-a", "--actor", "cold-agent", "--json",
+    ];
+    const runtimeCompleted = JSON.parse((await runOk(home, completionCommand)).stdout);
+    expect(runtimeCompleted.status).toBe("done");
+    expect(JSON.parse((await runOk(home, completionCommand)).stdout)).toEqual(runtimeCompleted);
+
+    const resumedAudit = JSON.parse((await executeRecipe("audit.resume", {
+      "{afterSequence}": "0",
+    })).stdout);
+    expect(resumedAudit.length).toBeGreaterThan(0);
+    expect(resumedAudit.map((event: any) => event.sequence)).toEqual(
+      [...resumedAudit].map((event: any) => event.sequence).sort((left, right) => left - right),
+    );
   });
 
   it("filters recipe guidance without pretending that local aliases are access control", async () => {

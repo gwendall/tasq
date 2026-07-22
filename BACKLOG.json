@@ -56,6 +56,10 @@
       "state": "blocked_by_first_protected_release",
       "candidateEvidence": "TQ-606_ADOPTION_CERTIFICATION.json"
     },
+    "publishedInteractiveRuntimeCertification": {
+      "state": "blocked_by_first_protected_release",
+      "candidateEvidence": "TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"
+    },
     "independentBlindHumanAdoption": {
       "state": "not_run",
       "requiredEvidence": "Unbriefed external human completes from only the public entrypoint with interventions recorded"
@@ -189,11 +193,12 @@
     },
     {
       "id": "TQ-320",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "runtime-consumers",
       "dependsOn": ["TQ-603", "TQ-304", "TQ-501"],
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
-      "evidence": ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"]
+      "remaining": ["rerun-from-first-published-release"],
+      "evidence": ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md", "TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"]
     },
     {
       "id": "TQ-801",

@@ -26,8 +26,11 @@ trust policy and verify the same URI/version/digest identities.
 @tasq-internal/reference-extension
   Gmail / GitHub / Mercury / HTTP / filesystem modules
             ↓
+@tasq/core
+  durable provider-neutral registry + kernel transactions
+            ↓
 @tasq-internal/local-service
-  durable registry + v1 compatibility adapter + transactions
+  bundled v1 compatibility provisioning and aliases
 ```
 
 No package above the arrow may import a package below it. Executable provider
@@ -187,7 +190,8 @@ HTTP methods, Mercury vocabulary/defaults and all five reconciliation paths.
   still exposes the five v1 aliases. Generic record APIs arrive after the
   universal conformance gate.
 - Registry installation remains an administrative service API, not an ordinary
-  task mutation.
+  task mutation. Embedded consumers call `installExtension` from `@tasq/core`;
+  installation stores a manifest but never downloads or executes runtime code.
 
 ## Required tests for a new extension
 
