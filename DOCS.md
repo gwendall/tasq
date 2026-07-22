@@ -33,6 +33,8 @@ routes readers by purpose; it does not replace the authoritative documents.
   `PUBLIC_RELEASE_POLICY.json` — public distribution gates.
 - `TQ-603_RELEASE_CONTRACT.md` and `TQ-604_LIFECYCLE_CERTIFICATION.md` — release
   production and published-byte lifecycle.
+- `TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and its JSON certificate —
+  clean-room interactive-runtime candidate and remaining published-byte gate.
 
 ## Engineering contracts and evidence
 

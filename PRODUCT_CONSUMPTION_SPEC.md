@@ -214,8 +214,9 @@ success alone.
 
 **Support:** the required kernel records and embedded/CLI/local-MCP integration
 surfaces exist. TQ-304 certifies durable workflow runtimes; the distinct
-interactive conversation/run shape is not yet certified. TQ-320 owns that
-conformance gate, motivated by a Denshin-style consumer.
+interactive conversation/run shape is candidate-certified from clean-room
+package tarballs. TQ-320 still requires replay from the first protected
+published packages before the public conformance claim closes.
 
 **Non-claim:** Tasq does not launch the agent, stream its terminal, own its
 conversation, choose its machine or authenticate a remote control plane.
@@ -239,8 +240,10 @@ an unfamiliar domain.
 **Path:** publish an immutable manifest/runtime pair behind the extension SDK;
 keep provider I/O and human policy outside the extension evaluator.
 
-**Support:** implemented internally; executable loading, signatures,
-sandboxing and a public extension registry are not implemented.
+**Support:** immutable manifest installation is exposed by Embedded Core and
+runtime composition is implemented by the SDK. Executable downloading,
+signatures, sandboxing and a hosted public extension catalog are not
+implemented.
 
 ### 4.9 Remote agent, remote human or another machine
 
@@ -282,7 +285,7 @@ is explicitly mutable source-build guidance, not a protected-release claim.
 | Use case | Kernel fit | Product readiness | Missing outer layer |
 |---|---|---|---|
 | Local coding-agent handoff | Excellent | Ready locally | Protected public release channel |
-| Interactive agent control plane | Excellent | Integration primitives ready | TQ-320 consumer adapter and conformance |
+| Interactive agent control plane | Excellent | Candidate conformance complete | TQ-320 published-package replay |
 | Multi-agent contention on one host | Excellent | Ready locally | Protected public release channel |
 | Robotics resource coordination | Excellent | Kernel/CLI ready | Robot adapter and fence enforcement |
 | Research with human acceptance | Excellent | Kernel ready | Domain UI and evidence policy |

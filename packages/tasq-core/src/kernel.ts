@@ -105,6 +105,22 @@ export {
 } from "./service/collaboration.js";
 export type { PrincipalContext } from "./service/collaboration.js";
 
+// Trusted administrative surface for provider-neutral extension manifests.
+// Bundled domain extensions remain outside the minimal kernel entrypoint.
+export {
+  canonicalJson,
+  sha256Digest,
+  prepareExtensionManifest,
+  installExtension,
+  listExtensionReleases,
+  getExtensionTypeRegistration,
+  getExtensionEvaluatorRegistration,
+} from "./service/extensions.js";
+export type {
+  InstallExtensionOptions,
+  InstalledExtension,
+} from "./service/extensions.js";
+
 export {
   proposeEffect,
   getEffect,

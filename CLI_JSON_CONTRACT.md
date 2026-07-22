@@ -191,7 +191,9 @@ Returned by:
 
 `status` is one of `running`, `input_required`, `succeeded`, `failed`, or
 `cancelled`. `endedAt` is null for active states and non-null for terminal
-states. Terminal objects never change again.
+states. Terminal objects never change again. Frozen `TaskAttemptV1` omits its
+internal revision; retry-safe transition recipes obtain the canonical current
+revision from `commitment.inspect` before compare-and-swap.
 
 ## `TaskEvidenceV1`
 
@@ -405,8 +407,10 @@ agent transport or new authority boundary.
 
 ## Retry semantics
 
-`claim`, `attempt start`, `evidence add`, and `wait create` accept
-`--idempotency-key`. Retrying
+`claim`, task status transitions, attempt start/transitions, `evidence add`,
+and `wait create` accept `--idempotency-key`. Task and attempt transitions also
+accept `--expected-revision`; frozen compatibility objects omit that revision,
+so autonomous consumers read it from `commitment.inspect`. Retrying
 the same operation, actor, and payload resolves to the same durable resource
 ID; reusing the key for another request or actor is an error. Claims and
 attempts are lifecycle objects, so a much later retry may return that same

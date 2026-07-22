@@ -114,7 +114,7 @@ syntax to that machine response so it cannot become a second command manual.
 | Package | Purpose |
 |---|---|
 | `@tasq/schema` | Portable schemas, identifiers, digests, and clock contracts |
-| `@tasq/core` | Profile-neutral coordination kernel and migrations |
+| `@tasq/core` | Profile-neutral coordination kernel, migrations and trusted manifest registry |
 | `@tasq/cli` | Tasq Local CLI and `tasq` executable |
 | `@tasq/mcp` | Capability-scoped local stdio MCP transport |
 | `@tasq/extension-sdk` | Extension runtime and connector conformance contracts |
@@ -124,10 +124,11 @@ syntax to that machine response so it cannot become a second command manual.
 The packages are release candidates until the first protected, attested public
 release is published. Do not infer npm availability from this source tree.
 
-Interactive agent control planes can already map conversations and runs to
-Tasq attempts and external references. TQ-320 will certify that consumer shape
-against a Denshin-style lifecycle before Tasq claims it as a supported
-integration recipe; it does not add machine or terminal ownership to Core.
+Interactive agent control planes can map conversations and runs to Tasq
+attempts and external references. TQ-320 now candidate-certifies that shape
+through a package-independent clean-room runtime fixture; replay from the first
+protected published packages remains. This integration does not add machine or
+terminal ownership to Core.
 
 The release-candidate lifecycle is implemented: target artifacts include a
 checksummed standalone installer, side-by-side activation and data-preserving

@@ -512,7 +512,7 @@
     },
     {
       "id": "TQ-320",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "runtime-consumers",
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
@@ -610,7 +610,7 @@
     {
       "path": "BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "4d0ecf5488f71d36cf584baeca31c2852ba40bd2f6c0b86c5dc39dd04e2f22f5"
+      "sha256": "a7ab5c1eb2c94e32a7a31886c9902f2b25d4bab3c2eb2b2221b3206bb077f079"
     },
     {
       "path": "PUBLIC_RELEASE_POLICY.json",

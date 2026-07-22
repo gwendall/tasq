@@ -228,12 +228,14 @@ export {
   sha256Digest,
   prepareExtensionManifest,
   installExtension,
-  ensureBundledReferenceExtension,
-  ensureBundledReferenceExtensionAvailable,
   listExtensionReleases,
   getExtensionTypeRegistration,
   getExtensionEvaluatorRegistration,
 } from "./service/extensions.js";
+export {
+  ensureBundledReferenceExtension,
+  ensureBundledReferenceExtensionAvailable,
+} from "./service/reference-extensions.js";
 export type {
   InstallExtensionOptions,
   InstalledExtension,

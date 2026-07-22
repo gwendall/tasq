@@ -27,7 +27,7 @@ import { runInTransaction } from "../db.js";
 import type { ServiceContext } from "./context.js";
 import { emitAfterCommit, recordEvent } from "./events.js";
 import { getTask } from "./tasks.js";
-import { ensureBundledReferenceExtensionAvailable } from "./extensions.js";
+import { ensureBundledReferenceExtensionAvailable } from "./reference-extensions.js";
 import { parseReferenceCondition } from "./reference-runtime.js";
 import { serviceNow } from "../util/clock.js";
 import {

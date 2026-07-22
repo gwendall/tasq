@@ -109,14 +109,25 @@ stays inert, support metadata stays redacted and corrupt canonical state fails
 with a generic operator-safe error. This is a Local browser gate, not a hosted
 Console or broad browser-engine claim.
 
-TQ-320 is accepted backlog scope, not implemented behavior. It will certify an
-interactive agent control plane that owns machines, conversations, terminals
-and runs while Tasq owns commitment coordination. Existing records appear
-sufficient; no new Core entity or handoff packet is authorized before the
-black-box consumer trial demonstrates a concrete gap.
+TQ-320 now has a package-independent candidate certificate. A clean-room
+runtime installs generated `@tasq/schema`, `@tasq/extension-sdk` and
+`@tasq/core` tarballs, then proves assignment, stable conversation/run
+identity, lost-response deduplication, `input_required` resume, claim expiry
+and higher-fence reclaim, two attempts in one conversation, distinct
+artifacts/evidence, cursor-only restart across separate adapter processes,
+stale claim/fence rejection at the protected effect gate and explicit
+completion. No new Core entity or runtime-specific enum was required. Local autonomous onboarding now
+also advertises additive retry-safe attempt recipes and an exact audit-resume
+recipe. Final TQ-320 closure still requires replay from the first protected
+published packages; the private Denshin journey remains product-learning
+evidence rather than that external claim.
 
-The interactive-runtime slice of TQ-607 is private learning evidence only.
-TQ-320 remains the post-release, package-independent conformance claim.
+The same clean-room trial found and closed an Embedded Core packaging gap:
+effects required a registered immutable type, but `@tasq/core` did not expose
+the neutral administrative manifest installer. `installExtension` and the
+read-only registry queries now live in Core; the Local service only adds
+bundled compatibility provisioning. Manifest installation never loads code or
+grants effect authority.
 
 The shortest verified loop is:
 

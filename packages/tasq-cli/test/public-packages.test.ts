@@ -122,6 +122,11 @@ describe("Tasq public npm package candidates", () => {
       expect(manifest).not.toHaveProperty("private");
       expect(JSON.stringify(manifest)).not.toContain("workspace:");
       expect(JSON.stringify(manifest)).not.toContain("@kami/");
+      const packagedReadme = await readFile(join(packageRoot, "README.md"), "utf8");
+      expect(packagedReadme).toContain(`# ${manifest.name}`);
+      expect(packagedReadme).toContain(`npm install ${manifest.name}`);
+      expect(packagedReadme).toContain("Bun 1.3 or newer");
+      expect(packagedReadme).toContain("https://github.com/gwendall/tasq");
       for (const path of await files(packageRoot)) {
         if (path.endsWith(".sql")) continue; // immutable migrations retain historical comments
         const content = await readFile(path);

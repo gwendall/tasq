@@ -111,10 +111,14 @@ describe("canonical Tasq roadmap", () => {
       evidence: ["TQ-804_GUARDED_MUTATION_REST.md", "TQ-804_MUTATION_REST_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-320")).toMatchObject({
-      status: "pending",
+      status: "candidate_done_publication_gate",
       milestone: "runtime-consumers",
       dependsOn: ["TQ-603", "TQ-304", "TQ-501"],
-      evidence: ["TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"],
+      remaining: ["rerun-from-first-published-release"],
+      evidence: [
+        "TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md",
+        "TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
+      ],
     });
     for (const item of roadmap.items.filter(({ milestone, id }) => (
       (milestone === "self-hosted-server" || milestone === "managed-cloud") && !["TQ-801", "TQ-802", "TQ-803", "TQ-804"].includes(id)
@@ -139,6 +143,7 @@ describe("canonical Tasq roadmap", () => {
       firstProtectedRelease: { state: "not_run" },
       publishedLifecycleCertification: { state: "blocked_by_first_protected_release" },
       publishedAdoptionCertification: { state: "blocked_by_first_protected_release" },
+      publishedInteractiveRuntimeCertification: { state: "blocked_by_first_protected_release" },
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items[0]).toMatchObject({

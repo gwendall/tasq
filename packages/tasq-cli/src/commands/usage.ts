@@ -27,7 +27,7 @@ export const SEARCH_USAGE = 'search "<query>"';
 
 /** transitionCmd builds its missing-arg usage from the verb name. */
 export function transitionUsage(verb: string): string {
-  return `${verb} <id>${verb === "done" ? " [--evidence <id,...>]" : ""} [--reason <text>] [--note <text>] [--at <iso>]`;
+  return `${verb} <id>${verb === "done" ? " [--evidence <id,...>]" : ""} [--reason <text>] [--note <text>] [--at <iso>] [--expected-revision <n>] [--idempotency-key <key>]`;
 }
 
 export const DEPEND_USAGE =
@@ -79,11 +79,11 @@ prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
 export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
 export const RELEASE_USAGE = "release <task-id> [--reason <text>] [--force]";
-export const ATTEMPT_USAGE = `attempt start <task-id> [--runtime <name>] [--external-id <id>]
+export const ATTEMPT_USAGE = `attempt start <task-id> [--claim <claim-id>] [--runtime <name>] [--external-id <id>] [--context-id <id>] [--metadata <json>] [--idempotency-key <key>]
 attempt list [task-id]
 attempt show <attempt-id>
-attempt status <attempt-id> --status running|input_required|succeeded|failed|cancelled
-attempt succeed|fail|cancel|wait|resume <attempt-id> [--message <text>]`;
+attempt status <attempt-id> --status running|input_required|succeeded|failed|cancelled [--expected-revision <n>] [--idempotency-key <key>]
+attempt succeed|fail|cancel|wait|resume <attempt-id> [--message <text>] [--expected-revision <n>] [--idempotency-key <key>]`;
 export const EVIDENCE_USAGE = `evidence add <task-id> --kind <kind> [--summary <text>] [--uri <uri>] [--digest <digest>] [--source <source>] [--attempt <id>] [--supersedes <id>] [--observed-at <iso>] [--metadata <json>] [--idempotency-key <key>]
 evidence list [task-id] [--kind <kind>] [--limit N]
 evidence show <evidence-id>`;

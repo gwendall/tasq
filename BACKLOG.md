@@ -142,17 +142,20 @@ breadth is intentionally lower priority even when technically unblocked.
 
 ### 5. Certify external interactive runtimes
 
-- **TQ-320 — pending after TQ-603:** certify a Denshin-shaped interactive
-  runtime consumer without adding Machine, terminal, conversation or provider
-  ontology to Core. The gate must cover stable conversation/run identity,
-  assignment, claim/fence, attempt lifecycle, `input_required`, multi-run
-  resume, artifacts/evidence, explicit completion and crash-safe retry through
-  existing public surfaces first. See
-  `TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md`.
+- **TQ-320 — candidate complete, published-byte gate:** a clean-room runtime
+  now installs generated `@tasq/*` tarballs and proves explicit assignment,
+  lost-response retry, claim expiry and higher-fence reclaim,
+  `input_required` resume on the same attempt, two runs in one conversation,
+  immutable terminal state, distinct artifacts/evidence, cursor recovery and
+  explicit completion. The autonomous CLI guide also exposes additive
+  retry-safe attempt recipes; no Machine, terminal, conversation or provider
+  ontology entered Core. Final closure requires rerunning the same fixture
+  from the first protected published packages. See
+  `TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and
+  `TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 
-  TQ-607 first exercises this shape privately to discover friction. TQ-320 is
-  the stricter public-byte, package-independent conformance claim; private
-  dogfood does not complete it.
+  TQ-607's Denshin journey remains private product-learning evidence. The
+  candidate proof is package-independent but is not a published-byte claim.
 
 ### 6. Build self-hosted Tasq Server
 

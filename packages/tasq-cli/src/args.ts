@@ -149,3 +149,13 @@ export function enumArg<T extends string>(
     `Invalid value for --${flagName}: "${raw}". Allowed: ${allowed.join(", ")}`,
   );
 }
+
+/** Parse an optional strictly positive integer flag used for CAS revisions. */
+export function positiveIntegerArg(args: ParsedArgs, flagName: string): number | undefined {
+  const value = args.number(flagName);
+  if (value === undefined) return undefined;
+  if (!Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`Invalid value for --${flagName}: expected a positive integer`);
+  }
+  return value;
+}

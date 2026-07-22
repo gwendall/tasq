@@ -35,6 +35,8 @@ The top-level `*.test.ts` files cover:
 - bounded/source-linked context and read-only observation loops;
 - Local Console contracts, browser certification, public adoption and product
   support truth;
+- package-installed interactive-runtime pause, crash, reclaim, multi-run and
+  explicit-completion conformance;
 - future hosted authority/store/REST foundations without claiming a deployable
   Server;
 - documentation and public-roadmap consistency.

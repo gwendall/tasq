@@ -1,7 +1,7 @@
 # TQ-320 — interactive agent-runtime consumer conformance
 
-> **Status:** accepted scope; implementation pending after the first protected
-> release gate
+> **Status:** candidate certified; first protected published-package replay
+> remains external
 > **Proposed contract:** `tasq.interactive-runtime-consumer.v1`
 > **Motivating consumer:** Denshin-style machine, terminal and agent-session
 > control planes
@@ -18,6 +18,33 @@ completion basis.
 This item is a consumer contract and black-box conformance gate first. It does
 not authorize a new kernel entity, a Denshin dependency, a prompt builder or an
 agent scheduler.
+
+## Candidate result
+
+The pre-public candidate now passes from generated npm tarballs installed in a
+clean directory. The fixture accepts an assignment, deduplicates a lost
+external launch and lost attempt-start response, pauses and resumes one attempt
+through `input_required`, survives claim expiry with a higher-fence reclaim,
+exits the first adapter process, recovers in a second process from a persisted
+event sequence plus runtime lookup, and runs another attempt in the same
+conversation. The protected dispatch gate rejects both the expired claim and
+the stale fence. Attempt success leaves the commitment open; a digest-bound
+artifact remains distinct from evidence and completion remains an explicit
+evidence-aware transition.
+
+The trial required no new record or assignment packet. It did expose a Local
+agent ergonomics gap: autonomous onboarding did not advertise retry-safe
+attempt transitions or exact event-cursor resume. Additive recipes now cover
+attempt start/pause/resume/success, attempt-bound evidence and `audit.resume`;
+the established claim/start/complete recipes remain the surrounding lifecycle.
+The CLI transitions themselves also accept caller-stable retry identity and
+compare-and-swap revisions. Frozen compatibility JSON continues to omit
+revisions; canonical `commitment.inspect` supplies every CAS revision.
+
+Machine, session and conversation identities remain opaque references. The
+fixture contains no Denshin dependency, credentials, transcript content,
+terminal bytes or device-clock authority. Machine evidence is recorded in
+`TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 
 ## Why TQ-304 is not the complete proof
 
@@ -130,17 +157,16 @@ demonstrates the concrete gap in at least one second unrelated runtime shape.
 ## Dependencies and order
 
 TQ-320 depends on the completed TQ-304 runtime recipes and TQ-501 bounded
-context contract. Execution remains behind TQ-603 because the first external
-consumer should integrate the exact protected package bytes rather than a
-checkout-only dependency. It precedes any generic claim that interactive agent
-control planes are certified consumers; it does not block internal TQ-805
-Server work.
+context contract. Candidate execution was deliberately completed before
+TQ-603 from deterministic installable package tarballs so runtime friction can
+be fixed while the repository is private. Final closure remains behind TQ-603:
+the identical fixture must consume the exact protected published package
+bytes. It does not block internal TQ-805 Server work.
 
-TQ-607 first runs the same identity/lifecycle shape as a private dogfood
-consumer to discover product friction before publication. That source-built or
-candidate-byte use is learning evidence, not TQ-320 completion: this contract
-still requires the first protected public bytes and a package-independent
-black-box consumer.
+TQ-607 first ran the same identity/lifecycle shape as a private dogfood
+consumer to discover product friction. The stricter package-independent
+candidate now also passes, but neither proof substitutes for replay from the
+first protected public bytes.
 
 ## Definition of done
 

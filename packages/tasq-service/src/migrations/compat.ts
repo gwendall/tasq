@@ -6,7 +6,7 @@ import {
   type MigrationOptions as KernelMigrationOptions,
   type MigrationResult,
 } from "./index.js";
-import { ensureReferenceExtensionRegistry } from "../service/extensions.js";
+import { ensureReferenceExtensionRegistry } from "../service/reference-extensions.js";
 import { serviceNow } from "../util/clock.js";
 
 export interface MigrationOptions extends KernelMigrationOptions {

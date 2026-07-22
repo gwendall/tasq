@@ -16,7 +16,7 @@ import {
   type AttemptStatus,
   type Metadata,
 } from "@tasq-internal/local-service";
-import { enumArg, parseDateArg, type ParsedArgs } from "../args.js";
+import { enumArg, parseDateArg, positiveIntegerArg, type ParsedArgs } from "../args.js";
 import { color, printError, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime, regenerateProjection } from "../runtime.js";
 import { resolveTaskIdOrError } from "./_resolve.js";
@@ -191,6 +191,8 @@ export async function attemptCmd(args: ParsedArgs): Promise<number> {
     if (!target) throw new Error(`Unknown attempt subcommand: ${sub}`);
     const attempt = await transitionTaskAttempt(rt.db, id, target, {
       ...rt.ctx,
+      idempotencyKey: args.string("idempotency-key"),
+      expectedRevision: positiveIntegerArg(args, "expected-revision"),
       message: args.string("message") ?? null,
       occurredAt: args.string("at") ? parseDateArg(args.string("at")!) : undefined,
     });
