@@ -66,8 +66,9 @@ installation, activation, rendezvous and uninstall instructions are in
 
 `TQ-321_AGENT_PLUGIN_CERTIFICATION.json` records strict manifest validation and
 real install/list/uninstall lifecycle results from isolated temporary homes for
-Codex 0.144.4 and Claude Code 2.1.217. It explicitly leaves the remote-main
-replay and both blind behavioral matrices open.
+Codex 0.144.4 and Claude Code 2.1.217. The same lifecycle also passes from the
+public `main` marketplace through an anonymous HTTPS clone. Both blind
+behavioral matrices remain open.
 
 The originally proposed Tasq-specific installer and `integration doctor`
 commands are not required for the candidate because both supported hosts now
