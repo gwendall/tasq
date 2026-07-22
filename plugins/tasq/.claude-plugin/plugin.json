@@ -1,0 +1,15 @@
+{
+  "name": "tasq",
+  "version": "0.1.0",
+  "description": "Coordinate durable commitments across humans and AI agents through an explicit local Tasq space.",
+  "author": {
+    "name": "Gwendall Esnault",
+    "email": "gwendall@metahood.xyz",
+    "url": "https://github.com/gwendall"
+  },
+  "homepage": "https://github.com/gwendall/tasq",
+  "repository": "https://github.com/gwendall/tasq",
+  "license": "Apache-2.0",
+  "keywords": ["agents", "coordination", "mcp", "tasks"],
+  "skills": "./skills/"
+}

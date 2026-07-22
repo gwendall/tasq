@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tasq"
+  short_description: "Coordinate durable work across agents"
+  default_prompt: "Use $tasq to inspect and coordinate durable work in an explicit Tasq space."

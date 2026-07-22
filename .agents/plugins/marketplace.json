@@ -1,0 +1,20 @@
+{
+  "name": "tasq",
+  "interface": {
+    "displayName": "Tasq"
+  },
+  "plugins": [
+    {
+      "name": "tasq",
+      "source": {
+        "source": "local",
+        "path": "./plugins/tasq"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

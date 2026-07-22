@@ -6,6 +6,7 @@
   "repositoryVisibility": "public_alpha",
   "statusVocabulary": [
     "done",
+    "in_progress_implementation",
     "in_progress_dogfood",
     "in_progress_external_gate",
     "candidate_done_publication_gate",
@@ -119,12 +120,12 @@
   "items": [
     {
       "id": "TQ-321",
-      "status": "pending",
+      "status": "in_progress_implementation",
       "milestone": "runtime-consumers",
       "dependsOn": ["TQ-311", "TQ-312", "TQ-318"],
       "outcome": "Let a zero-context Codex or Claude Code agent discover, install and use Tasq through native instructions, MCP where available and a CLI fallback without replacing the runtime's private scratchpad",
-      "remaining": ["ship-install-and-uninstall-paths", "ship-codex-and-claude-adapters", "run-blind-agent-certification"],
-      "evidence": ["TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md"]
+      "remaining": ["run-blind-agent-certification"],
+      "evidence": ["TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md", "TQ-321_AGENT_PLUGIN_CERTIFICATION.json", "AGENT_INTEGRATIONS.md", "AGENT_INTEGRATIONS.json", "plugins/tasq/skills/tasq/SKILL.md"]
     },
     {
       "id": "TQ-608",

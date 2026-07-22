@@ -1,7 +1,9 @@
 # TQ-321 — Zero-context agent integration
 
-**Status:** accepted next work; implementation and blind certification pending  
-**Depends on:** TQ-311, TQ-312 and TQ-318  
+**Status:** native integration candidate implemented; blind certification pending
+
+**Depends on:** TQ-311, TQ-312 and TQ-318
+
 **Blocks:** first protected package release in TQ-603
 
 ## Outcome
@@ -46,6 +48,33 @@ actor belongs in Tasq.
   space/actor/capability binding and a safe first-read result;
 - `tasq integration uninstall` that removes only manifest-owned files and never
   touches `TASQ_HOME` or a ledger.
+
+## Implemented candidate
+
+`AGENT_INTEGRATIONS.json` is the neutral machine contract. The Codex marketplace
+at `.agents/plugins/marketplace.json` and Claude marketplace at
+`.claude-plugin/marketplace.json` both install the same versioned
+`plugins/tasq/skills/tasq/SKILL.md`. Native host uninstall commands are the
+ownership boundary and never address Tasq data.
+
+The source-alpha candidate intentionally does not ship a generic `.mcp.json`:
+MCP configuration is valid only after the host binds an explicit executable,
+space, actor and capability set. The shared skill uses already host-bound MCP
+when present and otherwise falls back to `tasq onboard ... --json`. Human
+installation, activation, rendezvous and uninstall instructions are in
+`AGENT_INTEGRATIONS.md`.
+
+`TQ-321_AGENT_PLUGIN_CERTIFICATION.json` records strict manifest validation and
+real install/list/uninstall lifecycle results from isolated temporary homes for
+Codex 0.144.4 and Claude Code 2.1.217. It explicitly leaves the remote-main
+replay and both blind behavioral matrices open.
+
+The originally proposed Tasq-specific installer and `integration doctor`
+commands are not required for the candidate because both supported hosts now
+provide native marketplace lifecycle commands and the existing onboarding
+response performs executable and first-read discovery. They must be revisited
+if another host lacks an owned native lifecycle or blind trials show that the
+composed diagnostics are insufficient.
 
 ## Blind acceptance
 

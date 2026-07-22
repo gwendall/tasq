@@ -66,6 +66,7 @@ describe("canonical Tasq roadmap", () => {
       repositoryVisibility: "public_alpha",
       statusVocabulary: [
         "done",
+        "in_progress_implementation",
         "in_progress_dogfood",
         "in_progress_external_gate",
         "candidate_done_publication_gate",
@@ -147,8 +148,16 @@ describe("canonical Tasq roadmap", () => {
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
-      status: "pending",
+      status: "in_progress_implementation",
       milestone: "runtime-consumers",
+      remaining: ["run-blind-agent-certification"],
+      evidence: [
+        "TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md",
+        "TQ-321_AGENT_PLUGIN_CERTIFICATION.json",
+        "AGENT_INTEGRATIONS.md",
+        "AGENT_INTEGRATIONS.json",
+        "plugins/tasq/skills/tasq/SKILL.md",
+      ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
       status: "pending",

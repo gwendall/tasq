@@ -1,0 +1,27 @@
+{
+  "name": "tasq",
+  "version": "0.1.0",
+  "description": "Coordinate durable commitments across humans and AI agents through an explicit local Tasq space.",
+  "author": {
+    "name": "Gwendall Esnault",
+    "email": "gwendall@metahood.xyz",
+    "url": "https://github.com/gwendall"
+  },
+  "homepage": "https://github.com/gwendall/tasq",
+  "repository": "https://github.com/gwendall/tasq",
+  "license": "Apache-2.0",
+  "keywords": ["agents", "coordination", "mcp", "tasks"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Tasq",
+    "shortDescription": "Durable agent coordination",
+    "longDescription": "Inspect and coordinate durable commitments, claims, attempts, evidence and resource leases without replacing the agent runtime's private scratchpad.",
+    "developerName": "Gwendall Esnault",
+    "category": "Productivity",
+    "capabilities": ["Inspect commitments", "Coordinate shared work"],
+    "defaultPrompt": [
+      "Use Tasq to inspect the next durable commitments in my explicit space.",
+      "Use Tasq to claim and record progress on shared work."
+    ]
+  }
+}

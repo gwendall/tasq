@@ -102,6 +102,15 @@ Console inspection. Published-byte replay and an independent real-human blind
 session remain external gates; no human-usability completion is inferred from
 the automated proxy.
 
+TQ-321 now has a native integration candidate for Codex and Claude Code. Both
+host marketplaces install the same versioned safety skill and pass isolated
+clean-home install/list/uninstall smoke tests. The skill obtains an absent
+executable through `/adopt.json`, requires an explicit space and stable actor,
+uses already host-bound MCP when present and otherwise starts with CLI JSON
+onboarding. It never mirrors a runtime scratchpad. Full blind behavioral
+certification across both hosts remains open, so this is not yet a completed
+host-support claim.
+
 TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.
 Five fixed-clock, process-isolated ledgers cover empty, mature, hostile,
 corrupt and 2,501-commitment states. Pagination stays bounded, hostile content

@@ -18,6 +18,7 @@ evidence justifies completion?
 | Building from source | [DEVELOPMENT.md](DEVELOPMENT.md), then the root verification commands below |
 | A coding agent | [AGENTS.md](AGENTS.md), which routes into the same development contract |
 | An agent operating a Tasq ledger | [SKILL.md](SKILL.md), then `tasq onboard --space <id> --actor <label> --json` |
+| Installing Tasq into Codex or Claude Code | [AGENT_INTEGRATIONS.md](AGENT_INTEGRATIONS.md) |
 | Integrating Core, MCP, an extension or connector | The matching package README, then [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
 | Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
@@ -108,6 +109,9 @@ The versioned response describes implemented capabilities and returns bounded
 argv recipes. Actor labels are attribution, not authentication or authority.
 The repository [SKILL.md](SKILL.md) is deliberately short and delegates exact
 syntax to that machine response so it cannot become a second command manual.
+For a zero-context Codex or Claude Code session, install the shared native
+plugin using [AGENT_INTEGRATIONS.md](AGENT_INTEGRATIONS.md), then provide an
+explicit space, stable actor label and capability set.
 
 ## Packages
 
