@@ -7,7 +7,8 @@
   "main": "./src/kernel.ts",
   "types": "./src/kernel.ts",
   "exports": {
-    ".": "./src/kernel.ts"
+    ".": "./src/kernel.ts",
+    "./internal/*": "./src/*.ts"
   },
   "files": [
     "src",

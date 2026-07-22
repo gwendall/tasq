@@ -56,6 +56,7 @@ function releaseDependencies(): {
   const requireFromCli = createRequire(import.meta.url);
   const serviceEntrypoint = requireFromCli.resolve("@tasq-internal/local-service");
   const requireFromService = createRequire(serviceEntrypoint);
+  const coreEntrypoint = requireFromService.resolve("@tasq/core");
   const clientEntrypoint = requireFromService.resolve("@libsql/client");
   const requireFromClient = createRequire(clientEntrypoint);
   const libsqlEntrypoint = requireFromClient.resolve("libsql");
@@ -75,7 +76,7 @@ function releaseDependencies(): {
   }
   const packageName = `@libsql/${target}`;
   return {
-    migrationDirectory: join(dirname(serviceEntrypoint), "migrations"),
+    migrationDirectory: join(dirname(coreEntrypoint), "migrations"),
     libsqlDirectory: dirname(libsqlEntrypoint),
     native: {
       packageName,

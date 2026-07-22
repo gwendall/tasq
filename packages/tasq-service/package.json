@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tasq/core": "workspace:*",
     "@tasq/extension-sdk": "workspace:*",
     "@tasq-internal/life-planning-profile": "workspace:*",
     "@tasq-internal/reference-extension": "workspace:*",

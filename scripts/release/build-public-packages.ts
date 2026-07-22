@@ -112,14 +112,14 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     },
     {
       name: "@tasq/core",
-      sourceDirectory: "tasq-service",
+      sourceDirectory: "tasq-core",
       description: "Universal runtime-neutral commitment coordination kernel for Tasq.",
       entrypoint: "./src/kernel.ts",
       exports: { ".": "./src/kernel.ts" },
       dependencies: {
         "@tasq/extension-sdk": version,
         "@tasq/schema": version,
-        ...await selectedDependencies("tasq-service", ["@libsql/client", "drizzle-orm", "zod"]),
+        ...await selectedDependencies("tasq-core", ["@libsql/client", "drizzle-orm", "zod"]),
       },
       copyMode: "core-graph",
     },

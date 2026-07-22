@@ -159,8 +159,8 @@ rotation that records a durable recovery snapshot digest. See
 ```
 tasq-cli ──→ tasq-inspector ─┐
      └────────→ tasq-service ├─→ tasq-reference-extension
-                  ↑          │
-                  └──────────┘
+                  │          │
+                  ├────────→ tasq-core
                   ├────────→ tasq-life-planning-profile (DB-free)
                   │                       │
                   ├──────────────→ tasq-extension-sdk
@@ -191,11 +191,13 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
   pure markdown renderer, canonical area/goal/project/task ancestry and
   recurrence/calendar planning. It has no runtime dependencies and consumes
   structural read models or injected structural lookups only.
-- `tasq-service` is the only write path. Holds all DB knowledge.
-- `tasq-service/kernel` is the profile-neutral embedded surface: canonical
-  commitments, explicit workspace/actor context, injected time and migrations
-  without reference-extension bootstrap. Compatibility planning modules load
-  lazily only when a caller actually supplies planning fields or recurrence.
+- `tasq-core` is the only source implementation of neutral persistence,
+  migrations and commitment coordination. Public packages are built from this
+  directory, not from a private compatibility mirror.
+- `tasq-service` is the Local composition and the only Local-facing write
+  entrypoint. Its neutral module paths are exact forwarders to `tasq-core`; it
+  owns only compatibility planning, bundled reference behavior, diagnostics
+  and projection adapters.
 - `tasq-inspector` is a read-only sibling surface over the strict kernel. It
   owns no storage or policy, and kernel/service never import it.
 - `tasq-cli` is one of several possible interfaces. MCP, the local inspector
@@ -547,7 +549,7 @@ is the implemented compatibility boundary.
 │   ├── tasq-inspector/ ── loopback GET/HEAD HTML/JSON projection + browser tests
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-server/ ── durable authority control plane + opaque ledger router
-│   ├── tasq-service/   ── @tasq-internal/local-service   (service layer + tests)
+│   ├── tasq-service/   ── @tasq-internal/local-service   (Core forwarders + Local compatibility + tests)
 │   ├── tasq-cli/       ── @tasq/cli       (CLI + E2E tests)
 │   └── tasq-evals/     ── @tasq-internal/evals     (agent scenarios)
 └── scripts/

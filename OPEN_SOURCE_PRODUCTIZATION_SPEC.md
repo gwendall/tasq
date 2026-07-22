@@ -56,7 +56,7 @@ unrelated project; only the executable uses that unscoped name.
 | Public package | Source today | Contract |
 |---|---|---|
 | `@tasq/schema` | `tasq-schema` | Versioned DTOs, IDs, digests and protocol envelopes |
-| `@tasq/core` | strict `tasq-service/kernel` | Profile-neutral kernel with injected store, identity and `Clock` |
+| `@tasq/core` | `packages/tasq-core` | Profile-neutral kernel with injected store, identity and `Clock` |
 | `@tasq/cli` | `tasq-cli` | Supported Local CLI and `tasq` binary |
 | `@tasq/mcp` | `tasq-mcp` | Local stdio and embeddable factory with capability closure |
 | `@tasq/console` | `tasq-inspector` | Read-only local operator surface |

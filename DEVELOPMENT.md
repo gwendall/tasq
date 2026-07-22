@@ -91,8 +91,8 @@ exact owning contract or missing decision rather than silently widening scope.
 | Change | Primary location | Required companion work |
 |---|---|---|
 | Portable records, validation, IDs or clock contracts | `packages/tasq-schema/` | Schema tests; compatibility review |
-| Profile-neutral kernel operation or migration | `packages/tasq-core/` and compatibility service where required | State, migration, retry and audit tests |
-| Local compatibility service or planning behavior | `packages/tasq-service/` | Service tests; keep profile policy out of Core |
+| Profile-neutral kernel operation or migration | `packages/tasq-core/` only | State, migration, retry and audit tests; Local neutral paths forward here |
+| Local compatibility service or planning behavior | `packages/tasq-service/` | Service tests; keep profile policy out of Core and never copy neutral modules |
 | CLI command or JSON shape | `packages/tasq-cli/src/commands/` | Route/usage update, E2E test, `CLI_JSON_CONTRACT.md` if stable JSON changes |
 | Local MCP tool | `packages/tasq-mcp/` | One declared capability, MCP tests and discovery/onboarding truth |
 | Read-only Console projection or UI | `packages/tasq-inspector/` | Unit/integration tests and browser certification when user-visible |

@@ -318,6 +318,9 @@ importers:
       '@tasq-internal/reference-extension':
         specifier: workspace:*
         version: link:../tasq-reference-extension
+      '@tasq/core':
+        specifier: workspace:*
+        version: link:../tasq-core
       '@tasq/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk

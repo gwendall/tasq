@@ -132,7 +132,7 @@ describe("Tasq public npm package candidates", () => {
 
     for (const [releasedDirectory, sourceDirectory] of [
       [`tasq-schema-${version}`, "tasq-schema"],
-      [`tasq-core-${version}`, "tasq-service"],
+      [`tasq-core-${version}`, "tasq-core"],
     ]) {
       const released = JSON.parse(await readFile(
         join(extracted, releasedDirectory, "package", "package.json"),

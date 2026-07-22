@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Make `packages/tasq-core` the single neutral source authority, replace the
+  Local compatibility mirror with forwarding modules and build the public
+  `@tasq/core` candidate from its real source directory.
 - Add TQ-607, a machine-tracked private dogfood gate requiring at least 30
   days across the personal life-pilot, Kami Robotics and an interactive agent
   runtime before an explicit public-launch decision.
