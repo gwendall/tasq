@@ -17,6 +17,7 @@ evidence justifies completion?
 | Evaluating the product | This README, then [CURRENT_STATE.md](CURRENT_STATE.md) and [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md) |
 | Building from source | [DEVELOPMENT.md](DEVELOPMENT.md), then the root verification commands below |
 | A coding agent | [AGENTS.md](AGENTS.md), which routes into the same development contract |
+| An agent operating a Tasq ledger | [SKILL.md](SKILL.md), then `tasq onboard --space <id> --actor <label> --json` |
 | Integrating Core, MCP, an extension or connector | The matching package README, then [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
 | Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
@@ -94,6 +95,8 @@ tasq onboard --space robotics/team-a --actor agent:planner --json
 
 The versioned response describes implemented capabilities and returns bounded
 argv recipes. Actor labels are attribution, not authentication or authority.
+The repository [SKILL.md](SKILL.md) is deliberately short and delegates exact
+syntax to that machine response so it cannot become a second command manual.
 
 ## Packages
 

@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Add a concise standalone `SKILL.md` that delegates exact agent workflows to
+  the versioned `tasq onboard` guide and remove installed-help references to
+  repository files that may not exist beside the executable.
 - Make `packages/tasq-core` the single neutral source authority, replace the
   Local compatibility mirror with forwarding modules and build the public
   `@tasq/core` candidate from its real source directory.

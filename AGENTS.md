@@ -19,6 +19,10 @@ also read [CURRENT_STATE.md](CURRENT_STATE.md),
 `BACKLOG.json` is the machine-readable execution authority; planned status
 never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
 
+Agents operating a Tasq ledger rather than modifying this repository use the
+short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
+`tasq onboard`; they do not reconstruct workflows from repository prose.
+
 ## Non-negotiable rules
 
 1. Core coordinates commitments; it does not own provider policy, credentials,
