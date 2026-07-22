@@ -22,6 +22,9 @@ evidence justifies completion?
 | Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
 | Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
 
+The compact [documentation map](DOCS.md) separates active product truth,
+contributor guidance and subsystem evidence.
+
 This standalone repository is the canonical source authority. References to a
 former `products/tasq` subtree describe export history only; current changes
 belong here.

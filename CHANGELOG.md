@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Added
 
+- Add machine-readable coding-agent preflight, one-command handoff verification,
+  a documentation map, an executable onboarding eval and a safety-focused pull
+  request template.
 - Add a concise standalone `SKILL.md` that delegates exact agent workflows to
   the versioned `tasq onboard` guide and remove installed-help references to
   repository files that may not exist beside the executable.

@@ -19,8 +19,13 @@ git status --short --branch
 ```
 
 The root should contain `package.json`, `pnpm-workspace.yaml`, `AGENTS.md`,
-`CURRENT_STATE.md`, `BACKLOG.json`, `packages/` and `apps/`. Preserve unrelated
-local changes if the worktree is not clean.
+`SKILL.md`, `CURRENT_STATE.md`, `BACKLOG.json`, `packages/` and `apps/`.
+Preserve unrelated local changes if the worktree is not clean. Run the
+machine-readable preflight after verifying the remote:
+
+```bash
+pnpm --silent agent:preflight --json
+```
 
 ## 2. Bootstrap and verify the baseline
 
@@ -156,6 +161,7 @@ guardrails. See [TESTING.md](TESTING.md) for the complete test ownership map.
   adversarial coverage.
 - Human and machine product truth agree and non-claims remain explicit.
 - `pnpm docs:check`, `pnpm typecheck` and `pnpm test` pass.
+- `pnpm verify:handoff` runs that complete root gate plus diff-integrity checks.
 - Relevant browser suites pass for Console/site changes.
 - No secrets, private ledger data, private transcripts, generated caches,
   absolute workstation paths or unrelated artifacts are included.
