@@ -26,7 +26,7 @@ describe("coding-agent onboarding and handoff", () => {
         canonical: true,
       },
       work: {
-        activeBacklogItem: { id: "TQ-321", status: "in_progress_implementation" },
+        activeBacklogItem: { id: "TQ-607", status: "in_progress_dogfood" },
         dogfood: {
           phase: dogfood.currentPhase,
           nextAction: dogfood.nextAction,

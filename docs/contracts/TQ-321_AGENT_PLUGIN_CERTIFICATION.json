@@ -1,20 +1,20 @@
 {
   "contractVersion": "tasq.agent-plugin-certification.v1",
-  "revision": 1,
-  "integrationVersion": "0.1.0",
-  "status": "candidate-public-native-lifecycle-passed-blind-behavior-pending",
+  "revision": 2,
+  "integrationVersion": "0.1.1",
+  "status": "passed-public-native-lifecycle-and-blind-behavior",
   "testedAt": "2026-07-22",
   "source": {
     "kind": "public-main",
     "repository": "https://github.com/gwendall/tasq",
-    "ref": "0ed9a652c3092c016c3027b62182c87bad8abe9c",
+    "ref": "2e6b654d6860a375bf2f4d5d271c401e58da3073",
     "sha256": {
-      "AGENT_INTEGRATIONS.json": "8ff1c60e8fb72e8764e82ebf55eb20583883a1ec82c775e271a7273e3e5dd452",
+      "AGENT_INTEGRATIONS.json": "766eaffeb0615059cd78df35caae9cd0a4bca121d34e086100556c4b2ab18e53",
       ".agents/plugins/marketplace.json": "1fedf441fa239b6fefd80bc40f45fc1ab05f326c931405b90302fb2858b8765b",
-      ".claude-plugin/marketplace.json": "d50a82ef49e0538d76f21a11605fd12a83676527fe21316eeda4f8b306d64c61",
-      "plugins/tasq/.codex-plugin/plugin.json": "1b9f5f7964659d76a8095be7e34df4a59957f3d8063fa2a6d51c005dafd39e4c",
-      "plugins/tasq/.claude-plugin/plugin.json": "bfa0bfdf294eca9babeae0446821fce52ab0db40b7f189b0e4a91dfba2a9a517",
-      "plugins/tasq/skills/tasq/SKILL.md": "2d3838dc28594b46e436f8922479b76b2aa0dab2164ed97e375459307d7dbc2e"
+      ".claude-plugin/marketplace.json": "a457e6c0d38ce4147e8e71b89685b249ec4496db6b611a6845120c583f27d64f",
+      "plugins/tasq/.codex-plugin/plugin.json": "dc6e3ce11398b28f48654daadcf6b410c5f115c56242cccf7ab8fe978678385c",
+      "plugins/tasq/.claude-plugin/plugin.json": "527eb9d8fbb9cf55fe80b633cecd02915fbd43d3503e7e5f85a754e0f0cfd569",
+      "plugins/tasq/skills/tasq/SKILL.md": "4f54131c64156b7f4b9188c86dabcdff2f7675e99842091e6acd60da8c118ee6"
     }
   },
   "isolation": {
@@ -36,7 +36,7 @@
     },
     {
       "id": "claude-code",
-      "version": "2.1.217",
+      "version": "2.1.218",
       "manifestStrictValidation": "passed",
       "marketplaceDiscovery": "passed",
       "install": "passed",
@@ -48,11 +48,19 @@
   "sharedSkill": {
     "skillCreatorValidation": "passed",
     "pluginCreatorValidation": "passed",
-    "structuralEval": "packages/tasq-evals/agent-plugin-integration.test.ts"
+    "structuralEval": "packages/tasq-evals/agent-plugin-integration.test.ts",
+    "behavioralEval": "packages/tasq-evals/zero-context-agent-certification.test.ts",
+    "behavioralCertificate": "evidence/tq-321/latest.json"
   },
-  "remaining": [
-    "blind-codex-behavioral-matrix",
-    "blind-claude-code-behavioral-matrix"
-  ],
-  "tq321Complete": false
+  "behavioralAcceptance": {
+    "codex": "passed",
+    "claudeCode": "passed",
+    "processRestart": "passed",
+    "exclusiveCursorResume": "passed",
+    "resourceContentionAndStaleFenceRejection": "passed",
+    "evidenceBackedExplicitCompletion": "passed",
+    "nativeUninstallPreservedLedgerByteForByte": "passed"
+  },
+  "remaining": [],
+  "tq321Complete": true
 }

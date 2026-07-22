@@ -1,6 +1,6 @@
 # TQ-321 — Zero-context agent integration
 
-**Status:** native integration candidate implemented; blind certification pending
+**Status:** passed on native Codex and Claude Code integrations
 
 **Depends on:** TQ-311, TQ-312 and TQ-318
 
@@ -68,9 +68,14 @@ installation, activation, rendezvous and uninstall instructions are in
 
 `TQ-321_AGENT_PLUGIN_CERTIFICATION.json` records strict manifest validation and
 real install/list/uninstall lifecycle results from isolated temporary homes for
-Codex 0.144.4 and Claude Code 2.1.217. The same lifecycle also passes from the
-public `main` marketplace through an anonymous HTTPS clone. Both blind
-behavioral matrices remain open.
+Codex 0.144.4 and Claude Code 2.1.218. The same lifecycle passes from the public
+`main` marketplace through an anonymous HTTPS clone. The full behavioral
+certificate at `../../evidence/tq-321/latest.json` passes both host families.
+Each agent invoked the installed integration, read before mutation, resumed the
+same attempt after a real process boundary, continued from an exclusive event
+cursor, handled resource contention, rejected a stale fence, attached evidence,
+completed explicitly and preserved the ledger byte-for-byte through native
+plugin uninstall.
 
 The originally proposed Tasq-specific installer and `integration doctor`
 commands are not required for the candidate because both supported hosts now

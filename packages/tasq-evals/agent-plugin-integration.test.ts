@@ -99,12 +99,12 @@ describe("zero-context agent integration candidate", () => {
     expect(contract.ownership.uninstallPreserves).toEqual(["TASQ_HOME", "ledger", "database", "backups"]);
   });
 
-  test("records immutable native lifecycle evidence without overstating blind support", () => {
+  test("records immutable native lifecycle and blind behavioral evidence", () => {
     const certificate = readJson("docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json");
     expect(certificate).toMatchObject({
       contractVersion: "tasq.agent-plugin-certification.v1",
-      integrationVersion: "0.1.0",
-      status: "candidate-public-native-lifecycle-passed-blind-behavior-pending",
+      integrationVersion: "0.1.1",
+      status: "passed-public-native-lifecycle-and-blind-behavior",
       isolation: {
         cleanTemporaryHomes: true,
         remoteCloneViaHttps: true,
@@ -112,16 +112,33 @@ describe("zero-context agent integration candidate", () => {
         tasqHomeTouched: false,
         ledgerTouched: false,
       },
-      tq321Complete: false,
+      behavioralAcceptance: {
+        codex: "passed",
+        claudeCode: "passed",
+        processRestart: "passed",
+        exclusiveCursorResume: "passed",
+        resourceContentionAndStaleFenceRejection: "passed",
+        evidenceBackedExplicitCompletion: "passed",
+        nativeUninstallPreservedLedgerByteForByte: "passed",
+      },
+      tq321Complete: true,
     });
     expect(certificate.hosts).toEqual([
       expect.objectContaining({ id: "codex", install: "passed", uninstall: "passed" }),
       expect.objectContaining({ id: "claude-code", install: "passed", uninstall: "passed" }),
     ]);
-    expect(certificate.remaining).toEqual([
-      "blind-codex-behavioral-matrix",
-      "blind-claude-code-behavioral-matrix",
-    ]);
+    expect(certificate.remaining).toEqual([]);
+    const behavioral = readJson(certificate.sharedSkill.behavioralCertificate);
+    expect(behavioral).toMatchObject({
+      contractVersion: "tasq.zero-context-agent-certification.v1",
+      acceptance: {
+        passed: true,
+        requiredHosts: ["codex", "claude-code"],
+        completedHosts: ["codex", "claude-code"],
+      },
+    });
+    expect(behavioral.trials).toHaveLength(2);
+    expect(behavioral.trials.every((trial: { pass: boolean }) => trial.pass)).toBe(true);
     expect(certificate.source.ref).toMatch(/^[0-9a-f]{40}$/);
     for (const [path, digest] of Object.entries(certificate.source.sha256 as Record<string, string>)) {
       expect(path.length).toBeGreaterThan(0);

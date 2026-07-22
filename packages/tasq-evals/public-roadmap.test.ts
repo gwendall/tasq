@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "../..");
 const markdown = readFileSync(resolve(root, "docs/roadmap/BACKLOG.md"), "utf8");
+const releaseWorkflow = readFileSync(resolve(root, ".github/workflows/release.yml"), "utf8");
 const roadmap = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8")) as {
   contractVersion: string;
   revision: number;
@@ -148,12 +149,13 @@ describe("canonical Tasq roadmap", () => {
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
-      status: "in_progress_implementation",
+      status: "done",
       milestone: "runtime-consumers",
-      remaining: ["run-blind-agent-certification"],
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md",
         "docs/contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json",
+        "evidence/tq-321/latest.json",
         "docs/integrations/AGENT_INTEGRATIONS.md",
         "docs/integrations/AGENT_INTEGRATIONS.json",
         "plugins/tasq/skills/tasq/SKILL.md",
@@ -195,7 +197,6 @@ describe("canonical Tasq roadmap", () => {
       status: "pending",
       dependsOn: ["TQ-321", "TQ-608", "TQ-607"],
       remaining: [
-        "complete-agent-integration-certification",
         "complete-private-dogfood-go",
         "verify-npm-scope-control",
         "configure-npm-trusted-publishing",
@@ -222,6 +223,10 @@ describe("canonical Tasq roadmap", () => {
       ],
       evidence: ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"],
     });
+    expect(releaseWorkflow).toContain("id-token: write");
+    expect(releaseWorkflow).toContain("npm install --global npm@11.5.1");
+    expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.5.1"');
+    expect(releaseWorkflow).not.toContain("NODE_AUTH_TOKEN");
   });
 
   test("preserves the authority, clock and product boundaries", () => {

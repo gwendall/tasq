@@ -8,10 +8,10 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-22
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** use the public-source alpha to harden zero-context agent
-integration while continuing 30-day dogfood
-across the personal life-pilot, Kami Robotics and an interactive agent runtime.
-Do not publish packages or expand remote products before those gates close.
+**Current priority:** continue the 30-day retained-data dogfood while preparing
+the external npm scope and trusted-publishing gates that do not depend on its
+elapsed duration. Do not publish packages or expand remote products before the
+remaining gates close.
 
 ## What is already proven
 
@@ -48,11 +48,13 @@ repository-only architecture.
 
 - **Public source alpha — live.** Anonymous users can clone, inspect and build
   `main`. npm packages and downloadable artifacts remain unpublished.
-- **TQ-321 — in progress, zero-context agent integration.** Native Codex and
-  Claude Code marketplace install/uninstall paths and one shared safety skill
-  now pass clean-home lifecycle smoke tests. The remaining gate is the full
-  blind-agent behavioral certification over contention, restart, cursor and
-  evidence flows.
+- **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
+  Code marketplace paths pass real isolated install, two-process behavioral and
+  uninstall trials. Both hosts read before mutation, resume the same attempt
+  from an exclusive cursor, reject stale resource authority, complete with
+  evidence and preserve the ledger byte-for-byte through uninstall. See
+  `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
+  `../../evidence/tq-321/latest.json`.
 - **TQ-608 — source candidate complete; protected-byte replay pending.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
@@ -73,7 +75,7 @@ repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — paused behind TQ-321 and TQ-607, then external registry gate.**
+- **TQ-603 — paused behind TQ-607 and external registry gates.**
   `@tasq/schema` is not published. The authorized registry operator must verify
   scope/package control, bind the release workflow through npm OIDC and create the first
   immutable protected SemVer tag. Workstation publishing, implicit visibility
@@ -90,9 +92,8 @@ breadth is intentionally lower priority even when technically unblocked.
 
 ### 1. Harden the public alpha
 
-- **TQ-321:** run the full blind Codex and Claude Code behavioral matrix against
-  the implemented native plugins, host-bound MCP where available and CLI JSON
-  fallback.
+- **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
+  passes from the public marketplace with no repository briefing.
 - **TQ-608:** replay the implemented durable-data envelope from the first
   protected release bytes; add exact N-2 lines when those releases exist.
 

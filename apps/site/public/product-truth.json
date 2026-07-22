@@ -454,7 +454,7 @@
   "backlog": [
     {
       "id": "TQ-321",
-      "status": "in_progress_implementation",
+      "status": "done",
       "milestone": "runtime-consumers",
       "outcome": "Let a zero-context Codex or Claude Code agent discover, install and use Tasq through native instructions, MCP where available and a CLI fallback without replacing the runtime's private scratchpad"
     },
@@ -624,7 +624,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "a2fa915e7b941cc60b338e7e051e56cdf063395099c0c6fca4810417f7bd0a1d"
+      "sha256": "afe3bb1c65cff2d28523f0bc75d30dcbfdb5a1cdd96a72500b94c75f92b53918"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
