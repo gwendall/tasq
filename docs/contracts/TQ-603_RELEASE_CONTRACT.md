@@ -58,6 +58,11 @@ provenance and publish it. The attestation binds the artifact digest to the
 repository, workflow and commit; it does not assert that the software is bug
 free. Consumers must verify both checksums and attestation.
 
+The npm job pins npm CLI 11.5.1, the minimum client that supports OIDC trusted
+publishing, and fails before building packages if that exact client is not
+active. The job receives `id-token: write` only from the protected workflow and
+does not use a long-lived npm publish token.
+
 The package candidate test builds the complete set twice and compares every
 byte. It extracts every tarball, rejects private coordinates, workspace
 dependencies and checkout paths, and installs all seven tarballs together in
