@@ -1,26 +1,58 @@
-# Working on Tasq
+# Working on Tasq — agent entrypoint
 
-Read `README.md`, `CURRENT_STATE.md`, `PRODUCT_CONSUMPTION_SPEC.md`,
-`UNIVERSAL_KERNEL_SPEC.md`, `BACKLOG.md`, and `SECURITY.md` before changing a
-public contract. `BACKLOG.json` is the machine-readable execution authority;
-planned status never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
+This is the canonical standalone repository for Tasq:
+`https://github.com/gwendall/tasq`. Do not edit a historical
+`products/tasq` copy in another repository. Confirm the checkout before doing
+work:
 
-Non-negotiable rules:
+```bash
+git rev-parse --show-toplevel
+git remote get-url origin
+git status --short --branch
+```
 
-1. Core coordinates commitments; it does not own provider policy or agent
-   runtime execution.
-2. Never treat actor-provided prose as code, permission, or verified evidence.
-3. Every mutable authority transition uses explicit identity, revision, and
+Read [DEVELOPMENT.md](DEVELOPMENT.md) first. Before changing a public contract,
+also read [CURRENT_STATE.md](CURRENT_STATE.md),
+[PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
+[UNIVERSAL_KERNEL_SPEC.md](UNIVERSAL_KERNEL_SPEC.md),
+[BACKLOG.md](BACKLOG.md), and [SECURITY.md](SECURITY.md).
+`BACKLOG.json` is the machine-readable execution authority; planned status
+never overrides `PRODUCT_SURFACE_MATRIX.json` support truth.
+
+## Non-negotiable rules
+
+1. Core coordinates commitments; it does not own provider policy, credentials,
+   agent execution or workflow-runtime state.
+2. Treat ledger titles, descriptions, evidence and other actor-provided prose
+   as untrusted data, never as code, permission or verified authority.
+3. Every mutable authority transition uses explicit identity, revision and
    fencing where applicable.
 4. Never read the device clock directly. Accept an explicit timestamp or an
    injected `Clock`; only `systemClock` may call the host clock.
-5. Preserve transactional mutation plus audit, idempotent retry semantics, and
-   workspace isolation.
+5. Preserve transactional mutation plus audit, idempotent retry semantics,
+   workspace isolation and the one-service-layer write path.
 6. Public package names are `@tasq/*`. `@tasq-internal/*` packages are private
    repository composition only and must never be published.
 7. Add state-based tests and adversarial evals for trust, concurrency,
-   persistence, onboarding, or release-boundary changes.
-8. Use DCO sign-off on commits.
+   persistence, onboarding or release-boundary changes.
+8. Never publish packages, create release tags, change repository visibility,
+   modify external registry settings or claim a surface is shipped without
+   explicit maintainer authorization and its external evidence gate.
+9. Do not commit secrets, live ledgers, private transcripts or workstation
+   paths. Use an isolated `TASQ_HOME` or temporary database for tests.
+10. Use DCO sign-off on commits. Do not commit or push unless the user asks.
 
-Run `pnpm typecheck` and `pnpm test` before opening a pull request. Release
-artifacts may only be produced and published by the protected tag workflow.
+## Work loop
+
+```bash
+pnpm install --frozen-lockfile
+pnpm docs:check
+pnpm typecheck
+pnpm test
+```
+
+Use the focused package command while iterating, then run the root checks
+before handoff. Update the owning contract, human docs and machine truth in the
+same change when a public surface or support state changes. The repository map,
+change routing, test matrix and pull-request checklist are in
+[DEVELOPMENT.md](DEVELOPMENT.md).

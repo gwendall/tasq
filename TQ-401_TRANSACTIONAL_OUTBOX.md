@@ -124,7 +124,7 @@ events and do not grant provider effect authority.
 - disabling a sink preserves the record and stops future enqueueing.
 
 Migration tests also run `0017_transactional_outbox.sql` against fresh,
-tasq-zero and pre-agentic populated stores.
+legacy pre-agentic and populated stores.
 
 ## TQ-402 follow-through
 

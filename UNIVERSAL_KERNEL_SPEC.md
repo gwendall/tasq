@@ -14,7 +14,11 @@ detail. A later change that moves responsibility across kernel, extension,
 policy, connector or runtime boundaries requires a new decision record.
 
 The exhaustive current-to-target field/command/event/JSON mapping is frozen in
-`UNIVERSAL_COMPATIBILITY_INVENTORY.md` and its machine-readable JSON companion.
+the machine-readable
+[`UNIVERSAL_COMPATIBILITY_INVENTORY.json`](UNIVERSAL_COMPATIBILITY_INVENTORY.json).
+The narrative inventory and private acceptance transcripts were historical
+bootstrap evidence and are intentionally not part of this standalone source
+tree; current executable evidence lives in the repository tests and evals.
 
 ## 1. Thesis
 
@@ -1081,7 +1085,8 @@ Tasq earns the word “universal” when an unfamiliar third party can:
 5. inspect why the commitment is still open or why it was completed;
 6. do all of this without modifying kernel source or schema.
 
-UK-011 demonstrates this complete gate composition; see
-`UK-011_UNIVERSAL_ACCEPTANCE.md`. Tasq is now an accepted universal embedded
+The executable
+`packages/tasq-evals/universal-kernel-acceptance.test.ts` demonstrates this
+complete gate composition. Tasq is now an accepted universal embedded
 coordination-kernel implementation. It is not yet a hosted protocol service or
 an external standard.

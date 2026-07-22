@@ -2,7 +2,7 @@
   "name": "@tasq-internal/local-service",
   "version": "0.1.0",
   "private": true,
-  "description": "tasq-zero: the only write path. Open the DB, mutate via service functions (which emit events), read via query helpers. No SQL elsewhere.",
+  "description": "Private Tasq Local compatibility service and the only local-ledger write path.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

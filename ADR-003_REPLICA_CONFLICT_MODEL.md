@@ -5,8 +5,8 @@
 - **Depends on:** TQ-402 ordered delivery, TQ-403 durable idempotency,
   ADR-UK-006 collaboration records, ADR-006 machine discovery
 - **Unlocks:** TQ-405 explicit mutation/snapshot sync and TQ-406 chaos proof
-- **Supersedes:** the wall-clock LWW and audit-event replay proposal in
-  `SPEC.md` §8
+- **Supersedes:** the wall-clock LWW and audit-event replay proposal in the
+  historical pre-kernel hosted/sync vision
 - **Does not authorize:** remote authentication, multi-user grants, peer-to-peer
   effect authority or raw database replication
 
@@ -241,7 +241,7 @@ Timestamps are descriptive inputs. They MUST NOT:
 - choose a conflict winner;
 - advance or validate a cursor.
 
-This deliberately replaces `SPEC.md` §8's edit-time LWW rule. An injectable
+This deliberately replaces the historical edit-time LWW rule. An injectable
 clock can be advanced, frozen or rewound in a test without changing conflict
 classification.
 

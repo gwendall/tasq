@@ -1,5 +1,7 @@
 # Current state
 
+**Updated:** 2026-07-22
+
 Tasq currently ships source for two local product shapes:
 
 - **Core:** an embeddable, profile-neutral coordination kernel;
@@ -110,6 +112,10 @@ runtime success equivalent to commitment completion.
 Authority time is injectable throughout the kernel. Raw device time is allowed
 only in the explicit `systemClock` composition adapter.
 
-For orientation, read `README.md`, `PRODUCT_CONSUMPTION_SPEC.md`,
-`UNIVERSAL_KERNEL_SPEC.md`, `BACKLOG.md`, `ARCHITECTURE.md`, and `SECURITY.md`,
-then run `pnpm typecheck` and `pnpm test`.
+For orientation, read [README.md](README.md),
+[DEVELOPMENT.md](DEVELOPMENT.md),
+[PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
+[UNIVERSAL_KERNEL_SPEC.md](UNIVERSAL_KERNEL_SPEC.md),
+[BACKLOG.md](BACKLOG.md), [ARCHITECTURE.md](ARCHITECTURE.md) and
+[SECURITY.md](SECURITY.md), then run `pnpm docs:check`, `pnpm typecheck` and
+`pnpm test`.

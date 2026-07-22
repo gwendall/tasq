@@ -10,12 +10,13 @@ dump, a history filter, or a checkout that silently depends on the private
 monorepo. It must let an unknown contributor or agent understand, install,
 typecheck, test, build and inspect Tasq from that repository alone.
 
-## One-way cutover
+## One-way cutover (completed bootstrap)
 
-Before cutover, `products/tasq` is the source authority and
-`scripts/release/export-public-repository.ts` creates a reviewed candidate.
-The exporter accepts only an explicit 40-character source commit and output
-directory. It does not read wall time or device time.
+Before cutover, the private monorepo subtree was the source authority and a
+private exporter created a reviewed candidate from an explicit 40-character
+source commit. That bootstrap-only exporter and its private evidence are not
+part of the standalone repository; their output contract and digests are
+preserved in `PUBLIC_SOURCE_MANIFEST.json`.
 
 The reviewed candidate was committed to `gwendall/tasq` as
 `ce8070e066ab0c4df15bbcacd98ad871d9cd8db3`; that repository is now canonical.
@@ -47,14 +48,17 @@ and committed in the destination repository.
 
 ## Standalone gate
 
-`public-repository-export.test.ts` builds the repository twice and requires
-identical bytes and modes. It then verifies the allowlist and package boundary,
-performs a frozen install, runs kernel/MCP/boundary smoke tests, and builds all
-seven public package candidates from the exported tree itself.
+The historical bootstrap gate built the repository twice, required identical
+bytes and modes, verified the allowlist/package boundary, performed a frozen
+install and built all seven public package candidates from the exported tree.
+That private-source test was intentionally not exported because the one-way
+cutover is complete.
 
-The canonical repository CI independently runs the full recursive typecheck and
-test suite on Linux and macOS. A green private export test is necessary but is
-not a substitute for green destination-repository CI.
+The canonical repository now proves autonomy directly: documentation
+consistency, frozen install, full recursive typecheck/test, public-package
+boundary tests and deterministic candidate builds run from this tree. CI runs
+the complete suite on Linux and macOS. Historical export evidence is not a
+substitute for green current-repository CI.
 
 ## Repository controls
 

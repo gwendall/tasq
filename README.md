@@ -10,6 +10,21 @@ gives independent actors a shared, inspectable answer to: what are we trying
 to achieve, who currently owns the work or resource, what happened, and what
 evidence justifies completion?
 
+## Start here
+
+| You are… | Read or run first |
+|---|---|
+| Evaluating the product | This README, then [CURRENT_STATE.md](CURRENT_STATE.md) and [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md) |
+| Building from source | [DEVELOPMENT.md](DEVELOPMENT.md), then the root verification commands below |
+| A coding agent | [AGENTS.md](AGENTS.md), which routes into the same development contract |
+| Integrating Core, MCP, an extension or connector | The matching package README, then [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Operating or securing Local | [SUPPORT.md](SUPPORT.md), [SECURITY.md](SECURITY.md) and [TESTING.md](TESTING.md) |
+| Looking for the next task | [BACKLOG.md](BACKLOG.md) or machine-readable [BACKLOG.json](BACKLOG.json) |
+
+This standalone repository is the canonical source authority. References to a
+former `products/tasq` subtree describe export history only; current changes
+belong here.
+
 ## What exists
 
 - **Tasq Core** — an embeddable, profile-neutral TypeScript/Bun kernel.
@@ -155,7 +170,8 @@ from the protected tag workflow.
 Start with [CURRENT_STATE.md](CURRENT_STATE.md),
 [PRODUCT_CONSUMPTION_SPEC.md](PRODUCT_CONSUMPTION_SPEC.md),
 [UNIVERSAL_KERNEL_SPEC.md](UNIVERSAL_KERNEL_SPEC.md), and
-[BACKLOG.md](BACKLOG.md). See [SECURITY.md](SECURITY.md) for trust boundaries,
+[BACKLOG.md](BACKLOG.md). Contributors should use
+[DEVELOPMENT.md](DEVELOPMENT.md). See [SECURITY.md](SECURITY.md) for trust boundaries,
 [TESTING.md](TESTING.md) for the verification
 layers and [SUPPORT.md](SUPPORT.md) for current support claims.
 

@@ -10,6 +10,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "docs:check": "bun test packages/tasq-evals/documentation-contract.test.ts",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm --workspace-concurrency=1 -r --if-present test",
     "build:site": "pnpm --filter @tasq-internal/site build",

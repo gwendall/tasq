@@ -3,6 +3,7 @@
   "version": "0.0.0-private",
   "private": true,
   "type": "module",
+  "description": "Static ledger-free Tasq product and documentation site generated from canonical repository truth.",
   "scripts": {
     "dev": "bun scripts/generate-truth.ts && next dev",
     "generate": "bun scripts/generate-truth.ts",
