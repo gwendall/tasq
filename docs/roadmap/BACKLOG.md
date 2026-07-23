@@ -8,8 +8,8 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-23
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** repair the audited public copy and acquisition path
-(TQ-609/TQ-610), then rerun the independent blind-human adoption session.
+**Current priority:** finish the verified acquisition and universal agent
+entrypoint (TQ-610), then rerun the independent blind-human adoption session.
 Continue retained-data dogfood in parallel as the stable-graduation gate.
 After that short repair, build the online central Server path without waiting
 for optional offline replication.
@@ -161,13 +161,13 @@ Server/Cloud breadth remains behind published-byte Local certification.
   machine JSON and uses only synthetic illustrations. It is deployed from
   public `main` at <https://tasq.run>. See
   `../contracts/TQ-605_PUBLIC_SITE.md`.
-- **TQ-609 — in progress:** make every public command, example, product promise
-  and Local limitation exact and executable. The 2026-07-23 audit found a
-  prefix-install/PATH mismatch, rendered `+` markers, illustrative onboarding
-  JSON presented as real output, a nonexistent SDK API example, stale
-  pre-publication prose and an overly architectural first explanation. Site
-  tests must execute every displayed command and derive machine examples from
-  current release truth.
+- **TQ-609 — done:** every public command, example, product promise and Local
+  limitation is now exact and executable. The prefix-install/PATH mismatch,
+  rendered `+` markers, illustrative onboarding JSON, nonexistent SDK API,
+  stale pre-publication prose and overly architectural first explanation are
+  removed. Site tests execute the displayed install, onboarding, MCP, Console,
+  operations and Core examples against the published release; browser
+  acceptance verifies the real Local Console evidence and Local-only boundary.
 - **TQ-610:** provide verified `bunx`/`npm exec` try paths, a versioned
   checksum/provenance-verifying persistent installer, stable `/SKILL.md`,
   `/agents` and `/llms.txt` entrypoints, deterministic host integration,

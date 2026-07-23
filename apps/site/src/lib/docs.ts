@@ -1,10 +1,12 @@
 import { productTruth } from "@/lib/product-truth";
+import { publicCodeExamples } from "@/lib/examples";
 
 export type DocSection = {
   title: string;
   body: string[];
   bullets?: string[];
   code?: string;
+  codeTitle?: string;
   callout?: string;
 };
 
@@ -18,8 +20,6 @@ export type DocPage = {
 
 const published = productTruth.release.published;
 const releaseVersion = productTruth.release.version ?? "0.1.0";
-const tasqExecutable = published ? "tasq" : "./dist/cli/index.js";
-const installCommand = `npm install --prefix ~/.local/share/tasq --ignore-scripts @tasq-run/cli@${releaseVersion}`;
 
 export const docPages: DocPage[] = [
   {
@@ -35,12 +35,13 @@ export const docPages: DocPage[] = [
         title: published ? "Install the public alpha" : "Current installation path",
         body: [
           published
-            ? `Tasq Local ${releaseVersion} is a public alpha. Install the scoped CLI into an explicit prefix so the executable is easy to locate and removal never touches your ledger.`
+            ? `Tasq Local ${releaseVersion} is a public alpha. Install the scoped CLI into an explicit prefix, then invoke the exact executable path shown below. Removing that prefix never removes your ledger.`
             : "Tasq is public alpha source. There is no published npm package or downloadable release yet, so clone the canonical repository and use the deterministic source-build path below.",
         ],
         code: published
-          ? `${installCommand}\n~/.local/share/tasq/node_modules/.bin/tasq version`
+          ? publicCodeExamples.install.display
           : "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
+        codeTitle: published ? publicCodeExamples.install.title : "source build",
         callout:
           published
             ? "Do not install the unrelated unscoped package named tasq. The official package is @tasq-run/cli; its executable is tasq. Verify the exact version and provenance through the linked GitHub release or /adopt.json."
@@ -50,10 +51,10 @@ export const docPages: DocPage[] = [
         title: "Give an agent the minimum causal pointer",
         body: [
           "An agent cannot discover a local executable or shared database by intuition. Give it the executable path, workspace, stable actor label, capability envelope and current intent.",
-          "The onboarding response is versioned JSON. It describes supported capabilities and returns argument-array recipes, so the agent does not need repository-specific instructions.",
+          "The response uses the real tasq.autonomous-bootstrap.v1 contract. Read guide.firstReadRecipeId, then execute only the returned argument-array recipes.",
         ],
-        code:
-          `${tasqExecutable} onboard \\\n+  --space robotics/team-a \\\n+  --actor agent:planner \\\n+  --capabilities read,propose,coordinate \\\n+  --json`,
+        code: publicCodeExamples.onboard.display,
+        codeTitle: publicCodeExamples.onboard.title,
       },
       {
         title: "Keep everyone on the same authority",
@@ -78,19 +79,18 @@ export const docPages: DocPage[] = [
       {
         title: "Install the native agent guide",
         body: [
-          "A zero-context Codex or Claude Code agent can install the repository-owned Tasq guide, acquire the current distribution from /adopt.json and use only the recipes returned by onboarding.",
+          "The canonical repository includes native Codex and Claude Code integrations. Their job is only to provide the executable pointer and onboarding contract. The ledger still comes from the installed Tasq release and the explicit shared space.",
         ],
-        code:
-          "codex plugin marketplace add gwendall/tasq --ref main\ncodex plugin add tasq@tasq\n\nclaude plugin marketplace add gwendall/tasq --scope user\nclaude plugin install tasq@tasq --scope user",
         callout:
-          "Tasq coordinates durable commitments between actors. It does not replace the runtime's private scratchpad or its short-lived internal todo list.",
+          "Use the repository integration guide for host-specific installation. Tasq coordinates durable commitments between actors; it does not replace a runtime's private scratchpad or short-lived todo list.",
       },
       {
         title: "The safe loop",
         body: [
           "Discover the contract, read bounded state, acquire a fenced claim, record an attempt, attach durable evidence, then request explicit completion. Runtime success alone never closes a commitment.",
         ],
-        code: "commitment → claim → attempt → evidence → explicit completion",
+        code: publicCodeExamples.lifecycle.display,
+        codeTitle: publicCodeExamples.lifecycle.title,
       },
       {
         title: "Contention is a normal state",
@@ -124,8 +124,8 @@ export const docPages: DocPage[] = [
         body: [
           "Configure your MCP host to launch the installed Tasq executable as a local child process. Stdio is the transport; there is no remote MCP endpoint today.",
         ],
-        code:
-          "tasq mcp \\\n+  --tenant robotics/team-a \\\n+  --actor agent:builder \\\n+  --capabilities read,propose,coordinate",
+        code: publicCodeExamples.mcp.display,
+        codeTitle: publicCodeExamples.mcp.title,
       },
       {
         title: "Capability closure",
@@ -149,8 +149,8 @@ export const docPages: DocPage[] = [
         body: [
           "The Console is one foreground loopback process. Installation creates no daemon or hidden listener. A machine-readable status command proves the registered listener is the expected live instance.",
         ],
-        code:
-          "tasq web --tenant robotics/team-a\ntasq web status --tenant robotics/team-a --json",
+        code: publicCodeExamples.console.display,
+        codeTitle: publicCodeExamples.console.title,
       },
       {
         title: "Read-only by design",
@@ -178,8 +178,8 @@ export const docPages: DocPage[] = [
         body: [
           "Core reads no global CLI config, provider credential or ambient device clock. The host supplies every authority dependency at composition time.",
         ],
-        code:
-          "const tasq = createTasqService({\n  store,\n  workspaceId,\n  identity,\n  clock,\n})",
+        code: publicCodeExamples.sdk.display,
+        codeTitle: publicCodeExamples.sdk.title,
         callout:
           published
             ? `Install @tasq-run/core@${releaseVersion} for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.`
@@ -205,8 +205,8 @@ export const docPages: DocPage[] = [
         body: [
           "Tasq Local keeps one LibSQL ledger under TASQ_HOME. Backups, journal checkpoints and diagnostics are explicit operations.",
         ],
-        code:
-          "tasq doctor\ntasq backup\ntasq journal checkpoint --accept-database --reason \"verified restore\"",
+        code: publicCodeExamples.operations.display,
+        codeTitle: publicCodeExamples.operations.title,
       },
       {
         title: "Security boundary",
@@ -262,7 +262,7 @@ export const docPages: DocPage[] = [
         body: [
           published
             ? `Tasq Local ${releaseVersion} is publicly distributed as a protected alpha with scoped npm packages, checksummed native artifacts and repository-bound provenance. Server, remote MCP, hosted Console and Cloud remain unavailable.`
-            : "The canonical source repository and site are public. Release candidates pass clean-room lifecycle tests, but npm scope control and trusted publishing are not yet proven, so packages and downloads are not advertised as available.",
+            : "Generated release truth currently withholds package and download coordinates. The canonical source remains public; build from source and inspect /adopt.json instead of guessing an install path.",
         ],
       },
     ],

@@ -515,7 +515,7 @@
     },
     {
       "id": "TQ-609",
-      "status": "in_progress_implementation",
+      "status": "done",
       "milestone": "public-adoption",
       "outcome": "Make every public command, example, product promise and Local limitation exact, executable and generated from current release truth"
     },
@@ -667,7 +667,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "27f5af219b627ff7ad78c0a70c97df9d025dd3807b0fc56a65f9b55547de5dbe"
+      "sha256": "70e532c3a796164077b981d6006341b23d1366e61984ccdeed21aca818ac6fd6"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

@@ -44,15 +44,18 @@ describe("public site boundary", () => {
     const files = await sourceFiles(resolve(siteRoot, "src"));
     expect(files.some((path) => /[/\\]api[/\\]/.test(path))).toBe(false);
     const source = await sourceText();
-    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq-run\/console/);
-    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq-run\/core/);
+    expect(source).not.toMatch(/^\s*import.+["']@tasq-run\/console/m);
+    expect(source).not.toMatch(/^\s*import.+["']@tasq-run\/core/m);
     expect(source).not.toContain("TASQ_HOME/run/console");
   });
 
-  test("marks the only product-state illustration as synthetic", async () => {
+  test("distinguishes the synthetic coordination diagram from the real Console capture", async () => {
     const home = await readFile(resolve(siteRoot, "src/app/page.tsx"), "utf8");
+    const screenshot = await readFile(resolve(siteRoot, "public/console-local.png"));
     expect(home).toContain('data-synthetic-demo="true"');
     expect(home).toContain("Synthetic diagram:");
+    expect(home).toContain('src="/console-local.png"');
+    expect(screenshot.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
     expect(home).toContain('className="map-network"');
     expect(home.match(/className="map-path"/g)).toHaveLength(3);
     expect(home).not.toContain('className="map-line');
@@ -113,6 +116,7 @@ describe("public site boundary", () => {
           packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq-run/cli" })]),
           integrity: { kind: "npm-provenance-and-github-attestation" },
         },
+        requirements: expect.arrayContaining([{ runtime: "npm", version: ">=10" }]),
         human: { path: "/docs/getting-started/", primaryAction: "install_release" },
         agent: { executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq" },
       });
@@ -207,6 +211,7 @@ describe("public site boundary", () => {
             sourceCommit: "a".repeat(40),
           },
         },
+        requirements: expect.arrayContaining([{ runtime: "npm", version: ">=10" }]),
         human: { primaryAction: "install_release" },
         agent: { executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq" },
       });

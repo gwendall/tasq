@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -18,6 +19,7 @@ import {
 import { CodeWindow } from "@/components/code-window";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { publicCodeExamples } from "@/lib/examples";
 import { productTruth, titleWords } from "@/lib/product-truth";
 
 const currentShapes = productTruth.productShapes;
@@ -54,20 +56,17 @@ export default function HomePage() {
       <section className="hero-grid overflow-hidden border-b border-[var(--line-strong)]">
         <div className="site-container grid min-h-[660px] items-stretch lg:grid-cols-[1.08fr_0.92fr]">
           <div className="flex flex-col justify-center border-[var(--line)] py-16 sm:py-20 lg:border-r lg:pr-16">
-            <div className="eyebrow">
-              <span className="size-2 bg-[var(--signal)]" />
-              Universal coordination kernel
-            </div>
-            <h1 className="mt-7 max-w-3xl text-[clamp(3.1rem,7vw,6.35rem)] font-semibold leading-[0.9] tracking-[-0.068em]">
-              The shared truth <span className="text-outline">between</span> agents.
+            <div className="eyebrow">Coordination for agents and humans</div>
+            <h1 className="mt-7 max-w-3xl text-[clamp(3.1rem,6.2vw,5.7rem)] font-semibold leading-[0.92] tracking-[-0.064em]">
+              No duplicate work. <span className="text-outline">Agents stay aligned.</span>
             </h1>
             <p className="mt-8 max-w-2xl text-lg leading-8 text-[var(--ink-muted)] sm:text-xl">
-              Tasq gives humans, agents and runtimes one durable ledger for what is owed, who owns it, what happened and what proves it is done.
+              Codex, Claude Code, custom agents and humans claim work, survive crashes, hand off cleanly and prove completion in one ledger.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/docs/getting-started">
-                  {published ? "Install Tasq Local" : "Build Tasq Local"} <ArrowRight aria-hidden="true" className="size-4" />
+                  {published ? "Install Tasq" : "Build Tasq"} <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -76,12 +75,6 @@ export default function HomePage() {
                 </a>
               </Button>
             </div>
-            <p className="mt-6 flex items-start gap-2 font-mono text-[0.6875rem] leading-5 uppercase tracking-[0.07em] text-[var(--ink-faint)]">
-              <Clock3 aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-              {published
-                ? `Public alpha ${releaseVersion}. Packages and checksummed releases are live.`
-                : "Public source alpha. Bootstrap package identities exist; the supported release is pending."}
-            </p>
           </div>
 
           <div className="relative flex items-center py-14 sm:py-16 lg:pl-16">
@@ -127,13 +120,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-b border-[var(--line-strong)] bg-[var(--signal-soft)]">
+        <div className="site-container flex flex-col gap-2 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            <strong>{published ? `Tasq Local ${releaseVersion} is available now.` : "Tasq Local builds from source today."}</strong>{" "}
+            Local actors share one machine and store. Server and cross-machine coordination are not shipped yet.
+          </p>
+          <Link className="font-mono text-xs font-semibold uppercase tracking-[0.06em] underline underline-offset-4" href="/status">
+            Verify product status
+          </Link>
+        </div>
+      </section>
+
       <section className="border-b border-[var(--line-strong)] bg-[var(--ink)] text-[var(--paper)]">
         <div className="site-container grid gap-px bg-white/15 md:grid-cols-3">
-          {benefits.map(({ icon: Icon, title, body }, index) => (
+          {benefits.map(({ icon: Icon, title, body }) => (
             <article className="bg-[var(--ink)] px-6 py-9 sm:px-8" key={title}>
-              <div className="flex items-start justify-between">
+              <div className="flex items-start">
                 <Icon aria-hidden="true" className="size-6 text-[var(--signal)]" strokeWidth={1.6} />
-                <span className="font-mono text-[0.6875rem] text-white/30">0{index + 1}</span>
               </div>
               <h2 className="mt-9 text-xl font-semibold tracking-[-0.035em]">{title}</h2>
               <p className="mt-3 text-sm leading-6 text-white/55">{body}</p>
@@ -146,7 +150,6 @@ export default function HomePage() {
         <div className="site-container">
           <div className="section-intro">
             <div>
-              <p className="eyebrow">The irreducible loop</p>
               <h2>Execution happened.<br />Did the outcome?</h2>
             </div>
             <p>
@@ -167,16 +170,37 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <CodeWindow title="agent bootstrap">
-              {`$ tasq onboard \\\n+  --space robotics/team-a \\\n+  --actor agent:planner \\\n+  --json
+            <CodeWindow title={publicCodeExamples.onboard.title}>{publicCodeExamples.onboard.display}</CodeWindow>
+          </div>
+        </div>
+      </section>
 
-{
-  "contractVersion": "tasq.onboarding.v1",
-  "workspace": "robotics/team-a",
-  "capabilities": ["read", "propose", "coordinate"],
-  "recipes": { "read": ["tasq", "context", "--json"] }
-}`}
-            </CodeWindow>
+      <section className="section-space border-b border-[var(--line-strong)] bg-[var(--paper-strong)]">
+        <div className="site-container">
+          <div className="max-w-3xl">
+            <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.058em]">
+              See the shared state locally.
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--ink-muted)]">
+              The read-only Console shows commitments, claims, resources and audit history from the same local ledger. It binds only to loopback.
+            </p>
+          </div>
+          <div className="mt-10 overflow-hidden border border-[var(--line-strong)] bg-[var(--paper)] shadow-[5px_5px_0_var(--ink)]">
+            <Image
+              alt="The real Tasq Local Console showing a mature coordination workspace"
+              className="h-auto w-full"
+              height={1201}
+              priority={false}
+              src="/console-local.png"
+              width={1600}
+            />
+          </div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <CodeWindow title={publicCodeExamples.console.title}>{publicCodeExamples.console.display}</CodeWindow>
+            <div className="border-l-2 border-[var(--signal)] bg-[var(--signal-soft)] p-6 text-sm leading-6">
+              This is not tasq.run and it is not a hosted dashboard. Keep the listener on
+              {" "}<code>127.0.0.1</code>; do not expose it through a generic reverse proxy.
+            </div>
           </div>
         </div>
       </section>
@@ -214,7 +238,6 @@ export default function HomePage() {
         <div className="site-container">
           <div className="section-intro">
             <div>
-              <p className="eyebrow">One product, four shapes</p>
               <h2>Use what exists.<br />See what does not.</h2>
             </div>
             <p>
@@ -241,7 +264,7 @@ export default function HomePage() {
               <strong>Today:</strong>{" "}
               {published
                 ? `Local ${releaseVersion} is a protected public alpha. Server, remote MCP and Cloud are still not shipped.`
-                : "Local behavior is certified, but the first protected release is still waiting on registry authority."}
+                : "Generated release truth currently withholds package coordinates. Use the canonical source path from /adopt.json."}
             </p>
             <Button asChild variant="outline" size="sm"><Link href="/status">Inspect product truth <ArrowRight className="size-3.5" /></Link></Button>
           </div>

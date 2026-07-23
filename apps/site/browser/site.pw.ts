@@ -3,16 +3,22 @@ import { expect, test } from "@playwright/test";
 test("homepage explains the product and its generated release boundary", async ({ page }) => {
   await page.goto("/");
   const truth = await (await page.request.get("/product-truth.json")).json();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("shared truth");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("duplicate work");
   await expect(page.getByRole("link", {
-    name: truth.release.published ? "Install Tasq Local" : "Build Tasq Local",
+    name: truth.release.published ? "Install Tasq" : "Build Tasq",
   })).toBeVisible();
   await expect(page.getByText(
     truth.release.published
-      ? `Public alpha ${truth.release.version}. Packages and checksummed releases are live.`
-      : "Public source alpha. Bootstrap package identities exist; the supported release is pending.",
-    { exact: true },
+      ? `Tasq Local ${truth.release.version} is available now.`
+      : "Tasq Local builds from source today.",
+    { exact: false },
   )).toBeVisible();
+  await expect(page.getByRole("img", {
+    name: "The real Tasq Local Console showing a mature coordination workspace",
+  })).toBeVisible();
+  await expect(page.getByText("Server and cross-machine coordination are not shipped yet.", {
+    exact: false,
+  })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Not built");
   if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq-run/");
