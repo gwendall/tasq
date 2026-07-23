@@ -1,7 +1,9 @@
 # TQ-612 — independent completion resolution
 
-**Status:** source candidate implemented and locally certified  
-**Decision:** [ADR-005](../decisions/ADR-005_EVIDENCE_TRUST_AND_RESOLUTION.md)  
+**Status:** published and exact-byte certified in `v0.3.0`
+
+**Decision:** [ADR-005](../decisions/ADR-005_EVIDENCE_TRUST_AND_RESOLUTION.md)
+
 **Machine evidence:** [TQ-612 certification](TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json)
 
 ## Outcome
@@ -107,6 +109,9 @@ The executable evidence covers:
   import/export;
 - the complete repository test suite.
 
-The source candidate is not a published package claim until a protected tag
-release and downloaded-byte certification bind these changes to immutable
-artifacts.
+Protected release
+[30050429924](https://github.com/gwendall/tasq/actions/runs/30050429924)
+and downloaded-byte certification
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
+bind the implementation to `v0.3.0`, all seven registry tarballs, and the
+attested macOS arm64 and Linux x64 artifacts.

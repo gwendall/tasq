@@ -134,8 +134,8 @@ describe("TQ-320 interactive runtime candidate", () => {
       status: "published-package-certified",
       publishedArtifactEvidence: {
         status: "passed",
-        release: "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30042551026",
+        release: "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30051196124",
       },
       tq320Complete: true,
     });

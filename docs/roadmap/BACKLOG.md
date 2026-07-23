@@ -51,9 +51,9 @@ operation through real adopters, not more repository-only architecture.
 ## Current gates
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
-  seven `@tasq-run/*@0.2.0` packages from npm, or download the attested
+  seven `@tasq-run/*@0.3.0` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
-  [`v0.2.0`](https://github.com/gwendall/tasq/releases/tag/v0.2.0) release.
+  [`v0.3.0`](https://github.com/gwendall/tasq/releases/tag/v0.3.0) release.
   The historical `alpha-bootstrap` tag is not a supported channel.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
@@ -67,7 +67,7 @@ operation through real adopters, not more repository-only architecture.
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
-  snapshot failure before schema mutation. Exact `v0.2.0` bytes migrate the
+  snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
   populated format-5 fixture on both targets. Exact N-2 evidence becomes
   mandatory once three protected release lines exist.
 
@@ -97,7 +97,7 @@ operation through real adopters, not more repository-only architecture.
   then published all seven `0.1.0` packages through OIDC and built both native
   targets from commit `0f5357ea10e0eb9f86f143a4fc38030624238bd2`.
   The exact attested artifacts are attached to immutable tag `v0.1.0`; the
-  current release certificate now tracks `v0.2.0`. The tag workflow
+  current release certificate now tracks `v0.3.0`. The tag workflow
   fails before building unless the exact version, repository, package boundary,
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
@@ -183,19 +183,20 @@ Server/Cloud breadth remains behind published-byte Local certification.
   behind one deep `@tasq-run/core` interface. Generated candidates contain
   compiled ESM and declarations; fresh Node 22 and Bun consumers both pass the
   same-ledger restart journey, and the npm README is generated from the
-  executable example. Protected `v0.2.0` packages and native assets are
+  executable example. Protected `v0.3.0` packages and native assets are
   published; exact registry tarballs pass the same Node/Bun restart journey
   and both native targets pass the full post-release replay. See
   `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
-- **TQ-612 — source candidate complete; publication gate:** ADR-005 is accepted.
+- **TQ-612 — done:** ADR-005 is accepted.
   Core, embedded client, CLI, capability-scoped local MCP, canonical
   inspection and Local Console now separate evidence trust, completion
   proposals, challenges, versioned decisions and final completion.
   Deterministic, independent-attestation, optimistic-challenge and adjudicated
   policies expose `too_early`, `indeterminate` and `challenged` without
-  importing economic bonds. Adversarial and portable-data tests pass. The
-  remaining gate is a protected release plus downloaded-byte certification;
-  see `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
+  importing economic bonds. Adversarial and portable-data tests pass. Protected
+  `v0.3.0`, all seven registry tarballs and both native targets pass the exact
+  downloaded-byte certification; see
+  `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
 - **TQ-606 — published-byte automation complete, human gate:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers
   install candidate bytes outside the checkout, onboard two actors, recover
@@ -220,7 +221,7 @@ Server/Cloud breadth remains behind published-byte Local certification.
   explicit completion. The autonomous CLI guide also exposes additive
   retry-safe attempt recipes; no Machine, terminal, conversation or provider
   ontology entered Core. The same fixture passes from exact protected
-  `@tasq-run/*@0.2.0` packages on both supported targets. See
+  `@tasq-run/*@0.3.0` packages on both supported targets. See
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 
@@ -307,7 +308,7 @@ maintainer launch decision.
 
 ## Decisions still required
 
-ADR-005 is accepted and TQ-612 is implemented as a source candidate. TQ-906
+ADR-005 is accepted and TQ-612 is published and certified. TQ-906
 remote effects still requires its own independent authority review and
 deployment evidence; completion trust does not grant effect authority.
 

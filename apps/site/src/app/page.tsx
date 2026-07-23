@@ -163,7 +163,8 @@ export default function HomePage() {
                 ["02", "Claim", "Temporary right to work"],
                 ["03", "Attempt", "One execution, not the goal"],
                 ["04", "Evidence", "The basis for a decision"],
-                ["05", "Completion", "Explicit and auditable"],
+                ["05", "Decision", "Independent when policy requires"],
+                ["06", "Completion", "Explicit and auditable"],
               ].map(([number, title, body]) => (
                 <div className="ledger-step" key={number}>
                   <span>{number}</span><strong>{title}</strong><p>{body}</p>
@@ -182,7 +183,7 @@ export default function HomePage() {
               See the shared state locally.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--ink-muted)]">
-              The read-only Console shows commitments, claims, resources and audit history from the same local ledger. It binds only to loopback.
+              The read-only Console shows commitments, claims, resources, evidence, resolution decisions and audit history from the same local ledger. It binds only to loopback.
             </p>
           </div>
           <div className="mt-10 overflow-hidden border border-[var(--line-strong)] bg-[var(--paper)] shadow-[5px_5px_0_var(--ink)]">

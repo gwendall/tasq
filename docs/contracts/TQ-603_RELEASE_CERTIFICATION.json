@@ -1,14 +1,14 @@
 {
   "contractVersion": "tasq.public-release-certification.v1",
   "status": "published",
-  "version": "0.2.0",
-  "tag": "v0.2.0",
-  "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-  "publishedAt": "2026-07-23T20:21:06Z",
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+  "publishedAt": "2026-07-23T22:38:16Z",
   "workflow": {
     "name": "Protected release",
-    "runId": 30041513292,
-    "url": "https://github.com/gwendall/tasq/actions/runs/30041513292",
+    "runId": 30050429924,
+    "url": "https://github.com/gwendall/tasq/actions/runs/30050429924",
     "identityJob": "passed",
     "nativeBuildJobs": {
       "darwin-arm64": "passed",
@@ -18,8 +18,8 @@
     "githubReleaseJob": "passed"
   },
   "githubRelease": {
-    "url": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-    "targetCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "url": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "targetCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
     "draft": false,
     "prerelease": false,
     "assetCount": 10,
@@ -44,38 +44,38 @@
     "packages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.2.0",
-        "integrity": "sha512-/w1LPxXPko619IcO9SEI0WHfiAGiXasCXCO2pgduYECjCSSIjgZrlz2rpfITxoSF0ebturWQnXTNkrPJ/jd4vA=="
+        "version": "0.3.0",
+        "integrity": "sha512-/tb2FRdzSt9YVbJIOan0GVL9xmW2lLALy4mbQKvblpMbkvKyjkxX6+6TA/9UCD3yjqoUwS/gur7lpvnwpikcpg=="
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.2.0",
-        "integrity": "sha512-jiv+NrDgEphZWI5LX7nMS5bq0KTEFTnIZVFRlK3iqJErTzCg6nqly+eTKCN7abTfb7Wi1Xu/t444bTJ6zDPDag=="
+        "version": "0.3.0",
+        "integrity": "sha512-wAYRMzDuAsGojozmBv62oZ9zJAkGYc4+iY8EBUHUE08c715ABGn8gMJsplS41dcdGiZPpPZ97md81pNFv74LUA=="
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.2.0",
-        "integrity": "sha512-GhYAt/l8jDeC8N9a3CMXhKvo3gCjsJnHdZLlRXiW8DJtgC4L+Yr3YQ/uv2+9ykHPAeizp5QB8ou6FwBTVqjvTg=="
+        "version": "0.3.0",
+        "integrity": "sha512-yGGcBBZ4Q/gapyMekFx0RyysK0k0P0186kCoGpUevN/f1VBW1CKIs6xMkG1uPAoKf3e10yPwSLcUJJgfjboP8g=="
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.2.0",
-        "integrity": "sha512-+3NJvWUqXSrC902P72QswYkBpYgqDBqUmZzZ9tPbKIssKz/nwzSnEEh6kw32pkWWiy3ZxiHyyUa0qEcT6K7Wsw=="
+        "version": "0.3.0",
+        "integrity": "sha512-h5yWe3JEqUXXqzc3cJGU3bD3cFTh/aa5xoWbKzgjJeG1gXtJ6HxQwvNyO1eTxU3ujw+gAPihr08PCFt2HqMSHQ=="
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.2.0",
-        "integrity": "sha512-+nnTFTpn0TUxb9nJ4C/lGmd2ZKvtU1h105O6T/rQwtNNTQnNfru8ANzAzXi/3MWcwybuZGJ1nR848bEp7hYP1A=="
+        "version": "0.3.0",
+        "integrity": "sha512-pmh1Tyah4VrTSlYsH3JxUVkA5enn+K2FrM0kJtWxfq7VnRCovFdffX3FYiQhaxHMRQvs0UrE2zz6wSSBMQBQdw=="
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.2.0",
-        "integrity": "sha512-kFM0Mo4hbICuR9HXVP8VLH1BbNnsSvw7mN3CPVBsGJ8BHYt2iWm9pMlSyB6c9o+7Jt8cZ2waelqkdG5YhQXc9Q=="
+        "version": "0.3.0",
+        "integrity": "sha512-qxOPjd7SGdMtbxPTpTPwBXZ+1KmloGMKqhuKHBEJXGVSW9OSgJjDyuKiimGsf1o1Z/WcYQm327zkLmgAa817Hg=="
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.2.0",
-        "integrity": "sha512-kp2hSt6VJo3PLKmyD6FEJ3wbjZmAlPJl3r/eK4Mtv300mneVkLAMXZvyQdt9lPakX+/vOBOgmFxgpMcMlCLUHA=="
+        "version": "0.3.0",
+        "integrity": "sha512-w15lSltU75eAZgXRx2S0gjsDw26axar2laMWRFf3aYM9JqvAEhLZumqHHw0Fo802QmCtff0Gb0FoqvkCRHxczA=="
       }
     ]
   },
@@ -89,9 +89,9 @@
   },
   "postReleaseCertification": {
     "status": "passed",
-    "certifiedAt": "2026-07-23T20:34:11Z",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
-    "certificationSourceCommit": "ff35ce065d63a8aaa21617a03d03af1ed9b87a5a",
+    "certifiedAt": "2026-07-23T22:50:40Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124",
+    "certificationSourceCommit": "d5b77df0ec51578409929ee23c83ef7aa02c4069",
     "registryTarballsMatched": true,
     "downloadedByteTargets": ["darwin-arm64", "linux-x64-gnu"],
     "lifecyclePassed": true,

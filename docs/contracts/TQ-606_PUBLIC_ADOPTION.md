@@ -90,8 +90,8 @@ chooses correctly. That claim requires an independent blind human session with
 no maintainer assistance after public-source launch.
 
 Protected run
-[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
-has now rerun the journey from the exact attested `v0.2.0` release on both
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
+has now rerun the journey from the exact attested `v0.3.0` release on both
 supported targets. Final TQ-606 closure requires only one independent
 unbriefed-human completion from the public entrypoint, including interventions
 and failure points. Until that exists, the machine certificate keeps

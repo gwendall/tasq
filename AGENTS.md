@@ -30,7 +30,7 @@ acceptance criteria and verification routes, is in
 [`docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
 TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
-packages and native Tasq Local assets are published as protected `v0.2.0`;
+packages and native Tasq Local assets are published as protected `v0.3.0`;
 the immutable coordinates are certified in
 [TQ-603_RELEASE_CERTIFICATION.json](docs/contracts/TQ-603_RELEASE_CERTIFICATION.json).
 The post-release lifecycle, migration, adoption and interactive-runtime matrix
@@ -41,7 +41,7 @@ release; read
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 TQ-610's acquisition and universal-agent source implementation is in
 [TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
-The public `v0.2.0` installer, `setup`, `demo`, deterministic `agent install`
+The public `v0.3.0` installer, `setup`, `demo`, deterministic `agent install`
 helper and static agent entrypoints are published and downloaded-byte
 certified on both supported targets. Integration `0.1.2` has passed the
 zero-intervention public-main native Codex and Claude matrix in
@@ -51,15 +51,17 @@ Published coordinates and downloaded-byte evidence are frozen in
 The embedded-consumer boundary is in
 [TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md](docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md):
 `createLocalTasq` and compiled ESM/declarations pass exact published-package
-Node 22 and Bun restart certification at `v0.2.0`; its immutable coordinates
-and runtime evidence are frozen in
-[TQ-611_RELEASE_CERTIFICATION.json](docs/contracts/TQ-611_RELEASE_CERTIFICATION.json).
-ADR-005 is accepted and the TQ-612 source candidate is documented in
+Node 22 and Bun restart certification at `v0.3.0`; the original interface
+release is frozen in
+[TQ-611_RELEASE_CERTIFICATION.json](docs/contracts/TQ-611_RELEASE_CERTIFICATION.json)
+and the current replay in the TQ-612 certificate below.
+ADR-005 is accepted and the published TQ-612 contract is documented in
 [TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md](docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md).
-It advances source stores to format 26 and adds append-only evidence trust,
+Public `v0.3.0` advances stores to format 26 and adds append-only evidence trust,
 proposal, challenge and validation records across Core, embedded client, CLI,
-local MCP and Console. It is not a published `v0.2.0` claim; protected release
-and downloaded-byte certification are its remaining gate.
+local MCP and Console. The protected release and downloaded-byte certification
+are frozen in
+[TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json](docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json).
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
