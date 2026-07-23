@@ -141,8 +141,10 @@ describe("canonical Tasq roadmap", () => {
         state: "complete_public_alpha",
       },
       npmScopeControl: {
-        state: "unverified",
-        observation: expect.stringContaining("not evidence of scope ownership"),
+        state: "verified",
+        organization: "tasq-run",
+        operator: "gwendall",
+        boundary: expect.stringContaining("package identities and trusted publishers still require bootstrap"),
       },
       npmTrustedPublishing: { state: "unverified" },
       firstProtectedRelease: {
