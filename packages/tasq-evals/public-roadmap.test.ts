@@ -390,7 +390,7 @@ describe("canonical Tasq roadmap", () => {
     expect(roadmap.decisions).toContainEqual({
       id: "ADR-005",
       status: "pending",
-      blocks: ["TQ-906"],
+      blocks: ["TQ-612", "TQ-906"],
       question: "Evidence trust, authenticity, supersession, revocation and retention",
     });
   });

@@ -392,13 +392,6 @@
       "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority"
     },
     {
-      "id": "TQ-806",
-      "status": "pending",
-      "milestone": "self-hosted-server",
-      "dependsOn": ["TQ-405", "TQ-808"],
-      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
-    },
-    {
       "id": "TQ-807",
       "status": "pending",
       "milestone": "self-hosted-server",
@@ -411,6 +404,13 @@
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-807"],
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-806",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-405", "TQ-808"],
+      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
     },
     {
       "id": "TQ-810",

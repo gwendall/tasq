@@ -598,12 +598,6 @@
       "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority"
     },
     {
-      "id": "TQ-806",
-      "status": "pending",
-      "milestone": "self-hosted-server",
-      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
-    },
-    {
       "id": "TQ-807",
       "status": "pending",
       "milestone": "self-hosted-server",
@@ -614,6 +608,12 @@
       "status": "pending",
       "milestone": "self-hosted-server",
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-806",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
     },
     {
       "id": "TQ-810",
@@ -667,7 +667,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "22e5c8b7b55212b190f24e6a17ee7cd12180260592c7af17b0b6a4cf9b4de50d"
+      "sha256": "27f5af219b627ff7ad78c0a70c97df9d025dd3807b0fc56a65f9b55547de5dbe"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
