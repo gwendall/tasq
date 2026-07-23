@@ -4,12 +4,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createMutableClock } from "@tasq/schema";
+import { createMutableClock } from "@tasq-run/schema";
 import {
   getCommitment,
   openDb,
   runKernelMigrations,
-} from "@tasq/core";
+} from "@tasq-run/core";
 import {
   createTasqMcpServer,
   parseTasqMcpCapabilities,

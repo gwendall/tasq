@@ -7,7 +7,7 @@
  */
 
 import { createHash } from "node:crypto";
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 import { z } from "zod";
 
 export const VERIFIED_IDENTITY_CONTRACT_VERSION = "tasq.verified-identity.v1" as const;

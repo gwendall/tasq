@@ -455,7 +455,7 @@ describe.skipIf(target === null)("TQ-606 blind public adoption", () => {
       readFile(join(productRoot, "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"), "utf8"),
     ]);
     for (const source of [testSource, clientSource]) {
-      expect(source).not.toMatch(/from\s+["']@tasq\//);
+      expect(source).not.toMatch(/from\s+["']@tasq-run\//);
       expect(source).not.toMatch(/Date\.now\s*\(/);
       expect(source).not.toMatch(/new\s+Date\s*\(/);
       expect(source).not.toMatch(/performance\.now\s*\(/);

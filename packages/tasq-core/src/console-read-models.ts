@@ -31,7 +31,7 @@ import {
   type ConsolePage,
   type ConsoleSupportBundle,
   type ConsoleSection as ConsoleSectionT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import { serviceNow } from "./util/clock.js";
 

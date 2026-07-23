@@ -19,7 +19,7 @@ bind an artifact or observation as evidence and complete the commitment under
 its completion policy.
 
 The implementation lives in the standalone
-`@tasq/protocol-adapters` package. Dependency direction is one-way:
+`@tasq-run/protocol-adapters` package. Dependency direction is one-way:
 
 ```text
 MCP / A2A untrusted DTO

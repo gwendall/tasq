@@ -8,6 +8,9 @@ by ADR-008.
 
 ### Changed
 
+- Use the controlled product-aligned `@tasq-run/*` namespace for every public
+  package, workspace import, release artifact and SBOM identity; explicitly
+  prohibit the unrelated `tasq` package and `@tasq/*` scope.
 - Make `https://tasq.run` the canonical public website, documentation and
   pre-executable agent-acquisition entrypoint while retaining
   `https://github.com/gwendall/tasq` as the source authority.
@@ -31,7 +34,7 @@ by ADR-008.
   repository files that may not exist beside the executable.
 - Make `packages/tasq-core` the single neutral source authority, replace the
   Local compatibility mirror with forwarding modules and build the public
-  `@tasq/core` candidate from its real source directory.
+  `@tasq-run/core` candidate from its real source directory.
 - Add TQ-607, a machine-tracked private dogfood gate requiring at least 30
   days across the personal life-pilot, Kami Robotics and an interactive agent
   runtime before an explicit public-launch decision.

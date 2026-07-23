@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { ExtensionRuntimeRegistry } from "@tasq/extension-sdk";
+import { ExtensionRuntimeRegistry } from "@tasq-run/extension-sdk";
 import {
   HTTP_CONDITION_TYPE_URI,
   HTTP_OBSERVATION_TYPE_URI,

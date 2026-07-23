@@ -1,6 +1,6 @@
 /** Self-hosted local MCP transport discovered through autonomous onboarding. */
 
-import { BootstrapActorAlias, CoordinationSpaceId, systemClock, type Clock } from "@tasq/schema";
+import { BootstrapActorAlias, CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { openRuntime } from "../runtime.js";
 
@@ -13,7 +13,7 @@ export async function mcpCmd(args: ParsedArgs, clock: Clock = systemClock): Prom
   const actor = BootstrapActorAlias.parse(args.string("actor"));
   // Keep the MCP SDK out of every ordinary one-shot CLI process. Cold shell
   // bootstrap must remain sub-second after warm-up.
-  const { parseTasqMcpCapabilities, serveTasqMcpStdio } = await import("@tasq/mcp");
+  const { parseTasqMcpCapabilities, serveTasqMcpStdio } = await import("@tasq-run/mcp");
   const capabilities = parseTasqMcpCapabilities(
     args.string("capabilities") ?? "read,propose,coordinate",
   );

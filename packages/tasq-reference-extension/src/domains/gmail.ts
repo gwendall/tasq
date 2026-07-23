@@ -3,8 +3,8 @@ import type {
   ConditionTypeRuntime,
   EvaluatorRuntime,
   ObservationTypeRuntime,
-} from "@tasq/extension-sdk";
-import type { ExtensionManifestType, Metadata } from "@tasq/schema";
+} from "@tasq-run/extension-sdk";
+import type { ExtensionManifestType, Metadata } from "@tasq-run/schema";
 import { boundedString, matched, objectSchema, rejected, route } from "../shared.js";
 
 export const GMAIL_CONDITION_TYPE_URI = "https://schemas.tasq.dev/conditions/gmail/thread-reply";

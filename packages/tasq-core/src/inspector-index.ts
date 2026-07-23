@@ -12,7 +12,7 @@ import {
   type Clock,
   type InspectorIndex,
   type TaskStatus,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb } from "./db.js";
 import { serviceNow } from "./util/clock.js";
 

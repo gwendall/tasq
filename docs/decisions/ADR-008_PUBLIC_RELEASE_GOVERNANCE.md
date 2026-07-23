@@ -16,8 +16,8 @@ would blur ownership, expose unrelated history and make the public build
 impossible to reproduce independently.
 
 The product name remains **Tasq** for the pre-1.0 line. The unscoped npm name
-`tasq` is already owned by an unrelated project, so product identity and npm
-package identity must remain separate.
+`tasq` and the `@tasq` npm scope are already controlled by unrelated parties,
+so product identity and npm package identity must remain separate.
 
 ## 2. Decision
 
@@ -25,7 +25,10 @@ package identity must remain separate.
 
 - Product and executable: `Tasq` / `tasq`.
 - Canonical public website and documentation: `https://tasq.run`.
-- Public npm namespace: `@tasq/*`.
+- Public npm namespace: `@tasq-run/*`.
+- The unrelated `tasq` package and `@tasq/*` scope are prohibited publication
+  targets. The `@tasq-run` namespace deliberately matches the canonical
+  `tasq.run` product domain.
 - Public canonical repository:
   `https://github.com/gwendall/tasq`.
 - The current `@kami/*` package names are implementation coordinates, never
@@ -63,13 +66,13 @@ The first stable package set is deliberately small:
 
 | Public package | Current source | Public contract |
 |---|---|---|
-| `@tasq/schema` | `tasq-schema` | DTOs, identities, digests and table contracts |
-| `@tasq/core` | `tasq-service` strict `./kernel` surface | Embedded profile-neutral kernel, migrations and explicit store/identity/clock composition |
-| `@tasq/cli` | `tasq-cli` | Tasq Local CLI and the `tasq` binary |
-| `@tasq/mcp` | `tasq-mcp` | Local stdio transport and embeddable capability-scoped MCP factory |
-| `@tasq/extension-sdk` | `tasq-extension-sdk` | Extension runtime plus connector conformance contracts |
-| `@tasq/protocol-adapters` | `tasq-protocol-adapters` | Pure MCP Tasks and A2A mappings |
-| `@tasq/console` | `tasq-inspector` | Read-only loopback Local Console |
+| `@tasq-run/schema` | `tasq-schema` | DTOs, identities, digests and table contracts |
+| `@tasq-run/core` | `tasq-service` strict `./kernel` surface | Embedded profile-neutral kernel, migrations and explicit store/identity/clock composition |
+| `@tasq-run/cli` | `tasq-cli` | Tasq Local CLI and the `tasq` binary |
+| `@tasq-run/mcp` | `tasq-mcp` | Local stdio transport and embeddable capability-scoped MCP factory |
+| `@tasq-run/extension-sdk` | `tasq-extension-sdk` | Extension runtime plus connector conformance contracts |
+| `@tasq-run/protocol-adapters` | `tasq-protocol-adapters` | Pure MCP Tasks and A2A mappings |
+| `@tasq-run/console` | `tasq-inspector` | Read-only loopback Local Console |
 
 Only explicit `exports` are public. Source paths, SQL filenames, generated
 files, fixtures, deep imports and internal compatibility entrypoints are not.

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { ConditionTypeRuntime, EvaluatorRuntime, ObservationTypeRuntime } from "@tasq/extension-sdk";
-import type { ExtensionManifestType, Metadata } from "@tasq/schema";
+import type { ConditionTypeRuntime, EvaluatorRuntime, ObservationTypeRuntime } from "@tasq-run/extension-sdk";
+import type { ExtensionManifestType, Metadata } from "@tasq-run/schema";
 import { ambiguous, boundedString, HTTP_METHODS, matched, nullable, objectSchema, rejected, route } from "../shared.js";
 
 export const HTTP_CONDITION_TYPE_URI = "https://schemas.tasq.dev/conditions/http/response";

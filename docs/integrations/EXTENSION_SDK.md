@@ -17,16 +17,16 @@ never installs authority into a workspace. A host must do both under its own
 trust policy and verify the same URI/version/digest identities.
 
 ```text
-@tasq/schema
+@tasq-run/schema
   generic persisted records + manifest DTOs
             ↓
-@tasq/extension-sdk
+@tasq-run/extension-sdk
   pure runtime interfaces + immutable resolver
             ↓
 @tasq-internal/reference-extension
   Gmail / GitHub / Mercury / HTTP / filesystem modules
             ↓
-@tasq/core
+@tasq-run/core
   durable provider-neutral registry + kernel transactions
             ↓
 @tasq-internal/local-service
@@ -38,7 +38,7 @@ rules do not belong in `tasq-schema` or the generic service kernel.
 
 ## Runtime primitives
 
-`@tasq/extension-sdk` exports:
+`@tasq-run/extension-sdk` exports:
 
 - `ConditionTypeRuntime`: exact type URI/schema version plus canonical parser;
 - `ObservationTypeRuntime`: parser, stable subject identity and route keys;
@@ -75,7 +75,7 @@ import {
   assertConnectorConformance,
   defineConnectorConformanceProfile,
   runConnectorConformance,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 
 const profile = defineConnectorConformanceProfile({
   protocol: CONNECTOR_CONFORMANCE_PROTOCOL,
@@ -121,7 +121,7 @@ limitations and reference eval.
 ## Minimal unfamiliar extension
 
 ```ts
-import { defineExtensionRuntime } from "@tasq/extension-sdk";
+import { defineExtensionRuntime } from "@tasq-run/extension-sdk";
 
 export const robotics = defineExtensionRuntime({
   manifest: roboticsManifest,
@@ -190,7 +190,7 @@ HTTP methods, Mercury vocabulary/defaults and all five reconciliation paths.
   still exposes the five v1 aliases. Generic record APIs arrive after the
   universal conformance gate.
 - Registry installation remains an administrative service API, not an ordinary
-  task mutation. Embedded consumers call `installExtension` from `@tasq/core`;
+  task mutation. Embedded consumers call `installExtension` from `@tasq-run/core`;
   installation stores a manifest but never downloads or executes runtime code.
 
 ## Required tests for a new extension

@@ -7,7 +7,7 @@ import * as service from "../src/index.js";
 import {
   CLIENT_HELLO_CONTRACT_VERSION,
   createMutableClock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import { canonicalJson, sha256Digest } from "../src/service/extensions.js";
 
 const tmpDirs: string[] = [];

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * @tasq/cli — the `tasq` binary.
+ * @tasq-run/cli — the `tasq` binary.
  *
  * Routes the first positional arg to a command handler. Commands consume
  * `@tasq-internal/local-service` ; the CLI itself has no SQL.

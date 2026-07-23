@@ -4,7 +4,7 @@
  * Single low-overhead formatter ; no external dep on chalk/ansi-colors.
  */
 
-import { shortId, systemClock, type Clock } from "@tasq/schema";
+import { shortId, systemClock, type Clock } from "@tasq-run/schema";
 
 export { shortId };
 

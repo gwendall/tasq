@@ -42,7 +42,7 @@ import {
   IdempotencyRecord as IdempotencyRecordZ,
   MAX_TASK_DEPTH,
   CommitmentSummarySourceRefs,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   OBSERVATION_KIND_TYPE_URIS,
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,

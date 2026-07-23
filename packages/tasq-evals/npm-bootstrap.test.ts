@@ -13,7 +13,7 @@ const integrity = `sha512-${createHash("sha512").update(bytes).digest("base64")}
 
 function registryMetadata(overrides: Record<string, unknown> = {}) {
   return {
-    name: "@tasq/cli",
+    name: "@tasq-run/cli",
     version: "0.1.0-alpha.0",
     gitHead: sourceCommit,
     repository: {
@@ -22,7 +22,7 @@ function registryMetadata(overrides: Record<string, unknown> = {}) {
     },
     dist: {
       integrity,
-      tarball: "https://registry.npmjs.org/@tasq/cli/-/cli-0.1.0-alpha.0.tgz",
+      tarball: "https://registry.npmjs.org/@tasq-run/cli/-/cli-0.1.0-alpha.0.tgz",
     },
     ...overrides,
   };
@@ -42,7 +42,7 @@ describe("one-shot npm identity bootstrap", () => {
       const child = Bun.spawn([
         process.execPath,
         verifier,
-        "--package", "@tasq/cli",
+        "--package", "@tasq-run/cli",
         "--version", "0.1.0-alpha.0",
         "--source-commit", sourceCommit,
         "--tarball", tarball,
@@ -64,11 +64,11 @@ describe("one-shot npm identity bootstrap", () => {
     expect(JSON.parse(accepted.stdout)).toEqual({
       contractVersion: "tasq.npm-publication-verification.v1",
       status: "published",
-      package: "@tasq/cli",
+      package: "@tasq-run/cli",
       version: "0.1.0-alpha.0",
       sourceCommit,
       integrity,
-      tarball: "https://registry.npmjs.org/@tasq/cli/-/cli-0.1.0-alpha.0.tgz",
+      tarball: "https://registry.npmjs.org/@tasq-run/cli/-/cli-0.1.0-alpha.0.tgz",
     });
 
     for (const invalid of [

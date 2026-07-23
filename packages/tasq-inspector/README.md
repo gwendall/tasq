@@ -1,4 +1,4 @@
-# `@tasq/console`
+# `@tasq-run/console`
 
 Read-only local web Console over canonical Tasq Core projections.
 
@@ -13,9 +13,9 @@ reverse proxy. It is not the static product site in `apps/site` and is not a
 hosted Console.
 
 ```bash
-pnpm --filter @tasq/console typecheck
-pnpm --filter @tasq/console test
-pnpm --filter @tasq/console test:browser
+pnpm --filter @tasq-run/console typecheck
+pnpm --filter @tasq-run/console test
+pnpm --filter @tasq-run/console test:browser
 ```
 
 Start with [`../../LOCAL_CONSOLE_SPEC.md`](../../docs/concepts/LOCAL_CONSOLE_SPEC.md) and the

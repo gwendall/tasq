@@ -46,7 +46,7 @@
     },
     "npmScopeControl": {
       "state": "unverified",
-      "observation": "@tasq/schema is not published; this environment has no valid npm identity, which is not evidence of scope ownership"
+      "observation": "@tasq-run/schema is not published; this environment has no valid npm identity, which is not evidence of scope ownership"
     },
     "npmTrustedPublishing": {
       "state": "unverified",

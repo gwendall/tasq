@@ -11,7 +11,7 @@ import {
   runConnectorConformance,
   type ConnectorConformanceProfile,
   type NormalizedConnectorObservation,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import { watchFilesystemArtifact } from "@tasq-internal/filesystem-watcher";
 
 const tmpDirs: string[] = [];

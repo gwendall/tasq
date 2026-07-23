@@ -1,4 +1,4 @@
-# `@tasq/core`
+# `@tasq-run/core`
 
 Profile-neutral embedded commitment-coordination kernel for Tasq.
 
@@ -17,7 +17,7 @@ internal paths. Compatibility-only life planning and bundled provider types
 remain in private sibling packages.
 
 ```bash
-pnpm --filter @tasq/core typecheck
+pnpm --filter @tasq-run/core typecheck
 ```
 
 Kernel behavior is exercised primarily through the service, surface and eval

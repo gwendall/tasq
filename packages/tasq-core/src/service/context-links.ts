@@ -22,7 +22,7 @@ import {
   type Event,
   type ExternalContextLink,
   type NormalizedAttachExternalContextLinkInput,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";

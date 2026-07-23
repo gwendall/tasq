@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { openDb, runKernelMigrations, systemClock } from "@tasq/core";
+import { openDb, runKernelMigrations, systemClock } from "@tasq-run/core";
 import { createTasqMcpServer, parseTasqMcpCapabilities } from "./index.js";
 
 const workspaceId = process.env.TASQ_MCP_WORKSPACE?.trim();

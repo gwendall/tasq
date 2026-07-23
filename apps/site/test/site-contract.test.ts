@@ -34,7 +34,7 @@ describe("public site boundary", () => {
   test("guards package installation behind generated release truth and never invents remote surfaces", async () => {
     const source = await sourceText();
     expect(source).toContain("productTruth.release.published");
-    expect(source).toContain("@tasq/cli@");
+    expect(source).toContain("@tasq-run/cli@");
     expect(source).not.toMatch(/curl[^\n]+(?:install|releases\/download)/i);
     expect(source).not.toMatch(/remote MCP (?:is )?(?:available|shipped)/i);
     expect(source).not.toMatch(/self-host(?:ed|ing)[^\n]+(?:available|shipped|ready)/i);
@@ -44,8 +44,8 @@ describe("public site boundary", () => {
     const files = await sourceFiles(resolve(siteRoot, "src"));
     expect(files.some((path) => /[/\\]api[/\\]/.test(path))).toBe(false);
     const source = await sourceText();
-    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq\/console/);
-    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq\/core/);
+    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq-run\/console/);
+    expect(source).not.toMatch(/(?:from|import\s*)\s*["']@tasq-run\/core/);
     expect(source).not.toContain("TASQ_HOME/run/console");
   });
 
@@ -110,7 +110,7 @@ describe("public site boundary", () => {
         distribution: {
           mode: "npm_and_github_release",
           version: expect.stringMatching(/^\d+\.\d+\.\d+$/),
-          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq/cli" })]),
+          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq-run/cli" })]),
           integrity: { kind: "npm-provenance-and-github-attestation" },
         },
         human: { path: "/docs/getting-started/", primaryAction: "install_release" },
@@ -201,7 +201,7 @@ describe("public site boundary", () => {
           mode: "npm_and_github_release",
           published: true,
           version: "0.1.0",
-          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq/cli" })]),
+          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq-run/cli" })]),
           integrity: {
             kind: "npm-provenance-and-github-attestation",
             sourceCommit: "a".repeat(40),

@@ -6,9 +6,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createTasqMcpServer } from "@tasq/mcp";
-import { createMutableClock } from "@tasq/schema";
-import { openDb, runKernelMigrations } from "@tasq/core";
+import { createTasqMcpServer } from "@tasq-run/mcp";
+import { createMutableClock } from "@tasq-run/schema";
+import { openDb, runKernelMigrations } from "@tasq-run/core";
 
 const WORKSPACE = "tq-304-runtime-recipes";
 const cleanups: Array<() => Promise<void>> = [];

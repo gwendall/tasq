@@ -21,7 +21,7 @@ import {
   type Project as ProjectT,
   type Task as TaskT,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import { renderLifePlanningMarkdown } from "@tasq-internal/life-planning-profile";
 import type { TasqDb } from "../db.js";
 import { pickNext } from "../prioritizer.js";

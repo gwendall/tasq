@@ -1,2 +1,2 @@
 /** Forwarding compatibility module. Canonical implementation: packages/tasq-core/src/service/spaces.ts. */
-export * from "@tasq/core/internal/service/spaces";
+export * from "@tasq-run/core/internal/service/spaces";

@@ -20,7 +20,7 @@ import {
   type DeliveryOutboxStatus,
   type DeliverySink as DeliverySinkT,
   type Event as EventT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runOperationalTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";

@@ -86,6 +86,7 @@ describe.skipIf(target === null)("Tasq public release envelope", () => {
 
     const sbom = JSON.parse(await readFile(join(first, `${expectedPrefix}.cdx.json`), "utf8"));
     expect(sbom).toMatchObject({ bomFormat: "CycloneDX", specVersion: "1.6" });
+    expect(sbom.metadata.component.purl).toBe("pkg:npm/%40tasq-run/cli@0.1.0");
     expect(sbom.components.length).toBeGreaterThan(5);
     expect(sbom.components.some((component: { name: string }) => component.name === "@libsql/client")).toBe(true);
     expect(JSON.stringify(sbom)).not.toContain("@kami/");

@@ -41,7 +41,7 @@ Two intentionally identical effects have the same request digest, different
 effect IDs, different dispatch keys and require separate authority.
 
 The reference contract is implemented without persistence in
-`@tasq/schema/effects` and frozen by
+`@tasq-run/schema/effects` and frozen by
 `packages/tasq-schema/test/effects.test.ts` before the K2 tables exist.
 
 ## 1. Canonical request envelope
@@ -132,7 +132,7 @@ and incorporates the verified RFC 8785 negative-zero erratum.
 
 This strict profile is intentionally different from the older extension
 manifest helper, which omits object `undefined` and permits ordinary JSON
-numbers. Authority-bearing code must use only `@tasq/schema/effects`.
+numbers. Authority-bearing code must use only `@tasq-run/schema/effects`.
 
 ### Digest
 

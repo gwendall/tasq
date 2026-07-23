@@ -12,7 +12,7 @@ import {
   listExternalContextLinks,
   openDb,
   runKernelMigrations,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const dirs: string[] = [];
 afterEach(() => {

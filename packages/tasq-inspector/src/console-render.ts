@@ -4,7 +4,7 @@ import type {
   ConsoleOverview,
   ConsolePage,
   ConsoleSection,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 export interface ConsoleDocument {
   overview: ConsoleOverview;

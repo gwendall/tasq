@@ -3,8 +3,8 @@ import {
   ConsoleListenerDescriptor as ConsoleListenerDescriptorSchema,
   type Clock,
   type ConsoleListenerDescriptor,
-} from "@tasq/schema";
-import type { TasqDb } from "@tasq/core";
+} from "@tasq-run/schema";
+import type { TasqDb } from "@tasq-run/core";
 import { createTasqInspectorHandler } from "./server.js";
 import { assertLoopbackHost } from "./loopback.js";
 

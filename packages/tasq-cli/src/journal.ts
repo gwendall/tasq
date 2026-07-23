@@ -15,7 +15,7 @@ import {
   writeSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
-import { systemClock, type Clock } from "@tasq/schema";
+import { systemClock, type Clock } from "@tasq-run/schema";
 
 export const JOURNAL_CHECKPOINT_TYPE = "tasq.journal.checkpoint";
 

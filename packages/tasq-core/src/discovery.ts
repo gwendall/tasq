@@ -23,7 +23,7 @@ import {
   type OnboardingProblem,
   type OnboardingResponse as OnboardingResponseT,
   type TransportBoundary as TransportBoundaryT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import { canonicalJson, sha256Digest } from "./util/canonical-json.js";
 import { serviceNow } from "./util/clock.js";

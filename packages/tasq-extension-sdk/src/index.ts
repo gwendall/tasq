@@ -12,7 +12,7 @@ import type {
   ExtensionManifestType,
   Metadata,
   ReconciliationDecision,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 export * from "./effects.js";
 export * from "./connector-conformance.js";

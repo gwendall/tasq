@@ -20,8 +20,8 @@ clean CI build emits:
 - `tasq-v<version>-<target>.SHA256SUMS`, independent SHA-256 checksums.
 
 The same explicit inputs also produce seven public npm candidates:
-`@tasq/schema`, `@tasq/core`, `@tasq/cli`, `@tasq/mcp`,
-`@tasq/extension-sdk`, `@tasq/protocol-adapters` and `@tasq/console`. Their
+`@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`, `@tasq-run/mcp`,
+`@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters` and `@tasq-run/console`. Their
 tarballs are accompanied by `tasq.public-packages.v1` release metadata, a
 CycloneDX 1.6 dependency graph and a shared checksum file. The internal
 `@kami/*` manifests are never republished.
@@ -68,9 +68,9 @@ The package candidate test builds the complete set twice and compares every
 byte. It extracts every tarball, rejects private coordinates, workspace
 dependencies and checkout paths, and installs all seven tarballs together in
 a new directory. From that installation it imports every package entrypoint,
-boots `@tasq/core` with a mutable injected clock, completes a robotics
+boots `@tasq-run/core` with a mutable injected clock, completes a robotics
 commitment at exact controlled timestamps, verifies the CLI version and runs
-real autonomous onboarding. `@tasq/core` contains only the strict kernel
+real autonomous onboarding. `@tasq-run/core` contains only the strict kernel
 entrypoint graph: the life-planning policy and its area/goal/project service
 modules are absent.
 
@@ -82,7 +82,7 @@ The pipeline must refuse a public release until all of these facts are true:
    rationale in `PUBLIC_RELEASE_POLICY.json`;
 2. the workflow runs from `gwendall/tasq`, not the private monorepo;
 3. the immutable tag exactly matches the declared version;
-4. the `@tasq` npm scope and every intended package are controlled;
+4. the `@tasq-run` npm scope and every intended package are controlled;
 5. npm trusted publishing names the canonical repository, workflow and
    protected environment;
 6. macOS arm64 and Linux x64 clean-room jobs pass;
@@ -100,7 +100,7 @@ The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
 `v*` tags, the tag-scoped release environment, secret scanning, push protection
 and private vulnerability reporting are active. Gate 1, TQ-321 and the TQ-608
-source candidate are passed. npm `@tasq` scope control and trusted publishing
+source candidate are passed. npm `@tasq-run` scope control and trusted publishing
 remain external blockers. Therefore source is public alpha, while packages and
 downloadable artifacts are not published.
 
@@ -110,9 +110,9 @@ npm requires a package to exist before a trusted publisher can be configured.
 The one-time `bootstrap-npm.yml` workflow closes that circular dependency
 without publishing laptop-built bytes:
 
-1. create or verify the npm organization `tasq` and enable account-level 2FA;
+1. create or verify the npm organization `tasq-run` and enable account-level 2FA;
 2. create a short-lived granular bootstrap token with write access to the
-   `@tasq` scope and place it only in the protected `release` environment as
+   `@tasq-run` scope and place it only in the protected `release` environment as
    `NPM_BOOTSTRAP_TOKEN`;
 3. dispatch the workflow from `main` with the exact current 40-character commit
    and the literal confirmation `bootstrap-seven-packages`;

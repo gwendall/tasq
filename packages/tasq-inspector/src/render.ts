@@ -1,5 +1,5 @@
-import type { InspectorIndex } from "@tasq/schema";
-import type { CommitmentInspection } from "@tasq/core";
+import type { InspectorIndex } from "@tasq-run/schema";
+import type { CommitmentInspection } from "@tasq-run/core";
 
 function escapeHtml(value: unknown): string {
   return String(value)

@@ -256,15 +256,15 @@ async function seedHistoricalAt(
     // Since openDb returns the client too, callers can pass it ; but here
     // we use drizzle's update for parity with the service layer.
     await db
-      .update((await import("@tasq/schema")).task)
+      .update((await import("@tasq-run/schema")).task)
       .set({
         createdAt: endTime - cycleMs,
         completedAt: endTime,
-        revision: (await import("drizzle-orm")).sql`${(await import("@tasq/schema")).task.revision} + 1`,
+        revision: (await import("drizzle-orm")).sql`${(await import("@tasq-run/schema")).task.revision} + 1`,
       })
       .where(
         (await import("drizzle-orm")).eq(
-          (await import("@tasq/schema")).task.id,
+          (await import("@tasq-run/schema")).task.id,
           t.id,
         ),
       );

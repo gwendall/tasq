@@ -1,6 +1,6 @@
-# @tasq/mcp
+# @tasq-run/mcp
 
-Capability-scoped local MCP transport over `@tasq/core`.
+Capability-scoped local MCP transport over `@tasq-run/core`.
 
 Use `createTasqMcpServer()` for an embedded host. A cold local client should
 execute the fully scoped `transport.mcp.stdio` recipe returned by `tasq

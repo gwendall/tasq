@@ -15,7 +15,7 @@ import {
   type Goal as GoalT,
   type GoalStatus as GoalStatusT,
   type Event as EventT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit } from "./events.js";

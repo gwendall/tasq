@@ -1,4 +1,4 @@
-# `@tasq/extension-sdk`
+# `@tasq-run/extension-sdk`
 
 DB-free runtime contracts for trusted in-process Tasq extensions and the
 provider-neutral connector conformance profile.
@@ -14,6 +14,6 @@ not implemented. See [`../../EXTENSION_SDK.md`](../../docs/integrations/EXTENSIO
 [`../../TQ-305_CONNECTOR_CONFORMANCE.md`](../../docs/contracts/TQ-305_CONNECTOR_CONFORMANCE.md).
 
 ```bash
-pnpm --filter @tasq/extension-sdk typecheck
-pnpm --filter @tasq/extension-sdk test
+pnpm --filter @tasq-run/extension-sdk typecheck
+pnpm --filter @tasq-run/extension-sdk test
 ```

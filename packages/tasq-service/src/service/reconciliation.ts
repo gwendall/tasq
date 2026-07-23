@@ -16,7 +16,7 @@ import {
   type ReconciliationDecision,
   type ReconciliationEffect,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,
   WAIT_KIND_EXTENSION_IDENTITIES,

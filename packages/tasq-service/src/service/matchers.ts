@@ -1,19 +1,19 @@
 /** Compatibility exports over the generic bundled extension runtime. */
 
-import type { Observation, WaitCondition } from "@tasq/schema";
-import type { Metadata, ObservationKind } from "@tasq/schema";
+import type { Observation, WaitCondition } from "@tasq-run/schema";
+import type { Metadata, ObservationKind } from "@tasq-run/schema";
 import {
   REFERENCE_EXTENSION_RUNTIME,
   WAIT_KIND_EXTENSION_IDENTITIES,
 } from "@tasq-internal/reference-extension";
-import type { MatchDecision } from "@tasq/extension-sdk";
+import type { MatchDecision } from "@tasq-run/extension-sdk";
 import {
   evaluateReferenceWaitObservation,
   referenceConditionRouteKey,
   referenceObservationRouteKeys,
 } from "./reference-runtime.js";
 
-export type { MatchDecision } from "@tasq/extension-sdk";
+export type { MatchDecision } from "@tasq-run/extension-sdk";
 
 const compatibilityMatchers = Object.fromEntries(
   Object.entries(WAIT_KIND_EXTENSION_IDENTITIES).map(([kind, identity]) => {

@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

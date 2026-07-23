@@ -23,7 +23,7 @@
  */
 
 import { and, eq, gt, isNull } from "drizzle-orm";
-import { task, type Task as TaskT, Task as TaskZ, type Clock } from "@tasq/schema";
+import { task, type Task as TaskT, Task as TaskZ, type Clock } from "@tasq-run/schema";
 import type { TasqDb } from "../db.js";
 import { getTaskTree } from "./tasks.js";
 import { serviceNow } from "../util/clock.js";

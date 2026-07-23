@@ -22,7 +22,7 @@ import {
   TaskDependency,
   TaskEvidence,
   WaitCondition,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import { CONFIG_KEYS } from "../src/config.js";
 
 const productRoot = resolve(import.meta.dir, "../../..");

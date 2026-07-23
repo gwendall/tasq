@@ -38,7 +38,7 @@ import {
   type ContextPacketItem,
   type ContextPacketReason,
   type Task,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import { canonicalJson } from "./util/canonical-json.js";
 import { serviceNow } from "./util/clock.js";

@@ -1,6 +1,6 @@
 /** Local, unauthenticated and strictly read-only web inspection surface. */
 
-import { CoordinationSpaceId, systemClock, type Clock } from "@tasq/schema";
+import { CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
@@ -57,7 +57,7 @@ export async function webCmd(
   const port = parsePort(args.number("port"));
 
   // Keep browser-only code out of every ordinary one-shot CLI process.
-  const { assertLoopbackHost, startTasqInspectorServer } = await import("@tasq/console");
+  const { assertLoopbackHost, startTasqInspectorServer } = await import("@tasq-run/console");
   const loopbackHostname = assertLoopbackHost(hostname);
   await prepareConsoleRegistration(workspaceId);
   const rt = await openRuntime(undefined, workspaceId, clock, {

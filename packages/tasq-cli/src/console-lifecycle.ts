@@ -9,7 +9,7 @@ import {
   ConsoleListenerDescriptor as ConsoleListenerDescriptorSchema,
   type ConsoleDiscovery,
   type ConsoleListenerDescriptor,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import { configDir } from "./config.js";
 
 const DISCOVERY_TIMEOUT_MS = 1_000;

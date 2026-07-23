@@ -68,7 +68,7 @@ import {
   type Project as ProjectT,
   type TaskClaim,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb } from "./db.js";
 import { parseRow } from "./util/row.js";
 import { unresolvedBlockerMap } from "./service/dependencies.js";

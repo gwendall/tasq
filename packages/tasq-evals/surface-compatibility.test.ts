@@ -7,10 +7,10 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createTasqMcpServer } from "@tasq/mcp";
-import { syncA2ATask } from "@tasq/protocol-adapters";
-import { createMutableClock } from "@tasq/schema";
-import { openDb, runKernelMigrations } from "@tasq/core";
+import { createTasqMcpServer } from "@tasq-run/mcp";
+import { syncA2ATask } from "@tasq-run/protocol-adapters";
+import { createMutableClock } from "@tasq-run/schema";
+import { openDb, runKernelMigrations } from "@tasq-run/core";
 
 const WORKSPACE = "tq-307-surface-compatibility";
 const CLI_ENTRY = fileURLToPath(new URL("../tasq-cli/src/index.ts", import.meta.url));

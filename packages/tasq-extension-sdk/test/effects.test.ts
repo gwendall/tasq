@@ -5,7 +5,7 @@ import {
   prepareEffectRequest,
   type EffectDispatchPermit,
   type EffectDispatchPermitPayload,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   canonicalEffectPermitPayload,
   createHmacEffectPermitAuthenticator,

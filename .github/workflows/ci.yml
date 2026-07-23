@@ -46,8 +46,8 @@ jobs:
         with:
           bun-version: 1.3.11
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @tasq/console exec playwright install --with-deps chromium
-      - run: pnpm --filter @tasq/console test:browser
+      - run: pnpm --filter @tasq-run/console exec playwright install --with-deps chromium
+      - run: pnpm --filter @tasq-run/console test:browser
 
   console-browser-macos:
     runs-on: macos-14
@@ -63,8 +63,8 @@ jobs:
         with:
           bun-version: 1.3.11
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @tasq/console exec playwright install chromium
-      - run: pnpm --filter @tasq/console test:browser
+      - run: pnpm --filter @tasq-run/console exec playwright install chromium
+      - run: pnpm --filter @tasq-run/console test:browser
 
   public-site-browser:
     runs-on: ubuntu-latest

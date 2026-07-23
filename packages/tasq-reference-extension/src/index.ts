@@ -1,7 +1,7 @@
 /** Bundled five-domain extension used only by the v1 compatibility adapter. */
 
-import { defineExtensionRuntime } from "@tasq/extension-sdk";
-import type { ExtensionManifest, ExtensionManifestEvaluator } from "@tasq/schema";
+import { defineExtensionRuntime } from "@tasq-run/extension-sdk";
+import type { ExtensionManifest, ExtensionManifestEvaluator } from "@tasq-run/schema";
 import {
   GMAIL_CONDITION_TYPE_URI,
   GMAIL_EVALUATOR_URI,

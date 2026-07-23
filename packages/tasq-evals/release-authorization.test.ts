@@ -67,13 +67,13 @@ describe("protected public release authorization", () => {
       authorizedBy: "@gwendall",
       requiredGates: policy.releaseChannels["public-alpha"]!.blockers,
       publicPackages: [
-        "@tasq/schema",
-        "@tasq/core",
-        "@tasq/cli",
-        "@tasq/mcp",
-        "@tasq/extension-sdk",
-        "@tasq/protocol-adapters",
-        "@tasq/console",
+        "@tasq-run/schema",
+        "@tasq-run/core",
+        "@tasq-run/cli",
+        "@tasq-run/mcp",
+        "@tasq-run/extension-sdk",
+        "@tasq-run/protocol-adapters",
+        "@tasq-run/console",
       ],
     });
   });
@@ -101,6 +101,14 @@ describe("protected public release authorization", () => {
     const versionDrift = await verify(authorizedPolicy(), "0.1.1");
     expect(versionDrift.exitCode).not.toBe(0);
     expect(versionDrift.stderr).toContain("authorized version 0.1.0 does not match 0.1.1");
+
+    const scopeDrift = authorizedPolicy() as ReturnType<typeof authorizedPolicy> & {
+      identity: { npmScope: string };
+    };
+    scopeDrift.identity.npmScope = "@tasq";
+    const wrongScope = await verify(scopeDrift);
+    expect(wrongScope.exitCode).not.toBe(0);
+    expect(wrongScope.stderr).toContain("npm scope drift");
 
     const packageDrift = authorizedPolicy();
     packageDrift.packages[1] = { ...packageDrift.packages[1], source: "packages/tasq-service" };

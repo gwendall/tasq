@@ -7,7 +7,7 @@ import {
   EXTERNAL_CONTEXT_LINK_PAGE_CONTRACT_VERSION,
   ResourceKey as ResourceKeySchema,
   ResourceProblem,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   acquireTaskClaim,
   acquireResourceLease,
@@ -56,7 +56,7 @@ import {
   type BeginEffectExecutionOptions,
   type Clock,
   type TasqDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 export const TASQ_MCP_CAPABILITIES = ["read", "propose", "coordinate", "effect"] as const;
 export type TasqMcpCapability = typeof TASQ_MCP_CAPABILITIES[number];

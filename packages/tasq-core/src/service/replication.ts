@@ -57,7 +57,7 @@ import {
   type ReplicationSnapshotPage as ReplicationSnapshotPageT,
   type ReplicationSnapshotPageItem as ReplicationSnapshotPageItemT,
   type Task,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction, runOperationalTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";

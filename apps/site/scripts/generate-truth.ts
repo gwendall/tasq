@@ -322,7 +322,7 @@ const publishedAdoption = release ? {
         cwd: "{workingDirectory}",
         argv: [
           "npm", "install", "--prefix", "{installPrefix}", "--ignore-scripts",
-          `@tasq/cli@${release.version}`,
+          `@tasq-run/cli@${release.version}`,
         ],
         mutatesHost: true,
       },

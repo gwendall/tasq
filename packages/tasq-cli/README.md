@@ -1,4 +1,4 @@
-# `@tasq/cli`
+# `@tasq-run/cli`
 
 Tasq Local's Bun executable. It composes the local service, capability-scoped
 stdio MCP transport and read-only loopback Console into the `tasq` command.
@@ -29,9 +29,9 @@ not authentication.
 ## Develop
 
 ```bash
-pnpm --filter @tasq/cli typecheck
-pnpm --filter @tasq/cli test
-pnpm --filter @tasq/cli build
+pnpm --filter @tasq-run/cli typecheck
+pnpm --filter @tasq-run/cli test
+pnpm --filter @tasq-run/cli build
 ```
 
 Add commands under `src/commands/`, route them from `src/index.ts`, update

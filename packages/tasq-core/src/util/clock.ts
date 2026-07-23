@@ -2,7 +2,7 @@ import {
   clockNow,
   systemClock,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 export interface ClockOptions {
   clock?: Clock;

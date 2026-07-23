@@ -30,7 +30,7 @@ import {
   TaskDependency as TaskDependencyZ,
   type TaskDependency as TaskDependencyT,
   type DependencyType as DependencyTypeT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit, listEvents } from "./events.js";

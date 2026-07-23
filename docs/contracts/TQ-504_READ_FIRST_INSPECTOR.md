@@ -39,7 +39,7 @@ none of those remote components is implemented yet.
 
 ## 3. Architecture
 
-`@tasq/console` is a sibling surface beside CLI and MCP. It contains:
+`@tasq-run/console` is a sibling surface beside CLI and MCP. It contains:
 
 1. a bounded index read model composed by the service layer;
 2. a Fetch-compatible request handler;
@@ -50,7 +50,7 @@ none of those remote components is implemented yet.
 browser GET/HEAD
       |
       v
-@tasq/console  -->  @tasq/core  -->  LibSQL
+@tasq-run/console  -->  @tasq-run/core  -->  LibSQL
       |
       +-- HTML projection
       +-- tasq.inspector-index.v1
@@ -156,7 +156,7 @@ were.
 
 ## 9. Implemented evidence and findings
 
-The shipped `@tasq/console` package owns only a bounded service read
+The shipped `@tasq-run/console` package owns only a bounded service read
 model, pure HTML/CSS rendering, a Fetch-compatible handler and the Bun
 loopback listener. `tasq web` imports it lazily, requires an explicit tenant,
 announces the exact URL and unauthenticated-local boundary, handles

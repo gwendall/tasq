@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/console",
+  "name": "@tasq-run/console",
   "version": "0.1.0",
   "type": "module",
   "description": "Read-only local web inspector over canonical Tasq kernel projections.",
@@ -15,8 +15,8 @@
     "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\""
   },
   "dependencies": {
-    "@tasq/schema": "workspace:*",
-    "@tasq/core": "workspace:*"
+    "@tasq-run/schema": "workspace:*",
+    "@tasq-run/core": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",

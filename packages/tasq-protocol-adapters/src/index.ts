@@ -8,7 +8,7 @@ import type {
   Clock,
   ExternalRef,
   TaskAttempt,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   appendArtifact,
   appendExternalRef,
@@ -16,7 +16,7 @@ import {
   startTaskAttempt,
   transitionTaskAttempt,
   type TasqDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 export const MCP_TASKS_PROTOCOL_VERSION = "2025-11-25" as const;
 export const A2A_PROTOCOL_VERSION = "1.0" as const;

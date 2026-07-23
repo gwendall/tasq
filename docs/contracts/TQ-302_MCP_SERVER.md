@@ -5,14 +5,14 @@
 
 ## Outcome
 
-`@tasq/mcp` is a thin Model Context Protocol adapter over
-`@tasq/core`. Any MCP client can discover Tasq tools and
+`@tasq-run/mcp` is a thin Model Context Protocol adapter over
+`@tasq-run/core`. Any MCP client can discover Tasq tools and
 resources, then use the same commitment, claim, attempt, evidence and effect
 state machines as an embedded caller. The package adds no domain ontology,
 planning policy, provider schema, credential store or alternate write path.
 
-This differs from `@tasq/protocol-adapters`: that package imports remote
-MCP Tasks/A2A snapshots into attempts. `@tasq/mcp` lets an MCP client
+This differs from `@tasq-run/protocol-adapters`: that package imports remote
+MCP Tasks/A2A snapshots into attempts. `@tasq-run/mcp` lets an MCP client
 operate Tasq itself.
 
 ## Authority model

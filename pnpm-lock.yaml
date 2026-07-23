@@ -71,7 +71,7 @@ importers:
 
   packages/tasq-authority:
     dependencies:
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -87,13 +87,13 @@ importers:
       '@tasq-internal/local-service':
         specifier: workspace:*
         version: link:../tasq-service
-      '@tasq/console':
+      '@tasq-run/console':
         specifier: workspace:*
         version: link:../tasq-inspector
-      '@tasq/mcp':
+      '@tasq-run/mcp':
         specifier: workspace:*
         version: link:../tasq-mcp
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -109,10 +109,10 @@ importers:
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
-      '@tasq/extension-sdk':
+      '@tasq-run/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       drizzle-orm:
@@ -149,22 +149,22 @@ importers:
       '@tasq-internal/server':
         specifier: workspace:*
         version: link:../tasq-server
-      '@tasq/cli':
+      '@tasq-run/cli':
         specifier: workspace:*
         version: link:../tasq-cli
-      '@tasq/core':
+      '@tasq-run/core':
         specifier: workspace:*
         version: link:../tasq-core
-      '@tasq/extension-sdk':
+      '@tasq-run/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk
-      '@tasq/mcp':
+      '@tasq-run/mcp':
         specifier: workspace:*
         version: link:../tasq-mcp
-      '@tasq/protocol-adapters':
+      '@tasq-run/protocol-adapters':
         specifier: workspace:*
         version: link:../tasq-protocol-adapters
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
     devDependencies:
@@ -174,7 +174,7 @@ importers:
 
   packages/tasq-extension-sdk:
     dependencies:
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
     devDependencies:
@@ -190,10 +190,10 @@ importers:
 
   packages/tasq-inspector:
     dependencies:
-      '@tasq/core':
+      '@tasq-run/core':
         specifier: workspace:*
         version: link:../tasq-core
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
     devDependencies:
@@ -218,10 +218,10 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(zod@3.25.76)
-      '@tasq/core':
+      '@tasq-run/core':
         specifier: workspace:*
         version: link:../tasq-core
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -237,10 +237,10 @@ importers:
 
   packages/tasq-protocol-adapters:
     dependencies:
-      '@tasq/core':
+      '@tasq-run/core':
         specifier: workspace:*
         version: link:../tasq-core
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -253,10 +253,10 @@ importers:
 
   packages/tasq-reference-connectors:
     dependencies:
-      '@tasq/extension-sdk':
+      '@tasq-run/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
     devDependencies:
@@ -266,10 +266,10 @@ importers:
 
   packages/tasq-reference-extension:
     dependencies:
-      '@tasq/extension-sdk':
+      '@tasq-run/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -301,7 +301,7 @@ importers:
       '@tasq-internal/authority':
         specifier: workspace:*
         version: link:../tasq-authority
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       zod:
@@ -323,13 +323,13 @@ importers:
       '@tasq-internal/reference-extension':
         specifier: workspace:*
         version: link:../tasq-reference-extension
-      '@tasq/core':
+      '@tasq-run/core':
         specifier: workspace:*
         version: link:../tasq-core
-      '@tasq/extension-sdk':
+      '@tasq-run/extension-sdk':
         specifier: workspace:*
         version: link:../tasq-extension-sdk
-      '@tasq/schema':
+      '@tasq-run/schema':
         specifier: workspace:*
         version: link:../tasq-schema
       drizzle-orm:

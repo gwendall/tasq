@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { canonicalizeEffectJson } from "@tasq/schema";
+import { canonicalizeEffectJson } from "@tasq-run/schema";
 
 export const WORK_ITEM_OBSERVATION_TYPE_URI =
   "https://schemas.tasq.dev/observations/reference-work-item/snapshot" as const;

@@ -12,7 +12,7 @@ import {
   type Clock,
   type BootstrapRecipe,
   type BootstrapRecipeCapability,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";

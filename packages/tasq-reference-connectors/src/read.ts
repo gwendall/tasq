@@ -3,8 +3,8 @@ import {
   defineConnectorConformanceProfile,
   type ConnectorConformanceProfile,
   type NormalizedConnectorObservation,
-} from "@tasq/extension-sdk";
-import { canonicalizeEffectJson } from "@tasq/schema";
+} from "@tasq-run/extension-sdk";
+import { canonicalizeEffectJson } from "@tasq-run/schema";
 import {
   REFERENCE_CONNECTOR_VERSION,
   WORK_ITEM_OBSERVATION_TYPE_URI,

@@ -458,7 +458,7 @@ pnpm typecheck
 pnpm test
 
 # Required additionally for Console or site UI changes
-pnpm --filter @tasq/console test:browser
+pnpm --filter @tasq-run/console test:browser
 pnpm --filter @tasq-internal/site test:browser
 ```
 

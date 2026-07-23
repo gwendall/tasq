@@ -127,9 +127,9 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 ## Packages
 
-The intended public packages are `@tasq/schema`, `@tasq/core`, `@tasq/cli`,
-`@tasq/mcp`, `@tasq/extension-sdk`, `@tasq/protocol-adapters`, and
-`@tasq/console`. Their source is visible, but they are not available on npm
+The intended public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
+`@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`, and
+`@tasq-run/console`. Their source is visible, but they are not available on npm
 until the protected publication gate passes.
 
 ## Status and feedback

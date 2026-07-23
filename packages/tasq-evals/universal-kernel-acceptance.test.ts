@@ -5,13 +5,13 @@ import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ExtensionRuntimeRegistry, defineExtensionRuntime } from "@tasq/extension-sdk";
-import { createMutableClock, type ExtensionManifest, type Metadata } from "@tasq/schema";
+import { ExtensionRuntimeRegistry, defineExtensionRuntime } from "@tasq-run/extension-sdk";
+import { createMutableClock, type ExtensionManifest, type Metadata } from "@tasq-run/schema";
 import {
   TASQ_PROTOCOL_ADAPTER_MANIFEST,
   syncA2ATask,
   syncMcpTask,
-} from "@tasq/protocol-adapters";
+} from "@tasq-run/protocol-adapters";
 import {
   getDiscoverySchema,
   getTasqDiscovery,
@@ -37,7 +37,7 @@ import {
   proposeAssignment,
   runKernelMigrations,
   startCommitment,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const tmpDirs: string[] = [];
 afterEach(() => {

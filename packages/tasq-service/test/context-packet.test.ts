@@ -3,7 +3,7 @@ import { Buffer } from "node:buffer";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createMutableClock } from "@tasq/schema";
+import { createMutableClock } from "@tasq-run/schema";
 import {
   acquireTaskClaim,
   blockCommitment,

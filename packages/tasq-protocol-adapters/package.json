@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/protocol-adapters",
+  "name": "@tasq-run/protocol-adapters",
   "version": "0.1.0",
   "description": "Commitment-safe MCP Tasks and A2A execution adapters for Tasq.",
   "main": "./src/index.ts",
@@ -13,9 +13,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "zod": "^3.23.8",
-    "@tasq/core": "workspace:*"
+    "@tasq-run/core": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest"

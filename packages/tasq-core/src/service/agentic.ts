@@ -27,7 +27,7 @@ import {
   type TaskClaim,
   type TaskEvidence,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { parseRow } from "../util/row.js";

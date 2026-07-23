@@ -7,13 +7,13 @@ import {
   effect as effectTable,
   effectApproval as approvalTable,
   effectReceipt as receiptTable,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   createHmacEffectPermitAuthenticator,
   enforceEffectDispatch,
   type EffectConnectorPolicy,
   type EffectReceiptVerifier,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import {
   acquireTaskClaim,
   authorizeEffect,

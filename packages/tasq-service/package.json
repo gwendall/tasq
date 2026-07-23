@@ -18,11 +18,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/core": "workspace:*",
-    "@tasq/extension-sdk": "workspace:*",
+    "@tasq-run/core": "workspace:*",
+    "@tasq-run/extension-sdk": "workspace:*",
     "@tasq-internal/life-planning-profile": "workspace:*",
     "@tasq-internal/reference-extension": "workspace:*",
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "@libsql/client": "^0.14.0",
     "drizzle-orm": "^0.45.2",
     "zod": "^3.23.8"

@@ -69,7 +69,7 @@
                 "additionalProperties": false,
                 "required": ["name", "version"],
                 "properties": {
-                  "name": { "type": "string", "pattern": "^@tasq/[a-z-]+$" },
+                  "name": { "type": "string", "pattern": "^@tasq-run/[a-z-]+$" },
                   "version": { "type": "string", "minLength": 1 }
                 }
               }

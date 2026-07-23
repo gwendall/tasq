@@ -8,7 +8,7 @@ import {
   type EffectPermitVerifier,
   type EffectReceiptVerifier,
   type VerifiedEffectReceipt,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import {
   EffectDispatchPermit as EffectDispatchPermitSchema,
   EffectReceiptReport as EffectReceiptReportSchema,
@@ -20,7 +20,7 @@ import {
   type EffectDispatchPermit,
   type EffectJsonObject,
   type EffectReceiptReport,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   PROVIDER_RECEIPT_COVERAGE,
   REFERENCE_CONNECTOR_VERSION,

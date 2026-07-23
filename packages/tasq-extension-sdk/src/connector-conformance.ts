@@ -5,7 +5,7 @@ import {
   canonicalizeEffectJson,
   type EffectJsonObject,
   type EffectReceiptCoverage,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { VerifiedEffectReceipt } from "./effects.js";
 
 export const CONNECTOR_CONFORMANCE_PROTOCOL = "tasq.connector-conformance.v1" as const;

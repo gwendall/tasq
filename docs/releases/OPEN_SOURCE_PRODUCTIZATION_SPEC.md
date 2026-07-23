@@ -52,20 +52,20 @@ DCO-1.1 sign-off.
 
 ## 3. Proposed public package boundary
 
-The public namespace is `@tasq/*`; actual registry control is a blocking TQ-603
+The public namespace is `@tasq-run/*`; actual registry control is a blocking TQ-603
 precondition. Current `@kami/*` coordinates remain private implementation
 names and are not aliases. The unscoped npm package `tasq` belongs to an
 unrelated project; only the executable uses that unscoped name.
 
 | Public package | Source today | Contract |
 |---|---|---|
-| `@tasq/schema` | `tasq-schema` | Versioned DTOs, IDs, digests and protocol envelopes |
-| `@tasq/core` | `packages/tasq-core` | Profile-neutral kernel with injected store, identity and `Clock` |
-| `@tasq/cli` | `tasq-cli` | Supported Local CLI and `tasq` binary |
-| `@tasq/mcp` | `tasq-mcp` | Local stdio and embeddable factory with capability closure |
-| `@tasq/console` | `tasq-inspector` | Read-only local operator surface |
-| `@tasq/extension-sdk` | `tasq-extension-sdk` | Manifest/runtime and connector-conformance contracts |
-| `@tasq/protocol-adapters` | `tasq-protocol-adapters` | Pure MCP Tasks/A2A mappings, no transport authority |
+| `@tasq-run/schema` | `tasq-schema` | Versioned DTOs, IDs, digests and protocol envelopes |
+| `@tasq-run/core` | `packages/tasq-core` | Profile-neutral kernel with injected store, identity and `Clock` |
+| `@tasq-run/cli` | `tasq-cli` | Supported Local CLI and `tasq` binary |
+| `@tasq-run/mcp` | `tasq-mcp` | Local stdio and embeddable factory with capability closure |
+| `@tasq-run/console` | `tasq-inspector` | Read-only local operator surface |
+| `@tasq-run/extension-sdk` | `tasq-extension-sdk` | Manifest/runtime and connector-conformance contracts |
+| `@tasq-run/protocol-adapters` | `tasq-protocol-adapters` | Pure MCP Tasks/A2A mappings, no transport authority |
 | No first-release package | watcher/reference/profile packages | Repository examples without provider support promises |
 | No public package | eval harnesses/fixtures | Repository and release tooling |
 

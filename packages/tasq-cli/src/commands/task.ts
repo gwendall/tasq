@@ -172,7 +172,7 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
  * can consume. Returns `null` on resolution failure (error already printed).
  * Returns an object with only the keys the user explicitly provided so the
  * service can distinguish "inherit from parent" (key omitted) from "detach"
- * (key set to null) — see TaskInsert in @tasq/schema.
+ * (key set to null) — see TaskInsert in @tasq-run/schema.
  */
 async function resolveHierarchyFlags(
   rt: Awaited<ReturnType<typeof openRuntime>>,

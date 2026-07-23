@@ -66,7 +66,7 @@ function releaseDependencies(): {
   const requireFromCli = createRequire(import.meta.url);
   const serviceEntrypoint = requireFromCli.resolve("@tasq-internal/local-service");
   const requireFromService = createRequire(serviceEntrypoint);
-  const coreEntrypoint = requireFromService.resolve("@tasq/core");
+  const coreEntrypoint = requireFromService.resolve("@tasq-run/core");
   const clientEntrypoint = requireFromService.resolve("@libsql/client");
   const requireFromClient = createRequire(clientEntrypoint);
   const libsqlEntrypoint = requireFromClient.resolve("libsql");
@@ -139,16 +139,16 @@ function npmPurl(name: string, version: string): string {
 
 function publicComponentIdentity(name: string, version: string): Pick<BundledArtifactComponent, "name" | "purl"> {
   const publicPackages: Record<string, string> = {
-    "@tasq/cli": "@tasq/cli",
-    "@tasq/extension-sdk": "@tasq/extension-sdk",
-    "@tasq/console": "@tasq/console",
-    "@tasq/mcp": "@tasq/mcp",
-    "@tasq/schema": "@tasq/schema",
-    "@tasq-internal/local-service": "@tasq/core",
+    "@tasq-run/cli": "@tasq-run/cli",
+    "@tasq-run/extension-sdk": "@tasq-run/extension-sdk",
+    "@tasq-run/console": "@tasq-run/console",
+    "@tasq-run/mcp": "@tasq-run/mcp",
+    "@tasq-run/schema": "@tasq-run/schema",
+    "@tasq-internal/local-service": "@tasq-run/core",
   };
   const publicName = publicPackages[name];
   if (publicName) return { name: publicName, purl: npmPurl(publicName, version) };
-  if (name.startsWith("@tasq/")) return { name, purl: npmPurl(name, version) };
+  if (name.startsWith("@tasq-run/")) return { name, purl: npmPurl(name, version) };
   if (name.startsWith("@tasq-internal/")) {
     const genericName = `tasq-${name.slice("@tasq-internal/".length)}`;
     return { name: genericName, purl: `pkg:generic/${encodeURIComponent(genericName)}@${encodeURIComponent(version)}` };
