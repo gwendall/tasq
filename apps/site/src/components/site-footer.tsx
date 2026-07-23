@@ -28,7 +28,7 @@ export function SiteFooter() {
           <a href={`${productTruth.release.repository}/blob/main/CONTRIBUTING.md`}>Contribute</a>
         </div>
       </div>
-      <div className="site-container flex flex-col gap-2 border-t border-white/15 py-4 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-white/45 sm:flex-row sm:items-center sm:justify-between">
+      <div className="site-container flex flex-col gap-2 border-t border-white/15 py-5 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-white/45 sm:flex-row sm:items-center sm:justify-between">
         <span>{productTruth.release.license} · {productTruth.release.contributionTerms}</span>
         <span>Truth snapshot · {productTruth.sourceUpdatedAt}</span>
       </div>

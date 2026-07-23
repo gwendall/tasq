@@ -51,6 +51,33 @@ describe("public site boundary", () => {
     const home = await readFile(resolve(siteRoot, "src/app/page.tsx"), "utf8");
     expect(home).toContain('data-synthetic-demo="true"');
     expect(home).toContain("Synthetic diagram:");
+    expect(home).toContain('className="map-network"');
+    expect(home.match(/className="map-path"/g)).toHaveLength(3);
+    expect(home).not.toContain('className="map-line');
+  });
+
+  test("keeps interaction feedback physical and motion-safe", async () => {
+    const [buttons, styles] = await Promise.all([
+      readFile(resolve(siteRoot, "src/components/ui/button.tsx"), "utf8"),
+      readFile(resolve(siteRoot, "src/app/globals.css"), "utf8"),
+    ]);
+    expect(buttons).toContain('"ui-button ');
+    expect(buttons).toContain('data-variant={variant ?? "default"}');
+    expect(buttons).not.toContain("hover:bg-[var(--signal)]");
+    expect(buttons).toContain("hover:shadow-[3px_6px_0_var(--signal)]");
+    expect(buttons).toContain("active:shadow-[3px_2px_0_var(--signal)]");
+    expect(styles).toContain("box-shadow 240ms var(--ease-in-out)");
+    expect(styles).toContain("transform 240ms var(--ease-in-out)");
+    expect(styles).toContain(".ui-button:hover { --button-y: var(--button-hover-y); }");
+    expect(styles).toContain("--button-scale: .98;");
+    expect(styles).toContain("@media (hover: hover) and (pointer: fine)");
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+  });
+
+  test("renders the hero emphasis as an opaque brand color", async () => {
+    const styles = await readFile(resolve(siteRoot, "src/app/globals.css"), "utf8");
+    expect(styles).toContain("-webkit-text-fill-color: var(--signal)");
+    expect(styles).not.toMatch(/\.text-outline\s*\{[^}]*color:\s*transparent/s);
   });
 
   test("publishes the exact generated machine truth as a static asset", async () => {
