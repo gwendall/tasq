@@ -239,7 +239,7 @@ describe("TQ-601 product consumption design", () => {
       "self_hosted_server_is_not_implemented",
       "hosted_design_is_not_hosted_behavior",
       "canonical_source_repository_is_public_alpha",
-      "public_package_sources_are_visible_but_not_yet_published",
+      "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_deployed_at_tasq_run",
@@ -254,7 +254,7 @@ describe("TQ-601 product consumption design", () => {
 
   test("keeps public source distinct from package publication", () => {
     expect(releasePolicy).toMatchObject({
-      status: "public-alpha-source-not-published",
+      status: "public-alpha-bootstrap-published-release-pending",
       identity: {
         repositoryState: "public-alpha-source",
         npmScope: "@tasq-run",
@@ -281,12 +281,12 @@ describe("TQ-601 product consumption design", () => {
       canonical_repository_control_verified: true,
       public_source_launch_authorized: true,
       npm_scope_control_verified: true,
-      trusted_publishing_configured: false,
+      trusted_publishing_configured: true,
       tag_protection_configured: true,
     });
     expect(releasePolicy).toMatchObject({
       releaseAuthorization: {
-        state: "pending_external_registry",
+        state: "authorized",
         version: "0.1.0",
         channel: "public-alpha",
         decision: "go",

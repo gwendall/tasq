@@ -5,6 +5,36 @@ import { resolve } from "node:path";
 const root = resolve(import.meta.dir, "../..");
 const markdown = readFileSync(resolve(root, "docs/roadmap/BACKLOG.md"), "utf8");
 const releaseWorkflow = readFileSync(resolve(root, ".github/workflows/release.yml"), "utf8");
+const npmBootstrap = JSON.parse(readFileSync(
+  resolve(root, "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"),
+  "utf8",
+)) as {
+  contractVersion: string;
+  status: string;
+  repository: string;
+  sourceCommit: string;
+  bootstrap: {
+    version: string;
+    distTag: string;
+    publishedSupportGranted: boolean;
+    githubEnvironmentSecretDeleted: boolean;
+    granularAccessTokenRevoked: boolean;
+  };
+  trustedPublisher: {
+    repository: string;
+    workflowFile: string;
+    environment: string;
+    permissions: string[];
+  };
+  packages: Array<{
+    name: string;
+    version: string;
+    gitHead: string;
+    integrity: string;
+    tarball: string;
+    trustId: string;
+  }>;
+};
 const roadmap = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8")) as {
   contractVersion: string;
   revision: number;
@@ -144,9 +174,13 @@ describe("canonical Tasq roadmap", () => {
         state: "verified",
         organization: "tasq-run",
         operator: "gwendall",
-        boundary: expect.stringContaining("package identities and trusted publishers still require bootstrap"),
+        boundary: expect.stringContaining("seven package identities"),
       },
-      npmTrustedPublishing: { state: "unverified" },
+      npmTrustedPublishing: {
+        state: "verified",
+        packageCount: 7,
+        evidence: "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+      },
       firstProtectedRelease: {
         state: "not_run",
         channel: "public_alpha",
@@ -205,12 +239,8 @@ describe("canonical Tasq roadmap", () => {
       id: "TQ-603",
       status: "in_progress_external_gate",
       dependsOn: ["TQ-321", "TQ-608"],
-      remaining: [
-        "verify-npm-scope-control",
-        "bootstrap-first-package-versions",
-        "configure-npm-trusted-publishing",
-        "publish-first-protected-release",
-      ],
+      remaining: ["publish-first-protected-release"],
+      evidence: ["docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-604")).toMatchObject({
       id: "TQ-604",
@@ -237,6 +267,44 @@ describe("canonical Tasq roadmap", () => {
     expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.18.0"');
     expect(releaseWorkflow).toContain("verify-release-authorization.ts");
     expect(releaseWorkflow).not.toContain("NODE_AUTH_TOKEN");
+  });
+
+  test("binds the completed one-shot npm bootstrap to seven registry identities and no retained token", () => {
+    expect(npmBootstrap).toMatchObject({
+      contractVersion: "tasq.npm-bootstrap-certification.v1",
+      status: "passed",
+      repository: "gwendall/tasq",
+      sourceCommit: "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      bootstrap: {
+        version: "0.1.0-alpha.0",
+        distTag: "alpha-bootstrap",
+        publishedSupportGranted: false,
+        githubEnvironmentSecretDeleted: true,
+        granularAccessTokenRevoked: true,
+      },
+      trustedPublisher: {
+        repository: "gwendall/tasq",
+        workflowFile: "release.yml",
+        environment: "release",
+        permissions: ["publish"],
+      },
+    });
+    expect(npmBootstrap.packages.map(({ name }) => name)).toEqual([
+      "@tasq-run/schema",
+      "@tasq-run/core",
+      "@tasq-run/cli",
+      "@tasq-run/mcp",
+      "@tasq-run/extension-sdk",
+      "@tasq-run/protocol-adapters",
+      "@tasq-run/console",
+    ]);
+    for (const entry of npmBootstrap.packages) {
+      expect(entry.version).toBe("0.1.0-alpha.0");
+      expect(entry.gitHead).toBe("9fac010407fe3125319bd9bce067ef9d5448bb95");
+      expect(entry.integrity).toMatch(/^sha512-/);
+      expect(entry.tarball).toContain("https://registry.npmjs.org/@tasq-run/");
+      expect(entry.trustId).toMatch(/^[a-f0-9-]{36}$/);
+    }
   });
 
   test("preserves the authority, clock and product boundaries", () => {

@@ -36,7 +36,7 @@
       "state": "complete_public_alpha",
       "completedAt": "2026-07-22",
       "evidence": "https://github.com/gwendall/tasq",
-      "boundary": "source is public; npm packages and downloadable releases remain unpublished"
+      "boundary": "source is public; bootstrap npm identities exist under a non-default prerelease tag, while the supported release and downloadable artifacts remain pending"
     },
     "publicSiteDeployment": {
       "state": "complete",
@@ -50,11 +50,14 @@
       "operator": "gwendall",
       "organization": "tasq-run",
       "evidence": "authenticated npm team ls tasq-run returned tasq-run:developers",
-      "boundary": "organization control is verified; package identities and trusted publishers still require bootstrap"
+      "boundary": "organization control, seven package identities and their release-workflow trusted publishers are verified"
     },
     "npmTrustedPublishing": {
-      "state": "unverified",
-      "requiredBinding": "gwendall/tasq:.github/workflows/release.yml:release"
+      "state": "verified",
+      "verifiedAt": "2026-07-23",
+      "requiredBinding": "gwendall/tasq:.github/workflows/release.yml:release",
+      "packageCount": 7,
+      "evidence": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"
     },
     "firstProtectedRelease": {
       "state": "not_run",
@@ -164,7 +167,8 @@
       "milestone": "public-distribution",
       "dependsOn": ["TQ-321", "TQ-608"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["verify-npm-scope-control", "bootstrap-first-package-versions", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+      "remaining": ["publish-first-protected-release"],
+      "evidence": ["docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"]
     },
     {
       "id": "TQ-604",

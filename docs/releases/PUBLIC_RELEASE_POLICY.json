@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.public-release-policy.v1",
-  "status": "public-alpha-source-not-published",
+  "status": "public-alpha-bootstrap-published-release-pending",
   "acceptedAt": "2026-07-20",
   "identity": {
     "productName": "Tasq",
@@ -214,7 +214,7 @@
     }
   },
   "releaseAuthorization": {
-    "state": "pending_external_registry",
+    "state": "authorized",
     "version": "0.1.0",
     "channel": "public-alpha",
     "decision": "go",
@@ -223,15 +223,21 @@
     "rationale": "Publish Tasq Local as an explicitly labeled public alpha to obtain real adopter feedback while retained-data dogfood continues as the stable-graduation gate."
   },
   "npmBootstrap": {
-    "state": "workflow_ready_not_dispatched",
+    "state": "completed",
     "workflow": "bootstrap-npm.yml",
     "sourceRef": "refs/heads/main",
+    "sourceCommit": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30005833862/attempts/2",
     "version": "0.1.0-alpha.0",
     "distTag": "alpha-bootstrap",
     "environment": "release",
     "secretName": "NPM_BOOTSTRAP_TOKEN",
     "secretRetention": "delete_immediately_after_all_trust_records_are_verified",
     "tokenRetention": "revoke_immediately_after_all_trust_records_are_verified",
+    "secretDeleted": true,
+    "tokenRevoked": true,
+    "trustedPublisherBinding": "gwendall/tasq:.github/workflows/release.yml:release",
+    "certification": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
     "publishedSupportGranted": false
   },
   "publishedRelease": null,
@@ -243,7 +249,7 @@
     "canonical_repository_control_verified": true,
     "public_source_launch_authorized": true,
     "npm_scope_control_verified": true,
-    "trusted_publishing_configured": false,
+    "trusted_publishing_configured": true,
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true,

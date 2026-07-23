@@ -16,8 +16,9 @@ Tasq is not another agent runtime. It does not launch agents or call providers.
 It gives the tools you already use a shared, inspectable coordination layer.
 
 > **Public source alpha:** the repository is open for early use and feedback.
-> npm packages and downloadable releases are not published yet, and no stable
-> compatibility promise applies before the first protected release.
+> The seven npm identities exist under the non-default `alpha-bootstrap` tag
+> only; the supported `v0.1.0` packages and downloadable release are still
+> pending, and no stable compatibility promise applies to this pre-1.0 line.
 
 ## Why Tasq
 

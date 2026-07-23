@@ -88,7 +88,12 @@ describe("protected public release authorization", () => {
   });
 
   test("fails closed on pending authority, registry gaps, version drift, or package drift", async () => {
-    const pending = await verify(policy);
+    const pendingPolicy = structuredClone(policy);
+    pendingPolicy.releaseAuthorization = {
+      ...pendingPolicy.releaseAuthorization,
+      state: "pending_external_registry",
+    };
+    const pending = await verify(pendingPolicy);
     expect(pending.exitCode).not.toBe(0);
     expect(pending.stderr).toContain("authorization state is pending_external_registry");
 

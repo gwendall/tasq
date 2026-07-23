@@ -80,7 +80,7 @@ export default function HomePage() {
               <Clock3 aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
               {published
                 ? `Public alpha ${releaseVersion}. Packages and checksummed releases are live.`
-                : "Public source alpha. Packages and downloadable releases are not published."}
+                : "Public source alpha. Bootstrap package identities exist; the supported release is pending."}
             </p>
           </div>
 

@@ -1,0 +1,84 @@
+{
+  "contractVersion": "tasq.npm-bootstrap-certification.v1",
+  "status": "passed",
+  "certifiedAt": "2026-07-23",
+  "repository": "gwendall/tasq",
+  "sourceCommit": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+  "workflow": {
+    "file": "bootstrap-npm.yml",
+    "run": "https://github.com/gwendall/tasq/actions/runs/30005833862/attempts/2",
+    "conclusion": "success"
+  },
+  "bootstrap": {
+    "version": "0.1.0-alpha.0",
+    "distTag": "alpha-bootstrap",
+    "publishedSupportGranted": false,
+    "githubEnvironmentSecretDeleted": true,
+    "granularAccessTokenRevoked": true
+  },
+  "trustedPublisher": {
+    "type": "github",
+    "repository": "gwendall/tasq",
+    "workflowFile": "release.yml",
+    "environment": "release",
+    "permissions": ["publish"]
+  },
+  "packages": [
+    {
+      "name": "@tasq-run/schema",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-/r/wbH2fEjWQJvturwdUrXIDCtetuFPmZ3I/iGda1stx3a3kSnjUAhyCK1QYbRctuhK05MZ2oIOeeBtuIMcqRg==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/schema/-/schema-0.1.0-alpha.0.tgz",
+      "trustId": "539a46e5-1a54-4e9f-b9eb-b0c0bf1af851"
+    },
+    {
+      "name": "@tasq-run/core",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-0JR6if3hnVEy2HXC4JKuQPV3z3EXdl8cwtHabvHVyZDsgodgIOeqejkY9VKDIsUQ4L1O2mLLEHvdGQmLBRvA+Q==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/core/-/core-0.1.0-alpha.0.tgz",
+      "trustId": "60655fb9-b6d2-48e9-a3b6-b8425c1a5c2d"
+    },
+    {
+      "name": "@tasq-run/cli",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-dG7jcToaY3As1v92uMsiylpy711UdvYngAOpVQwP8qcOFhOUTJxRwpiqO1OlHkXph5bMqThX0Cxxyt84H/24BA==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/cli/-/cli-0.1.0-alpha.0.tgz",
+      "trustId": "b78fdbb8-6371-47b0-a569-125a2703b204"
+    },
+    {
+      "name": "@tasq-run/mcp",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-fs41byU/HnwK7TLt8DcePT5fRt3wjwRx3QNk0unZnp0P4+SzYl7ysJwef4GD7E+O/Udjfa/5rwpTtk68iLyK1A==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/mcp/-/mcp-0.1.0-alpha.0.tgz",
+      "trustId": "6a81f5bf-ef06-493a-823b-4edbcad9923c"
+    },
+    {
+      "name": "@tasq-run/extension-sdk",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-ANk5Vxvgu/J08fAeIg8JQxrfeq6AyZB4fVhc1vLH4+3u1bDllffwDCdv9uLAi8+5ijcEKFop+IieNcNmtViwOw==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/extension-sdk/-/extension-sdk-0.1.0-alpha.0.tgz",
+      "trustId": "6e30827f-066d-4578-8a11-d8c6d2e39f74"
+    },
+    {
+      "name": "@tasq-run/protocol-adapters",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-9T9MXagCOJME4zbADJGYF/JN4sCzN24GhhC/lna0J+dTEumNVu84ZsfwwG4h4seyYoIfl3Frv/7f3qL3mFtMLg==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/protocol-adapters/-/protocol-adapters-0.1.0-alpha.0.tgz",
+      "trustId": "b398735f-a581-421c-911e-fe35bd427779"
+    },
+    {
+      "name": "@tasq-run/console",
+      "version": "0.1.0-alpha.0",
+      "gitHead": "9fac010407fe3125319bd9bce067ef9d5448bb95",
+      "integrity": "sha512-hJ2BZBNAQ23qzFM9DJGmZ1rLczImQxDG/XpUd7vrBFcyWPpt2GFV2hW0rIcYeaqE6SbAuHiVUh1SarDkEDZbHg==",
+      "tarball": "https://registry.npmjs.org/@tasq-run/console/-/console-0.1.0-alpha.0.tgz",
+      "trustId": "b36dbb7e-216e-408c-bae8-0abd90776c9e"
+    }
+  ]
+}

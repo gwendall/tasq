@@ -34,7 +34,7 @@ export default function StatusPage() {
               <div>
                 <p className="eyebrow">Release channel</p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">
-                  {published ? `Public alpha ${releaseVersion}` : "Not published"}
+                  {published ? `Public alpha ${releaseVersion}` : "Protected release pending"}
                 </h2>
               </div>
               <StatusBadge support={published ? "implemented_certified" : "implemented_candidate_not_published"} />
@@ -42,7 +42,7 @@ export default function StatusPage() {
             <p className="mt-5 max-w-xl text-sm leading-6 text-[var(--ink-muted)]">
               {published
                 ? "The protected release publishes scoped npm packages and checksummed native artifacts. Retained-data dogfood continues; Server and Cloud are separate unshipped products."
-                : "The source repository, deterministic artifacts and lifecycle candidates exist. npm scope ownership and trusted publishing still require external registry authority."}
+                : "Source, deterministic candidates, seven bootstrap identities and npm OIDC bindings are verified. The bootstrap tag is not supported distribution; the immutable protected release is the remaining gate."}
             </p>
             <div className="mt-7 grid gap-px border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2">
               {Object.entries(productTruth.release.gates).map(([gate, passed]) => (

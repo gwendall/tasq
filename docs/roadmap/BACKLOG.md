@@ -9,8 +9,8 @@ never turns planned work into shipped behavior.
 
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** publish the explicitly authorized `v0.1.0` Local alpha
-once the npm scope/bootstrap and trusted-publishing gates close, certify those
-exact bytes, then continue retained-data dogfood as the stable-graduation gate.
+from the now-verified npm OIDC boundary, certify those exact bytes, then
+continue retained-data dogfood as the stable-graduation gate.
 Do not expand remote products before the Local alpha is independently usable.
 
 ## What is already proven
@@ -46,7 +46,9 @@ operation through real adopters, not more repository-only architecture.
 ## Current gates
 
 - **Public source alpha — live.** Anonymous users can clone, inspect and build
-  `main`. npm packages and downloadable artifacts remain unpublished.
+  `main`. Seven `0.1.0-alpha.0` identities exist only under the non-default
+  `alpha-bootstrap` tag; supported packages and downloadable artifacts remain
+  pending the protected `v0.1.0` workflow.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
   uninstall trials. Both hosts read before mutation, resume the same attempt
@@ -74,13 +76,17 @@ operation through real adopters, not more repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — active, paused only on external registry gates.** The maintainer
+- **TQ-603 — active, ready for the protected release.** The maintainer
   authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
   The authenticated `gwendall` operator controls the `tasq-run` npm
   organization; `npm team ls tasq-run` returned its developers team on
-  2026-07-23. The seven package identities are not published yet. The operator
-  must bootstrap them, bind each package to the release workflow through npm
-  OIDC and create the first immutable protected SemVer tag. The tag workflow
+  2026-07-23. Protected bootstrap run
+  [30005833862](https://github.com/gwendall/tasq/actions/runs/30005833862)
+  published and byte-verified all seven `0.1.0-alpha.0` identities under the
+  non-default `alpha-bootstrap` tag. Every package now trusts
+  `gwendall/tasq:.github/workflows/release.yml:release`; the bootstrap secret
+  is deleted and its granular token revoked. The remaining action is the first
+  immutable protected SemVer tag. The tag workflow
   fails before building unless the exact version, repository, package boundary,
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
@@ -104,10 +110,9 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 ### 2. Finish Local alpha distribution
 
-- **TQ-603:** verify npm scope control, bootstrap the seven package identities,
-  configure repository/workflow/environment-bound trusted publishing, flip the
-  reviewed authorization gate to `authorized`, then publish and attest
-  `v0.1.0`.
+- **TQ-603:** publish and attest `v0.1.0` through the verified
+  repository/workflow/environment-bound trusted publisher, then record the
+  immutable release coordinates.
 - **TQ-604:** certify the downloaded release on both supported targets and
   record release URL, version, commit and digests in the lifecycle certificate.
 

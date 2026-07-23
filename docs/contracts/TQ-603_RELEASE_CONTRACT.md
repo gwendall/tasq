@@ -1,6 +1,7 @@
 # TQ-603 public release contract
 
-**Status:** public source alpha; `v0.1.0` authorized as an alpha but paused behind external npm registry gates; TQ-321 and the TQ-608 source candidate passed
+**Status:** public source alpha; npm bootstrap and trusted publishing verified;
+`v0.1.0` authorized and ready for its protected tag
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
 ## Outcome
@@ -100,10 +101,15 @@ The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
 `v*` tags, the tag-scoped release environment, secret scanning, push protection
 and private vulnerability reporting are active. Gate 1, TQ-321 and the TQ-608
-source candidate are passed. Authenticated npm organization control is verified.
-The seven package identities and their trusted publishers remain the external
-blockers. Therefore source is public alpha, while packages and downloadable
-artifacts are not published.
+source candidate are passed. Authenticated npm organization control is
+verified. The seven `0.1.0-alpha.0` identities were published from the exact
+protected candidate under the non-default `alpha-bootstrap` tag, their registry
+integrity and `gitHead` match, and every identity is bound to the protected
+release workflow through npm OIDC. The GitHub bootstrap secret is deleted and
+the granular token is revoked. See
+`TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json`. The supported `v0.1.0` packages and
+downloadable artifacts remain pending until the immutable tag workflow
+succeeds.
 
 ### First-package bootstrap
 

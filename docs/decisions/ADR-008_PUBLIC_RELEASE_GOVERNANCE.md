@@ -9,8 +9,9 @@
 ## 1. Context
 
 Tasq Core and Tasq Local originated inside a larger private monorepo. Their
-standalone source now lives in the public canonical Tasq repository; npm
-packages remain unpublished.
+standalone source now lives in the public canonical Tasq repository. Seven
+bootstrap package identities exist under a non-default prerelease tag, while
+the first supported packages and downloadable release remain pending.
 Publishing directly from the original monorepo
 would blur ownership, expose unrelated history and make the public build
 impossible to reproduce independently.
@@ -187,8 +188,9 @@ a long-lived npm token is not a release design.
 ## 4. Consequences and gates
 
 TQ-602 is a decision checkpoint, not a release. Core and Local source are now
-public alpha, while `../concepts/PRODUCT_SURFACE_MATRIX.json` keeps their packages
-unpublished until TQ-603 produces verifiable artifacts. TQ-603 must stop before publication if repository or npm
+public alpha, while `../concepts/PRODUCT_SURFACE_MATRIX.json` keeps their
+supported distribution disabled until TQ-603 produces the first protected
+release. TQ-603 must stop before publication if repository or npm
 ownership, trusted publishing, artifact attestation, license closure or target
 certification is absent.
 
