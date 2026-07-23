@@ -8,6 +8,12 @@
 > **Scope:** target architecture; `CURRENT_STATE.md` remains authoritative for
 > what is implemented today.
 
+[`CONTEXT.md`](CONTEXT.md) fixes the canonical domain language and
+[`COMMITMENT_DIMENSIONS.md`](COMMITMENT_DIMENSIONS.md) clarifies how scheduling,
+recurrence, blockers, generated work and validation compose across the accepted
+kernel/profile/extension/runtime layers. They elaborate this boundary without
+raising a support claim.
+
 The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT** and **MAY** are
 normative. Acceptance freezes the semantic boundary, not every future storage
 detail. A later change that moves responsibility across kernel, extension,

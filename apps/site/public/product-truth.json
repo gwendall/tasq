@@ -514,6 +514,30 @@
       "outcome": "Next.js TypeScript Tailwind shadcn public product and docs app generated from versioned repository truth"
     },
     {
+      "id": "TQ-609",
+      "status": "in_progress_implementation",
+      "milestone": "public-adoption",
+      "outcome": "Make every public command, example, product promise and Local limitation exact, executable and generated from current release truth"
+    },
+    {
+      "id": "TQ-610",
+      "status": "pending",
+      "milestone": "public-adoption",
+      "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous"
+    },
+    {
+      "id": "TQ-611",
+      "status": "pending",
+      "milestone": "embedded-sdk",
+      "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary"
+    },
+    {
+      "id": "TQ-612",
+      "status": "pending",
+      "milestone": "completion-validation",
+      "outcome": "Separate evidence, completion proposals, validation decisions and final completion under versioned deterministic, attested, optimistic or adjudicated policies"
+    },
+    {
       "id": "TQ-606",
       "status": "candidate_done_external_gate",
       "milestone": "public-adoption",
@@ -568,22 +592,34 @@
       "outcome": "Remote MCP through the identical guard with REST capability parity"
     },
     {
+      "id": "TQ-809",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority"
+    },
+    {
       "id": "TQ-806",
       "status": "pending",
       "milestone": "self-hosted-server",
-      "outcome": "Authenticated replication transport, enrollment, recovery and authority rotation"
+      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
     },
     {
       "id": "TQ-807",
       "status": "pending",
       "milestone": "self-hosted-server",
-      "outcome": "Deployable server artifact with configuration, health, backup, restore and upgrade contracts"
+      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts"
     },
     {
       "id": "TQ-808",
       "status": "pending",
       "milestone": "self-hosted-server",
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-810",
+      "status": "pending",
+      "milestone": "remote-sdks",
+      "outcome": "Publish stable remote API schemas and thin cross-language clients beginning with Python, without reimplementing the kernel"
     },
     {
       "id": "TQ-901",
@@ -631,7 +667,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "b13fd3871e1369ace6b516ba6d9c1b27ac9d9a7049e9c54590dac5e843353879"
+      "sha256": "22e5c8b7b55212b190f24e6a17ee7cd12180260592c7af17b0b6a4cf9b4de50d"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

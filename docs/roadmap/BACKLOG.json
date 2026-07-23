@@ -120,7 +120,7 @@
     {
       "id": "ADR-005",
       "status": "pending",
-      "blocks": ["TQ-906"],
+      "blocks": ["TQ-612", "TQ-906"],
       "question": "Evidence trust, authenticity, supersession, revocation and retention"
     }
   ],
@@ -134,6 +134,10 @@
     "TQ-703",
     "TQ-704",
     "TQ-605",
+    "TQ-609",
+    "TQ-610",
+    "TQ-611",
+    "TQ-612",
     "TQ-606",
     "TQ-705",
     "TQ-320",
@@ -143,9 +147,11 @@
     "TQ-803",
     "TQ-804",
     "TQ-805",
-    "TQ-806",
+    "TQ-809",
     "TQ-807",
     "TQ-808",
+    "TQ-806",
+    "TQ-810",
     "TQ-901",
     "TQ-902",
     "TQ-903",
@@ -235,10 +241,80 @@
       "evidence": ["docs/contracts/TQ-605_PUBLIC_SITE.md"]
     },
     {
+      "id": "TQ-609",
+      "status": "in_progress_implementation",
+      "milestone": "public-adoption",
+      "dependsOn": ["TQ-603", "TQ-604", "TQ-605", "TQ-704"],
+      "outcome": "Make every public command, example, product promise and Local limitation exact, executable and generated from current release truth",
+      "remaining": [
+        "fix-prefix-install-path-contract",
+        "remove-rendered-command-diff-markers",
+        "replace-illustrative-onboarding-json-with-real-contract",
+        "remove-nonexistent-sdk-api-example",
+        "update-pre-publication-prose",
+        "lead-with-concrete-multi-agent-coordination-problem",
+        "show-real-local-console-and-local-only-boundary",
+        "execute-every-displayed-command-in-ci"
+      ],
+      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+    },
+    {
+      "id": "TQ-610",
+      "status": "pending",
+      "milestone": "public-adoption",
+      "dependsOn": ["TQ-609"],
+      "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous",
+      "remaining": [
+        "publish-versioned-verified-install-script",
+        "certify-bunx-and-npm-exec-try-paths",
+        "ship-explicit-human-setup-and-three-command-simple-journey",
+        "publish-skill-agents-and-llms-entrypoints",
+        "add-deterministic-agent-install-helper",
+        "publish-mcp-host-configurations",
+        "add-isolated-demo-journey",
+        "freeze-non-secret-explicit-project-rendezvous-contract"
+      ],
+      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+    },
+    {
+      "id": "TQ-611",
+      "status": "pending",
+      "milestone": "embedded-sdk",
+      "dependsOn": ["TQ-609"],
+      "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary",
+      "remaining": [
+        "decide-public-package-boundary",
+        "implement-deep-local-client-facade",
+        "publish-compiled-esm-and-types-or-explicit-bun-only-contract",
+        "certify-fresh-consumer-and-restart-journey",
+        "generate-sdk-examples-from-tests"
+      ],
+      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+    },
+    {
+      "id": "TQ-612",
+      "status": "pending",
+      "milestone": "completion-validation",
+      "dependsOn": ["ADR-005"],
+      "outcome": "Separate evidence, completion proposals, validation decisions and final completion under versioned deterministic, attested, optimistic or adjudicated policies",
+      "remaining": [
+        "accept-adr-005-evidence-trust-model",
+        "freeze-versioned-resolution-contract",
+        "implement-append-only-proposal-challenge-and-validation-records",
+        "ship-deterministic-and-independent-attestation-policies",
+        "represent-too-early-indeterminate-and-challenged-outcomes",
+        "certify-self-validation-stale-source-dispute-and-escalation-failures"
+      ],
+      "evidence": [
+        "docs/research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md",
+        "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"
+      ]
+    },
+    {
       "id": "TQ-606",
       "status": "candidate_done_external_gate",
       "milestone": "public-adoption",
-      "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
+      "dependsOn": ["TQ-604", "TQ-605", "TQ-704", "TQ-609", "TQ-610"],
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
       "remaining": ["record-independent-unbriefed-human-session"],
       "evidence": ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"]
@@ -309,18 +385,25 @@
       "outcome": "Remote MCP through the identical guard with REST capability parity"
     },
     {
+      "id": "TQ-809",
+      "status": "pending",
+      "milestone": "self-hosted-server",
+      "dependsOn": ["TQ-804", "TQ-611"],
+      "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority"
+    },
+    {
       "id": "TQ-806",
       "status": "pending",
       "milestone": "self-hosted-server",
-      "dependsOn": ["TQ-802", "TQ-405"],
-      "outcome": "Authenticated replication transport, enrollment, recovery and authority rotation"
+      "dependsOn": ["TQ-405", "TQ-808"],
+      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
     },
     {
       "id": "TQ-807",
       "status": "pending",
       "milestone": "self-hosted-server",
-      "dependsOn": ["TQ-805", "TQ-806"],
-      "outcome": "Deployable server artifact with configuration, health, backup, restore and upgrade contracts"
+      "dependsOn": ["TQ-805", "TQ-809"],
+      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts"
     },
     {
       "id": "TQ-808",
@@ -328,6 +411,13 @@
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-807"],
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+    },
+    {
+      "id": "TQ-810",
+      "status": "pending",
+      "milestone": "remote-sdks",
+      "dependsOn": ["TQ-808"],
+      "outcome": "Publish stable remote API schemas and thin cross-language clients beginning with Python, without reimplementing the kernel"
     },
     {
       "id": "TQ-901",
@@ -368,7 +458,7 @@
       "id": "TQ-906",
       "status": "pending",
       "milestone": "managed-cloud",
-      "dependsOn": ["TQ-905", "ADR-005"],
+      "dependsOn": ["TQ-905", "ADR-005", "TQ-612"],
       "outcome": "Remote effects only after independent evidence and authority review; disabled by default"
     }
   ]
