@@ -167,10 +167,10 @@ describe("canonical Tasq roadmap", () => {
       evidence: ["docs/contracts/TQ-804_GUARDED_MUTATION_REST.md", "docs/contracts/TQ-804_MUTATION_REST_CERTIFICATION.json"],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-320")).toMatchObject({
-      status: "candidate_done_publication_gate",
+      status: "done",
       milestone: "runtime-consumers",
       dependsOn: ["TQ-603", "TQ-304", "TQ-501"],
-      remaining: ["rerun-from-first-published-release"],
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md",
         "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
@@ -211,9 +211,10 @@ describe("canonical Tasq roadmap", () => {
         version: "0.1.0",
         sourceCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
       },
-      publishedLifecycleCertification: { state: "ready_for_published_byte_replay" },
-      publishedAdoptionCertification: { state: "ready_for_published_byte_replay" },
-      publishedInteractiveRuntimeCertification: { state: "ready_for_published_package_replay" },
+      publishedLifecycleCertification: { state: "complete" },
+      publishedConsoleLifecycleCertification: { state: "complete" },
+      publishedAdoptionCertification: { state: "automated_complete_human_pending" },
+      publishedInteractiveRuntimeCertification: { state: "complete" },
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
@@ -230,12 +231,9 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
-      status: "candidate_done_external_gate",
+      status: "done",
       milestone: "public-distribution",
-      remaining: [
-        "replay-first-protected-release-bytes",
-        "add-exact-protected-n-minus-two-lines-once-they-exist",
-      ],
+      remaining: [],
       evidence: expect.arrayContaining([
         "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json",
         "packages/tasq-service/test/data-safety.test.ts",
@@ -272,10 +270,11 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-604")).toMatchObject({
       id: "TQ-604",
-      status: "candidate_done_publication_gate",
+      status: "done",
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
-        "https://github.com/gwendall/tasq/pull/5",
+        "https://github.com/gwendall/tasq/actions/runs/30015923266",
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-605")).toMatchObject({
@@ -285,7 +284,6 @@ describe("canonical Tasq roadmap", () => {
     expect(roadmap.items.find(({ id }) => id === "TQ-606")).toMatchObject({
       status: "candidate_done_external_gate",
       remaining: [
-        "rerun-from-first-published-release",
         "record-independent-unbriefed-human-session",
       ],
       evidence: ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"],

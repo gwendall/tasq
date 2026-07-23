@@ -241,7 +241,7 @@ describe("TQ-601 product consumption design", () => {
       "canonical_source_repository_is_public_alpha",
       "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
       "first_supported_public_alpha_release_is_published_with_oidc_provenance",
-      "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
+      "local_release_v0_1_0_is_published_and_multi_target_lifecycle_certified",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_deployed_at_tasq_run",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
@@ -304,10 +304,10 @@ describe("TQ-601 product consumption design", () => {
       .toBe("implemented_certified");
   });
 
-  test("keeps candidate lifecycle evidence distinct from a published certificate", () => {
+  test("binds lifecycle completion to the exact published certificate", () => {
     expect(lifecycle).toMatchObject({
       contractVersion: "tasq.lifecycle-certification.v1",
-      status: "candidate-certified-published-replay-ready",
+      status: "published-release-certified",
       supportedTargets: ["darwin-arm64", "linux-x64-gnu"],
       installation: {
         layout: "side-by-side-explicit-prefix",
@@ -327,8 +327,11 @@ describe("TQ-601 product consumption design", () => {
       candidateEvidence: {
         requiredCiTargets: ["verify (macos-14)", "verify (ubuntu-latest)"],
       },
-      publishedArtifactEvidence: { status: "ready-v0.1.0-published" },
-      tq604Complete: false,
+      publishedArtifactEvidence: {
+        status: "passed",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30015923266",
+      },
+      tq604Complete: true,
     });
     for (const step of [
       "install-outside-checkout",

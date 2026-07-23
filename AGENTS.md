@@ -28,8 +28,10 @@ TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
 packages and native Tasq Local assets are published as protected `v0.1.0`;
 the immutable coordinates are certified in
 [TQ-603_RELEASE_CERTIFICATION.json](docs/contracts/TQ-603_RELEASE_CERTIFICATION.json).
-The post-release multi-target replay is the active distribution gate.
-TQ-608's source candidate is implemented; read
+The post-release lifecycle, migration, adoption and interactive-runtime matrix
+passes on both supported targets; independent blind-human adoption and retained
+dogfood are the remaining external gates. TQ-608 is complete for the current
+release; read
 [TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 

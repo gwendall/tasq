@@ -1,6 +1,7 @@
 # TQ-704 installed Console lifecycle
 
-**Status:** candidate complete; published-byte confirmation waits for TQ-603
+**Status:** complete for `v0.1.0`; installed Console certified from published
+bytes on both supported targets
 
 **Scope:** Tasq Local foreground Console only
 
@@ -106,10 +107,11 @@ does not determine ledger or listener authority.
 Linux x64 and macOS arm64 run the release lifecycle in CI. Real Chromium
 journeys remain a separate required Console job.
 
-## Honest completion boundary
+## Published certification result
 
-All implementation and candidate-byte evidence for TQ-704 is complete. No
-public package or native release currently exists, so this does not claim that
-a user has downloaded these bytes from npm or GitHub. After TQ-603 publishes
-the first protected attested release, the same journey must run from those
-downloaded bytes before TQ-704 can be called published-byte complete.
+Protected run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+downloaded and attestation-verified the `v0.1.0` assets on macOS ARM64 and Linux
+x64, then exercised the same-ledger installed Console as part of the complete
+lifecycle and public-adoption journeys. TQ-704 is published-byte complete for
+the first public-alpha release.

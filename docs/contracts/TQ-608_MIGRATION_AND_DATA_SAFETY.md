@@ -1,6 +1,7 @@
 # TQ-608 — Migration and data-safety envelope
 
-**Status:** source candidate implemented and hostile source matrix passed; protected-release N-2 replay pending
+**Status:** complete for the current public release; future N-2 certification
+becomes mandatory once three protected release lines exist
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
 **Blocks:** first protected package release in TQ-603
 
@@ -109,11 +110,16 @@ each file without leaving a pending receipt. The existing migration suite also
 upgrades populated format-0 and format-5 fixtures and rejects checksum drift or
 non-contiguous history.
 
-The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Before three
-protected release lines exist, the bootstrap matrix is every extant protected
-release (currently `v0.1.0`) plus the historical populated fixtures. Once three protected
-minor lines exist, exact N-2 binaries and published bytes are mandatory and
-the certificate must be revised. A real POSIX file-size quota additionally
-proves that snapshot exhaustion leaves the source format unchanged and any
-partial snapshot private. The first protected release is now the active
-external replay gate and is not falsely inferred from source tests.
+The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Protected run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+downloaded and attestation-verified `v0.1.0` on both supported targets, migrated
+the populated format-5 fixture to format 25 and passed the post-migration
+receipt and doctor checks. A real POSIX file-size quota additionally proves
+that snapshot exhaustion leaves the source format unchanged and any partial
+snapshot private.
+
+Before three protected release lines exist, the bootstrap matrix is every
+extant protected release plus the historical populated fixtures. Once three
+protected minor lines exist, exact N-2 binaries and published bytes become
+mandatory and the certificate must be revised. That future rule does not leave
+an unevaluable gate open against the single existing release line.

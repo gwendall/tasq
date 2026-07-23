@@ -1,7 +1,7 @@
 # TQ-604 clean-room lifecycle certification
 
-**Status:** candidate lifecycle implemented and certified in source CI;
-published `v0.1.0` exact-byte replay ready on both targets
+**Status:** complete for `v0.1.0`; exact published bytes certified on both
+supported targets
 **Machine contract:** `TQ-604_LIFECYCLE_CERTIFICATION.json`
 
 ## What now exists
@@ -82,10 +82,13 @@ construction and lifecycle inputs contain no wall-clock field, and the
 installer contains no device-clock read. Runtime authority time remains behind
 the explicit injected `Clock` boundary.
 
-## Honest completion boundary
+## Published certification result
 
-This closes the implementation and candidate-certification part of TQ-604.
-The protected workflow has published the first artifacts. TQ-604 becomes
-complete after their GitHub attestations are verified and this same journey
-succeeds from those downloaded bytes on both targets. npm scope control and
-trusted publishing are completed TQ-603 evidence.
+Protected certification run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+downloaded the exact `v0.1.0` release, verified every GitHub artifact
+attestation and ran the complete lifecycle on `darwin-arm64` and
+`linux-x64-gnu`. It also replayed the format-5-to-format-25 migration, installed
+Console inspection, public adoption and the published-package interactive
+runtime. The registry job independently downloaded and matched all seven npm
+tarballs. TQ-604 is complete for the first public-alpha release.

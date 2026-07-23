@@ -92,8 +92,8 @@ The canonical repository is public, its controls are active, and destination CI
 runs the complete test suite in isolated package processes while rejecting an
 install that mutates tracked source. Anonymous source access is verified.
 
-TQ-321, TQ-608 and the public-alpha authorization are passed. The remaining
-package-publication blockers are creating the seven `@tasq-run` package
-identities and configuring their trusted publishers; authenticated control of
-the npm organization is verified. No local artifact, source checkout or
-untagged GitHub build is publishable authority.
+TQ-321, TQ-608 and the public-alpha authorization are passed. All seven
+`@tasq-run` package identities, trusted publishers and the first protected
+release are live. Post-release run 30015923266 certifies exact npm and native
+bytes on both targets. No local artifact, source checkout or untagged GitHub
+build is publishable authority.

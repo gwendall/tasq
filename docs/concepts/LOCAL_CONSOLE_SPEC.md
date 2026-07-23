@@ -146,7 +146,7 @@ injected clock once per batch. See `../contracts/TQ-702_CONSOLE_LIVE_TRANSPORT.m
 | TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
 | TQ-702 | Cursor-driven SSE plus polling fallback | Complete — reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
 | TQ-703 | Accessible responsive navigation, search and support bundle | Complete — SSR/no-JS baseline plus six real Chromium journeys |
-| TQ-704 | Release/install integration, stable URLs and lifecycle | Candidate complete — standalone/npm artifact start, proof-of-life discovery, upgrade and uninstall; published-byte rerun pending TQ-603 |
+| TQ-704 | Release/install integration, stable URLs and lifecycle | Complete for `v0.1.0` — published standalone/npm start, proof-of-life discovery, upgrade and uninstall certified on both targets |
 | TQ-705 | Operator acceptance | Unknown operator resolves staged incidents without repository knowledge |
 
 ## 9. Acceptance scenarios

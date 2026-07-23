@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.interactive-runtime-certification.v1",
-  "status": "candidate-certified-publication-gate-pending",
+  "status": "published-package-certified",
   "candidate": {
     "source": "generated-public-package-tarballs",
     "packageIndependent": true,
@@ -42,9 +42,13 @@
     ]
   },
   "publishedArtifactEvidence": {
-    "status": "ready-v0.1.0-published",
+    "status": "passed",
     "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2"
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+    "certifiedAt": "2026-07-23T14:29:19Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+    "targets": ["darwin-arm64", "linux-x64-gnu"],
+    "registryTarballsMatched": true
   },
-  "tq320Complete": false
+  "tq320Complete": true
 }

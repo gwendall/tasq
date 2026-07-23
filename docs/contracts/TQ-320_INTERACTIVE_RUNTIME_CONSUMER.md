@@ -1,7 +1,7 @@
 # TQ-320 — interactive agent-runtime consumer conformance
 
-> **Status:** candidate certified; first protected published-package replay
-> remains external
+> **Status:** complete; candidate and exact protected `0.1.0` package replays
+> pass on both supported targets
 > **Proposed contract:** `tasq.interactive-runtime-consumer.v1`
 > **Motivating consumer:** Denshin-style machine, terminal and agent-session
 > control planes
@@ -158,15 +158,15 @@ demonstrates the concrete gap in at least one second unrelated runtime shape.
 
 TQ-320 depends on the completed TQ-304 runtime recipes and TQ-501 bounded
 context contract. Candidate execution was deliberately completed before
-TQ-603 from deterministic installable package tarballs so runtime friction can
-be fixed while the repository is private. Final closure remains behind TQ-603:
-the identical fixture must consume the exact protected published package
-bytes. It does not block internal TQ-805 Server work.
+TQ-603 from deterministic installable package tarballs. Protected run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+then consumed the exact `@tasq-run/*@0.1.0` registry tarballs on both supported
+targets and closed the publication gate. TQ-320 does not block internal TQ-805
+Server work.
 
 TQ-607 first ran the same identity/lifecycle shape as a private dogfood
-consumer to discover product friction. The stricter package-independent
-candidate now also passes, but neither proof substitutes for replay from the
-first protected public bytes.
+consumer to discover product friction. The stricter package-independent and
+protected public-package proofs now both pass.
 
 ## Definition of done
 

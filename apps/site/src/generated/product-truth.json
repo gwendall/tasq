@@ -29,7 +29,7 @@
     "gates": {
       "maintainer_public_alpha_authorization": true,
       "data_safety_source_candidate": true,
-      "data_safety_published_byte_replay": false,
+      "data_safety_published_byte_replay": true,
       "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": true,
       "public_source_launch_authorized": true,
@@ -444,7 +444,7 @@
     "canonical_source_repository_is_public_alpha",
     "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
     "first_supported_public_alpha_release_is_published_with_oidc_provenance",
-    "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
+    "local_release_v0_1_0_is_published_and_multi_target_lifecycle_certified",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_deployed_at_tasq_run",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
@@ -467,7 +467,7 @@
     },
     {
       "id": "TQ-608",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export"
     },
@@ -479,7 +479,7 @@
     },
     {
       "id": "TQ-604",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes"
     },
@@ -503,7 +503,7 @@
     },
     {
       "id": "TQ-704",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "local-console",
       "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners"
     },
@@ -527,7 +527,7 @@
     },
     {
       "id": "TQ-320",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "runtime-consumers",
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
@@ -626,17 +626,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "bed90dd09c4cbd88c782e72edf37bf23452e6a689ed5bd7ff75efce9e60a3256"
+      "sha256": "86c6bbbbb195222d27245995944663f88703e1097c74b1bd766a25d1cc01b8cf"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "023954c3d26dcc2b65abcbf44f1dea587c2938ace8435996b89a1709a56032ac"
+      "sha256": "b13fd3871e1369ace6b516ba6d9c1b27ac9d9a7049e9c54590dac5e843353879"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "f0def5b7ddadf721844f012ecb955d566338a687384a79d2f3bfd993d1da9907"
+      "sha256": "551ae77d0849c9e6b45e26c9aa0aee7bce3b46ac097e9faf11258e6eb0d751de"
     }
   ]
 }

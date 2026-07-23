@@ -68,8 +68,8 @@ installed artifact, and TQ-321 zero-context Codex/Claude integration is
 certified. The seven `@tasq-run/*@0.1.0` packages and the attested native
 macOS-arm64/Linux-x64 assets are published from protected OIDC CI at immutable
 tag `v0.1.0`; the historical non-default bootstrap tag is not a supported
-install channel. The TQ-608 source migration candidate is passed and awaits
-the recorded multi-target protected-byte replay.
+install channel. TQ-608 is certified from the exact published release on both
+supported targets.
 TQ-607 continues as the stable-graduation gate.
 
 ### 2.3 Tasq Server
@@ -218,9 +218,8 @@ success alone.
 
 **Support:** the required kernel records and embedded/CLI/local-MCP integration
 surfaces exist. TQ-304 certifies durable workflow runtimes; the distinct
-interactive conversation/run shape is candidate-certified from clean-room
-package tarballs. TQ-320 still requires replay from the first protected
-published packages before the public conformance claim closes.
+interactive conversation/run shape is certified from clean-room candidates
+and the exact published `0.1.0` package tarballs on both supported targets.
 
 **Non-claim:** Tasq does not launch the agent, stream its terminal, own its
 conversation, choose its machine or authenticate a remote control plane.
@@ -287,7 +286,7 @@ is explicitly mutable source-build guidance, not a protected-release claim.
 | Use case | Kernel fit | Product readiness | Missing outer layer |
 |---|---|---|---|
 | Local coding-agent handoff | Excellent | Ready locally | Protected public release channel |
-| Interactive agent control plane | Excellent | Candidate conformance complete | TQ-320 published-package replay |
+| Interactive agent control plane | Excellent | Published-package conformance complete | Runtime-specific integration and deployment |
 | Multi-agent contention on one host | Excellent | Ready locally | Protected public release channel |
 | Robotics resource coordination | Excellent | Kernel/CLI ready | Robot adapter and fence enforcement |
 | Research with human acceptance | Excellent | Kernel ready | Domain UI and evidence policy |

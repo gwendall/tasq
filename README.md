@@ -130,6 +130,8 @@ The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/console`. Version `0.1.0` is published from protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
 on the [`v0.1.0` release](https://github.com/gwendall/tasq/releases/tag/v0.1.0).
+The exact registry and release bytes pass the published lifecycle, migration,
+adoption and interactive-runtime matrix on macOS ARM64 and Linux x64.
 
 ## Status and feedback
 

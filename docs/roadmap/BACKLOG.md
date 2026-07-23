@@ -8,9 +8,8 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-23
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** certify the exact published `v0.1.0` Local bytes on both
-supported targets, then continue retained-data dogfood as the
-stable-graduation gate.
+**Current priority:** complete one independent blind-human adoption session,
+then continue retained-data dogfood as the stable-graduation gate.
 Do not expand remote products before the Local alpha is independently usable.
 
 ## What is already proven
@@ -57,13 +56,14 @@ operation through real adopters, not more repository-only architecture.
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — source candidate complete; protected-byte replay pending.** The
+- **TQ-608 — done for the current release.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
-  snapshot failure before schema mutation. Exact first-release/N-2 bytes remain
-  external replay evidence.
+  snapshot failure before schema mutation. Exact `v0.1.0` bytes migrate the
+  populated format-5 fixture on both targets. Exact N-2 evidence becomes
+  mandatory once three protected release lines exist.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -96,10 +96,11 @@ operation through real adopters, not more repository-only architecture.
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
   forbidden.
-- **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
-  passes from generated release assets on macOS arm64 and Linux x64. Final
-  closure requires downloading the first protected release, verifying every
-  GitHub attestation, and rerunning the same journey from those exact bytes.
+- **TQ-604 — done.** Protected run
+  [30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+  downloaded the exact `v0.1.0` release, verified every GitHub attestation and
+  passed install, onboarding, contention, Console, backup, upgrade, restore and
+  data-preserving uninstall on macOS ARM64 and Linux x64.
 
 During alpha and TQ-607, fixes discovered by real adopters are in scope. New
 Server/Cloud breadth remains behind published-byte Local certification.
@@ -110,15 +111,15 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 - **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
   passes from the public marketplace with no repository briefing.
-- **TQ-608:** replay the implemented durable-data envelope from the first
-  protected release bytes; add exact N-2 lines when those releases exist.
+- **TQ-608 — done for current release:** exact first-release replay passes;
+  enforce exact N-2 when three protected release lines exist.
 
 ### 2. Finish Local alpha distribution
 
 - **TQ-603 — done:** `v0.1.0`, seven npm packages and both native artifact
   sets are published with immutable coordinates and provenance.
-- **TQ-604:** certify the downloaded release on both supported targets and
-  record release URL, version, commit and digests in the lifecycle certificate.
+- **TQ-604 — done:** downloaded release, target, source commit and protected
+  workflow evidence are recorded in the lifecycle certificate.
 
 ### 3. Complete the Local Console
 
@@ -137,14 +138,14 @@ Server/Cloud breadth remains behind published-byte Local certification.
   explicit live/stale states and a preview-before-download redacted support
   bundle. It stays read-only and unauthenticated only because it stays on
   loopback. See `../contracts/TQ-703_OPERATOR_CONSOLE.md`.
-- **TQ-704 — candidate complete, published-byte gate:** installed Tasq Local
+- **TQ-704 — done:** installed Tasq Local
   now starts one explicit foreground Console, emits a versioned machine
   announcement, proves live discovery with `web status`, cleans crash-safe
   private registration, and preserves same-ledger Console behavior through
   upgrade and uninstall. Standalone and npm candidates load the full UI without
   checkout-relative assets or hidden listeners. See
-  `../contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; downloaded-byte
-  confirmation is now ready to run against `v0.1.0`.
+  `../contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; exact downloaded-byte
+  confirmation passes on both supported targets.
 
 ### 4. Explain and validate the public product
 
@@ -154,12 +155,13 @@ Server/Cloud breadth remains behind published-byte Local certification.
   machine JSON and uses only synthetic illustrations. It is deployed from
   public `main` at <https://tasq.run>. See
   `../contracts/TQ-605_PUBLIC_SITE.md`.
-- **TQ-606 — candidate complete, external gates:** `/adopt.json` now closes the
+- **TQ-606 — published-byte automation complete, human gate:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers
   install candidate bytes outside the checkout, onboard two actors, recover
   typed contention with a higher fence, complete with evidence and inspect the
-  same ledger through installed Console. Final closure requires the first
-  published bytes and one independent unbriefed human session; see
+  same ledger through installed Console. The first published-byte replay passes
+  on both targets. Final closure requires one independent unbriefed human
+  session; see
   `../contracts/TQ-606_PUBLIC_ADOPTION.md`.
 - **TQ-705 — done:** fixed-clock, process-isolated empty, mature, hostile,
   corrupt and 2,501-commitment fixtures now run through the production Console
@@ -169,20 +171,19 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 ### 5. Certify external interactive runtimes
 
-- **TQ-320 — candidate complete, published-byte gate:** a clean-room runtime
+- **TQ-320 — done:** a clean-room runtime
   now installs generated `@tasq-run/*` tarballs and proves explicit assignment,
   lost-response retry, claim expiry and higher-fence reclaim,
   `input_required` resume on the same attempt, two runs in one conversation,
   immutable terminal state, distinct artifacts/evidence, cursor recovery and
   explicit completion. The autonomous CLI guide also exposes additive
   retry-safe attempt recipes; no Machine, terminal, conversation or provider
-  ontology entered Core. Final closure requires rerunning the same fixture
-  from the first protected published packages. See
+  ontology entered Core. The same fixture passes from exact protected
+  `@tasq-run/*@0.1.0` packages on both supported targets. See
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 
-  TQ-607's Denshin journey remains private product-learning evidence. The
-  candidate proof is package-independent but is not a published-byte claim.
+  TQ-607's Denshin journey remains private product-learning evidence.
 
 ### 6. Prove retained product value for stable graduation
 

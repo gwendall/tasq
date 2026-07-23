@@ -30,9 +30,9 @@ authorized on 2026-07-22. On 2026-07-23 the maintainer authorized a pre-1.0
 public package alpha so real adopters can provide feedback before the full
 30-day program closes. TQ-607 therefore remains mandatory for stable
 graduation, not for `v0.1.0`. TQ-321 is passed. TQ-603 has closed npm scope,
-package-bootstrap, trusted-publishing and first protected-release gates. The
-TQ-608 source candidate is passed and awaits its multi-target protected-byte
-replay.
+package-bootstrap, trusted-publishing and first protected-release gates.
+Protected run 30015923266 certifies TQ-604, TQ-608 and TQ-320 from exact
+published bytes on both supported targets.
 
 ## 2. Decisions required before release
 
@@ -172,13 +172,13 @@ Failures block release. Repository-local success is not a substitute.
 | Item | Outcome |
 |---|---|
 | TQ-321 | DONE — zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
-| TQ-608 | SOURCE CANDIDATE PASSED — data-preserving migration envelope, verified backup/doctor, real process-kill recovery and portable import; protected-byte/N-2 replay pending |
+| TQ-608 | DONE FOR CURRENT RELEASE — data-preserving migration envelope and exact `v0.1.0` multi-target replay; exact N-2 becomes mandatory once three protected lines exist |
 | TQ-607 | Three-consumer retained-data dogfood and explicit stable-graduation decision; non-blocking for the labeled pre-1.0 alpha |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | After exact maintainer alpha authorization and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
-| TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
+| TQ-603 | DONE — seven OIDC/provenance npm packages and attested native artifacts published at `v0.1.0` |
+| TQ-604 | DONE — exact published-byte install/upgrade/rollback/uninstall/backup certification on both supported targets |
 | TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq.run` |
-| TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |
+| TQ-606 | CANDIDATE — published-byte automated human path plus blind agent pass; independent human pending |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful
 local open-source release, and open-sourcing Core/Local does not make those

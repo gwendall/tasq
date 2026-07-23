@@ -92,10 +92,19 @@
     "bootstrapTokenRevoked": true,
     "bootstrapGitHubSecretDeleted": true
   },
+  "postReleaseCertification": {
+    "status": "passed",
+    "certifiedAt": "2026-07-23T14:29:19Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+    "certificationSourceCommit": "d02ba152e0a65158180d863733006b3f21062e5b",
+    "registryTarballsMatched": true,
+    "downloadedByteTargets": ["darwin-arm64", "linux-x64-gnu"],
+    "lifecyclePassed": true,
+    "migrationPassed": true,
+    "interactiveRuntimePassed": true,
+    "automatedAdoptionPassed": true
+  },
   "remainingPostReleaseEvidence": [
-    "multi-target-downloaded-byte-lifecycle-replay",
-    "multi-target-downloaded-byte-migration-replay",
-    "published-package-interactive-runtime-replay",
     "independent-unbriefed-human-adoption"
   ]
 }
