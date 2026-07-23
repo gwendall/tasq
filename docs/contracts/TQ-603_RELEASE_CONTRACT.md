@@ -100,9 +100,10 @@ The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
 `v*` tags, the tag-scoped release environment, secret scanning, push protection
 and private vulnerability reporting are active. Gate 1, TQ-321 and the TQ-608
-source candidate are passed. npm `@tasq-run` scope control and trusted publishing
-remain external blockers. Therefore source is public alpha, while packages and
-downloadable artifacts are not published.
+source candidate are passed. Authenticated npm organization control is verified.
+The seven package identities and their trusted publishers remain the external
+blockers. Therefore source is public alpha, while packages and downloadable
+artifacts are not published.
 
 ### First-package bootstrap
 

@@ -52,8 +52,10 @@ DCO-1.1 sign-off.
 
 ## 3. Proposed public package boundary
 
-The public namespace is `@tasq-run/*`; actual registry control is a blocking TQ-603
-precondition. Current `@kami/*` coordinates remain private implementation
+The public namespace is `@tasq-run/*`. Control of the `tasq-run` npm
+organization was authenticated on 2026-07-23; creating the seven package
+identities and binding their trusted publishers remain blocking TQ-603
+preconditions. Current `@kami/*` coordinates remain private implementation
 names and are not aliases. The unscoped npm package `tasq` belongs to an
 unrelated project; only the executable uses that unscoped name.
 

@@ -76,13 +76,15 @@ operation through real adopters, not more repository-only architecture.
   authoritative live counters and next action.
 - **TQ-603 — active, paused only on external registry gates.** The maintainer
   authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
-  `@tasq-run/schema` is not published. The authorized registry operator must verify
-  scope/package control, bootstrap the seven first package identities, bind
-  each package to the release workflow through npm OIDC and create the first
-  immutable protected SemVer tag. The tag workflow now fails before building
-  unless the exact version, repository, package boundary, maintainer decision
-  and channel-specific gates match. Unreviewed workstation builds, implicit
-  visibility changes and long-lived automation tokens remain forbidden.
+  The authenticated `gwendall` operator controls the `tasq-run` npm
+  organization; `npm team ls tasq-run` returned its developers team on
+  2026-07-23. The seven package identities are not published yet. The operator
+  must bootstrap them, bind each package to the release workflow through npm
+  OIDC and create the first immutable protected SemVer tag. The tag workflow
+  fails before building unless the exact version, repository, package boundary,
+  maintainer decision and channel-specific gates match. Unreviewed workstation
+  builds, implicit visibility changes and long-lived automation tokens remain
+  forbidden.
 - **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
   passes from generated release assets on macOS arm64 and Linux x64. Final
   closure requires downloading the first protected release, verifying every

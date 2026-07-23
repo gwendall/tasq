@@ -280,7 +280,7 @@ describe("TQ-601 product consumption design", () => {
       private_multi_app_dogfood_accepted: false,
       canonical_repository_control_verified: true,
       public_source_launch_authorized: true,
-      npm_scope_control_verified: false,
+      npm_scope_control_verified: true,
       trusted_publishing_configured: false,
       tag_protection_configured: true,
     });

@@ -93,6 +93,7 @@ runs the complete test suite in isolated package processes while rejecting an
 install that mutates tracked source. Anonymous source access is verified.
 
 TQ-321, TQ-608 and the public-alpha authorization are passed. The remaining
-package-publication blockers are npm `@tasq-run` scope control and trusted
-publisher configuration. No local artifact, source checkout or untagged GitHub
-build is publishable authority.
+package-publication blockers are creating the seven `@tasq-run` package
+identities and configuring their trusted publishers; authenticated control of
+the npm organization is verified. No local artifact, source checkout or
+untagged GitHub build is publishable authority.
