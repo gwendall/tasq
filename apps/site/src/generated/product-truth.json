@@ -543,7 +543,7 @@
     },
     {
       "id": "TQ-610",
-      "status": "in_progress_release_certification",
+      "status": "candidate_done_publication_gate",
       "milestone": "public-adoption",
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous"
     },
@@ -689,7 +689,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "98628919d75c862248145f95b47b319e9ccf714779cebe13723248a748491187"
+      "sha256": "24b5c5c67b7e259ab32b0e132588daab483d00d917e0a42d40fac470a6956d80"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
