@@ -61,6 +61,12 @@ describe("public site boundary", () => {
     expect(publicAsset).toBe(internal);
   });
 
+  test("uses the public domain as canonical metadata", async () => {
+    const layout = await readFile(resolve(siteRoot, "src/app/layout.tsx"), "utf8");
+    expect(layout).toContain("metadataBase: new URL(productTruth.release.website)");
+    expect(layout).toContain('alternates: { canonical: "/" }');
+  });
+
   test("publishes a fail-closed pre-executable adoption contract", async () => {
     const [internalRaw, publicRaw] = await Promise.all([
       readFile(resolve(siteRoot, "src/generated/adopt.json"), "utf8"),

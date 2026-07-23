@@ -5,6 +5,8 @@
 
 **Durable coordination for humans and agents.**
 
+Website and documentation: [tasq.run](https://tasq.run)
+
 Tasq gives independent agents, runtimes, and people one local ledger for the
 work that must survive a chat, process, or retry. It records the commitment,
 who is working on it, each execution attempt, the evidence produced, and the
@@ -84,7 +86,8 @@ returned. The executable stores data in `$TASQ_HOME/db.sqlite`; do not edit that
 database directly. See the [data safety guide](docs/guides/DATA_SAFETY.md)
 before using a long-lived ledger.
 
-The current machine-readable acquisition contract is
+The current machine-readable acquisition contract is available at
+[`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It deliberately
 declares a mutable source build until protected release artifacts exist.
 

@@ -1,8 +1,9 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-07-22",
+  "updatedAt": "2026-07-23",
   "canonicalRepository": "https://github.com/gwendall/tasq",
+  "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
   "statusVocabulary": [
     "done",
@@ -34,6 +35,12 @@
       "completedAt": "2026-07-22",
       "evidence": "https://github.com/gwendall/tasq",
       "boundary": "source is public; npm packages and downloadable releases remain unpublished"
+    },
+    "publicSiteDeployment": {
+      "state": "complete",
+      "completedAt": "2026-07-23",
+      "evidence": "https://tasq.run",
+      "boundary": "static ledger-free product and documentation site; not Tasq Server, remote MCP, hosted Console or a package-release claim"
     },
     "npmScopeControl": {
       "state": "unverified",

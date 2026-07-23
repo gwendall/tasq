@@ -22,9 +22,22 @@ describe("public site truth", () => {
   test("keeps the public source alpha distinct from a published release", () => {
     expect(productTruth.release.published).toBe(false);
     expect(productTruth.release.installAction).toBe("build_from_source");
+    expect(productTruth.release.website).toBe("https://tasq.run");
     expect(productTruth.release.repositoryState).toBe("public-alpha-source");
     expect(productTruth.release.publicPackages).toHaveLength(7);
     expect(productTruth.productShapes.every((entry) => !entry.publiclyDistributed)).toBe(true);
+  });
+
+  test("publishes the deployed site as a certified ledger-free surface", () => {
+    const surface = productTruth.surfaces.find((entry) => entry.id === "public_site");
+    expect(surface).toMatchObject({
+      support: "implemented_certified",
+      transport: "public_https_static_files",
+      mutations: false,
+      authorityBoundary: "versioned_repository_truth_no_ledger_access",
+    });
+    expect(surface?.entrypoint).toContain("https://tasq.run");
+    expect(productTruth.criticalTruths).toContain("public_site_is_deployed_at_tasq_run");
   });
 
   test("covers the current consumer journeys in public learning paths", () => {

@@ -6,6 +6,12 @@ by ADR-008.
 
 ## Unreleased
 
+### Changed
+
+- Make `https://tasq.run` the canonical public website, documentation and
+  pre-executable agent-acquisition entrypoint while retaining
+  `https://github.com/gwendall/tasq` as the source authority.
+
 ### Fixed
 
 - Keep the autonomous onboarding `audit.list` recipe unfiltered across the

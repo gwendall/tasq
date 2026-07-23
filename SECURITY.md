@@ -29,9 +29,10 @@ Release metadata is authoritative if it narrows that window.
 - Local MCP capabilities are selected and enforced by its host.
 - The Local Console is loopback-only and read-only; it is not safe to expose
   through a generic reverse proxy.
-- The public product/docs app candidate is a static, ledger-free build. It
-  imports no Console/Core runtime and exposes only versioned product truth. It
-  is implemented but no production deployment or domain is currently claimed.
+- The public product/docs app at <https://tasq.run> is a static, ledger-free
+  build. It imports no Console/Core runtime and exposes only versioned product
+  truth. Its deployment does not create a Tasq Server, hosted Console or agent
+  API.
 - Console registration proves a specific foreground loopback listener is live;
   its local descriptor and instance ID are discovery metadata, not credentials
   or authorization. Install creates no listener or daemon.

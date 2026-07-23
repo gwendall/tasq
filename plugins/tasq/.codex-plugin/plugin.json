@@ -7,7 +7,7 @@
     "email": "gwendall@metahood.xyz",
     "url": "https://github.com/gwendall"
   },
-  "homepage": "https://github.com/gwendall/tasq",
+  "homepage": "https://tasq.run",
   "repository": "https://github.com/gwendall/tasq",
   "license": "Apache-2.0",
   "keywords": ["agents", "coordination", "mcp", "tasks"],

@@ -5,9 +5,9 @@ same versioned product truth to machine consumers.
 
 `scripts/generate-truth.ts` derives application/public snapshots from the
 canonical root contracts. The app has no API routes, Core/Console runtime,
-ledger access or install authority. It is implemented and tested in the
-repository but is not currently deployed; a local build must not be described
-as a public site.
+ledger access or install authority. It is deployed from public `main` at
+<https://tasq.run>; local or preview builds must not be described as that
+production deployment.
 
 ```bash
 pnpm --filter @tasq-internal/site typecheck

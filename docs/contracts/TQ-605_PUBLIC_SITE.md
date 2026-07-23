@@ -1,7 +1,7 @@
 # TQ-605 — Public product and documentation site
 
-> **Status:** implemented, certified and deployed from public `main` — 2026-07-22
-> **Deployment status:** live at <https://tasq-five.vercel.app>; custom domain pending
+> **Status:** implemented, certified and deployed from public `main` — 2026-07-23
+> **Deployment status:** live at <https://tasq.run>
 > **Authority:** `../concepts/PRODUCT_SURFACE_MATRIX.json`, `../roadmap/BACKLOG.json` and
 > `../releases/PUBLIC_RELEASE_POLICY.json`, never hand-authored website state
 
@@ -116,10 +116,10 @@ pnpm --filter @tasq-internal/site test:browser
 TQ-605 certifies the versioned application in the public source repository. On
 2026-07-22 the `kamirobotics/tasq` Vercel project was connected directly to
 `gwendall/tasq`, with `main` as its production branch and `apps/site` as its
-root directory. The production alias returns HTTP 200 with HTTPS at
-<https://tasq-five.vercel.app>.
+root directory. The canonical domain returns HTTP 200 with HTTPS at
+<https://tasq.run>.
 
-This deployment does not claim a custom domain, uptime, analytics, search
-indexing or a published Tasq package. TQ-603 remains the authority for the
-first protected package and artifact release. Connecting a custom domain is a
-separate DNS operation and does not change the package support state.
+This deployment does not claim an uptime SLA, analytics, a remote coordination
+surface or a published Tasq package. TQ-603 remains the authority for the first
+protected package and artifact release. The custom domain does not change the
+package support state.

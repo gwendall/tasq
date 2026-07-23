@@ -195,7 +195,7 @@ function manifest(definition: PublicPackage, inputs: Inputs) {
       directory: `packages/${definition.sourceDirectory}`,
     },
     bugs: { url: "https://github.com/gwendall/tasq/issues" },
-    homepage: "https://github.com/gwendall/tasq#readme",
+    homepage: "https://tasq.run",
     publishConfig: { access: "public", provenance: true },
     dependencies: definition.dependencies,
     optionalDependencies: definition.optionalDependencies,

@@ -128,8 +128,8 @@ describe("TQ-601 product consumption design", () => {
       mutations: false,
     });
     expect(byId(matrix.surfaces, "public_site")).toMatchObject({
-      support: "implemented_candidate_not_published",
-      transport: "static_files",
+      support: "implemented_certified",
+      transport: "public_https_static_files",
       mutations: false,
       authorityBoundary: "versioned_repository_truth_no_ledger_access",
     });
@@ -194,7 +194,7 @@ describe("TQ-601 product consumption design", () => {
     });
     expect(byId(matrix.consumers, "prospective_adopter")).toMatchObject({
       supportedSurfaces: ["public_site"],
-      irreducibleInputs: ["authorized_repository_access_or_deployed_static_site"],
+      irreducibleInputs: ["public_site_url_or_public_repository"],
     });
   });
 
@@ -204,8 +204,8 @@ describe("TQ-601 product consumption design", () => {
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_candidate_not_published");
     expect(byId(matrix.journeys, "public_product_discovery")).toMatchObject({
-      support: "implemented_candidate_not_published",
-      steps: ["discover_product", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "request_authorized_repository_access", "build_from_source"],
+      support: "implemented_certified",
+      steps: ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"],
     });
     for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
@@ -226,7 +226,7 @@ describe("TQ-601 product consumption design", () => {
       "public_package_sources_are_visible_but_not_yet_published",
       "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
       "public_site_is_static_docs_not_console_or_agent_api",
-      "public_site_is_built_but_not_deployed",
+      "public_site_is_deployed_at_tasq_run",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
       "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
       "device_time_is_only_read_by_the_system_clock_adapter",
