@@ -8,9 +8,9 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-23
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** publish the explicitly authorized `v0.1.0` Local alpha
-from the now-verified npm OIDC boundary, certify those exact bytes, then
-continue retained-data dogfood as the stable-graduation gate.
+**Current priority:** certify the exact published `v0.1.0` Local bytes on both
+supported targets, then continue retained-data dogfood as the
+stable-graduation gate.
 Do not expand remote products before the Local alpha is independently usable.
 
 ## What is already proven
@@ -45,10 +45,11 @@ operation through real adopters, not more repository-only architecture.
 
 ## Current gates
 
-- **Public source alpha — live.** Anonymous users can clone, inspect and build
-  `main`. Seven `0.1.0-alpha.0` identities exist only under the non-default
-  `alpha-bootstrap` tag; supported packages and downloadable artifacts remain
-  pending the protected `v0.1.0` workflow.
+- **Public Local alpha — live.** Anonymous users can clone `main`, install all
+  seven `@tasq-run/*@0.1.0` packages from npm, or download the attested
+  macOS-arm64/Linux-x64 assets from the immutable
+  [`v0.1.0`](https://github.com/gwendall/tasq/releases/tag/v0.1.0) release.
+  The historical `alpha-bootstrap` tag is not a supported channel.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
   uninstall trials. Both hosts read before mutation, resume the same attempt
@@ -76,7 +77,7 @@ operation through real adopters, not more repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — active, ready for the protected release.** The maintainer
+- **TQ-603 — done, first protected release published.** The maintainer
   authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
   The authenticated `gwendall` operator controls the `tasq-run` npm
   organization; `npm team ls tasq-run` returned its developers team on
@@ -85,8 +86,12 @@ operation through real adopters, not more repository-only architecture.
   published and byte-verified all seven `0.1.0-alpha.0` identities under the
   non-default `alpha-bootstrap` tag. Every package now trusts
   `gwendall/tasq:.github/workflows/release.yml:release`; the bootstrap secret
-  is deleted and its granular token revoked. The remaining action is the first
-  immutable protected SemVer tag. The tag workflow
+  is deleted and its granular token revoked. Protected run
+  [30011315256](https://github.com/gwendall/tasq/actions/runs/30011315256)
+  then published all seven `0.1.0` packages through OIDC and built both native
+  targets from commit `0f5357ea10e0eb9f86f143a4fc38030624238bd2`.
+  The exact attested artifacts are attached to immutable tag `v0.1.0`; see
+  `../contracts/TQ-603_RELEASE_CERTIFICATION.json`. The tag workflow
   fails before building unless the exact version, repository, package boundary,
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
@@ -110,9 +115,8 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 ### 2. Finish Local alpha distribution
 
-- **TQ-603:** publish and attest `v0.1.0` through the verified
-  repository/workflow/environment-bound trusted publisher, then record the
-  immutable release coordinates.
+- **TQ-603 — done:** `v0.1.0`, seven npm packages and both native artifact
+  sets are published with immutable coordinates and provenance.
 - **TQ-604:** certify the downloaded release on both supported targets and
   record release URL, version, commit and digests in the lifecycle certificate.
 
@@ -139,8 +143,8 @@ Server/Cloud breadth remains behind published-byte Local certification.
   private registration, and preserves same-ledger Console behavior through
   upgrade and uninstall. Standalone and npm candidates load the full UI without
   checkout-relative assets or hidden listeners. See
-  `../contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; downloaded-byte confirmation waits
-  for TQ-603.
+  `../contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md`; downloaded-byte
+  confirmation is now ready to run against `v0.1.0`.
 
 ### 4. Explain and validate the public product
 

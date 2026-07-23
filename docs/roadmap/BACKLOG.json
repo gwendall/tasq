@@ -36,7 +36,7 @@
       "state": "complete_public_alpha",
       "completedAt": "2026-07-22",
       "evidence": "https://github.com/gwendall/tasq",
-      "boundary": "source is public; bootstrap npm identities exist under a non-default prerelease tag, while the supported release and downloadable artifacts remain pending"
+      "boundary": "source is public and v0.1.0 is the first supported public-alpha package and downloadable release"
     },
     "publicSiteDeployment": {
       "state": "complete",
@@ -60,9 +60,12 @@
       "evidence": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"
     },
     "firstProtectedRelease": {
-      "state": "not_run",
+      "state": "complete",
       "channel": "public_alpha",
       "version": "0.1.0",
+      "completedAt": "2026-07-23",
+      "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+      "evidence": "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
       "requires": ["maintainerPublicAlphaAuthorization", "publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
     },
     "maintainerPublicAlphaAuthorization": {
@@ -72,19 +75,19 @@
       "boundary": "authorizes the labeled pre-1.0 alpha; retained-data dogfood still blocks stable graduation"
     },
     "publishedLifecycleCertification": {
-      "state": "blocked_by_first_protected_release",
+      "state": "ready_for_published_byte_replay",
       "candidateEvidence": "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json"
     },
     "publishedConsoleLifecycleCertification": {
-      "state": "blocked_by_first_protected_release",
+      "state": "ready_for_published_byte_replay",
       "candidateEvidence": "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"
     },
     "publishedAdoptionCertification": {
-      "state": "blocked_by_first_protected_release",
+      "state": "ready_for_published_byte_replay",
       "candidateEvidence": "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"
     },
     "publishedInteractiveRuntimeCertification": {
-      "state": "blocked_by_first_protected_release",
+      "state": "ready_for_published_package_replay",
       "candidateEvidence": "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"
     },
     "independentBlindHumanAdoption": {
@@ -163,12 +166,15 @@
     },
     {
       "id": "TQ-603",
-      "status": "in_progress_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-321", "TQ-608"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["publish-first-protected-release"],
-      "evidence": ["docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"]
+      "evidence": [
+        "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+        "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
+        "https://github.com/gwendall/tasq/releases/tag/v0.1.0"
+      ]
     },
     {
       "id": "TQ-604",

@@ -114,7 +114,17 @@ jobs:
           set -euo pipefail
           packages=(tasq-run-schema tasq-run-extension-sdk tasq-run-core tasq-run-protocol-adapters tasq-run-mcp tasq-run-console tasq-run-cli)
           for name in "${packages[@]}"; do
-            npm publish "dist/packages/${name}-${{ needs.identity.outputs.version }}.tgz" --access public --provenance
+            tarball="dist/packages/${name}-${{ needs.identity.outputs.version }}.tgz"
+            package_name="$(tar -xOf "$tarball" package/package.json | jq -r .name)"
+            if npm view "${package_name}@${{ needs.identity.outputs.version }}" version >/dev/null 2>&1; then
+              bun scripts/release/verify-npm-publication.ts \
+                --package "$package_name" \
+                --version "${{ needs.identity.outputs.version }}" \
+                --source-commit "${{ needs.identity.outputs.commit }}" \
+                --tarball "$tarball"
+            else
+              npm publish "$tarball" --access public --provenance
+            fi
           done
 
   github-release:
@@ -126,6 +136,24 @@ jobs:
         with:
           path: dist
           merge-multiple: true
-      - run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes
+      - name: Create or repair the immutable GitHub release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p existing-release
+            gh release download "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --dir existing-release
+            for asset in dist/*; do
+              cmp "$asset" "existing-release/$(basename "$asset")"
+            done
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --generate-notes \
+              --target "${{ needs.identity.outputs.commit }}"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}

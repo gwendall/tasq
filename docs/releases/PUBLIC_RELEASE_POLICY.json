@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.public-release-policy.v1",
-  "status": "public-alpha-bootstrap-published-release-pending",
+  "status": "published-alpha",
   "acceptedAt": "2026-07-20",
   "identity": {
     "productName": "Tasq",
@@ -240,7 +240,45 @@
     "certification": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
     "publishedSupportGranted": false
   },
-  "publishedRelease": null,
+  "publishedRelease": {
+    "version": "0.1.0",
+    "tag": "v0.1.0",
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30011315256",
+    "publishedAt": "2026-07-23T13:31:46Z",
+    "publishedPackages": [
+      {
+        "name": "@tasq-run/schema",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/core",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/cli",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/mcp",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/extension-sdk",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/protocol-adapters",
+        "version": "0.1.0"
+      },
+      {
+        "name": "@tasq-run/console",
+        "version": "0.1.0"
+      }
+    ],
+    "certification": "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json"
+  },
   "externalPublicationGateStatus": {
     "maintainer_public_alpha_authorization": true,
     "data_safety_source_candidate": true,

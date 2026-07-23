@@ -53,14 +53,15 @@ A package is not available merely because its source exists here; npm
 availability starts only after an explicitly authorized protected attested
 release.
 
-Public source launch occurred on 2026-07-22 as an explicitly bounded alpha.
-TQ-607 private dogfood remains the package-release gate. The
+Public source launch occurred on 2026-07-22 and protected public alpha
+`v0.1.0` was published on 2026-07-23. TQ-607 private dogfood remains the
+stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may build from source and file
-issues; package publication remains blocked during the gate.
+`go`, `extend` or `no_go` decision. Early users may install `0.1.0`, build from
+source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
 interactive runtime have completed every required journey; cold onboarding,
@@ -73,8 +74,9 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle now exists as a certified candidate. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. This is not yet a published-download claim; see
-`../contracts/TQ-604_LIFECYCLE_CERTIFICATION.md` for the remaining evidence gate.
+`TASQ_HOME`. Those assets are now published at immutable `v0.1.0`; the
+remaining TQ-604 gate is replaying that journey from the downloaded,
+attestation-verified bytes on both supported targets.
 
 The loopback Console has canonical TQ-701 overview, actor, claim, resource,
 wait, effect, redacted audit and bounded operational-health JSON contracts.
@@ -86,8 +88,8 @@ original commitment graph remains available as a deep inspection surface.
 TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
 discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
-are certified without a checkout or hidden service; published-byte evidence
-still depends on the first protected release.
+are certified without a checkout or hidden service; published-byte replay is
+now ready against the `v0.1.0` release.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives

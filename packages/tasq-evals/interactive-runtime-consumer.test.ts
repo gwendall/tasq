@@ -12,6 +12,7 @@ const productRoot = resolve(import.meta.dir, "../..");
 const builder = join(productRoot, "scripts/release/build-public-packages.ts");
 const sourceCommit = "0123456789abcdef0123456789abcdef01234567";
 const version = "0.1.0-tq320.1";
+const publishedNpmVersion = process.env.TASQ_PUBLISHED_NPM_VERSION?.replace(/^v/, "");
 
 afterEach(async () => {
   await Promise.all(roots.splice(0).map((path) => rm(path, { recursive: true, force: true })));
@@ -47,26 +48,32 @@ describe("TQ-320 interactive runtime candidate", () => {
     const consumer = join(root, "consumer");
     await mkdir(consumer, { recursive: true });
 
-    const built = await run([
-      process.execPath,
-      builder,
-      "--version", version,
-      "--source-commit", sourceCommit,
-      "--outdir", packages,
-    ], productRoot);
-    expect(built, built.stderr).toMatchObject({ exitCode: 0, stderr: "" });
-    const release = JSON.parse(await readFile(
-      join(packages, `tasq-packages-v${version}.release.json`),
-      "utf8",
-    ));
     const wanted = ["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core"];
+    let dependencies: Record<string, string>;
+    if (publishedNpmVersion === undefined) {
+      const built = await run([
+        process.execPath,
+        builder,
+        "--version", version,
+        "--source-commit", sourceCommit,
+        "--outdir", packages,
+      ], productRoot);
+      expect(built, built.stderr).toMatchObject({ exitCode: 0, stderr: "" });
+      const release = JSON.parse(await readFile(
+        join(packages, `tasq-packages-v${version}.release.json`),
+        "utf8",
+      ));
+      dependencies = Object.fromEntries(wanted.map((name) => {
+        const archive = release.packages.find((item: { name: string }) => item.name === name);
+        return [name, `file:${join(packages, archive.filename)}`];
+      }));
+    } else {
+      dependencies = Object.fromEntries(wanted.map((name) => [name, publishedNpmVersion]));
+    }
     await writeFile(join(consumer, "package.json"), `${JSON.stringify({
       private: true,
       type: "module",
-      dependencies: Object.fromEntries(wanted.map((name) => {
-        const archive = release.packages.find((item: { name: string }) => item.name === name);
-        return [name, `file:${join(packages, archive.filename)}`];
-      })),
+      dependencies,
     }, null, 2)}\n`, "utf8");
     const installed = await run([
       "npm", "install", "--ignore-scripts", "--no-audit", "--no-fund", "--no-package-lock",
@@ -126,8 +133,8 @@ describe("TQ-320 interactive runtime candidate", () => {
       contractVersion: "tasq.interactive-runtime-certification.v1",
       status: "candidate-certified-publication-gate-pending",
       publishedArtifactEvidence: {
-        status: "not-run-no-public-release-exists",
-        blockedBy: "TQ-603-first-protected-release",
+        status: "ready-v0.1.0-published",
+        release: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
       },
       tq320Complete: false,
     });

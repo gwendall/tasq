@@ -3,9 +3,9 @@
   "sourceUpdatedAt": "2026-07-23",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
-    "status": "public-alpha-bootstrap-published-release-pending",
-    "published": false,
-    "installAction": "build_from_source",
+    "status": "published-alpha",
+    "published": true,
+    "installAction": "install_release",
     "website": "https://tasq.run",
     "repository": "https://github.com/gwendall/tasq",
     "repositoryState": "public-alpha-source",
@@ -40,10 +40,10 @@
       "candidate_targets_clean_room_certified": true,
       "agent_integration_candidate_certified": true
     },
-    "version": null,
-    "tag": null,
-    "sourceCommit": null,
-    "githubRelease": null
+    "version": "0.1.0",
+    "tag": "v0.1.0",
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.0"
   },
   "productShapes": [
     {
@@ -61,7 +61,7 @@
         "extension_author",
         "connector_author"
       ],
-      "publiclyDistributed": false
+      "publiclyDistributed": true
     },
     {
       "id": "local",
@@ -78,7 +78,7 @@
         "human_local_user",
         "human_operator"
       ],
-      "publiclyDistributed": false
+      "publiclyDistributed": true
     },
     {
       "id": "server",
@@ -375,7 +375,7 @@
     },
     {
       "id": "public_install_to_first_agent",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": [
         "discover_product",
         "install",
@@ -404,7 +404,7 @@
         "choose_consumer_path",
         "inspect_support_truth",
         "read_adoption_manifest",
-        "build_from_source"
+        "install_release"
       ]
     },
     {
@@ -443,8 +443,8 @@
     "hosted_design_is_not_hosted_behavior",
     "canonical_source_repository_is_public_alpha",
     "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
-    "public_identity_license_and_oidc_release_authority_are_verified_but_no_supported_release_is_published",
-    "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+    "first_supported_public_alpha_release_is_published_with_oidc_provenance",
+    "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_deployed_at_tasq_run",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
@@ -473,7 +473,7 @@
     },
     {
       "id": "TQ-603",
-      "status": "in_progress_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations"
     },
@@ -626,17 +626,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "dcf8d09c864afdd2521b9856cf118d041bc7b5c16053d608c96107ef83d26288"
+      "sha256": "bed90dd09c4cbd88c782e72edf37bf23452e6a689ed5bd7ff75efce9e60a3256"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "0c820132ad7bd3821ed604fe9a9cf00b3de89203abf30e881357b49ccd073ae3"
+      "sha256": "023954c3d26dcc2b65abcbf44f1dea587c2938ace8435996b89a1709a56032ac"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "2fc39b50a08a91436ea70d2c076970cbd88a46d7429d856e6bbe691e8f3bc1dd"
+      "sha256": "f0def5b7ddadf721844f012ecb955d566338a687384a79d2f3bfd993d1da9907"
     }
   ]
 }

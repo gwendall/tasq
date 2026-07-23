@@ -82,5 +82,5 @@ ledger.
 Before three protected release lines exist, direct-upgrade evidence uses every
 extant protected release plus the populated Tasq Zero and format-5 historical
 fixtures. Once N-2 protected lines exist, those exact released binaries and
-bytes become mandatory acceptance inputs. Published-byte replay cannot be
-claimed before the first protected release exists.
+bytes become mandatory acceptance inputs. Protected `v0.1.0` now exists; its
+exact downloaded bytes are the active replay gate.

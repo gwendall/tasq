@@ -98,11 +98,11 @@ describe("TQ-601 product consumption design", () => {
     ]);
     expect(byId(matrix.productShapes, "core")).toMatchObject({
       support: "implemented_integration_required",
-      publiclyDistributed: false,
+      publiclyDistributed: true,
     });
     expect(byId(matrix.productShapes, "local")).toMatchObject({
       support: "implemented_certified",
-      publiclyDistributed: false,
+      publiclyDistributed: true,
     });
     expect(byId(matrix.productShapes, "server")).toMatchObject({
       support: "not_implemented",
@@ -218,10 +218,10 @@ describe("TQ-601 product consumption design", () => {
     expect(byId(matrix.journeys, "local_agent_from_executable").support)
       .toBe("implemented_certified");
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
-      .toBe("implemented_candidate_not_published");
+      .toBe("implemented_certified");
     expect(byId(matrix.journeys, "public_product_discovery")).toMatchObject({
       support: "implemented_certified",
-      steps: ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"],
+      steps: ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "install_release"],
     });
     for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
       expect(byId(matrix.journeys, id).support).toBe("not_implemented");
@@ -240,7 +240,8 @@ describe("TQ-601 product consumption design", () => {
       "hosted_design_is_not_hosted_behavior",
       "canonical_source_repository_is_public_alpha",
       "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
-      "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+      "first_supported_public_alpha_release_is_published_with_oidc_provenance",
+      "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_deployed_at_tasq_run",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
@@ -252,9 +253,9 @@ describe("TQ-601 product consumption design", () => {
     }
   });
 
-  test("keeps public source distinct from package publication", () => {
+  test("binds public source to the immutable protected alpha", () => {
     expect(releasePolicy).toMatchObject({
-      status: "public-alpha-bootstrap-published-release-pending",
+      status: "published-alpha",
       identity: {
         repositoryState: "public-alpha-source",
         npmScope: "@tasq-run",
@@ -292,16 +293,21 @@ describe("TQ-601 product consumption design", () => {
         decision: "go",
         authorizedBy: "@gwendall",
       },
-      publishedRelease: null,
+      publishedRelease: {
+        version: "0.1.0",
+        tag: "v0.1.0",
+        sourceCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+      },
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
-      .toBe("implemented_candidate_not_published");
+      .toBe("implemented_certified");
   });
 
   test("keeps candidate lifecycle evidence distinct from a published certificate", () => {
     expect(lifecycle).toMatchObject({
       contractVersion: "tasq.lifecycle-certification.v1",
-      status: "candidate-certified-publication-pending",
+      status: "candidate-certified-published-replay-ready",
       supportedTargets: ["darwin-arm64", "linux-x64-gnu"],
       installation: {
         layout: "side-by-side-explicit-prefix",
@@ -321,7 +327,7 @@ describe("TQ-601 product consumption design", () => {
       candidateEvidence: {
         requiredCiTargets: ["verify (macos-14)", "verify (ubuntu-latest)"],
       },
-      publishedArtifactEvidence: { status: "not-run-no-public-release-exists" },
+      publishedArtifactEvidence: { status: "ready-v0.1.0-published" },
       tq604Complete: false,
     });
     for (const step of [

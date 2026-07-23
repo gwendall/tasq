@@ -15,10 +15,10 @@ decision that made it complete.
 Tasq is not another agent runtime. It does not launch agents or call providers.
 It gives the tools you already use a shared, inspectable coordination layer.
 
-> **Public source alpha:** the repository is open for early use and feedback.
-> The seven npm identities exist under the non-default `alpha-bootstrap` tag
-> only; the supported `v0.1.0` packages and downloadable release are still
-> pending, and no stable compatibility promise applies to this pre-1.0 line.
+> **Public alpha:** `v0.1.0` is available from npm and as an attested GitHub
+> release for macOS arm64 and Linux x64. This is an intentionally early pre-1.0
+> line: use backups for retained ledgers and expect documented migrations as
+> the contracts evolve.
 
 ## Why Tasq
 
@@ -62,20 +62,17 @@ service is shipped.
 
 An attempt succeeding never completes its commitment automatically.
 
-## Try the source alpha
+## Try the public alpha
 
-Requirements: Bun 1.3+, Node.js 22+, and pnpm 10.29+.
+Requirements: Bun 1.3+ and npm 11.5+.
 
 ```bash
-git clone https://github.com/gwendall/tasq.git
-cd tasq
-pnpm install --frozen-lockfile
-pnpm build:cli
+npm install --prefix .tasq-runtime --ignore-scripts @tasq-run/cli@0.1.0
 
 # Keep this evaluation isolated from any existing Tasq ledger.
 export TASQ_HOME="$PWD/.tasq"
 
-./dist/cli/index.js onboard \
+./.tasq-runtime/node_modules/.bin/tasq onboard \
   --space demo/local \
   --actor demo:user \
   --capabilities read,propose,coordinate \
@@ -128,10 +125,11 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 ## Packages
 
-The intended public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
+The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`, and
-`@tasq-run/console`. Their source is visible, but they are not available on npm
-until the protected publication gate passes.
+`@tasq-run/console`. Version `0.1.0` is published from protected GitHub Actions
+OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
+on the [`v0.1.0` release](https://github.com/gwendall/tasq/releases/tag/v0.1.0).
 
 ## Status and feedback
 

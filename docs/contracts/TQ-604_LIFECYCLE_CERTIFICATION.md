@@ -1,7 +1,7 @@
 # TQ-604 clean-room lifecycle certification
 
 **Status:** candidate lifecycle implemented and certified in source CI;
-published-artifact certificate pending the first protected release
+published `v0.1.0` exact-byte replay ready on both targets
 **Machine contract:** `TQ-604_LIFECYCLE_CERTIFICATION.json`
 
 ## What now exists
@@ -46,8 +46,8 @@ bun tasq-v0.1.0-darwin-arm64.install.ts uninstall \
   --version 0.1.0 --target darwin-arm64 --prefix "$HOME/.local"
 ```
 
-These are contract examples, not a claim that version `0.1.0` is published.
-Linux uses target `linux-x64-gnu`.
+Version `0.1.0` is published at the immutable GitHub release. Linux uses target
+`linux-x64-gnu`.
 
 ## Upgrade and rollback
 
@@ -84,9 +84,8 @@ the explicit injected `Clock` boundary.
 
 ## Honest completion boundary
 
-This closes the implementation and candidate-certification part of TQ-604. It
-does not certify a public download that does not yet exist. TQ-604 becomes
-complete only after the protected workflow publishes the first artifacts,
-their GitHub attestations are verified, and this same journey succeeds from
-those downloaded bytes on both targets. npm scope control and trusted
-publishing remain separate TQ-603 external gates.
+This closes the implementation and candidate-certification part of TQ-604.
+The protected workflow has published the first artifacts. TQ-604 becomes
+complete after their GitHub attestations are verified and this same journey
+succeeds from those downloaded bytes on both targets. npm scope control and
+trusted publishing are completed TQ-603 evidence.
