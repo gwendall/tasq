@@ -315,6 +315,7 @@ describe("Task recurrence schema (SPEC §6.4-H)", () => {
       nextAction: null,
       successCriteria: null,
       completionMode: "assertion",
+      validationRequired: false,
       status: "open",
       priority: null,
       estimatedMinutes: null,

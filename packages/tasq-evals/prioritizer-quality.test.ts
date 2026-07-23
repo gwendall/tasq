@@ -26,6 +26,7 @@ function task(over: Partial<Task>): Task {
     nextAction: null,
     successCriteria: null,
     completionMode: "assertion",
+    validationRequired: false,
     status: "open",
     priority: null,
     estimatedMinutes: null,

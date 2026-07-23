@@ -60,6 +60,7 @@ import { contextLinkCmd } from "./commands/context-link.js";
 import { webCmd } from "./commands/web.js";
 import { portableExportCmd, portableImportCmd } from "./commands/portable.js";
 import { agentCmd, demoCmd, setupCmd } from "./commands/adoption.js";
+import { resolutionCmd } from "./commands/resolution.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -80,15 +81,15 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     area: ["slug", "importance", "cadence", "description", "name", "cascade"],
     goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
     project: ["area", "goal", "status", "description", "title", "cascade"],
-    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "idempotency-key"],
+    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "idempotency-key"],
     list: ["area", "goal", "project", "status", "limit", "include-scheduled", "include-deferred"],
     show: [],
     inspect: [],
     discover: ["hello"],
-    update: ["title", "description", "next", "success", "completion", "priority", "est", "due", "schedule", "area", "goal", "project", "parent", "recurrence", "interval", "anchor", "metadata", "metadata-patch", "clear-description", "clear-next", "clear-success", "clear-priority", "clear-est", "clear-due", "clear-schedule", "clear-area", "clear-goal", "clear-project", "clear-parent", "clear-recurrence", "clear-metadata"],
+    update: ["title", "description", "next", "success", "completion", "validated", "priority", "est", "due", "schedule", "area", "goal", "project", "parent", "recurrence", "interval", "anchor", "metadata", "metadata-patch", "clear-description", "clear-next", "clear-success", "clear-priority", "clear-est", "clear-due", "clear-schedule", "clear-area", "clear-goal", "clear-project", "clear-parent", "clear-recurrence", "clear-metadata"],
     start: ["note", "source", "at", "expected-revision", "idempotency-key"],
-    done: ["note", "source", "at", "evidence", "expected-revision", "idempotency-key"],
-    complete: ["note", "source", "at", "evidence", "expected-revision", "idempotency-key"],
+    done: ["note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key"],
+    complete: ["note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key"],
     block: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
     unblock: ["note", "source", "at", "expected-revision", "idempotency-key"],
     cancel: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
@@ -118,6 +119,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     release: ["reason", "force"],
     attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "at", "limit", "expected-revision", "idempotency-key"],
     evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
+    resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
     wait: ["kind", "parameters", "schema-version", "not-before", "deadline", "fallback-kind", "fallback-spec", "fallback-task", "supersedes", "idempotency-key", "status", "reason", "at", "matcher-version", "limit", "ascending"],
     observation: ["source", "external-event-id", "kind", "payload", "schema-version", "occurred-at", "verification-level", "verification-method", "raw-ref", "digest", "metadata", "occurred-from", "occurred-to", "after-recorded-at", "after-id", "limit", "ascending"],
     reconcile: ["matcher-version", "observation", "decision", "effect", "limit", "ascending"],
@@ -191,6 +193,8 @@ ${color.bold("AGENT COORDINATION")}
   attempt succeed|fail <id>      close an execution attempt
   evidence add <id> --kind ...   attach an observable receipt
   evidence list [<id>]           inspect completion evidence
+  resolution contract|trust|propose|challenge|attest|settle|adjudicate|show
+                                 independently validate completion
   resource acquire|renew|release|verify|get|list|events|sweep
                                  coordinate any opaque external resource key
   mcp --tenant <space> --actor <label> [--capabilities read,coordinate]
@@ -429,6 +433,8 @@ export async function main(
         return await attemptCmd(args);
       case "evidence":
         return await evidenceCmd(args);
+      case "resolution":
+        return await resolutionCmd(args, clock);
       case "wait":
         return await waitCmd(args);
       case "observation":
@@ -574,5 +580,7 @@ export async function runTasqCli(
 
 if (import.meta.main) {
   const argv = process.argv.slice(2);
-  process.exit(await runTasqCli(argv, systemClock, process.argv[1] ?? "tasq"));
+  // Let stdout/stderr drain before the runtime exits. Calling process.exit()
+  // can truncate a valid large JSON contract at the OS pipe-buffer boundary.
+  process.exitCode = await runTasqCli(argv, systemClock, process.argv[1] ?? "tasq");
 }

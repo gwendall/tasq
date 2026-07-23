@@ -8,7 +8,15 @@ for await (const chunk of process.stdin) chunks.push(chunk);
 const request = JSON.parse(Buffer.concat(chunks).toString("utf8"));
 
 function run(argv) {
-  const child = spawnSync(argv[0], argv.slice(1), { env: process.env, encoding: "utf8" });
+  // Maximum legal space/actor identifiers are repeated in each executable
+  // recipe. Keep the independent client bounded, but above Node's
+  // platform-dependent synchronous pipe buffer so valid bootstrap JSON is
+  // never truncated before parsing.
+  const child = spawnSync(argv[0], argv.slice(1), {
+    env: process.env,
+    encoding: "utf8",
+    maxBuffer: 4 * 1024 * 1024,
+  });
   let stdout;
   try {
     stdout = JSON.parse(child.stdout);

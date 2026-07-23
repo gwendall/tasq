@@ -301,6 +301,12 @@ function taskToProjection(row: Task): ReplicatedCommitmentSnapshotT {
       `Commitment ${row.id} uses compatibility-profile hierarchy fields outside ${REPLICATION_PROJECTION_VERSION}`,
     );
   }
+  if (row.validationRequired) {
+    throw new ReplicationProtocolError(
+      "projection_violation",
+      `Commitment ${row.id} requires authority-only resolution records outside ${REPLICATION_PROJECTION_VERSION}`,
+    );
+  }
   return ReplicatedCommitmentSnapshot.parse({
     id: row.id,
     title: row.title,

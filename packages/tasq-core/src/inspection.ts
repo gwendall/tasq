@@ -12,19 +12,24 @@ import {
   assignment,
   commitmentRelation,
   completionRecord,
+  completionChallenge,
+  completionProposal,
   event,
   externalContextLink,
   externalRef,
+  evidenceTrustRecord,
   effect,
   effectApproval,
   effectReceipt,
   observation,
   principal,
   reconciliation,
+  resolutionContract,
   taskAttempt,
   taskClaim,
   taskEvidence,
   waitCondition,
+  validationDecision,
   type Clock,
 } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
@@ -75,7 +80,8 @@ export async function inspectCommitmentInTransaction(
   const workspace = eq(assignment.tenantId, options.workspaceId);
 
   const [assignmentRows, relationRows, claimRows, attemptRows, artifactRows, effectRows,
-    evidenceRows, completionRows, conditionRows, contextLinkRows, eventRows, latestEventRows,
+    evidenceRows, completionRows, resolutionRows, trustRows, proposalRows, challengeRows,
+    decisionRows, conditionRows, contextLinkRows, eventRows, latestEventRows,
     latestObservationRows] = await Promise.all([
     db.select().from(assignment).where(and(workspace, eq(assignment.taskId, commitmentId)))
       .orderBy(asc(assignment.createdAt)),
@@ -101,6 +107,26 @@ export async function inspectCommitmentInTransaction(
     db.select().from(completionRecord).where(and(
       eq(completionRecord.tenantId, options.workspaceId), eq(completionRecord.taskId, commitmentId),
     )).orderBy(asc(completionRecord.resultingRevision)),
+    db.select().from(resolutionContract).where(and(
+      eq(resolutionContract.tenantId, options.workspaceId),
+      eq(resolutionContract.taskId, commitmentId),
+    )).orderBy(asc(resolutionContract.createdAt)),
+    db.select().from(evidenceTrustRecord).where(and(
+      eq(evidenceTrustRecord.tenantId, options.workspaceId),
+      eq(evidenceTrustRecord.taskId, commitmentId),
+    )).orderBy(asc(evidenceTrustRecord.createdAt)),
+    db.select().from(completionProposal).where(and(
+      eq(completionProposal.tenantId, options.workspaceId),
+      eq(completionProposal.taskId, commitmentId),
+    )).orderBy(asc(completionProposal.proposedAt)),
+    db.select().from(completionChallenge).where(and(
+      eq(completionChallenge.tenantId, options.workspaceId),
+      eq(completionChallenge.taskId, commitmentId),
+    )).orderBy(asc(completionChallenge.challengedAt)),
+    db.select().from(validationDecision).where(and(
+      eq(validationDecision.tenantId, options.workspaceId),
+      eq(validationDecision.taskId, commitmentId),
+    )).orderBy(asc(validationDecision.decidedAt)),
     db.select().from(waitCondition).where(and(
       eq(waitCondition.tenantId, options.workspaceId), eq(waitCondition.taskId, commitmentId),
     )).orderBy(asc(waitCondition.createdAt)),
@@ -173,6 +199,15 @@ export async function inspectCommitmentInTransaction(
   for (const row of receiptRows) principalIds.add(row.recordedByPrincipalId);
   for (const row of evidenceRows) if (row.principalId) principalIds.add(row.principalId);
   for (const row of completionRows) principalIds.add(row.decidedByPrincipalId);
+  for (const row of resolutionRows) {
+    principalIds.add(row.createdByPrincipalId);
+    for (const id of JSON.parse(row.eligibleValidatorPrincipalIds) as string[]) principalIds.add(id);
+    for (const id of JSON.parse(row.adjudicatorPrincipalIds) as string[]) principalIds.add(id);
+  }
+  for (const row of trustRows) principalIds.add(row.recordedByPrincipalId);
+  for (const row of proposalRows) principalIds.add(row.proposerPrincipalId);
+  for (const row of challengeRows) principalIds.add(row.challengerPrincipalId);
+  for (const row of decisionRows) principalIds.add(row.decidedByPrincipalId);
   for (const row of contextLinkRows) principalIds.add(row.principalId);
   for (const row of externalRefRows) principalIds.add(row.createdByPrincipalId);
   for (const row of eventRows) if (row.principalId) principalIds.add(row.principalId);
@@ -234,6 +269,37 @@ export async function inspectCommitmentInTransaction(
       completionPolicyUri, completionPolicyVersion, ...row }) => ({
       ...row, workspaceId, commitmentId, evidenceIds: jsonArray(evidenceIds),
       policy: { uri: completionPolicyUri, version: completionPolicyVersion },
+    })),
+    resolutionContracts: resolutionRows.map(({ tenantId: workspaceId, taskId: commitmentId,
+      criteriaJson, eligibleValidatorPrincipalIds, adjudicatorPrincipalIds, metadata,
+      policyUri, policyVersion, implementationDigest, ...row }) => ({
+      ...row,
+      workspaceId,
+      commitmentId,
+      criteria: JSON.parse(criteriaJson) as Record<string, unknown>[],
+      eligibleValidatorPrincipalIds: jsonArray(eligibleValidatorPrincipalIds),
+      adjudicatorPrincipalIds: jsonArray(adjudicatorPrincipalIds),
+      metadata: json(metadata),
+      policy: { uri: policyUri, version: policyVersion, implementationDigest },
+    })),
+    evidenceTrustRecords: trustRows.map(({ tenantId: workspaceId, taskId: commitmentId, ...row }) => ({
+      ...row, workspaceId, commitmentId,
+    })),
+    completionProposals: proposalRows.map(({ tenantId: workspaceId, taskId: commitmentId,
+      criterionEvidence, ...row }) => ({
+      ...row, workspaceId, commitmentId,
+      criterionEvidence: JSON.parse(criterionEvidence) as Record<string, unknown>[],
+    })),
+    completionChallenges: challengeRows.map(({ tenantId: workspaceId, taskId: commitmentId,
+      counterEvidenceIds, ...row }) => ({
+      ...row, workspaceId, commitmentId, counterEvidenceIds: jsonArray(counterEvidenceIds),
+    })),
+    validationDecisions: decisionRows.map(({ tenantId: workspaceId, taskId: commitmentId,
+      evidenceIds, trustRecordIds, policyUri, policyVersion, implementationDigest, ...row }) => ({
+      ...row, workspaceId, commitmentId,
+      evidenceIds: jsonArray(evidenceIds),
+      trustRecordIds: jsonArray(trustRecordIds),
+      policy: { uri: policyUri, version: policyVersion, implementationDigest },
     })),
     conditions: conditionRows.map(({ tenantId: workspaceId, taskId: commitmentId, kind, typeUri,
       schemaVersion, evaluatorUri, evaluatorVersion, evaluatorImplementationDigest,
@@ -319,6 +385,7 @@ export function renderCommitmentInspection(snapshot: CommitmentInspection): stri
     `- Completion policy: \`${snapshot.commitment.completionPolicy}\``,
     `- Assignments / claims / attempts: ${snapshot.assignments.length} / ${snapshot.claims.length} / ${snapshot.attempts.length}`,
     `- Artifacts / evidence / completions: ${snapshot.artifacts.length} / ${snapshot.evidence.length} / ${snapshot.completionRecords.length}`,
+    `- Resolution contracts / proposals / decisions: ${snapshot.resolutionContracts.length} / ${snapshot.completionProposals.length} / ${snapshot.validationDecisions.length}`,
     `- External context links: ${snapshot.externalContextLinks.length}`,
     `- Effects / approvals / receipts: ${snapshot.effects.length} / ${snapshot.effectApprovals.length} / ${snapshot.effectReceipts.length}`,
     `- Conditions / observations / reconciliations: ${snapshot.conditions.length} / ${snapshot.observations.length} / ${snapshot.reconciliations.length}`,

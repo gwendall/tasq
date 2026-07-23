@@ -7,11 +7,16 @@
  */
 
 import type {
+  CompletionProposal,
+  EvidenceTrustRecord,
   ExtensionManifest,
   ExtensionManifestEvaluator,
   ExtensionManifestType,
   Metadata,
   ReconciliationDecision,
+  ResolutionContract,
+  TaskEvidence,
+  ValidationOutcome,
 } from "@tasq-run/schema";
 
 export * from "./effects.js";
@@ -53,6 +58,47 @@ export interface TasqExtensionRuntime {
   conditions: readonly ConditionTypeRuntime[];
   observations: readonly ObservationTypeRuntime[];
   evaluators: readonly EvaluatorRuntime[];
+}
+
+/** Canonical, already-authorized input to one deterministic completion evaluator. */
+export interface CompletionEvaluationInput {
+  contract: ResolutionContract;
+  proposal: CompletionProposal;
+  evidence: readonly TaskEvidence[];
+  effectiveTrust: readonly EvidenceTrustRecord[];
+  evaluatedAt: number;
+}
+
+export interface CompletionEvaluationResult {
+  outcome: Exclude<ValidationOutcome, "challenged">;
+  reasonCode: string;
+  explanation: string;
+}
+
+/**
+ * Trusted pure-code seam for deterministic completion. The durable contract
+ * binds all three identity fields before this runtime is invoked.
+ */
+export interface CompletionEvaluatorRuntime {
+  policyUri: string;
+  policyVersion: number;
+  implementationDigest: string;
+  evaluate(input: CompletionEvaluationInput): CompletionEvaluationResult;
+}
+
+export function defineCompletionEvaluator(
+  runtime: CompletionEvaluatorRuntime,
+): CompletionEvaluatorRuntime {
+  if (!runtime.policyUri.match(/^[a-z][a-z0-9+.-]*:/i)) {
+    throw new Error("Completion evaluator policyUri must be absolute");
+  }
+  if (!Number.isSafeInteger(runtime.policyVersion) || runtime.policyVersion <= 0) {
+    throw new Error("Completion evaluator policyVersion must be a positive integer");
+  }
+  if (!/^sha256:[0-9a-f]{64}$/.test(runtime.implementationDigest)) {
+    throw new Error("Completion evaluator implementationDigest must be sha256");
+  }
+  return Object.freeze(runtime);
 }
 
 function identity(uri: string, version: number): string {

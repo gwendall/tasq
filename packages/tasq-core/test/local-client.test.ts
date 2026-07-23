@@ -137,4 +137,78 @@ describe("createLocalTasq", () => {
       clock,
     })).rejects.toThrow("workspaceId is required");
   });
+
+  test("exposes the complete validated-completion chain to embedded applications", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tasq-local-resolution-"));
+    roots.push(root);
+    const url = `file:${join(root, "db.sqlite")}`;
+    const clock = createMutableClock(2_100_000_000_000);
+    const worker = await createLocalTasq({
+      url, workspaceId: "research/lab", actor: "worker", clock, wal: false,
+    });
+    const reviewer = await createLocalTasq({
+      url, workspaceId: "research/lab", actor: "reviewer", clock, wal: false,
+    });
+    try {
+      const commitment = await worker.commitments.create({
+        title: "Verify result",
+        successCriteria: "Result artifact exists",
+        completionPolicy: "evidence",
+        validationRequired: true,
+      }, { idempotencyKey: "result:create" });
+      const evidence = await worker.evidence.add({
+        taskId: commitment.id,
+        kind: "artifact",
+        summary: "Result artifact exists",
+      }, { idempotencyKey: "result:evidence" });
+      const trust = await worker.resolution.trust.attest({
+        taskId: commitment.id,
+        evidenceId: evidence.id,
+        authenticity: "unverified",
+        authorityUri: "urn:tasq:authority:local-attribution",
+        authorityVersion: 1,
+        authorityDigest: `sha256:${"3".repeat(64)}`,
+        reason: "Local attribution only",
+        verifiedAt: clock.now(),
+      }, { idempotencyKey: "result:trust" });
+      const contract = await worker.resolution.contracts.create({
+        taskId: commitment.id,
+        criteria: [{
+          id: "artifact",
+          statement: "Result artifact exists",
+          acceptedEvidenceKinds: ["artifact"],
+        }],
+        policyKind: "attestation",
+        policyUri: "urn:tasq:test:embedded-attestation",
+        policyVersion: 1,
+        implementationDigest: `sha256:${"4".repeat(64)}`,
+        eligibleValidatorPrincipalIds: [reviewer.principalId],
+      }, { idempotencyKey: "result:contract" });
+      const proposal = await worker.resolution.proposals.create({
+        taskId: commitment.id,
+        resolutionContractId: contract.id,
+        criterionEvidence: [{ criterionId: "artifact", evidenceIds: [evidence.id] }],
+      }, { idempotencyKey: "result:proposal" });
+      const decision = await reviewer.resolution.decisions.attest({
+        proposalId: proposal.id,
+        outcome: "accepted",
+        reasonCode: "verified",
+        explanation: "Independent reviewer accepted the evidence",
+      }, { idempotencyKey: "result:decision" });
+      const done = await worker.commitments.complete(commitment.id, {
+        expectedRevision: commitment.revision,
+        validationDecisionId: decision.id,
+        idempotencyKey: "result:complete",
+      });
+      expect(done.status).toBe("done");
+      expect(await worker.resolution.inspect(contract.id)).toMatchObject({
+        trustRecords: [{ id: trust.id }],
+        proposals: [{ id: proposal.id }],
+        decisions: [{ id: decision.id, outcome: "accepted" }],
+      });
+    } finally {
+      await reviewer.close();
+      await worker.close();
+    }
+  });
 });

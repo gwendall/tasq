@@ -51,7 +51,7 @@ Tasq Server, remote MCP, hosted Console, and Tasq Cloud are roadmap products.
 The repository contains internal foundations for them, but no deployable remote
 service is shipped.
 
-## The five concepts
+## The core concepts
 
 | Concept | Meaning |
 |---|---|
@@ -59,9 +59,17 @@ service is shipped.
 | Claim | An exclusive, expiring right to work on it |
 | Attempt | One execution, successful or not |
 | Evidence | An observable receipt used to justify completion |
+| Resolution | A frozen policy, proposal, optional challenge, and explicit decision about whether evidence satisfies the commitment |
 | Resource lease | Fenced ownership of a non-task resource such as a robot, file, or deployment slot |
 
 An attempt succeeding never completes its commitment automatically.
+Validated commitments also cannot be completed by evidence alone.
+
+The repository's TQ-612 source candidate implements independent completion
+resolution across Core, embedded client, CLI, local MCP and Console. It is not
+part of published `v0.2.0` packages until the next protected release and
+downloaded-byte certification. See the
+[completion-resolution contract](docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md).
 
 ## Try the public alpha
 

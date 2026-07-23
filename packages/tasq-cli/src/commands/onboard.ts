@@ -369,6 +369,97 @@ function recipes(
       outputContract: "tasq.cli-json.v1/TaskEvidenceV1",
     },
     {
+      id: "resolution.inspect", version: 1, requiredCapability: "read", mutates: false,
+      description: "Read the complete append-only contract, trust, proposal, challenge and decision chain.",
+      argvTemplate: [executable, "resolution", "show", "{resolutionContractId}", ...scope],
+      parameters: [
+        parameter("resolutionContractId", "Frozen resolution contract identifier from commitment.inspect or a proposal."),
+      ],
+      outputContract: "tasq.completion-resolution-chain.v1",
+    },
+    {
+      id: "resolution.contract.attestation", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Freeze criterion/evidence rules and the eligible independent validator aliases for a validated commitment.",
+      argvTemplate: [
+        executable, "resolution", "contract", "{commitmentId}",
+        "--policy", "attestation", "--criteria", "{criteriaJson}",
+        "--validators", "{validatorAliasesCsv}",
+        "--idempotency-key", "{idempotencyKey}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Evidence-mode commitment created with validationRequired."),
+        parameter("criteriaJson", "JSON array covering every frozen success criterion."),
+        parameter("validatorAliasesCsv", "Comma-separated stable aliases of already-onboarded eligible validators."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact frozen contract."),
+      ],
+      outputContract: "tasq.cli-json.v1/ResolutionContractV1",
+    },
+    {
+      id: "resolution.trust.unverified", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Record local attribution without claiming authenticated source or provider verification.",
+      argvTemplate: [
+        executable, "resolution", "trust", "{commitmentId}",
+        "--evidence", "{evidenceId}", "--reason", "{reason}",
+        "--idempotency-key", "{idempotencyKey}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment that owns the evidence."),
+        parameter("evidenceId", "Exact current evidence identifier."),
+        parameter("reason", "Why local attribution is being recorded; this cannot upgrade authenticity."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact trust record."),
+      ],
+      outputContract: "tasq.cli-json.v1/EvidenceTrustRecordV1",
+    },
+    {
+      id: "resolution.propose", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Bind every frozen criterion to exact evidence IDs and request a separate completion decision.",
+      argvTemplate: [
+        executable, "resolution", "propose", "{commitmentId}",
+        "--contract", "{resolutionContractId}",
+        "--criterion-evidence", "{criterionEvidenceJson}",
+        "--idempotency-key", "{idempotencyKey}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment proposed for completion."),
+        parameter("resolutionContractId", "Exact frozen contract identifier."),
+        parameter("criterionEvidenceJson", "JSON array mapping every criterionId to exact evidenceIds."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact proposal."),
+      ],
+      outputContract: "tasq.cli-json.v1/CompletionProposalV1",
+    },
+    {
+      id: "resolution.attest", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Append a decision as an eligible validator; the frozen contract decides whether self-validation is forbidden.",
+      argvTemplate: [
+        executable, "resolution", "attest", "{proposalId}",
+        "--outcome", "{outcome}", "--reason-code", "{reasonCode}",
+        "--explanation", "{explanation}", "--idempotency-key", "{idempotencyKey}",
+        ...scope,
+      ],
+      parameters: [
+        parameter("proposalId", "Exact proposal identifier."),
+        parameter("outcome", "One of accepted, rejected, too_early or indeterminate."),
+        parameter("reasonCode", "Stable machine-readable decision reason."),
+        parameter("explanation", "Bounded human-readable decision basis."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact decision."),
+      ],
+      outputContract: "tasq.cli-json.v1/ValidationDecisionV1",
+    },
+    {
+      id: "commitment.complete.validated", version: 1, requiredCapability: "coordinate", mutates: true,
+      description: "Complete only with the exact current accepted validation decision.",
+      argvTemplate: [
+        executable, "done", "{commitmentId}", "--decision", "{validationDecisionId}",
+        "--idempotency-key", "{idempotencyKey}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Validated commitment identifier."),
+        parameter("validationDecisionId", "Current accepted decision from resolution.attest or another supported policy."),
+        parameter("idempotencyKey", "Caller-stable identity for this exact terminal transition."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskV1",
+    },
+    {
       id: "commitment.complete", version: 1, requiredCapability: "coordinate", mutates: true,
       description: "Complete a commitment with its evidence. This terminal transaction automatically releases every active commitment claim; do not release the claim first.",
       argvTemplate: [
@@ -491,6 +582,32 @@ function guide(selectedRecipes: readonly BootstrapRecipe[]) {
       invariants: [
         "A successful attempt does not complete its commitment.",
         "Completion consumes evidence identifiers and atomically releases active commitment claims.",
+      ],
+    },
+    {
+      id: "propose-validated-completion",
+      intent: "Submit evidence against a frozen contract, then hand the proposal to a separate validator.",
+      recipeIds: [
+        "context.read", "commitment.inspect", "evidence.append",
+        "resolution.trust.unverified", "resolution.propose",
+      ],
+      invariants: [
+        "Local attribution is explicitly unverified; higher authenticity requires a host authority.",
+        "A proposal never completes its commitment and does not authorize self-validation.",
+        "Persist the proposal and contract IDs for the separately onboarded validator.",
+      ],
+    },
+    {
+      id: "validate-and-complete",
+      intent: "As an eligible validator, inspect the frozen chain, append a decision and complete only if it is accepted.",
+      recipeIds: [
+        "context.read", "commitment.inspect", "resolution.inspect",
+        "resolution.attest", "commitment.complete.validated",
+      ],
+      invariants: [
+        "Eligibility and self-validation rules come from the frozen contract, not ledger prose.",
+        "Rejected, too_early, indeterminate or challenged decisions cannot complete a commitment.",
+        "An exact retry must reuse the same decision idempotency key after a lost response.",
       ],
     },
     {

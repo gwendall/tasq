@@ -148,6 +148,7 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
         completionMode:
           enumArg<CompletionMode>(args.string("completion"), COMPLETION_MODES, "completion") ??
           "assertion",
+        validationRequired: args.bool("validated"),
         priority: args.number("priority") ?? null,
         estimatedMinutes: args.number("est") ?? null,
         dueAt: args.string("due") ? parseDateArg(args.string("due")!) : null,
@@ -484,6 +485,7 @@ export async function transitionCmd(verb: Transition, args: ParsedArgs): Promise
       source: args.string("source"),
       occurredAt: args.string("at") ? parseDateArg(args.string("at")!) : undefined,
       evidenceIds,
+      validationDecisionId: verb === "done" ? args.string("decision") : undefined,
     });
     await regenerateProjection(rt);
 
@@ -529,6 +531,7 @@ export async function updateCmd(args: ParsedArgs): Promise<number> {
       "completion",
     );
     if (completionMode !== undefined) patch.completionMode = completionMode;
+    if (args.flag("validated") !== undefined) patch.validationRequired = args.bool("validated");
     if (args.number("priority") !== undefined) patch.priority = args.number("priority");
     if (args.number("est") !== undefined) patch.estimatedMinutes = args.number("est");
     if (args.string("due") !== undefined) patch.dueAt = parseDateArg(args.string("due")!);

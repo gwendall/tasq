@@ -45,6 +45,7 @@ export interface Commitment {
   description: string | null;
   successCriteria: string | null;
   completionPolicy: "assertion" | "evidence";
+  validationRequired: boolean;
   status: TaskStatusT;
   priority: number | null;
   notBefore: number | null;
@@ -63,6 +64,7 @@ const CommitmentCreate = z.object({
   description: z.string().nullable().default(null),
   successCriteria: z.string().min(1).max(2_000).nullable().default(null),
   completionPolicy: CompletionMode.default("assertion"),
+  validationRequired: z.boolean().default(false),
   priority: Priority.nullable().default(null),
   notBefore: UnixMs.nullable().default(null),
   dueAt: UnixMs.nullable().default(null),
@@ -76,6 +78,7 @@ export interface CreateCommitmentInput {
   description?: string | null;
   successCriteria?: string | null;
   completionPolicy?: "assertion" | "evidence";
+  validationRequired?: boolean;
   priority?: number | null;
   notBefore?: number | null;
   dueAt?: number | null;
@@ -101,6 +104,7 @@ export interface CommitmentTransitionOptions extends KernelContext {
   source?: string;
   occurredAt?: number;
   evidenceIds?: string[];
+  validationDecisionId?: string;
 }
 
 export async function createCommitment(
@@ -115,6 +119,7 @@ export async function createCommitment(
     description: parsed.description,
     successCriteria: parsed.successCriteria,
     completionMode: parsed.completionPolicy,
+    validationRequired: parsed.validationRequired,
     priority: parsed.priority,
     scheduledAt: parsed.notBefore,
     dueAt: parsed.dueAt,
@@ -162,6 +167,9 @@ export async function updateCommitment(
     ...(parsed.completionPolicy !== undefined
       ? { completionMode: parsed.completionPolicy }
       : {}),
+    ...(parsed.validationRequired !== undefined
+      ? { validationRequired: parsed.validationRequired }
+      : {}),
     ...(parsed.priority !== undefined ? { priority: parsed.priority } : {}),
     ...(parsed.notBefore !== undefined ? { scheduledAt: parsed.notBefore } : {}),
     ...(parsed.dueAt !== undefined ? { dueAt: parsed.dueAt } : {}),
@@ -192,6 +200,7 @@ function transition(
     source: options.source,
     occurredAt: options.occurredAt,
     evidenceIds: options.evidenceIds,
+    validationDecisionId: options.validationDecisionId,
   }));
 }
 
@@ -216,6 +225,7 @@ function toCommitment(row: Task): Commitment {
     description: row.description,
     successCriteria: row.successCriteria,
     completionPolicy: row.completionMode,
+    validationRequired: row.validationRequired,
     status: row.status,
     priority: row.priority,
     notBefore: row.scheduledAt,

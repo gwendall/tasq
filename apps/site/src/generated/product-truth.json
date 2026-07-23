@@ -555,7 +555,7 @@
     },
     {
       "id": "TQ-612",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "completion-validation",
       "outcome": "Separate evidence, completion proposals, validation decisions and final completion under versioned deterministic, attested, optimistic or adjudicated policies"
     },
@@ -689,7 +689,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "4101927cb1ca721be576a141545b51c1b4a525cd0163a558b9c8d49adb9cd0ec"
+      "sha256": "fce8943561358e88bc17ddc2eeda3ad0a725b646f0abed6faf8a20bf163384d9"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

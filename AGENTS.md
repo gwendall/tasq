@@ -54,6 +54,12 @@ The embedded-consumer boundary is in
 Node 22 and Bun restart certification at `v0.2.0`; its immutable coordinates
 and runtime evidence are frozen in
 [TQ-611_RELEASE_CERTIFICATION.json](docs/contracts/TQ-611_RELEASE_CERTIFICATION.json).
+ADR-005 is accepted and the TQ-612 source candidate is documented in
+[TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md](docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md).
+It advances source stores to format 26 and adds append-only evidence trust,
+proposal, challenge and validation records across Core, embedded client, CLI,
+local MCP and Console. It is not a published `v0.2.0` claim; protected release
+and downloaded-byte certification are its remaining gate.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

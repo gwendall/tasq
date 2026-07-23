@@ -39,6 +39,11 @@ shell string or insert a runtime wrapper.
   commitment automatically.
 - Attach observable evidence when required, then complete with the exact
   evidence identifiers.
+- If `validationRequired` is true, evidence alone cannot complete the
+  commitment. Use the returned resolution recipes: submit a proposal against
+  the frozen contract, hand it to a separately onboarded eligible validator,
+  and complete only with the current `accepted` decision ID. Local trust
+  recipes record unverified attribution only.
 - Coordinate robots, files, deployment slots and other non-commitment objects
   with the returned `resource.*` recipes. Verify the exact lease and fence
   immediately before protected I/O.

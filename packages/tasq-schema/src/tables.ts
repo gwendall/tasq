@@ -247,6 +247,7 @@ export const task = sqliteTable(
     nextAction: text("next_action"),
     successCriteria: text("success_criteria"),
     completionMode: text("completion_mode").notNull().default("assertion"),
+    validationRequired: integer("validation_required", { mode: "boolean" }).notNull().default(false),
     status: text("status").notNull().default("open"),
     priority: integer("priority"),
     estimatedMinutes: integer("estimated_minutes"),
@@ -834,6 +835,196 @@ export const artifact = sqliteTable(
   }),
 );
 
+// ──────────────────────────────────────────────────────────────────────
+// ADR-005 independently validated completion — immutable resolution chain
+// ──────────────────────────────────────────────────────────────────────
+
+export const resolutionContract = sqliteTable(
+  "resolution_contract",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull().default("gwendall"),
+    taskId: text("task_id").notNull().references(() => task.id),
+    taskRevision: integer("task_revision").notNull(),
+    successCriteriaSnapshot: text("success_criteria_snapshot").notNull(),
+    criteriaJson: text("criteria_json").notNull(),
+    criteriaDigest: text("criteria_digest").notNull(),
+    policyKind: text("policy_kind").notNull(),
+    policyUri: text("policy_uri").notNull(),
+    policyVersion: integer("policy_version").notNull(),
+    implementationDigest: text("implementation_digest").notNull(),
+    notBefore: integer("not_before"),
+    challengeWindowMs: integer("challenge_window_ms").notNull().default(0),
+    allowSelfValidation: integer("allow_self_validation", { mode: "boolean" }).notNull().default(false),
+    eligibleValidatorPrincipalIds: text("eligible_validator_principal_ids").notNull().default("[]"),
+    adjudicatorPrincipalIds: text("adjudicator_principal_ids").notNull().default("[]"),
+    contractDigest: text("contract_digest").notNull(),
+    createdByPrincipalId: text("created_by_principal_id").notNull().references(() => principal.id),
+    metadata: text("metadata").notNull().default("{}"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => ({
+    taskIdx: index("idx_resolution_contract_task").on(t.tenantId, t.taskId, t.createdAt),
+    digestUniq: uniqueIndex("uniq_resolution_contract_digest").on(t.tenantId, t.contractDigest),
+    revisionCheck: check("resolution_contract_revision_check", sql`${t.taskRevision} > 0`),
+    policyCheck: check(
+      "resolution_contract_policy_check",
+      sql`${t.policyKind} IN ('deterministic','attestation','optimistic','adjudicated')`,
+    ),
+    policyVersionCheck: check("resolution_contract_policy_version_check", sql`${t.policyVersion} > 0`),
+    challengeCheck: check("resolution_contract_challenge_check", sql`${t.challengeWindowMs} >= 0`),
+    jsonCheck: check(
+      "resolution_contract_json_check",
+      sql`json_valid(${t.criteriaJson}) AND json_type(${t.criteriaJson}) = 'array'
+        AND json_array_length(${t.criteriaJson}) > 0
+        AND json_valid(${t.eligibleValidatorPrincipalIds}) AND json_type(${t.eligibleValidatorPrincipalIds}) = 'array'
+        AND json_valid(${t.adjudicatorPrincipalIds}) AND json_type(${t.adjudicatorPrincipalIds}) = 'array'
+        AND json_valid(${t.metadata}) AND json_type(${t.metadata}) = 'object'`,
+    ),
+  }),
+);
+
+export const evidenceTrustRecord = sqliteTable(
+  "evidence_trust_record",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull().default("gwendall"),
+    taskId: text("task_id").notNull().references(() => task.id),
+    evidenceId: text("evidence_id").notNull().references(() => taskEvidence.id),
+    action: text("action").notNull(),
+    authenticity: text("authenticity").notNull(),
+    authorityUri: text("authority_uri").notNull(),
+    authorityVersion: integer("authority_version").notNull(),
+    authorityDigest: text("authority_digest").notNull(),
+    supersedesTrustRecordId: text("supersedes_trust_record_id").references(
+      (): AnySQLiteColumn => evidenceTrustRecord.id,
+    ),
+    reason: text("reason").notNull(),
+    verifiedAt: integer("verified_at").notNull(),
+    validUntil: integer("valid_until"),
+    retentionUntil: integer("retention_until"),
+    recordedByPrincipalId: text("recorded_by_principal_id").notNull().references(() => principal.id),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => ({
+    evidenceIdx: index("idx_evidence_trust_evidence").on(t.tenantId, t.evidenceId, t.createdAt),
+    rootUniq: uniqueIndex("uniq_evidence_trust_root").on(t.tenantId, t.evidenceId)
+      .where(sql`${t.supersedesTrustRecordId} IS NULL`),
+    childUniq: uniqueIndex("uniq_evidence_trust_child").on(t.tenantId, t.supersedesTrustRecordId)
+      .where(sql`${t.supersedesTrustRecordId} IS NOT NULL`),
+    actionCheck: check("evidence_trust_action_check", sql`${t.action} IN ('attest','revoke')`),
+    authenticityCheck: check(
+      "evidence_trust_authenticity_check",
+      sql`${t.authenticity} IN ('unverified','authenticated_principal','authenticated_source','provider_verified')`,
+    ),
+    chronologyCheck: check(
+      "evidence_trust_chronology_check",
+      sql`(${t.validUntil} IS NULL OR ${t.validUntil} >= ${t.verifiedAt})
+        AND (${t.retentionUntil} IS NULL OR ${t.retentionUntil} >= ${t.verifiedAt})`,
+    ),
+    supersessionCheck: check(
+      "evidence_trust_supersession_check",
+      sql`(${t.action} = 'attest' AND ${t.supersedesTrustRecordId} IS NULL)
+        OR (${t.action} = 'revoke' AND ${t.supersedesTrustRecordId} IS NOT NULL
+          AND ${t.supersedesTrustRecordId} <> ${t.id})`,
+    ),
+  }),
+);
+
+export const completionProposal = sqliteTable(
+  "completion_proposal",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull().default("gwendall"),
+    taskId: text("task_id").notNull().references(() => task.id),
+    resolutionContractId: text("resolution_contract_id").notNull().references(() => resolutionContract.id),
+    contractDigest: text("contract_digest").notNull(),
+    proposerPrincipalId: text("proposer_principal_id").notNull().references(() => principal.id),
+    criterionEvidence: text("criterion_evidence").notNull(),
+    summary: text("summary"),
+    proposalDigest: text("proposal_digest").notNull(),
+    proposedAt: integer("proposed_at").notNull(),
+  },
+  (t) => ({
+    taskIdx: index("idx_completion_proposal_task").on(t.tenantId, t.taskId, t.proposedAt),
+    contractIdx: index("idx_completion_proposal_contract").on(t.tenantId, t.resolutionContractId, t.proposedAt),
+    digestUniq: uniqueIndex("uniq_completion_proposal_digest").on(t.tenantId, t.proposalDigest),
+    evidenceJsonCheck: check(
+      "completion_proposal_evidence_json_check",
+      sql`json_valid(${t.criterionEvidence}) AND json_type(${t.criterionEvidence}) = 'array'
+        AND json_array_length(${t.criterionEvidence}) > 0`,
+    ),
+  }),
+);
+
+export const completionChallenge = sqliteTable(
+  "completion_challenge",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull().default("gwendall"),
+    taskId: text("task_id").notNull().references(() => task.id),
+    proposalId: text("proposal_id").notNull().references(() => completionProposal.id),
+    challengerPrincipalId: text("challenger_principal_id").notNull().references(() => principal.id),
+    reasonCode: text("reason_code").notNull(),
+    explanation: text("explanation").notNull(),
+    counterEvidenceIds: text("counter_evidence_ids").notNull().default("[]"),
+    challengedAt: integer("challenged_at").notNull(),
+  },
+  (t) => ({
+    proposalIdx: index("idx_completion_challenge_proposal").on(t.tenantId, t.proposalId, t.challengedAt),
+    counterEvidenceJsonCheck: check(
+      "completion_challenge_evidence_json_check",
+      sql`json_valid(${t.counterEvidenceIds}) AND json_type(${t.counterEvidenceIds}) = 'array'`,
+    ),
+  }),
+);
+
+export const validationDecision = sqliteTable(
+  "validation_decision",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull().default("gwendall"),
+    taskId: text("task_id").notNull().references(() => task.id),
+    resolutionContractId: text("resolution_contract_id").notNull().references(() => resolutionContract.id),
+    proposalId: text("proposal_id").notNull().references(() => completionProposal.id),
+    outcome: text("outcome").notNull(),
+    policyUri: text("policy_uri").notNull(),
+    policyVersion: integer("policy_version").notNull(),
+    implementationDigest: text("implementation_digest").notNull(),
+    policyInputDigest: text("policy_input_digest").notNull(),
+    evidenceIds: text("evidence_ids").notNull().default("[]"),
+    trustRecordIds: text("trust_record_ids").notNull().default("[]"),
+    supersedesDecisionId: text("supersedes_decision_id").references(
+      (): AnySQLiteColumn => validationDecision.id,
+    ),
+    decidedByPrincipalId: text("decided_by_principal_id").notNull().references(() => principal.id),
+    reasonCode: text("reason_code").notNull(),
+    explanation: text("explanation").notNull(),
+    decidedAt: integer("decided_at").notNull(),
+  },
+  (t) => ({
+    proposalIdx: index("idx_validation_decision_proposal").on(t.tenantId, t.proposalId, t.decidedAt),
+    rootUniq: uniqueIndex("uniq_validation_decision_root").on(t.tenantId, t.proposalId)
+      .where(sql`${t.supersedesDecisionId} IS NULL`),
+    childUniq: uniqueIndex("uniq_validation_decision_child").on(t.tenantId, t.supersedesDecisionId)
+      .where(sql`${t.supersedesDecisionId} IS NOT NULL`),
+    outcomeCheck: check(
+      "validation_decision_outcome_check",
+      sql`${t.outcome} IN ('accepted','rejected','too_early','indeterminate','challenged')`,
+    ),
+    policyVersionCheck: check("validation_decision_policy_version_check", sql`${t.policyVersion} > 0`),
+    supersessionCheck: check(
+      "validation_decision_supersession_check",
+      sql`${t.supersedesDecisionId} IS NULL OR ${t.supersedesDecisionId} <> ${t.id}`,
+    ),
+    jsonCheck: check(
+      "validation_decision_json_check",
+      sql`json_valid(${t.evidenceIds}) AND json_type(${t.evidenceIds}) = 'array'
+        AND json_valid(${t.trustRecordIds}) AND json_type(${t.trustRecordIds}) = 'array'`,
+    ),
+  }),
+);
+
 export const completionRecord = sqliteTable(
   "completion_record",
   {
@@ -845,6 +1036,12 @@ export const completionRecord = sqliteTable(
     completionPolicyVersion: integer("completion_policy_version").notNull(),
     policyInputDigest: text("policy_input_digest").notNull(),
     evidenceIds: text("evidence_ids").notNull().default("[]"),
+    resolutionContractId: text("resolution_contract_id").references(
+      () => resolutionContract.id,
+    ),
+    validationDecisionId: text("validation_decision_id").references(
+      () => validationDecision.id,
+    ),
     decidedByPrincipalId: text("decided_by_principal_id").notNull().references(() => principal.id),
     decidedAt: integer("decided_at").notNull(),
   },
@@ -860,6 +1057,11 @@ export const completionRecord = sqliteTable(
     evidenceJsonCheck: check(
       "completion_record_evidence_json_check",
       sql`json_valid(${t.evidenceIds}) AND json_type(${t.evidenceIds}) = 'array'`,
+    ),
+    resolutionLinkCheck: check(
+      "completion_record_resolution_link_check",
+      sql`(${t.resolutionContractId} IS NULL AND ${t.validationDecisionId} IS NULL)
+        OR (${t.resolutionContractId} IS NOT NULL AND ${t.validationDecisionId} IS NOT NULL)`,
     ),
   }),
 );
@@ -1644,6 +1846,11 @@ export const schema = {
   taskAttempt,
   taskEvidence,
   artifact,
+  resolutionContract,
+  evidenceTrustRecord,
+  completionProposal,
+  completionChallenge,
+  validationDecision,
   completionRecord,
   extensionRelease,
   extensionType,

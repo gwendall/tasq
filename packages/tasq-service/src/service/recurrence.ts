@@ -89,6 +89,7 @@ export async function materializeNextInstance(
     nextAction: completed.nextAction,
     successCriteria: completed.successCriteria,
     completionMode: completed.completionMode,
+    validationRequired: completed.validationRequired,
     status: "open",
     priority: completed.priority,
     estimatedMinutes: completed.estimatedMinutes,

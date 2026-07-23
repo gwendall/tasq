@@ -150,6 +150,12 @@ not become a cryptographic tracing implementation.
   terminal state.
 - `task_evidence` is append-only, linked to an optional attempt, and can
   supersede earlier evidence without rewriting it.
+- `task.validationRequired` opts an evidence commitment into the ADR-005
+  resolution chain. Frozen contracts, evidence trust/revocation, proposals,
+  challenges and validation decisions remain separate append-only records.
+- Deterministic, attested, optimistic and adjudicated resolution policies
+  produce explicit accepted, rejected, too-early, indeterminate or challenged
+  outcomes. Only a current accepted decision can complete a validated task.
 - `artifact` stores immutable digest-bound outputs; `external_ref` binds kernel
   records to identities in other systems without storing credentials.
 - `external_context_link` separately records a reusable many-to-many pointer
@@ -170,8 +176,9 @@ not become a cryptographic tracing implementation.
   whether it satisfied a waiting condition, changed nothing, or arrived after
   the condition was already terminal. A satisfying match creates evidence but
   never completes the task.
-- Completing an evidence-mode task requires explicit evidence IDs belonging to
-  that task.
+- Completing an ordinary evidence-mode task requires explicit evidence IDs
+  belonging to that task. A validated task instead requires the exact current
+  accepted decision, whose record binds those evidence IDs.
 - A task cannot become terminal while an attempt is active.
 - Terminal completion releases its claim; deletion cancels active attempts and
   releases claims atomically.

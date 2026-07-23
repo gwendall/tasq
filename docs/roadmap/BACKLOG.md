@@ -187,12 +187,15 @@ Server/Cloud breadth remains behind published-byte Local certification.
   published; exact registry tarballs pass the same Node/Bun restart journey
   and both native targets pass the full post-release replay. See
   `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
-- **TQ-612:** after ADR-005, separate evidence, completion proposal, validation
-  decision and final completion. Ship deterministic, independent-attestation,
-  optimistic-challenge and adjudicated policy shapes with explicit
-  `too_early`, `indeterminate` and `challenged` outcomes. Economic bonds remain
-  outside the kernel. See
-  [`../research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md`](../research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md).
+- **TQ-612 — source candidate complete; publication gate:** ADR-005 is accepted.
+  Core, embedded client, CLI, capability-scoped local MCP, canonical
+  inspection and Local Console now separate evidence trust, completion
+  proposals, challenges, versioned decisions and final completion.
+  Deterministic, independent-attestation, optimistic-challenge and adjudicated
+  policies expose `too_early`, `indeterminate` and `challenged` without
+  importing economic bonds. Adversarial and portable-data tests pass. The
+  remaining gate is a protected release plus downloaded-byte certification;
+  see `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
 - **TQ-606 — published-byte automation complete, human gate:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers
   install candidate bytes outside the checkout, onboard two actors, recover
@@ -304,10 +307,9 @@ maintainer launch decision.
 
 ## Decisions still required
 
-ADR-005 must define evidence trust classes, authenticity, supersession,
-revocation and retention before TQ-612 independently validated completion or
-TQ-906 remote effects can be accepted. It does not block Local read-only
-product work, ordinary attributable completion or the online Server.
+ADR-005 is accepted and TQ-612 is implemented as a source candidate. TQ-906
+remote effects still requires its own independent authority review and
+deployment evidence; completion trust does not grant effect authority.
 
 ## Explicit non-goals
 

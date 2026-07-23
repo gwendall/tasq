@@ -152,6 +152,36 @@ export {
 export type { PrincipalContext } from "./service/collaboration.js";
 
 export {
+  createResolutionContract,
+  getResolutionContract,
+  listResolutionContracts,
+  attestEvidenceTrust,
+  revokeEvidenceTrust,
+  getEvidenceTrustRecord,
+  listEvidenceTrustRecords,
+  proposeCompletion,
+  getCompletionProposal,
+  listCompletionProposals,
+  challengeCompletion,
+  getCompletionChallenge,
+  listCompletionChallenges,
+  evaluateCompletionDeterministically,
+  attestCompletion,
+  settleOptimisticCompletion,
+  adjudicateCompletion,
+  getValidationDecision,
+  listValidationDecisions,
+  getCompletionResolutionChain,
+} from "./service/resolution.js";
+export type {
+  ResolutionContext,
+  EvidenceTrustAuthority,
+  AttestEvidenceTrustOptions,
+  RevokeEvidenceTrustOptions,
+  DeterministicValidationOptions,
+} from "./service/resolution.js";
+
+export {
   proposeEffect,
   getEffect,
   listEffects,

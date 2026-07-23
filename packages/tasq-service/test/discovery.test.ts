@@ -58,6 +58,7 @@ describe("UK-009 machine discovery", () => {
         "https://schemas.tasq.dev/capabilities/commitment-summaries",
         "https://schemas.tasq.dev/capabilities/commitments",
         "https://schemas.tasq.dev/capabilities/completion-records",
+        "https://schemas.tasq.dev/capabilities/completion-resolution",
         "https://schemas.tasq.dev/capabilities/context-packets",
         "https://schemas.tasq.dev/capabilities/effects",
         "https://schemas.tasq.dev/capabilities/evidence",

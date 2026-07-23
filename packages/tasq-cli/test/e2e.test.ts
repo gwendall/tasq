@@ -48,7 +48,7 @@ interface RunResult {
 
 const TASK_V1_KEYS = [
   "id", "tenantId", "projectId", "goalId", "areaId", "parentTaskId",
-  "title", "description", "nextAction", "successCriteria", "completionMode", "status",
+  "title", "description", "nextAction", "successCriteria", "completionMode", "validationRequired", "status",
   "priority", "estimatedMinutes", "scheduledAt", "dueAt", "startedAt", "completedAt",
   "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak",
   "recurrenceParentId", "metadata", "createdAt", "updatedAt", "deletedAt",
@@ -142,10 +142,10 @@ describe("CLI meta commands", () => {
       contractVersion: "tasq.executable-version.v1",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 25,
-        readable: { min: 25, max: 25 },
-        writable: { min: 25, max: 25 },
-        directlyMigratable: { min: 0, max: 25 },
+        current: 26,
+        readable: { min: 26, max: 26 },
+        writable: { min: 26, max: 26 },
+        directlyMigratable: { min: 0, max: 26 },
         irreversible: true,
       },
     });
@@ -396,6 +396,8 @@ describe("autonomous zero-integrator bootstrap", () => {
       "propose-outcome",
       "coordinate-resource-effect",
       "complete-evidenced-work",
+      "propose-validated-completion",
+      "validate-and-complete",
       "run-interactive-attempt",
     ]);
     for (const journey of created.guide.journeys) {
@@ -978,6 +980,8 @@ describe("canonical commitment inspection", () => {
       "contractVersion", "inspectedAt", "workspaceId", "commitment", "principals",
       "assignments", "relations", "claims", "attempts", "artifacts", "effects",
       "effectApprovals", "effectReceipts", "evidence",
+      "resolutionContracts", "evidenceTrustRecords", "completionProposals",
+      "completionChallenges", "validationDecisions",
       "completionRecords", "conditions", "observations", "reconciliations",
       "externalRefs", "externalContextLinks", "events", "resumeCursor",
     ]);
@@ -1193,6 +1197,123 @@ describe("agentic commitment primitives", () => {
     expect(shown.claim).toBeNull();
     expect(shown.attempts).toHaveLength(1);
     expect(shown.evidence).toHaveLength(1);
+  });
+});
+
+describe("independently validated completion", () => {
+  it("runs contract → trust → proposal → independent decision → completion through CLI JSON", async () => {
+    const home = await freshHome();
+    await runOk(home, ["init"]);
+    const commitment = JSON.parse((await runOk(home, [
+      "add", "Publish independently verified result",
+      "--success", "The result artifact exists",
+      "--completion", "evidence",
+      "--validated",
+      "--actor", "author",
+      "--json",
+    ])).stdout);
+
+    await runOk(home, [
+      "claim", commitment.id, "--actor", "reviewer", "--for", "10m", "--json",
+    ]);
+    await runOk(home, [
+      "release", commitment.id, "--actor", "reviewer", "--reason", "identity bootstrap", "--json",
+    ]);
+    const evidence = JSON.parse((await runOk(home, [
+      "evidence", "add", commitment.id,
+      "--actor", "worker",
+      "--kind", "artifact",
+      "--summary", "Result artifact exists at the declared URI",
+      "--uri", "https://example.test/result",
+      "--json",
+    ])).stdout);
+    const criteria = JSON.stringify([{
+      id: "artifact-exists",
+      statement: "The result artifact exists",
+      minimumEvidenceCount: 1,
+      acceptedEvidenceKinds: ["artifact"],
+      minimumAuthenticity: "unverified",
+    }]);
+    const contract = JSON.parse((await runOk(home, [
+      "resolution", "contract", commitment.id,
+      "--actor", "author",
+      "--policy", "attestation",
+      "--criteria", criteria,
+      "--validators", "reviewer",
+      "--idempotency-key", "contract-1",
+      "--json",
+    ])).stdout);
+    const trust = JSON.parse((await runOk(home, [
+      "resolution", "trust", commitment.id,
+      "--actor", "auditor",
+      "--evidence", evidence.id,
+      "--reason", "Locally attributed observation",
+      "--idempotency-key", "trust-1",
+      "--json",
+    ])).stdout);
+    const proposal = JSON.parse((await runOk(home, [
+      "resolution", "propose", commitment.id,
+      "--actor", "worker",
+      "--contract", contract.id,
+      "--criterion-evidence", JSON.stringify([{
+        criterionId: "artifact-exists",
+        evidenceIds: [evidence.id],
+      }]),
+      "--idempotency-key", "proposal-1",
+      "--json",
+    ])).stdout);
+
+    const selfValidation = await runCli(home, [
+      "resolution", "attest", proposal.id,
+      "--actor", "worker",
+      "--outcome", "accepted",
+      "--reason-code", "looks-good",
+      "--explanation", "Self approval must fail",
+      "--idempotency-key", "decision-self",
+      "--json",
+    ]);
+    expect(selfValidation.exitCode).not.toBe(0);
+
+    const decision = JSON.parse((await runOk(home, [
+      "resolution", "attest", proposal.id,
+      "--actor", "reviewer",
+      "--outcome", "accepted",
+      "--reason-code", "verified",
+      "--explanation", "Evidence satisfies the frozen criterion",
+      "--idempotency-key", "decision-1",
+      "--json",
+    ])).stdout);
+    const completed = JSON.parse((await runOk(home, [
+      "done", commitment.id,
+      "--actor", "author",
+      "--decision", decision.id,
+      "--idempotency-key", "complete-1",
+      "--json",
+    ])).stdout);
+    expect(completed).toMatchObject({ status: "done", validationRequired: true });
+
+    const chain = JSON.parse((await runOk(home, [
+      "resolution", "show", contract.id, "--json",
+    ])).stdout);
+    expect(chain).toMatchObject({
+      contract: { id: contract.id },
+      proposals: [{ id: proposal.id }],
+      decisions: [{ id: decision.id, outcome: "accepted" }],
+      trustRecords: [{ id: trust.id, action: "attest" }],
+    });
+    const inspected = JSON.parse((await runOk(home, [
+      "inspect", commitment.id, "--json",
+    ])).stdout);
+    expect(inspected).toMatchObject({
+      resolutionContracts: [{ id: contract.id }],
+      evidenceTrustRecords: [{ id: trust.id }],
+      completionProposals: [{ id: proposal.id }],
+      validationDecisions: [{ id: decision.id }],
+      completionRecords: [{
+        resolutionContractId: contract.id,
+        validationDecisionId: decision.id,
+      }],
+    });
   });
 });
 
@@ -2165,7 +2286,7 @@ describe("durability", () => {
     expect(report.ok).toBe(true);
     expect(report.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 25,
+      current: 26,
     });
     expect(report.store.sqliteIntegrity).toBe("ok");
     expect(report.journal.databaseOnly).toEqual([]);
@@ -2432,7 +2553,7 @@ describe("durability", () => {
     expect(result.contractVersion).toBe("tasq.backup-receipt.v1");
     expect(result.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.verified).toBe(true);
-    expect(result.storeFormat).toBe(25);
+    expect(result.storeFormat).toBe(26);
     expect(result.sizeBytes).toBeGreaterThan(0);
     expect(result.eventCursor).toBe(2);
     expect(existsSync(target)).toBe(true);
@@ -2449,7 +2570,7 @@ describe("durability", () => {
       ok: true,
       target: exportPath,
       workspaceId: "gwendall",
-      storeFormat: 25,
+      storeFormat: 26,
     });
     expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
 
