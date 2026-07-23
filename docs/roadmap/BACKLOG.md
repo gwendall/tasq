@@ -178,10 +178,14 @@ Server/Cloud breadth remains behind published-byte Local certification.
   protected npm/native release and downloaded-byte recertification pass on
   macOS ARM64 and Linux x64 GNU. See
   `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
-- **TQ-611:** expose a real high-level local TypeScript client with explicit
-  workspace, actor and clock. Certify the actual Bun/Node boundary, publish
-  compiled ESM and declarations where supported, and generate every SDK
-  example from executable tests.
+- **TQ-611 — source candidate passed, publication in progress:**
+  `createLocalTasq` now binds an explicit store, workspace, actor and clock
+  behind one deep `@tasq-run/core` interface. Generated candidates contain
+  compiled ESM and declarations; fresh Node 22 and Bun consumers both pass the
+  same-ledger restart journey, and the npm README is generated from the
+  executable example. Protected `v0.2.0` publication, exact-byte replay and
+  public-site truth remain. See
+  `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
 - **TQ-612:** after ADR-005, separate evidence, completion proposal, validation
   decision and final completion. Ship deterministic, independent-attestation,
   optimistic-challenge and adjudicated policy shapes with explicit

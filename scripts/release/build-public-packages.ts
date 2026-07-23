@@ -27,7 +27,8 @@ interface PublicPackage {
   bin?: Record<string, string>;
   dependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
-  copyMode: "all-source" | "core-graph" | "cli-bundle";
+  copyMode: "all-source" | "compiled-esm" | "cli-bundle";
+  runtime: "bun" | "bun-node";
 }
 
 const productRoot = resolve(import.meta.dir, "../..");
@@ -81,47 +82,50 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       name: "@tasq-run/schema",
       sourceDirectory: "tasq-schema",
       description: "Portable schemas, identifiers and clock contracts for Tasq.",
-      entrypoint: "./src/index.ts",
+      entrypoint: "./dist/index.js",
       exports: {
-        ".": "./src/index.ts",
-        "./tables": "./src/tables.ts",
-        "./types": "./src/types.ts",
-        "./extensions": "./src/extensions.ts",
-        "./discovery": "./src/discovery.ts",
-        "./effects": "./src/effects.ts",
-        "./replication": "./src/replication.ts",
-        "./bootstrap": "./src/bootstrap.ts",
-        "./resources": "./src/resources.ts",
-        "./context": "./src/context.ts",
-        "./summaries": "./src/summaries.ts",
-        "./clock": "./src/clock.ts",
-        "./ids": "./src/ids.ts",
-        "./console": "./src/console.ts",
+        ".": "./dist/index.js",
+        "./tables": "./dist/tables.js",
+        "./types": "./dist/types.js",
+        "./extensions": "./dist/extensions.js",
+        "./discovery": "./dist/discovery.js",
+        "./effects": "./dist/effects.js",
+        "./replication": "./dist/replication.js",
+        "./bootstrap": "./dist/bootstrap.js",
+        "./resources": "./dist/resources.js",
+        "./context": "./dist/context.js",
+        "./summaries": "./dist/summaries.js",
+        "./clock": "./dist/clock.js",
+        "./ids": "./dist/ids.js",
+        "./console": "./dist/console.js",
       },
       dependencies: await selectedDependencies("tasq-schema", ["drizzle-orm", "zod"]),
-      copyMode: "all-source",
+      copyMode: "compiled-esm",
+      runtime: "bun-node",
     },
     {
       name: "@tasq-run/extension-sdk",
       sourceDirectory: "tasq-extension-sdk",
       description: "DB-free extension and connector contracts for Tasq.",
-      entrypoint: "./src/index.ts",
-      exports: { ".": "./src/index.ts" },
+      entrypoint: "./dist/index.js",
+      exports: { ".": "./dist/index.js" },
       dependencies: { "@tasq-run/schema": version },
-      copyMode: "all-source",
+      copyMode: "compiled-esm",
+      runtime: "bun-node",
     },
     {
       name: "@tasq-run/core",
       sourceDirectory: "tasq-core",
       description: "Universal runtime-neutral commitment coordination kernel for Tasq.",
-      entrypoint: "./src/kernel.ts",
-      exports: { ".": "./src/kernel.ts" },
+      entrypoint: "./dist/kernel.js",
+      exports: { ".": "./dist/kernel.js" },
       dependencies: {
         "@tasq-run/extension-sdk": version,
         "@tasq-run/schema": version,
         ...await selectedDependencies("tasq-core", ["@libsql/client", "drizzle-orm", "zod"]),
       },
-      copyMode: "core-graph",
+      copyMode: "compiled-esm",
+      runtime: "bun-node",
     },
     {
       name: "@tasq-run/mcp",
@@ -136,6 +140,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
         ...await selectedDependencies("tasq-mcp", ["@modelcontextprotocol/sdk", "zod"]),
       },
       copyMode: "all-source",
+      runtime: "bun",
     },
     {
       name: "@tasq-run/protocol-adapters",
@@ -149,6 +154,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
         ...await selectedDependencies("tasq-protocol-adapters", ["zod"]),
       },
       copyMode: "all-source",
+      runtime: "bun",
     },
     {
       name: "@tasq-run/console",
@@ -158,6 +164,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       exports: { ".": "./src/index.ts" },
       dependencies: { "@tasq-run/core": version, "@tasq-run/schema": version },
       copyMode: "all-source",
+      runtime: "bun",
     },
     {
       name: "@tasq-run/cli",
@@ -170,11 +177,15 @@ async function definitions(version: string): Promise<PublicPackage[]> {
         "@libsql/linux-x64-gnu": "0.4.7",
       },
       copyMode: "cli-bundle",
+      runtime: "bun",
     },
   ];
 }
 
 function manifest(definition: PublicPackage, inputs: Inputs) {
+  const types = definition.copyMode === "compiled-esm"
+    ? definition.entrypoint.replace(/\.js$/, ".d.ts")
+    : definition.copyMode === "cli-bundle" ? undefined : definition.entrypoint;
   return {
     name: definition.name,
     version: inputs.version,
@@ -182,13 +193,17 @@ function manifest(definition: PublicPackage, inputs: Inputs) {
     license: "Apache-2.0",
     type: "module",
     main: definition.entrypoint,
-    types: definition.copyMode === "cli-bundle" ? undefined : definition.entrypoint,
+    types,
     exports: definition.exports,
     bin: definition.bin,
     files: definition.copyMode === "cli-bundle"
       ? ["index.js", "artifact.json", "*.sql", "LICENSE", "README.md"]
-      : ["src", "LICENSE", "README.md"],
-    engines: { bun: ">=1.3.0" },
+      : definition.copyMode === "compiled-esm"
+        ? ["dist", "LICENSE", "README.md"]
+        : ["src", "LICENSE", "README.md"],
+    engines: definition.runtime === "bun-node"
+      ? { bun: ">=1.3.0", node: ">=22" }
+      : { bun: ">=1.3.0" },
     repository: {
       type: "git",
       url: "git+https://github.com/gwendall/tasq.git",
@@ -274,13 +289,17 @@ async function coreGraph(sourceRoot: string): Promise<string[]> {
   return [...seen].sort();
 }
 
-function packageUsage(definition: PublicPackage): string {
+async function packageUsage(definition: PublicPackage): Promise<string> {
   const install = `npm install ${definition.name}`;
   switch (definition.name) {
     case "@tasq-run/cli":
       return `## Start\n\n\`\`\`bash\n${install}\nnpx tasq onboard --space my-context --actor agent:local --json\n\`\`\`\n\nExecute the returned argument-vector recipes directly. Read before mutating, persist numeric event sequences, claim before autonomous work and keep attempt success distinct from commitment completion.`;
     case "@tasq-run/core":
-      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nOpen an explicit store, run checksum-pinned kernel migrations, inject a \`Clock\`, install only trusted provider-neutral extension manifests, and pass explicit \`workspaceId\`, actor and retry identity to every mutation. Core owns commitments, collaboration, claims, attempts, evidence, resources, audit and replication; the embedding runtime owns execution, credentials, provider policy and transport.`;
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\n` +
+        "The normal embedded path owns database opening, compatible migrations and local coordination-space bootstrap while keeping the store, workspace, actor and clock explicit:\n\n" +
+        `\`\`\`js\n${(await readFile(join(packagesRoot, "tasq-core", "examples", "local-client.mjs"), "utf8")).trim()}\n\`\`\`\n\n` +
+        "Run the same program again against the same `TASQ_DB_URL` to reopen the ledger without recreating or losing the commitment. " +
+        "Lower-level kernel exports remain available for advanced trusted integrations; they require callers to compose storage, migrations and context themselves.";
     case "@tasq-run/schema":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nImport portable records, validators, identifiers and clock contracts from \`@tasq-run/schema\`. These schemas describe coordination data; they do not grant authentication, effect authority or provider access.`;
     case "@tasq-run/mcp":
@@ -298,8 +317,11 @@ function packageUsage(definition: PublicPackage): string {
 
 async function writeReadme(stage: string, definition: PublicPackage): Promise<void> {
   const text = `# ${definition.name}\n\n${definition.description}\n\n` +
-    `${packageUsage(definition)}\n\n` +
-    "## Runtime and support\n\nBun 1.3 or newer is the initial certified runtime; Node.js support is not yet certified. " +
+    `${await packageUsage(definition)}\n\n` +
+    "## Runtime and support\n\n" +
+    (definition.runtime === "bun-node"
+      ? "Bun 1.3+ and Node.js 22+ are certified from the same compiled ESM package. "
+      : "Bun 1.3 or newer is the certified runtime; Node.js support is not certified for this package. ") +
     "This package is generated deterministically from the canonical Tasq source tree.\n\n" +
     "Source, full documentation, security policy and release provenance: https://github.com/gwendall/tasq\n";
   await writeFile(join(stage, "README.md"), text, "utf8");
@@ -310,8 +332,38 @@ async function stagePackage(definition: PublicPackage, inputs: Inputs, stage: st
   const sourceRoot = join(packagesRoot, definition.sourceDirectory, "src");
   if (definition.copyMode === "all-source") {
     for (const path of await allFiles(sourceRoot)) await copySourceFile(sourceRoot, path, join(stage, "src"));
-  } else if (definition.copyMode === "core-graph") {
-    for (const path of await coreGraph(sourceRoot)) await copySourceFile(sourceRoot, path, join(stage, "src"));
+  } else if (definition.copyMode === "compiled-esm") {
+    const compile = Bun.spawn([
+      "pnpm", "exec", "tsc",
+      "-p", join(packagesRoot, definition.sourceDirectory, "tsconfig.json"),
+      "--noEmit", "false",
+      "--declaration", "true",
+      "--declarationMap", "false",
+      "--sourceMap", "false",
+      "--composite", "false",
+      "--outDir", join(stage, "dist"),
+      "--module", "ESNext",
+      "--moduleResolution", "Bundler",
+    ], { cwd: productRoot, stdout: "pipe", stderr: "pipe" });
+    const [exitCode, stdout, stderr] = await Promise.all([
+      compile.exited,
+      new Response(compile.stdout).text(),
+      new Response(compile.stderr).text(),
+    ]);
+    if (exitCode !== 0) {
+      throw new Error(`Compiled ESM build failed for ${definition.name}:\n${stderr || stdout}`);
+    }
+    const migrationRoot = join(sourceRoot, "migrations");
+    try {
+      for (const path of await allFiles(migrationRoot)) {
+        if (!path.endsWith(".sql")) continue;
+        const destination = join(stage, "dist", "migrations", relative(migrationRoot, path));
+        await mkdir(dirname(destination), { recursive: true });
+        await copyFile(path, destination);
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
   } else {
     const build = Bun.spawn([
       process.execPath,
@@ -420,7 +472,16 @@ async function main(): Promise<void> {
     contractVersion: "tasq.public-packages.v1",
     version: inputs.version,
     source: { repository: "https://github.com/gwendall/tasq", commit: inputs.sourceCommit },
-    runtime: { name: "bun", minimumVersion: "1.3.0" },
+    runtime: {
+      default: { name: "bun", minimumVersion: "1.3.0" },
+      compiledEsm: {
+        packages: ["@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
+        supported: [
+          { name: "bun", minimumVersion: "1.3.0" },
+          { name: "node", minimumVersion: "22.0.0" },
+        ],
+      },
+    },
     packages: artifacts,
     provenance: {
       requiredBuilder: "protected-github-actions-tag-workflow",

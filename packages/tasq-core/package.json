@@ -39,6 +39,7 @@
     "zod": "^3.23.8"
   },
   "scripts": {
+    "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

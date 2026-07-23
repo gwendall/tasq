@@ -122,8 +122,11 @@ ADR and signed release metadata.
   stores follow documented sequential upgrades.
 - Downgrade is never an in-place schema operation. Rollback restores the
   verified pre-upgrade snapshot with its matching binary.
-- Public TypeScript packages require Bun `>=1.3` initially. Node.js compatibility
-  is not claimed until a separate runtime matrix passes.
+- Public TypeScript packages require Bun `>=1.3` initially. Starting with the
+  authorized `v0.2.0` candidate, compiled `@tasq-run/core`, Schema and Extension
+  SDK packages also require Node.js `>=22`; TQ-611 certifies both runtimes from
+  the same package candidates. Other TypeScript packages remain Bun-only until
+  their own runtime matrix passes.
 - CLI support attaches to exact release targets, initially candidates
   `darwin-arm64` and `linux-x64-gnu`. No architecture becomes supported merely
   because Bun can compile it.

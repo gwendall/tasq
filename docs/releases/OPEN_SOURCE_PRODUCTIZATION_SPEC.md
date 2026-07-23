@@ -69,7 +69,7 @@ unrelated project; only the executable uses that unscoped name.
 | Public package | Source today | Contract |
 |---|---|---|
 | `@tasq-run/schema` | `tasq-schema` | Versioned DTOs, IDs, digests and protocol envelopes |
-| `@tasq-run/core` | `packages/tasq-core` | Profile-neutral kernel with injected store, identity and `Clock` |
+| `@tasq-run/core` | `packages/tasq-core` | Profile-neutral kernel plus `createLocalTasq`; explicit store, identity and `Clock` |
 | `@tasq-run/cli` | `tasq-cli` | Supported Local CLI and `tasq` binary |
 | `@tasq-run/mcp` | `tasq-mcp` | Local stdio and embeddable factory with capability closure |
 | `@tasq-run/console` | `tasq-inspector` | Read-only local operator surface |
@@ -80,6 +80,13 @@ unrelated project; only the executable uses that unscoped name.
 
 Public APIs must have explicit entrypoints. Deep imports, migration internals,
 test fixtures and monorepo aliases are not compatibility promises.
+
+TQ-611 keeps the high-level local client in `@tasq-run/core`: it composes the
+same in-process kernel and store, so a separate `@tasq-run/client` would add a
+shallow versioning layer without a distinct adapter. The authorized `v0.2.0`
+candidate compiles Core, Schema and Extension SDK to ESM plus declarations and
+certifies that closure under both Bun 1.3+ and Node 22+. Other public
+TypeScript packages retain their Bun-only support boundary.
 
 ## 4. Distribution contract
 

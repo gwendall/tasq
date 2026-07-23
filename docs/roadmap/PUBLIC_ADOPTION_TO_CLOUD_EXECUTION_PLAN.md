@@ -57,7 +57,7 @@ mirroring of every Codex or Claude todo.
 | Surface | Current truth | Gap this plan closes |
 |---|---|---|
 | Public source | Public canonical repository | Keep human and machine truth synchronized |
-| npm | Seven `@tasq-run/*@0.1.0` packages published | Present exact, tested acquisition commands |
+| npm | Seven `@tasq-run/*@0.1.1` packages published | Present exact, tested acquisition commands |
 | Native release assets | Attested macOS ARM64 and Linux x64 assets | Add a user-facing verified installer and explicit runtime/platform table |
 | CLI | Broad local command surface | Teach a small journey before the complete reference |
 | Local MCP | Capability-scoped stdio transport | Add exact host configuration examples |
@@ -304,7 +304,8 @@ Never recommend the unrelated unscoped package name.
 
 ## 7. TQ-611 — Deep local TypeScript client
 
-**Status:** pending
+**Status:** source candidate passed; protected `v0.2.0` publication and
+published-byte replay pending
 
 **Depends on:** TQ-609
 
@@ -345,6 +346,21 @@ const tasq = await createLocalTasq({
   clearly before state mutation.
 - No application needs to call migration internals for the normal path.
 - Site, package README and type declarations expose the same API.
+
+### Implementation evidence
+
+The package seam is `@tasq-run/core`; a separate `@tasq-run/client` was
+rejected as a shallow pass-through over the same in-process store and kernel.
+`createLocalTasq` owns store opening, compatible migrations, space/principal
+bootstrap and bound operation context. Generated Core, Schema and Extension
+SDK packages now contain compiled ESM plus declarations. Fresh Node 22 and Bun
+consumers execute the same generated example twice against one ledger.
+
+Source-candidate acceptance is recorded in
+`../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`. The current published
+`@tasq-run/core@0.1.1` remains the earlier low-level Bun-oriented surface, so
+site and support-matrix claims stay unchanged until the protected `v0.2.0`
+release and exact published-byte replay pass.
 
 ## 8. TQ-612 — Completion validation and dispute policy
 

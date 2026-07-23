@@ -37,8 +37,9 @@ let replacement agents resume without replay gaps.
 
 ## What is available today
 
-- **Tasq Core** — an embeddable, profile-neutral TypeScript/Bun coordination
-  kernel.
+- **Tasq Core** — an embeddable, profile-neutral TypeScript coordination
+  kernel. The source candidate adds `createLocalTasq`; protected `v0.2.0`
+  publication is authorized and pending.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
 - **Integration contracts** — extension, connector, MCP Tasks, and A2A adapter

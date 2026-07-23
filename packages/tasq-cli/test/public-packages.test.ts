@@ -104,6 +104,15 @@ describe("Tasq public npm package candidates", () => {
       source: { commit: sourceCommit },
       clockBoundary: "explicit inputs only; no device time is package authority",
       provenance: { localArtifactsPublishable: false },
+      runtime: {
+        compiledEsm: {
+          packages: ["@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
+          supported: [
+            { name: "bun", minimumVersion: "1.3.0" },
+            { name: "node", minimumVersion: "22.0.0" },
+          ],
+        },
+      },
     });
     expect(release.packages.map((item: { name: string }) => item.name).sort()).toEqual(packageNames);
     expect(JSON.stringify(release)).not.toMatch(/generatedAt|createdAt|timestamp/);
@@ -126,7 +135,23 @@ describe("Tasq public npm package candidates", () => {
       const packagedReadme = await readFile(join(packageRoot, "README.md"), "utf8");
       expect(packagedReadme).toContain(`# ${manifest.name}`);
       expect(packagedReadme).toContain(`npm install ${manifest.name}`);
-      expect(packagedReadme).toContain("Bun 1.3 or newer");
+      if (["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core"].includes(manifest.name)) {
+        expect(packagedReadme).toContain("Bun 1.3+ and Node.js 22+");
+        expect(manifest.engines).toEqual({ bun: ">=1.3.0", node: ">=22" });
+      } else {
+        expect(packagedReadme).toContain("Bun 1.3 or newer");
+      }
+      if (manifest.name === "@tasq-run/core") {
+        const executableExample = (await readFile(
+          join(productRoot, "packages", "tasq-core", "examples", "local-client.mjs"),
+          "utf8",
+        )).trim();
+        expect(packagedReadme).toContain(`\`\`\`js\n${executableExample}\n\`\`\``);
+        expect(await readFile(
+          join(productRoot, "packages", "tasq-core", "README.md"),
+          "utf8",
+        )).toContain(`\`\`\`js\n${executableExample}\n\`\`\``);
+      }
       expect(packagedReadme).toContain("https://github.com/gwendall/tasq");
       for (const path of await files(packageRoot)) {
         if (path.endsWith(".sql")) continue; // immutable migrations retain historical comments
@@ -151,9 +176,28 @@ describe("Tasq public npm package candidates", () => {
       expect(released.dependencies["drizzle-orm"]).toBe(source.dependencies["drizzle-orm"]);
     }
 
-    const coreRoot = join(extracted, `tasq-run-core-${version}`, "package", "src");
+    const coreRoot = join(extracted, `tasq-run-core-${version}`, "package", "dist");
     for (const forbidden of ["areas.ts", "goals.ts", "projects.ts", "recurrence.ts", "life-task-policy.ts"]) {
-      expect((await files(coreRoot)).some((path) => path.endsWith(`/${forbidden}`)), forbidden).toBe(false);
+      expect((await files(coreRoot)).some((path) => path.endsWith(`/${forbidden.replace(".ts", ".js")}`)), forbidden).toBe(false);
+    }
+    expect((await files(coreRoot)).some((path) => path.endsWith("/kernel.d.ts"))).toBe(true);
+    expect((await files(coreRoot)).some((path) => path.endsWith("/local-client.d.ts"))).toBe(true);
+    expect((await files(coreRoot)).some((path) => path.endsWith(".ts") && !path.endsWith(".d.ts"))).toBe(false);
+    expect(await readFile(join(coreRoot, "kernel.d.ts"), "utf8")).toContain(
+      'export { createLocalTasq } from "./local-client.js"',
+    );
+    const clientDeclarations = await readFile(join(coreRoot, "local-client.d.ts"), "utf8");
+    for (const declaration of [
+      "interface CreateLocalTasqOptions",
+      "interface LocalTasqClient",
+      "readonly commitments:",
+      "readonly claims:",
+      "readonly attempts:",
+      "readonly evidence:",
+      "readonly resources:",
+      "readonly cursors:",
+    ]) {
+      expect(clientDeclarations).toContain(declaration);
     }
 
     const consumer = join(root, "consumer");
@@ -217,6 +261,30 @@ describe("Tasq public npm package candidates", () => {
       completedAt: 1_900_000_002_000,
       packageEntrypointsLoaded: true,
     });
+
+    const nodeExample = join(consumer, "local-client.mjs");
+    await writeFile(
+      nodeExample,
+      await readFile(join(productRoot, "packages", "tasq-core", "examples", "local-client.mjs"), "utf8"),
+      "utf8",
+    );
+    const nodeStore = `file:${join(root, "node-client.sqlite")}`;
+    const firstNode = await run(["node", nodeExample], consumer, { TASQ_DB_URL: nodeStore });
+    expect(firstNode.exitCode, firstNode.stderr).toBe(0);
+    const firstNodeResult = JSON.parse(firstNode.stdout);
+    expect(firstNodeResult).toMatchObject({ status: "done" });
+    const secondNode = await run(["node", nodeExample], consumer, { TASQ_DB_URL: nodeStore });
+    expect(secondNode.exitCode, secondNode.stderr).toBe(0);
+    expect(JSON.parse(secondNode.stdout)).toEqual(firstNodeResult);
+
+    const bunStore = `file:${join(root, "bun-client.sqlite")}`;
+    const firstBun = await run([process.execPath, "run", nodeExample], consumer, { TASQ_DB_URL: bunStore });
+    expect(firstBun.exitCode, firstBun.stderr).toBe(0);
+    const firstBunResult = JSON.parse(firstBun.stdout);
+    expect(firstBunResult).toMatchObject({ status: "done" });
+    const secondBun = await run([process.execPath, "run", nodeExample], consumer, { TASQ_DB_URL: bunStore });
+    expect(secondBun.exitCode, secondBun.stderr).toBe(0);
+    expect(JSON.parse(secondBun.stdout)).toEqual(firstBunResult);
 
     const cli = join(consumer, "node_modules", ".bin", "tasq");
     expect(await run([cli, "--version"], consumer)).toMatchObject({ exitCode: 0, stdout: `${version}\n`, stderr: "" });

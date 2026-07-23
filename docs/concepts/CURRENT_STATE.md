@@ -172,6 +172,17 @@ read-only registry queries now live in Core; the Local service only adds
 bundled compatibility provisioning. Manifest installation never loads code or
 grants effect authority.
 
+TQ-611 now provides the source-candidate `createLocalTasq` interface inside
+`@tasq-run/core`. One explicit call owns store opening, checksum-pinned
+migrations, coordination-space/principal bootstrap and repeated operation
+context while keeping URL, workspace, actor and `Clock` mandatory. The
+generated Core, Schema and Extension SDK candidates contain compiled ESM plus
+declarations and pass fresh Node 22 and Bun same-ledger restart tests. The
+currently published `0.1.1` Core remains the prior low-level Bun-oriented
+surface; protected `v0.2.0` publication and exact-byte replay are still
+required before the public site or support matrix claims the new interface.
+See `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
+
 The shortest verified loop is:
 
 ```text
