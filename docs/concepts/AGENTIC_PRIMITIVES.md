@@ -7,6 +7,9 @@ agent runtime. The implemented system owns durable desired outcomes: what must
 become true, what blocks it, who is working, what executions occurred and what
 evidence justifies completion. `UNIVERSAL_KERNEL_SPEC.md` proposes the stricter
 provider- and policy-neutral boundary required to make this a reusable kernel.
+[`COMMITMENT_DIMENSIONS.md`](COMMITMENT_DIMENSIONS.md) clarifies how time,
+recurrence, dependencies, generation, validation and other dimensions compose
+without turning the commitment record into a grab-bag.
 
 The core separation is:
 

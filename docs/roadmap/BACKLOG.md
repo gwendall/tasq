@@ -8,9 +8,15 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-23
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** complete one independent blind-human adoption session,
-then continue retained-data dogfood as the stable-graduation gate.
-Do not expand remote products before the Local alpha is independently usable.
+**Current priority:** repair the audited public copy and acquisition path
+(TQ-609/TQ-610), then rerun the independent blind-human adoption session.
+Continue retained-data dogfood in parallel as the stable-graduation gate.
+After that short repair, build the online central Server path without waiting
+for optional offline replication.
+
+The detailed task inventory, acceptance criteria and verification routes for
+public adoption through Server and Cloud are in
+[`PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
 ## What is already proven
 
@@ -155,6 +161,30 @@ Server/Cloud breadth remains behind published-byte Local certification.
   machine JSON and uses only synthetic illustrations. It is deployed from
   public `main` at <https://tasq.run>. See
   `../contracts/TQ-605_PUBLIC_SITE.md`.
+- **TQ-609 — in progress:** make every public command, example, product promise
+  and Local limitation exact and executable. The 2026-07-23 audit found a
+  prefix-install/PATH mismatch, rendered `+` markers, illustrative onboarding
+  JSON presented as real output, a nonexistent SDK API example, stale
+  pre-publication prose and an overly architectural first explanation. Site
+  tests must execute every displayed command and derive machine examples from
+  current release truth.
+- **TQ-610:** provide verified `bunx`/`npm exec` try paths, a versioned
+  checksum/provenance-verifying persistent installer, stable `/SKILL.md`,
+  `/agents` and `/llms.txt` entrypoints, deterministic host integration,
+  copyable MCP configurations, an isolated demo, an explicit non-secret
+  project rendezvous contract and one human setup followed by the
+  `add -> list -> done` simple journey. Advanced coordination stays outside the
+  first-run path.
+- **TQ-611:** expose a real high-level local TypeScript client with explicit
+  workspace, actor and clock. Certify the actual Bun/Node boundary, publish
+  compiled ESM and declarations where supported, and generate every SDK
+  example from executable tests.
+- **TQ-612:** after ADR-005, separate evidence, completion proposal, validation
+  decision and final completion. Ship deterministic, independent-attestation,
+  optimistic-challenge and adjudicated policy shapes with explicit
+  `too_early`, `indeterminate` and `challenged` outcomes. Economic bonds remain
+  outside the kernel. See
+  [`../research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md`](../research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md).
 - **TQ-606 — published-byte automation complete, human gate:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers
   install candidate bytes outside the checkout, onboard two actors, recover
@@ -214,12 +244,22 @@ Server/Cloud breadth remains behind published-byte Local certification.
   durable domain commit. Cross-database loss becomes typed exact recovery, not
   fake ACID; see `../contracts/TQ-804_GUARDED_MUTATION_REST.md`.
 - **TQ-805:** remote MCP behind the identical guard, with REST/MCP parity.
-- **TQ-806:** authenticated replication transport, enrollment, recovery and
-  authority rotation.
-- **TQ-807:** deployable server artifact/image with explicit configuration,
-  health, backup, restore and upgrade contracts.
+- **TQ-809:** add the remote CLI and runtime-neutral TypeScript client with
+  explicit endpoint/workspace selection, bounded enrollment, credential
+  recovery/revocation and cursor-safe event resume. Online clients use one
+  central Server authority and receive no direct database credential.
+- **TQ-807:** deploy an online Server artifact/image with a concrete credential
+  verifier, explicit configuration, same-origin authenticated read-only
+  Console, health, backup, restore and upgrade contracts. TQ-806 no longer
+  blocks this first online product.
 - **TQ-808:** hostile multi-surface certification across issuers, workspaces,
   revocation races and clean-room self-hosting.
+- **TQ-806:** after TQ-808, add optional authenticated offline replication,
+  visible conflicts, recovery and authority rotation. Offline clients cannot
+  retain expired claim, lease, approval or effect authority.
+- **TQ-810:** after TQ-808, publish stable remote API schemas and thin
+  cross-language clients beginning with Python. No language client
+  reimplements kernel or migration semantics.
 
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
@@ -257,8 +297,9 @@ maintainer launch decision.
 ## Decisions still required
 
 ADR-005 must define evidence trust classes, authenticity, supersession,
-revocation and retention before high-stakes automatic completion or remote
-effects can be accepted. It does not block Local read-only product work.
+revocation and retention before TQ-612 independently validated completion or
+TQ-906 remote effects can be accepted. It does not block Local read-only
+product work, ordinary attributable completion or the online Server.
 
 ## Explicit non-goals
 

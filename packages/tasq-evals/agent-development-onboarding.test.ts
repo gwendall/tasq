@@ -18,7 +18,13 @@ describe("coding-agent onboarding and handoff", () => {
     const result = run([process.execPath, "scripts/agent-preflight.ts", "--json"]);
     expect(result.exitCode, result.stderr).toBe(0);
     const preflight = JSON.parse(result.stdout);
+    const backlog = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8"));
     const dogfood = JSON.parse(readFileSync(resolve(root, "docs/contracts/TQ-607_DOGFOOD_STATUS.json"), "utf8"));
+    const active = backlog.items.find((item: { status: string }) => ![
+      "done",
+      "candidate_done_publication_gate",
+      "candidate_done_external_gate",
+    ].includes(item.status));
     expect(preflight).toMatchObject({
       contractVersion: "tasq.agent-preflight.v1",
       ok: true,
@@ -26,7 +32,11 @@ describe("coding-agent onboarding and handoff", () => {
         canonical: true,
       },
       work: {
-        activeBacklogItem: { id: "TQ-607", status: "in_progress_dogfood" },
+        activeBacklogItem: {
+          id: active.id,
+          status: active.status,
+          outcome: active.outcome,
+        },
         dogfood: {
           phase: dogfood.currentPhase,
           nextAction: dogfood.nextAction,

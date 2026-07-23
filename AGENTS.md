@@ -16,6 +16,8 @@ toolchain, worktree and active-backlog check.
 
 Read [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md) first. Before changing a public contract,
 also read [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md),
+[CONTEXT.md](docs/concepts/CONTEXT.md),
+[COMMITMENT_DIMENSIONS.md](docs/concepts/COMMITMENT_DIMENSIONS.md),
 [PRODUCT_CONSUMPTION_SPEC.md](docs/concepts/PRODUCT_CONSUMPTION_SPEC.md),
 [UNIVERSAL_KERNEL_SPEC.md](docs/concepts/UNIVERSAL_KERNEL_SPEC.md),
 [BACKLOG.md](docs/roadmap/BACKLOG.md), and [SECURITY.md](SECURITY.md).
@@ -23,6 +25,9 @@ also read [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md),
 execution authority; planned status never overrides
 [`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](docs/concepts/PRODUCT_SURFACE_MATRIX.json)
 support truth.
+The complete current public-adoption-to-Cloud sequence, including detailed
+acceptance criteria and verification routes, is in
+[`docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
 TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
 packages and native Tasq Local assets are published as protected `v0.1.0`;
