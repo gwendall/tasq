@@ -25,7 +25,7 @@ Do not install the unrelated unscoped npm package named `tasq`.
 
 Fetch the public acquisition manifest:
 
-`https://raw.githubusercontent.com/gwendall/tasq/main/apps/site/public/adopt.json`
+`https://tasq.run/adopt.json`
 
 Select one declared acquisition method. Execute its argv arrays exactly, in the
 declared working directory, and resolve only placeholders the manifest explicitly

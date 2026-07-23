@@ -57,7 +57,7 @@ describe("zero-context agent integration candidate", () => {
       "private reasoning, temporary checklists",
       "Never infer a space",
       "unrelated unscoped npm package",
-      "https://raw.githubusercontent.com/gwendall/tasq/main/apps/site/public/adopt.json",
+      "https://tasq.run/adopt.json",
       "tasq_discover",
       "tasq onboard --space <explicit-space> --actor <stable-label>",
       "--capabilities read,propose,coordinate --json",

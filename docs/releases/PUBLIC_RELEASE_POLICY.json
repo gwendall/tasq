@@ -6,6 +6,7 @@
     "productName": "Tasq",
     "cliBinary": "tasq",
     "npmScope": "@tasq",
+    "publicSite": "https://tasq.run",
     "canonicalRepository": "https://github.com/gwendall/tasq",
     "repositoryState": "public-alpha-source",
     "unscopedNpmPackage": {

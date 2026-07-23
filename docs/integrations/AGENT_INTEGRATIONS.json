@@ -1,12 +1,12 @@
 {
   "contractVersion": "tasq.agent-integrations.v1",
-  "revision": 1,
+  "revision": 2,
   "integrationVersion": "0.1.1",
   "sourceRepository": "https://github.com/gwendall/tasq",
   "executable": {
     "command": "tasq",
     "minimumVersion": "0.1.0",
-    "acquisitionManifest": "https://raw.githubusercontent.com/gwendall/tasq/main/apps/site/public/adopt.json",
+    "acquisitionManifest": "https://tasq.run/adopt.json",
     "unscopedNpmPackageAllowed": false
   },
   "rendezvous": {

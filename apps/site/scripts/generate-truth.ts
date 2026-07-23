@@ -65,6 +65,7 @@ type ReleasePolicy = {
     productName: string;
     cliBinary: string;
     npmScope: string;
+    publicSite: string;
     canonicalRepository: string;
     repositoryState: string;
   };
@@ -138,6 +139,7 @@ const truth = {
       : privatePrelaunch
         ? "request_access_then_build"
         : "build_from_source",
+    website: policy.identity.publicSite,
     repository: policy.identity.canonicalRepository,
     repositoryState: policy.identity.repositoryState,
     cliBinary: policy.identity.cliBinary,

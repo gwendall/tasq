@@ -24,6 +24,7 @@ package identity must remain separate.
 ### 2.1 Identity
 
 - Product and executable: `Tasq` / `tasq`.
+- Canonical public website and documentation: `https://tasq.run`.
 - Public npm namespace: `@tasq/*`.
 - Public canonical repository:
   `https://github.com/gwendall/tasq`.

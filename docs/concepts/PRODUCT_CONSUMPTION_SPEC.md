@@ -116,7 +116,7 @@ product to be useful.
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
 | Embedded Core | `@tasq/core` | Public source, release candidate | TypeScript integration; package unpublished |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
-| Public product/docs site | `pnpm build:site`; `/product-truth.json` | Static app implemented and repository-certified | Not deployed; no ledger or agent API |
+| Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
 | Protocol adapters | `@tasq/protocol-adapters` | Public source, release candidate | Mapping only; no transport or completion authority |
 | Extension SDK | `@tasq/extension-sdk` | Public source, release candidate | Trusted in-process code; no public registry distribution |
@@ -262,15 +262,14 @@ claim.
 **Need:** understand the product, select the correct integration path and
 verify what is actually available without reading implementation chronology.
 
-**Path:** use the public canonical repository to build the static site or
-inspect its `/product-truth.json` export. Follow the
+**Path:** open <https://tasq.run> or inspect its `/product-truth.json` export.
+The public canonical repository remains the source authority. Follow the
 consumer-specific guide to the canonical CLI, local MCP, Console or embedded
 path. Check the displayed repository-contract digests when exact support
 provenance matters.
 
 **Support:** the static application and export are implemented and tested in
-the public canonical repository. No production deployment or domain is
-currently claimed.
+the public canonical repository and deployed at <https://tasq.run>.
 
 **Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
 MCP endpoint or evidence that packages have been published.

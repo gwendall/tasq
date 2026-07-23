@@ -1,11 +1,12 @@
 {
   "contractVersion": "tasq.public-site-truth.v1",
-  "sourceUpdatedAt": "2026-07-22",
+  "sourceUpdatedAt": "2026-07-23",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
     "status": "public-alpha-source-not-published",
     "published": false,
     "installAction": "build_from_source",
+    "website": "https://tasq.run",
     "repository": "https://github.com/gwendall/tasq",
     "repositoryState": "public-alpha-source",
     "cliBinary": "tasq",
@@ -170,9 +171,9 @@
     },
     {
       "id": "public_site",
-      "support": "implemented_candidate_not_published",
-      "transport": "static_files",
-      "entrypoint": "pnpm build:site; /product-truth.json",
+      "support": "implemented_certified",
+      "transport": "public_https_static_files",
+      "entrypoint": "https://tasq.run; https://tasq.run/product-truth.json; https://tasq.run/adopt.json",
       "mutations": false,
       "authorityBoundary": "versioned_repository_truth_no_ledger_access"
     },
@@ -313,7 +314,7 @@
         "public_site"
       ],
       "irreducibleInputs": [
-        "authorized_repository_access_or_deployed_static_site"
+        "public_site_url_or_public_repository"
       ]
     },
     {
@@ -391,13 +392,12 @@
     },
     {
       "id": "public_product_discovery",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": [
-        "discover_product",
+        "visit_public_site",
         "choose_consumer_path",
         "inspect_support_truth",
         "read_adoption_manifest",
-        "request_authorized_repository_access",
         "build_from_source"
       ]
     },
@@ -440,7 +440,7 @@
     "public_identity_and_license_are_selected_but_no_artifact_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",
-    "public_site_is_built_but_not_deployed",
+    "public_site_is_deployed_at_tasq_run",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
     "local_console_five_state_browser_matrix_is_certified_on_linux_and_macos",
     "hosted_authority_foundation_is_internal_and_does_not_implement_a_remote_surface",
@@ -619,17 +619,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "40e0ed6a4741123f4c6484a5fd50ee9c6423f4927a3c820b88a9603d61ba7b96"
+      "sha256": "27793b8052465b44b0b9f1651925d144b11cf7e9c53ecc24eafd528a30e90394"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "afe3bb1c65cff2d28523f0bc75d30dcbfdb5a1cdd96a72500b94c75f92b53918"
+      "sha256": "adb8c336b0bfe921462732890893836d6c5d79b981d9fd8d4c18fad56bf04de2"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "0c758c5e8207adc825a75671850f8d59f4347c47cc2acc223fb0dced1ab7bc06"
+      "sha256": "eb8fc7985634226cac8fb90f83681cd2670dbd30f50042e3ff26b79e71da1d30"
     }
   ]
 }
