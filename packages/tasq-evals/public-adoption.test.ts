@@ -480,8 +480,8 @@ describe.skipIf(target === null)("TQ-606 blind public adoption", () => {
       },
       publishedArtifactEvidence: {
         status: "passed",
-        release: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30015923266",
+        release: "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30042551026",
       },
       independentHumanEvidence: { status: "not-run-automated-path-only" },
       tq606Complete: false,

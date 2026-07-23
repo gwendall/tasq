@@ -30,7 +30,7 @@ acceptance criteria and verification routes, is in
 [`docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
 TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
-packages and native Tasq Local assets are published as protected `v0.1.1`;
+packages and native Tasq Local assets are published as protected `v0.2.0`;
 the immutable coordinates are certified in
 [TQ-603_RELEASE_CERTIFICATION.json](docs/contracts/TQ-603_RELEASE_CERTIFICATION.json).
 The post-release lifecycle, migration, adoption and interactive-runtime matrix
@@ -41,18 +41,19 @@ release; read
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 TQ-610's acquisition and universal-agent source implementation is in
 [TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
-The public `v0.1.1` installer, `setup`, `demo`, deterministic `agent install`
+The public `v0.2.0` installer, `setup`, `demo`, deterministic `agent install`
 helper and static agent entrypoints are published and downloaded-byte
 certified on both supported targets. Integration `0.1.2` has passed the
 zero-intervention public-main native Codex and Claude matrix in
 [TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json](docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json).
 Published coordinates and downloaded-byte evidence are frozen in
 [TQ-610_RELEASE_CERTIFICATION.json](docs/contracts/TQ-610_RELEASE_CERTIFICATION.json).
-The next embedded-consumer boundary is in
+The embedded-consumer boundary is in
 [TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md](docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md):
-`createLocalTasq` and compiled ESM/declarations pass source-candidate Node 22
-and Bun restart certification; protected `v0.2.0` publication and exact-byte
-replay remain before public support truth changes.
+`createLocalTasq` and compiled ESM/declarations pass exact published-package
+Node 22 and Bun restart certification at `v0.2.0`; its immutable coordinates
+and runtime evidence are frozen in
+[TQ-611_RELEASE_CERTIFICATION.json](docs/contracts/TQ-611_RELEASE_CERTIFICATION.json).
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

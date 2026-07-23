@@ -139,8 +139,16 @@
       "irreversible": true,
       "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
     },
-    "initialPackageRuntime": "bun>=1.3",
-    "nodeSupport": "not-certified"
+    "packageRuntimes": {
+      "@tasq-run/schema": ["bun>=1.3", "node>=22"],
+      "@tasq-run/extension-sdk": ["bun>=1.3", "node>=22"],
+      "@tasq-run/core": ["bun>=1.3", "node>=22"],
+      "@tasq-run/cli": ["bun>=1.3"],
+      "@tasq-run/mcp": ["bun>=1.3"],
+      "@tasq-run/protocol-adapters": ["bun>=1.3"],
+      "@tasq-run/console": ["bun>=1.3"]
+    },
+    "nodeSupport": "certified-for-compiled-core-schema-extension-sdk-only"
   },
   "candidateCliTargets": [
     "darwin-arm64",
@@ -241,53 +249,56 @@
     "publishedSupportGranted": false
   },
   "publishedRelease": {
-    "version": "0.1.1",
-    "tag": "v0.1.1",
-    "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037044905",
-    "publishedAt": "2026-07-23T19:15:44Z",
+    "version": "0.2.0",
+    "tag": "v0.2.0",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30041513292",
+    "publishedAt": "2026-07-23T20:21:06Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.1.1"
+        "version": "0.2.0"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.1.1"
+        "version": "0.2.0"
       }
     ],
-    "certification": "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
+    "certification": "docs/contracts/TQ-611_RELEASE_CERTIFICATION.json",
     "postReleaseCertification": {
       "status": "passed",
-      "certifiedAt": "2026-07-23T19:17:28Z",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037272412",
+      "certifiedAt": "2026-07-23T20:34:11Z",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
       "targets": ["darwin-arm64", "linux-x64-gnu"],
       "registryTarballsMatched": true,
       "downloadedByteLifecyclePassed": true,
       "downloadedByteMigrationPassed": true,
       "publishedPackageInteractiveRuntimePassed": true,
-      "automatedAdoptionPassed": true
+      "automatedAdoptionPassed": true,
+      "embeddedClientNodePassed": true,
+      "embeddedClientBunPassed": true,
+      "sameLedgerRestartPassed": true
     }
   },
   "externalPublicationGateStatus": {

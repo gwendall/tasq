@@ -23,7 +23,7 @@ describe("TQ-611 embedded TypeScript client certification", () => {
   test("binds the accepted package seam and explicit composition interface", () => {
     expect(certificate).toMatchObject({
       contractVersion: "tasq.embedded-typescript-client-certification.v1",
-      status: "source-candidate-passed-publication-pending",
+      status: "published-byte-certified",
       packageBoundary: {
         package: "@tasq-run/core",
         newPackageRejected: "@tasq-run/client",
@@ -44,10 +44,26 @@ describe("TQ-611 embedded TypeScript client certification", () => {
       },
       publication: {
         targetVersion: "0.2.0",
-        state: "pending-protected-release",
-        publicSiteClaimAllowed: false,
+        state: "published-certified",
+        sourceCommit: "28f4d77477e81ae2277f73f326c8703e7124f192",
+        releaseWorkflow: "https://github.com/gwendall/tasq/actions/runs/30041513292",
+        postReleaseCertification: "https://github.com/gwendall/tasq/actions/runs/30042551026",
+        publishedByteReplay: "passed",
+        publicSiteClaimAllowed: true,
       },
     });
+    expect(certificate.runtimes).toEqual([
+      expect.objectContaining({
+        name: "bun",
+        publishedFreshInstall: "passed",
+        publishedSameLedgerRestart: "passed",
+      }),
+      expect.objectContaining({
+        name: "node",
+        publishedFreshInstall: "passed",
+        publishedSameLedgerRestart: "passed",
+      }),
+    ]);
     expect(kernel).toContain('export { createLocalTasq } from "./local-client.js"');
   });
 

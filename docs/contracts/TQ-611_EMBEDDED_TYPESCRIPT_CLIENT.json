@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.embedded-typescript-client-certification.v1",
-  "status": "source-candidate-passed-publication-pending",
+  "status": "published-byte-certified",
   "packageBoundary": {
     "package": "@tasq-run/core",
     "newPackageRejected": "@tasq-run/client",
@@ -46,14 +46,18 @@
       "minimumVersion": "1.3.0",
       "certifiedVersion": "1.3.11",
       "candidateFreshInstall": "passed",
-      "sameLedgerRestart": "passed"
+      "sameLedgerRestart": "passed",
+      "publishedFreshInstall": "passed",
+      "publishedSameLedgerRestart": "passed"
     },
     {
       "name": "node",
       "minimumVersion": "22.0.0",
       "certifiedVersion": "22.22.3",
       "candidateFreshInstall": "passed",
-      "sameLedgerRestart": "passed"
+      "sameLedgerRestart": "passed",
+      "publishedFreshInstall": "passed",
+      "publishedSameLedgerRestart": "passed"
     }
   ],
   "documentation": {
@@ -75,9 +79,12 @@
   },
   "publication": {
     "targetVersion": "0.2.0",
-    "state": "pending-protected-release",
-    "publishedByteReplay": "pending",
-    "publicSiteClaimAllowed": false
+    "state": "published-certified",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "releaseWorkflow": "https://github.com/gwendall/tasq/actions/runs/30041513292",
+    "postReleaseCertification": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+    "publishedByteReplay": "passed",
+    "publicSiteClaimAllowed": true
   },
   "invariants": [
     "attempt_success_does_not_complete_commitment",

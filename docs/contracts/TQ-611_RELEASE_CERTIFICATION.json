@@ -1,0 +1,55 @@
+{
+  "contractVersion": "tasq.tq611-release-certification.v1",
+  "status": "passed",
+  "version": "0.2.0",
+  "tag": "v0.2.0",
+  "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+  "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+  "publication": {
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30041513292",
+    "publishedAt": "2026-07-23T20:21:06Z",
+    "npmTrustedPublishingPassed": true,
+    "nativeTargets": ["darwin-arm64", "linux-x64-gnu"],
+    "assetCount": 10
+  },
+  "postReleaseCertification": {
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+    "certifiedAt": "2026-07-23T20:34:11Z",
+    "registryTarballsMatched": true,
+    "attestationsVerified": true,
+    "lifecyclePassed": true,
+    "migrationPassed": true,
+    "publicAdoptionPassed": true,
+    "interactiveRuntimePassed": true,
+    "embeddedClientNodePassed": true,
+    "embeddedClientBunPassed": true,
+    "sameLedgerRestartPassed": true
+  },
+  "npm": {
+    "compiledNode22AndBunClosure": [
+      "@tasq-run/schema",
+      "@tasq-run/extension-sdk",
+      "@tasq-run/core"
+    ],
+    "bunOnlyPackages": [
+      "@tasq-run/cli",
+      "@tasq-run/mcp",
+      "@tasq-run/protocol-adapters",
+      "@tasq-run/console"
+    ],
+    "integrities": {
+      "@tasq-run/schema": "sha512-/w1LPxXPko619IcO9SEI0WHfiAGiXasCXCO2pgduYECjCSSIjgZrlz2rpfITxoSF0ebturWQnXTNkrPJ/jd4vA==",
+      "@tasq-run/extension-sdk": "sha512-+nnTFTpn0TUxb9nJ4C/lGmd2ZKvtU1h105O6T/rQwtNNTQnNfru8ANzAzXi/3MWcwybuZGJ1nR848bEp7hYP1A==",
+      "@tasq-run/core": "sha512-jiv+NrDgEphZWI5LX7nMS5bq0KTEFTnIZVFRlK3iqJErTzCg6nqly+eTKCN7abTfb7Wi1Xu/t444bTJ6zDPDag==",
+      "@tasq-run/protocol-adapters": "sha512-kFM0Mo4hbICuR9HXVP8VLH1BbNnsSvw7mN3CPVBsGJ8BHYt2iWm9pMlSyB6c9o+7Jt8cZ2waelqkdG5YhQXc9Q==",
+      "@tasq-run/mcp": "sha512-+3NJvWUqXSrC902P72QswYkBpYgqDBqUmZzZ9tPbKIssKz/nwzSnEEh6kw32pkWWiy3ZxiHyyUa0qEcT6K7Wsw==",
+      "@tasq-run/console": "sha512-kp2hSt6VJo3PLKmyD6FEJ3wbjZmAlPJl3r/eK4Mtv300mneVkLAMXZvyQdt9lPakX+/vOBOgmFxgpMcMlCLUHA==",
+      "@tasq-run/cli": "sha512-GhYAt/l8jDeC8N9a3CMXhKvo3gCjsJnHdZLlRXiW8DJtgC4L+Yr3YQ/uv2+9ykHPAeizp5QB8ou6FwBTVqjvTg=="
+    }
+  },
+  "checksumManifests": {
+    "darwin-arm64": "sha256:5790eb9f77eddb35668043d7f8b89f29367ac26b8c0747ba10072f190d94dd4c",
+    "linux-x64-gnu": "sha256:625f665be5c1d329368b0e9ab1381c7149b1cee37b7420f7f788add3d926288c"
+  },
+  "remaining": []
+}

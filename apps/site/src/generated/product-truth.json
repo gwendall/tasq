@@ -40,10 +40,10 @@
       "candidate_targets_clean_room_certified": true,
       "agent_integration_candidate_certified": true
     },
-    "version": "0.1.1",
-    "tag": "v0.1.1",
-    "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1"
+    "version": "0.2.0",
+    "tag": "v0.2.0",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.2.0"
   },
   "productShapes": [
     {
@@ -123,7 +123,7 @@
       "id": "embedded_typescript",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq-run/core",
+      "entrypoint": "@tasq-run/core@0.2.0 createLocalTasq({ url, workspaceId, actor, clock })",
       "mutations": true,
       "authorityBoundary": "integrator_owned"
     },
@@ -549,7 +549,7 @@
     },
     {
       "id": "TQ-611",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "embedded-sdk",
       "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary"
     },
@@ -684,17 +684,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "7ef1a718d422554cd93ea1ca6513454dce7a4df535d675b753b512e3d009d2c8"
+      "sha256": "79f668097d1696e19db398a082f17befcfa25b43d283ad72f79c734d79ccf028"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "f38717fa61322a6d2b5c579cb8a4ba4003c74fc1ad2bc80ad1a726038078a2d6"
+      "sha256": "4101927cb1ca721be576a141545b51c1b4a525cd0163a558b9c8d49adb9cd0ec"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "9d189f07b4bc85995442f3307a0f0f6a4bd2b497778116161770c177fa9b8217"
+      "sha256": "51887764249edf03aced09e63993876e376943baa1eef0e1bdc8e694593742a2"
     }
   ]
 }

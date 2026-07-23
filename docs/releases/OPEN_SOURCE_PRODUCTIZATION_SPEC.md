@@ -1,7 +1,7 @@
 # TQ-601/TQ-602 — Open-source productization specification
 
-> **Status:** protected public alpha `v0.1.1` published and certified — 2026-07-23
-> **Current truth:** canonical source, seven `@tasq-run/*@0.1.1` packages and
+> **Status:** protected public alpha `v0.2.0` published and certified — 2026-07-23
+> **Current truth:** canonical source, seven `@tasq-run/*@0.2.0` packages and
 > attested macOS-arm64/Linux-x64 release artifacts are public
 > **Product contract:** `../concepts/PRODUCT_CONSUMPTION_SPEC.md`
 > **Binding decision:** `../decisions/ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
@@ -31,8 +31,9 @@ public package alpha so real adopters can provide feedback before the full
 30-day program closes. TQ-607 therefore remains mandatory for stable
 graduation, not for the public alpha. TQ-321 is passed. TQ-603 has closed npm scope,
 package-bootstrap, trusted-publishing and first protected-release gates.
-Protected run 30037272412 certifies lifecycle, migration, adoption and runtime use from exact
-published bytes on both supported targets.
+Protected run 30042551026 certifies lifecycle, migration, adoption, runtime
+use and the embedded Node/Bun client from exact published bytes on both
+supported targets.
 
 ## 2. Decisions required before release
 
@@ -60,8 +61,9 @@ identities were published from protected CI under the non-default
 `alpha-bootstrap` tag and bound to `gwendall/tasq`, `release.yml` and the
 `release` environment through npm trusted publishing. The short-lived
 bootstrap token and GitHub secret were then removed. Supported `0.1.0` was
-the first OIDC release; current `0.1.1` is published on the default `latest`
-tag and contains the TQ-610 onboarding paths. Current `@kami/*`
+the first OIDC release; current `0.2.0` is published on the default `latest`
+tag and contains the TQ-610 onboarding paths plus the TQ-611 embedded client.
+Current `@kami/*`
 coordinates remain private implementation
 names and are not aliases. The unscoped npm package `tasq` belongs to an
 unrelated project; only the executable uses that unscoped name.
@@ -83,9 +85,9 @@ test fixtures and monorepo aliases are not compatibility promises.
 
 TQ-611 keeps the high-level local client in `@tasq-run/core`: it composes the
 same in-process kernel and store, so a separate `@tasq-run/client` would add a
-shallow versioning layer without a distinct adapter. The authorized `v0.2.0`
-candidate compiles Core, Schema and Extension SDK to ESM plus declarations and
-certifies that closure under both Bun 1.3+ and Node 22+. Other public
+shallow versioning layer without a distinct adapter. Published `v0.2.0`
+compiles Core, Schema and Extension SDK to ESM plus declarations and certifies
+that closure under both Bun 1.3+ and Node 22+ from exact registry tarballs. Other public
 TypeScript packages retain their Bun-only support boundary.
 
 ## 4. Distribution contract
@@ -180,15 +182,16 @@ Failures block release. Repository-local success is not a substitute.
 | Item | Outcome |
 |---|---|
 | TQ-321 | DONE — zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
-| TQ-608 | DONE FOR CURRENT RELEASE — data-preserving migration envelope and exact `v0.1.1` multi-target replay; exact N-2 becomes mandatory once three protected lines exist |
+| TQ-608 | DONE FOR CURRENT RELEASE — data-preserving migration envelope and exact `v0.2.0` multi-target replay; exact N-2 becomes mandatory once three protected lines exist |
 | TQ-607 | Three-consumer retained-data dogfood and explicit stable-graduation decision; non-blocking for the labeled pre-1.0 alpha |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | DONE — first protected release at `v0.1.0`; current seven OIDC/provenance packages and attested native artifacts at `v0.1.1` |
+| TQ-603 | DONE — first protected release at `v0.1.0`; current seven OIDC/provenance packages and attested native artifacts at `v0.2.0` |
 | TQ-604 | DONE — exact published-byte install/upgrade/rollback/uninstall/backup certification on both supported targets |
 | TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq.run` |
 | TQ-606 | CANDIDATE — published-byte automated human path plus blind agent pass; independent human pending |
 | TQ-609 | DONE — public copy, examples and product truth execute against the published release |
-| TQ-610 | DONE — verified acquisition, simple setup, agent entrypoints and MCP helpers published and certified at `v0.1.1` |
+| TQ-610 | DONE — verified acquisition, simple setup, agent entrypoints and MCP helpers retained and recertified at `v0.2.0` |
+| TQ-611 | DONE — `createLocalTasq`, compiled ESM/declarations and exact published Node/Bun restart certification at `v0.2.0` |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful
 local open-source release, and open-sourcing Core/Local does not make those

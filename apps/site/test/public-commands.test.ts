@@ -4,8 +4,10 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 import { publicCodeExamples } from "../src/lib/examples";
+import { productTruth } from "../src/lib/product-truth";
 
 const repositoryRoot = resolve(import.meta.dir, "../../..");
+const releaseVersion = productTruth.release.version;
 let home = "";
 let environment: Record<string, string> = {};
 
@@ -60,7 +62,7 @@ describe("displayed public commands", () => {
   test("executes both exact one-shot package runners", async () => {
     const result = await runShell(publicCodeExamples.quickTry.display);
     expect(result.exitCode, result.stderr).toBe(0);
-    expect(result.stdout.trim().split("\n")).toEqual(["0.1.1", "0.1.1"]);
+    expect(result.stdout.trim().split("\n")).toEqual([releaseVersion, releaseVersion]);
   }, 30_000);
 
   test("runs the generated verified installer lifecycle without touching data", async () => {
@@ -69,19 +71,19 @@ describe("displayed public commands", () => {
     await mkdir(liveHome, { recursive: true });
     const marker = resolve(liveHome, "ledger-marker");
     await writeFile(marker, "preserve-me");
-    const installer = resolve(repositoryRoot, "apps/site/public/install-v0.1.1.sh");
+    const installer = resolve(repositoryRoot, `apps/site/public/install-v${releaseVersion}.sh`);
 
-    const dryRun = await runShell(`sh "${installer}" --dry-run --version 0.1.1 --prefix "${prefix}"`);
+    const dryRun = await runShell(`sh "${installer}" --dry-run --version ${releaseVersion} --prefix "${prefix}"`);
     expect(dryRun.exitCode, dryRun.stderr).toBe(0);
     expect(dryRun.stdout).toContain("checksum-of-checksums");
 
-    const install = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --version 0.1.1 --prefix "${prefix}"`);
+    const install = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --version ${releaseVersion} --prefix "${prefix}"`);
     expect(install.exitCode, install.stderr).toBe(0);
     const version = await runShell(`"${prefix}/bin/tasq" version`);
     expect(version.exitCode, version.stderr).toBe(0);
-    expect(version.stdout.trim()).toBe("0.1.1");
+    expect(version.stdout.trim()).toBe(releaseVersion);
 
-    const uninstall = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --uninstall --version 0.1.1 --prefix "${prefix}"`);
+    const uninstall = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --uninstall --version ${releaseVersion} --prefix "${prefix}"`);
     expect(uninstall.exitCode, uninstall.stderr).toBe(0);
     expect(await readFile(marker, "utf8")).toBe("preserve-me");
   }, 120_000);
@@ -89,7 +91,7 @@ describe("displayed public commands", () => {
   test("installs the exact published CLI and executes every displayed Local command", async () => {
     const install = await runShell(publicCodeExamples.install.display);
     expect(install.exitCode, install.stderr).toBe(0);
-    expect(install.stdout).toContain("0.1.1");
+    expect(install.stdout).toContain(releaseVersion);
 
     const onboard = await runShell(publicCodeExamples.onboard.display);
     expect(onboard.exitCode, onboard.stderr).toBe(0);
@@ -157,6 +159,9 @@ describe("displayed public commands", () => {
   }, 120_000);
 
   test("executes the displayed embedded Core example against an isolated store", async () => {
+    expect(publicCodeExamples.sdk.display as string).toBe(
+      (await readFile(resolve(repositoryRoot, "packages/tasq-core/examples/local-client.mjs"), "utf8")).trim(),
+    );
     const child = Bun.spawn([process.execPath, "-e", publicCodeExamples.sdk.display], {
       cwd: resolve(repositoryRoot, "packages/tasq-core"),
       env: environment,
@@ -169,6 +174,6 @@ describe("displayed public commands", () => {
       new Response(child.stderr).text(),
     ]);
     expect(exitCode, stderr).toBe(0);
-    expect(stdout.trim()).toMatch(/^[0-9a-f-]{36}$/);
+    expect(JSON.parse(stdout)).toMatchObject({ status: "done" });
   }, 30_000);
 });

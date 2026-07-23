@@ -59,7 +59,7 @@ describe("zero-context agent integration candidate", () => {
       agents: "https://tasq.run/agents/",
       llms: "https://tasq.run/llms.txt",
       integration: "https://tasq.run/integration.json",
-      installer: "https://tasq.run/install-v0.1.1.sh",
+      installer: `https://tasq.run/install-v${contract.acquisition.version}.sh`,
     });
   });
 
@@ -87,9 +87,10 @@ describe("zero-context agent integration candidate", () => {
 
   test("freezes executable acquisition, MCP hosts and a non-secret project pointer", () => {
     const contract = readJson("docs/integrations/AGENT_INTEGRATIONS.json");
+    const version = contract.acquisition.version;
     expect(contract.acquisition.quickTry).toEqual([
-      ["bunx", "@tasq-run/cli@0.1.1", "version"],
-      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.1", "--", "tasq", "version"],
+      ["bunx", `@tasq-run/cli@${version}`, "version"],
+      ["npm", "exec", "--yes", `--package=@tasq-run/cli@${version}`, "--", "tasq", "version"],
     ]);
     expect(Object.keys(contract.mcp.hostRecipes)).toEqual(["codex", "claude", "generic"]);
     for (const host of ["codex", "claude"] as const) {

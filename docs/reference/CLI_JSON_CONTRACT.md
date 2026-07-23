@@ -107,8 +107,8 @@ surface before the v1 surface is retired.
 
 ## Progressive adoption envelopes
 
-These source-candidate commands are independently versioned and become public
-only in the protected `v0.1.1` release:
+These commands were introduced through the protected `v0.1.1` release and
+remain part of the current protected release line:
 
 - `tasq setup --space <id> --actor <label> --json` returns
   `tasq.human-setup.v1` with `contractVersion`, `disposition`, `space`,

@@ -1,6 +1,7 @@
 # TQ-606 — Blind public adoption gate
 
-> **Status:** candidate certified; publication and independent-human evidence pending — 2026-07-21
+> **Status:** exact published-byte automation certified; independent-human
+> evidence pending — 2026-07-23
 > **Machine certificate:** `TQ-606_ADOPTION_CERTIFICATION.json`
 > **Candidate pointers:** `/docs/getting-started/`, `/adopt.json` and
 > `/product-truth.json`
@@ -18,37 +19,34 @@ onboarding, semantic operation selection, coordination and human inspection.
 ## 2. The pre-executable gap
 
 `tasq onboard` already teaches an unknown agent everything it needs after it
-has an executable pointer. Before TQ-606, the site gave a human source-build
-commands but gave a machine only product status. A machine could know that no
-release existed without knowing the safe next argv.
+has an executable pointer. Before TQ-606, a machine could see product status
+without knowing a safe acquisition argv.
 
-The static site candidate now generates `tasq.public-adoption.v1` at
-`/adopt.json`. The canonical repository is public, so the contract permits
-anonymous source acquisition. It
+The deployed static site now generates `tasq.public-adoption.v1` at
+`/adopt.json`. It
 includes:
 
-- the public repository access state, current distribution mode and
-  mutable-source warning;
-- exact Node, Bun and pnpm requirements from the root manifest;
-- source acquisition, dependency, verification and CLI-build argv arrays;
+- immutable npm and GitHub release coordinates;
+- exact Node, Bun and npm requirements;
+- pinned package-runner, npm-prefix and checksum-authenticated native
+  acquisition argv arrays;
 - distinct working-directory placeholders;
-- the relative executable result;
+- the explicit executable result;
 - a bounded onboarding argv template for workspace and actor handoff;
 - the authority, same-store, no-shell-reconstruction and no-device-time
   invariants required for safe use.
 
 Its JSON Schema is served at
 `/schemas/public-adoption.v1.schema.json`. Internal and public copies are
-byte-identical and checked on every build. A future protected release changes
-the acquisition semantics materially, so the generator deliberately fails
-closed when release policy becomes published until a maintainer replaces the
-source-build contract with reviewed, attested-release instructions.
+byte-identical and checked on every build. The generator fails closed if
+published release policy lacks immutable coordinates or its versioned,
+repository-pinned installer.
 
-## 3. Candidate journey
+## 3. Published journey
 
-`packages/tasq-evals/public-adoption.test.ts` builds one real native release
-candidate and installs it into an isolated prefix. The release build is test
-setup, never presented as a public download.
+`packages/tasq-evals/public-adoption.test.ts` consumes the downloaded,
+attested native release in post-publication CI and installs it into an isolated
+prefix.
 
 The harness then copies only public contracts and package-independent clients
 into separate temporary directories:
@@ -86,14 +84,14 @@ repository or consults a device clock. The test itself uses no ambient clock.
 ## 5. What remains external
 
 The automated human-shell proxy proves that every documented step is complete
-and executable for a public source consumer. It cannot prove that a
+and executable for a published-artifact consumer. It cannot prove that a
 real unfamiliar person understands the language, notices the warnings or
 chooses correctly. That claim requires an independent blind human session with
 no maintainer assistance after public-source launch.
 
 Protected run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
-has now rerun the journey from the exact attested `v0.1.0` release on both
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+has now rerun the journey from the exact attested `v0.2.0` release on both
 supported targets. Final TQ-606 closure requires only one independent
 unbriefed-human completion from the public entrypoint, including interventions
 and failure points. Until that exists, the machine certificate keeps

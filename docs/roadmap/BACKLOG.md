@@ -51,9 +51,9 @@ operation through real adopters, not more repository-only architecture.
 ## Current gates
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
-  seven `@tasq-run/*@0.1.1` packages from npm, or download the attested
+  seven `@tasq-run/*@0.2.0` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
-  [`v0.1.1`](https://github.com/gwendall/tasq/releases/tag/v0.1.1) release.
+  [`v0.2.0`](https://github.com/gwendall/tasq/releases/tag/v0.2.0) release.
   The historical `alpha-bootstrap` tag is not a supported channel.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
@@ -67,7 +67,7 @@ operation through real adopters, not more repository-only architecture.
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
-  snapshot failure before schema mutation. Exact `v0.1.1` bytes migrate the
+  snapshot failure before schema mutation. Exact `v0.2.0` bytes migrate the
   populated format-5 fixture on both targets. Exact N-2 evidence becomes
   mandatory once three protected release lines exist.
 
@@ -96,8 +96,8 @@ operation through real adopters, not more repository-only architecture.
   [30011315256](https://github.com/gwendall/tasq/actions/runs/30011315256)
   then published all seven `0.1.0` packages through OIDC and built both native
   targets from commit `0f5357ea10e0eb9f86f143a4fc38030624238bd2`.
-  The exact attested artifacts are attached to immutable tag `v0.1.0`; see
-  `../contracts/TQ-603_RELEASE_CERTIFICATION.json`. The tag workflow
+  The exact attested artifacts are attached to immutable tag `v0.1.0`; the
+  current release certificate now tracks `v0.2.0`. The tag workflow
   fails before building unless the exact version, repository, package boundary,
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
@@ -178,13 +178,14 @@ Server/Cloud breadth remains behind published-byte Local certification.
   protected npm/native release and downloaded-byte recertification pass on
   macOS ARM64 and Linux x64 GNU. See
   `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
-- **TQ-611 — source candidate passed, publication in progress:**
+- **TQ-611 — done:**
   `createLocalTasq` now binds an explicit store, workspace, actor and clock
   behind one deep `@tasq-run/core` interface. Generated candidates contain
   compiled ESM and declarations; fresh Node 22 and Bun consumers both pass the
   same-ledger restart journey, and the npm README is generated from the
-  executable example. Protected `v0.2.0` publication, exact-byte replay and
-  public-site truth remain. See
+  executable example. Protected `v0.2.0` packages and native assets are
+  published; exact registry tarballs pass the same Node/Bun restart journey
+  and both native targets pass the full post-release replay. See
   `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
 - **TQ-612:** after ADR-005, separate evidence, completion proposal, validation
   decision and final completion. Ship deterministic, independent-attestation,
@@ -216,7 +217,7 @@ Server/Cloud breadth remains behind published-byte Local certification.
   explicit completion. The autonomous CLI guide also exposes additive
   retry-safe attempt recipes; no Machine, terminal, conversation or provider
   ontology entered Core. The same fixture passes from exact protected
-  `@tasq-run/*@0.1.1` packages on both supported targets. See
+  `@tasq-run/*@0.2.0` packages on both supported targets. See
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 
