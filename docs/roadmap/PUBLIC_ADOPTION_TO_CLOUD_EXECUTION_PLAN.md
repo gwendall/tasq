@@ -164,7 +164,7 @@ its own dependencies and evidence gate.
 
 ## 5. TQ-609 — Public adoption truth and copy repair
 
-**Status:** in progress
+**Status:** done
 
 **Depends on:** TQ-603, TQ-604, TQ-605, TQ-704
 
@@ -179,7 +179,7 @@ its own dependencies and evidence gate.
   contract; never hand-maintain a plausible JSON shape.
 - Remove the nonexistent `createTasqService` example. Until TQ-611 ships, show
   only real exported Core APIs and state the integration cost honestly.
-- Update all remaining pre-publication and candidate-only prose for `v0.1.0`.
+- Update all remaining pre-publication and candidate-only prose for the current release.
 - Lead the homepage with the concrete human/Codex/Claude coordination failure,
   then show the claim/attempt/evidence recovery loop.
 - State beside the main promise that Local coordinates processes sharing one
@@ -216,7 +216,8 @@ its own dependencies and evidence gate.
 
 ## 6. TQ-610 — Acquisition lifecycle and universal agent entrypoint
 
-**Status:** pending
+**Status:** done — see
+[`TQ-610_RELEASE_CERTIFICATION.json`](../contracts/TQ-610_RELEASE_CERTIFICATION.json)
 
 **Depends on:** TQ-609
 
@@ -294,8 +295,9 @@ Never recommend the unrelated unscoped package name.
   preserves `TASQ_HOME` and every ledger byte.
 - One unknown shell agent, Codex and Claude Code each reach the same contention
   and recovery journey without repository prose.
-- One unbriefed human completes setup, `add`, `list` and `done` without seeing
-  advanced coordination terminology or editing configuration by hand.
+- The automated human-shell proxy completes setup, `add`, `list` and `done`
+  without advanced coordination terminology or hand-edited configuration.
+  The independent unbriefed-human session remains TQ-606's external gate.
 - A hostile repository descriptor cannot widen tool, MCP or effect authority.
 - Every public acquisition route is version-pinned or resolves through a
   versioned machine contract.

@@ -35,7 +35,7 @@ describe("public site boundary", () => {
     const source = await sourceText();
     expect(source).toContain("productTruth.release.published");
     expect(source).toContain("@tasq-run/cli@");
-    expect(source).toContain("https://tasq.run/install-v0.1.0.sh");
+    expect(source).toContain("https://tasq.run/install-v${releaseVersion}.sh");
     expect(source).not.toMatch(/curl[^\n]*\|\s*(?:ba)?sh/i);
     expect(source).not.toMatch(/curl[^\n]+releases\/download/i);
     expect(source).not.toMatch(/remote MCP (?:is )?(?:available|shipped)/i);

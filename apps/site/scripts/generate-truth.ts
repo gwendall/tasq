@@ -97,11 +97,6 @@ const adoptionOutputPaths = [
   resolve(repoRoot, "apps/site/src/generated/adopt.json"),
   resolve(repoRoot, "apps/site/public/adopt.json"),
 ];
-const installerSourcePath = resolve(repoRoot, "scripts/release/install-v0.1.0.sh");
-const installerOutputPaths = [
-  resolve(repoRoot, "apps/site/public/install.sh"),
-  resolve(repoRoot, "apps/site/public/install-v0.1.0.sh"),
-];
 const publicEntryCopies = [
   {
     source: "plugins/tasq/skills/tasq/SKILL.md",
@@ -147,6 +142,17 @@ const [matrixFile, backlogFile, policyFile, rootPackageFile] = await Promise.all
 const matrix = matrixFile.value;
 const backlog = backlogFile.value;
 const policy = policyFile.value;
+const publishedVersion = policy.publishedRelease?.version;
+const installerSourcePath = resolve(
+  repoRoot,
+  `scripts/release/install-v${publishedVersion ?? "unpublished"}.sh`,
+);
+const installerOutputPaths = [
+  resolve(repoRoot, "apps/site/public/install.sh"),
+  ...(publishedVersion
+    ? [resolve(repoRoot, `apps/site/public/install-v${publishedVersion}.sh`)]
+    : []),
+];
 const supportVocabulary = new Set(matrix.supportLevels);
 
 for (const claim of [...matrix.productShapes, ...matrix.surfaces, ...matrix.journeys]) {

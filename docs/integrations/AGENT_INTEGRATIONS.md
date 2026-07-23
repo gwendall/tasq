@@ -74,18 +74,18 @@ project-local registration is preferable.
 Try the exact scoped package without persistent installation:
 
 ```bash
-bunx @tasq-run/cli@0.1.0 version
-npm exec --yes --package=@tasq-run/cli@0.1.0 -- tasq version
+bunx @tasq-run/cli@0.1.1 version
+npm exec --yes --package=@tasq-run/cli@0.1.1 -- tasq version
 ```
 
 For a persistent native lifecycle, download and inspect the versioned
 installer before executing it:
 
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.0.sh
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.1.sh
 less /tmp/tasq-install.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.1.0 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.1.0 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --dry-run --version 0.1.1 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.1.1 --prefix "$HOME/.local"
 ```
 
 The script selects only a certified platform, authenticates the downloaded
@@ -128,10 +128,9 @@ effect authority. Tasq never scans the current directory for this descriptor.
 A user or trusted project instruction must activate it explicitly, and the
 runtime must still supply its own stable actor label.
 
-The `setup`, `demo` and deterministic `agent install` helper are implemented
-for the next CLI release and remain
-`implemented_candidate_not_published` until immutable package and native
-artifacts containing them pass the protected release gate.
+The `setup`, `demo` and deterministic `agent install` helper are published in
+`v0.1.1` and pass the protected downloaded-byte certification on both
+supported targets.
 
 ## Current certification boundary
 

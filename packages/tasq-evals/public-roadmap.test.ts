@@ -333,27 +333,24 @@ describe("canonical Tasq roadmap", () => {
     }
   });
 
-  test("binds the first supported alpha to protected package and native release evidence", () => {
+  test("binds the current supported alpha to protected package and native release evidence", () => {
     expect(releaseCertification).toMatchObject({
       contractVersion: "tasq.public-release-certification.v1",
       status: "published",
-      version: "0.1.0",
-      tag: "v0.1.0",
-      sourceCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+      version: "0.1.1",
+      tag: "v0.1.1",
+      sourceCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
       workflow: {
-        runId: 30011315256,
+        runId: 30037044905,
         identityJob: "passed",
         nativeBuildJobs: { "darwin-arm64": "passed", "linux-x64-gnu": "passed" },
         npmTrustedPublishingJob: "passed",
-        githubReleaseJob: {
-          initialState: "failed_after_successful_publication",
-          recovery: expect.stringContaining("exact attested workflow artifacts"),
-        },
+        githubReleaseJob: "passed",
       },
       githubRelease: {
-        url: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-        targetCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-        prerelease: true,
+        url: "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
+        targetCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
+        prerelease: false,
         assetCount: 10,
       },
       npm: {
@@ -369,7 +366,7 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(releaseCertification.npm.packages).toHaveLength(7);
     for (const entry of releaseCertification.npm.packages) {
-      expect(entry.version).toBe("0.1.0");
+      expect(entry.version).toBe("0.1.1");
       expect(entry.integrity).toMatch(/^sha512-/);
     }
   });

@@ -30,7 +30,7 @@ acceptance criteria and verification routes, is in
 [`docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
 TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
-packages and native Tasq Local assets are published as protected `v0.1.0`;
+packages and native Tasq Local assets are published as protected `v0.1.1`;
 the immutable coordinates are certified in
 [TQ-603_RELEASE_CERTIFICATION.json](docs/contracts/TQ-603_RELEASE_CERTIFICATION.json).
 The post-release lifecycle, migration, adoption and interactive-runtime matrix
@@ -41,12 +41,13 @@ release; read
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 TQ-610's acquisition and universal-agent source implementation is in
 [TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
-The public `v0.1.0` installer and static agent entrypoints are usable; `setup`,
-`demo` and `agent install` remain candidate-only until the authorized
-`v0.1.1` protected release and downloaded-byte certification pass. Integration
-`0.1.2` itself has passed the zero-intervention public-main native Codex and
-Claude matrix in
+The public `v0.1.1` installer, `setup`, `demo`, deterministic `agent install`
+helper and static agent entrypoints are published and downloaded-byte
+certified on both supported targets. Integration `0.1.2` has passed the
+zero-intervention public-main native Codex and Claude matrix in
 [TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json](docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json).
+Published coordinates and downloaded-byte evidence are frozen in
+[TQ-610_RELEASE_CERTIFICATION.json](docs/contracts/TQ-610_RELEASE_CERTIFICATION.json).
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

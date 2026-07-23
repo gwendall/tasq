@@ -15,7 +15,7 @@ decision that made it complete.
 Tasq is not another agent runtime. It does not launch agents or call providers.
 It gives the tools you already use a shared, inspectable coordination layer.
 
-> **Public alpha:** `v0.1.0` is available from npm and as an attested GitHub
+> **Public alpha:** `v0.1.1` is available from npm and as an attested GitHub
 > release for macOS arm64 and Linux x64. This is an intentionally early pre-1.0
 > line: use backups for retained ledgers and expect documented migrations as
 > the contracts evolve.
@@ -67,9 +67,9 @@ An attempt succeeding never completes its commitment automatically.
 Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.0.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.1.0 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.1.0 --prefix "$HOME/.local"
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.1.sh
+sh /tmp/tasq-install.sh --dry-run --version 0.1.1 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.1.1 --prefix "$HOME/.local"
 
 # Keep this evaluation isolated from any existing Tasq ledger.
 export TASQ_HOME="$PWD/.tasq"
@@ -89,7 +89,7 @@ before using a long-lived ledger.
 The current machine-readable acquisition contract is available at
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
-immutable `v0.1.0` npm and GitHub release coordinates, the supported targets,
+immutable `v0.1.1` npm and GitHub release coordinates, the supported targets,
 the explicit install prefix, and the exact onboarding argument vector.
 The generic agent entrypoints are
 [`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
@@ -134,9 +134,9 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`, and
-`@tasq-run/console`. Version `0.1.0` is published from protected GitHub Actions
+`@tasq-run/console`. Version `0.1.1` is published from protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
-on the [`v0.1.0` release](https://github.com/gwendall/tasq/releases/tag/v0.1.0).
+on the [`v0.1.1` release](https://github.com/gwendall/tasq/releases/tag/v0.1.1).
 The exact registry and release bytes pass the published lifecycle, migration,
 adoption and interactive-runtime matrix on macOS ARM64 and Linux x64.
 

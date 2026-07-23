@@ -16,7 +16,7 @@ npm exec --yes --package=@tasq-run/cli@${releaseVersion} -- tasq version`,
   nativeInstall: {
     kind: "shell",
     title: "verified persistent install",
-    display: `curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.0.sh
+    display: `curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v${releaseVersion}.sh
 sh /tmp/tasq-install.sh --dry-run --version ${releaseVersion} --prefix "$HOME/.local"
 sh /tmp/tasq-install.sh --version ${releaseVersion} --prefix "$HOME/.local"
 "$HOME/.local/bin/tasq" version`,

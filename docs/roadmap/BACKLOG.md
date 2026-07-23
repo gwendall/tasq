@@ -51,9 +51,9 @@ operation through real adopters, not more repository-only architecture.
 ## Current gates
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
-  seven `@tasq-run/*@0.1.0` packages from npm, or download the attested
+  seven `@tasq-run/*@0.1.1` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
-  [`v0.1.0`](https://github.com/gwendall/tasq/releases/tag/v0.1.0) release.
+  [`v0.1.1`](https://github.com/gwendall/tasq/releases/tag/v0.1.1) release.
   The historical `alpha-bootstrap` tag is not a supported channel.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
@@ -67,7 +67,7 @@ operation through real adopters, not more repository-only architecture.
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
-  snapshot failure before schema mutation. Exact `v0.1.0` bytes migrate the
+  snapshot failure before schema mutation. Exact `v0.1.1` bytes migrate the
   populated format-5 fixture on both targets. Exact N-2 evidence becomes
   mandatory once three protected release lines exist.
 
@@ -168,16 +168,15 @@ Server/Cloud breadth remains behind published-byte Local certification.
   removed. Site tests execute the displayed install, onboarding, MCP, Console,
   operations and Core examples against the published release; browser
   acceptance verifies the real Local Console evidence and Local-only boundary.
-- **TQ-610 — implementation complete, release certification in progress:**
+- **TQ-610 — done:**
   verified `bunx`/`npm exec` try paths, the versioned checksum-authenticating
   persistent installer, stable `/SKILL.md`, `/agents`, `/llms.txt` and
   `/integration.json` entrypoints, explicit Codex/Claude/generic MCP recipes,
   an isolated demo, the non-secret project rendezvous schema and the one-command
-  human setup are implemented. The current `v0.1.0` installer is executable
-  from public source. Integration `0.1.2` passes the public-main native Codex
-  and Claude matrix with zero interventions. `setup`, `demo` and `agent
-  install` remain candidate-only until protected `v0.1.1` npm/native
-  publication and downloaded-byte recertification pass. See
+  human setup are published in `v0.1.1`. Integration `0.1.2` passes the
+  public-main native Codex and Claude matrix with zero interventions. The
+  protected npm/native release and downloaded-byte recertification pass on
+  macOS ARM64 and Linux x64 GNU. See
   `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
 - **TQ-611:** expose a real high-level local TypeScript client with explicit
   workspace, actor and clock. Certify the actual Bun/Node boundary, publish
@@ -213,7 +212,7 @@ Server/Cloud breadth remains behind published-byte Local certification.
   explicit completion. The autonomous CLI guide also exposes additive
   retry-safe attempt recipes; no Machine, terminal, conversation or provider
   ontology entered Core. The same fixture passes from exact protected
-  `@tasq-run/*@0.1.0` packages on both supported targets. See
+  `@tasq-run/*@0.1.1` packages on both supported targets. See
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md` and
   `../contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json`.
 

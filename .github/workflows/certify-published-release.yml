@@ -6,12 +6,12 @@ on:
       tag:
         description: Immutable release tag to certify
         required: true
-        default: v0.1.0
+        default: v0.1.1
         type: string
       source_commit:
         description: Exact 40-character source commit
         required: true
-        default: 0f5357ea10e0eb9f86f143a4fc38030624238bd2
+        default: 1005f16642c23f3a470838055ea2d701c1eaa395
         type: string
 
 permissions:

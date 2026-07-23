@@ -60,7 +60,7 @@ describe("displayed public commands", () => {
   test("executes both exact one-shot package runners", async () => {
     const result = await runShell(publicCodeExamples.quickTry.display);
     expect(result.exitCode, result.stderr).toBe(0);
-    expect(result.stdout.trim().split("\n")).toEqual(["0.1.0", "0.1.0"]);
+    expect(result.stdout.trim().split("\n")).toEqual(["0.1.1", "0.1.1"]);
   }, 30_000);
 
   test("runs the generated verified installer lifecycle without touching data", async () => {
@@ -69,19 +69,19 @@ describe("displayed public commands", () => {
     await mkdir(liveHome, { recursive: true });
     const marker = resolve(liveHome, "ledger-marker");
     await writeFile(marker, "preserve-me");
-    const installer = resolve(repositoryRoot, "apps/site/public/install-v0.1.0.sh");
+    const installer = resolve(repositoryRoot, "apps/site/public/install-v0.1.1.sh");
 
-    const dryRun = await runShell(`sh "${installer}" --dry-run --version 0.1.0 --prefix "${prefix}"`);
+    const dryRun = await runShell(`sh "${installer}" --dry-run --version 0.1.1 --prefix "${prefix}"`);
     expect(dryRun.exitCode, dryRun.stderr).toBe(0);
     expect(dryRun.stdout).toContain("checksum-of-checksums");
 
-    const install = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --version 0.1.0 --prefix "${prefix}"`);
+    const install = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --version 0.1.1 --prefix "${prefix}"`);
     expect(install.exitCode, install.stderr).toBe(0);
     const version = await runShell(`"${prefix}/bin/tasq" version`);
     expect(version.exitCode, version.stderr).toBe(0);
-    expect(version.stdout.trim()).toBe("0.1.0");
+    expect(version.stdout.trim()).toBe("0.1.1");
 
-    const uninstall = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --uninstall --version 0.1.0 --prefix "${prefix}"`);
+    const uninstall = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --uninstall --version 0.1.1 --prefix "${prefix}"`);
     expect(uninstall.exitCode, uninstall.stderr).toBe(0);
     expect(await readFile(marker, "utf8")).toBe("preserve-me");
   }, 120_000);
@@ -89,7 +89,7 @@ describe("displayed public commands", () => {
   test("installs the exact published CLI and executes every displayed Local command", async () => {
     const install = await runShell(publicCodeExamples.install.display);
     expect(install.exitCode, install.stderr).toBe(0);
-    expect(install.stdout).toContain("0.1.0");
+    expect(install.stdout).toContain("0.1.1");
 
     const onboard = await runShell(publicCodeExamples.onboard.display);
     expect(onboard.exitCode, onboard.stderr).toBe(0);
