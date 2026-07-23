@@ -65,9 +65,11 @@ authentication.
 **Current state:** behavior and candidate install/upgrade/uninstall are
 certified on Linux/macOS, including foreground Console discovery from the
 installed artifact, and TQ-321 zero-context Codex/Claude integration is
-certified. Public package and native-release publication are paused behind the
-external TQ-603 npm scope/bootstrap and trusted-publishing gates; the
-maintainer authorized `v0.1.0` as a labeled public alpha on 2026-07-23. The
+certified. The seven `0.1.0-alpha.0` bootstrap identities and their
+release-workflow OIDC bindings are verified; the non-default bootstrap tag is
+not a supported install channel. The maintainer authorized `v0.1.0` as a
+labeled public alpha on 2026-07-23, and the protected tag is the remaining
+distribution step. The
 TQ-608 source migration candidate is passed and awaits protected-byte replay.
 TQ-607 continues as the stable-graduation gate.
 
@@ -116,12 +118,12 @@ product to be useful.
 | Local CLI | `tasq ...` | Implemented and tested | Public installer/release channel missing |
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
-| Embedded Core | `@tasq-run/core` | Public source, release candidate | TypeScript integration; package unpublished |
+| Embedded Core | `@tasq-run/core` | Public source, protected release pending | Bootstrap identity is not the supported install channel |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
 | Protocol adapters | `@tasq-run/protocol-adapters` | Public source, release candidate | Mapping only; no transport or completion authority |
-| Extension SDK | `@tasq-run/extension-sdk` | Public source, release candidate | Trusted in-process code; no public registry distribution |
+| Extension SDK | `@tasq-run/extension-sdk` | Public source, protected release pending | Trusted in-process code; bootstrap identity is not supported distribution |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |

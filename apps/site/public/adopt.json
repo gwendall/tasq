@@ -16,15 +16,15 @@
       "sourceContracts": [
         {
           "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
-          "sha256": "42991b16dfd0df6f41d9cad2b6f31fc3706914841fe0338f97c18377e32583e9"
+          "sha256": "dcf8d09c864afdd2521b9856cf118d041bc7b5c16053d608c96107ef83d26288"
         },
         {
           "path": "docs/roadmap/BACKLOG.json",
-          "sha256": "46993fd1888034fba7196fd8b36efb1af7af07d8448d8520d5dbd31def1f777c"
+          "sha256": "0c820132ad7bd3821ed604fe9a9cf00b3de89203abf30e881357b49ccd073ae3"
         },
         {
           "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
-          "sha256": "4e32d41f20b35ecb1e912ff1787e2cd2ca52e52ff2e0912206c9591603f1c147"
+          "sha256": "2fc39b50a08a91436ea70d2c076970cbd88a46d7429d856e6bbe691e8f3bc1dd"
         }
       ]
     }

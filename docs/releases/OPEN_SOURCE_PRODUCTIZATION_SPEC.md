@@ -1,7 +1,8 @@
 # TQ-601/TQ-602 — Open-source productization specification
 
-> **Status:** public-source alpha; packages and artifacts not released — 2026-07-22
-> **Current truth:** canonical source is public; npm packages and release artifacts are not published
+> **Status:** public-source alpha; npm bootstrap complete; protected release pending — 2026-07-23
+> **Current truth:** canonical source is public; seven non-default bootstrap
+> package identities exist; supported packages and release artifacts are pending
 > **Product contract:** `../concepts/PRODUCT_CONSUMPTION_SPEC.md`
 > **Binding decision:** `../decisions/ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
 > `PUBLIC_RELEASE_POLICY.json`
@@ -28,9 +29,10 @@ explicit `go`, `extend` or `no_go` decision. Source visibility was separately
 authorized on 2026-07-22. On 2026-07-23 the maintainer authorized a pre-1.0
 public package alpha so real adopters can provide feedback before the full
 30-day program closes. TQ-607 therefore remains mandatory for stable
-graduation, not for `v0.1.0`. TQ-321 is passed. TQ-603 is paused only on the
-external npm scope/bootstrap and trusted-publishing gates; the TQ-608 source
-candidate is passed and awaits protected-byte replay.
+graduation, not for `v0.1.0`. TQ-321 is passed. TQ-603 has closed npm scope,
+package-bootstrap and trusted-publishing gates; only the first protected tag
+release remains. The TQ-608 source candidate is passed and awaits
+protected-byte replay.
 
 ## 2. Decisions required before release
 
@@ -53,9 +55,12 @@ DCO-1.1 sign-off.
 ## 3. Proposed public package boundary
 
 The public namespace is `@tasq-run/*`. Control of the `tasq-run` npm
-organization was authenticated on 2026-07-23; creating the seven package
-identities and binding their trusted publishers remain blocking TQ-603
-preconditions. Current `@kami/*` coordinates remain private implementation
+organization was authenticated on 2026-07-23. The seven `0.1.0-alpha.0`
+identities were published from protected CI under the non-default
+`alpha-bootstrap` tag and bound to `gwendall/tasq`, `release.yml` and the
+`release` environment through npm trusted publishing. The short-lived
+bootstrap token and GitHub secret were then removed. These identities grant no
+supported-release claim. Current `@kami/*` coordinates remain private implementation
 names and are not aliases. The unscoped npm package `tasq` belongs to an
 unrelated project; only the executable uses that unscoped name.
 

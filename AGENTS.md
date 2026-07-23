@@ -24,9 +24,11 @@ execution authority; planned status never overrides
 [`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](docs/concepts/PRODUCT_SURFACE_MATRIX.json)
 support truth.
 
-The remaining release-blocking integration contract is
-[TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md](docs/contracts/TQ-321_ZERO_CONTEXT_AGENT_INTEGRATION.md)
-and its blind host matrix. TQ-608's source candidate is implemented; read
+TQ-321's zero-context Codex/Claude matrix is passed. The seven npm bootstrap
+identities and their protected `release.yml` OIDC bindings are certified in
+[TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json](docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json);
+the remaining public-alpha distribution step is the first protected `v0.1.0`
+tag. TQ-608's source candidate is implemented; read
 [TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 

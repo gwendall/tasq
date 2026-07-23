@@ -183,7 +183,7 @@ export const docPages: DocPage[] = [
         callout:
           published
             ? `Install @tasq-run/core@${releaseVersion} for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.`
-            : "Package source is public, but @tasq-run/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
+            : "The @tasq-run/core bootstrap identity is published only under a non-default prerelease tag. Build from source until the protected release; public compatibility starts there, not with bootstrap or source-tree imports.",
       },
       {
         title: "Extensions and connectors stay outside Core",

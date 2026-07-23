@@ -3,7 +3,7 @@
   "sourceUpdatedAt": "2026-07-23",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
-    "status": "public-alpha-source-not-published",
+    "status": "public-alpha-bootstrap-published-release-pending",
     "published": false,
     "installAction": "build_from_source",
     "website": "https://tasq.run",
@@ -34,7 +34,7 @@
       "canonical_repository_control_verified": true,
       "public_source_launch_authorized": true,
       "npm_scope_control_verified": true,
-      "trusted_publishing_configured": false,
+      "trusted_publishing_configured": true,
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
       "candidate_targets_clean_room_certified": true,
@@ -442,8 +442,8 @@
     "self_hosted_server_is_not_implemented",
     "hosted_design_is_not_hosted_behavior",
     "canonical_source_repository_is_public_alpha",
-    "public_package_sources_are_visible_but_not_yet_published",
-    "public_identity_and_license_are_selected_but_no_artifact_is_published",
+    "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
+    "public_identity_license_and_oidc_release_authority_are_verified_but_no_supported_release_is_published",
     "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_deployed_at_tasq_run",
@@ -626,17 +626,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "42991b16dfd0df6f41d9cad2b6f31fc3706914841fe0338f97c18377e32583e9"
+      "sha256": "dcf8d09c864afdd2521b9856cf118d041bc7b5c16053d608c96107ef83d26288"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "46993fd1888034fba7196fd8b36efb1af7af07d8448d8520d5dbd31def1f777c"
+      "sha256": "0c820132ad7bd3821ed604fe9a9cf00b3de89203abf30e881357b49ccd073ae3"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "4e32d41f20b35ecb1e912ff1787e2cd2ca52e52ff2e0912206c9591603f1c147"
+      "sha256": "2fc39b50a08a91436ea70d2c076970cbd88a46d7429d856e6bbe691e8f3bc1dd"
     }
   ]
 }
