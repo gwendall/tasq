@@ -30,15 +30,15 @@ export default async function DocRoute({ params }: { params: Promise<{ slug: str
 
   return (
     <article className="docs-article mx-auto max-w-4xl px-0 py-12 lg:px-14 lg:py-16">
-      <header className="border-b border-[var(--line-strong)] pb-10">
+      <header className="border-b border-[var(--line-strong)] pb-11">
         <p className="eyebrow">{page.eyebrow}</p>
-        <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-6xl">{page.title}</h1>
+        <h1 className="mt-5 max-w-3xl text-[clamp(2.75rem,5vw,4rem)] font-semibold leading-[1.03] tracking-[-0.052em]">{page.title}</h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">{page.summary}</p>
       </header>
 
       <div className="divide-y divide-[var(--line)]">
         {page.sections.map((section) => (
-          <section className="py-10" key={section.title}>
+          <section className="py-11" key={section.title}>
             <h2>{section.title}</h2>
             {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             {section.bullets ? (

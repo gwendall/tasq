@@ -5,15 +5,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex min-h-11 items-center justify-center gap-2 border px-4 text-sm font-semibold tracking-[-0.01em] transition-[background-color,color,transform,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px",
+  "ui-button inline-flex min-h-11 items-center justify-center gap-2 border px-4 text-sm font-semibold tracking-[-0.01em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] shadow-[3px_3px_0_var(--signal)] hover:bg-[var(--signal)] hover:text-[var(--ink)] hover:shadow-[3px_3px_0_var(--ink)]",
+          "border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] shadow-[3px_3px_0_var(--signal)] hover:shadow-[3px_6px_0_var(--signal)] active:shadow-[3px_2px_0_var(--signal)]",
         outline:
-          "border-[var(--line-strong)] bg-transparent text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--paper-strong)]",
-        ghost: "border-transparent text-[var(--ink-muted)] hover:bg-[var(--paper-strong)] hover:text-[var(--ink)]",
+          "border-[var(--line-strong)] bg-transparent text-[var(--ink)] shadow-[3px_3px_0_transparent] hover:border-[var(--ink)] hover:shadow-[3px_6px_0_var(--line-strong)] active:shadow-[3px_2px_0_var(--line-strong)]",
+        ghost:
+          "border-transparent text-[var(--ink-muted)] hover:text-[var(--ink)]",
       },
       size: {
         default: "h-11",
@@ -34,7 +35,13 @@ function Button({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
   const Component = asChild ? Slot : "button";
-  return <Component className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+  return (
+    <Component
+      className={cn(buttonVariants({ variant, size, className }))}
+      data-variant={variant ?? "default"}
+      {...props}
+    />
+  );
 }
 
 export { Button, buttonVariants };

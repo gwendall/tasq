@@ -18,7 +18,7 @@ export function SiteHeader() {
         <Link href="/" className="flex shrink-0 items-center gap-2.5 font-semibold tracking-[-0.04em]" aria-label="Tasq home">
           <BrandMark />
           <span className="text-lg">tasq</span>
-          <span className="hidden border-l border-[var(--line)] pl-2.5 font-mono text-[0.62rem] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)] sm:inline">
+          <span className="hidden border-l border-[var(--line)] pl-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)] sm:inline">
             local first
           </span>
         </Link>
