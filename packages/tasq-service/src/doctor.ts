@@ -4,8 +4,11 @@ import {
   artifact,
   assignment,
   commitmentRelation,
+  completionChallenge,
+  completionProposal,
   completionRecord,
   commitmentSummary,
+  evidenceTrustRecord,
   event,
   externalContextLink,
   externalRef,
@@ -27,6 +30,8 @@ import {
   observation,
   observationRoute,
   reconciliation,
+  resolutionContract,
+  validationDecision,
   idempotencyKey,
   Effect as EffectZ,
   EffectApproval as EffectApprovalZ,
@@ -64,7 +69,7 @@ import {
 
 export interface DoctorIssue {
   code: string;
-  entityType?: "area" | "goal" | "project" | "task" | "summary" | "context_link" | "principal" | "assignment" | "relation" | "artifact" | "completion" | "external_ref" | "event" | "observation" | "reconciliation" | "extension" | "effect" | "effect_approval" | "effect_receipt" | "idempotency";
+  entityType?: "area" | "goal" | "project" | "task" | "summary" | "context_link" | "principal" | "assignment" | "relation" | "artifact" | "completion" | "resolution_contract" | "evidence_trust" | "completion_proposal" | "completion_challenge" | "validation_decision" | "external_ref" | "event" | "observation" | "reconciliation" | "extension" | "effect" | "effect_approval" | "effect_receipt" | "idempotency";
   entityId?: string;
   message: string;
 }
@@ -87,7 +92,7 @@ export async function diagnoseStore(
   const foreignKeys = await client.execute("PRAGMA foreign_key_check");
   const issues: DoctorIssue[] = [];
 
-  const [areas, goals, projects, tasks, summaries, contextLinks, dependencies, claims, attempts, evidence, principals, assignments, relations, artifacts, externalRefs, completions, events, releases, extensionTypes, evaluators, waits, observations, routes, reconciliations, idempotency, effects, approvals, receipts] = await Promise.all([
+  const [areas, goals, projects, tasks, summaries, contextLinks, dependencies, claims, attempts, evidence, principals, assignments, relations, artifacts, externalRefs, completions, resolutionContracts, trustRecords, proposals, challenges, decisions, events, releases, extensionTypes, evaluators, waits, observations, routes, reconciliations, idempotency, effects, approvals, receipts] = await Promise.all([
     db.select().from(area).where(eq(area.tenantId, tenantId)),
     db.select().from(goal).where(eq(goal.tenantId, tenantId)),
     db.select().from(project).where(eq(project.tenantId, tenantId)),
@@ -104,6 +109,11 @@ export async function diagnoseStore(
     db.select().from(artifact).where(eq(artifact.tenantId, tenantId)),
     db.select().from(externalRef).where(eq(externalRef.tenantId, tenantId)),
     db.select().from(completionRecord).where(eq(completionRecord.tenantId, tenantId)),
+    db.select().from(resolutionContract).where(eq(resolutionContract.tenantId, tenantId)),
+    db.select().from(evidenceTrustRecord).where(eq(evidenceTrustRecord.tenantId, tenantId)),
+    db.select().from(completionProposal).where(eq(completionProposal.tenantId, tenantId)),
+    db.select().from(completionChallenge).where(eq(completionChallenge.tenantId, tenantId)),
+    db.select().from(validationDecision).where(eq(validationDecision.tenantId, tenantId)),
     db.select().from(event).where(eq(event.tenantId, tenantId)),
     db.select().from(extensionRelease).where(eq(extensionRelease.tenantId, tenantId)),
     db.select().from(extensionType).where(eq(extensionType.tenantId, tenantId)),
@@ -129,6 +139,10 @@ export async function diagnoseStore(
   const relationById = new Map(relations.map((row) => [row.id, row]));
   const artifactById = new Map(artifacts.map((row) => [row.id, row]));
   const completionById = new Map(completions.map((row) => [row.id, row]));
+  const resolutionContractById = new Map(resolutionContracts.map((row) => [row.id, row]));
+  const trustRecordById = new Map(trustRecords.map((row) => [row.id, row]));
+  const proposalById = new Map(proposals.map((row) => [row.id, row]));
+  const decisionById = new Map(decisions.map((row) => [row.id, row]));
   const releaseById = new Map(releases.map((row) => [row.id, row]));
   const extensionTypeByIdentity = new Map(extensionTypes.map((row) => [
     `${row.typeUri}@${row.schemaVersion}`,
@@ -332,6 +346,10 @@ export async function diagnoseStore(
     if (row.completionMode === "evidence" && !row.successCriteria?.trim()) {
       issues.push(issue("evidence_mode_without_criteria", "task", row.id, "Evidence-backed task has no success criteria"));
     }
+    if (row.validationRequired && row.completionMode !== "evidence") {
+      issues.push(issue("validated_task_without_evidence_mode", "task", row.id,
+        "Independently validated task must use evidence completion mode"));
+    }
     if (row.parentTaskId) {
       const parent = taskById.get(row.parentTaskId);
       if (!parent || parent.deletedAt != null) {
@@ -439,6 +457,131 @@ export async function diagnoseStore(
     }
   }
 
+  for (const row of resolutionContracts) {
+    const linkedTask = taskById.get(row.taskId);
+    if (!linkedTask || row.taskRevision > linkedTask.revision) {
+      issues.push(issue("resolution_contract_task_mismatch", "resolution_contract", row.id,
+        `Resolution contract ${row.id} has a missing task or impossible revision`));
+    }
+    if (!principalById.has(row.createdByPrincipalId)) {
+      issues.push(issue("resolution_contract_principal_mismatch", "resolution_contract", row.id,
+        `Resolution contract ${row.id} has a missing/cross-workspace creator`));
+    }
+    for (const [field, value] of [
+      ["criteria", row.criteriaJson],
+      ["eligible validators", row.eligibleValidatorPrincipalIds],
+      ["adjudicators", row.adjudicatorPrincipalIds],
+    ] as const) {
+      try {
+        const parsed = JSON.parse(value);
+        if (!Array.isArray(parsed) || (field === "criteria" && parsed.length === 0)) throw new Error();
+        if (field !== "criteria" && parsed.some((id) => !principalById.has(String(id)))) {
+          issues.push(issue("resolution_contract_principal_mismatch", "resolution_contract", row.id,
+            `Resolution contract ${row.id} names a missing/cross-workspace ${field}`));
+        }
+      } catch {
+        issues.push(issue("resolution_contract_json_invalid", "resolution_contract", row.id,
+          `Resolution contract ${row.id} has invalid ${field} JSON`));
+      }
+    }
+  }
+
+  for (const row of trustRecords) {
+    const linkedEvidence = evidenceById.get(row.evidenceId);
+    if (!linkedEvidence || linkedEvidence.taskId !== row.taskId) {
+      issues.push(issue("evidence_trust_evidence_mismatch", "evidence_trust", row.id,
+        `Evidence trust record ${row.id} points at missing or foreign evidence`));
+    }
+    if (!principalById.has(row.recordedByPrincipalId)) {
+      issues.push(issue("evidence_trust_principal_mismatch", "evidence_trust", row.id,
+        `Evidence trust record ${row.id} has a missing/cross-workspace recorder`));
+    }
+    if (row.supersedesTrustRecordId) {
+      const prior = trustRecordById.get(row.supersedesTrustRecordId);
+      if (!prior || prior.evidenceId !== row.evidenceId || prior.taskId !== row.taskId) {
+        issues.push(issue("evidence_trust_chain_mismatch", "evidence_trust", row.id,
+          `Evidence trust record ${row.id} supersedes a missing or foreign trust record`));
+      }
+    }
+  }
+
+  for (const row of proposals) {
+    const contract = resolutionContractById.get(row.resolutionContractId);
+    if (!contract || contract.taskId !== row.taskId || contract.contractDigest !== row.contractDigest) {
+      issues.push(issue("completion_proposal_contract_mismatch", "completion_proposal", row.id,
+        `Completion proposal ${row.id} does not match its frozen contract`));
+    }
+    if (!principalById.has(row.proposerPrincipalId)) {
+      issues.push(issue("completion_proposal_principal_mismatch", "completion_proposal", row.id,
+        `Completion proposal ${row.id} has a missing/cross-workspace proposer`));
+    }
+    try {
+      const criterionEvidence = JSON.parse(row.criterionEvidence) as Array<{ evidenceIds?: unknown }>;
+      if (!Array.isArray(criterionEvidence) || criterionEvidence.length === 0 ||
+          criterionEvidence.some((criterion) =>
+            !Array.isArray(criterion.evidenceIds) ||
+            criterion.evidenceIds.some((id) => evidenceById.get(String(id))?.taskId !== row.taskId))) {
+        throw new Error();
+      }
+    } catch {
+      issues.push(issue("completion_proposal_evidence_mismatch", "completion_proposal", row.id,
+        `Completion proposal ${row.id} has invalid or foreign criterion evidence`));
+    }
+  }
+
+  for (const row of challenges) {
+    const proposal = proposalById.get(row.proposalId);
+    if (!proposal || proposal.taskId !== row.taskId) {
+      issues.push(issue("completion_challenge_proposal_mismatch", "completion_challenge", row.id,
+        `Completion challenge ${row.id} points at a missing or foreign proposal`));
+    }
+    if (!principalById.has(row.challengerPrincipalId)) {
+      issues.push(issue("completion_challenge_principal_mismatch", "completion_challenge", row.id,
+        `Completion challenge ${row.id} has a missing/cross-workspace challenger`));
+    }
+    try {
+      const counterEvidenceIds = JSON.parse(row.counterEvidenceIds) as unknown;
+      if (!Array.isArray(counterEvidenceIds) ||
+          counterEvidenceIds.some((id) => evidenceById.get(String(id))?.taskId !== row.taskId)) throw new Error();
+    } catch {
+      issues.push(issue("completion_challenge_evidence_mismatch", "completion_challenge", row.id,
+        `Completion challenge ${row.id} has invalid or foreign counter-evidence`));
+    }
+  }
+
+  for (const row of decisions) {
+    const contract = resolutionContractById.get(row.resolutionContractId);
+    const proposal = proposalById.get(row.proposalId);
+    if (!contract || !proposal || contract.taskId !== row.taskId ||
+        proposal.taskId !== row.taskId || proposal.resolutionContractId !== row.resolutionContractId) {
+      issues.push(issue("validation_decision_chain_mismatch", "validation_decision", row.id,
+        `Validation decision ${row.id} does not match its contract and proposal`));
+    }
+    if (!principalById.has(row.decidedByPrincipalId)) {
+      issues.push(issue("validation_decision_principal_mismatch", "validation_decision", row.id,
+        `Validation decision ${row.id} has a missing/cross-workspace decider`));
+    }
+    if (row.supersedesDecisionId) {
+      const prior = decisionById.get(row.supersedesDecisionId);
+      if (!prior || prior.proposalId !== row.proposalId || prior.taskId !== row.taskId) {
+        issues.push(issue("validation_decision_supersession_mismatch", "validation_decision", row.id,
+          `Validation decision ${row.id} supersedes a missing or foreign decision`));
+      }
+    }
+    try {
+      const evidenceIds = JSON.parse(row.evidenceIds) as unknown;
+      const trustIds = JSON.parse(row.trustRecordIds) as unknown;
+      if (!Array.isArray(evidenceIds) || !Array.isArray(trustIds) ||
+          evidenceIds.some((id) => evidenceById.get(String(id))?.taskId !== row.taskId) ||
+          trustIds.some((id) => trustRecordById.get(String(id))?.taskId !== row.taskId)) throw new Error();
+    } catch {
+      issues.push(issue("validation_decision_evidence_mismatch", "validation_decision", row.id,
+        `Validation decision ${row.id} has invalid or foreign evidence/trust references`));
+    }
+  }
+
+  const supersededDecisions = new Set(decisions.flatMap((row) =>
+    row.supersedesDecisionId ? [row.supersedesDecisionId] : []));
   const completionsByTaskRevision = new Set<string>();
   for (const row of completions) {
     completionsByTaskRevision.add(`${row.taskId}\u0000${row.resultingRevision}`);
@@ -451,6 +594,20 @@ export async function diagnoseStore(
     try { evidenceIds = typeof evidenceIds === "string" ? JSON.parse(evidenceIds) : evidenceIds; } catch { evidenceIds = null; }
     if (!Array.isArray(evidenceIds) || evidenceIds.some((id) => evidenceById.get(String(id))?.taskId !== row.taskId)) {
       issues.push(issue("completion_evidence_mismatch", "completion", row.id, `Completion ${row.id} has invalid or foreign evidence`));
+    }
+    if (linkedTask?.validationRequired) {
+      const decision = row.validationDecisionId ? decisionById.get(row.validationDecisionId) : null;
+      const contract = row.resolutionContractId ? resolutionContractById.get(row.resolutionContractId) : null;
+      if (!decision || !contract || decision.outcome !== "accepted" ||
+          supersededDecisions.has(decision.id) ||
+          decision.taskId !== row.taskId || contract.taskId !== row.taskId ||
+          decision.resolutionContractId !== contract.id) {
+        issues.push(issue("completion_validation_mismatch", "completion", row.id,
+          `Validated completion ${row.id} lacks a current accepted decision and matching contract`));
+      }
+    } else if (row.validationDecisionId || row.resolutionContractId) {
+      issues.push(issue("unexpected_completion_validation", "completion", row.id,
+        `Non-validated completion ${row.id} unexpectedly links resolution records`));
     }
   }
   for (const row of tasks) {

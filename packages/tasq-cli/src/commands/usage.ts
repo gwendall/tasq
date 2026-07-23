@@ -12,14 +12,14 @@
 
 // ── Task verbs (top-level) ──────────────────────────────────────────────
 export const ADD_USAGE =
-  "add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]";
+  "add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]";
 export const SHOW_USAGE = "show <id>";
 export const INSPECT_USAGE = "inspect <id> [--json]   canonical profile-neutral commitment graph";
 export const DISCOVER_USAGE = `discover [show] [--json]
 discover schema <resource-id> [--json]
 discover negotiate --hello <json> [--json]`;
 export const UPDATE_USAGE =
-  "update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]";
+  "update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]";
 export const TREE_USAGE = "tree <id> — shows a task + its sub-tasks";
 export const TASK_STATUS_USAGE =
   "task status <id>  (shows progress + ETA for a task with sub-tasks)";
@@ -27,7 +27,7 @@ export const SEARCH_USAGE = 'search "<query>"';
 
 /** transitionCmd builds its missing-arg usage from the verb name. */
 export function transitionUsage(verb: string): string {
-  return `${verb} <id>${verb === "done" ? " [--evidence <id,...>]" : ""} [--reason <text>] [--note <text>] [--at <iso>] [--expected-revision <n>] [--idempotency-key <key>]`;
+  return `${verb} <id>${verb === "done" ? " [--evidence <id,...>] [--decision <accepted-validation-id>]" : ""} [--reason <text>] [--note <text>] [--at <iso>] [--expected-revision <n>] [--idempotency-key <key>]`;
 }
 
 export const DEPEND_USAGE =
@@ -94,6 +94,18 @@ attempt succeed|fail|cancel|wait|resume <attempt-id> [--message <text>] [--expec
 export const EVIDENCE_USAGE = `evidence add <task-id> --kind <kind> [--summary <text>] [--uri <uri>] [--digest <digest>] [--source <source>] [--attempt <id>] [--supersedes <id>] [--observed-at <iso>] [--metadata <json>] [--idempotency-key <key>]
 evidence list [task-id] [--kind <kind>] [--limit N]
 evidence show <evidence-id>`;
+export const RESOLUTION_USAGE = `resolution contract <task-id> --criteria <json> --policy deterministic|attestation|optimistic|adjudicated
+                    [--policy-uri <uri>] [--policy-version N] [--implementation-digest sha256:...]
+                    [--validators <actor,...>] [--adjudicators <actor,...>] [--challenge-window-ms N]
+resolution trust <task-id> --evidence <id> [--reason <text>] [--retention-until <iso>] --idempotency-key <key>
+resolution revoke-trust <trust-id> --reason <text> --idempotency-key <key>
+resolution propose <task-id> --contract <id> --criterion-evidence <json> [--summary <text>] --idempotency-key <key>
+resolution challenge <proposal-id> --reason-code <code> --explanation <text> [--counter-evidence <id,...>]
+resolution attest|adjudicate <proposal-id> --outcome accepted|rejected|too_early|indeterminate
+                    --reason-code <code> --explanation <text> [--supersedes <decision-id>]
+resolution settle <proposal-id> --idempotency-key <key>
+resolution show <contract-id>
+Authenticated trust above unverified is available only through a host authority, not this local CLI.`;
 export const WAIT_USAGE = `wait create <task-id> --kind <kind> --parameters <json> [--not-before <iso>] [--deadline <iso>]
             [--fallback-kind none|create_task|activate_task] [--fallback-spec <json>|--fallback-task <task-id>]
             [--schema-version N] [--supersedes <wait-id>] [--idempotency-key <key>]
@@ -153,6 +165,8 @@ export function commandUsage(command: string): string | undefined {
       return DISCOVER_USAGE;
     case "update":
       return UPDATE_USAGE;
+    case "resolution":
+      return RESOLUTION_USAGE;
     case "start":
       return transitionUsage("start");
     case "done":

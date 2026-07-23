@@ -284,16 +284,37 @@ rewritten.
 
 ```text
 id, tenantId, projectId, goalId, areaId, parentTaskId,
-title, description, nextAction, successCriteria, completionMode, status,
+title, description, nextAction, successCriteria, completionMode,
+validationRequired, status,
 priority, estimatedMinutes, scheduledAt, dueAt, startedAt, completedAt,
 recurrence, recurrenceInterval, recurrenceAnchor, lastDoneAt, streak,
 recurrenceParentId, metadata, createdAt, updatedAt, deletedAt
 ```
 
-On success, `status` is `done` and `completedAt` is non-null. Evidence IDs used
-for the decision are stored in the `completed` audit event payload rather than
-duplicated onto the task row. Retrieve evidence objects through `evidence list`
-or the composite task view.
+On success, `status` is `done` and `completedAt` is non-null. The immutable
+completion record retains policy identity, evidence IDs and deciding principal;
+the `completed` audit event also exposes the decision basis.
+
+## Independently validated completion
+
+`validationRequired` is additive and defaults to `false`. When true, the task
+must use evidence completion and `done` requires
+`--decision <accepted-validation-id>` instead of accepting evidence alone.
+
+`tasq resolution` exposes exact JSON objects for:
+
+- `contract` / `show`: `ResolutionContract` and
+  `CompletionResolutionChain`;
+- `trust` / `revoke-trust`: `EvidenceTrustRecord`;
+- `propose`: `CompletionProposal`;
+- `challenge`: `CompletionChallenge`;
+- `attest`, `settle`, and `adjudicate`: `ValidationDecision`.
+
+The complete chain contains exactly `contract`, `proposals`, `challenges`,
+`decisions` and `trustRecords`. Decision outcomes are `accepted`, `rejected`,
+`too_early`, `indeterminate` or `challenged`. Only a current `accepted`
+decision can complete the task. CLI trust records are always `unverified`;
+higher authenticity requires a host authority through Core.
 
 ## Composite task view
 
@@ -407,7 +428,9 @@ are:
 contractVersion, inspectedAt, workspaceId, commitment, principals,
 assignments, relations, claims, attempts, artifacts, effects, effectApprovals,
 effectReceipts, evidence,
-completionRecords, conditions, observations, reconciliations, externalRefs,
+resolutionContracts, evidenceTrustRecords, completionProposals,
+completionChallenges, validationDecisions, completionRecords,
+conditions, observations, reconciliations, externalRefs,
 externalContextLinks, events, resumeCursor
 ```
 
@@ -459,7 +482,7 @@ agent transport or new authority boundary.
 ## Retry semantics
 
 `claim`, task status transitions, attempt start/transitions, `evidence add`,
-and `wait create` accept `--idempotency-key`. Task and attempt transitions also
+resolution mutations, and `wait create` accept `--idempotency-key`. Task and attempt transitions also
 accept `--expected-revision`; frozen compatibility objects omit that revision,
 so autonomous consumers read it from `commitment.inspect`. Retrying
 the same operation, actor, and payload resolves to the same durable resource
@@ -467,5 +490,7 @@ ID; reusing the key for another request or actor is an error. Claims and
 attempts are lifecycle objects, so a much later retry may return that same
 resource in its newer state (for example a released claim or succeeded
 attempt), not a frozen copy of the first response. Evidence is immutable and
-therefore remains identical. Consumers must use returned IDs rather than infer
+therefore remains identical. Resolution decisions also replay after the task
+becomes terminal, so a lost response never requires re-evaluating changed
+state. Consumers must use returned IDs rather than infer
 identity from titles, timestamps, or external prose.

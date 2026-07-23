@@ -461,9 +461,18 @@ describe("Tasq read-only inspector handler", () => {
           externalReceiptId: injection, receiptDigest: "sha256:receipt", evidenceId: "evidence-1",
           report: { hostile: injection },
         }],
+        resolutionContracts: [{ id: "resolution-contract-1", policyUri: injection }],
+        evidenceTrustRecords: [{ id: "evidence-trust-1", reason: injection }],
+        completionProposals: [{ id: "completion-proposal-1", summary: injection }],
+        completionChallenges: [{ id: "completion-challenge-1", explanation: injection }],
+        validationDecisions: [{ id: "validation-decision-1", explanation: injection }],
       } as unknown as CommitmentInspection;
       const html = renderCommitmentPage(snapshot);
-      for (const id of ["wait-1", "observation-1", "reconciliation-1", "effect-1", "approval-1", "receipt-1"]) {
+      for (const id of [
+        "wait-1", "observation-1", "reconciliation-1", "effect-1", "approval-1", "receipt-1",
+        "resolution-contract-1", "evidence-trust-1", "completion-proposal-1",
+        "completion-challenge-1", "validation-decision-1",
+      ]) {
         expect(html).toContain(id);
       }
       expect(html).not.toContain(injection);

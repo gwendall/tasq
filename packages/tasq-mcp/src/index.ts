@@ -1,12 +1,15 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { createHash } from "node:crypto";
 import {
   COMMITMENT_SUMMARY_PAGE_CONTRACT_VERSION,
   DEFAULT_EXTERNAL_CONTEXT_PURPOSE_URI,
   EXTERNAL_CONTEXT_LINK_PAGE_CONTRACT_VERSION,
   ResourceKey as ResourceKeySchema,
   ResourceProblem,
+  RESOLUTION_POLICY_KINDS,
+  VALIDATION_OUTCOMES,
 } from "@tasq-run/schema";
 import {
   acquireTaskClaim,
@@ -14,14 +17,19 @@ import {
   attachExternalContextLink,
   appendCommitmentSummary,
   addTaskEvidence,
+  adjudicateCompletion,
+  attestCompletion,
+  attestEvidenceTrust,
   authorizeEffect,
   beginEffectExecution,
   buildContextPacket,
   blockCommitment,
   cancelCommitment,
   cancelEffect,
+  challengeCompletion,
   completeCommitment,
   createCommitment,
+  createResolutionContract,
   detachExternalContextLink,
   getCommitment,
   getCommitmentSummary,
@@ -29,6 +37,7 @@ import {
   getResourceLeaseView,
   getDiscoverySchema,
   getEffect,
+  getCompletionResolutionChain,
   getTasqDiscovery,
   inspectCommitment,
   listCommitments,
@@ -41,6 +50,7 @@ import {
   listEvents,
   negotiateOnboarding,
   proposeEffect,
+  proposeCompletion,
   releaseTaskClaim,
   releaseResourceLease,
   ResourceLeaseError,
@@ -48,6 +58,7 @@ import {
   reopenCommitment,
   startCommitment,
   startTaskAttempt,
+  settleOptimisticCompletion,
   transitionTaskAttempt,
   sweepExpiredResources,
   unblockCommitment,
@@ -81,6 +92,9 @@ const JsonObject = z.record(z.unknown());
 const CommitmentStatus = z.enum(["open", "in_progress", "blocked", "done", "cancelled"]);
 const AttemptStatus = z.enum(["running", "input_required", "succeeded", "failed", "cancelled"]);
 const EffectStatus = z.enum(["proposed", "authorized", "executing", "committed", "indeterminate", "failed", "cancelled"]);
+const ValidationOutcome = z.enum(VALIDATION_OUTCOMES);
+const ResolutionPolicyKind = z.enum(RESOLUTION_POLICY_KINDS);
+const Sha256Digest = z.string().regex(/^sha256:[0-9a-f]{64}$/);
 
 function asObject(value: unknown): Record<string, unknown> {
   if (value !== null && !Array.isArray(value) && typeof value === "object") {
@@ -279,6 +293,18 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       options.db, commitmentId, { workspaceId: options.workspaceId, now: now() },
     ) })));
 
+    server.registerTool("tasq_resolution_get", {
+      description: "Read the complete append-only resolution chain for one frozen contract.",
+      inputSchema: { resolutionContractId: Id },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
+    }, ({ resolutionContractId }) => guarded(async () => ({
+      resolution: await getCompletionResolutionChain(
+        options.db,
+        resolutionContractId,
+        options.workspaceId,
+      ),
+    })));
+
     server.registerTool("tasq_summary_list", {
       description: "Read append-only source-bound summaries for terminal work; raw inspection remains authoritative and summary prose grants no authority.",
       inputSchema: {
@@ -450,6 +476,7 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
         description: z.string().max(20_000).nullable().optional(),
         successCriteria: z.string().trim().min(1).max(2_000).nullable().optional(),
         completionPolicy: z.enum(["assertion", "evidence"]).optional(),
+        validationRequired: z.boolean().optional(),
         priority: z.number().int().min(0).max(4).nullable().optional(),
         notBefore: z.number().int().nonnegative().nullable().optional(),
         dueAt: z.number().int().nonnegative().nullable().optional(),
@@ -471,6 +498,7 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
           description: z.string().max(20_000).nullable().optional(),
           successCriteria: z.string().trim().min(1).max(2_000).nullable().optional(),
           completionPolicy: z.enum(["assertion", "evidence"]).optional(),
+          validationRequired: z.boolean().optional(),
           priority: z.number().int().min(0).max(4).nullable().optional(),
           notBefore: z.number().int().nonnegative().nullable().optional(),
           dueAt: z.number().int().nonnegative().nullable().optional(),
@@ -506,6 +534,124 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
   }
 
   if (capabilities.has("coordinate")) {
+    server.registerTool("tasq_resolution_contract_create", {
+      description: "Freeze success criteria, evidence constraints and one exact completion policy identity.",
+      inputSchema: {
+        commitmentId: Id,
+        criteria: z.array(JsonObject).min(1).max(100),
+        policyKind: ResolutionPolicyKind,
+        policyUri: z.string().trim().min(3).max(2_000),
+        policyVersion: z.number().int().positive(),
+        implementationDigest: Sha256Digest,
+        notBefore: z.number().int().nonnegative().nullable().optional(),
+        challengeWindowMs: z.number().int().nonnegative().optional(),
+        allowSelfValidation: z.boolean().optional(),
+        eligibleValidatorPrincipalIds: z.array(Id).max(100).optional(),
+        adjudicatorPrincipalIds: z.array(Id).max(100).optional(),
+        metadata: JsonObject.optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ commitmentId, idempotencyKey, ...input }) => guarded(async () =>
+      createResolutionContract(options.db, {
+        taskId: commitmentId,
+        ...input,
+      }, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_evidence_trust_attest_unverified", {
+      description: "Record local actor attribution for evidence. This tool cannot claim authenticated source or provider verification.",
+      inputSchema: {
+        commitmentId: Id,
+        evidenceId: Id,
+        reason: z.string().trim().min(1).max(2_000),
+        verifiedAt: z.number().int().nonnegative().optional(),
+        retentionUntil: z.number().int().nonnegative().nullable().optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ commitmentId, evidenceId, reason, verifiedAt, retentionUntil, idempotencyKey }) =>
+      guarded(async () => attestEvidenceTrust(options.db, {
+        taskId: commitmentId,
+        evidenceId,
+        authenticity: "unverified",
+        authorityUri: "urn:tasq:authority:local-attribution",
+        authorityVersion: 1,
+        authorityDigest: `sha256:${createHash("sha256")
+          .update("tasq.local-attribution.v1")
+          .digest("hex")}`,
+        reason,
+        verifiedAt: verifiedAt ?? now(),
+        validUntil: null,
+        retentionUntil: retentionUntil ?? null,
+      }, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_completion_propose", {
+      description: "Propose completion against every frozen criterion with explicit evidence IDs.",
+      inputSchema: {
+        commitmentId: Id,
+        resolutionContractId: Id,
+        criterionEvidence: z.array(z.object({
+          criterionId: z.string().trim().min(1).max(120),
+          evidenceIds: z.array(Id).min(1).max(100),
+        })).min(1).max(100),
+        summary: z.string().trim().min(1).max(2_000).nullable().optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ commitmentId, idempotencyKey, ...input }) => guarded(async () =>
+      proposeCompletion(options.db, {
+        taskId: commitmentId,
+        ...input,
+      }, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_completion_challenge", {
+      description: "Append a timely reasoned challenge; it never overwrites the proposal.",
+      inputSchema: {
+        proposalId: Id,
+        reasonCode: z.string().trim().min(1).max(120),
+        explanation: z.string().trim().min(1).max(2_000),
+        counterEvidenceIds: z.array(Id).max(100).optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ idempotencyKey, ...input }) => guarded(async () =>
+      challengeCompletion(options.db, input, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_completion_attest", {
+      description: "Record a decision by the bound eligible principal. Self-validation and stale inputs fail closed.",
+      inputSchema: {
+        proposalId: Id,
+        outcome: ValidationOutcome.exclude(["challenged"]),
+        reasonCode: z.string().trim().min(1).max(120),
+        explanation: z.string().trim().min(1).max(2_000),
+        supersedesDecisionId: Id.nullable().optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ idempotencyKey, ...input }) => guarded(async () =>
+      attestCompletion(options.db, input, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_completion_settle_optimistic", {
+      description: "Settle an optimistic proposal using the injected clock and durable challenge records.",
+      inputSchema: { proposalId: Id, idempotencyKey: IdempotencyKey },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ proposalId, idempotencyKey }) => guarded(async () =>
+      settleOptimisticCompletion(options.db, proposalId, serviceContext(idempotencyKey))));
+
+    server.registerTool("tasq_completion_adjudicate", {
+      description: "Append a named adjudicator decision, optionally superseding the current challenged leaf.",
+      inputSchema: {
+        proposalId: Id,
+        outcome: ValidationOutcome.exclude(["challenged"]),
+        reasonCode: z.string().trim().min(1).max(120),
+        explanation: z.string().trim().min(1).max(2_000),
+        supersedesDecisionId: Id.nullable().optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ idempotencyKey, ...input }) => guarded(async () =>
+      adjudicateCompletion(options.db, input, serviceContext(idempotencyKey))));
+
     server.registerTool("tasq_context_link_attach", {
       description: "Append a pointer to reusable context owned elsewhere. Version or digest pins identity; neither authenticates content or grants authority.",
       inputSchema: {
@@ -643,15 +789,18 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
         reason: z.string().max(2_000).optional(),
         note: z.string().max(20_000).optional(),
         evidenceIds: z.array(Id).max(100).optional(),
+        validationDecisionId: Id.optional(),
         idempotencyKey: IdempotencyKey,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
-    }, ({ commitmentId, transition, expectedRevision, reason, note, evidenceIds, idempotencyKey }) =>
+    }, ({ commitmentId, transition, expectedRevision, reason, note, evidenceIds,
+      validationDecisionId, idempotencyKey }) =>
       guarded(async () => {
         const operation = { start: startCommitment, complete: completeCommitment, block: blockCommitment,
           unblock: unblockCommitment, cancel: cancelCommitment, reopen: reopenCommitment }[transition];
         return operation(options.db, commitmentId, {
           ...kernelContext(idempotencyKey), expectedRevision, reason, note, evidenceIds,
+          validationDecisionId,
         });
       }));
 

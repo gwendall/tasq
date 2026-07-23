@@ -228,6 +228,11 @@ function executionSection(snapshot: CommitmentInspection): string {
     ["Claims", snapshot.claims, "No claim history."],
     ["Attempts", snapshot.attempts, "No execution attempts."],
     ["Evidence", snapshot.evidence, "No evidence records."],
+    ["Resolution contracts", snapshot.resolutionContracts, "No completion resolution contract."],
+    ["Evidence trust", snapshot.evidenceTrustRecords, "No evidence trust records."],
+    ["Completion proposals", snapshot.completionProposals, "No completion proposals."],
+    ["Completion challenges", snapshot.completionChallenges, "No completion challenges."],
+    ["Validation decisions", snapshot.validationDecisions, "No validation decisions."],
     ["Completion records", snapshot.completionRecords, "No completion records."],
   ];
   return `<div class="execution-grid">${groups.map(([label, records, message]) =>

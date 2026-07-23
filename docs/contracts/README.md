@@ -11,7 +11,7 @@ certificates or status snapshots.
 | 300 | MCP, connectors, protocol surfaces, and agent integration |
 | 400 | Outbox, idempotency, replication, and recovery |
 | 500 | Bounded context, compaction, links, and read-first inspection |
-| 600 | Public repository, releases, adoption, dogfood, and data safety |
+| 600 | Public repository, releases, adoption, dogfood, data safety, and completion resolution |
 | 700 | Local Console models, transport, UI, lifecycle, and browser proof |
 | 800 | Hosted authority and REST foundations |
 

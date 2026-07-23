@@ -1,0 +1,66 @@
+{
+  "contractVersion": "tasq.tq-612-certification.v1",
+  "status": "source_candidate",
+  "decision": "ADR-005",
+  "storeFormat": 26,
+  "policies": [
+    "deterministic",
+    "attestation",
+    "optimistic",
+    "adjudicated"
+  ],
+  "outcomes": [
+    "accepted",
+    "rejected",
+    "too_early",
+    "indeterminate",
+    "challenged"
+  ],
+  "surfaces": {
+    "core": "implemented_tested",
+    "embeddedClient": "implemented_tested",
+    "cli": "implemented_tested",
+    "localMcp": "implemented_tested",
+    "canonicalInspection": "implemented_tested",
+    "localConsole": "implemented_tested",
+    "portableExportImport": "implemented_tested",
+    "remoteServer": "not_implemented"
+  },
+  "trustBoundary": {
+    "localCliMaximum": "unverified",
+    "localMcpMaximum": "unverified",
+    "higherTrustRequiresHostAuthority": true,
+    "actorLabelIsAuthentication": false
+  },
+  "adversarialCases": [
+    "self_validation",
+    "ineligible_validator",
+    "criteria_drift",
+    "evidence_supersession",
+    "stale_evidence",
+    "source_mismatch",
+    "trust_missing",
+    "trust_revoked",
+    "trust_expired",
+    "retention_insufficient",
+    "evaluator_identity_drift",
+    "too_early_settlement",
+    "timely_challenge",
+    "stale_supersession",
+    "lost_response_replay"
+  ],
+  "evidence": [
+    "packages/tasq-service/test/resolution.test.ts",
+    "packages/tasq-evals/completion-resolution-adversarial.test.ts",
+    "packages/tasq-cli/test/e2e.test.ts",
+    "packages/tasq-mcp/test/mcp-server.test.ts",
+    "packages/tasq-core/test/local-client.test.ts",
+    "packages/tasq-inspector/test/inspector.test.ts",
+    "packages/tasq-service/test/data-safety.test.ts"
+  ],
+  "publication": {
+    "release": null,
+    "protectedRun": null,
+    "downloadedByteCertification": null
+  }
+}

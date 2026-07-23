@@ -107,9 +107,25 @@ An immutable binding that explains why an artifact, observation or receipt
 supports a success criterion.
 _Avoid_: Any output, validator decision
 
+**Evidence trust record**:
+An immutable, authority-attributed statement about the authenticity, validity
+and retention of one exact evidence record; correction or revocation appends a
+new trust record.
+_Avoid_: Reputation score, evidence content
+
+**Resolution contract**:
+An immutable policy snapshot that freezes criteria, evidence constraints,
+validator eligibility, uncertainty behavior and challenge rules for completion.
+_Avoid_: Task status, mutable checklist
+
 **Completion proposal**:
 A claim that named criteria are satisfied by specific evidence.
 _Avoid_: Completion record
+
+**Completion challenge**:
+An immutable reasoned objection to one completion proposal, optionally with
+counter-evidence.
+_Avoid_: Rejected task, mutable comment
 
 **Validation decision**:
 An immutable accepted, rejected, challenged, too-early or indeterminate

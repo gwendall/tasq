@@ -142,6 +142,10 @@ pnpm --filter @tasq-internal/evals test -- hosted-mutation-rest.test.ts
   authenticated dispatch permits, attempt/claim/fence enforcement, immutable
   verified receipts, timeout recovery, independent compensation and doctor
   detection after simulated SQL-guard bypass
+- `resolution.test.ts` — frozen validation contracts, explicit evidence trust,
+  independent attestation, self-validation refusal, deterministic evaluator
+  identity, optimistic challenge/adjudication, supersession and durable
+  lost-response replay after terminal completion
 - `inspection.test.ts` — complete profile-neutral commitment graph including
   exact effects, approval histories and outcome receipts
 - `inspector-index.test.ts` — hard bounds, literal search, coordination signal
@@ -348,6 +352,10 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   connector compose with an unmodified minimal kernel; exact retry performs one
   provider write, a verified receipt becomes evidence, and the commitment stays
   open pending a separate completion decision
+- eval `completion-resolution-adversarial.test.ts` — TQ-612 drives independent
+  attestation and optimistic dispute/adjudication over exact trust/evidence
+  inputs, rejects identity and freshness drift, and proves a completed
+  validated chain survives portable export/import
 - eval `surface-compatibility.test.ts` — TQ-307 drives one commitment through
   the real CLI, official MCP client and A2A adapter over one SQLite ledger;
   replay reuses the remote attempt/artifact, the lease is released explicitly,

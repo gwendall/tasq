@@ -105,6 +105,36 @@ export {
 } from "./service/collaboration.js";
 export type { PrincipalContext } from "./service/collaboration.js";
 
+export {
+  createResolutionContract,
+  getResolutionContract,
+  listResolutionContracts,
+  attestEvidenceTrust,
+  revokeEvidenceTrust,
+  getEvidenceTrustRecord,
+  listEvidenceTrustRecords,
+  proposeCompletion,
+  getCompletionProposal,
+  listCompletionProposals,
+  challengeCompletion,
+  getCompletionChallenge,
+  listCompletionChallenges,
+  evaluateCompletionDeterministically,
+  attestCompletion,
+  settleOptimisticCompletion,
+  adjudicateCompletion,
+  getValidationDecision,
+  listValidationDecisions,
+  getCompletionResolutionChain,
+} from "./service/resolution.js";
+export type {
+  ResolutionContext,
+  EvidenceTrustAuthority,
+  AttestEvidenceTrustOptions,
+  RevokeEvidenceTrustOptions,
+  DeterministicValidationOptions,
+} from "./service/resolution.js";
+
 // Trusted administrative surface for provider-neutral extension manifests.
 // Bundled domain extensions remain outside the minimal kernel entrypoint.
 export {
@@ -237,6 +267,21 @@ export type {
   LocalMutationOptions,
   LocalTasqClient,
 } from "./local-client.js";
+
+export {
+  PORTABLE_EXPORT_CONTRACT_VERSION,
+  PORTABLE_EXPORT_OMISSIONS,
+  exportPortableStore,
+  importPortableStore,
+  validatePortableExport,
+} from "./portable.js";
+export type {
+  PortableExportDocument,
+  PortableExportOptions,
+  PortableExportResult,
+  PortableImportResult,
+  PortableTable,
+} from "./portable.js";
 
 export * from "./service/resources.js";
 

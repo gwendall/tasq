@@ -122,13 +122,14 @@
     "TQ-504",
     "TQ-505",
     "TQ-321",
-    "ADR-004"
+    "ADR-004",
+    "ADR-005"
   ],
   "decisions": [
     {
       "id": "ADR-005",
-      "status": "pending",
-      "blocks": ["TQ-612", "TQ-906"],
+      "status": "accepted",
+      "blocks": ["TQ-906"],
       "question": "Evidence trust, authenticity, supersession, revocation and retention"
     }
   ],
@@ -303,21 +304,23 @@
     },
     {
       "id": "TQ-612",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "completion-validation",
       "dependsOn": ["ADR-005"],
       "outcome": "Separate evidence, completion proposals, validation decisions and final completion under versioned deterministic, attested, optimistic or adjudicated policies",
       "remaining": [
-        "accept-adr-005-evidence-trust-model",
-        "freeze-versioned-resolution-contract",
-        "implement-append-only-proposal-challenge-and-validation-records",
-        "ship-deterministic-and-independent-attestation-policies",
-        "represent-too-early-indeterminate-and-challenged-outcomes",
-        "certify-self-validation-stale-source-dispute-and-escalation-failures"
+        "publish-protected-release",
+        "certify-downloaded-bytes-on-supported-targets"
       ],
       "evidence": [
+        "docs/decisions/ADR-005_EVIDENCE_TRUST_AND_RESOLUTION.md",
+        "docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md",
+        "docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json",
         "docs/research/PREDICTION_MARKET_ORACLES_FOR_TASQ.md",
-        "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"
+        "packages/tasq-evals/completion-resolution-adversarial.test.ts",
+        "packages/tasq-service/test/resolution.test.ts",
+        "packages/tasq-cli/test/e2e.test.ts",
+        "packages/tasq-mcp/test/mcp-server.test.ts"
       ]
     },
     {

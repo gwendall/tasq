@@ -133,9 +133,10 @@ event cursor, rejected stale resource authority, attached evidence, completed
 explicitly and preserved the ledger byte-for-byte through native uninstall.
 The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
-TQ-608 now implements the source data-safety candidate. Store format 25 and
-its read/write/direct-migration ranges appear in executable and release
-metadata. Existing-store upgrades are serialized, snapshot-verified,
+TQ-608 protects both release and source evolution. The published `v0.2.0`
+line uses store format 25; the current TQ-612 source candidate advances to
+format 26. Each executable reports its exact read/write/direct-migration
+ranges. Existing-store upgrades are serialized, snapshot-verified,
 receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
@@ -186,6 +187,20 @@ and post-release certification run
 close the interface's release gate.
 See `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
 
+TQ-612 is implemented and locally certified as a source candidate. ADR-005
+freezes four evidence authenticity classes and separates immutable resolution
+contracts, evidence trust/revocation, completion proposals, challenges,
+validation decisions and final completion records. Deterministic, attested,
+optimistic and adjudicated policies fail closed on stale criteria, evidence,
+trust or evaluator identity. Core, `createLocalTasq`, CLI, local MCP,
+inspection, Local Console, doctor and portable export/import share the same
+records. Local CLI/MCP can claim only unverified attribution; higher trust
+requires a host authority. Validated commitments are intentionally excluded
+from replication until its protocol carries the entire resolution chain.
+Protected publication and downloaded-byte certification remain before this is
+a released-package claim. See
+`../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
+
 The shortest verified loop is:
 
 ```text
@@ -195,6 +210,12 @@ commitment → claim → attempt → evidence → explicit completion
 Typed waits, observations, reconciliation, resource leases, effects,
 replication, bounded context and audit history extend that loop without making
 runtime success equivalent to commitment completion.
+
+When independent validation is required, the longer explicit path is:
+
+```text
+evidence → trust → proposal → challenge? → validation decision → completion
+```
 
 Authority time is injectable throughout the kernel. Raw device time is allowed
 only in the explicit `systemClock` composition adapter.

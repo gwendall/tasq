@@ -441,6 +441,7 @@ describe("Migration runner", () => {
         "0023_commitment_summaries.sql",
         "0024_external_context_links.sql",
         "0025_console_read_indexes.sql",
+        "0026_completion_resolution.sql",
       ]);
 
       const open = await getTask(db, "01910000-0000-7000-8000-000000000010");
@@ -540,6 +541,7 @@ describe("Migration runner", () => {
         "0023_commitment_summaries.sql",
         "0024_external_context_links.sql",
         "0025_console_read_indexes.sql",
+        "0026_completion_resolution.sql",
       ]);
       expect(result.skipped).toEqual([
         "0000_init.sql",
@@ -594,7 +596,7 @@ describe("Migration runner", () => {
       const migrationRows = await client.execute(
         "SELECT name, checksum FROM _migration ORDER BY name",
       );
-      expect(migrationRows.rows).toHaveLength(26);
+      expect(migrationRows.rows).toHaveLength(27);
       expect(migrationRows.rows.every((row) => typeof row["checksum"] === "string")).toBe(true);
 
       const legacyIdentity = await client.execute(
@@ -625,7 +627,7 @@ describe("Migration runner", () => {
 
       const second = await runMigrations(client);
       expect(second.applied).toEqual([]);
-      expect(second.skipped).toHaveLength(26);
+      expect(second.skipped).toHaveLength(27);
     } finally {
       await close();
     }

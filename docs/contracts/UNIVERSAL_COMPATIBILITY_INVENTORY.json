@@ -68,7 +68,7 @@
       "exportName": "task",
       "recordOwner": "kernel",
       "fieldGroups": {
-        "kernel": ["id", "title", "description", "successCriteria", "completionMode", "status", "dueAt", "startedAt", "completedAt", "metadata", "revision", "createdAt", "updatedAt", "deletedAt"],
+        "kernel": ["id", "title", "description", "successCriteria", "completionMode", "validationRequired", "status", "dueAt", "startedAt", "completedAt", "metadata", "revision", "createdAt", "updatedAt", "deletedAt"],
         "kernel_rename": ["tenantId", "scheduledAt"],
         "kernel_generalize": ["parentTaskId"],
         "profile": ["projectId", "goalId", "areaId", "nextAction", "priority", "estimatedMinutes", "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak", "recurrenceParentId"]
@@ -251,11 +251,51 @@
         "kernel_rename": ["tenantId"]
       }
     },
+    "resolution_contract": {
+      "exportName": "resolutionContract",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "taskRevision", "successCriteriaSnapshot", "criteriaJson", "criteriaDigest", "policyKind", "policyUri", "policyVersion", "implementationDigest", "notBefore", "challengeWindowMs", "allowSelfValidation", "eligibleValidatorPrincipalIds", "adjudicatorPrincipalIds", "contractDigest", "createdByPrincipalId", "metadata", "createdAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "evidence_trust_record": {
+      "exportName": "evidenceTrustRecord",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "evidenceId", "action", "authenticity", "authorityUri", "authorityVersion", "authorityDigest", "supersedesTrustRecordId", "reason", "verifiedAt", "validUntil", "retentionUntil", "recordedByPrincipalId", "createdAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "completion_proposal": {
+      "exportName": "completionProposal",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "resolutionContractId", "contractDigest", "proposerPrincipalId", "criterionEvidence", "summary", "proposalDigest", "proposedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "completion_challenge": {
+      "exportName": "completionChallenge",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "proposalId", "challengerPrincipalId", "reasonCode", "explanation", "counterEvidenceIds", "challengedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "validation_decision": {
+      "exportName": "validationDecision",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "taskId", "resolutionContractId", "proposalId", "outcome", "policyUri", "policyVersion", "implementationDigest", "policyInputDigest", "evidenceIds", "trustRecordIds", "supersedesDecisionId", "decidedByPrincipalId", "reasonCode", "explanation", "decidedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
     "completion_record": {
       "exportName": "completionRecord",
       "recordOwner": "kernel",
       "fieldGroups": {
-        "kernel": ["id", "taskId", "resultingRevision", "completionPolicyUri", "completionPolicyVersion", "policyInputDigest", "evidenceIds", "decidedByPrincipalId", "decidedAt"],
+        "kernel": ["id", "taskId", "resultingRevision", "completionPolicyUri", "completionPolicyVersion", "policyInputDigest", "evidenceIds", "resolutionContractId", "validationDecisionId", "decidedByPrincipalId", "decidedAt"],
         "kernel_rename": ["tenantId"]
       }
     },
@@ -349,7 +389,7 @@
     }
   },
   "commands": {
-    "kernel": ["claim", "release", "attempt", "evidence", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
+    "kernel": ["claim", "release", "attempt", "evidence", "resolution", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
@@ -362,8 +402,8 @@
       "attempt_cancelled", "attempt_failed", "attempt_input_required", "attempt_running", "attempt_started", "attempt_succeeded", "artifact_appended",
       "assignment_accepted", "assignment_proposed", "assignment_rejected", "assignment_released", "assignment_revoked",
       "blocked", "cancelled", "claim_acquired", "claim_released", "claim_renewed", "completed", "created", "deleted",
-      "commitment_summary_appended", "dependency_added", "dependency_removed", "effect_approval_recorded", "effect_authority_withdrawn", "effect_authorized", "effect_cancelled", "effect_execution_started", "effect_proposed", "effect_receipt_recorded", "evidence_added", "external_context_link_appended", "external_ref_appended", "instance_generated", "reconciliation_recorded", "relation_added", "relation_ended", "restored",
-      "scope_rederived", "started", "status_changed", "unblocked", "uncancelled", "updated", "wait_cancelled", "wait_created",
+      "commitment_summary_appended", "completion_challenged", "completion_proposed", "dependency_added", "dependency_removed", "effect_approval_recorded", "effect_authority_withdrawn", "effect_authorized", "effect_cancelled", "effect_execution_started", "effect_proposed", "effect_receipt_recorded", "evidence_added", "evidence_trust_attested", "evidence_trust_revoked", "external_context_link_appended", "external_ref_appended", "instance_generated", "reconciliation_recorded", "relation_added", "relation_ended", "resolution_contract_created", "restored",
+      "scope_rederived", "started", "status_changed", "unblocked", "uncancelled", "updated", "validation_decided", "wait_cancelled", "wait_created",
       "wait_expired", "wait_fallback_activated", "wait_satisfied"
     ],
     "documentedReserved": ["linked", "note_added"],
@@ -377,7 +417,7 @@
     "AreaV1": { "schema": "Area", "owner": "profile", "fields": ["id", "tenantId", "name", "slug", "importance", "cadenceTarget", "description", "metadata", "createdAt", "updatedAt", "deletedAt"] },
     "GoalV1": { "schema": "Goal", "owner": "profile", "fields": ["id", "tenantId", "areaId", "title", "description", "horizon", "importance", "status", "targetDate", "metadata", "createdAt", "updatedAt", "deletedAt"] },
     "ProjectV1": { "schema": "Project", "owner": "profile", "fields": ["id", "tenantId", "goalId", "areaId", "title", "description", "status", "metadata", "createdAt", "updatedAt", "deletedAt"] },
-    "TaskV1": { "schema": "Task", "owner": "kernel_rename", "fields": ["id", "tenantId", "projectId", "goalId", "areaId", "parentTaskId", "title", "description", "nextAction", "successCriteria", "completionMode", "status", "priority", "estimatedMinutes", "scheduledAt", "dueAt", "startedAt", "completedAt", "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak", "recurrenceParentId", "metadata", "createdAt", "updatedAt", "deletedAt"] },
+    "TaskV1": { "schema": "Task", "owner": "kernel_rename", "fields": ["id", "tenantId", "projectId", "goalId", "areaId", "parentTaskId", "title", "description", "nextAction", "successCriteria", "completionMode", "validationRequired", "status", "priority", "estimatedMinutes", "scheduledAt", "dueAt", "startedAt", "completedAt", "recurrence", "recurrenceInterval", "recurrenceAnchor", "lastDoneAt", "streak", "recurrenceParentId", "metadata", "createdAt", "updatedAt", "deletedAt"] },
     "TaskDependencyV1": { "schema": "TaskDependency", "owner": "kernel_generalize", "fields": ["id", "tenantId", "fromTaskId", "toTaskId", "type", "createdAt", "updatedAt", "deletedAt"] },
     "TaskClaimV1": { "schema": "TaskClaim", "owner": "kernel_rename", "fields": ["id", "tenantId", "taskId", "actor", "fence", "acquiredAt", "heartbeatAt", "expiresAt", "releasedAt", "releaseReason", "metadata", "createdAt", "updatedAt"] },
     "TaskAttemptV1": { "schema": "TaskAttempt", "owner": "kernel_rename", "fields": ["id", "tenantId", "taskId", "claimId", "actor", "runtime", "externalId", "contextId", "status", "statusMessage", "startedAt", "endedAt", "metadata", "createdAt", "updatedAt"] },
@@ -414,7 +454,7 @@
     },
     "CommitmentInspectionV1": {
       "owner": "kernel",
-      "fields": ["contractVersion", "inspectedAt", "workspaceId", "commitment", "principals", "assignments", "relations", "claims", "attempts", "artifacts", "effects", "effectApprovals", "effectReceipts", "evidence", "completionRecords", "conditions", "observations", "reconciliations", "externalRefs", "externalContextLinks", "events", "resumeCursor"],
+      "fields": ["contractVersion", "inspectedAt", "workspaceId", "commitment", "principals", "assignments", "relations", "claims", "attempts", "artifacts", "effects", "effectApprovals", "effectReceipts", "evidence", "resolutionContracts", "evidenceTrustRecords", "completionProposals", "completionChallenges", "validationDecisions", "completionRecords", "conditions", "observations", "reconciliations", "externalRefs", "externalContextLinks", "events", "resumeCursor"],
       "resumeCursorFields": ["afterEventSequence", "afterObservation"],
       "observationCursorFields": ["recordedAt", "id"]
     },

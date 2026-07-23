@@ -7,6 +7,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMutableClock } from "@tasq-run/schema";
 import {
   getCommitment,
+  localPrincipalId,
   openDb,
   runKernelMigrations,
 } from "@tasq-run/core";
@@ -69,6 +70,7 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_effect_list",
       "tasq_event_list",
       "tasq_onboard",
+      "tasq_resolution_get",
       "tasq_resource_event_list",
       "tasq_resource_get",
       "tasq_resource_list",
@@ -149,6 +151,13 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_attempt_transition",
       "tasq_evidence_add",
       "tasq_effect_propose",
+      "tasq_resolution_contract_create",
+      "tasq_evidence_trust_attest_unverified",
+      "tasq_completion_propose",
+      "tasq_completion_challenge",
+      "tasq_completion_attest",
+      "tasq_completion_settle_optimistic",
+      "tasq_completion_adjudicate",
       "tasq_resource_acquire",
       "tasq_resource_renew",
       "tasq_resource_release",
@@ -166,6 +175,104 @@ describe("Tasq MCP capability boundary", () => {
 });
 
 describe("Tasq MCP agent flow", () => {
+  it("resolves and completes a validated commitment through capability-scoped tools", async () => {
+    const { client } = await fixture(["read", "propose", "coordinate"]);
+    const created = structured<{ id: string; revision: number }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Verify calibration artifact",
+        successCriteria: "One calibration artifact exists",
+        completionPolicy: "evidence",
+        validationRequired: true,
+        idempotencyKey: "validated-create",
+      },
+    }));
+    const evidence = structured<{ id: string }>(await client.callTool({
+      name: "tasq_evidence_add",
+      arguments: {
+        commitmentId: created.id,
+        kind: "artifact",
+        summary: "Calibration artifact exists",
+        idempotencyKey: "validated-evidence",
+      },
+    }));
+    const plannerPrincipalId = localPrincipalId("robotics-lab", "agent:planner");
+    const contract = structured<{ id: string }>(await client.callTool({
+      name: "tasq_resolution_contract_create",
+      arguments: {
+        commitmentId: created.id,
+        criteria: [{
+          id: "artifact",
+          statement: "One calibration artifact exists",
+          acceptedEvidenceKinds: ["artifact"],
+          minimumAuthenticity: "unverified",
+        }],
+        policyKind: "attestation",
+        policyUri: "urn:tasq:test:attestation",
+        policyVersion: 1,
+        implementationDigest: `sha256:${"a".repeat(64)}`,
+        allowSelfValidation: true,
+        eligibleValidatorPrincipalIds: [plannerPrincipalId],
+        idempotencyKey: "validated-contract",
+      },
+    }));
+    const trust = structured<{ id: string }>(await client.callTool({
+      name: "tasq_evidence_trust_attest_unverified",
+      arguments: {
+        commitmentId: created.id,
+        evidenceId: evidence.id,
+        reason: "MCP-local attribution only",
+        idempotencyKey: "validated-trust",
+      },
+    }));
+    const proposal = structured<{ id: string }>(await client.callTool({
+      name: "tasq_completion_propose",
+      arguments: {
+        commitmentId: created.id,
+        resolutionContractId: contract.id,
+        criterionEvidence: [{ criterionId: "artifact", evidenceIds: [evidence.id] }],
+        idempotencyKey: "validated-proposal",
+      },
+    }));
+    const decision = structured<{ id: string; outcome: string }>(await client.callTool({
+      name: "tasq_completion_attest",
+      arguments: {
+        proposalId: proposal.id,
+        outcome: "accepted",
+        reasonCode: "verified",
+        explanation: "Frozen criterion is satisfied",
+        idempotencyKey: "validated-decision",
+      },
+    }));
+    expect(decision.outcome).toBe("accepted");
+    const completed = structured<{ status: string }>(await client.callTool({
+      name: "tasq_commitment_transition",
+      arguments: {
+        commitmentId: created.id,
+        transition: "complete",
+        expectedRevision: created.revision,
+        validationDecisionId: decision.id,
+        idempotencyKey: "validated-complete",
+      },
+    }));
+    expect(completed.status).toBe("done");
+    const chain = structured<{
+      resolution: {
+        contract: { id: string };
+        trustRecords: Array<{ id: string }>;
+        decisions: Array<{ id: string }>;
+      } | null;
+    }>(await client.callTool({
+      name: "tasq_resolution_get",
+      arguments: { resolutionContractId: contract.id },
+    }));
+    expect(chain.resolution).toMatchObject({
+      contract: { id: contract.id },
+      trustRecords: [{ id: trust.id }],
+      decisions: [{ id: decision.id }],
+    });
+  });
+
   it("shares a pinned external context identity without importing memory content", async () => {
     const { client, clock } = await fixture(["read", "propose", "coordinate"]);
     const created = structured<{ id: string }>(await client.callTool({

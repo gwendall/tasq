@@ -19,6 +19,9 @@ import {
   taskClaim,
   taskEvidence,
   completionRecord,
+  completionProposal,
+  resolutionContract,
+  validationDecision,
   waitCondition,
   uuidv7,
   Task as TaskZ,
@@ -167,6 +170,9 @@ export async function createTaskInTransaction(
   if (parsed.completionMode === "evidence" && !parsed.successCriteria?.trim()) {
     throw new Error("Evidence-backed tasks require explicit successCriteria");
   }
+  if (parsed.validationRequired && parsed.completionMode !== "evidence") {
+    throw new Error("Independently validated tasks must use evidence completion mode");
+  }
   const id = parsed.id ?? uuidv7(now);
   const scope = await (options.hierarchyPolicy ?? flatHierarchyPolicy).resolveScope(tx, tenantId, parsed);
   if (scope.parentTaskId) {
@@ -190,6 +196,7 @@ export async function createTaskInTransaction(
     nextAction: parsed.nextAction,
     successCriteria: parsed.successCriteria,
     completionMode: parsed.completionMode,
+    validationRequired: parsed.validationRequired,
     status: parsed.status,
     priority: parsed.priority,
     estimatedMinutes: parsed.estimatedMinutes,
@@ -223,6 +230,7 @@ export async function createTaskInTransaction(
           title: parsed.title,
           status: parsed.status,
           completionMode: parsed.completionMode,
+          validationRequired: parsed.validationRequired,
           areaId: scope.areaId,
           goalId: scope.goalId,
           projectId: scope.projectId,
@@ -312,6 +320,9 @@ export async function createTask(
   }
   if (parsed.completionMode === "evidence" && !parsed.successCriteria?.trim()) {
     throw new Error("Evidence-backed tasks require explicit successCriteria");
+  }
+  if (parsed.validationRequired && parsed.completionMode !== "evidence") {
+    throw new Error("Independently validated tasks must use evidence completion mode");
   }
   const now = serviceNow(ctx, ctx.now);
   const tenantId = ctx.tenantId ?? parsed.tenantId;
@@ -513,12 +524,19 @@ export async function updateTaskInTransaction(
   const desiredCompletionMode = parsed.completionMode ?? before.completionMode;
   const desiredSuccessCriteria =
     parsed.successCriteria !== undefined ? parsed.successCriteria : before.successCriteria;
+  const desiredValidationRequired =
+    parsed.validationRequired !== undefined ? parsed.validationRequired : before.validationRequired;
   if (desiredCompletionMode === "evidence" && !desiredSuccessCriteria?.trim()) {
     throw new Error("Evidence-backed tasks require explicit successCriteria");
   }
+  if (desiredValidationRequired && desiredCompletionMode !== "evidence") {
+    throw new Error("Independently validated tasks must use evidence completion mode");
+  }
   if (
     (before.status === "done" || before.status === "cancelled") &&
-    (parsed.completionMode !== undefined || parsed.successCriteria !== undefined)
+    (parsed.completionMode !== undefined
+      || parsed.successCriteria !== undefined
+      || parsed.validationRequired !== undefined)
   ) {
     throw new Error("Cannot change completion semantics on a terminal task; reopen it first");
   }
@@ -598,6 +616,7 @@ export async function updateTaskInTransaction(
   if (parsed.nextAction !== undefined) patch.nextAction = parsed.nextAction;
   if (parsed.successCriteria !== undefined) patch.successCriteria = parsed.successCriteria;
   if (parsed.completionMode !== undefined) patch.completionMode = parsed.completionMode;
+  if (parsed.validationRequired !== undefined) patch.validationRequired = parsed.validationRequired;
   if (parsed.priority !== undefined) patch.priority = parsed.priority;
   if (parsed.estimatedMinutes !== undefined) patch.estimatedMinutes = parsed.estimatedMinutes;
   if (parsed.scheduledAt !== undefined) patch.scheduledAt = parsed.scheduledAt;
@@ -698,6 +717,8 @@ export interface StatusChangeOptions extends TaskServiceContext {
   occurredAt?: number;
   /** Evidence explicitly used to justify completion. */
   evidenceIds?: string[];
+  /** Accepted current decision required when validationRequired is true. */
+  validationDecisionId?: string;
 }
 
 export interface RecurringCompletionMaterializer {
@@ -736,6 +757,7 @@ export async function transitionTaskStatus(
       source: options.source ?? null,
       occurredAt: options.occurredAt ?? null,
       evidenceIds: requestedEvidenceIds,
+      validationDecisionId: options.validationDecisionId ?? null,
     },
     { now },
   );
@@ -767,8 +789,70 @@ export async function transitionTaskStatus(
     await (options.hierarchyPolicy ?? flatHierarchyPolicy).assertLiveAncestors(tx, tenantId, before);
 
     let completionEvidenceIds: string[] = [];
+    let validatedBasis: {
+      resolutionContractId: string;
+      validationDecisionId: string;
+      policyUri: string;
+      policyVersion: number;
+      policyInputDigest: string;
+      decidedByPrincipalId: string;
+    } | null = null;
     if (to === "done") {
       completionEvidenceIds = requestedEvidenceIds;
+      if (before.validationRequired) {
+        if (!options.validationDecisionId) {
+          throw new Error(`Task ${id} requires an accepted validation decision`);
+        }
+        const decisions = await tx.select().from(validationDecision).where(and(
+          eq(validationDecision.id, options.validationDecisionId),
+          eq(validationDecision.tenantId, tenantId),
+          eq(validationDecision.taskId, id),
+        )).limit(1);
+        const decision = decisions[0];
+        if (!decision || decision.outcome !== "accepted") {
+          throw new Error("Validated completion requires an accepted decision for this task");
+        }
+        const superseding = await tx.select({ id: validationDecision.id })
+          .from(validationDecision).where(and(
+            eq(validationDecision.tenantId, tenantId),
+            eq(validationDecision.supersedesDecisionId, decision.id),
+          )).limit(1);
+        if (superseding.length > 0) {
+          throw new Error("Validation decision has been superseded");
+        }
+        const contracts = await tx.select().from(resolutionContract).where(and(
+          eq(resolutionContract.id, decision.resolutionContractId),
+          eq(resolutionContract.tenantId, tenantId),
+          eq(resolutionContract.taskId, id),
+        )).limit(1);
+        const contract = contracts[0];
+        if (!contract || contract.successCriteriaSnapshot !== before.successCriteria) {
+          throw new Error("Validation decision uses stale success criteria");
+        }
+        const proposals = await tx.select().from(completionProposal).where(and(
+          eq(completionProposal.id, decision.proposalId),
+          eq(completionProposal.tenantId, tenantId),
+          eq(completionProposal.taskId, id),
+          eq(completionProposal.resolutionContractId, contract.id),
+        )).limit(1);
+        if (!proposals[0]) throw new Error("Validation decision proposal basis is missing");
+        const decisionEvidenceIds = JSON.parse(decision.evidenceIds) as string[];
+        if (requestedEvidenceIds.length > 0
+          && JSON.stringify(requestedEvidenceIds) !== JSON.stringify(decisionEvidenceIds)) {
+          throw new Error("Explicit completion evidence differs from the accepted validation decision");
+        }
+        completionEvidenceIds = decisionEvidenceIds;
+        validatedBasis = {
+          resolutionContractId: contract.id,
+          validationDecisionId: decision.id,
+          policyUri: decision.policyUri,
+          policyVersion: decision.policyVersion,
+          policyInputDigest: decision.policyInputDigest,
+          decidedByPrincipalId: decision.decidedByPrincipalId,
+        };
+      } else if (options.validationDecisionId) {
+        throw new Error("Task does not require an independent validation decision");
+      }
       if (before.completionMode === "evidence" && completionEvidenceIds.length === 0) {
         throw new Error(
           `Task ${id} requires explicit evidence; add evidence and pass its id when completing`,
@@ -828,6 +912,14 @@ export async function transitionTaskStatus(
         ? await cancelWaitingConditionsForTaskTx(tx, id, tenantId, actor, now)
         : { ids: [] as string[], events: [] as EventT[] };
 
+    const attribution = options.principalId
+      ? await getPrincipal(tx, options.principalId, tenantId)
+      : await ensureLocalPrincipal(tx, tenantId, actor, now);
+    if (!attribution) throw new Error(`Principal not found in workspace: ${options.principalId}`);
+    if (attribution.status !== "enabled") throw new Error(`Principal is disabled: ${attribution.id}`);
+
+    let completionRecordId: string | null = null;
+
     const patch: Partial<typeof task.$inferInsert> = {
       status: to,
       updatedAt: now,
@@ -858,38 +950,35 @@ export async function transitionTaskStatus(
     }
 
     const after = (await getTask(tx, id, tenantId)) as TaskT;
-    const attribution = options.principalId
-      ? await getPrincipal(tx, options.principalId, tenantId)
-      : await ensureLocalPrincipal(tx, tenantId, actor, now);
-    if (!attribution) throw new Error(`Principal not found in workspace: ${options.principalId}`);
-    if (attribution.status !== "enabled") throw new Error(`Principal is disabled: ${attribution.id}`);
-    let completionRecordId: string | null = null;
     if (to === "done") {
       completionRecordId = uuidv7(now);
-      const completionPolicyUri = before.completionMode === "evidence"
+      const completionPolicyUri = validatedBasis?.policyUri ?? (before.completionMode === "evidence"
         ? "urn:tasq:completion-policy:evidence-required"
-        : "urn:tasq:completion-policy:assertion";
-      const policyInputDigest = createHash("sha256").update(stableSerialize({
-        taskId: id,
-        resultingRevision: after.revision,
-        completionPolicyUri,
-        completionPolicyVersion: 1,
-        evidenceIds: completionEvidenceIds,
-      })).digest("hex");
+        : "urn:tasq:completion-policy:assertion");
+      const completionPolicyVersion = validatedBasis?.policyVersion ?? 1;
+      const policyInputDigest = validatedBasis?.policyInputDigest ?? createHash("sha256")
+        .update(stableSerialize({
+          taskId: id,
+          resultingRevision: after.revision,
+          completionPolicyUri,
+          completionPolicyVersion,
+          evidenceIds: completionEvidenceIds,
+        })).digest("hex");
       await tx.insert(completionRecord).values({
         id: completionRecordId,
         tenantId,
         taskId: id,
         resultingRevision: after.revision,
         completionPolicyUri,
-        completionPolicyVersion: 1,
+        completionPolicyVersion,
         policyInputDigest,
         evidenceIds: JSON.stringify(completionEvidenceIds),
-        decidedByPrincipalId: attribution.id,
+        resolutionContractId: validatedBasis?.resolutionContractId ?? null,
+        validationDecisionId: validatedBasis?.validationDecisionId ?? null,
+        decidedByPrincipalId: validatedBasis?.decidedByPrincipalId ?? attribution.id,
         decidedAt: occurredAt,
       });
     }
-
     // Terminal commitments release coordination leases automatically. This is
     // state cleanup, not execution success: attempts must already be terminal.
     const releasedClaims =

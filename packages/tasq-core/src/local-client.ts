@@ -9,13 +9,25 @@
 import type {
   AttemptStatus,
   Clock,
+  CompletionChallenge,
+  CompletionChallengeInsert,
+  CompletionProposal,
+  CompletionProposalInsert,
+  CompletionResolutionChain,
   EntityType,
+  EvidenceTrustAttestationInsert,
+  EvidenceTrustRecord,
   Event,
+  ManualValidationDecisionInsert,
   Metadata,
+  ResolutionContract,
+  ResolutionContractInsert,
   TaskAttempt,
   TaskClaim,
   TaskEvidence,
+  ValidationDecision,
 } from "@tasq-run/schema";
+import type { CompletionEvaluatorRuntime } from "@tasq-run/extension-sdk";
 import {
   type Commitment,
   type CommitmentTransitionOptions,
@@ -58,6 +70,29 @@ import {
   type TransitionAttemptOptions,
 } from "./service/agentic.js";
 import { getEvent, listEvents, type ListEventsOptions } from "./service/events.js";
+import {
+  adjudicateCompletion,
+  attestCompletion,
+  attestEvidenceTrust,
+  challengeCompletion,
+  createResolutionContract,
+  evaluateCompletionDeterministically,
+  getCompletionChallenge,
+  getCompletionProposal,
+  getCompletionResolutionChain,
+  getEvidenceTrustRecord,
+  getResolutionContract,
+  getValidationDecision,
+  listCompletionChallenges,
+  listCompletionProposals,
+  listEvidenceTrustRecords,
+  listResolutionContracts,
+  listValidationDecisions,
+  proposeCompletion,
+  revokeEvidenceTrust,
+  settleOptimisticCompletion,
+  type EvidenceTrustAuthority,
+} from "./service/resolution.js";
 import {
   acquireResourceLease,
   getResourceLeaseView,
@@ -187,6 +222,48 @@ export interface LocalTasqClient {
       commitmentId?: string | null,
       options?: Omit<ListEvidenceOptions, BoundServiceContext>,
     ): Promise<TaskEvidence[]>;
+  };
+  readonly resolution: {
+    contracts: {
+      create(input: ResolutionContractInsert, options?: LocalMutationOptions): Promise<ResolutionContract>;
+      get(id: string): Promise<ResolutionContract | null>;
+      list(commitmentId: string): Promise<ResolutionContract[]>;
+    };
+    trust: {
+      attest(
+        input: EvidenceTrustAttestationInsert,
+        options?: LocalMutationOptions & { authority?: EvidenceTrustAuthority },
+      ): Promise<EvidenceTrustRecord>;
+      revoke(
+        trustRecordId: string,
+        options: LocalMutationOptions & { reason: string },
+      ): Promise<EvidenceTrustRecord>;
+      get(id: string): Promise<EvidenceTrustRecord | null>;
+      list(commitmentId: string): Promise<EvidenceTrustRecord[]>;
+    };
+    proposals: {
+      create(input: CompletionProposalInsert, options?: LocalMutationOptions): Promise<CompletionProposal>;
+      get(id: string): Promise<CompletionProposal | null>;
+      list(commitmentId: string): Promise<CompletionProposal[]>;
+    };
+    challenges: {
+      create(input: CompletionChallengeInsert, options?: LocalMutationOptions): Promise<CompletionChallenge>;
+      get(id: string): Promise<CompletionChallenge | null>;
+      list(proposalId: string): Promise<CompletionChallenge[]>;
+    };
+    decisions: {
+      evaluate(
+        proposalId: string,
+        evaluator: CompletionEvaluatorRuntime,
+        options?: LocalMutationOptions & { supersedesDecisionId?: string | null },
+      ): Promise<ValidationDecision>;
+      attest(input: ManualValidationDecisionInsert, options?: LocalMutationOptions): Promise<ValidationDecision>;
+      settle(proposalId: string, options?: LocalMutationOptions): Promise<ValidationDecision>;
+      adjudicate(input: ManualValidationDecisionInsert, options?: LocalMutationOptions): Promise<ValidationDecision>;
+      get(id: string): Promise<ValidationDecision | null>;
+      list(proposalId: string): Promise<ValidationDecision[]>;
+    };
+    inspect(contractId: string): Promise<CompletionResolutionChain | null>;
   };
   readonly resources: {
     acquire(
@@ -322,6 +399,50 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
         get: (id) => getTaskEvidence(handle.db, id, options.workspaceId),
         list: (id = null, listOptions = {}) =>
           listTaskEvidence(handle.db, id, serviceContext(listOptions)),
+      },
+      resolution: {
+        contracts: {
+          create: (input, mutation = {}) =>
+            createResolutionContract(handle.db, input, serviceContext(mutation)),
+          get: (id) => getResolutionContract(handle.db, id, options.workspaceId),
+          list: (id) => listResolutionContracts(handle.db, id, options.workspaceId),
+        },
+        trust: {
+          attest: (input, mutation = {}) =>
+            attestEvidenceTrust(handle.db, input, serviceContext(mutation)),
+          revoke: (id, mutation) =>
+            revokeEvidenceTrust(handle.db, id, { ...serviceContext(), ...mutation }),
+          get: (id) => getEvidenceTrustRecord(handle.db, id, options.workspaceId),
+          list: (id) => listEvidenceTrustRecords(handle.db, id, options.workspaceId),
+        },
+        proposals: {
+          create: (input, mutation = {}) =>
+            proposeCompletion(handle.db, input, serviceContext(mutation)),
+          get: (id) => getCompletionProposal(handle.db, id, options.workspaceId),
+          list: (id) => listCompletionProposals(handle.db, id, options.workspaceId),
+        },
+        challenges: {
+          create: (input, mutation = {}) =>
+            challengeCompletion(handle.db, input, serviceContext(mutation)),
+          get: (id) => getCompletionChallenge(handle.db, id, options.workspaceId),
+          list: (id) => listCompletionChallenges(handle.db, id, options.workspaceId),
+        },
+        decisions: {
+          evaluate: (id, evaluator, mutation = {}) =>
+            evaluateCompletionDeterministically(handle.db, id, {
+              ...serviceContext(mutation), evaluator,
+              supersedesDecisionId: mutation.supersedesDecisionId,
+            }),
+          attest: (input, mutation = {}) =>
+            attestCompletion(handle.db, input, serviceContext(mutation)),
+          settle: (id, mutation = {}) =>
+            settleOptimisticCompletion(handle.db, id, serviceContext(mutation)),
+          adjudicate: (input, mutation = {}) =>
+            adjudicateCompletion(handle.db, input, serviceContext(mutation)),
+          get: (id) => getValidationDecision(handle.db, id, options.workspaceId),
+          list: (id) => listValidationDecisions(handle.db, id, options.workspaceId),
+        },
+        inspect: (id) => getCompletionResolutionChain(handle.db, id, options.workspaceId),
       },
       resources: {
         acquire: (key, leaseOptions) =>

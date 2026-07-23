@@ -60,8 +60,8 @@ describe("released CLI artifact", () => {
     expect(manifest.migrations.at(-1)?.name).toMatch(/^\d{4}_.+\.sql$/);
     expect(manifest.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 25,
-      directlyMigratable: { min: 0, max: 25 },
+      current: 26,
+      directlyMigratable: { min: 0, max: 26 },
     });
 
     const tasqHome = join(root, "home");

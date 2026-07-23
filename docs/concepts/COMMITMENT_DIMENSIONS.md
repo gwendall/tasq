@@ -69,7 +69,7 @@ because their invariants, lifetimes and authority differ.
 |---|---|---|---|
 | Desired outcome | `commitment` | Kernel | Implemented as task-compatible commitment |
 | Lifecycle | commitment status | Kernel | Implemented |
-| Success meaning | criteria + completion policy | Kernel/policy seam | Assertion and evidence-required implemented; independent validation is TQ-612 |
+| Success meaning | criteria + completion policy | Kernel/policy seam | Assertion, evidence-required and independent validation implemented |
 | Earliest useful start | `not_before` | Kernel | Implemented through `scheduled_at` compatibility |
 | Due time | `due_at` | Kernel | Implemented |
 | Recurrence | rule/template generating instances | Scheduling profile | Implemented compatibility materializer; conceptually outside minimal kernel |
@@ -83,7 +83,7 @@ because their invariants, lifetimes and authority differ.
 | Execution | attempt | Kernel/runtime seam | Implemented |
 | Output | artifact | Kernel | Implemented |
 | Proof | evidence | Kernel | Implemented |
-| Validation | proposal → decision → completion | Kernel/policy seam | Completion record exists; proposal/decision/challenge are TQ-612 |
+| Validation | proposal → decision → completion | Kernel/policy seam | Contracts, trust, proposals, challenges and decisions implemented by TQ-612 |
 | External action | effect → approval → receipt | Kernel/connector seam | Implemented locally; remote effects remain disabled |
 | Provenance | principal, event, external reference | Kernel | Implemented |
 | Recovery | revision, idempotency, cursor, backup | Durability | Implemented locally |
