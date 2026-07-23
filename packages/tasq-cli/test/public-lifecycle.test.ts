@@ -9,6 +9,12 @@ const builder = join(productRoot, "scripts/release/build-public-release.ts");
 const sourceCommit = "0123456789abcdef0123456789abcdef01234567";
 const publishedReleaseDirectory = process.env.TASQ_PUBLISHED_RELEASE_DIR;
 const publishedReleaseVersion = (process.env.TASQ_PUBLISHED_RELEASE_VERSION ?? "0.1.0").replace(/^v/, "");
+const upgradeReleaseVersion = (() => {
+  if (publishedReleaseDirectory === undefined) return "0.2.0";
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(publishedReleaseVersion);
+  if (match === null) throw new Error(`published release version must be stable semver: ${publishedReleaseVersion}`);
+  return `${match[1]}.${Number(match[2]) + 1}.0`;
+})();
 const target = process.platform === "darwin" && process.arch === "arm64"
   ? "darwin-arm64"
   : process.platform === "linux" && process.arch === "x64"
@@ -121,12 +127,12 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     const releaseV1Directory = join(root, "release-v1");
     const releaseV2Directory = join(root, "release-v2");
     if (publishedReleaseDirectory === undefined) await build("0.1.0", releaseV1Directory);
-    await build("0.2.0", releaseV2Directory);
+    await build(upgradeReleaseVersion, releaseV2Directory);
     const releaseV1 = releasePaths(
       publishedReleaseDirectory ?? releaseV1Directory,
       publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
     );
-    const releaseV2 = releasePaths(releaseV2Directory, "0.2.0");
+    const releaseV2 = releasePaths(releaseV2Directory, upgradeReleaseVersion);
     await chmod(releaseV1.installer, 0o755);
     await chmod(releaseV2.installer, 0o755);
 
@@ -216,8 +222,8 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     const snapshot = join(root, "v1.sqlite");
     await ok(cli, ["backup", snapshot, "--tenant", "lifecycle/team", "--actor", "alpha", "--json"], { home });
     const journalAtSnapshot = await readFile(join(home, "events.jsonl"));
-    expect(await install(prefix, releaseV2)).toMatchObject({ status: "installed", version: "0.2.0" });
-    expect((await ok(cli, ["--version"], { home })).trim()).toBe("0.2.0");
+    expect(await install(prefix, releaseV2)).toMatchObject({ status: "installed", version: upgradeReleaseVersion });
+    expect((await ok(cli, ["--version"], { home })).trim()).toBe(upgradeReleaseVersion);
     expect(JSON.parse(await ok(cli, [
       "doctor", "--tenant", "lifecycle/team", "--actor", "alpha", "--json",
     ], { home }))).toMatchObject({ ok: true });
@@ -230,10 +236,10 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     const upgradedWebStderr = new Response(upgradedWeb.stderr).text();
     const upgradedStartup = await firstLine(upgradedWeb.stdout);
     const upgradedListener = JSON.parse(upgradedStartup.line);
-    expect(upgradedListener).toMatchObject({ productVersion: "0.2.0", workspaceId: "lifecycle/team" });
+    expect(upgradedListener).toMatchObject({ productVersion: upgradeReleaseVersion, workspaceId: "lifecycle/team" });
     const v2Console = await fetch(upgradedListener.endpoint.url).then((response) => response.text());
     expect(v2Console).toContain("Lifecycle survives");
-    expect(v2Console).toContain("Tasq Local 0.2.0");
+    expect(v2Console).toContain(`Tasq Local ${upgradeReleaseVersion}`);
     upgradedWeb.kill("SIGTERM");
     expect(await upgradedWeb.exited).toBe(0);
     await upgradedStartup.reader.cancel();
@@ -266,10 +272,10 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     ]));
     expect(removedV1).toMatchObject({ status: "uninstalled", activeLinkRemoved: true, dataDisposition: "preserved-not-touched" });
     await ok(releaseV2.installer, [
-      "activate", "--version", "0.2.0", "--target", target!, "--prefix", prefix,
+      "activate", "--version", upgradeReleaseVersion, "--target", target!, "--prefix", prefix,
     ]);
     const removedV2 = JSON.parse(await ok(releaseV2.installer, [
-      "uninstall", "--version", "0.2.0", "--target", target!, "--prefix", prefix,
+      "uninstall", "--version", upgradeReleaseVersion, "--target", target!, "--prefix", prefix,
     ]));
     expect(removedV2).toMatchObject({ status: "uninstalled", activeLinkRemoved: true, dataDisposition: "preserved-not-touched" });
     expect((await stat(join(home, "db.sqlite"))).size).toBe(mainDbSize);
