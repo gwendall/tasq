@@ -7,7 +7,12 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByRole("link", {
     name: truth.release.published ? "Install Tasq Local" : "Build Tasq Local",
   })).toBeVisible();
-  await expect(page.getByText(truth.release.published ? "Public alpha" : "Public source alpha", { exact: false })).toBeVisible();
+  await expect(page.getByText(
+    truth.release.published
+      ? `Public alpha ${truth.release.version}. Packages and checksummed releases are live.`
+      : "Public source alpha. Bootstrap package identities exist; the supported release is pending.",
+    { exact: true },
+  )).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Not built");
   if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq-run/");
@@ -17,7 +22,10 @@ test("documentation gives a complete causal onboarding path", async ({ page }) =
   await page.goto("/docs/getting-started/");
   const truth = await (await page.request.get("/product-truth.json")).json();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("One ledger");
-  await expect(page.getByText(truth.release.published ? "public alpha" : "public alpha source", { exact: false })).toBeVisible();
+  await expect(page.getByRole("heading", {
+    level: 2,
+    name: truth.release.published ? "Install the public alpha" : "Current installation path",
+  })).toBeVisible();
   await expect(page.getByText("onboard", { exact: false }).first()).toBeVisible();
   await page.getByRole("link", { name: "For agents" }).click();
   await expect(page).toHaveURL(/\/docs\/agents\/?$/);
