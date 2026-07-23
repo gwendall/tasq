@@ -231,8 +231,8 @@ describe("canonical Tasq roadmap", () => {
       evidence: ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"],
     });
     expect(releaseWorkflow).toContain("id-token: write");
-    expect(releaseWorkflow).toContain("npm install --global npm@11.5.1");
-    expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.5.1"');
+    expect(releaseWorkflow).toContain("npm install --global npm@11.18.0");
+    expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.18.0"');
     expect(releaseWorkflow).toContain("verify-release-authorization.ts");
     expect(releaseWorkflow).not.toContain("NODE_AUTH_TOKEN");
   });

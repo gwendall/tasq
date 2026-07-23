@@ -120,6 +120,7 @@ describe("Tasq public npm package candidates", () => {
       const manifest = JSON.parse(await readFile(join(packageRoot, "package.json"), "utf8"));
       expect(packageNames).toContain(manifest.name);
       expect(manifest).not.toHaveProperty("private");
+      expect(manifest.gitHead).toBe(sourceCommit);
       expect(JSON.stringify(manifest)).not.toContain("workspace:");
       expect(JSON.stringify(manifest)).not.toContain("@kami/");
       const packagedReadme = await readFile(join(packageRoot, "README.md"), "utf8");

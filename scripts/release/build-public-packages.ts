@@ -194,6 +194,7 @@ function manifest(definition: PublicPackage, inputs: Inputs) {
       url: "git+https://github.com/gwendall/tasq.git",
       directory: `packages/${definition.sourceDirectory}`,
     },
+    gitHead: inputs.sourceCommit,
     bugs: { url: "https://github.com/gwendall/tasq/issues" },
     homepage: "https://tasq.run",
     publishConfig: { access: "public", provenance: true },
