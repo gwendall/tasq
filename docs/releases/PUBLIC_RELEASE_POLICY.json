@@ -223,12 +223,12 @@
   },
   "releaseAuthorization": {
     "state": "authorized",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-07-23",
-    "rationale": "Publish the additive embedded TypeScript client, compiled ESM declarations and certified Node 22 plus Bun runtime boundary. Retained-data dogfood remains the stable-graduation gate."
+    "rationale": "Publish opt-in independent completion resolution, store format 26, executable agent onboarding, explicit evidence trust and dispute/adjudication trails across Core, CLI, local MCP and Console. Ordinary commitments remain backward-compatible; retained-data dogfood remains the stable-graduation gate."
   },
   "npmBootstrap": {
     "state": "completed",
