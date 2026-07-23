@@ -71,12 +71,13 @@ same-ledger forward upgrades is complete. No critical failure is open. These
 figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.json` and
 `pnpm --silent dogfood status --json` are the authoritative current state.
 
-The Local release lifecycle now exists as a certified candidate. Generated
+The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. Those assets are now published at immutable `v0.1.0`; the
-remaining TQ-604 gate is replaying that journey from the downloaded,
-attestation-verified bytes on both supported targets.
+`TASQ_HOME`. Those assets are published at immutable `v0.1.0`. Protected run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+downloaded them, verified every attestation and passed the lifecycle on both
+supported targets, closing TQ-604.
 
 The loopback Console has canonical TQ-701 overview, actor, claim, resource,
 wait, effect, redacted audit and bounded operational-health JSON contracts.
@@ -88,8 +89,8 @@ original commitment graph remains available as a deep inspection surface.
 TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
 discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
-are certified without a checkout or hidden service; published-byte replay is
-now ready against the `v0.1.0` release.
+are certified without a checkout or hidden service; the same path now also
+passes from exact `v0.1.0` published bytes on both supported targets.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
@@ -102,9 +103,9 @@ than the public entrypoint.
 TQ-606 adds the fail-closed `/adopt.json` pre-executable contract and a complete
 candidate adoption journey across a human-shell proxy, a package-independent
 agent, typed contention/recovery, evidence completion and installed same-ledger
-Console inspection. Published-byte replay and an independent real-human blind
-session remain external gates; no human-usability completion is inferred from
-the automated proxy.
+Console inspection. The exact published-byte replay now passes on both targets.
+One independent real-human blind session remains the sole external gate; no
+human-usability completion is inferred from the automated proxy.
 
 TQ-321 now certifies native integrations for Codex and Claude Code. Both host
 marketplaces install the same versioned safety skill and pass isolated
@@ -124,8 +125,10 @@ receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
-Exact first protected release bytes and future N-2 protected lines remain
-external replay boundaries; see `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
+Exact `v0.1.0` published bytes now migrate the populated format-5 fixture and
+pass post-migration doctor on both targets. Exact N-2 protected lines become a
+mandatory boundary once three protected release lines exist; see
+`../guides/DATA_SAFETY.md` and the TQ-608 certificate.
 
 TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.
 Five fixed-clock, process-isolated ledgers cover empty, mature, hostile,
@@ -134,7 +137,7 @@ stays inert, support metadata stays redacted and corrupt canonical state fails
 with a generic operator-safe error. This is a Local browser gate, not a hosted
 Console or broad browser-engine claim.
 
-TQ-320 now has a package-independent candidate certificate. A clean-room
+TQ-320 now has package-independent and published-package certificates. A clean-room
 runtime installs generated `@tasq-run/schema`, `@tasq-run/extension-sdk` and
 `@tasq-run/core` tarballs, then proves assignment, stable conversation/run
 identity, lost-response deduplication, `input_required` resume, claim expiry
@@ -143,9 +146,9 @@ artifacts/evidence, cursor-only restart across separate adapter processes,
 stale claim/fence rejection at the protected effect gate and explicit
 completion. No new Core entity or runtime-specific enum was required. Local autonomous onboarding now
 also advertises additive retry-safe attempt recipes and an exact audit-resume
-recipe. Final TQ-320 closure still requires replay from the first protected
-published packages; the private Denshin journey remains product-learning
-evidence rather than that external claim.
+recipe. Protected run 30015923266 replayed the same fixture from exact
+`@tasq-run/*@0.1.0` registry tarballs on both targets, closing TQ-320. The
+private Denshin journey remains separate product-learning evidence.
 
 The same clean-room trial found and closed an Embedded Core packaging gap:
 effects required a registered immutable type, but `@tasq-run/core` did not expose

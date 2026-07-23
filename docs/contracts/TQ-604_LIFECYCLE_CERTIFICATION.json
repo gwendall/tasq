@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.lifecycle-certification.v1",
-  "status": "candidate-certified-published-replay-ready",
+  "status": "published-release-certified",
   "productShape": "tasq-local",
   "supportedTargets": ["darwin-arm64", "linux-x64-gnu"],
   "releaseAssets": {
@@ -60,14 +60,31 @@
     ]
   },
   "publishedArtifactEvidence": {
-    "status": "ready-v0.1.0-published",
+    "status": "passed",
     "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
     "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "requiredBeforeCompletion": [
-      "verify-each-published-asset-attestation",
-      "run-clean-room-journey-from-downloaded-assets-on-both-targets",
-      "record-release-url-version-commit-and-digests"
+    "certifiedAt": "2026-07-23T14:29:19Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+    "certificationSourceCommit": "d02ba152e0a65158180d863733006b3f21062e5b",
+    "registryTarballsMatched": true,
+    "targets": {
+      "darwin-arm64": {
+        "status": "passed",
+        "job": "https://github.com/gwendall/tasq/actions/runs/30015923266/job/89235786083"
+      },
+      "linux-x64-gnu": {
+        "status": "passed",
+        "job": "https://github.com/gwendall/tasq/actions/runs/30015923266/job/89235786045"
+      }
+    },
+    "verified": [
+      "every-published-asset-attestation",
+      "clean-room-lifecycle-from-downloaded-assets-on-both-targets",
+      "format-5-to-format-25-published-binary-migration",
+      "same-ledger-installed-console",
+      "public-adoption-path",
+      "published-package-interactive-runtime"
     ]
   },
-  "tq604Complete": false
+  "tq604Complete": true
 }

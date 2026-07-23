@@ -20,11 +20,10 @@ precondition is handled once by the protected `bootstrap-npm.yml` workflow: it
 uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
-seven packages. Published-package support does not begin until the exact alpha
-authorization and registry gates pass, TQ-603 publishes artifacts and TQ-604
-certifies their complete lifecycle without a repository checkout. TQ-607
-remains the retained-data gate for stable graduation, not for the explicitly
-labeled pre-1.0 alpha.
+seven packages. `v0.1.0` and all seven packages are now published; TQ-604
+certifies their complete lifecycle without a repository checkout on both
+supported targets. TQ-607 remains the retained-data gate for stable graduation,
+not for the explicitly labeled pre-1.0 alpha.
 
 The implemented candidate builder is:
 
@@ -37,14 +36,14 @@ bun scripts/release/build-public-release.ts \
 ```
 
 Use `linux-x64-gnu` on the supported Linux runner. Inputs are explicit and no
-build timestamp is recorded. The output is deterministic, but remains
-unpublishable until the remaining package gates pass and protected CI in the
-canonical repository attest it. See `../contracts/TQ-603_RELEASE_CONTRACT.md` for files,
-verification and refusal gates.
+build timestamp is recorded. Local output remains unpublishable; protected CI
+in the canonical repository is the only publication authority. See
+`../contracts/TQ-603_RELEASE_CONTRACT.md` for files, verification and refusal
+gates.
 
 Each target envelope also contains a target-named `.install.ts` lifecycle
 tool. It verifies itself, the manifest and archive against `SHA256SUMS`, then
 installs versions side by side under an explicit prefix. It never edits shell
 startup files or manages `TASQ_HOME`. Exact commands, upgrade/rollback rules
-and the remaining published-byte gate are in
+and the passed published-byte certificate are in
 `../contracts/TQ-604_LIFECYCLE_CERTIFICATION.md`.

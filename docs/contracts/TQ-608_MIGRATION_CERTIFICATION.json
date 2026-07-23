@@ -1,8 +1,8 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 1,
-  "status": "source-candidate-passed-v0.1.0-replay-ready",
-  "testedAt": "2026-07-22",
+  "revision": 2,
+  "status": "current-release-passed",
+  "testedAt": "2026-07-23",
   "storeFormat": {
     "contractVersion": "tasq.store-format.v1",
     "current": 25,
@@ -60,10 +60,20 @@
     "packages/tasq-cli/test/artifact-smoke.test.ts",
     "packages/tasq-cli/test/public-release.test.ts"
   ],
-  "remainingExternalReplay": [
-    "first-protected-release-exact-bytes-and-attestation",
-    "exact-protected-n-minus-two-binaries-once-three-lines-exist"
-  ],
+  "publishedReleaseEvidence": {
+    "version": "0.1.0",
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+    "certifiedAt": "2026-07-23T14:29:19Z",
+    "targets": ["darwin-arm64", "linux-x64-gnu"],
+    "sourceFixtureFormat": 5,
+    "targetFormat": 25,
+    "attestationsVerified": true,
+    "postMigrationDoctorPassed": true
+  },
+  "futureCompatibilityRule": "Once three protected release lines exist, certify exact protected N-2 binaries and published bytes before claiming support for that line.",
+  "remainingExternalReplay": [],
   "tq608SourceCandidateComplete": true,
-  "publishedByteCertificationComplete": false
+  "publishedByteCertificationComplete": true
 }

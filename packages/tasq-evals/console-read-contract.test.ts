@@ -164,7 +164,7 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     }
     for (const marker of [
       "/api/console/runtime", "web status", "foreground", "instanceId",
-      "TASQ_HOME/run/console", "published-byte confirmation",
+      "TASQ_HOME/run/console", "published-byte complete",
     ]) {
       expect(`${schema}\n${server}\n${listener}\n${lifecycle}\n${webCommand}\n${installedDocs}`).toContain(marker);
     }
@@ -186,6 +186,6 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     expect(backlog.items.find(({ id }) => id === "TQ-701")?.status).toBe("done");
     expect(backlog.items.find(({ id }) => id === "TQ-702")?.status).toBe("done");
     expect(backlog.items.find(({ id }) => id === "TQ-703")?.status).toBe("done");
-    expect(backlog.items.find(({ id }) => id === "TQ-704")?.status).toBe("candidate_done_publication_gate");
+    expect(backlog.items.find(({ id }) => id === "TQ-704")?.status).toBe("done");
   });
 });

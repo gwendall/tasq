@@ -268,7 +268,7 @@
     "canonical_source_repository_is_public_alpha",
     "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
     "first_supported_public_alpha_release_is_published_with_oidc_provenance",
-    "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
+    "local_release_v0_1_0_is_published_and_multi_target_lifecycle_certified",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_deployed_at_tasq_run",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",

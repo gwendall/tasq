@@ -75,20 +75,28 @@
       "boundary": "authorizes the labeled pre-1.0 alpha; retained-data dogfood still blocks stable graduation"
     },
     "publishedLifecycleCertification": {
-      "state": "ready_for_published_byte_replay",
-      "candidateEvidence": "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json"
+      "state": "complete",
+      "completedAt": "2026-07-23",
+      "evidence": "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
     },
     "publishedConsoleLifecycleCertification": {
-      "state": "ready_for_published_byte_replay",
-      "candidateEvidence": "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"
+      "state": "complete",
+      "completedAt": "2026-07-23",
+      "evidence": "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
     },
     "publishedAdoptionCertification": {
-      "state": "ready_for_published_byte_replay",
-      "candidateEvidence": "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"
+      "state": "automated_complete_human_pending",
+      "completedAt": "2026-07-23",
+      "evidence": "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
     },
     "publishedInteractiveRuntimeCertification": {
-      "state": "ready_for_published_package_replay",
-      "candidateEvidence": "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"
+      "state": "complete",
+      "completedAt": "2026-07-23",
+      "evidence": "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
     },
     "independentBlindHumanAdoption": {
       "state": "not_run",
@@ -157,11 +165,11 @@
     },
     {
       "id": "TQ-608",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
-      "remaining": ["replay-first-protected-release-bytes", "add-exact-protected-n-minus-two-lines-once-they-exist"],
+      "remaining": [],
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts"]
     },
     {
@@ -178,11 +186,12 @@
     },
     {
       "id": "TQ-604",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-603"],
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes",
-      "evidence": ["docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/pull/5"]
+      "remaining": [],
+      "evidence": ["docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/actions/runs/30015923266"]
     },
     {
       "id": "TQ-701",
@@ -210,11 +219,12 @@
     },
     {
       "id": "TQ-704",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "local-console",
       "dependsOn": ["TQ-603", "TQ-703"],
       "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners",
-      "evidence": ["docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md"]
+      "remaining": [],
+      "evidence": ["docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md", "https://github.com/gwendall/tasq/actions/runs/30015923266"]
     },
     {
       "id": "TQ-605",
@@ -230,7 +240,7 @@
       "milestone": "public-adoption",
       "dependsOn": ["TQ-604", "TQ-605", "TQ-704"],
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
-      "remaining": ["rerun-from-first-published-release", "record-independent-unbriefed-human-session"],
+      "remaining": ["record-independent-unbriefed-human-session"],
       "evidence": ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"]
     },
     {
@@ -243,11 +253,11 @@
     },
     {
       "id": "TQ-320",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "runtime-consumers",
       "dependsOn": ["TQ-603", "TQ-304", "TQ-501"],
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
-      "remaining": ["rerun-from-first-published-release"],
+      "remaining": [],
       "evidence": ["docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md", "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"]
     },
     {

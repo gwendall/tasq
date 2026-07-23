@@ -91,12 +91,10 @@ real unfamiliar person understands the language, notices the warnings or
 chooses correctly. That claim requires an independent blind human session with
 no maintainer assistance after public-source launch.
 
-The install also uses generated candidate bytes because TQ-603 has no published
-release. Final TQ-606 closure therefore requires both:
-
-1. rerunning the journey from the first protected, attested release bytes;
-2. recording one independent unbriefed-human completion from the public
-   entrypoint, including interventions and failure points.
-
-Until both exist, the machine certificate keeps `tq606Complete: false` and the
-backlog uses an external-gate candidate status.
+Protected run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+has now rerun the journey from the exact attested `v0.1.0` release on both
+supported targets. Final TQ-606 closure requires only one independent
+unbriefed-human completion from the public entrypoint, including interventions
+and failure points. Until that exists, the machine certificate keeps
+`tq606Complete: false` and the backlog uses an external-gate candidate status.

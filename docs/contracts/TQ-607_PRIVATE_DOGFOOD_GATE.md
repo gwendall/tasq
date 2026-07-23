@@ -97,7 +97,7 @@ Required proof:
   completion decision.
 
 This private integration is learning evidence for TQ-607. Formal public-byte
-consumer conformance remains TQ-320 after TQ-603.
+consumer conformance is separately complete under TQ-320.
 
 ## Cross-cutting drills
 

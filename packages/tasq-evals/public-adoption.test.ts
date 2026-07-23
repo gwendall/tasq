@@ -472,15 +472,16 @@ describe.skipIf(target === null)("TQ-606 blind public adoption", () => {
     expect(clientSource).not.toContain("recipe.id ===");
     expect(JSON.parse(certificateRaw)).toMatchObject({
       contractVersion: "tasq.public-adoption-certification.v1",
-      status: "candidate-certified-external-gates-pending",
+      status: "published-bytes-certified-human-gate-pending",
       repositoryAccess: {
         state: "public-alpha",
         requiredPrecondition: null,
         publicSourceLaunchAuthorized: true,
       },
       publishedArtifactEvidence: {
-        status: "ready-v0.1.0-published",
+        status: "passed",
         release: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30015923266",
       },
       independentHumanEvidence: { status: "not-run-automated-path-only" },
       tq606Complete: false,

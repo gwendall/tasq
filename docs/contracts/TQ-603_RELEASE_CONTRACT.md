@@ -50,8 +50,9 @@ and performs real autonomous onboarding.
 The lifecycle candidate extends that clean-room gate through side-by-side
 install, two-agent contention/recovery, Console inspection, backup, upgrade,
 snapshot-and-binary rollback and data-preserving uninstall. See
-`TQ-604_LIFECYCLE_CERTIFICATION.md`. Published-byte certification is now
-running against the immutable `v0.1.0` download.
+`TQ-604_LIFECYCLE_CERTIFICATION.md`. Published-byte certification passed
+against the immutable `v0.1.0` download on both supported targets in run
+[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266).
 
 A local output is always an **unpublishable candidate**. Only the protected tag
 workflow in the canonical repository may attach GitHub/Sigstore build
@@ -93,9 +94,8 @@ The pipeline must refuse a public release until all of these facts are true:
 8. every shipped component has a declared license and SBOM identity;
 9. public source launch and repository visibility have been explicitly
    authorized;
-10. TQ-321 zero-context agent integration is certified and the TQ-608 source
-    candidate is passed; its published-byte replay remains part of the first
-    protected lifecycle certificate.
+10. TQ-321 zero-context agent integration and TQ-608 current-release
+    published-byte migration are certified.
 
 The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable

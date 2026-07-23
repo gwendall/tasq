@@ -131,12 +131,13 @@ describe("TQ-320 interactive runtime candidate", () => {
     expect(source).not.toMatch(/performance\.now\s*\(/);
     expect(JSON.parse(certificate)).toMatchObject({
       contractVersion: "tasq.interactive-runtime-certification.v1",
-      status: "candidate-certified-publication-gate-pending",
+      status: "published-package-certified",
       publishedArtifactEvidence: {
-        status: "ready-v0.1.0-published",
+        status: "passed",
         release: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30015923266",
       },
-      tq320Complete: false,
+      tq320Complete: true,
     });
   });
 });
