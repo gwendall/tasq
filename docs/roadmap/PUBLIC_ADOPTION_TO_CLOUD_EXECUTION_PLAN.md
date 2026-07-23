@@ -57,7 +57,7 @@ mirroring of every Codex or Claude todo.
 | Surface | Current truth | Gap this plan closes |
 |---|---|---|
 | Public source | Public canonical repository | Keep human and machine truth synchronized |
-| npm | Seven `@tasq-run/*@0.2.0` packages published | Present exact, tested acquisition commands |
+| npm | Seven `@tasq-run/*@0.3.0` packages published | Present exact, tested acquisition commands |
 | Native release assets | Attested macOS ARM64 and Linux x64 assets | Add a user-facing verified installer and explicit runtime/platform table |
 | CLI | Broad local command surface | Teach a small journey before the complete reference |
 | Local MCP | Capability-scoped stdio transport | Add exact host configuration examples |
@@ -304,7 +304,7 @@ Never recommend the unrelated unscoped package name.
 
 ## 7. TQ-611 — Deep local TypeScript client
 
-**Status:** done — protected `v0.2.0` publication and published-byte replay
+**Status:** done — protected `v0.3.0` publication and published-byte replay
 passed
 
 **Depends on:** TQ-609
@@ -359,14 +359,15 @@ consumers execute the same generated example twice against one ledger.
 Acceptance is recorded in
 `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md` and
 `../contracts/TQ-611_RELEASE_CERTIFICATION.json`.
-`@tasq-run/core@0.2.0` is published with compiled ESM and declarations; exact
+`@tasq-run/core@0.3.0` is published with compiled ESM and declarations; exact
 registry bytes pass the Node 22 and Bun fresh-install plus same-ledger restart
 journey. CLI, MCP, Console and protocol adapters retain their Bun-only runtime
 boundary.
 
 ## 8. TQ-612 — Completion validation and dispute policy
 
-**Status:** pending
+**Status:** done — published in `v0.3.0` and exact-byte certified on both
+supported native targets
 
 **Depends on:** ADR-005
 

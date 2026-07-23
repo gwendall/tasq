@@ -96,6 +96,7 @@ export const docPages: DocPage[] = [
         title: "The safe loop",
         body: [
           "Discover the contract, read bounded state, acquire a fenced claim, record an attempt, attach durable evidence, then request explicit completion. Runtime success alone never closes a commitment.",
+          "For a validated commitment, follow the frozen resolution policy: propose the exact evidence, allow any configured challenge window, obtain an eligible decision, then complete with that accepted decision. Ordinary todos keep the shorter path.",
         ],
         code: publicCodeExamples.lifecycle.display,
         codeTitle: publicCodeExamples.lifecycle.title,
@@ -115,7 +116,7 @@ export const docPages: DocPage[] = [
       {
         title: "What Tasq does not coordinate for you",
         body: [
-          "Tasq does not choose the best model, schedule your workflow, store prompts, call providers or decide what evidence is good enough for your domain. Those policies remain replaceable outer layers.",
+          "Tasq does not choose the best model, schedule your workflow, store prompts, call providers or invent what counts as sufficient evidence for your domain. It freezes the policy you choose and records proposals, challenges and decisions; the policy itself remains a replaceable outer layer.",
         ],
       },
     ],
@@ -150,7 +151,7 @@ export const docPages: DocPage[] = [
     eyebrow: "For humans",
     title: "See what the agents believe is true.",
     summary:
-      "Use the CLI to change state and the read-only Local Console to inspect commitments, holders, waits, effects, evidence and audit history.",
+      "Use the CLI to change state and the read-only Local Console to inspect commitments, holders, waits, effects, evidence, resolution decisions and audit history.",
     sections: [
       {
         title: "Start the Local Console explicitly",
@@ -234,12 +235,13 @@ export const docPages: DocPage[] = [
       {
         title: "Separate records prevent separate failures",
         body: [
-          "A commitment is the outcome still owed. An assignment records responsibility. A claim grants temporary exclusive execution. An attempt records one run. Evidence explains why a completion decision is justified.",
+          "A commitment is the outcome still owed. An assignment records responsibility. A claim grants temporary exclusive execution. An attempt records one run. Evidence supports a completion proposal. A frozen resolution policy and explicit decision can independently determine whether that evidence is sufficient.",
         ],
         bullets: [
           "Assignment is not a claim.",
           "A successful attempt is not a completed commitment.",
           "An output is not automatically evidence.",
+          "Evidence is not automatically an accepted completion decision.",
           "An approval is not an executed external effect.",
           "A provider timeout is indeterminate, not safely retryable failure.",
         ],

@@ -94,6 +94,6 @@ install that mutates tracked source. Anonymous source access is verified.
 
 TQ-321, TQ-608 and the public-alpha authorization are passed. All seven
 `@tasq-run` package identities, trusted publishers and the first protected
-release are live. Current post-release run 30042551026 certifies exact npm and native
+release are live. Current post-release run 30051196124 certifies exact npm and native
 bytes on both targets. No local artifact, source checkout or untagged GitHub
 build is publishable authority.

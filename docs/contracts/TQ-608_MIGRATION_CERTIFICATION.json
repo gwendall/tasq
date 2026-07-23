@@ -5,10 +5,10 @@
   "testedAt": "2026-07-23",
   "storeFormat": {
     "contractVersion": "tasq.store-format.v1",
-    "current": 25,
-    "readable": { "min": 25, "max": 25 },
-    "writable": { "min": 25, "max": 25 },
-    "directlyMigratable": { "min": 0, "max": 25 },
+    "current": 26,
+    "readable": { "min": 26, "max": 26 },
+    "writable": { "min": 26, "max": 26 },
+    "directlyMigratable": { "min": 0, "max": 26 },
     "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
     "irreversible": true,
     "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
@@ -27,9 +27,10 @@
   ],
   "migrationSet": {
     "first": "0000_init.sql",
-    "last": "0025_console_read_indexes.sql",
-    "count": 26,
-    "orderedDigestManifestSha256": "d2fe6e6fa8969917244c9a5f1d4dc9180cdbfe985d337a2189786cb7bd337f00"
+    "last": "0026_completion_resolution.sql",
+    "count": 27,
+    "orderedDigestManifestFormat": "sha256sum-lines-final-newline",
+    "orderedDigestManifestSha256": "deeed81774be2aa7f6a06abd5aaa4e46a6a7ee80286c6c1d005a789b5d95c674"
   },
   "passed": {
     "verifiedPrivateSnapshotAndReceipt": true,
@@ -61,14 +62,14 @@
     "packages/tasq-cli/test/public-release.test.ts"
   ],
   "publishedReleaseEvidence": {
-    "version": "0.2.0",
-    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
-    "certifiedAt": "2026-07-23T20:34:11Z",
+    "version": "0.3.0",
+    "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124",
+    "certifiedAt": "2026-07-23T22:50:40Z",
     "targets": ["darwin-arm64", "linux-x64-gnu"],
     "sourceFixtureFormat": 5,
-    "targetFormat": 25,
+    "targetFormat": 26,
     "attestationsVerified": true,
     "postMigrationDoctorPassed": true
   },

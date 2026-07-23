@@ -40,10 +40,10 @@
       "candidate_targets_clean_room_certified": true,
       "agent_integration_candidate_certified": true
     },
-    "version": "0.2.0",
-    "tag": "v0.2.0",
-    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.2.0"
+    "version": "0.3.0",
+    "tag": "v0.3.0",
+    "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.3.0"
   },
   "productShapes": [
     {
@@ -123,7 +123,7 @@
       "id": "embedded_typescript",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq-run/core@0.2.0 createLocalTasq({ url, workspaceId, actor, clock })",
+      "entrypoint": "@tasq-run/core@0.3.0 createLocalTasq({ url, workspaceId, actor, clock })",
       "mutations": true,
       "authorityBoundary": "integrator_owned"
     },
@@ -555,7 +555,7 @@
     },
     {
       "id": "TQ-612",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "completion-validation",
       "outcome": "Separate evidence, completion proposals, validation decisions and final completion under versioned deterministic, attested, optimistic or adjudicated policies"
     },
@@ -684,17 +684,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "79f668097d1696e19db398a082f17befcfa25b43d283ad72f79c734d79ccf028"
+      "sha256": "0e35a943f50a4a112a29e6fb76baab1d6e165659924bb13c6dee4af7ca380481"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "fce8943561358e88bc17ddc2eeda3ad0a725b646f0abed6faf8a20bf163384d9"
+      "sha256": "6783368fb9bd999a862a836b2e78f7fa89c331a4f63d8977e0e434aaff00ad9f"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "c32ff1084c882f8fb3a28ad05b22690076153f1d563cecb525d5e1bb51458474"
+      "sha256": "035b06848c0a13b6d743b91b865933496baff2267466e0f241db8682f4a82c7f"
     }
   ]
 }

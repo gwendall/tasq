@@ -34,10 +34,10 @@
   },
   "publishedArtifactEvidence": {
     "status": "passed",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-    "certifiedAt": "2026-07-23T20:34:11Z",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+    "certifiedAt": "2026-07-23T22:50:40Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124",
     "targets": ["darwin-arm64", "linux-x64-gnu"]
   },
   "independentHumanEvidence": {

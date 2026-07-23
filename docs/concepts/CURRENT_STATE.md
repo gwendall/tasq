@@ -54,13 +54,13 @@ availability starts only after an explicitly authorized protected attested
 release.
 
 Public source launch occurred on 2026-07-22 and protected public alpha
-`v0.2.0` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
+`v0.3.0` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
 stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may install `0.2.0`, build from
+`go`, `extend` or `no_go` decision. Early users may install `0.3.0`, build from
 source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
@@ -74,8 +74,8 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. The current assets are published at immutable `v0.2.0`. Protected run
-[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+`TASQ_HOME`. The current assets are published at immutable `v0.3.0`. Protected run
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
 downloaded them, verified every attestation and passed the lifecycle on both
 supported targets, closing TQ-604.
 
@@ -90,7 +90,7 @@ TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
 discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
 are certified without a checkout or hidden service; the same path now also
-passes from exact `v0.2.0` published bytes on both supported targets.
+passes from exact `v0.3.0` published bytes on both supported targets.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
@@ -133,15 +133,14 @@ event cursor, rejected stale resource authority, attached evidence, completed
 explicitly and preserved the ledger byte-for-byte through native uninstall.
 The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
-TQ-608 protects both release and source evolution. The published `v0.2.0`
-line uses store format 25; the current TQ-612 source candidate advances to
-format 26. Each executable reports its exact read/write/direct-migration
+TQ-608 protects both release and source evolution. Published `v0.3.0` uses
+store format 26. Each executable reports its exact read/write/direct-migration
 ranges. Existing-store upgrades are serialized, snapshot-verified,
 receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
-Exact `v0.2.0` published bytes now migrate the populated format-5 fixture and
+Exact `v0.3.0` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. Exact N-2 protected lines become a
 mandatory boundary once three protected release lines exist; see
 `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
@@ -162,8 +161,8 @@ artifacts/evidence, cursor-only restart across separate adapter processes,
 stale claim/fence rejection at the protected effect gate and explicit
 completion. No new Core entity or runtime-specific enum was required. Local autonomous onboarding now
 also advertises additive retry-safe attempt recipes and an exact audit-resume
-recipe. Protected run 30042551026 replayed the same fixture from exact
-`@tasq-run/*@0.2.0` registry tarballs on both targets, closing TQ-320. The
+recipe. Protected run 30051196124 replayed the same fixture from exact
+`@tasq-run/*@0.3.0` registry tarballs on both targets, closing TQ-320. The
 private Denshin journey remains separate product-learning evidence.
 
 The same clean-room trial found and closed an Embedded Core packaging gap:
@@ -177,17 +176,17 @@ TQ-611 now provides the published `createLocalTasq` interface inside
 `@tasq-run/core`. One explicit call owns store opening, checksum-pinned
 migrations, coordination-space/principal bootstrap and repeated operation
 context while keeping URL, workspace, actor and `Clock` mandatory. The
-published `0.2.0` Core, Schema and Extension SDK packages contain compiled ESM
+published `0.3.0` Core, Schema and Extension SDK packages contain compiled ESM
 plus declarations and pass fresh Node 22 and Bun same-ledger restart tests
 from exact registry tarballs. The CLI, MCP, Console and protocol adapters
 remain Bun-only. Protected publication run
-[30041513292](https://github.com/gwendall/tasq/actions/runs/30041513292)
+[30050429924](https://github.com/gwendall/tasq/actions/runs/30050429924)
 and post-release certification run
-[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
 close the interface's release gate.
 See `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
 
-TQ-612 is implemented and locally certified as a source candidate. ADR-005
+TQ-612 is published and exact-byte certified in `v0.3.0`. ADR-005
 freezes four evidence authenticity classes and separates immutable resolution
 contracts, evidence trust/revocation, completion proposals, challenges,
 validation decisions and final completion records. Deterministic, attested,
@@ -197,8 +196,11 @@ inspection, Local Console, doctor and portable export/import share the same
 records. Local CLI/MCP can claim only unverified attribution; higher trust
 requires a host authority. Validated commitments are intentionally excluded
 from replication until its protocol carries the entire resolution chain.
-Protected publication and downloaded-byte certification remain before this is
-a released-package claim. See
+Publication run
+[30050429924](https://github.com/gwendall/tasq/actions/runs/30050429924)
+and post-release run
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
+certify both native targets and all seven registry tarballs. See
 `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
 
 The shortest verified loop is:

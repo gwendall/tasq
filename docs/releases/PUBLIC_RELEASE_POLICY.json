@@ -131,10 +131,10 @@
     "downgrade": "restore-matching-verified-snapshot-and-binary",
     "storeFormat": {
       "contractVersion": "tasq.store-format.v1",
-      "current": 25,
-      "readable": { "min": 25, "max": 25 },
-      "writable": { "min": 25, "max": 25 },
-      "directlyMigratable": { "min": 0, "max": 25 },
+      "current": 26,
+      "readable": { "min": 26, "max": 26 },
+      "writable": { "min": 26, "max": 26 },
+      "directlyMigratable": { "min": 0, "max": 26 },
       "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
       "irreversible": true,
       "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
@@ -249,47 +249,47 @@
     "publishedSupportGranted": false
   },
   "publishedRelease": {
-    "version": "0.2.0",
-    "tag": "v0.2.0",
-    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30041513292",
-    "publishedAt": "2026-07-23T20:21:06Z",
+    "version": "0.3.0",
+    "tag": "v0.3.0",
+    "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30050429924",
+    "publishedAt": "2026-07-23T22:38:16Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.2.0"
+        "version": "0.3.0"
       }
     ],
-    "certification": "docs/contracts/TQ-611_RELEASE_CERTIFICATION.json",
+    "certification": "docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json",
     "postReleaseCertification": {
       "status": "passed",
-      "certifiedAt": "2026-07-23T20:34:11Z",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+      "certifiedAt": "2026-07-23T22:50:40Z",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124",
       "targets": ["darwin-arm64", "linux-x64-gnu"],
       "registryTarballsMatched": true,
       "downloadedByteLifecyclePassed": true,

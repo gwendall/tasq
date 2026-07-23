@@ -65,7 +65,7 @@
       "id": "embedded_typescript",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq-run/core@0.2.0 createLocalTasq({ url, workspaceId, actor, clock })",
+      "entrypoint": "@tasq-run/core@0.3.0 createLocalTasq({ url, workspaceId, actor, clock })",
       "mutations": true,
       "authorityBoundary": "integrator_owned"
     },

@@ -1,6 +1,6 @@
 # TQ-704 installed Console lifecycle
 
-**Status:** complete for `v0.2.0`; installed Console certified from published
+**Status:** complete for `v0.3.0`; installed Console certified from published
 bytes on both supported targets
 
 **Scope:** Tasq Local foreground Console only
@@ -110,8 +110,8 @@ journeys remain a separate required Console job.
 ## Published certification result
 
 Protected run
-[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
-downloaded and attestation-verified the `v0.2.0` assets on macOS ARM64 and Linux
+[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
+downloaded and attestation-verified the `v0.3.0` assets on macOS ARM64 and Linux
 x64, then exercised the same-ledger installed Console as part of the complete
 lifecycle and public-adoption journeys. TQ-704 is published-byte complete for
 the first public-alpha release.

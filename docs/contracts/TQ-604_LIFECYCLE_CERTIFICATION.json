@@ -61,26 +61,26 @@
   },
   "publishedArtifactEvidence": {
     "status": "passed",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
-    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
-    "certifiedAt": "2026-07-23T20:34:11Z",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
-    "certificationSourceCommit": "ff35ce065d63a8aaa21617a03d03af1ed9b87a5a",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+    "certifiedAt": "2026-07-23T22:50:40Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124",
+    "certificationSourceCommit": "d5b77df0ec51578409929ee23c83ef7aa02c4069",
     "registryTarballsMatched": true,
     "targets": {
       "darwin-arm64": {
         "status": "passed",
-        "job": "https://github.com/gwendall/tasq/actions/runs/30042551026/job/89325762345"
+        "job": "https://github.com/gwendall/tasq/actions/runs/30051196124/job/89353439684"
       },
       "linux-x64-gnu": {
         "status": "passed",
-        "job": "https://github.com/gwendall/tasq/actions/runs/30042551026/job/89325762481"
+        "job": "https://github.com/gwendall/tasq/actions/runs/30051196124/job/89353439711"
       }
     },
     "verified": [
       "every-published-asset-attestation",
       "clean-room-lifecycle-from-downloaded-assets-on-both-targets",
-      "format-5-to-format-25-published-binary-migration",
+      "format-5-to-format-26-published-binary-migration",
       "same-ledger-installed-console",
       "public-adoption-path",
       "published-package-interactive-runtime"

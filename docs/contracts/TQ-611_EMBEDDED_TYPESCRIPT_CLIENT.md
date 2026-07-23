@@ -1,6 +1,6 @@
 # TQ-611 — Deep local TypeScript client
 
-> **Status:** complete; protected `v0.2.0` publication and exact published-byte
+> **Status:** complete; protected `v0.3.0` publication and exact published-byte
 > certification passed
 > **Package seam:** `@tasq-run/core`
 > **Machine evidence:** `TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.json`
@@ -49,7 +49,7 @@ The protected package builder emits compiled ESM and `.d.ts` declarations for
 `dist/`; raw TypeScript is not the Node execution path. Migrations are copied
 beside the compiled migration loader and retain their immutable checksums.
 
-The published `@tasq-run/core@0.2.0` package is certified on:
+The published `@tasq-run/core@0.3.0` package is certified on:
 
 - Bun 1.3.11 or newer;
 - Node.js 22 or newer.
@@ -85,10 +85,10 @@ pnpm --filter @tasq-run/core typecheck
 ## Published-byte closure
 
 Protected release run
-[`30041513292`](https://github.com/gwendall/tasq/actions/runs/30041513292)
-published `@tasq-run/core@0.2.0` and its compiled dependency closure from source
-commit `28f4d77477e81ae2277f73f326c8703e7124f192`. Post-release run
-[`30042551026`](https://github.com/gwendall/tasq/actions/runs/30042551026)
+[`30050429924`](https://github.com/gwendall/tasq/actions/runs/30050429924)
+published `@tasq-run/core@0.3.0` and its compiled dependency closure from source
+commit `c093ed58ab2a9e38dbd9d877ba75021997761057`. Post-release run
+[`30051196124`](https://github.com/gwendall/tasq/actions/runs/30051196124)
 downloaded the exact registry tarballs and repeated the Node 22 and Bun
 fresh-install plus same-ledger restart journey. The site and release manifests
 may therefore advertise `createLocalTasq` and the package-specific Node
