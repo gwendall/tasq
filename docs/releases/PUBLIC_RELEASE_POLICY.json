@@ -302,7 +302,7 @@
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true,
-    "agent_integration_candidate_certified": false
+    "agent_integration_candidate_certified": true
   },
   "repositoryControls": {
     "enforcementState": "active-public-repository",

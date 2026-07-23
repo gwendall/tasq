@@ -4,7 +4,7 @@
   "source": {
     "repository": "https://github.com/gwendall/tasq",
     "ref": "main",
-    "localCommit": "2015490bf0db03b3fdd4e8bd6319fc268f3e2ea7"
+    "localCommit": "bbab02de19bf82d2c5cee86a58687c07819af6c8"
   },
   "releaseArtifact": {
     "contractVersion": "tasq.cli-artifact.v1",
@@ -365,106 +365,130 @@
         ]
       ],
       "phaseOne": {
-        "prompt": "Use $tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 codex restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
+        "prompt": "Use $tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 codex restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
         "exitCode": 0,
         "stderr": "Reading additional input from stdin...\n",
-        "finalResponse": "Created exactly one durable commitment:\n\n- Commitment: `019f8ebc-eb0d-781e-bb9c-f5f950603042`\n- Claim: `019f8ebd-0522-7249-a79d-d1271fa182cc`, leased for 10m\n- Running attempt: `019f8ebd-3d5f-74e6-8b75-c2aff762dbd3`\n- Commitment status: `in_progress`\n- Attempt status: `running`\n\nLatest observed Tasq event sequence: **4**\n\n1. `created`\n2. `claim_acquired`\n3. `started`\n4. `attempt_started`\n\nNeither the attempt nor commitment was completed.",
-        "durationNanoseconds": "74289316542",
-        "transcriptSha256": "4d6e7de9b05d6c04d7e4a2ad24d268a5212db4236bcd07bf29d55f16e722eccb",
+        "finalResponse": "Created exactly one durable Tasq commitment:\n\n- Commitment: `TQ-321 codex restart commitment`\n- ID: `019f904e-5180-7934-8550-794483602e31`\n- Status: `in_progress`\n- Claim: active for 10m, ID `019f904e-642d-7a12-b6c2-e4aaa905c0f7`\n- Local attempt: `running`, ID `019f904e-9f60-71f2-935e-dd4c8c73d139`\n\nLatest observed Tasq event sequence: **4** (`attempt_started`). Events 1–4 were: `created`, `claim_acquired`, `started`, `attempt_started`.\n\nNeither the attempt nor commitment was completed.",
+        "durationNanoseconds": "89982149542",
+        "transcriptSha256": "10ac5341efec63f05d241fe51c00fced9f6f95cdcc3817d0e7482420ebcc53cc",
         "commands": [
           {
-            "command": "/bin/zsh -lc \"sed -n '1,240p' '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/codex-config/plugins/cache/tasq/tasq/0.1.1/skills/tasq/SKILL.md'\"",
+            "command": "/bin/zsh -lc \"sed -n '1,240p' /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config/plugins/cache/tasq/0.1.2/skills/tasq/SKILL.md\"",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc \"sed -n '1,260p' /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config/plugins/cache/tasq/0.1.2/skills/tasq/SKILL.md\"",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc \"rg --files /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5 | rg '/tasq/.*/?SKILL\\\\.md\"'$|/tasq/SKILL'\"\\\\.md\"'$'\"'\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' onboard --space 'tq321/blind/codex' --actor 'codex:tq321-blind' --capabilities 'read,propose,coordinate' --json\"",
+            "command": "/bin/zsh -lc \"sed -n '1,320p' /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config/plugins/cache/tasq/tasq/0.1.2/skills/tasq/SKILL.md\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' context --max-records '20' --max-tokens '8192' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js onboard --space tq321/blind/codex --actor codex:tq321-blind --capabilities read,propose,coordinate --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' onboard --space 'tq321/blind/codex' --actor 'codex:tq321-blind' --capabilities 'read,propose,coordinate' --json | jq '.recipes[] | select(.id == \\\"commitment.propose\\\" or .id == \\\"commitment.claim\\\" or .id == \\\"commitment.start\\\" or .id == \\\"attempt.start\\\" or .id == \\\"audit.list\\\" or .id == \\\"audit.resume\\\")'\"",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' add 'TQ-321 codex restart commitment' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "command": "/bin/zsh -lc \"/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js onboard --space tq321/blind/codex --actor codex:tq321-blind --capabilities read,propose,coordinate --json | jq '{guide: .guide.journeys, recipes: [.recipes[] | select(.id == \\\"commitment.propose\\\" or .id == \\\"commitment.claim\\\" or .id == \\\"commitment.start\\\" or .id == \\\"attempt.start\\\" or .id == \\\"audit.resume\\\" or .id == \\\"audit.list\\\") | {id, argvTemplate, parameters}]}'\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' claim '019f8ebc-eb0d-781e-bb9c-f5f950603042' --for '10m' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "command": "/bin/zsh -lc \"/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js add 'TQ-321 codex restart commitment' --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' start '019f8ebc-eb0d-781e-bb9c-f5f950603042' --note 'Starting the requested local restart-survivable attempt.' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js claim 019f904e-5180-7934-8550-794483602e31 --for 10m --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' attempt start '019f8ebc-eb0d-781e-bb9c-f5f950603042' --claim '019f8ebd-0522-7249-a79d-d1271fa182cc' --runtime 'codex-gpt5' --external-id 'tq321-codex-restart-attempt-1' --context-id 'tq321-blind-codex' --idempotency-key 'tq321-codex-restart-attempt-start-1' --tenant 'tq321/blind/codex' --actor 'codex:tq321-blind' --json\"",
+            "command": "/bin/zsh -lc \"/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js start 019f904e-5180-7934-8550-794483602e31 --note 'Starting local restart-resumable attempt.' --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"'/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js' event list --after-sequence '0' --ascending --tenant 'tq321/blind/codex' --json\"",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js attempt start 019f904e-5180-7934-8550-794483602e31 --claim 019f904e-642d-7a12-b6c2-e4aaa905c0f7 --runtime codex/v1 --external-id tq321-codex-restart-run --context-id tq321-blind-codex-session --idempotency-key tq321-codex-restart-attempt-start --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --after-sequence 0 --ascending --tenant tq321/blind/codex --json'",
             "exitCode": 0
           }
         ]
       },
       "restart": {
         "persistedAfterSequence": 4,
-        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use $tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 codex restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/codex`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
+        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use $tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js` (directly executable without node or bun); space `tq321/blind/codex`; actor `codex:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 codex restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/codex`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
         "exitCode": 0,
         "stderr": "Reading additional input from stdin...\n",
-        "finalResponse": "Resumed successfully from exclusive cursor 4.\n\n- Existing attempt marked `succeeded`.\n- Peer lease contention observed; peer lease/fence never used.\n- Acquired own lease `019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297`, fence `2`.\n- Verified immediately before exactly `sleep 1`, then released it.\n- Evidence `019f8ebf-18e3-7ee9-a635-822608017aed` attached.\n- Existing commitment explicitly completed.\n- Final event cursor: **7**.",
-        "durationNanoseconds": "129005988916",
-        "transcriptSha256": "6c476f372c13e2987394d171bfcf8aed785d35a8e9f531c2477f1b37a9683517",
+        "finalResponse": "Completed the existing `TQ-321 codex restart commitment`.\n\n- Observed peer contention and authority-confirmed release.\n- Acquired our own lease with fence `2`; never used the peer’s lease/fence.\n- Verified authority immediately before running exactly `sleep 1`.\n- Released our lease.\n- Marked the existing attempt succeeded.\n- Attached digest-bound evidence `019f9050-d540-7c63-8701-fd6452c54076`.\n- Explicitly completed the commitment with that evidence.\n\nFinal event cursor: `7`.",
+        "durationNanoseconds": "151984480708",
+        "transcriptSha256": "32c6e19d4e5cad7ba4cb3a1bfce8a7b4a0a5a23e24708b96fff2f2389072b682",
         "commands": [
           {
-            "command": "/bin/zsh -lc \"sed -n '1,240p' /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/codex-config/plugins/cache/tasq/tasq/0.1.1/skills/tasq/SKILL.md\"",
+            "command": "/bin/zsh -lc \"sed -n '1,240p' /Users/gwendall/.agents/skills/tasq/0.1.2/skills/tasq/SKILL.md\"",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc \"sed -n '1,280p' /private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config/plugins/cache/tasq/0.1.2/skills/tasq/SKILL.md\"",
+            "exitCode": 1
+          },
+          {
+            "command": "/bin/zsh -lc \"rg --files /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config | rg '/tasq/.*/SKILL\\\\.md\"'$|/tasq/SKILL'\"\\\\.md\"'$'\"'\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js onboard --space tq321/blind/codex --actor codex:tq321-blind --capabilities read,propose,coordinate --json'",
+            "command": "/bin/zsh -lc \"sed -n '1,320p' /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/codex-config/plugins/cache/tasq/tasq/0.1.2/skills/tasq/SKILL.md\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js onboard --space tq321/blind/codex --actor codex:tq321-blind --capabilities read,propose,coordinate --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js event list --after-sequence 4 --tenant tq321/blind/codex --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js help attempt'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js help event'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js help resource'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/codex --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js inspect 019f8ebc-eb0d-781e-bb9c-f5f950603042 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js help resource'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource get deployment-slot/codex --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource get deployment-slot/codex --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource events deployment-slot/codex --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js inspect 019f904e-5180-7934-8550-794483602e31 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource acquire deployment-slot/codex --for 30m --idempotency-key tq321-codex-restart-resource-acquire-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource events deployment-slot/codex --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource verify deployment-slot/codex --lease 019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource acquire deployment-slot/codex --for 30m --idempotency-key tq321-codex-restart-acquire-deployment-slot --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource verify deployment-slot/codex --lease 019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource verify deployment-slot/codex --lease 019f904f-e62b-7fdc-b84c-af76212d4848 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource verify deployment-slot/codex --lease 019f904f-e62b-7fdc-b84c-af76212d4848 --fence 2 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
@@ -472,23 +496,31 @@
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource release deployment-slot/codex --lease 019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297 --fence 2 --revision 1 --idempotency-key tq321-codex-restart-resource-release-v1 --reason completed-authorized-sleep --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource release deployment-slot/codex --lease 019f904f-e62b-7fdc-b84c-af76212d4848 --fence 2 --revision 1 --idempotency-key tq321-codex-restart-release-deployment-slot --reason completed-sleep-effect --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js attempt succeed 019f8ebd-3d5f-74e6-8b75-c2aff762dbd3 --message authorized-sleep-completed-and-resource-released --expected-revision 1 --idempotency-key tq321-codex-restart-attempt-succeed-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js help attempt'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js evidence add 019f8ebc-eb0d-781e-bb9c-f5f950603042 --attempt 019f8ebd-3d5f-74e6-8b75-c2aff762dbd3 --kind execution-observation --summary 'Tasq verified lease 019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297 fence 2 at authority timestamp 1784806286956 immediately before sleep 1; sleep exited 0 with empty output; Tasq released the same lease at authority timestamp 1784806295560.' --uri urn:tasq:resource-lease:019f8ebe-59d3-7f7d-9dc3-fdc88bb6b297 --digest sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 --source codex:tq321-blind --idempotency-key tq321-codex-restart-evidence-v1 --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js attempt succeed 019f904e-9f60-71f2-935e-dd4c8c73d139 --message deployment-slot-verified-sleep-completed-and-lease-released --expected-revision 1 --idempotency-key tq321-codex-restart-attempt-succeed --tenant tq321/blind/codex --actor codex:tq321-blind --json'",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js done 019f8ebc-eb0d-781e-bb9c-f5f950603042 --evidence 019f8ebf-18e3-7ee9-a635-822608017aed --note 'Existing restart attempt succeeded after exclusive resource verification, sleep 1, and release.' --source codex:tq321-blind --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "command": "/bin/zsh -lc \"printf %s 'deployment-slot/codex lease 019f904f-e62b-7fdc-b84c-af76212d4848 fence 2 verified valid; sleep 1 exit 0; lease released revision 2' | shasum -a 256\"",
             "exitCode": 0
           },
           {
-            "command": "/bin/zsh -lc '/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js event list --after-sequence 4 --tenant tq321/blind/codex --json'",
+            "command": "/bin/zsh -lc \"/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js evidence add 019f904e-5180-7934-8550-794483602e31 --attempt 019f904e-9f60-71f2-935e-dd4c8c73d139 --kind execution-observation --summary 'Authority verified lease 019f904f-e62b-7fdc-b84c-af76212d4848 fence 2; sleep 1 exited 0; exact lease released at revision 2.' --uri tasq://tq321/blind/codex/resource-leases/019f904f-e62b-7fdc-b84c-af76212d4848 --digest sha256:8bdab8993cec8d1079b29593287f1fdd14e5e43e87f2bf9240c4148ef50afb83 --source codex:tq321-blind --idempotency-key tq321-codex-restart-evidence-execution --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc \"/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js done 019f904e-5180-7934-8550-794483602e31 --evidence 019f9050-d540-7c63-8701-fd6452c54076 --note 'Existing restart attempt succeeded after fenced deployment-slot execution and release.' --source codex:tq321-blind --tenant tq321/blind/codex --actor codex:tq321-blind --json\"",
+            "exitCode": 0
+          },
+          {
+            "command": "/bin/zsh -lc '/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/codex --json'",
             "exitCode": 0
           }
         ],
@@ -496,12 +528,12 @@
       },
       "staleVerification": {
         "argv": [
-          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js",
+          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js",
           "resource",
           "verify",
           "deployment-slot/codex",
           "--lease",
-          "019f8ebd-6ee0-7633-b084-5c3dacacf63a",
+          "019f904e-cc02-7f15-aca0-ad12af0fb549",
           "--fence",
           "1",
           "--tenant",
@@ -512,8 +544,8 @@
         ],
         "exitCode": 1
       },
-      "ledgerDigestBeforeUninstall": "sha256:dce58c982fbaea9e7227597bcd60f3365d4eb8561ff2ade9325602f217495019",
-      "ledgerDigestAfterUninstall": "sha256:dce58c982fbaea9e7227597bcd60f3365d4eb8561ff2ade9325602f217495019",
+      "ledgerDigestBeforeUninstall": "sha256:a08e9a3539ab840a9fd1f9d75554fd943951cb171a4cb1d809e2f302a230bf11",
+      "ledgerDigestAfterUninstall": "sha256:a08e9a3539ab840a9fd1f9d75554fd943951cb171a4cb1d809e2f302a230bf11",
       "uninstallArgv": [
         [
           "codex",
@@ -580,166 +612,166 @@
         ]
       ],
       "phaseOne": {
-        "prompt": "Use /tasq:tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 claude restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
+        "prompt": "Use /tasq:tasq. This is a synthetic integration evaluation. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. Start from the installed Tasq integration and read before any mutation. Create exactly one durable commitment titled `TQ-321 claude restart commitment`, claim it for 10m, and start one local attempt. Do not complete the attempt or commitment in this process. Keep private scratchpad todos out of Tasq. Observe the latest event sequence through Tasq and report it at the end. Do not read SQLite, edit projections, or read the device clock.",
         "exitCode": 0,
         "stderr": "",
-        "finalResponse": "Done. Summary:\n\n- **Space**: `tq321/blind/claude`, actor `claude:tq321-blind` (onboarded with capabilities `read,propose,coordinate`)\n- **Commitment created**: \"TQ-321 claude restart commitment\" — id `019f8ec0-4f60-7318-8e87-b4890ea66011`\n- **Claimed** for 10m (claim id `019f8ec0-5bfc-727b-8eaa-4109f2b79840`, fence `1`, expires per authority timestamp `1784806998972`)\n- **Started** the commitment (status → `in_progress`)\n- **Started one local attempt**: id `019f8ec0-78ed-78db-b611-397c95d7a961`, runtime `claude-code-agent-sdk/v1`, status `running` — left unresolved, not succeeded/completed\n\n**Latest observed event sequence: 4** (`attempt_started`), following sequence 3 (`started`), 2 (`claim_acquired`), 1 (`created`) — all for this same commitment. Neither the attempt nor the commitment was completed in this process, and no scratchpad todos were written to Tasq.",
-        "durationNanoseconds": "77719054041",
-        "transcriptSha256": "322c85ed8dca4e10efe21062247fcb9c0c3fef8d5d919c11d8b26efd7b110f26",
+        "finalResponse": "Done. Summary of what was set up in Tasq space `tq321/blind/claude`:\n\n- **Commitment created**: `TQ-321 claude restart commitment` (id `019f9052-04a9-7836-a9fe-83ecd744eb34`), status `in_progress`\n- **Claim**: 10-minute lease acquired (id `019f9052-1106-77a3-96a1-d9cf81061d1e`, fence `1`, expires `1784833325254`)\n- **Attempt**: one local attempt started (id `019f9052-340c-7a96-a580-6ceaf9219c16`, runtime `claude-code/1`), left in `running` state — not completed, per instructions\n\n**Latest event sequence: 4** (`attempt_started`), following sequence 3 (`started`), 2 (`claim_acquired`), and 1 (`created`) — the full ordered event history for this fresh space.",
+        "durationNanoseconds": "76071726292",
+        "transcriptSha256": "154d0a7856ebd765e0c8f13bcdc3665af1f02fb20e2962f18456fe7720420f39",
         "commands": [
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
+            "command": "ls -la /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js",
             "exitCode": null
           },
           {
-            "command": "cat \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt\"",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['guide'], indent=2))\n\"\n",
+            "command": "cat \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt\"",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nprint(list(data.keys()))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['guide'], indent=2))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['recipes'], indent=2))\nprint('WARNINGS', json.dumps(data['warnings'], indent=2))\nprint('DISCOVERY', json.dumps(data['discovery'], indent=2)[:2000])\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt') as f:\n    data = json.load(f)\nprint(list(data.keys()))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nfor r in data['recipes']:\n    print(r['id'], '->', r.get('requiredCapability'), r.get('mutates'))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data['recipes'], indent=2))\nprint('---WARNINGS---')\nprint(json.dumps(data['warnings'], indent=2))\nprint('---DISCOVERY---')\nprint(json.dumps(data['discovery'], indent=2))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nfor r in data['recipes']:\n    if r['id'] in ('context.read','commitment.propose','commitment.claim','commitment.start','attempt.start'):\n        print(r['id'])\n        print(json.dumps(r, indent=2))\n        print('---')\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt') as f:\n    data = json.load(f)\nids = [r['id'] for r in data['recipes']]\nprint(ids)\n\"\n",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/e0ed801f-9ffd-44b1-a292-93bb21ed0b25/tool-results/byhohm2u5.txt') as f:\n    data = json.load(f)\nneed = ['context.read','commitment.propose','commitment.claim','commitment.start','attempt.start','audit.list','audit.resume']\nfor r in data['recipes']:\n    if r['id'] in need:\n        print(json.dumps(r, indent=2))\n        print('====')\n\"\n",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js add \"TQ-321 claude restart commitment\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js context --max-records 20 --max-tokens 8192 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js claim 019f8ec0-4f60-7318-8e87-b4890ea66011 --for 10m --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js add \"TQ-321 claude restart commitment\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js start 019f8ec0-4f60-7318-8e87-b4890ea66011 --note \"Begin restart commitment coordination for TQ-321\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js claim 019f9052-04a9-7836-a9fe-83ecd744eb34 --for 10m --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js attempt start 019f8ec0-4f60-7318-8e87-b4890ea66011 --claim 019f8ec0-5bfc-727b-8eaa-4109f2b79840 --runtime claude-code-agent-sdk/v1 --external-id tq321-claude-restart-attempt-1 --context-id tq321-claude-restart-ctx-1 --idempotency-key tq321-claude-restart-attempt-1-start --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js start 019f9052-04a9-7836-a9fe-83ecd744eb34 --note \"Beginning restart-commitment coordination test\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/731deef1-f3c1-4bf2-84b7-a89a8b82050f/tool-results/bctcgaqay.txt') as f:\n    data = json.load(f)\nfor r in data['recipes']:\n    if r['id'] in ('audit.list','audit.resume'):\n        print(json.dumps(r, indent=2))\n        print('---')\n\"\n",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js attempt start 019f9052-04a9-7836-a9fe-83ecd744eb34 \\\n  --claim 019f9052-1106-77a3-96a1-d9cf81061d1e \\\n  --runtime \"claude-code/1\" \\\n  --external-id \"tq321-claude-restart-run-1\" \\\n  --context-id \"tq321-claude-restart-ctx-1\" \\\n  --idempotency-key \"tq321-claude-restart-attempt-start-1\" \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/private/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js event list --tenant tq321/blind/claude --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --tenant tq321/blind/claude --json",
             "exitCode": null
           }
         ]
       },
       "restart": {
         "persistedAfterSequence": 4,
-        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use /tasq:tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 claude restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/claude`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
+        "phaseTwoPrompt": "This is a fresh process restart in the same synthetic integration evaluation. Use /tasq:tasq. Explicit Tasq rendezvous packet: executable `/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js` (directly executable without node or bun); space `tq321/blind/claude`; actor `claude:tq321-blind`; capabilities `read,propose,coordinate`. The persisted exclusive cursor from the previous process is `4`. Resume with event list after that exact sequence. Locate the existing commitment `TQ-321 claude restart commitment` and its running attempt; do not create a replacement. A peer temporarily holds `deployment-slot/claude`. Inspect live authority, observe contention, and never use the peer's lease or fence. Wait for authority to report it reclaimable, acquire it yourself, verify your exact lease and fence immediately before running exactly `sleep 1`, then release it. Mark the existing attempt succeeded, attach observable evidence, and explicitly complete the commitment with that evidence. Report the final event cursor. Never read or record the device clock; use only Tasq authority timestamps and stable semantic or random UUID idempotency keys.",
         "exitCode": 0,
         "stderr": "",
-        "finalResponse": "Everything completed as planned.\n\n**Summary:**\n- Resumed at cursor `4`, found the existing commitment `TQ-321 claude restart commitment` (`019f8ec0-4f60-7318-8e87-b4890ea66011`) with its running attempt (`019f8ec0-78ed-78db-b611-397c95d7a961`) — no new commitment/attempt was created.\n- Inspected `deployment-slot/claude`: peer `tq321:peer-claude` had held it (fence 1) then released it — confirmed via the resource event stream, never touched the peer's lease/fence.\n- Acquired the lease myself (`leaseId=019f8ec1-a7fd-7493-971e-7b1799dc907f`, `fence=2`), verified it immediately before acting, ran `sleep 1` (exit code 0), then released the lease cleanly.\n- Attached observable evidence (`019f8ec2-29c7-7f1b-adc9-6f536e5874a6`) binding the lease/fence/exit-code details, marked the attempt succeeded, and completed the commitment with that evidence.\n- All timestamps and idempotency keys came from Tasq authority responses / random UUIDs — no device clock was read.\n\n**Final event cursor: `7`**",
-        "durationNanoseconds": "113687184541",
-        "transcriptSha256": "c79fca79b85c83e8f90f047c061756a675e41207f0876710428d02f8a5b0472b",
+        "finalResponse": "Done. Summary:\n\n- Resumed from cursor 4 (no new events in between), found the existing commitment `TQ-321 claude restart commitment` (`019f9052-04a9-7836-a9fe-83ecd744eb34`) with its running attempt (`019f9052-340c-7a96-a580-6ceaf9219c16`) — no new commitment was created.\n- Inspected `deployment-slot/claude`: the peer (`tq321:peer-claude`) had already explicitly released it (reason: \"release for blind contender\"), so authority reported it reclaimable without needing to poll further.\n- Acquired the lease myself (leaseId `019f9053-67d9-77f8-a10d-67ac25916a2e`, fence `2`), verified that exact lease/fence as valid immediately before the effect, ran `sleep 1`, then released the lease cleanly (never touched the peer's lease/fence).\n- Marked the existing attempt succeeded, appended digest-bound evidence (`019f9054-055f-7e5b-a465-22d2689694c7`) referencing the lease-cycle observation file, and completed the commitment using that evidence — status is now `done`.\n\nFinal event cursor: **7**.",
+        "durationNanoseconds": "126825193583",
+        "transcriptSha256": "fc3bfe043a4e37365afed21d1289f2531278b98944195057f7be63ed7b14b6a8",
         "commands": [
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js onboard --space tq321/blind/claude --actor claude:tq321-blind --capabilities read,propose,coordinate --json",
             "exitCode": null
           },
           {
-            "command": "cat /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt",
+            "command": "cat \"/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bnu650dmm.txt\"",
             "exitCode": null
           },
           {
-            "command": "wc -l /var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data.get('guide', {}), indent=2))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nrecipes = data['guide']['recipes'] if 'recipes' in data['guide'] else None\nprint(list(data['guide'].keys()))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nprint(list(data.keys()))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nprint(list(data.keys()))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nprint(json.dumps(data.get('recipes', {}), indent=2)[:6000])\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nrecipes = data['recipes']\nprint(type(recipes), len(recipes) if hasattr(recipes,'__len__') else '')\nif isinstance(recipes, dict):\n    print(list(recipes.keys()))\nelif isinstance(recipes, list):\n    for r in recipes:\n        print(r.get('id'))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nrecipes = data['recipes']\nids = [r['id'] for r in recipes]\nprint(ids)\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['context.read','audit.resume','commitment.inspect','commitment.list']:\n    print('===', rid, '===')\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['audit.resume','audit.list','resource.world','resource.acquire','resource.verify','resource.release','resource.get','resource.events']:\n    print('====', rid, '====')\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js list --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js list --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js inspect 019f8ec0-4f60-7318-8e87-b4890ea66011 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js inspect 019f9052-04a9-7836-a9fe-83ecd744eb34 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['resource.world','resource.get','resource.acquire','resource.verify','resource.release','resource.renew','resource.events']:\n    print('===', rid, '===')\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource list --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource get deployment-slot/claude --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource get deployment-slot/claude --tenant tq321/blind/claude --actor claude:tq321-blind --json\necho \"---EVENTS---\"\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource events --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource events --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource acquire deployment-slot/claude --for 5m --idempotency-key tq321-claude-restart-resource-acquire-1 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "IDKEY=$(python3 -c \"import uuid; print(uuid.uuid4())\")\necho \"idempotency-key: $IDKEY\"\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource acquire deployment-slot/claude --for 5m --idempotency-key \"$IDKEY\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource verify deployment-slot/claude --lease 019f9053-67d9-77f8-a10d-67ac25916a2e --fence 2 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource verify deployment-slot/claude --lease 019f8ec1-a7fd-7493-971e-7b1799dc907f --fence 2 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "sleep 1 && echo \"sleep-1-completed\"",
             "exitCode": null
           },
           {
-            "command": "sleep 1; echo \"exit_code=$?\"",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js resource release deployment-slot/claude --lease 019f9053-67d9-77f8-a10d-67ac25916a2e --fence 2 --revision 1 --idempotency-key tq321-claude-restart-resource-release-1 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "IDKEY=$(python3 -c \"import uuid; print(uuid.uuid4())\")\necho \"release idempotency-key: $IDKEY\"\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js resource release deployment-slot/claude --lease 019f8ec1-a7fd-7493-971e-7b1799dc907f --fence 2 --revision 1 --idempotency-key \"$IDKEY\" --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "python3 -c \"\nimport json\nwith open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-HeaiS5-claude-workspace/6b1f099b-52f2-4ad0-a707-121075a37f4a/tool-results/bmkyf9nss.txt') as f:\n    data = json.load(f)\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['attempt.succeed','evidence.append.for-attempt','commitment.complete']:\n    print('====', rid, '====')\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
             "exitCode": null
           },
           {
-            "command": "python3 -c \"\nimport json\ndata = json.load(open('/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/claude-code-config/projects/-private-var-folders-jy-gj7-hhq52bj1n5-vzc6f5y0c0000gn-T-tasq-tq321-zero-context-4h2hpM-claude-workspace/97de8cd6-7a20-438f-880a-e0cbc67c43fb/tool-results/bdd0xr58e.txt'))\nrecipes = {r['id']: r for r in data['recipes']}\nfor rid in ['evidence.append','evidence.append.for-attempt','attempt.succeed','commitment.complete']:\n    print('===', rid, '===')\n    print(json.dumps(recipes[rid], indent=2))\n\"\n",
+            "command": "mkdir -p /tmp/tq321-evidence\ncat > /tmp/tq321-evidence/deployment-slot-lease-cycle.json <<'EOF'\n{\n  \"acquire\": {\n    \"leaseId\": \"019f9053-67d9-77f8-a10d-67ac25916a2e\",\n    \"fence\": 2,\n    \"resourceKey\": \"deployment-slot/claude\",\n    \"disposition\": \"acquired\",\n    \"acquiredAt\": 1784832813017\n  },\n  \"verify\": {\n    \"status\": \"valid\",\n    \"leaseId\": \"019f9053-67d9-77f8-a10d-67ac25916a2e\",\n    \"fence\": 2,\n    \"verifiedAt\": 1784832816573\n  },\n  \"effect\": {\n    \"command\": \"sleep 1\",\n    \"result\": \"sleep-1-completed\"\n  },\n  \"release\": {\n    \"disposition\": \"released\",\n    \"leaseId\": \"019f9053-67d9-77f8-a10d-67ac25916a2e\",\n    \"fence\": 2,\n    \"releasedAt\": 1784832827363\n  }\n}\nEOF\nshasum -a 256 /tmp/tq321-evidence/deployment-slot-lease-cycle.json",
             "exitCode": null
           },
           {
-            "command": "DIGEST=$(python3 -c \"\nimport hashlib, json\npayload = {\n  'attemptId': '019f8ec0-78ed-78db-b611-397c95d7a961',\n  'guardedAction': 'sleep 1',\n  'exitCode': 0,\n  'resourceKey': 'deployment-slot/claude',\n  'leaseId': '019f8ec1-a7fd-7493-971e-7b1799dc907f',\n  'fence': 2,\n  'verifyStatus': 'valid',\n  'verifiedAt': 1784806487413,\n  'releaseDisposition': 'released',\n  'releasedAt': 1784806493894\n}\nprint(hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest())\n\")\necho \"digest=$DIGEST\"\nIDKEY=$(python3 -c \"import uuid; print(uuid.uuid4())\")\necho \"idempotency-key=$IDKEY\"\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js evidence add 019f8ec0-4f60-7318-8e87-b4890ea66011 \\\n  --attempt 019f8ec0-78ed-78db-b611-397c95d7a961 \\\n  --kind lease-guarded-execution \\\n  --summary \"Guarded action 'sleep 1' ran under freshly acquired lease on deployment-slot/claude (leaseId=019f8ec1-a7fd-7493-971e-7b1799dc907f, fence=2, verified status=valid); exit code 0; lease then released (disposition=released).\" \\\n  --uri \"tasq://tq321/blind/claude/resource/deployment-slot%2Fclaude/lease/019f8ec1-a7fd-7493-971e-7b1799dc907f\" \\\n  --digest \"sha256:$DIGEST\" \\\n  --source claude-code-agent-sdk/v1 \\\n  --idempotency-key \"$IDKEY\" \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js attempt succeed 019f9052-340c-7a96-a580-6ceaf9219c16 --message \"Reclaimed deployment-slot/claude after peer release, verified lease/fence, ran sleep 1, released lease\" --expected-revision 1 --idempotency-key tq321-claude-restart-attempt-succeed-1 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "IDKEY=$(python3 -c \"import uuid; print(uuid.uuid4())\")\necho \"idempotency-key=$IDKEY\"\n/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js attempt succeed 019f8ec0-78ed-78db-b611-397c95d7a961 \\\n  --message \"Reclaimed deployment-slot/claude lease after peer release, verified lease/fence, ran guarded sleep 1 (exit 0), released lease.\" \\\n  --expected-revision 1 \\\n  --idempotency-key \"$IDKEY\" \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js evidence add 019f9052-04a9-7836-a9fe-83ecd744eb34 --attempt 019f9052-340c-7a96-a580-6ceaf9219c16 --kind resource_lease_cycle --summary \"Observed peer release of deployment-slot/claude, acquired lease (fence 2), verified fence valid immediately before I/O, ran sleep 1, released lease\" --uri file:///tmp/tq321-evidence/deployment-slot-lease-cycle.json --digest sha256:ba18dc78ebc62ee00fb0d87f9d5766e886a02fb1bc1744bcc5b7efe990d585b2 --source claude-code/1 --idempotency-key tq321-claude-restart-evidence-1 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js done 019f8ec0-4f60-7318-8e87-b4890ea66011 \\\n  --evidence 019f8ec2-29c7-7f1b-adc9-6f536e5874a6 \\\n  --note \"Peer released deployment-slot/claude; reacquired as claude:tq321-blind (lease 019f8ec1-a7fd-7493-971e-7b1799dc907f, fence 2), verified fence, ran guarded sleep 1 (exit 0), released lease cleanly.\" \\\n  --source claude-code-agent-sdk/v1 \\\n  --tenant tq321/blind/claude --actor claude:tq321-blind --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js done 019f9052-04a9-7836-a9fe-83ecd744eb34 --evidence 019f9054-055f-7e5b-a465-22d2689694c7 --note \"Restart-commitment coordination verified: reclaimed contended deployment-slot/claude lease after peer's explicit release, verified fence, executed sleep 1 effect, and released the lease cleanly.\" --source claude-code/1 --tenant tq321/blind/claude --actor claude:tq321-blind --json",
             "exitCode": null
           },
           {
-            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json",
+            "command": "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js event list --after-sequence 4 --ascending --tenant tq321/blind/claude --json",
             "exitCode": null
           }
         ],
@@ -747,12 +779,12 @@
       },
       "staleVerification": {
         "argv": [
-          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-4h2hpM/release/index.js",
+          "/var/folders/jy/gj7_hhq52bj1n5_vzc6f5y0c0000gn/T/tasq-tq321-zero-context-HeaiS5/release/index.js",
           "resource",
           "verify",
           "deployment-slot/claude",
           "--lease",
-          "019f8ec0-af50-742a-962c-2085d5da5eb0",
+          "019f9052-573c-7482-9885-aff807ef06ab",
           "--fence",
           "1",
           "--tenant",
@@ -763,8 +795,8 @@
         ],
         "exitCode": 1
       },
-      "ledgerDigestBeforeUninstall": "sha256:76aafbcd9e4752758ea9cb5aea9b8066500ed00c23d61846d641ae6739b13e85",
-      "ledgerDigestAfterUninstall": "sha256:76aafbcd9e4752758ea9cb5aea9b8066500ed00c23d61846d641ae6739b13e85",
+      "ledgerDigestBeforeUninstall": "sha256:787594404564dfcaa1d7dec4a63007b7cd1149997722ae2a3fefff391a9015fb",
+      "ledgerDigestAfterUninstall": "sha256:787594404564dfcaa1d7dec4a63007b7cd1149997722ae2a3fefff391a9015fb",
       "uninstallArgv": [
         [
           "claude",

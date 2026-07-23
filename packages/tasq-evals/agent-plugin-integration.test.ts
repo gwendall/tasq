@@ -189,4 +189,52 @@ describe("zero-context agent integration candidate", () => {
       expect(digest, `${path}: invalid historical digest`).toMatch(/^[0-9a-f]{64}$/);
     }
   });
+
+  test("binds integration 0.1.2 to the exact public-main native certificate", () => {
+    const certification = readJson("docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json");
+    const evidence = readFileSync(resolve(root, certification.behavioralEvidence.path));
+    expect(certification).toMatchObject({
+      contractVersion: "tasq.agent-entrypoint-certification.v1",
+      status: "passed-public-main-native-behavior",
+      integrationVersion: "0.1.2",
+      certifiedSource: {
+        repository: "https://github.com/gwendall/tasq",
+        ref: "main",
+        commit: "bbab02de19bf82d2c5cee86a58687c07819af6c8",
+      },
+      hosts: [
+        {
+          id: "codex",
+          version: "codex-cli 0.144.4",
+          integrationVersion: "0.1.2",
+          humanInterventions: 0,
+          assertionCount: 20,
+          passed: true,
+        },
+        {
+          id: "claude-code",
+          version: "2.1.218 (Claude Code)",
+          integrationVersion: "0.1.2",
+          humanInterventions: 0,
+          assertionCount: 20,
+          passed: true,
+        },
+      ],
+      acceptance: {
+        nativeUninstallPreservedLedgerByteForByte: "passed",
+        userConfigurationTouched: false,
+        tasqHomeTouched: false,
+      },
+      remaining: [],
+    });
+    expect(
+      new Bun.CryptoHasher("sha256").update(evidence).digest("hex"),
+    ).toBe(certification.behavioralEvidence.sha256);
+    const behavioral = JSON.parse(evidence.toString());
+    expect(behavioral.source.localCommit).toBe(certification.certifiedSource.commit);
+    expect(behavioral.acceptance.passed).toBe(true);
+    expect(behavioral.trials.every((trial: { pass: boolean; humanInterventions: number }) => (
+      trial.pass && trial.humanInterventions === 0
+    ))).toBe(true);
+  });
 });

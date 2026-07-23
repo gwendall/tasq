@@ -1,0 +1,50 @@
+{
+  "contractVersion": "tasq.agent-entrypoint-certification.v1",
+  "status": "passed-public-main-native-behavior",
+  "integrationVersion": "0.1.2",
+  "certifiedSource": {
+    "repository": "https://github.com/gwendall/tasq",
+    "ref": "main",
+    "commit": "bbab02de19bf82d2c5cee86a58687c07819af6c8"
+  },
+  "behavioralEvidence": {
+    "path": "evidence/tq-321/latest.json",
+    "sha256": "067d88fdd56ff9a21865c989636cc54680a8b3cfd69cbdde28097383420bfc82",
+    "acceptancePassed": true
+  },
+  "hosts": [
+    {
+      "id": "codex",
+      "version": "codex-cli 0.144.4",
+      "integrationVersion": "0.1.2",
+      "sourceRef": "main",
+      "cleanTemporaryHostConfig": true,
+      "humanInterventions": 0,
+      "assertionCount": 20,
+      "passed": true
+    },
+    {
+      "id": "claude-code",
+      "version": "2.1.218 (Claude Code)",
+      "integrationVersion": "0.1.2",
+      "sourceRef": "main",
+      "cleanTemporaryHostConfig": true,
+      "humanInterventions": 0,
+      "assertionCount": 20,
+      "passed": true
+    }
+  ],
+  "acceptance": {
+    "readBeforeMutation": "passed",
+    "twoProcessRestartAndExclusiveCursorResume": "passed",
+    "existingAttemptReused": "passed",
+    "realResourceContentionObserved": "passed",
+    "staleFenceRejected": "passed",
+    "observableEvidenceAttached": "passed",
+    "explicitEvidenceBackedCompletion": "passed",
+    "nativeUninstallPreservedLedgerByteForByte": "passed",
+    "userConfigurationTouched": false,
+    "tasqHomeTouched": false
+  },
+  "remaining": []
+}

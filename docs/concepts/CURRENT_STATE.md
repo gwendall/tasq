@@ -119,10 +119,12 @@ helper are implemented and tested in source, but remain
 publication and downloaded-byte recertification pass. See
 `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
 
-TQ-321 certifies integration `0.1.1` on native Codex and Claude Code.
-Integration `0.1.2`, changed by TQ-610, is explicitly a candidate until the
-same public-main native harness emits a new certificate. Both host marketplaces
-install the same versioned safety skill and the certified version passes
+TQ-321 certifies integrations `0.1.1` and `0.1.2` on native Codex and Claude
+Code. The TQ-610 `0.1.2` trial installed the public-`main` marketplace at
+commit `bbab02d`, passed both host families with zero intervention and is bound
+to the exact behavioral-evidence digest in
+`../contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json`. Both host
+marketplaces install the same versioned safety skill and the certified version passes
 isolated clean-home install, two-process behavioral and uninstall trials. The
 skill obtains an absent
 executable through `/adopt.json`, requires an explicit space and stable actor,

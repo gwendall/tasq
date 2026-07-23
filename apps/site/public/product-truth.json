@@ -38,7 +38,7 @@
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
       "candidate_targets_clean_room_certified": true,
-      "agent_integration_candidate_certified": false
+      "agent_integration_candidate_certified": true
     },
     "version": "0.1.0",
     "tag": "v0.1.0",
@@ -543,7 +543,7 @@
     },
     {
       "id": "TQ-610",
-      "status": "in_progress_implementation",
+      "status": "candidate_done_publication_gate",
       "milestone": "public-adoption",
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous"
     },
@@ -689,12 +689,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "c1c0adf2cb9988db990bc4e95260a607f57d7f6a93049cd83780cec5f1b5506c"
+      "sha256": "24b5c5c67b7e259ab32b0e132588daab483d00d917e0a42d40fac470a6956d80"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "32cb371612902daf7236e03909de8010192f97f5aa45a953a0ae13ecc9738ed8"
+      "sha256": "35b2d6a6aef207dcdff911dfafeecdcefcdb43d86b5f735d0681b2038253e7bf"
     }
   ]
 }
