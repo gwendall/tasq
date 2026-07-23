@@ -65,6 +65,7 @@
   "behaviorEvidence": {
     "interfaceTest": "packages/tasq-core/test/local-client.test.ts",
     "candidateTest": "packages/tasq-cli/test/public-packages.test.ts",
+    "publishedByteTest": "packages/tasq-evals/published-embedded-client.test.ts",
     "canonicalLoop": "passed",
     "claimAttemptEvidence": "passed",
     "resourceFence": "passed",

@@ -70,6 +70,9 @@ instead of recreating or losing it.
 The Core interface test additionally exercises claims, attempts, evidence,
 resource fences, inspection, event cursors and process restart only through
 `createLocalTasq`.
+The post-publication workflow downloads and verifies all seven registry
+tarballs, then `published-embedded-client.test.ts` installs the exact released
+Core dependency closure and repeats the two-run journey under Node 22 and Bun.
 
 Acceptance evidence:
 

@@ -111,3 +111,7 @@ jobs:
               --source-commit "${{ inputs.source_commit }}" \
               --tarball "$tarball"
           done
+      - name: Replay embedded client from exact registry packages
+        run: bun test packages/tasq-evals/published-embedded-client.test.ts
+        env:
+          TASQ_PUBLISHED_NPM_VERSION: ${{ inputs.tag }}
