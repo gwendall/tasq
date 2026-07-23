@@ -174,9 +174,10 @@ Server/Cloud breadth remains behind published-byte Local certification.
   `/integration.json` entrypoints, explicit Codex/Claude/generic MCP recipes,
   an isolated demo, the non-secret project rendezvous schema and the one-command
   human setup are implemented. The current `v0.1.0` installer is executable
-  from public source. `setup`, `demo` and `agent install` remain candidate-only
-  until protected `v0.1.1` npm/native publication and downloaded-byte
-  recertification pass. See
+  from public source. Integration `0.1.2` passes the public-main native Codex
+  and Claude matrix with zero interventions. `setup`, `demo` and `agent
+  install` remain candidate-only until protected `v0.1.1` npm/native
+  publication and downloaded-byte recertification pass. See
   `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
 - **TQ-611:** expose a real high-level local TypeScript client with explicit
   workspace, actor and clock. Certify the actual Bun/Node boundary, publish

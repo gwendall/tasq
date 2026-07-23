@@ -1,8 +1,7 @@
 # TQ-321 — Zero-context agent integration
 
-**Status:** integration `0.1.1` passed on native Codex and Claude Code;
-integration `0.1.2` is a TQ-610 candidate pending the same native
-recertification
+**Status:** integrations `0.1.1` and `0.1.2` passed on native Codex and Claude
+Code
 
 **Depends on:** TQ-311, TQ-312 and TQ-318
 
@@ -79,11 +78,14 @@ cursor, handled resource contention, rejected a stale fence, attached evidence,
 completed explicitly and preserved the ledger byte-for-byte through native
 plugin uninstall.
 
-Those records certify integration version `0.1.1` exactly. TQ-610 changes the
-shared skill and manifests to candidate version `0.1.2`; the historical
-certificate remains immutable and must not be presented as evidence for the
-new bytes. TQ-610 stays open until the native harness has installed `0.1.2`
-from public `main` and emitted a new behavioral certificate.
+`TQ-321_AGENT_PLUGIN_CERTIFICATION.json` remains the immutable lifecycle
+certificate for integration `0.1.1`. TQ-610 changed the shared skill and
+manifests to `0.1.2`; the native harness subsequently installed those exact
+public-`main` plugin bytes on both host families and replaced
+`../../evidence/tq-321/latest.json` with the new behavioral evidence. The
+version/source/digest binding is recorded separately in
+`TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json` so the historical certificate is
+not rewritten.
 
 The originally proposed Tasq-specific installer and `integration doctor`
 commands are not required for the candidate because both supported hosts now

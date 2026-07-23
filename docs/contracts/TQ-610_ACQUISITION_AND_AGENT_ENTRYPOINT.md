@@ -1,7 +1,7 @@
 # TQ-610 - Acquisition lifecycle and universal agent entrypoint
 
-**Status:** implementation complete; protected `v0.1.1` publication and
-downloaded-byte recertification pending
+**Status:** implementation and public-main native agent certification complete;
+protected `v0.1.1` publication and downloaded-byte recertification pending
 
 ## Outcome
 
@@ -64,6 +64,9 @@ argument boundary.
   descriptor.
 - `apps/site/browser/site.pw.ts` verifies discoverability and responsive public
   rendering.
+- `TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json` binds integration `0.1.2` to
+  public `main` commit `bbab02d`, the exact behavioral-evidence digest and
+  zero-intervention native Codex/Claude trials.
 
 ## Remaining release gate
 

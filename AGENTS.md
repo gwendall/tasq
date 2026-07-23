@@ -43,7 +43,10 @@ TQ-610's acquisition and universal-agent source implementation is in
 [TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
 The public `v0.1.0` installer and static agent entrypoints are usable; `setup`,
 `demo` and `agent install` remain candidate-only until the authorized
-`v0.1.1` protected release and downloaded-byte certification pass.
+`v0.1.1` protected release and downloaded-byte certification pass. Integration
+`0.1.2` itself has passed the zero-intervention public-main native Codex and
+Claude matrix in
+[TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json](docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json).
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
