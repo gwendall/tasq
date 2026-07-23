@@ -19,7 +19,7 @@ import {
   openDb,
   queueReplicatedCommitmentCreate,
   recoverReplicationAuthority,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 type Base = { dbPath: string; now: number };
 type Config = Base & ({

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { createMutableClock } from "@tasq/schema";
+import { createMutableClock } from "@tasq-run/schema";
 import {
   bootstrapCoordinationSpace,
   buildConsoleEventBatch,
@@ -13,7 +13,7 @@ import {
   createCommitment,
   openDb,
   runKernelMigrations,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const root = resolve(import.meta.dir, "../..");
 const tmpDirs: string[] = [];
@@ -125,9 +125,9 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
     };
 
     expect(serviceCompatibility).toContain("Canonical implementation: packages/tasq-core/src/console-read-models.ts");
-    expect(serviceCompatibility).toContain('export * from "@tasq/core/internal/console-read-models"');
+    expect(serviceCompatibility).toContain('export * from "@tasq-run/core/internal/console-read-models"');
     expect(liveServiceCompatibility).toContain("Canonical implementation: packages/tasq-core/src/console-live.ts");
-    expect(liveServiceCompatibility).toContain('export * from "@tasq/core/internal/console-live"');
+    expect(liveServiceCompatibility).toContain('export * from "@tasq-run/core/internal/console-live"');
     expect(schema).toContain("tasq.console-page.v1");
     expect(schema).toContain("tasq.console-event-batch.v1");
     expect(schema).toContain("tasq.console-support-bundle.v1");

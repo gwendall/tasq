@@ -6,7 +6,7 @@ import {
   createHmacEffectPermitAuthenticator,
   runConnectorConformance,
   type EffectConnectorConformanceProbe,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import {
   EffectReceiptReport,
   canonicalizeEffectJson,
@@ -16,7 +16,7 @@ import {
   type EffectDispatchPermit,
   type EffectDispatchPermitPayload,
   type EffectReceiptReport as EffectReceiptReportT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   PROVIDER_RECEIPT_COVERAGE,
   ProviderOutcomeUnknownError,

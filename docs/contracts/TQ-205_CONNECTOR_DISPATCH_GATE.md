@@ -31,7 +31,7 @@ must finish or recover it through TQ-206's verified receipt path.
 
 ## Implemented APIs
 
-`@tasq/core` exports `beginEffectExecution`. It requires:
+`@tasq-run/core` exports `beginEffectExecution`. It requires:
 
 - effect ID and optimistic `expectedRevision`;
 - exact claim ID and fencing token;
@@ -45,7 +45,7 @@ the current exact approved leaf or connector policy acceptance. On success it
 atomically enters `executing`, increments the revision, emits
 `effect_execution_started` and returns `tasq.effect-dispatch-permit.v1`.
 
-`@tasq/extension-sdk` exports:
+`@tasq-run/extension-sdk` exports:
 
 - `assertEffectAuthority` for the pure in-transaction policy decision;
 - `enforceEffectDispatch` for the final connector-side check;

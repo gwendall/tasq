@@ -40,7 +40,15 @@ const releasePolicy = JSON.parse(readFileSync(
   "utf8",
 )) as {
   status: string;
-  identity: { repositoryState: string };
+  identity: {
+    repositoryState: string;
+    npmScope: string;
+    unavailableNpmScope: {
+      name: string;
+      ownership: string;
+      mustNeverPublish: boolean;
+    };
+  };
   externalPublicationGateStatus: Record<string, boolean>;
   releaseAuthorization: {
     state: string;
@@ -247,7 +255,15 @@ describe("TQ-601 product consumption design", () => {
   test("keeps public source distinct from package publication", () => {
     expect(releasePolicy).toMatchObject({
       status: "public-alpha-source-not-published",
-      identity: { repositoryState: "public-alpha-source" },
+      identity: {
+        repositoryState: "public-alpha-source",
+        npmScope: "@tasq-run",
+        unavailableNpmScope: {
+          name: "@tasq",
+          ownership: "unrelated-third-party",
+          mustNeverPublish: true,
+        },
+      },
       repositoryControls: {
         enforcementState: "active-public-repository",
         requiredPullRequest: true,

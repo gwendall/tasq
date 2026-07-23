@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createMutableClock, type Clock } from "@tasq/schema";
+import { createMutableClock, type Clock } from "@tasq-run/schema";
 import {
   completeDelivery,
   createCommitment,
@@ -21,7 +21,7 @@ import {
   runKernelMigrations,
   type LeasedDelivery,
   type TasqDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const tmpDirs: string[] = [];
 

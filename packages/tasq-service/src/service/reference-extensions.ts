@@ -1,7 +1,7 @@
 /** Bundled compatibility provisioning around the neutral Core registry. */
 
 import type { Client } from "@libsql/client";
-import { uuidv7 } from "@tasq/schema";
+import { uuidv7 } from "@tasq-run/schema";
 import { REFERENCE_EXTENSION_MANIFEST } from "@tasq-internal/reference-extension";
 import type { TasqDb } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -11,7 +11,7 @@ import {
   type InstallExtensionOptions,
   type InstalledExtension,
   type PreparedManifest,
-} from "@tasq/core/internal/service/extensions";
+} from "@tasq-run/core/internal/service/extensions";
 
 export async function ensureBundledReferenceExtension(
   db: TasqDb,

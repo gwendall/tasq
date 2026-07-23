@@ -12,7 +12,7 @@ import {
   type ObservationKind,
   type VerificationLevel,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import { OBSERVATION_KIND_TYPE_URIS } from "@tasq-internal/reference-extension";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";

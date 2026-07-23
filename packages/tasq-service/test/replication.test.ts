@@ -41,7 +41,7 @@ import {
   ReplicationOperation,
   createMutableClock,
   uuidv7,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 const WORKSPACE = "replication-test";
 const AUTHORITY_REPLICA = "019d0000-0000-7000-8000-000000000001";

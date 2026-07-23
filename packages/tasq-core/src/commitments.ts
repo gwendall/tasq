@@ -11,7 +11,7 @@ import {
   type Metadata as MetadataT,
   type Task,
   type TaskStatus as TaskStatusT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import {
   blockTask,

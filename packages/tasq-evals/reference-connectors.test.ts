@@ -19,8 +19,8 @@ import {
   type ProviderWorkItemSnapshot,
   type WorkItemProviderClient,
 } from "@tasq-internal/reference-connectors";
-import { createHmacEffectPermitAuthenticator } from "@tasq/extension-sdk";
-import { createMutableClock, type EffectJsonObject } from "@tasq/schema";
+import { createHmacEffectPermitAuthenticator } from "@tasq-run/extension-sdk";
+import { createMutableClock, type EffectJsonObject } from "@tasq-run/schema";
 import {
   acquireTaskClaim,
   authorizeEffect,
@@ -36,7 +36,7 @@ import {
   recordEffectReceipt,
   runKernelMigrations,
   startTaskAttempt,
-} from "@tasq/core";
+} from "@tasq-run/core";
 import { installExtension } from "@tasq-internal/local-service";
 
 const tmpDirs: string[] = [];

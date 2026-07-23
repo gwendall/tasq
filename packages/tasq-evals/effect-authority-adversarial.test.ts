@@ -15,14 +15,14 @@ import {
   enforceEffectDispatch,
   type EffectConnectorPolicy,
   type EffectReceiptVerifier,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import {
   canonicalizeEffectJson,
   createMutableClock,
   type EffectDispatchPermit,
   type EffectJsonObject,
   type EffectReceiptReport,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   acquireTaskClaim,
   authorizeEffect,

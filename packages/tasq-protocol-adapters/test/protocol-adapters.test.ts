@@ -5,7 +5,7 @@ import { join } from "node:path";
 import {
   createMutableClock,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   createCommitment,
   getCommitment,
@@ -15,7 +15,7 @@ import {
   openDb,
   runKernelMigrations,
   type TasqDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 import {
   A2ATaskSnapshot,
   INLINE_PROTOCOL_ARTIFACT_MAX_BYTES,

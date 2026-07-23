@@ -16,7 +16,7 @@ import {
   REPLICATION_PUSH_CONTRACT_VERSION,
   createMutableClock,
   type ReplicationPushRequest,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   REPLICATION_RETENTION,
   acceptReplicationPush,
@@ -45,7 +45,7 @@ import {
   runKernelMigrations,
   verifyDatabaseFile,
   type OpenedDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 setDefaultTimeout(60_000);
 

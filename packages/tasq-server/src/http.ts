@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 import {
   ACTION_URIS,
   ResourceRef,

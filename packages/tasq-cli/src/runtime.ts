@@ -26,7 +26,7 @@ import {
   readLeadingCheckpoint,
   verifyJournalArchiveChain,
 } from "./journal.js";
-import { systemClock, type Clock } from "@tasq/schema";
+import { systemClock, type Clock } from "@tasq-run/schema";
 
 export interface Runtime extends OpenedDb {
   config: TasqConfig;

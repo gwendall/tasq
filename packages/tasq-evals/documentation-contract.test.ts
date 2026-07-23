@@ -183,7 +183,7 @@ describe("standalone documentation contract", () => {
       if (manifest.name?.startsWith("@tasq-internal/") && manifest.private !== true) {
         failures.push(`${label}: internal package must be private`);
       }
-      if (manifest.name?.startsWith("@tasq/") && manifest.private === true) {
+      if (manifest.name?.startsWith("@tasq-run/") && manifest.private === true) {
         failures.push(`${label}: public candidate cannot be marked private`);
       }
     }

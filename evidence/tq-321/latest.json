@@ -207,43 +207,43 @@
         "purl": "pkg:npm/%40neon-rs/load@0.0.4"
       },
       {
-        "name": "@tasq/cli",
+        "name": "@tasq-run/cli",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/cli@0.1.0"
       },
       {
-        "name": "@tasq/console",
+        "name": "@tasq-run/console",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/console@0.1.0"
       },
       {
-        "name": "@tasq/core",
+        "name": "@tasq-run/core",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/core@0.1.0"
       },
       {
-        "name": "@tasq/core",
+        "name": "@tasq-run/core",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/core@0.1.0"
       },
       {
-        "name": "@tasq/extension-sdk",
+        "name": "@tasq-run/extension-sdk",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/extension-sdk@0.1.0"
       },
       {
-        "name": "@tasq/mcp",
+        "name": "@tasq-run/mcp",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/mcp@0.1.0"
       },
       {
-        "name": "@tasq/schema",
+        "name": "@tasq-run/schema",
         "version": "0.1.0",
         "license": "Apache-2.0",
         "purl": "pkg:npm/%40tasq/schema@0.1.0"

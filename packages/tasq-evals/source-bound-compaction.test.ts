@@ -14,7 +14,7 @@ import {
   openDb,
   reopenCommitment,
   runKernelMigrations,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const dirs: string[] = [];
 afterEach(() => {

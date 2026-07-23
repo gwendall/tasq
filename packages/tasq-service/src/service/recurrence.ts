@@ -19,7 +19,7 @@ import {
   uuidv7,
   type Task as TaskT,
   type Event as EventT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDbOrTx } from "../db.js";
 import { recordEvent } from "./events.js";
 import type { ServiceContext } from "./context.js";

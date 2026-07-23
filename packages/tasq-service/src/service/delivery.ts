@@ -1,2 +1,2 @@
 /** Forwarding compatibility module. Canonical implementation: packages/tasq-core/src/service/delivery.ts. */
-export * from "@tasq/core/internal/service/delivery";
+export * from "@tasq-run/core/internal/service/delivery";

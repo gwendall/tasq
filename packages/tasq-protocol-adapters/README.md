@@ -1,4 +1,4 @@
-# `@tasq/protocol-adapters`
+# `@tasq-run/protocol-adapters`
 
 Pure outward adapters that map MCP Tasks and A2A Tasks onto Tasq execution
 records.
@@ -9,8 +9,8 @@ complete the durable commitment. The package owns no transport, listener,
 credentials, database or hosted service.
 
 ```bash
-pnpm --filter @tasq/protocol-adapters typecheck
-pnpm --filter @tasq/protocol-adapters test
+pnpm --filter @tasq-run/protocol-adapters typecheck
+pnpm --filter @tasq-run/protocol-adapters test
 ```
 
 See [`../../ADR-007_PROTOCOL_TASK_ADAPTERS.md`](../../docs/decisions/ADR-007_PROTOCOL_TASK_ADAPTERS.md)

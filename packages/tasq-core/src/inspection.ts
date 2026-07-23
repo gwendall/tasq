@@ -26,7 +26,7 @@ import {
   taskEvidence,
   waitCondition,
   type Clock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import { getCommitment } from "./commitments.js";
 import { serviceNow } from "./util/clock.js";

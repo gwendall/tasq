@@ -6,7 +6,7 @@ import {
   CONSOLE_LISTENER_CONTRACT_VERSION,
   ConsoleListenerDescriptor,
   createMutableClock,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   consoleRegistrationPath,
   discoverConsole,

@@ -46,7 +46,7 @@ bind itself to a principal or widen a grant.
 
 The hosted adapter is a sibling of CLI, MCP and the inspector. It may depend
 inward on a new pure authentication/authorization contract package and
-`@tasq/core`. The kernel and service may not import HTTP, OIDC,
+`@tasq-run/core`. The kernel and service may not import HTTP, OIDC,
 SPIFFE, cookies, an identity vendor or a policy engine.
 
 ```text

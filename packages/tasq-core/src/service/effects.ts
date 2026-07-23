@@ -35,14 +35,14 @@ import {
   type EffectJsonObject,
   type EffectStatus,
   type Principal,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   assertEffectAuthority,
   canonicalEffectPermitPayload,
   type EffectConnectorPolicy,
   type EffectPermitIssuer,
   type EffectReceiptVerifier,
-} from "@tasq/extension-sdk";
+} from "@tasq-run/extension-sdk";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";

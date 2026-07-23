@@ -32,8 +32,8 @@ describe("single Core source authority", () => {
       }
       if (!modulePath.endsWith(".ts")) continue;
       const specifier = modulePath === "kernel.ts"
-        ? "@tasq/core"
-        : `@tasq/core/internal/${modulePath.slice(0, -3)}`;
+        ? "@tasq-run/core"
+        : `@tasq-run/core/internal/${modulePath.slice(0, -3)}`;
       const expected = `/** Forwarding compatibility module. Canonical implementation: packages/tasq-core/src/${modulePath}. */\nexport * from "${specifier}";\n`;
       if (readFileSync(localPath, "utf8") !== expected) {
         violations.push(`${modulePath}: overlapping implementation is not an exact Core forwarder`);
@@ -57,8 +57,8 @@ describe("single Core source authority", () => {
 
     expect(core.exports["."]).toBe("./src/kernel.ts");
     expect(core.exports["./internal/*"]).toBe("./src/*.ts");
-    expect(local.dependencies["@tasq/core"]).toBe("workspace:*");
-    expect(builder).toContain('name: "@tasq/core",\n      sourceDirectory: "tasq-core"');
-    expect(builder).not.toContain('name: "@tasq/core",\n      sourceDirectory: "tasq-service"');
+    expect(local.dependencies["@tasq-run/core"]).toBe("workspace:*");
+    expect(builder).toContain('name: "@tasq-run/core",\n      sourceDirectory: "tasq-core"');
+    expect(builder).not.toContain('name: "@tasq-run/core",\n      sourceDirectory: "tasq-service"');
   });
 });

@@ -21,7 +21,7 @@ import {
   type CommitmentSummary,
   type CommitmentSummarySourceRefs,
   type Event,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { inspectCommitmentInTransaction, type CommitmentInspection } from "../inspection.js";

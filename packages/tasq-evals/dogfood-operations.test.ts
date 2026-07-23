@@ -160,6 +160,6 @@ describe("TQ-607 dogfood operations", () => {
     expect(source).not.toContain("Date.now(");
     expect(source).not.toContain("new Date(");
     expect(source).not.toContain("db.sqlite");
-    expect(source).not.toContain("@tasq/core");
+    expect(source).not.toContain("@tasq-run/core");
   });
 });

@@ -43,7 +43,7 @@ Core owns no network listener, login, browser session, provider credential,
 workflow runtime, human policy or hosted control plane.
 
 **Current state:** implemented in the canonical standalone repository; the
-seven `@tasq/*` packages are release candidates, not yet a published public
+seven `@tasq-run/*` packages are release candidates, not yet a published public
 SDK distribution.
 
 ### 2.2 Tasq Local
@@ -116,12 +116,12 @@ product to be useful.
 | Local CLI | `tasq ...` | Implemented and tested | Public installer/release channel missing |
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
-| Embedded Core | `@tasq/core` | Public source, release candidate | TypeScript integration; package unpublished |
+| Embedded Core | `@tasq-run/core` | Public source, release candidate | TypeScript integration; package unpublished |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
-| Protocol adapters | `@tasq/protocol-adapters` | Public source, release candidate | Mapping only; no transport or completion authority |
-| Extension SDK | `@tasq/extension-sdk` | Public source, release candidate | Trusted in-process code; no public registry distribution |
+| Protocol adapters | `@tasq-run/protocol-adapters` | Public source, release candidate | Mapping only; no transport or completion authority |
+| Extension SDK | `@tasq-run/extension-sdk` | Public source, release candidate | Trusted in-process code; no public registry distribution |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
@@ -340,7 +340,7 @@ learn -> install -> verify -> create/join workspace -> connect first agent
 
 Today, behavior from `create/join workspace` onward is substantially proven,
 and candidate acquisition/install/upgrade/uninstall is clean-room tested.
-ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq/*` package
+ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq-run/*` package
 boundary and dedicated repository. That repository is now a public-source
 alpha. TQ-607 still requires retained-data use across three real consumers and
 an explicit decision before package publication resumes. Protected release

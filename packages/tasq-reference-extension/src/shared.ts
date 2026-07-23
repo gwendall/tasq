@@ -1,4 +1,4 @@
-import type { MatchDecision } from "@tasq/extension-sdk";
+import type { MatchDecision } from "@tasq-run/extension-sdk";
 
 export const JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema";
 

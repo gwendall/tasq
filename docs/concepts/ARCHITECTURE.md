@@ -8,7 +8,7 @@ target lives in `UNIVERSAL_KERNEL_SPEC.md`; UK-002's exhaustive map lives in
 is implemented and UK-004 moved provider schemas/evaluator code into a
 reference extension package. UK-005 is complete: life prioritization,
 projection, recurrence and planning ancestry live in the DB-free bundled
-profile, while a minimal `@tasq/core` composition boots without loading it.
+profile, while a minimal `@tasq-run/core` composition boots without loading it.
 
 ## Product composition
 
@@ -56,7 +56,7 @@ adapter or kernel composition.
                               │
                               ▼  (CLI + JSON, today)
 ┌────────────────────────────────────────────────────────────────┐
-│ @tasq/cli              one Bun entry point                │
+│ @tasq-run/cli              one Bun entry point                │
 │  - args parser              (no external dep)                  │
 │  - commands/* (planning, claims, attempts, evidence, waits,    │
 │    context links, reconciliation, audit and durability)        │
@@ -67,7 +67,7 @@ adapter or kernel composition.
               ┌───────────────┴────────────────┐
               ▼                                ▼
 ┌───────────────────────────────┐  ┌─────────────────────────────┐
-│ @tasq/console          │  │ @tasq/mcp              │
+│ @tasq-run/console          │  │ @tasq-run/mcp              │
 │ bounded index + canonical     │  │ capability-scoped local     │
 │ graph HTML/JSON; GET/HEAD only│  │ stdio transport             │
 │ loopback, no JS or authority  │  └─────────────────────────────┘
@@ -88,7 +88,7 @@ adapter or kernel composition.
                               ├──────────────┐
                               ▼              ▼
 ┌───────────────────────────────┐  ┌─────────────────────────────┐
-│ @tasq-internal/reference-extension│  │ @tasq/extension-sdk    │
+│ @tasq-internal/reference-extension│  │ @tasq-run/extension-sdk    │
 │ five v1 domain modules         │─→│ pure runtime identities,    │
 │ schemas, routes, evaluators    │  │ parsers and evaluator lookup│
 └───────────────────────────────┘  └─────────────────────────────┘
@@ -96,7 +96,7 @@ adapter or kernel composition.
                               └──────┬───────┘
                                      ▼
 ┌────────────────────────────────────────────────────────────────┐
-│ @tasq/schema           types + tables + ids               │
+│ @tasq-run/schema           types + tables + ids               │
 │  - types.ts/extensions.ts: records + immutable manifests       │
 │  - effects.ts: canonical effect request + identity contract    │
 │  - tables.ts: Drizzle table definitions (mirror types 1:1)     │
@@ -211,7 +211,7 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
 ## Time is an injected dependency
 
 No kernel, service, policy, migration or CLI business logic reads the host
-clock directly. `@tasq/schema` defines the tiny `Clock { now(): number }`
+clock directly. `@tasq-run/schema` defines the tiny `Clock { now(): number }`
 contract, a mutable controlled clock for tests/simulation, and the sole
 `systemClock` adapter allowed to read device time. The CLI injects that adapter
 at its composition root; embedders may inject any compatible clock.
@@ -539,8 +539,8 @@ is the implemented compatibility boundary.
 ├── ADR-*.md / TQ-*.md / BACKLOG.md + BACKLOG.json
 ├── apps/site/         ── static, ledger-free product/docs app
 ├── packages/
-│   ├── tasq-core/      ── @tasq/core      (neutral kernel + migrations)
-│   ├── tasq-schema/    ── @tasq/schema    (types/tables/ids/effect identity + tests)
+│   ├── tasq-core/      ── @tasq-run/core      (neutral kernel + migrations)
+│   ├── tasq-schema/    ── @tasq-run/schema    (types/tables/ids/effect identity + tests)
 │   ├── tasq-extension-sdk/ ── runtime contract + connector conformance + tests
 │   ├── tasq-life-planning-profile/ ── DB-free bundled policy + tests
 │   ├── tasq-reference-extension/ ── five bundled domain modules + parity tests
@@ -550,7 +550,7 @@ is the implemented compatibility boundary.
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-server/ ── durable authority control plane + opaque ledger router
 │   ├── tasq-service/   ── @tasq-internal/local-service   (Core forwarders + Local compatibility + tests)
-│   ├── tasq-cli/       ── @tasq/cli       (CLI + E2E tests)
+│   ├── tasq-cli/       ── @tasq-run/cli       (CLI + E2E tests)
 │   └── tasq-evals/     ── @tasq-internal/evals     (agent scenarios)
 └── scripts/
     ├── install-cli.sh  ── source-checkout development launcher

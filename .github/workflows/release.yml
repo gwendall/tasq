@@ -112,7 +112,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          packages=(tasq-schema tasq-extension-sdk tasq-core tasq-protocol-adapters tasq-mcp tasq-console tasq-cli)
+          packages=(tasq-run-schema tasq-run-extension-sdk tasq-run-core tasq-run-protocol-adapters tasq-run-mcp tasq-run-console tasq-run-cli)
           for name in "${packages[@]}"; do
             npm publish "dist/packages/${name}-${{ needs.identity.outputs.version }}.tgz" --access public --provenance
           done

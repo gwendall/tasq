@@ -9,7 +9,7 @@
 import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import { createClient, type Client, type ResultSet } from "@libsql/client";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
-import { schema } from "@tasq/schema";
+import { schema } from "@tasq-run/schema";
 
 export type TasqDb = LibSQLDatabase<typeof schema>;
 

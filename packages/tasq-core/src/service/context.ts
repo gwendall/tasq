@@ -1,6 +1,6 @@
 /** Profile-neutral service call context shared by kernel and compatibility layers. */
 
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 
 export interface ServiceContext {
   /** Actor performing the operation. */

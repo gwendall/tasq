@@ -5,7 +5,7 @@ import {
   listCurrentCommitmentSummaries,
   type Clock,
 } from "@tasq-internal/local-service";
-import { COMMITMENT_SUMMARY_PAGE_CONTRACT_VERSION } from "@tasq/schema";
+import { COMMITMENT_SUMMARY_PAGE_CONTRACT_VERSION } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { color, printError, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";

@@ -133,8 +133,8 @@ with a generic operator-safe error. This is a Local browser gate, not a hosted
 Console or broad browser-engine claim.
 
 TQ-320 now has a package-independent candidate certificate. A clean-room
-runtime installs generated `@tasq/schema`, `@tasq/extension-sdk` and
-`@tasq/core` tarballs, then proves assignment, stable conversation/run
+runtime installs generated `@tasq-run/schema`, `@tasq-run/extension-sdk` and
+`@tasq-run/core` tarballs, then proves assignment, stable conversation/run
 identity, lost-response deduplication, `input_required` resume, claim expiry
 and higher-fence reclaim, two attempts in one conversation, distinct
 artifacts/evidence, cursor-only restart across separate adapter processes,
@@ -146,7 +146,7 @@ published packages; the private Denshin journey remains product-learning
 evidence rather than that external claim.
 
 The same clean-room trial found and closed an Embedded Core packaging gap:
-effects required a registered immutable type, but `@tasq/core` did not expose
+effects required a registered immutable type, but `@tasq-run/core` did not expose
 the neutral administrative manifest installer. `installExtension` and the
 read-only registry queries now live in Core; the Local service only adds
 bundled compatibility provisioning. Manifest installation never loads code or

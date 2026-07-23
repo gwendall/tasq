@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/mcp",
+  "name": "@tasq-run/mcp",
   "version": "0.1.0",
   "description": "Capability-scoped MCP transport over the universal Tasq kernel.",
   "main": "./src/index.ts",
@@ -17,10 +17,10 @@
     "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\""
   },
   "dependencies": {
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.23.8",
-    "@tasq/core": "workspace:*"
+    "@tasq-run/core": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",

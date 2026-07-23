@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { watchFilesystemArtifact } from "@tasq-internal/filesystem-watcher";
-import { createMutableClock } from "@tasq/schema";
+import { createMutableClock } from "@tasq-run/schema";
 import {
   completeCommitment,
   createCommitment,

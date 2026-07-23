@@ -31,7 +31,7 @@ The dedicated canonical repository is public and Linux/macOS CI is live.
 Pull requests, both verification checks, linear history, immutable `v*` tags,
 secret scanning, push protection and private vulnerability reporting are
 platform-enforced. Repository visibility is still not release evidence.
-Release archives and seven `@tasq/*` package candidates are deterministic and
+Release archives and seven `@tasq-run/*` package candidates are deterministic and
 clean-room tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and
 certified the candidate install/upgrade/restore/uninstall lifecycle on both
 native targets.
@@ -76,7 +76,7 @@ operation through real adopters, not more repository-only architecture.
   authoritative live counters and next action.
 - **TQ-603 — active, paused only on external registry gates.** The maintainer
   authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
-  `@tasq/schema` is not published. The authorized registry operator must verify
+  `@tasq-run/schema` is not published. The authorized registry operator must verify
   scope/package control, bootstrap the seven first package identities, bind
   each package to the release workflow through npm OIDC and create the first
   immutable protected SemVer tag. The tag workflow now fails before building
@@ -159,7 +159,7 @@ Server/Cloud breadth remains behind published-byte Local certification.
 ### 5. Certify external interactive runtimes
 
 - **TQ-320 — candidate complete, published-byte gate:** a clean-room runtime
-  now installs generated `@tasq/*` tarballs and proves explicit assignment,
+  now installs generated `@tasq-run/*` tarballs and proves explicit assignment,
   lost-response retry, claim expiry and higher-fence reclaim,
   `input_required` resume on the same attempt, two runs in one conversation,
   immutable terminal state, distinct artifacts/evidence, cursor recovery and

@@ -1,8 +1,8 @@
 /** Package-installed interactive runtime fixture. No checkout-relative imports. */
 
 import assert from "node:assert/strict";
-import { createHmacEffectPermitAuthenticator, type EffectConnectorPolicy } from "@tasq/extension-sdk";
-import type { EffectJsonObject } from "@tasq/schema";
+import { createHmacEffectPermitAuthenticator, type EffectConnectorPolicy } from "@tasq-run/extension-sdk";
+import type { EffectJsonObject } from "@tasq-run/schema";
 import {
   acceptAssignment,
   acquireTaskClaim,
@@ -32,7 +32,7 @@ import {
   startCommitment,
   startTaskAttempt,
   transitionTaskAttempt,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const workspaceId = "runtime/conformance";
 const coordinatorActor = "runtime:coordinator";

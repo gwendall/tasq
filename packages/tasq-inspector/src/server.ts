@@ -9,7 +9,7 @@ import {
   type ConsoleListenerDescriptor,
   type ConsoleStreamEnvelope,
   type TaskStatus as TaskStatusT,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   buildConsoleEventBatch,
   buildConsoleHealth,
@@ -20,7 +20,7 @@ import {
   ConsoleLiveCursorError,
   inspectCommitment,
   type TasqDb,
-} from "@tasq/core";
+} from "@tasq-run/core";
 import {
   INSPECTOR_CSS,
   renderCommitmentPage,

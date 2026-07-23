@@ -19,7 +19,7 @@ export type DocPage = {
 const published = productTruth.release.published;
 const releaseVersion = productTruth.release.version ?? "0.1.0";
 const tasqExecutable = published ? "tasq" : "./dist/cli/index.js";
-const installCommand = `npm install --prefix ~/.local/share/tasq --ignore-scripts @tasq/cli@${releaseVersion}`;
+const installCommand = `npm install --prefix ~/.local/share/tasq --ignore-scripts @tasq-run/cli@${releaseVersion}`;
 
 export const docPages: DocPage[] = [
   {
@@ -43,8 +43,8 @@ export const docPages: DocPage[] = [
           : "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
         callout:
           published
-            ? "Do not install the unrelated unscoped package named tasq. The official package is @tasq/cli; its executable is tasq. Verify the exact version and provenance through the linked GitHub release or /adopt.json."
-            : "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
+            ? "Do not install the unrelated unscoped package named tasq. The official package is @tasq-run/cli; its executable is tasq. Verify the exact version and provenance through the linked GitHub release or /adopt.json."
+            : "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq-run scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
       },
       {
         title: "Give an agent the minimum causal pointer",
@@ -182,8 +182,8 @@ export const docPages: DocPage[] = [
           "const tasq = createTasqService({\n  store,\n  workspaceId,\n  identity,\n  clock,\n})",
         callout:
           published
-            ? `Install @tasq/core@${releaseVersion} for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.`
-            : "Package source is public, but @tasq/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
+            ? `Install @tasq-run/core@${releaseVersion} for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.`
+            : "Package source is public, but @tasq-run/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
       },
       {
         title: "Extensions and connectors stay outside Core",

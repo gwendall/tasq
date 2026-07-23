@@ -1,4 +1,4 @@
-# `@tasq/schema`
+# `@tasq-run/schema`
 
 Portable data and validation foundation for Tasq: Zod schemas, TypeScript
 types, identifiers, canonical clock contracts and Drizzle table definitions.
@@ -12,6 +12,6 @@ Only `src/clock.ts` may provide the `systemClock` adapter that reads host time.
 All authoritative code consumes an injected `Clock` or explicit timestamp.
 
 ```bash
-pnpm --filter @tasq/schema typecheck
-pnpm --filter @tasq/schema test
+pnpm --filter @tasq-run/schema typecheck
+pnpm --filter @tasq-run/schema test
 ```

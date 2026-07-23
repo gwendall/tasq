@@ -21,7 +21,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Client } from "@libsql/client";
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 import { verifyDatabaseFile, type DatabaseVerification } from "../db.js";
 import { serviceNow } from "../util/clock.js";
 

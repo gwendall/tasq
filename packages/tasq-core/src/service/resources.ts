@@ -22,7 +22,7 @@ import {
   type ResourceProblemCode,
   type ResourceSweep,
   type ResourceWorld,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson } from "../util/canonical-json.js";

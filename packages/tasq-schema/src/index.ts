@@ -1,5 +1,5 @@
 /**
- * @tasq/schema — public surface.
+ * @tasq-run/schema — public surface.
  *
  * Three sub-modules:
  *   - `./types`  Zod schemas + TS types for entities and operations

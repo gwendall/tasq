@@ -14,7 +14,7 @@ import {
   type ReleaseClaimOptions,
   type TransitionAttemptOptions,
 } from "./service/agentic.js";
-import type { AttemptStatus } from "@tasq/schema";
+import type { AttemptStatus } from "@tasq-run/schema";
 import {
   getTasqDiscovery as getTasqDiscoveryWithProfile,
   type GetTasqDiscoveryOptions,
@@ -291,8 +291,8 @@ export {
   systemClock,
   uuidv7,
   timestampFromUuidv7,
-} from "@tasq/schema";
-export type { Clock, MutableClock } from "@tasq/schema";
+} from "@tasq-run/schema";
+export type { Clock, MutableClock } from "@tasq-run/schema";
 
 export type KernelMigrationOptions = MigrationOptions;
 

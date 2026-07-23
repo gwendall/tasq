@@ -65,7 +65,7 @@
       "id": "embedded_typescript",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq/core",
+      "entrypoint": "@tasq-run/core",
       "mutations": true,
       "authorityBoundary": "integrator_owned"
     },
@@ -89,7 +89,7 @@
       "id": "extension_sdk",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq/extension-sdk",
+      "entrypoint": "@tasq-run/extension-sdk",
       "mutations": false,
       "authorityBoundary": "trusted_runtime_code_no_provider_authority"
     },
@@ -97,7 +97,7 @@
       "id": "protocol_adapters",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq/protocol-adapters",
+      "entrypoint": "@tasq-run/protocol-adapters",
       "mutations": true,
       "authorityBoundary": "no_completion_authority"
     },
@@ -113,7 +113,7 @@
       "id": "replication_kernel",
       "support": "implemented_integration_required",
       "transport": "integrator_supplied",
-      "entrypoint": "@tasq/core replication APIs",
+      "entrypoint": "@tasq-run/core replication APIs",
       "mutations": true,
       "authorityBoundary": "one_authority_per_workspace_epoch"
     },

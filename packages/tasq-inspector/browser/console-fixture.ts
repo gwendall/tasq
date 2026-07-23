@@ -10,7 +10,7 @@ import {
   openDb,
   runKernelMigrations,
   startCommitment,
-} from "@tasq/core";
+} from "@tasq-run/core";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { startTasqInspectorServer } from "../src/index.js";

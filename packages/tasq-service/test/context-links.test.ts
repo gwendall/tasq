@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { eq } from "drizzle-orm";
-import { externalContextLink } from "@tasq/schema";
+import { externalContextLink } from "@tasq-run/schema";
 import {
   attachExternalContextLink,
   createCommitment,

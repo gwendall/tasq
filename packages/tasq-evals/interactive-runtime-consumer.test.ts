@@ -59,7 +59,7 @@ describe("TQ-320 interactive runtime candidate", () => {
       join(packages, `tasq-packages-v${version}.release.json`),
       "utf8",
     ));
-    const wanted = ["@tasq/schema", "@tasq/extension-sdk", "@tasq/core"];
+    const wanted = ["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core"];
     await writeFile(join(consumer, "package.json"), `${JSON.stringify({
       private: true,
       type: "module",

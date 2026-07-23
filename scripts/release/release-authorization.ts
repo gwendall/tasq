@@ -43,13 +43,13 @@ export type VerifiedReleaseAuthorization = {
 
 const expectedRepository = "https://github.com/gwendall/tasq";
 const expectedPackages = [
-  ["packages/tasq-schema", "@tasq/schema"],
-  ["packages/tasq-core", "@tasq/core"],
-  ["packages/tasq-cli", "@tasq/cli"],
-  ["packages/tasq-mcp", "@tasq/mcp"],
-  ["packages/tasq-extension-sdk", "@tasq/extension-sdk"],
-  ["packages/tasq-protocol-adapters", "@tasq/protocol-adapters"],
-  ["packages/tasq-inspector", "@tasq/console"],
+  ["packages/tasq-schema", "@tasq-run/schema"],
+  ["packages/tasq-core", "@tasq-run/core"],
+  ["packages/tasq-cli", "@tasq-run/cli"],
+  ["packages/tasq-mcp", "@tasq-run/mcp"],
+  ["packages/tasq-extension-sdk", "@tasq-run/extension-sdk"],
+  ["packages/tasq-protocol-adapters", "@tasq-run/protocol-adapters"],
+  ["packages/tasq-inspector", "@tasq-run/console"],
 ] as const;
 
 function fail(message: string): never {
@@ -71,7 +71,7 @@ export function verifyReleaseAuthorization(input: {
   if (policy.contractVersion !== "tasq.public-release-policy.v1") fail("unknown policy contract");
   if (policy.identity.canonicalRepository !== expectedRepository) fail("canonical repository drift");
   if (policy.identity.repositoryState !== "public-alpha-source") fail("repository is not the public source authority");
-  if (policy.identity.npmScope !== "@tasq") fail("npm scope drift");
+  if (policy.identity.npmScope !== "@tasq-run") fail("npm scope drift");
 
   const authorization = policy.releaseAuthorization;
   if (authorization.state !== "authorized") fail(`authorization state is ${authorization.state}`);

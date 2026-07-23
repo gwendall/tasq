@@ -101,7 +101,7 @@ code (`invalid_input`, `config_error`, `storage_error` or `unavailable`), a
 retryability decision and argv next actions. Existing CLI v1 commands preserve
 their historical stderr error contract.
 
-The public Zod schemas live in `@tasq/schema/bootstrap`; embedded callers
+The public Zod schemas live in `@tasq-run/schema/bootstrap`; embedded callers
 use `bootstrapCoordinationSpace` and `getCoordinationSpace` from the strict
 kernel or full service entrypoint. Discovery advertises the implemented
 `spaces` capability.

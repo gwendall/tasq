@@ -15,7 +15,7 @@ import {
   type EffectRequestEnvelope,
   type EffectReceiptCoverage,
   type EffectReceiptReport,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 export interface VerifiedEffectReceipt {
   level: "self_asserted" | "authenticated_context" | "cryptographic";

@@ -8,8 +8,8 @@
 ## Outcome
 
 Tasq now has one transport-neutral, profile-neutral operator read layer over the
-canonical ledger. It is exported by `@tasq/core`, consumed by the loopback
-`@tasq/console` server, and contains no Console-owned state. A future UI, MCP
+canonical ledger. It is exported by `@tasq-run/core`, consumed by the loopback
+`@tasq-run/console` server, and contains no Console-owned state. A future UI, MCP
 tool or authenticated server can render the same contracts without rebuilding
 coordination meaning.
 

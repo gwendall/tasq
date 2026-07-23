@@ -1,6 +1,6 @@
 /** v1 alias adapter over the generic trusted extension runtime registry. */
 
-import { ExtensionRuntimeRegistry, type MatchDecision } from "@tasq/extension-sdk";
+import { ExtensionRuntimeRegistry, type MatchDecision } from "@tasq-run/extension-sdk";
 import {
   OBSERVATION_KIND_TYPE_URIS,
   REFERENCE_EXTENSION_RUNTIME,
@@ -12,7 +12,7 @@ import type {
   ObservationKind,
   WaitCondition,
   WaitConditionKind,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 
 export const BUNDLED_RUNTIME_REGISTRY = new ExtensionRuntimeRegistry([
   REFERENCE_EXTENSION_RUNTIME,

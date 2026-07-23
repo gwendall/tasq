@@ -34,7 +34,7 @@ completion_record     immutable basis for one completed commitment revision
 task.revision         optimistic concurrency token for commitment mutation
 ```
 
-The strict `@tasq/core` entrypoint exposes these APIs without
+The strict `@tasq-run/core` entrypoint exposes these APIs without
 loading a planning profile or reference provider extension.
 
 ## 3. Semantic separation

@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/cli",
+  "name": "@tasq-run/cli",
   "version": "0.1.0",
   "description": "Tasq Local CLI, autonomous onboarding entrypoint and Bun executable.",
   "main": "./src/index.ts",
@@ -15,9 +15,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/console": "workspace:*",
-    "@tasq/mcp": "workspace:*",
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/console": "workspace:*",
+    "@tasq-run/mcp": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "@tasq-internal/local-service": "workspace:*",
     "zod": "^3.23.8"
   },

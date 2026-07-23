@@ -46,7 +46,7 @@ Browser certification is separate and is required when changing the Console or
 public site:
 
 ```bash
-pnpm --filter @tasq/console test:browser
+pnpm --filter @tasq-run/console test:browser
 pnpm --filter @tasq-internal/site test:browser
 ```
 

@@ -187,14 +187,14 @@ export {
   exportPortableStore,
   validatePortableExport,
   importPortableStore,
-} from "@tasq/core/internal/portable";
+} from "@tasq-run/core/internal/portable";
 export type {
   PortableTable,
   PortableExportDocument,
   PortableExportResult,
   PortableExportOptions,
   PortableImportResult,
-} from "@tasq/core/internal/portable";
+} from "@tasq-run/core/internal/portable";
 export type {
   MigrationResult,
   MigrationOptions,
@@ -454,7 +454,7 @@ export { renderProjection } from "./projection/markdown.js";
 export type { RenderOptions } from "./projection/markdown.js";
 
 // Schema re-exports for convenience (callers usually need types + ids)
-export * from "@tasq/schema";
+export * from "@tasq-run/schema";
 
 // Bundled v1 aliases live outside the kernel schema but remain available to
 // existing service consumers during the compatibility window.

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createMutableClock, timestampFromUuidv7 } from "@tasq/schema";
+import { createMutableClock, timestampFromUuidv7 } from "@tasq-run/schema";
 import {
   createTask,
   listEvents,

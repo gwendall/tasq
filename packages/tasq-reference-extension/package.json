@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/extension-sdk": "workspace:*",
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/extension-sdk": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

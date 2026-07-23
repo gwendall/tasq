@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/extension-sdk",
+  "name": "@tasq-run/extension-sdk",
   "version": "0.1.0",
   "description": "Pure runtime contract and trusted in-process registry for Tasq domain extensions.",
   "main": "./src/index.ts",
@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tasq/schema": "workspace:*"
+    "@tasq-run/schema": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest"

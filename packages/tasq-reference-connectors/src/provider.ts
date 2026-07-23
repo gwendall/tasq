@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { canonicalizeEffectJson, type EffectJsonObject } from "@tasq/schema";
+import { canonicalizeEffectJson, type EffectJsonObject } from "@tasq-run/schema";
 import { PROVIDER_RECEIPT_COVERAGE } from "./constants.js";
 
 const PORTABLE_REF = /^[A-Za-z0-9](?:[A-Za-z0-9._:-]{0,255})$/;

@@ -45,7 +45,7 @@ export function verifyNpmPublication(input: {
   candidateBytes: Uint8Array;
 }): VerifiedNpmPublication {
   const { metadata, packageName, version, sourceCommit, candidateBytes } = input;
-  if (!/^@tasq\/[a-z0-9-]+$/.test(packageName)) fail(`unexpected package ${packageName}`);
+  if (!/^@tasq-run\/[a-z0-9-]+$/.test(packageName)) fail(`unexpected package ${packageName}`);
   if (!/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
     fail(`invalid SemVer ${version}`);
   }

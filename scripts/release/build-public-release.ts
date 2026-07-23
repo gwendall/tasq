@@ -79,7 +79,7 @@ function thirdPartyNotices(components: CliArtifact["bundledComponents"]): string
 }
 
 function cyclonedx(inputs: ReleaseInputs, artifact: CliArtifact) {
-  const rootRef = `pkg:npm/%40tasq/cli@${inputs.version}`;
+  const rootRef = `pkg:npm/%40tasq-run/cli@${inputs.version}`;
   return {
     bomFormat: "CycloneDX",
     specVersion: "1.6",

@@ -9,18 +9,18 @@
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
-    "@tasq/cli": "workspace:*",
+    "@tasq-run/cli": "workspace:*",
     "@tasq-internal/filesystem-watcher": "workspace:*",
-    "@tasq/mcp": "workspace:*",
-    "@tasq/extension-sdk": "workspace:*",
-    "@tasq/protocol-adapters": "workspace:*",
+    "@tasq-run/mcp": "workspace:*",
+    "@tasq-run/extension-sdk": "workspace:*",
+    "@tasq-run/protocol-adapters": "workspace:*",
     "@tasq-internal/reference-connectors": "workspace:*",
-    "@tasq/schema": "workspace:*",
+    "@tasq-run/schema": "workspace:*",
     "@tasq-internal/local-service": "workspace:*",
     "@tasq-internal/authority": "workspace:*",
     "@tasq-internal/server": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@tasq/core": "workspace:*"
+    "@tasq-run/core": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest"

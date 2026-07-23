@@ -33,12 +33,12 @@ describe("UK-004 extension package boundary", () => {
     const sdk = packageJson("tasq-extension-sdk").dependencies ?? {};
     const reference = packageJson("tasq-reference-extension").dependencies ?? {};
     const service = packageJson("tasq-service").dependencies ?? {};
-    expect(schema["@tasq/extension-sdk"]).toBeUndefined();
+    expect(schema["@tasq-run/extension-sdk"]).toBeUndefined();
     expect(schema["@tasq-internal/reference-extension"]).toBeUndefined();
-    expect(sdk["@tasq/schema"]).toBe("workspace:*");
-    expect(reference["@tasq/extension-sdk"]).toBe("workspace:*");
-    expect(reference["@tasq/schema"]).toBe("workspace:*");
-    expect(service["@tasq/extension-sdk"]).toBe("workspace:*");
+    expect(sdk["@tasq-run/schema"]).toBe("workspace:*");
+    expect(reference["@tasq-run/extension-sdk"]).toBe("workspace:*");
+    expect(reference["@tasq-run/schema"]).toBe("workspace:*");
+    expect(service["@tasq-run/extension-sdk"]).toBe("workspace:*");
     expect(service["@tasq-internal/reference-extension"]).toBe("workspace:*");
   });
 
@@ -65,17 +65,17 @@ describe("UK-005 planning profile boundary", () => {
 
     expect(profile).toEqual({});
     expect(profileSource).not.toContain("drizzle-orm");
-    expect(profileSource).not.toContain("@tasq/schema");
+    expect(profileSource).not.toContain("@tasq-run/schema");
     expect(profileSource).not.toContain("TasqDb");
     expect(projectionSource).not.toContain("drizzle-orm");
     expect(projectionSource).not.toContain("@kami/");
     expect(projectionSource).not.toContain("TasqDb");
     expect(projectionSource).not.toContain("Date.now()");
     expect(recurrenceSource).not.toContain("drizzle-orm");
-    expect(recurrenceSource).not.toContain("@tasq/schema");
+    expect(recurrenceSource).not.toContain("@tasq-run/schema");
     expect(recurrenceSource).not.toContain("TasqDb");
     expect(hierarchySource).not.toContain("drizzle-orm");
-    expect(hierarchySource).not.toContain("@tasq/schema");
+    expect(hierarchySource).not.toContain("@tasq-run/schema");
     expect(hierarchySource).not.toContain("TasqDb");
     expect(serviceAdapter).toContain('from "@tasq-internal/life-planning-profile"');
     expect(serviceAdapter).not.toContain("const AVOIDANCE_WEIGHT");
@@ -122,20 +122,20 @@ describe("UK-010 protocol adapter boundary", () => {
     const schema = packageJson("tasq-schema").dependencies ?? {};
     const servicePackage = packageJson("tasq-service");
     const service = servicePackage.dependencies ?? {};
-    const kernelCoordinate = adapters["@tasq/core"] ? "@tasq/core" : servicePackage.name;
-    expect(adapters["@tasq/schema"]).toBe("workspace:*");
+    const kernelCoordinate = adapters["@tasq-run/core"] ? "@tasq-run/core" : servicePackage.name;
+    expect(adapters["@tasq-run/schema"]).toBe("workspace:*");
     expect(adapters).toEqual({
-      "@tasq/schema": "workspace:*",
+      "@tasq-run/schema": "workspace:*",
       [kernelCoordinate]: "workspace:*",
       zod: "^3.23.8",
     });
-    expect(schema["@tasq/protocol-adapters"]).toBeUndefined();
-    expect(service["@tasq/protocol-adapters"]).toBeUndefined();
+    expect(schema["@tasq-run/protocol-adapters"]).toBeUndefined();
+    expect(service["@tasq-run/protocol-adapters"]).toBeUndefined();
     for (const path of [
       ...walkTypeScript("packages/tasq-schema/src"),
       ...walkTypeScript("packages/tasq-service/src"),
     ]) {
-      expect(read(path), path).not.toContain("@tasq/protocol-adapters");
+      expect(read(path), path).not.toContain("@tasq-run/protocol-adapters");
       expect(read(path), path).not.toContain("TASK_STATE_SUBMITTED");
       expect(read(path), path).not.toContain("TASK_STATE_AUTH_REQUIRED");
     }
@@ -175,8 +175,8 @@ describe("TQ-306 reference connector boundary", () => {
     const connectors = packageJson("tasq-reference-connectors").dependencies ?? {};
     const schema = packageJson("tasq-schema").dependencies ?? {};
     const service = packageJson("tasq-service").dependencies ?? {};
-    expect(connectors["@tasq/schema"]).toBe("workspace:*");
-    expect(connectors["@tasq/extension-sdk"]).toBe("workspace:*");
+    expect(connectors["@tasq-run/schema"]).toBe("workspace:*");
+    expect(connectors["@tasq-run/extension-sdk"]).toBe("workspace:*");
     expect(connectors["@tasq-internal/local-service"]).toBeUndefined();
     expect(schema["@tasq-internal/reference-connectors"]).toBeUndefined();
     expect(service["@tasq-internal/reference-connectors"]).toBeUndefined();
@@ -196,18 +196,18 @@ describe("TQ-504 read-first inspector boundary", () => {
     const schema = packageJson("tasq-schema").dependencies ?? {};
     const servicePackage = packageJson("tasq-service");
     const service = servicePackage.dependencies ?? {};
-    const kernelCoordinate = inspector["@tasq/core"] ? "@tasq/core" : servicePackage.name;
+    const kernelCoordinate = inspector["@tasq-run/core"] ? "@tasq-run/core" : servicePackage.name;
     expect(inspector).toEqual({
-      "@tasq/schema": "workspace:*",
+      "@tasq-run/schema": "workspace:*",
       [kernelCoordinate]: "workspace:*",
     });
-    expect(schema["@tasq/console"]).toBeUndefined();
-    expect(service["@tasq/console"]).toBeUndefined();
+    expect(schema["@tasq-run/console"]).toBeUndefined();
+    expect(service["@tasq-run/console"]).toBeUndefined();
     for (const path of [
       ...walkTypeScript("packages/tasq-schema/src"),
       ...walkTypeScript("packages/tasq-service/src"),
     ]) {
-      expect(read(path), path).not.toContain("@tasq/console");
+      expect(read(path), path).not.toContain("@tasq-run/console");
     }
   });
 });

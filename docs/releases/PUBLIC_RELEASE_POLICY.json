@@ -5,7 +5,7 @@
   "identity": {
     "productName": "Tasq",
     "cliBinary": "tasq",
-    "npmScope": "@tasq",
+    "npmScope": "@tasq-run",
     "publicSite": "https://tasq.run",
     "canonicalRepository": "https://github.com/gwendall/tasq",
     "repositoryState": "public-alpha-source",
@@ -13,6 +13,12 @@
       "name": "tasq",
       "ownership": "unrelated-third-party",
       "mustNeverPublish": true
+    },
+    "unavailableNpmScope": {
+      "name": "@tasq",
+      "ownership": "unrelated-third-party",
+      "mustNeverPublish": true,
+      "verifiedAt": "2026-07-23"
     },
     "preOneRename": {
       "allowed": true,
@@ -39,43 +45,43 @@
   "packages": [
     {
       "source": "packages/tasq-schema",
-      "publicName": "@tasq/schema",
+      "publicName": "@tasq-run/schema",
       "tier": "public-stable",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-core",
-      "publicName": "@tasq/core",
+      "publicName": "@tasq-run/core",
       "tier": "public-stable-kernel-entrypoint-only",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-cli",
-      "publicName": "@tasq/cli",
+      "publicName": "@tasq-run/cli",
       "tier": "public-stable",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-mcp",
-      "publicName": "@tasq/mcp",
+      "publicName": "@tasq-run/mcp",
       "tier": "public-stable-local-stdio",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-extension-sdk",
-      "publicName": "@tasq/extension-sdk",
+      "publicName": "@tasq-run/extension-sdk",
       "tier": "public-stable",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-protocol-adapters",
-      "publicName": "@tasq/protocol-adapters",
+      "publicName": "@tasq-run/protocol-adapters",
       "tier": "public-stable-pure-adapters",
       "firstRelease": true
     },
     {
       "source": "packages/tasq-inspector",
-      "publicName": "@tasq/console",
+      "publicName": "@tasq-run/console",
       "tier": "public-stable-read-only-local",
       "firstRelease": true
     },

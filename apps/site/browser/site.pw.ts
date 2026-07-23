@@ -10,7 +10,7 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByText(truth.release.published ? "Public alpha" : "Public source alpha", { exact: false })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Not built");
-  if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq/");
+  if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq-run/");
 });
 
 test("documentation gives a complete causal onboarding path", async ({ page }) => {

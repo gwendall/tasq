@@ -1,5 +1,5 @@
 import { createClient, type Client, type Transaction } from "@libsql/client";
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 import {
   AuthorityEligibility,
   AuthorityPrincipal,

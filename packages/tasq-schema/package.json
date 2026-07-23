@@ -1,5 +1,5 @@
 {
-  "name": "@tasq/schema",
+  "name": "@tasq-run/schema",
   "version": "0.1.0",
   "description": "Portable Tasq schemas, TypeScript types, identifiers, clock contracts and Drizzle table definitions.",
   "main": "./src/index.ts",

@@ -25,7 +25,7 @@ import {
   runKernelMigrations,
   startTaskAttempt,
   transitionTaskAttempt,
-} from "@tasq/core";
+} from "@tasq-run/core";
 
 const tmpDirs: string[] = [];
 afterEach(() => {

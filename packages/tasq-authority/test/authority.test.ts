@@ -492,7 +492,7 @@ describe("TQ-801 corrupt snapshots and purity", () => {
     expect(source).not.toMatch(/\bnew\s+Date\s*\(/);
     expect(source).not.toMatch(/systemClock|performance\.now|process\.hrtime/);
     expect(source).not.toMatch(/from\s+["'](?:node:)?(?:http|https|net|tls)|fetch\s*\(/);
-    expect(source).not.toMatch(/@tasq\/(?:core|service|store)|sqlite|libsql|postgres/i);
+    expect(source).not.toMatch(/@tasq-run\/(?:core|service|store)|sqlite|libsql|postgres/i);
     expect(() => evaluateAuthorization(requestFor(registered("workspace.read")), undefined as never)).toThrow(
       "authorization requires an injected Clock",
     );

@@ -103,7 +103,7 @@ exclusive monotone paging, hostile-body redaction, workspace binding, overflow,
 ahead-ledger recovery and pruned-cursor recovery. Inspector tests exercise
 polling, SSE, `Last-Event-ID`, backpressure, overflow-to-poll continuation,
 typed `409`, `HEAD`, security headers and injected time/scheduling. The public
-eval imports the live reader only through `@tasq/core`, checks the Core/service
+eval imports the live reader only through `@tasq-run/core`, checks the Core/service
 mirror and rejects ambient clocks in both implementations.
 
 This checkpoint supplies transport contracts. TQ-703 now consumes them in the

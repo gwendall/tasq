@@ -47,7 +47,7 @@ verified receipts.
 
 ## Embedded API
 
-The strict `@tasq/core` entrypoint exports:
+The strict `@tasq-run/core` entrypoint exports:
 
 - `proposeEffect`, `getEffect`, `listEffects`;
 - `recordEffectApproval`, `getEffectApproval`, `listEffectApprovals`,

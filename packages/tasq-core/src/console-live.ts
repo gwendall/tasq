@@ -11,7 +11,7 @@ import {
   type Clock,
   type ConsoleEventBatch,
   type ConsoleLiveProblem,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb } from "./db.js";
 import { buildConsoleOverview } from "./console-read-models.js";
 import { serviceNow } from "./util/clock.js";

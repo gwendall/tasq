@@ -8,7 +8,7 @@ import {
 import {
   DEFAULT_EXTERNAL_CONTEXT_PURPOSE_URI,
   EXTERNAL_CONTEXT_LINK_PAGE_CONTRACT_VERSION,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { color, printError, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";

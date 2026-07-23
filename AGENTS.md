@@ -49,7 +49,7 @@ Agents arriving through Codex or Claude Code use the native plugin paths in
    injected `Clock`; only `systemClock` may call the host clock.
 5. Preserve transactional mutation plus audit, idempotent retry semantics,
    workspace isolation and the one-service-layer write path.
-6. Public package names are `@tasq/*`. `@tasq-internal/*` packages are private
+6. Public package names are `@tasq-run/*`. `@tasq-internal/*` packages are private
    repository composition only and must never be published.
 7. Add state-based tests and adversarial evals for trust, concurrency,
    persistence, onboarding or release-boundary changes.

@@ -1,6 +1,6 @@
 /** Eval composition root: production CLI code with a harness-owned clock. */
 
-import { createMutableClock } from "@tasq/schema";
+import { createMutableClock } from "@tasq-run/schema";
 import { runTasqCli } from "../../tasq-cli/src/index.js";
 
 const raw = process.env.TASQ_EVAL_CLOCK_MS;

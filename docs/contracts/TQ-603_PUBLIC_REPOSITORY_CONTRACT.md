@@ -31,10 +31,10 @@ The export is allowlist-first:
 
 - public architecture, product, security, contribution and release contracts
   are copied explicitly;
-- package source and tests are copied with public `@tasq/*` coordinates;
+- package source and tests are copied with public `@tasq-run/*` coordinates;
 - compatibility packages use `@tasq-internal/*`, remain `private: true`, and
   cannot enter the release set;
-- the strict `@tasq/core` source is materialized from the kernel import graph,
+- the strict `@tasq-run/core` source is materialized from the kernel import graph,
   not from the broader compatibility service;
 - repository workflows, issue forms, root tooling and a frozen lockfile are
   generated into the standalone tree;
@@ -92,6 +92,7 @@ The canonical repository is public, its controls are active, and destination CI
 runs the complete test suite in isolated package processes while rejecting an
 install that mutates tracked source. Anonymous source access is verified.
 
-The current package-publication blockers are TQ-321, TQ-608, a TQ-607 `go`, npm
-`@tasq` scope control and trusted publisher configuration. No local artifact,
-source checkout or untagged GitHub build is publishable authority.
+TQ-321, TQ-608 and the public-alpha authorization are passed. The remaining
+package-publication blockers are npm `@tasq-run` scope control and trusted
+publisher configuration. No local artifact, source checkout or untagged GitHub
+build is publishable authority.

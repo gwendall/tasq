@@ -9,13 +9,13 @@ const builder = join(productRoot, "scripts/release/build-public-packages.ts");
 const version = "0.1.0-test.1";
 const sourceCommit = "0123456789abcdef0123456789abcdef01234567";
 const packageNames = [
-  "@tasq/cli",
-  "@tasq/console",
-  "@tasq/core",
-  "@tasq/extension-sdk",
-  "@tasq/mcp",
-  "@tasq/protocol-adapters",
-  "@tasq/schema",
+  "@tasq-run/cli",
+  "@tasq-run/console",
+  "@tasq-run/core",
+  "@tasq-run/extension-sdk",
+  "@tasq-run/mcp",
+  "@tasq-run/protocol-adapters",
+  "@tasq-run/schema",
 ];
 
 setDefaultTimeout(240_000);
@@ -137,8 +137,8 @@ describe("Tasq public npm package candidates", () => {
     }
 
     for (const [releasedDirectory, sourceDirectory] of [
-      [`tasq-schema-${version}`, "tasq-schema"],
-      [`tasq-core-${version}`, "tasq-core"],
+      [`tasq-run-schema-${version}`, "tasq-schema"],
+      [`tasq-run-core-${version}`, "tasq-core"],
     ]) {
       const released = JSON.parse(await readFile(
         join(extracted, releasedDirectory, "package", "package.json"),
@@ -151,7 +151,7 @@ describe("Tasq public npm package candidates", () => {
       expect(released.dependencies["drizzle-orm"]).toBe(source.dependencies["drizzle-orm"]);
     }
 
-    const coreRoot = join(extracted, `tasq-core-${version}`, "package", "src");
+    const coreRoot = join(extracted, `tasq-run-core-${version}`, "package", "src");
     for (const forbidden of ["areas.ts", "goals.ts", "projects.ts", "recurrence.ts", "life-task-policy.ts"]) {
       expect((await files(coreRoot)).some((path) => path.endsWith(`/${forbidden}`)), forbidden).toBe(false);
     }
@@ -177,12 +177,12 @@ describe("Tasq public npm package candidates", () => {
       import { tmpdir } from "node:os";
       import { join } from "node:path";
       import { openDb, runKernelMigrations, createMutableClock, createCommitment,
-        startCommitment, completeCommitment } from "@tasq/core";
-      import * as schema from "@tasq/schema";
-      import * as extensionSdk from "@tasq/extension-sdk";
-      import * as mcp from "@tasq/mcp";
-      import * as adapters from "@tasq/protocol-adapters";
-      import * as consolePackage from "@tasq/console";
+        startCommitment, completeCommitment } from "@tasq-run/core";
+      import * as schema from "@tasq-run/schema";
+      import * as extensionSdk from "@tasq-run/extension-sdk";
+      import * as mcp from "@tasq-run/mcp";
+      import * as adapters from "@tasq-run/protocol-adapters";
+      import * as consolePackage from "@tasq-run/console";
       const root = await mkdtemp(join(tmpdir(), "tasq-installed-core-"));
       const clock = createMutableClock(1900000000000);
       const handle = await openDb({ url: "file:" + join(root, "db.sqlite"), wal: false });

@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { eq } from "drizzle-orm";
-import { commitmentSummary } from "@tasq/schema";
+import { commitmentSummary } from "@tasq-run/schema";
 import {
   appendCommitmentSummary,
   completeCommitment,

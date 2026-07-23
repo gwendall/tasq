@@ -8,7 +8,7 @@ import {
   principal,
   uuidv7,
   type Principal,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";

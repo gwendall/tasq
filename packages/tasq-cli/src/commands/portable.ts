@@ -17,7 +17,7 @@ import {
   importPortableStore,
   type PortableExportDocument,
 } from "@tasq-internal/local-service";
-import type { Clock } from "@tasq/schema";
+import type { Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { configDir } from "../config.js";
 import { openRuntime } from "../runtime.js";

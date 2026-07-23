@@ -7,7 +7,7 @@ import {
   type Clock,
   type IdempotencyRecord,
   type IdempotencyRetentionClass,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runOperationalTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";

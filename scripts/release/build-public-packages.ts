@@ -33,12 +33,12 @@ interface PublicPackage {
 const productRoot = resolve(import.meta.dir, "../..");
 const packagesRoot = join(productRoot, "packages");
 const importRewrites = new Map([
-  ["@tasq/schema", "@tasq/schema"],
-  ["@tasq/extension-sdk", "@tasq/extension-sdk"],
-  ["@tasq/core", "@tasq/core"],
-  ["@tasq/mcp", "@tasq/mcp"],
-  ["@tasq/protocol-adapters", "@tasq/protocol-adapters"],
-  ["@tasq/console", "@tasq/console"],
+  ["@tasq-run/schema", "@tasq-run/schema"],
+  ["@tasq-run/extension-sdk", "@tasq-run/extension-sdk"],
+  ["@tasq-run/core", "@tasq-run/core"],
+  ["@tasq-run/mcp", "@tasq-run/mcp"],
+  ["@tasq-run/protocol-adapters", "@tasq-run/protocol-adapters"],
+  ["@tasq-run/console", "@tasq-run/console"],
 ]);
 
 function requiredFlag(name: string): string {
@@ -78,7 +78,7 @@ async function selectedDependencies(
 async function definitions(version: string): Promise<PublicPackage[]> {
   return [
     {
-      name: "@tasq/schema",
+      name: "@tasq-run/schema",
       sourceDirectory: "tasq-schema",
       description: "Portable schemas, identifiers and clock contracts for Tasq.",
       entrypoint: "./src/index.ts",
@@ -102,65 +102,65 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       copyMode: "all-source",
     },
     {
-      name: "@tasq/extension-sdk",
+      name: "@tasq-run/extension-sdk",
       sourceDirectory: "tasq-extension-sdk",
       description: "DB-free extension and connector contracts for Tasq.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
-      dependencies: { "@tasq/schema": version },
+      dependencies: { "@tasq-run/schema": version },
       copyMode: "all-source",
     },
     {
-      name: "@tasq/core",
+      name: "@tasq-run/core",
       sourceDirectory: "tasq-core",
       description: "Universal runtime-neutral commitment coordination kernel for Tasq.",
       entrypoint: "./src/kernel.ts",
       exports: { ".": "./src/kernel.ts" },
       dependencies: {
-        "@tasq/extension-sdk": version,
-        "@tasq/schema": version,
+        "@tasq-run/extension-sdk": version,
+        "@tasq-run/schema": version,
         ...await selectedDependencies("tasq-core", ["@libsql/client", "drizzle-orm", "zod"]),
       },
       copyMode: "core-graph",
     },
     {
-      name: "@tasq/mcp",
+      name: "@tasq-run/mcp",
       sourceDirectory: "tasq-mcp",
       description: "Capability-scoped local stdio MCP transport for Tasq Core.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
       bin: { "tasq-mcp": "./src/stdio.ts" },
       dependencies: {
-        "@tasq/core": version,
-        "@tasq/schema": version,
+        "@tasq-run/core": version,
+        "@tasq-run/schema": version,
         ...await selectedDependencies("tasq-mcp", ["@modelcontextprotocol/sdk", "zod"]),
       },
       copyMode: "all-source",
     },
     {
-      name: "@tasq/protocol-adapters",
+      name: "@tasq-run/protocol-adapters",
       sourceDirectory: "tasq-protocol-adapters",
       description: "Commitment-safe MCP Tasks and A2A execution adapters for Tasq.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
       dependencies: {
-        "@tasq/core": version,
-        "@tasq/schema": version,
+        "@tasq-run/core": version,
+        "@tasq-run/schema": version,
         ...await selectedDependencies("tasq-protocol-adapters", ["zod"]),
       },
       copyMode: "all-source",
     },
     {
-      name: "@tasq/console",
+      name: "@tasq-run/console",
       sourceDirectory: "tasq-inspector",
       description: "Read-only loopback Console primitives for Tasq Local.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
-      dependencies: { "@tasq/core": version, "@tasq/schema": version },
+      dependencies: { "@tasq-run/core": version, "@tasq-run/schema": version },
       copyMode: "all-source",
     },
     {
-      name: "@tasq/cli",
+      name: "@tasq-run/cli",
       sourceDirectory: "tasq-cli",
       description: "Standalone local-first Tasq command-line agent and human interface.",
       entrypoint: "./index.js",
@@ -277,19 +277,19 @@ async function coreGraph(sourceRoot: string): Promise<string[]> {
 function packageUsage(definition: PublicPackage): string {
   const install = `npm install ${definition.name}`;
   switch (definition.name) {
-    case "@tasq/cli":
+    case "@tasq-run/cli":
       return `## Start\n\n\`\`\`bash\n${install}\nnpx tasq onboard --space my-context --actor agent:local --json\n\`\`\`\n\nExecute the returned argument-vector recipes directly. Read before mutating, persist numeric event sequences, claim before autonomous work and keep attempt success distinct from commitment completion.`;
-    case "@tasq/core":
+    case "@tasq-run/core":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nOpen an explicit store, run checksum-pinned kernel migrations, inject a \`Clock\`, install only trusted provider-neutral extension manifests, and pass explicit \`workspaceId\`, actor and retry identity to every mutation. Core owns commitments, collaboration, claims, attempts, evidence, resources, audit and replication; the embedding runtime owns execution, credentials, provider policy and transport.`;
-    case "@tasq/schema":
-      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nImport portable records, validators, identifiers and clock contracts from \`@tasq/schema\`. These schemas describe coordination data; they do not grant authentication, effect authority or provider access.`;
-    case "@tasq/mcp":
+    case "@tasq-run/schema":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nImport portable records, validators, identifiers and clock contracts from \`@tasq-run/schema\`. These schemas describe coordination data; they do not grant authentication, effect authority or provider access.`;
+    case "@tasq-run/mcp":
       return `## Start\n\n\`\`\`bash\n${install}\nnpx tasq-mcp --help\n\`\`\`\n\nEmbed \`createTasqMcpServer()\` when the host owns the store and injected identity, or launch the local stdio composition returned by \`tasq onboard\`. Generic stdio exposes only host-selected capabilities and never grants effect dispatch authority.`;
-    case "@tasq/extension-sdk":
+    case "@tasq-run/extension-sdk":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nUse \`defineExtensionRuntime()\` and the connector conformance helpers to declare immutable provider-neutral types and evaluators. Credentials, network I/O and domain policy stay in the host or connector, never in Core.`;
-    case "@tasq/protocol-adapters":
+    case "@tasq-run/protocol-adapters":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nUse the pure MCP Tasks and A2A mappings to import external execution state as attempts and artifacts. Remote success never becomes commitment completion without a separate evidence-aware decision.`;
-    case "@tasq/console":
+    case "@tasq-run/console":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nEmbed the bounded read models and loopback Console server in a trusted local composition. The Console is read-only, foreground and loopback-only; it is not an authenticated hosted UI or an agent API.`;
     default:
       throw new Error(`Missing public package README guidance for ${definition.name}`);
@@ -380,7 +380,7 @@ async function main(): Promise<void> {
       version: inputs.version,
       filename,
       sha256: await sha256(join(inputs.outdir, filename)),
-      dependencies: Object.keys(definition.dependencies ?? {}).filter((name) => name.startsWith("@tasq/")),
+      dependencies: Object.keys(definition.dependencies ?? {}).filter((name) => name.startsWith("@tasq-run/")),
     });
   }
   artifacts.sort((left, right) => left.name.localeCompare(right.name));
@@ -402,7 +402,7 @@ async function main(): Promise<void> {
       type: "library",
       "bom-ref": packagePurl(artifact.name, artifact.version),
       group: "tasq",
-      name: artifact.name.slice("@tasq/".length),
+      name: artifact.name.slice("@tasq-run/".length),
       version: artifact.version,
       licenses: [{ license: { id: "Apache-2.0" } }],
       hashes: [{ alg: "SHA-256", content: artifact.sha256 }],

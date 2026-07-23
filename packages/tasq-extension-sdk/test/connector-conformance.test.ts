@@ -4,7 +4,7 @@ import {
   prepareEffectRequest,
   type EffectDispatchPermit,
   type EffectDispatchPermitPayload,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   CONNECTOR_CONFORMANCE_PROTOCOL,
   CONNECTOR_FAILURE_PROTOCOL,

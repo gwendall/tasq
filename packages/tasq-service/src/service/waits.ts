@@ -16,7 +16,7 @@ import {
   type WaitCondition,
   type WaitConditionKind,
   type WaitConditionStatus,
-} from "@tasq/schema";
+} from "@tasq-run/schema";
 import {
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,
   REFERENCE_EVALUATOR_VERSION,
