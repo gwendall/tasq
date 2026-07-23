@@ -1,19 +1,21 @@
-# TQ-607 — Private multi-application dogfood gate
+# TQ-607 — Retained-data dogfood and stable-graduation gate
 
 > **Status:** accepted and in progress — 2026-07-22
 > **Machine status:** `TQ-607_DOGFOOD_STATUS.json`
-> **Unlocks:** TQ-603 package publication after the other release gates
+> **Unlocks:** stable graduation after the pre-1.0 public alpha
 
 ## Outcome
 
-Use Tasq as a real operating dependency before turning package publication
-into a stable public promise. The program keeps the public repository
+Use Tasq as a real operating dependency before turning the pre-1.0 alpha into
+a stable public promise. The program keeps the public repository
 at open-source quality and tests whether Tasq is
 useful and natural across unrelated applications rather than merely correct in
 repository fixtures.
 
-This is a product-learning gate. It does not authorize Server, Cloud, new Core
-ontology or public distribution.
+This is a product-learning and stable-graduation gate. The maintainer
+separately authorized a labeled `v0.1.0` public alpha on 2026-07-23 so external
+adopters can contribute real feedback. TQ-607 does not authorize Server,
+Cloud, new Core ontology or a stable release.
 
 ## Minimum duration
 
@@ -49,7 +51,7 @@ an adopter ledger.
    onboarding and support-bundle review against the same evolving data.
 5. **Decision review — no earlier than 2026-08-21.** Reconcile every required
    proof and critical failure, then record `go`, `extend` or `no_go`. A `go`
-   advances the backlog to TQ-603 but does not publish anything.
+   authorizes stable graduation but does not publish anything by itself.
 
 ## Three required consumers
 
@@ -130,7 +132,7 @@ authority.
 
 ## Critical failures
 
-The package-release decision cannot be `go` while any of these remain unresolved:
+The stable-graduation decision cannot be `go` while any of these remain unresolved:
 
 - data loss or an unrecoverable ledger;
 - a cross-workspace isolation failure;
@@ -146,12 +148,13 @@ The package-release decision cannot be `go` while any of these remain unresolved
 
 At or after the minimum date, the maintainer records one explicit decision:
 
-- `go` — TQ-607 closes and TQ-603 may become active after TQ-321, TQ-608 and
-  the external registry gates;
+- `go` — TQ-607 closes and Tasq may graduate beyond the explicitly labeled
+  pre-1.0 alpha after the separate release gates;
 - `extend` — dogfood continues with named missing evidence and a new review
   date;
-- `no_go` — package publication remains blocked and only the failed product
-  boundary is reopened.
+- `no_go` — stable graduation remains blocked and only the failed product
+  boundary is reopened; already published alpha bytes remain governed by the
+  incident and compatibility policies.
 
 The decision must summarize observed value as well as correctness. Passing
 tests without repeated useful operation across the three consumers is not a

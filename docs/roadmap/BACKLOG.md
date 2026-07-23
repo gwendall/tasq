@@ -8,10 +8,10 @@ never turns planned work into shipped behavior.
 **Updated:** 2026-07-23
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** continue the 30-day retained-data dogfood while preparing
-the external npm scope and trusted-publishing gates that do not depend on its
-elapsed duration. Do not publish packages or expand remote products before the
-remaining gates close.
+**Current priority:** publish the explicitly authorized `v0.1.0` Local alpha
+once the npm scope/bootstrap and trusted-publishing gates close, certify those
+exact bytes, then continue retained-data dogfood as the stable-graduation gate.
+Do not expand remote products before the Local alpha is independently usable.
 
 ## What is already proven
 
@@ -39,9 +39,9 @@ native targets.
 The repository follows open-source engineering discipline as a public alpha:
 standalone source authority, public/private package boundaries, DCO,
 reproducible setup, Linux/macOS CI, complete onboarding and versioned machine
-truth. TQ-607 separates that engineering readiness from product readiness. The
-next proof is repeated useful operation through three real adopters, not more
-repository-only architecture.
+truth. TQ-607 separates alpha distribution from stable product readiness. The
+next two proofs are the first protected public bytes and repeated useful
+operation through real adopters, not more repository-only architecture.
 
 ## Current gates
 
@@ -74,18 +74,22 @@ repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — paused behind TQ-607 and external registry gates.**
+- **TQ-603 — active, paused only on external registry gates.** The maintainer
+  authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
   `@tasq/schema` is not published. The authorized registry operator must verify
-  scope/package control, bind the release workflow through npm OIDC and create the first
-  immutable protected SemVer tag. Workstation publishing, implicit visibility
-  changes and long-lived npm tokens remain forbidden.
+  scope/package control, bootstrap the seven first package identities, bind
+  each package to the release workflow through npm OIDC and create the first
+  immutable protected SemVer tag. The tag workflow now fails before building
+  unless the exact version, repository, package boundary, maintainer decision
+  and channel-specific gates match. Unreviewed workstation builds, implicit
+  visibility changes and long-lived automation tokens remain forbidden.
 - **TQ-604 — candidate complete, published-byte gate.** The complete lifecycle
   passes from generated release assets on macOS arm64 and Linux x64. Final
   closure requires downloading the first protected release, verifying every
   GitHub attestation, and rerunning the same journey from those exact bytes.
 
-During TQ-607, fixes discovered by real adopters are in scope. New Server/Cloud
-breadth is intentionally lower priority even when technically unblocked.
+During alpha and TQ-607, fixes discovered by real adopters are in scope. New
+Server/Cloud breadth remains behind published-byte Local certification.
 
 ## Ordered checkpoints
 
@@ -96,22 +100,12 @@ breadth is intentionally lower priority even when technically unblocked.
 - **TQ-608:** replay the implemented durable-data envelope from the first
   protected release bytes; add exact N-2 lines when those releases exist.
 
-### 2. Prove retained product value
+### 2. Finish Local alpha distribution
 
-- **TQ-607:** run the three-consumer dogfood program, preserve real ledgers,
-  classify every material workaround, complete the cross-cutting recovery
-  drills and record the launch decision. The remaining execution is repeated
-  personal use on the retained ledger, the open/blocked/resumed/evidence path,
-  the no-direct-store-repair proof, one more forward upgrade and the minimum
-  calendar duration. Passing repository tests without repeated useful
-  operation is insufficient.
-
-### 3. Finish Local distribution
-
-- **TQ-603:** only after a TQ-607 `go`, obtain explicit source-launch
-  authorization, restore repository protections, verify npm scope control,
-  configure repository-bound trusted publishing, then publish and attest the
-  first release.
+- **TQ-603:** verify npm scope control, bootstrap the seven package identities,
+  configure repository/workflow/environment-bound trusted publishing, flip the
+  reviewed authorization gate to `authorized`, then publish and attest
+  `v0.1.0`.
 - **TQ-604:** certify the downloaded release on both supported targets and
   record release URL, version, commit and digests in the lifecycle certificate.
 
@@ -179,7 +173,17 @@ breadth is intentionally lower priority even when technically unblocked.
   TQ-607's Denshin journey remains private product-learning evidence. The
   candidate proof is package-independent but is not a published-byte claim.
 
-### 6. Build self-hosted Tasq Server
+### 6. Prove retained product value for stable graduation
+
+- **TQ-607:** continue the three-consumer dogfood program on retained ledgers,
+  classify every material workaround, complete the cross-cutting recovery
+  drills and record the stable-graduation decision. The remaining execution is
+  repeated personal use, the open/blocked/resumed/evidence path, the
+  no-direct-store-repair proof, one more forward upgrade and the minimum
+  calendar duration. Passing repository tests or publishing alpha bytes cannot
+  manufacture this evidence.
+
+### 7. Build self-hosted Tasq Server
 
 - **TQ-801 — done:** strict verified-identity/binding/grant/decision contracts,
   16 digest-bound actions and one pure injected-clock evaluator implement the
@@ -208,7 +212,7 @@ breadth is intentionally lower priority even when technically unblocked.
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
 
-### 7. Build managed Tasq Cloud
+### 8. Build managed Tasq Cloud
 
 - **TQ-901:** tenant control plane and isolated workspace provisioning.
 - **TQ-902:** same-origin hosted BFF sessions and authenticated Console.

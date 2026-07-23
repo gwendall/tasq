@@ -73,6 +73,13 @@ type ReleasePolicy = {
   packages: Array<{ publicName: string | null; firstRelease: boolean }>;
   candidateCliTargets: string[];
   externalPublicationGateStatus: Record<string, boolean>;
+  publishedRelease: null | {
+    version: string;
+    tag: string;
+    sourceCommit: string;
+    githubRelease: string;
+    publishedPackages: Array<{ name: string; version: string }>;
+  };
 };
 
 type RootPackage = {
@@ -96,10 +103,17 @@ async function readJson<T>(relativePath: string): Promise<{ raw: string; value: 
   return { raw, value: JSON.parse(raw) as T };
 }
 
+function optionalFlag(name: string): string | undefined {
+  const index = process.argv.indexOf(name);
+  const value = index === -1 ? undefined : process.argv[index + 1];
+  if (value?.startsWith("--")) throw new Error(`${name} requires a value`);
+  return value;
+}
+
 const [matrixFile, backlogFile, policyFile, rootPackageFile] = await Promise.all([
-  readJson<ProductMatrix>("docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
+  readJson<ProductMatrix>(optionalFlag("--matrix") ?? "docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
   readJson<Backlog>("docs/roadmap/BACKLOG.json"),
-  readJson<ReleasePolicy>("docs/releases/PUBLIC_RELEASE_POLICY.json"),
+  readJson<ReleasePolicy>(optionalFlag("--policy") ?? "docs/releases/PUBLIC_RELEASE_POLICY.json"),
   readJson<RootPackage>("package.json"),
 ]);
 
@@ -120,10 +134,16 @@ for (const surface of matrix.surfaces) {
   }
 }
 
-const published = policy.status === "published";
+const published = policy.status === "published-alpha";
 const privatePrelaunch = policy.identity.repositoryState === "private-canonical-unprotected-prelaunch";
 if (!published && matrix.productShapes.some((shape) => shape.publiclyDistributed)) {
   throw new Error("A product shape cannot be publicly distributed before release policy is published");
+}
+if (published && !policy.publishedRelease) {
+  throw new Error("Published release policy requires immutable release coordinates");
+}
+if (published && matrix.productShapes.find((shape) => shape.id === "local")?.publiclyDistributed !== true) {
+  throw new Error("Published Tasq Local must be marked publicly distributed");
 }
 
 const sourceDigest = (raw: string) => createHash("sha256").update(raw).digest("hex");
@@ -151,6 +171,10 @@ const truth = {
       .map((entry) => entry.publicName),
     candidateTargets: policy.candidateCliTargets,
     gates: policy.externalPublicationGateStatus,
+    version: policy.publishedRelease?.version ?? null,
+    tag: policy.publishedRelease?.tag ?? null,
+    sourceCommit: policy.publishedRelease?.sourceCommit ?? null,
+    githubRelease: policy.publishedRelease?.githubRelease ?? null,
   },
   productShapes: matrix.productShapes,
   surfaces: matrix.surfaces,
@@ -183,14 +207,11 @@ const truth = {
 };
 
 const serialized = `${JSON.stringify(truth, null, 2)}\n`;
-if (published) {
-  throw new Error("The protected release requires a reviewed attested-release adoption manifest; source-build instructions fail closed");
-}
 const packageManager = rootPackageFile.value.packageManager.split("@");
 if (packageManager.length !== 2 || packageManager[0] !== "pnpm" || !packageManager[1]) {
   throw new Error("The public adoption manifest requires one exact pnpm packageManager version");
 }
-const adoption = {
+const sourceAdoption = {
   $schema: "/schemas/public-adoption.v1.schema.json",
   contractVersion: "tasq.public-adoption.v1",
   product: "Tasq Local",
@@ -263,6 +284,74 @@ const adoption = {
     "unpublished_source_ref_is_mutable_and_not_a_release_attestation",
   ],
 };
+const release = policy.publishedRelease;
+const publishedAdoption = release ? {
+  $schema: "/schemas/public-adoption.v1.schema.json",
+  contractVersion: "tasq.public-adoption.v1",
+  product: "Tasq Local",
+  support: "implemented_certified",
+  distribution: {
+    mode: "npm_and_github_release",
+    published: true,
+    version: release.version,
+    tag: release.tag,
+    repository: policy.identity.canonicalRepository,
+    githubRelease: release.githubRelease,
+    packages: release.publishedPackages,
+    cliTargets: policy.candidateCliTargets,
+    integrity: {
+      kind: "npm-provenance-and-github-attestation",
+      sourceCommit: release.sourceCommit,
+      releaseManifestPattern: `tasq-v${release.version}-{target}.release.json`,
+      checksumPattern: `tasq-v${release.version}-{target}.SHA256SUMS`,
+    },
+  },
+  requirements: [
+    { runtime: "node", version: rootPackageFile.value.engines.node },
+    { runtime: "bun", version: rootPackageFile.value.engines.bun },
+    { runtime: "npm", version: ">=11.5.1" },
+  ],
+  human: {
+    path: "/docs/getting-started/",
+    primaryAction: "install_release",
+  },
+  agent: {
+    acquisition: [
+      {
+        id: "package.install",
+        cwd: "{workingDirectory}",
+        argv: [
+          "npm", "install", "--prefix", "{installPrefix}", "--ignore-scripts",
+          `@tasq/cli@${release.version}`,
+        ],
+        mutatesHost: true,
+      },
+    ],
+    executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq",
+    onboardArgvTemplate: [
+      "{tasqExecutable}", "onboard", "--space", "{workspaceId}", "--actor", "{actorLabel}",
+      "--capabilities", "read,propose,coordinate", "--json",
+    ],
+    placeholders: [
+      "{workingDirectory}", "{installPrefix}", "{tasqExecutable}", "{workspaceId}", "{actorLabel}",
+    ],
+  },
+  invariants: [
+    "execute_argv_without_shell_reconstruction",
+    "verify_registry_version_and_release_provenance",
+    "persist_one_executable_identity_for_the_session",
+    "read_before_mutation",
+    "actor_labels_are_attribution_not_authentication",
+    "same_workspace_requires_the_same_store",
+    "device_time_is_not_authority",
+    "runtime_success_does_not_complete_a_commitment",
+    "uninstall_never_removes_user_data",
+  ],
+} : null;
+if (published && !publishedAdoption) {
+  throw new Error("Published release policy requires a reviewed release adoption manifest");
+}
+const adoption = published ? publishedAdoption : sourceAdoption;
 const adoptionSerialized = `${JSON.stringify(adoption, null, 2)}\n`;
 
 async function checkOutputs(paths: string[], expected: string): Promise<void> {
@@ -274,7 +363,9 @@ async function checkOutputs(paths: string[], expected: string): Promise<void> {
   }
 }
 
-if (process.argv.includes("--check")) {
+if (process.argv.includes("--stdout")) {
+  process.stdout.write(`${JSON.stringify({ truth, adoption })}\n`);
+} else if (process.argv.includes("--check")) {
   await checkOutputs(truthOutputPaths, serialized);
   await checkOutputs(adoptionOutputPaths, adoptionSerialized);
 } else {

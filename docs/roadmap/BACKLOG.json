@@ -28,7 +28,9 @@
     "privateMultiAppDogfood": {
       "state": "in_progress",
       "requiredEvidence": "docs/contracts/TQ-607_DOGFOOD_STATUS.json",
-      "requiredDecision": "go_extend_or_no_go_at_or_after_minimum_duration"
+      "requiredDecision": "go_extend_or_no_go_at_or_after_minimum_duration",
+      "blocks": "stable_graduation",
+      "publicAlphaBlocking": false
     },
     "publicSourceLaunch": {
       "state": "complete_public_alpha",
@@ -52,7 +54,15 @@
     },
     "firstProtectedRelease": {
       "state": "not_run",
-      "requires": ["privateMultiAppDogfood", "publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
+      "channel": "public_alpha",
+      "version": "0.1.0",
+      "requires": ["maintainerPublicAlphaAuthorization", "publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
+    },
+    "maintainerPublicAlphaAuthorization": {
+      "state": "complete",
+      "completedAt": "2026-07-23",
+      "evidence": "docs/releases/PUBLIC_RELEASE_POLICY.json",
+      "boundary": "authorizes the labeled pre-1.0 alpha; retained-data dogfood still blocks stable graduation"
     },
     "publishedLifecycleCertification": {
       "state": "blocked_by_first_protected_release",
@@ -99,7 +109,6 @@
   "executionOrder": [
     "TQ-321",
     "TQ-608",
-    "TQ-607",
     "TQ-603",
     "TQ-604",
     "TQ-701",
@@ -110,6 +119,7 @@
     "TQ-606",
     "TQ-705",
     "TQ-320",
+    "TQ-607",
     "TQ-801",
     "TQ-802",
     "TQ-803",
@@ -145,21 +155,12 @@
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts"]
     },
     {
-      "id": "TQ-607",
-      "status": "in_progress_dogfood",
-      "milestone": "private-dogfood",
-      "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
-      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a package-release decision",
-      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
-      "evidence": ["docs/contracts/TQ-607_PRIVATE_DOGFOOD_GATE.md", "docs/contracts/TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
-    },
-    {
       "id": "TQ-603",
-      "status": "pending",
+      "status": "in_progress_external_gate",
       "milestone": "public-distribution",
-      "dependsOn": ["TQ-321", "TQ-608", "TQ-607"],
+      "dependsOn": ["TQ-321", "TQ-608"],
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations",
-      "remaining": ["complete-private-dogfood-go", "verify-npm-scope-control", "configure-npm-trusted-publishing", "publish-first-protected-release"]
+      "remaining": ["verify-npm-scope-control", "bootstrap-first-package-versions", "configure-npm-trusted-publishing", "publish-first-protected-release"]
     },
     {
       "id": "TQ-604",
@@ -234,6 +235,15 @@
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
       "remaining": ["rerun-from-first-published-release"],
       "evidence": ["docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md", "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"]
+    },
+    {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
+      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation",
+      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
+      "evidence": ["docs/contracts/TQ-607_PRIVATE_DOGFOOD_GATE.md", "docs/contracts/TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
     },
     {
       "id": "TQ-801",

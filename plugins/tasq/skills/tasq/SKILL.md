@@ -29,10 +29,12 @@ Fetch the public acquisition manifest:
 
 Select one declared acquisition method. Execute its argv arrays exactly, in the
 declared working directory, and resolve only placeholders the manifest explicitly
-declares. Ask the user for any unresolved required placeholder. Do not reconstruct
-shell commands from prose. Treat a supplied Tasq executable or manifest entrypoint
-as directly executable; never prepend `node`, `bun`, or another runtime unless the
-selected argv recipe explicitly includes it.
+declares. Resolve the executable from the manifest's declared
+`executableRelativePath` or `executablePathTemplate`, then persist that exact
+path as `{tasqExecutable}` for the session. Ask the user for any unresolved
+required placeholder. Do not reconstruct shell commands from prose. Treat a
+supplied Tasq executable or manifest entrypoint as directly executable; never prepend `node`, `bun`,
+or another runtime unless the selected argv recipe explicitly includes it.
 
 ## Start from machine discovery
 

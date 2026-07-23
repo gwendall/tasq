@@ -1,3 +1,5 @@
+import { productTruth } from "@/lib/product-truth";
+
 export type DocSection = {
   title: string;
   body: string[];
@@ -14,23 +16,35 @@ export type DocPage = {
   sections: DocSection[];
 };
 
+const published = productTruth.release.published;
+const releaseVersion = productTruth.release.version ?? "0.1.0";
+const tasqExecutable = published ? "tasq" : "./dist/cli/index.js";
+const installCommand = `npm install --prefix ~/.local/share/tasq --ignore-scripts @tasq/cli@${releaseVersion}`;
+
 export const docPages: DocPage[] = [
   {
     slug: "getting-started",
     eyebrow: "Start here",
-    title: "One ledger. Two actors. Start from source.",
+    title: published ? "One ledger. Two actors. Five minutes." : "One ledger. Two actors. Start from source.",
     summary:
-      "Clone and build Tasq Local from the public canonical source, create a workspace, then hand any shell-capable agent a bounded onboarding response.",
+      published
+        ? "Install Tasq Local, create one explicit workspace, then hand any shell-capable agent the versioned onboarding response."
+        : "Clone and build Tasq Local from the public canonical source, create a workspace, then hand any shell-capable agent a bounded onboarding response.",
     sections: [
       {
-        title: "Current installation path",
+        title: published ? "Install the public alpha" : "Current installation path",
         body: [
-          "Tasq is public alpha source. There is no published npm package or downloadable release yet, so clone the canonical repository and use the deterministic source-build path below.",
+          published
+            ? `Tasq Local ${releaseVersion} is a public alpha. Install the scoped CLI into an explicit prefix so the executable is easy to locate and removal never touches your ledger.`
+            : "Tasq is public alpha source. There is no published npm package or downloadable release yet, so clone the canonical repository and use the deterministic source-build path below.",
         ],
-        code:
-          "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
+        code: published
+          ? `${installCommand}\n~/.local/share/tasq/node_modules/.bin/tasq version`
+          : "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
         callout:
-          "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
+          published
+            ? "Do not install the unrelated unscoped package named tasq. The official package is @tasq/cli; its executable is tasq. Verify the exact version and provenance through the linked GitHub release or /adopt.json."
+            : "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
       },
       {
         title: "Give an agent the minimum causal pointer",
@@ -39,7 +53,7 @@ export const docPages: DocPage[] = [
           "The onboarding response is versioned JSON. It describes supported capabilities and returns argument-array recipes, so the agent does not need repository-specific instructions.",
         ],
         code:
-          "./dist/cli/index.js onboard \\\n+  --space robotics/team-a \\\n+  --actor agent:planner \\\n+  --capabilities read,propose,coordinate \\\n+  --json",
+          `${tasqExecutable} onboard \\\n+  --space robotics/team-a \\\n+  --actor agent:planner \\\n+  --capabilities read,propose,coordinate \\\n+  --json`,
       },
       {
         title: "Keep everyone on the same authority",
@@ -61,6 +75,16 @@ export const docPages: DocPage[] = [
     summary:
       "Shell agents, MCP clients and custom runtimes can share commitment state while keeping their own models, tools and execution loops.",
     sections: [
+      {
+        title: "Install the native agent guide",
+        body: [
+          "A zero-context Codex or Claude Code agent can install the repository-owned Tasq guide, acquire the current distribution from /adopt.json and use only the recipes returned by onboarding.",
+        ],
+        code:
+          "codex plugin marketplace add gwendall/tasq --ref main\ncodex plugin add tasq@tasq\n\nclaude plugin marketplace add gwendall/tasq --scope user\nclaude plugin install tasq@tasq --scope user",
+        callout:
+          "Tasq coordinates durable commitments between actors. It does not replace the runtime's private scratchpad or its short-lived internal todo list.",
+      },
       {
         title: "The safe loop",
         body: [
@@ -157,7 +181,9 @@ export const docPages: DocPage[] = [
         code:
           "const tasq = createTasqService({\n  store,\n  workspaceId,\n  identity,\n  clock,\n})",
         callout:
-          "Package source is public, but @tasq/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
+          published
+            ? `Install @tasq/core@${releaseVersion} for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.`
+            : "Package source is public, but @tasq/core is not published yet. Source consumers can evaluate the alpha; public package compatibility starts with the first protected release, not with a source-tree import.",
       },
       {
         title: "Extensions and connectors stay outside Core",
@@ -234,7 +260,9 @@ export const docPages: DocPage[] = [
       {
         title: "The publication gate",
         body: [
-          "Private source, release candidates and clean-room lifecycle tests exist. Public-source launch, npm scope control and trusted publishing have not been externally authorized or proven, so no anonymous source, package or download is advertised as available.",
+          published
+            ? `Tasq Local ${releaseVersion} is publicly distributed as a protected alpha with scoped npm packages, checksummed native artifacts and repository-bound provenance. Server, remote MCP, hosted Console and Cloud remain unavailable.`
+            : "The canonical source repository and site are public. Release candidates pass clean-room lifecycle tests, but npm scope control and trusted publishing are not yet proven, so packages and downloads are not advertised as available.",
         ],
       },
     ],

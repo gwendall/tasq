@@ -12,6 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function StatusPage() {
+  const published = productTruth.release.published;
+  const releaseVersion = productTruth.release.version ?? "0.1.0";
+
   return (
     <main id="main-content">
       <section className="border-b border-[var(--line-strong)] bg-[var(--paper-strong)]">
@@ -28,11 +31,18 @@ export default function StatusPage() {
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="border border-[var(--line-strong)] p-7 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div><p className="eyebrow">Release channel</p><h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">Not published</h2></div>
-              <StatusBadge support="implemented_candidate_not_published" />
+              <div>
+                <p className="eyebrow">Release channel</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">
+                  {published ? `Public alpha ${releaseVersion}` : "Not published"}
+                </h2>
+              </div>
+              <StatusBadge support={published ? "implemented_certified" : "implemented_candidate_not_published"} />
             </div>
             <p className="mt-5 max-w-xl text-sm leading-6 text-[var(--ink-muted)]">
-              The source repository, deterministic artifacts and lifecycle candidates exist. npm scope ownership and trusted publishing still require external registry authority.
+              {published
+                ? "The protected release publishes scoped npm packages and checksummed native artifacts. Retained-data dogfood continues; Server and Cloud are separate unshipped products."
+                : "The source repository, deterministic artifacts and lifecycle candidates exist. npm scope ownership and trusted publishing still require external registry authority."}
             </p>
             <div className="mt-7 grid gap-px border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2">
               {Object.entries(productTruth.release.gates).map(([gate, passed]) => (
@@ -47,6 +57,11 @@ export default function StatusPage() {
             <PackageOpen className="size-7 text-[var(--signal)]" strokeWidth={1.5} />
             <p className="mt-8 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-white/40">First release boundary</p>
             <p className="mt-3 text-2xl font-semibold tracking-[-0.035em]">{productTruth.release.publicPackages.length} public packages</p>
+            {published && productTruth.release.githubRelease ? (
+              <a className="mt-3 inline-flex font-mono text-xs text-[var(--signal)] hover:text-white" href={productTruth.release.githubRelease}>
+                Verify release and artifacts <ArrowRight className="ml-2 size-3.5" />
+              </a>
+            ) : null}
             <div className="mt-6 flex flex-wrap gap-2.5">
               {productTruth.release.publicPackages.map((name) => <span className="border border-white/15 px-2.5 py-1.5 font-mono text-[0.6875rem] text-white/60" key={name}>{name}</span>)}
             </div>

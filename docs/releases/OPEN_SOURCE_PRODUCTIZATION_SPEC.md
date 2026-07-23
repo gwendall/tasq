@@ -25,10 +25,12 @@ agent runtime.
 
 TQ-607 closes only with real upgrade/recovery/onboarding evidence and an
 explicit `go`, `extend` or `no_go` decision. Source visibility was separately
-authorized on 2026-07-22; a TQ-607 `go` remains necessary for package
-publication. TQ-321 is passed. TQ-603 is paused until the TQ-607 decision and
-the external registry gates; the TQ-608 source candidate is passed and awaits
-protected-byte replay.
+authorized on 2026-07-22. On 2026-07-23 the maintainer authorized a pre-1.0
+public package alpha so real adopters can provide feedback before the full
+30-day program closes. TQ-607 therefore remains mandatory for stable
+graduation, not for `v0.1.0`. TQ-321 is passed. TQ-603 is paused only on the
+external npm scope/bootstrap and trusted-publishing gates; the TQ-608 source
+candidate is passed and awaits protected-byte replay.
 
 ## 2. Decisions required before release
 
@@ -163,9 +165,9 @@ Failures block release. Repository-local success is not a substitute.
 |---|---|
 | TQ-321 | DONE — zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
 | TQ-608 | SOURCE CANDIDATE PASSED — data-preserving migration envelope, verified backup/doctor, real process-kill recovery and portable import; protected-byte/N-2 replay pending |
-| TQ-607 | Three-consumer retained-data dogfood and explicit package-release decision |
+| TQ-607 | Three-consumer retained-data dogfood and explicit stable-graduation decision; non-blocking for the labeled pre-1.0 alpha |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | After TQ-607 `go` and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
+| TQ-603 | After exact maintainer alpha authorization and external registry control, reproducible public artifacts and package publication; first bytes replay TQ-608 |
 | TQ-604 | Clean-room install/upgrade/rollback/uninstall/backup certification |
 | TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq.run` |
 | TQ-606 | CANDIDATE — automated human path plus blind agent pass; published bytes and independent human pending |

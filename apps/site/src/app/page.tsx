@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { productTruth, titleWords } from "@/lib/product-truth";
 
 const currentShapes = productTruth.productShapes;
+const published = productTruth.release.published;
+const releaseVersion = productTruth.release.version ?? "0.1.0";
 const benefits = [
   {
     icon: Network,
@@ -65,7 +67,7 @@ export default function HomePage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/docs/getting-started">
-                  Build Tasq Local <ArrowRight aria-hidden="true" className="size-4" />
+                  {published ? "Install Tasq Local" : "Build Tasq Local"} <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -76,7 +78,9 @@ export default function HomePage() {
             </div>
             <p className="mt-6 flex items-start gap-2 font-mono text-[0.6875rem] leading-5 uppercase tracking-[0.07em] text-[var(--ink-faint)]">
               <Clock3 aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-              Public source alpha. Packages and downloadable releases are not published.
+              {published
+                ? `Public alpha ${releaseVersion}. Packages and checksummed releases are live.`
+                : "Public source alpha. Packages and downloadable releases are not published."}
             </p>
           </div>
 
@@ -233,7 +237,12 @@ export default function HomePage() {
             </table>
           </div>
           <div className="mt-5 flex flex-col justify-between gap-5 border-l-2 border-[var(--signal)] bg-[var(--signal-soft)] p-6 sm:flex-row sm:items-center">
-            <p className="text-sm leading-6"><strong>Today:</strong> Local behavior is certified, but the first protected release is still waiting on registry authority.</p>
+            <p className="text-sm leading-6">
+              <strong>Today:</strong>{" "}
+              {published
+                ? `Local ${releaseVersion} is a protected public alpha. Server, remote MCP and Cloud are still not shipped.`
+                : "Local behavior is certified, but the first protected release is still waiting on registry authority."}
+            </p>
             <Button asChild variant="outline" size="sm"><Link href="/status">Inspect product truth <ArrowRight className="size-3.5" /></Link></Button>
           </div>
         </div>
@@ -244,10 +253,14 @@ export default function HomePage() {
           <div>
             <p className="eyebrow text-white/45"><TerminalSquare className="size-3.5" /> Start local</p>
             <h2 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-[-0.05em] sm:text-5xl">Give your agents something durable to agree on.</h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/55">Build from the canonical source, create one workspace and connect the first independent actor.</p>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-white/55">
+              {published
+                ? "Install the protected alpha, create one workspace and connect the first independent actor."
+                : "Build from the canonical source, create one workspace and connect the first independent actor."}
+            </p>
           </div>
           <Button asChild size="lg" className="border-white bg-[var(--signal)] text-[var(--ink)] shadow-[3px_3px_0_white] hover:shadow-[3px_6px_0_white] active:shadow-[3px_2px_0_white]">
-            <Link href="/docs/getting-started">Read the local guide <ArrowRight className="size-4" /></Link>
+            <Link href="/docs/getting-started">{published ? "Install the public alpha" : "Read the local guide"} <ArrowRight className="size-4" /></Link>
           </Button>
         </div>
       </section>

@@ -183,21 +183,32 @@ describe.skipIf(target === null)("TQ-606 blind public adoption", () => {
     await Promise.all([chmod(humanClient, 0o755), chmod(agentClient, 0o755)]);
 
     const adoption = JSON.parse(await readFile(adoptionPath, "utf8"));
-    expect(adoption).toMatchObject({
-      contractVersion: "tasq.public-adoption.v1",
-      support: "implemented_candidate_not_published",
-      distribution: {
-        mode: "source_build",
-        published: false,
-        repositoryAccess: "public",
-        preconditions: [],
-        sourceRefMutable: true,
-        integrity: { kind: "repository-contract-digests" },
-      },
-      human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
-      agent: { executableRelativePath: "dist/cli/index.js" },
-    });
-    expect(adoption.distribution.integrity.sourceContracts).toHaveLength(3);
+    expect(adoption.contractVersion).toBe("tasq.public-adoption.v1");
+    if (adoption.distribution.published) {
+      expect(adoption).toMatchObject({
+        support: "implemented_certified",
+        distribution: {
+          mode: "npm_and_github_release",
+          integrity: { kind: "npm-provenance-and-github-attestation" },
+        },
+        human: { path: "/docs/getting-started/", primaryAction: "install_release" },
+        agent: { executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq" },
+      });
+    } else {
+      expect(adoption).toMatchObject({
+        support: "implemented_candidate_not_published",
+        distribution: {
+          mode: "source_build",
+          repositoryAccess: "public",
+          preconditions: [],
+          sourceRefMutable: true,
+          integrity: { kind: "repository-contract-digests" },
+        },
+        human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
+        agent: { executableRelativePath: "dist/cli/index.js" },
+      });
+      expect(adoption.distribution.integrity.sourceContracts).toHaveLength(3);
+    }
     expect(adoption.invariants).toContain("device_time_is_not_authority");
     expect(adoption.invariants).not.toContain("private_prelaunch_repository_requires_authorized_access");
 

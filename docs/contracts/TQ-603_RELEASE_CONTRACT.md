@@ -1,6 +1,6 @@
 # TQ-603 public release contract
 
-**Status:** public source alpha; package publication paused behind TQ-607 and external registry gates; TQ-321 and the TQ-608 source candidate passed
+**Status:** public source alpha; `v0.1.0` authorized as an alpha but paused behind external npm registry gates; TQ-321 and the TQ-608 source candidate passed
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
 ## Outcome
@@ -77,7 +77,8 @@ modules are absent.
 
 The pipeline must refuse a public release until all of these facts are true:
 
-1. TQ-607 records a `go` decision after its minimum private dogfood evidence;
+1. the maintainer records an exact version, alpha channel, `go` decision and
+   rationale in `PUBLIC_RELEASE_POLICY.json`;
 2. the workflow runs from `gwendall/tasq`, not the private monorepo;
 3. the immutable tag exactly matches the declared version;
 4. the `@tasq` npm scope and every intended package are controlled;
@@ -97,8 +98,19 @@ The pipeline must refuse a public release until all of these facts are true:
 The public canonical repository and both clean-room CI targets satisfy gates 2,
 6 and 9. Pull requests, required Linux/macOS checks, linear history, immutable
 `v*` tags, the tag-scoped release environment, secret scanning, push protection
-and private vulnerability reporting are active. Gate 1 plus TQ-321 are the
-current product-hardening priority; TQ-608's source candidate is passed. npm
-`@tasq` scope control and trusted
-publishing remain external blockers. TQ-321 is certified. Therefore source is public alpha, while
-packages and downloadable artifacts are not published.
+and private vulnerability reporting are active. Gate 1, TQ-321 and the TQ-608
+source candidate are passed. npm `@tasq` scope control and trusted publishing
+remain external blockers. Therefore source is public alpha, while packages and
+downloadable artifacts are not published.
+
+TQ-607 is deliberately not an alpha-publication blocker after the maintainer's
+2026-07-23 strategy decision. It continues unchanged as retained-data evidence
+and blocks stable graduation. The first alpha is explicitly pre-1.0, documents
+its migration/backup boundary and must be replayed from published bytes before
+the release truth can advance beyond candidate evidence.
+
+The tag workflow executes
+`scripts/release/verify-release-authorization.ts` before any artifact job. That
+gate binds the tag version, canonical repository, seven-package boundary,
+maintainer decision and channel-specific external gates. A pending npm gate,
+version drift or package-source drift stops the workflow before publication.

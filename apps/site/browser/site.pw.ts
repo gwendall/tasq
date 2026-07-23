@@ -1,19 +1,23 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage explains the product and the unpublished boundary", async ({ page }) => {
+test("homepage explains the product and its generated release boundary", async ({ page }) => {
   await page.goto("/");
+  const truth = await (await page.request.get("/product-truth.json")).json();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("shared truth");
-  await expect(page.getByRole("link", { name: "Build Tasq Local" })).toBeVisible();
-  await expect(page.getByText("Public source alpha")).toBeVisible();
+  await expect(page.getByRole("link", {
+    name: truth.release.published ? "Install Tasq Local" : "Build Tasq Local",
+  })).toBeVisible();
+  await expect(page.getByText(truth.release.published ? "Public alpha" : "Public source alpha", { exact: false })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Not built");
-  await expect(page.locator("body")).not.toContainText("npm install @tasq/");
+  if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq/");
 });
 
 test("documentation gives a complete causal onboarding path", async ({ page }) => {
   await page.goto("/docs/getting-started/");
+  const truth = await (await page.request.get("/product-truth.json")).json();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("One ledger");
-  await expect(page.getByText("public alpha source", { exact: false })).toBeVisible();
+  await expect(page.getByText(truth.release.published ? "public alpha" : "public alpha source", { exact: false })).toBeVisible();
   await expect(page.getByText("onboard", { exact: false }).first()).toBeVisible();
   await page.getByRole("link", { name: "For agents" }).click();
   await expect(page).toHaveURL(/\/docs\/agents\/?$/);
@@ -33,14 +37,11 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   expect((await response.json()).contractVersion).toBe("tasq.public-site-truth.v1");
   const adoption = await page.request.get("/adopt.json");
   expect(adoption.ok()).toBe(true);
-  expect(await adoption.json()).toMatchObject({
-    contractVersion: "tasq.public-adoption.v1",
-    distribution: {
-      mode: "source_build",
-      published: false,
-      repositoryAccess: "public",
-    },
-  });
+  const adoptionContract = await adoption.json();
+  expect(adoptionContract.contractVersion).toBe("tasq.public-adoption.v1");
+  expect(adoptionContract.distribution.mode).toBe(
+    adoptionContract.distribution.published ? "npm_and_github_release" : "source_build",
+  );
 });
 
 test("mobile layout stays within the viewport and exposes navigation", async ({ page }) => {
