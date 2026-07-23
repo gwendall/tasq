@@ -12,7 +12,7 @@ contributor guides, and executable engineering contracts.
 | Build or change the repository | [Development](guides/DEVELOPMENT.md) → owning package README |
 | Operate or recover a ledger | [Data safety](guides/DATA_SAFETY.md) → [testing](guides/TESTING.md) |
 | Install Tasq for Codex or Claude Code | [Agent integrations](integrations/AGENT_INTEGRATIONS.md) |
-| Embed Core or write a connector | [Architecture](concepts/ARCHITECTURE.md) → [extension SDK](integrations/EXTENSION_SDK.md) |
+| Embed Core or write a connector | [Embedded TypeScript client](contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md) → [architecture](concepts/ARCHITECTURE.md) → [extension SDK](integrations/EXTENSION_SDK.md) |
 | Understand JSON compatibility | [CLI JSON contract](reference/CLI_JSON_CONTRACT.md) |
 | See current work and release blockers | [Roadmap](roadmap/BACKLOG.md) |
 | Evaluate public support claims | [Product surface matrix](concepts/PRODUCT_SURFACE_MATRIX.json) |

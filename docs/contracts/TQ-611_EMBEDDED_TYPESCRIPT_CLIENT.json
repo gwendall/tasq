@@ -1,0 +1,89 @@
+{
+  "contractVersion": "tasq.embedded-typescript-client-certification.v1",
+  "status": "source-candidate-passed-publication-pending",
+  "packageBoundary": {
+    "package": "@tasq-run/core",
+    "newPackageRejected": "@tasq-run/client",
+    "reason": "same local kernel and store composition; a separate package would be a shallow pass-through",
+    "entrypoint": "createLocalTasq"
+  },
+  "interface": {
+    "requiredInputs": ["url", "workspaceId", "actor", "clock"],
+    "operationGroups": [
+      "commitments",
+      "claims",
+      "attempts",
+      "evidence",
+      "resources",
+      "inspection",
+      "events",
+      "cursors"
+    ],
+    "owns": [
+      "database_open",
+      "compatible_migrations",
+      "coordination_space_bootstrap",
+      "local_principal_bootstrap",
+      "bound_operation_context",
+      "connection_close"
+    ],
+    "neverInfers": ["store_from_cwd", "workspace_from_config", "actor_from_ambient_identity", "clock_from_hidden_policy"]
+  },
+  "distribution": {
+    "format": "compiled-esm-plus-declarations",
+    "compiledPackages": [
+      "@tasq-run/schema",
+      "@tasq-run/extension-sdk",
+      "@tasq-run/core"
+    ],
+    "packageRoot": "dist",
+    "rawTypeScriptExecutionRequired": false,
+    "migrationSqlCoLocatedWithCompiledLoader": true
+  },
+  "runtimes": [
+    {
+      "name": "bun",
+      "minimumVersion": "1.3.0",
+      "certifiedVersion": "1.3.11",
+      "candidateFreshInstall": "passed",
+      "sameLedgerRestart": "passed"
+    },
+    {
+      "name": "node",
+      "minimumVersion": "22.0.0",
+      "certifiedVersion": "22.22.3",
+      "candidateFreshInstall": "passed",
+      "sameLedgerRestart": "passed"
+    }
+  ],
+  "documentation": {
+    "executableSource": "packages/tasq-core/examples/local-client.mjs",
+    "generatedPackageReadme": true,
+    "executedBy": "packages/tasq-cli/test/public-packages.test.ts",
+    "sourceReadmeParity": "packages/tasq-core/README.md"
+  },
+  "behaviorEvidence": {
+    "interfaceTest": "packages/tasq-core/test/local-client.test.ts",
+    "candidateTest": "packages/tasq-cli/test/public-packages.test.ts",
+    "publishedByteTest": "packages/tasq-evals/published-embedded-client.test.ts",
+    "canonicalLoop": "passed",
+    "claimAttemptEvidence": "passed",
+    "resourceFence": "passed",
+    "inspection": "passed",
+    "exclusiveEventCursor": "passed",
+    "sameLedgerRestart": "passed"
+  },
+  "publication": {
+    "targetVersion": "0.2.0",
+    "state": "pending-protected-release",
+    "publishedByteReplay": "pending",
+    "publicSiteClaimAllowed": false
+  },
+  "invariants": [
+    "attempt_success_does_not_complete_commitment",
+    "actor_attribution_is_not_authority",
+    "explicit_workspace_and_clock_are_mandatory",
+    "lower_level_kernel_exports_remain_available",
+    "deep_imports_are_not_compatibility_promises"
+  ]
+}

@@ -549,7 +549,7 @@
     },
     {
       "id": "TQ-611",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "embedded-sdk",
       "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary"
     },
@@ -689,12 +689,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "14c8840444b95d6e061fae04707f577b909a5f8e2403a8a29afe2b5e0505b461"
+      "sha256": "f38717fa61322a6d2b5c579cb8a4ba4003c74fc1ad2bc80ad1a726038078a2d6"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "3e2ccf36f274e239c0b21a51db081ca4b2a29fdddcfd2d62fd30a698bbbfa2b5"
+      "sha256": "9d189f07b4bc85995442f3307a0f0f6a4bd2b497778116161770c177fa9b8217"
     }
   ]
 }

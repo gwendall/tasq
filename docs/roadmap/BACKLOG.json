@@ -276,18 +276,22 @@
     },
     {
       "id": "TQ-611",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "embedded-sdk",
       "dependsOn": ["TQ-609"],
       "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary",
       "remaining": [
-        "decide-public-package-boundary",
-        "implement-deep-local-client-facade",
-        "publish-compiled-esm-and-types-or-explicit-bun-only-contract",
-        "certify-fresh-consumer-and-restart-journey",
-        "generate-sdk-examples-from-tests"
+        "publish-v0.2.0-through-protected-release",
+        "certify-node-and-bun-from-exact-published-tarballs",
+        "update-public-site-and-runtime-truth"
       ],
-      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+      "evidence": [
+        "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md",
+        "docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md",
+        "docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.json",
+        "packages/tasq-core/test/local-client.test.ts",
+        "packages/tasq-cli/test/public-packages.test.ts"
+      ]
     },
     {
       "id": "TQ-612",

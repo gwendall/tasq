@@ -48,6 +48,11 @@ zero-intervention public-main native Codex and Claude matrix in
 [TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json](docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json).
 Published coordinates and downloaded-byte evidence are frozen in
 [TQ-610_RELEASE_CERTIFICATION.json](docs/contracts/TQ-610_RELEASE_CERTIFICATION.json).
+The next embedded-consumer boundary is in
+[TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md](docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md):
+`createLocalTasq` and compiled ESM/declarations pass source-candidate Node 22
+and Bun restart certification; protected `v0.2.0` publication and exact-byte
+replay remain before public support truth changes.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

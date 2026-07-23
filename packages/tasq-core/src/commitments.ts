@@ -71,6 +71,19 @@ const CommitmentCreate = z.object({
 
 const CommitmentUpdate = CommitmentCreate.partial().strict();
 
+export interface CreateCommitmentInput {
+  title: string;
+  description?: string | null;
+  successCriteria?: string | null;
+  completionPolicy?: "assertion" | "evidence";
+  priority?: number | null;
+  notBefore?: number | null;
+  dueAt?: number | null;
+  metadata?: MetadataT;
+}
+
+export type UpdateCommitmentInput = Partial<CreateCommitmentInput>;
+
 export interface ListCommitmentsOptions {
   workspaceId: string;
   status?: TaskStatusT | TaskStatusT[];
@@ -92,7 +105,7 @@ export interface CommitmentTransitionOptions extends KernelContext {
 
 export async function createCommitment(
   db: TasqDb,
-  input: unknown,
+  input: CreateCommitmentInput,
   context: KernelContext,
 ): Promise<Commitment> {
   const parsed = CommitmentCreate.parse(input);
@@ -138,7 +151,7 @@ export async function listCommitments(
 export async function updateCommitment(
   db: TasqDb,
   id: string,
-  input: unknown,
+  input: UpdateCommitmentInput,
   context: KernelContext & { expectedRevision: number },
 ): Promise<Commitment> {
   const parsed = CommitmentUpdate.parse(input);

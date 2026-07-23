@@ -221,9 +221,22 @@ export function transitionTaskAttempt(
 export type {
   Commitment,
   KernelContext,
+  CreateCommitmentInput,
+  UpdateCommitmentInput,
   ListCommitmentsOptions,
   CommitmentTransitionOptions,
 } from "./commitments.js";
+
+export { createLocalTasq } from "./local-client.js";
+export type {
+  AddLocalEvidenceInput,
+  CreateLocalTasqOptions,
+  EventCursorPage,
+  LocalCommitmentTransitionOptions,
+  LocalEvidenceOptions,
+  LocalMutationOptions,
+  LocalTasqClient,
+} from "./local-client.js";
 
 export * from "./service/resources.js";
 
