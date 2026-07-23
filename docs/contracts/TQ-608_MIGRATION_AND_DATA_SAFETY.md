@@ -109,11 +109,11 @@ each file without leaving a pending receipt. The existing migration suite also
 upgrades populated format-0 and format-5 fixtures and rejects checksum drift or
 non-contiguous history.
 
-The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Before protected
-release lines exist, the bootstrap matrix is every extant protected release
-(currently none) plus the historical populated fixtures. Once three protected
+The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Before three
+protected release lines exist, the bootstrap matrix is every extant protected
+release (currently `v0.1.0`) plus the historical populated fixtures. Once three protected
 minor lines exist, exact N-2 binaries and published bytes are mandatory and
 the certificate must be revised. A real POSIX file-size quota additionally
 proves that snapshot exhaustion leaves the source format unchanged and any
-partial snapshot private. The first protected release remains an external
-replay gate and is not falsely inferred from source tests.
+partial snapshot private. The first protected release is now the active
+external replay gate and is not falsely inferred from source tests.

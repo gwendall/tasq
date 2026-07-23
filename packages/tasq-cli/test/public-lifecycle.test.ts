@@ -7,6 +7,8 @@ const temporaryPaths: string[] = [];
 const productRoot = resolve(import.meta.dir, "../../..");
 const builder = join(productRoot, "scripts/release/build-public-release.ts");
 const sourceCommit = "0123456789abcdef0123456789abcdef01234567";
+const publishedReleaseDirectory = process.env.TASQ_PUBLISHED_RELEASE_DIR;
+const publishedReleaseVersion = (process.env.TASQ_PUBLISHED_RELEASE_VERSION ?? "0.1.0").replace(/^v/, "");
 const target = process.platform === "darwin" && process.arch === "arm64"
   ? "darwin-arm64"
   : process.platform === "linux" && process.arch === "x64"
@@ -118,9 +120,12 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     temporaryPaths.push(root);
     const releaseV1Directory = join(root, "release-v1");
     const releaseV2Directory = join(root, "release-v2");
-    await build("0.1.0", releaseV1Directory);
+    if (publishedReleaseDirectory === undefined) await build("0.1.0", releaseV1Directory);
     await build("0.2.0", releaseV2Directory);
-    const releaseV1 = releasePaths(releaseV1Directory, "0.1.0");
+    const releaseV1 = releasePaths(
+      publishedReleaseDirectory ?? releaseV1Directory,
+      publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
+    );
     const releaseV2 = releasePaths(releaseV2Directory, "0.2.0");
     await chmod(releaseV1.installer, 0o755);
     await chmod(releaseV2.installer, 0o755);
@@ -132,10 +137,11 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
       contractVersion: "tasq.lifecycle-result.v1",
       action: "install",
       status: "installed",
-      version: "0.1.0",
+      version: publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
       dataDisposition: "external-not-managed",
     });
-    expect((await ok(cli, ["--version"], { cwd: tmpdir(), home })).trim()).toBe("0.1.0");
+    expect((await ok(cli, ["--version"], { cwd: tmpdir(), home })).trim())
+      .toBe(publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion);
 
     const onboarding = JSON.parse(await ok(cli, [
       "onboard", "--space", "lifecycle/team", "--actor", "alpha", "--json",
@@ -183,7 +189,7 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     const listener = JSON.parse(startup.line);
     expect(listener).toMatchObject({
       contractVersion: "tasq.console-listener.v1",
-      productVersion: "0.1.0",
+      productVersion: publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
       workspaceId: "lifecycle/team",
       endpoint: { scope: "loopback" },
       process: { mode: "foreground", pid: web.pid },
@@ -195,7 +201,9 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     expect(index).toMatchObject({ contractVersion: "tasq.inspector-index.v1", workspaceId: "lifecycle/team" });
     const v1Console = await fetch(url).then((response) => response.text());
     expect(v1Console).toContain("Lifecycle survives");
-    expect(v1Console).toContain("Tasq Local 0.1.0");
+    expect(v1Console).toContain(
+      `Tasq Local ${publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion}`,
+    );
     expect(await fetch(`${url}/assets/console.js`).then((response) => response.status)).toBe(200);
     expect(await fetch(`${url}/api/console/runtime`).then((response) => response.json())).toEqual(listener);
     web.kill("SIGTERM");
@@ -237,7 +245,9 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     await chmod(join(restoredHome, "db.sqlite"), 0o600);
     await writeFile(join(restoredHome, "events.jsonl"), journalAtSnapshot, { mode: 0o600 });
     await ok(releaseV1.installer, [
-      "activate", "--version", "0.1.0", "--target", target!, "--prefix", prefix,
+      "activate", "--version",
+      publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
+      "--target", target!, "--prefix", prefix,
     ]);
     expect(JSON.parse(await ok(cli, [
       "doctor", "--tenant", "lifecycle/team", "--actor", "alpha", "--json",
@@ -250,7 +260,9 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
     const mainDbSize = (await stat(join(home, "db.sqlite"))).size;
     const restoredDbSize = (await stat(join(restoredHome, "db.sqlite"))).size;
     const removedV1 = JSON.parse(await ok(releaseV1.installer, [
-      "uninstall", "--version", "0.1.0", "--target", target!, "--prefix", prefix,
+      "uninstall", "--version",
+      publishedReleaseDirectory === undefined ? "0.1.0" : publishedReleaseVersion,
+      "--target", target!, "--prefix", prefix,
     ]));
     expect(removedV1).toMatchObject({ status: "uninstalled", activeLinkRemoved: true, dataDisposition: "preserved-not-touched" });
     await ok(releaseV2.installer, [

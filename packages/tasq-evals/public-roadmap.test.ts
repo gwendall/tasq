@@ -35,6 +35,30 @@ const npmBootstrap = JSON.parse(readFileSync(
     trustId: string;
   }>;
 };
+const releaseCertification = JSON.parse(readFileSync(
+  resolve(root, "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json"),
+  "utf8",
+)) as {
+  contractVersion: string;
+  status: string;
+  version: string;
+  tag: string;
+  sourceCommit: string;
+  workflow: {
+    runId: number;
+    identityJob: string;
+    nativeBuildJobs: Record<string, string>;
+    npmTrustedPublishingJob: string;
+    githubReleaseJob: { initialState: string; recovery: string };
+  };
+  githubRelease: { url: string; targetCommit: string; prerelease: boolean; assetCount: number };
+  npm: {
+    distTag: string;
+    trustedPublishing: string;
+    packages: Array<{ name: string; version: string; integrity: string }>;
+  };
+  security: Record<string, boolean>;
+};
 const roadmap = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json"), "utf8")) as {
   contractVersion: string;
   revision: number;
@@ -182,13 +206,14 @@ describe("canonical Tasq roadmap", () => {
         evidence: "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
       },
       firstProtectedRelease: {
-        state: "not_run",
+        state: "complete",
         channel: "public_alpha",
         version: "0.1.0",
+        sourceCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
       },
-      publishedLifecycleCertification: { state: "blocked_by_first_protected_release" },
-      publishedAdoptionCertification: { state: "blocked_by_first_protected_release" },
-      publishedInteractiveRuntimeCertification: { state: "blocked_by_first_protected_release" },
+      publishedLifecycleCertification: { state: "ready_for_published_byte_replay" },
+      publishedAdoptionCertification: { state: "ready_for_published_byte_replay" },
+      publishedInteractiveRuntimeCertification: { state: "ready_for_published_package_replay" },
       independentBlindHumanAdoption: { state: "not_run" },
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-321")).toMatchObject({
@@ -237,10 +262,13 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-603")).toMatchObject({
       id: "TQ-603",
-      status: "in_progress_external_gate",
+      status: "done",
       dependsOn: ["TQ-321", "TQ-608"],
-      remaining: ["publish-first-protected-release"],
-      evidence: ["docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"],
+      evidence: [
+        "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+        "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
+        "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+      ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-604")).toMatchObject({
       id: "TQ-604",
@@ -304,6 +332,47 @@ describe("canonical Tasq roadmap", () => {
       expect(entry.integrity).toMatch(/^sha512-/);
       expect(entry.tarball).toContain("https://registry.npmjs.org/@tasq-run/");
       expect(entry.trustId).toMatch(/^[a-f0-9-]{36}$/);
+    }
+  });
+
+  test("binds the first supported alpha to protected package and native release evidence", () => {
+    expect(releaseCertification).toMatchObject({
+      contractVersion: "tasq.public-release-certification.v1",
+      status: "published",
+      version: "0.1.0",
+      tag: "v0.1.0",
+      sourceCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+      workflow: {
+        runId: 30011315256,
+        identityJob: "passed",
+        nativeBuildJobs: { "darwin-arm64": "passed", "linux-x64-gnu": "passed" },
+        npmTrustedPublishingJob: "passed",
+        githubReleaseJob: {
+          initialState: "failed_after_successful_publication",
+          recovery: expect.stringContaining("exact attested workflow artifacts"),
+        },
+      },
+      githubRelease: {
+        url: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+        targetCommit: "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+        prerelease: true,
+        assetCount: 10,
+      },
+      npm: {
+        distTag: "latest",
+        trustedPublishing: "oidc-with-provenance",
+      },
+      security: {
+        npmAutomationTokenUsedForSupportedRelease: false,
+        maintainerWorkstationBuildArtifactsPublished: false,
+        releaseAssetsUploadedFromAttestedWorkflowArtifacts: true,
+        immutableTagVerified: true,
+      },
+    });
+    expect(releaseCertification.npm.packages).toHaveLength(7);
+    for (const entry of releaseCertification.npm.packages) {
+      expect(entry.version).toBe("0.1.0");
+      expect(entry.integrity).toMatch(/^sha512-/);
     }
   });
 

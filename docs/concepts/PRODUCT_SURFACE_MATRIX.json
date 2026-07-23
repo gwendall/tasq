@@ -20,14 +20,14 @@
       "support": "implemented_integration_required",
       "entrypoints": ["embedded_typescript", "extension_sdk", "protocol_adapters", "replication_kernel"],
       "consumers": ["typescript_application", "runtime_integrator", "extension_author", "connector_author"],
-      "publiclyDistributed": false
+      "publiclyDistributed": true
     },
     {
       "id": "local",
       "support": "implemented_certified",
       "entrypoints": ["cli_json", "mcp_stdio", "local_console", "markdown_projection"],
       "consumers": ["local_shell_agent", "local_mcp_agent", "human_local_user", "human_operator"],
-      "publiclyDistributed": false
+      "publiclyDistributed": true
     },
     {
       "id": "server",
@@ -230,7 +230,7 @@
     },
     {
       "id": "public_install_to_first_agent",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": ["discover_product", "install", "verify", "onboard", "connect_agent"]
     },
     {
@@ -241,7 +241,7 @@
     {
       "id": "public_product_discovery",
       "support": "implemented_certified",
-      "steps": ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "build_from_source"]
+      "steps": ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "install_release"]
     },
     {
       "id": "remote_multi_user_collaboration",
@@ -267,8 +267,8 @@
     "hosted_design_is_not_hosted_behavior",
     "canonical_source_repository_is_public_alpha",
     "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
-    "public_identity_license_and_oidc_release_authority_are_verified_but_no_supported_release_is_published",
-    "local_release_lifecycle_is_candidate_certified_but_no_download_is_published",
+    "first_supported_public_alpha_release_is_published_with_oidc_provenance",
+    "local_release_v0_1_0_is_published_lifecycle_multi_target_replay_pending",
     "public_site_is_static_docs_not_console_or_agent_api",
     "public_site_is_deployed_at_tasq_run",
     "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",

@@ -1,8 +1,8 @@
 # TQ-601/TQ-602 — Open-source productization specification
 
-> **Status:** public-source alpha; npm bootstrap complete; protected release pending — 2026-07-23
-> **Current truth:** canonical source is public; seven non-default bootstrap
-> package identities exist; supported packages and release artifacts are pending
+> **Status:** protected public alpha `v0.1.0` published — 2026-07-23
+> **Current truth:** canonical source, seven `@tasq-run/*@0.1.0` packages and
+> attested macOS-arm64/Linux-x64 release artifacts are public
 > **Product contract:** `../concepts/PRODUCT_CONSUMPTION_SPEC.md`
 > **Binding decision:** `../decisions/ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
 > `PUBLIC_RELEASE_POLICY.json`
@@ -30,9 +30,9 @@ authorized on 2026-07-22. On 2026-07-23 the maintainer authorized a pre-1.0
 public package alpha so real adopters can provide feedback before the full
 30-day program closes. TQ-607 therefore remains mandatory for stable
 graduation, not for `v0.1.0`. TQ-321 is passed. TQ-603 has closed npm scope,
-package-bootstrap and trusted-publishing gates; only the first protected tag
-release remains. The TQ-608 source candidate is passed and awaits
-protected-byte replay.
+package-bootstrap, trusted-publishing and first protected-release gates. The
+TQ-608 source candidate is passed and awaits its multi-target protected-byte
+replay.
 
 ## 2. Decisions required before release
 
@@ -59,8 +59,9 @@ organization was authenticated on 2026-07-23. The seven `0.1.0-alpha.0`
 identities were published from protected CI under the non-default
 `alpha-bootstrap` tag and bound to `gwendall/tasq`, `release.yml` and the
 `release` environment through npm trusted publishing. The short-lived
-bootstrap token and GitHub secret were then removed. These identities grant no
-supported-release claim. Current `@kami/*` coordinates remain private implementation
+bootstrap token and GitHub secret were then removed. Supported `0.1.0` was
+later published through OIDC on the default `latest` tag. Current `@kami/*`
+coordinates remain private implementation
 names and are not aliases. The unscoped npm package `tasq` belongs to an
 unrelated project; only the executable uses that unscoped name.
 
@@ -81,7 +82,7 @@ test fixtures and monorepo aliases are not compatibility promises.
 
 ## 4. Distribution contract
 
-The first public release should support macOS and Linux through:
+The first public release supports macOS and Linux through:
 
 1. checksummed, versioned GitHub release artifacts for the `tasq` executable;
 2. a documented npm/Bun package path for embedders and adapter authors;

@@ -24,11 +24,12 @@ execution authority; planned status never overrides
 [`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](docs/concepts/PRODUCT_SURFACE_MATRIX.json)
 support truth.
 
-TQ-321's zero-context Codex/Claude matrix is passed. The seven npm bootstrap
-identities and their protected `release.yml` OIDC bindings are certified in
-[TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json](docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json);
-the remaining public-alpha distribution step is the first protected `v0.1.0`
-tag. TQ-608's source candidate is implemented; read
+TQ-321's zero-context Codex/Claude matrix is passed. The seven `@tasq-run/*`
+packages and native Tasq Local assets are published as protected `v0.1.0`;
+the immutable coordinates are certified in
+[TQ-603_RELEASE_CERTIFICATION.json](docs/contracts/TQ-603_RELEASE_CERTIFICATION.json).
+The post-release multi-target replay is the active distribution gate.
+TQ-608's source candidate is implemented; read
 [TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
 

@@ -33,8 +33,9 @@
     }
   },
   "publishedArtifactEvidence": {
-    "status": "not-run-no-public-release-exists",
-    "blockedBy": "TQ-603-first-protected-release"
+    "status": "ready-v0.1.0-published",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2"
   },
   "independentHumanEvidence": {
     "status": "not-run-automated-path-only",

@@ -1,0 +1,101 @@
+{
+  "contractVersion": "tasq.public-release-certification.v1",
+  "status": "published",
+  "version": "0.1.0",
+  "tag": "v0.1.0",
+  "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+  "publishedAt": "2026-07-23T13:31:46Z",
+  "workflow": {
+    "name": "Protected release",
+    "runId": 30011315256,
+    "url": "https://github.com/gwendall/tasq/actions/runs/30011315256",
+    "identityJob": "passed",
+    "nativeBuildJobs": {
+      "darwin-arm64": "passed",
+      "linux-x64-gnu": "passed"
+    },
+    "npmTrustedPublishingJob": "passed",
+    "githubReleaseJob": {
+      "initialState": "failed_after_successful_publication",
+      "cause": "gh release create ran without repository context in a job without checkout",
+      "recovery": "the exact attested workflow artifacts were downloaded and attached manually to the immutable tag",
+      "releaseCreatedAt": "2026-07-23T13:31:46Z"
+    }
+  },
+  "githubRelease": {
+    "url": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "targetCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
+    "draft": false,
+    "prerelease": true,
+    "assetCount": 10,
+    "targets": [
+      "darwin-arm64",
+      "linux-x64-gnu"
+    ],
+    "assetsPerTarget": [
+      "archive",
+      "installer",
+      "release-manifest",
+      "sha256-checksums",
+      "cyclonedx-sbom"
+    ]
+  },
+  "npm": {
+    "registry": "https://registry.npmjs.org",
+    "distTag": "latest",
+    "trustedPublishing": "oidc-with-provenance",
+    "sourceCommitVerified": true,
+    "integrityVerified": true,
+    "packages": [
+      {
+        "name": "@tasq-run/schema",
+        "version": "0.1.0",
+        "integrity": "sha512-Br/+au8jBBb+Equ7Z1IKzknpKGPfy5E7KSDi/gRJKNpOanoN0WMWn03UkHoy8t4u2EKLdq2SR1+lJsybsI516w=="
+      },
+      {
+        "name": "@tasq-run/core",
+        "version": "0.1.0",
+        "integrity": "sha512-tnV+gSr99oDyfNTu5jM7GT/rcZkc8a4BI6Jzz0NAYWJnl5lIPpXeNsY1JmAlmYOkSmWQQQnZl0ENmb3Mydv/8w=="
+      },
+      {
+        "name": "@tasq-run/cli",
+        "version": "0.1.0",
+        "integrity": "sha512-qu+v+I/H5Tdr80ITDyYpM6wDqfwdPAWfWCI8daokrXY8TklJD7WWtWMZP37NCE6pV6CJQLHq/XJE+DxaZ+wy4g=="
+      },
+      {
+        "name": "@tasq-run/mcp",
+        "version": "0.1.0",
+        "integrity": "sha512-tPfecwl7TuUArxTNjvV0Wm1W/4t4LhTTlOehvrWtrdHlzbnHS00TLSYdxhs7v+6kfSeeU1nfXOJVUo+r8e7Ddw=="
+      },
+      {
+        "name": "@tasq-run/extension-sdk",
+        "version": "0.1.0",
+        "integrity": "sha512-xa4BJwnuqmPJD9nWaJR6z7Mlxc7H7E1VDJjyISFhisHySB/M10hkEmS9kt2LAWUdAaajC6RNgbMoyLo9q3PwyQ=="
+      },
+      {
+        "name": "@tasq-run/protocol-adapters",
+        "version": "0.1.0",
+        "integrity": "sha512-mH3vXTLx1096KjPD83gWjETEdCkLm7twgiPvJu5WsHWhE0W1CID1RBZNQ3Opi0S1IpcLV7ahPaP3BfAyUCY77g=="
+      },
+      {
+        "name": "@tasq-run/console",
+        "version": "0.1.0",
+        "integrity": "sha512-/zkqgXSUwTskazNVD8Wm8dJVny7x+tkaRdqjtGPx5NUJnEYZhBwRvXG0N2mbX2+/9Zf0ZmNlUPXvtEcGnUCDbg=="
+      }
+    ]
+  },
+  "security": {
+    "npmAutomationTokenUsedForSupportedRelease": false,
+    "maintainerWorkstationBuildArtifactsPublished": false,
+    "releaseAssetsUploadedFromAttestedWorkflowArtifacts": true,
+    "immutableTagVerified": true,
+    "bootstrapTokenRevoked": true,
+    "bootstrapGitHubSecretDeleted": true
+  },
+  "remainingPostReleaseEvidence": [
+    "multi-target-downloaded-byte-lifecycle-replay",
+    "multi-target-downloaded-byte-migration-replay",
+    "published-package-interactive-runtime-replay",
+    "independent-unbriefed-human-adoption"
+  ]
+}

@@ -8,11 +8,16 @@ const chunks = [];
 for await (const chunk of process.stdin) chunks.push(chunk);
 const request = JSON.parse(Buffer.concat(chunks).toString("utf8"));
 const manifest = JSON.parse(readFileSync(request.manifestPath, "utf8"));
+const sourceDistribution = manifest.distribution?.published === false &&
+  manifest.distribution?.mode === "source_build";
+const releaseDistribution = manifest.distribution?.published === true &&
+  manifest.distribution?.mode === "npm_and_github_release" &&
+  /^\d+\.\d+\.\d+$/.test(manifest.distribution?.version ?? "") &&
+  manifest.distribution?.integrity?.kind === "npm-provenance-and-github-attestation";
 
 if (
   manifest.contractVersion !== "tasq.public-adoption.v1" ||
-  manifest.distribution?.published !== false ||
-  manifest.distribution?.mode !== "source_build" ||
+  (!sourceDistribution && !releaseDistribution) ||
   !Array.isArray(manifest.agent?.onboardArgvTemplate)
 ) {
   throw new Error("unsupported, malformed or falsely published adoption manifest");

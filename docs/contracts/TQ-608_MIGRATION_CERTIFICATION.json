@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
   "revision": 1,
-  "status": "source-candidate-passed-protected-release-replay-pending",
+  "status": "source-candidate-passed-v0.1.0-replay-ready",
   "testedAt": "2026-07-22",
   "storeFormat": {
     "contractVersion": "tasq.store-format.v1",

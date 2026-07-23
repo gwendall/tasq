@@ -1,0 +1,113 @@
+name: Certify published release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Immutable release tag to certify
+        required: true
+        default: v0.1.0
+        type: string
+      source_commit:
+        description: Exact 40-character source commit
+        required: true
+        default: 0f5357ea10e0eb9f86f143a4fc38030624238bd2
+        type: string
+
+permissions:
+  contents: read
+  attestations: read
+
+jobs:
+  published-bytes:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x64-gnu
+          - os: macos-14
+            target: darwin-arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - run: pnpm install --frozen-lockfile
+      - name: Validate immutable release identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ inputs.tag }}" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          [[ "${{ inputs.source_commit }}" =~ ^[a-f0-9]{40}$ ]]
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/${{ inputs.tag }}" --jq .sha)" = "${{ inputs.source_commit }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Download and attest exact release bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/published
+          gh release download "${{ inputs.tag }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir dist/published \
+            --pattern "tasq-${{ inputs.tag }}-${{ matrix.target }}.*"
+          test "$(find dist/published -type f | wc -l | tr -d ' ')" = "5"
+          for asset in dist/published/*; do
+            gh attestation verify "$asset" --repo "$GITHUB_REPOSITORY"
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Replay lifecycle, migration and public adoption
+        run: >-
+          bun test
+          packages/tasq-cli/test/public-lifecycle.test.ts
+          packages/tasq-evals/published-release-replay.test.ts
+          packages/tasq-evals/public-adoption.test.ts
+        env:
+          TASQ_PUBLISHED_RELEASE_DIR: ${{ github.workspace }}/dist/published
+          TASQ_PUBLISHED_RELEASE_VERSION: ${{ inputs.tag }}
+          TASQ_PUBLISHED_SOURCE_COMMIT: ${{ inputs.source_commit }}
+      - name: Replay interactive runtime from protected npm packages
+        run: bun test packages/tasq-evals/interactive-runtime-consumer.test.ts
+        env:
+          TASQ_PUBLISHED_NPM_VERSION: ${{ inputs.tag }}
+
+  npm-registry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - run: pnpm install --frozen-lockfile
+      - name: Download and match every registry tarball
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ inputs.tag }}"
+          version="${version#v}"
+          mkdir -p dist/packages
+          packages=(@tasq-run/schema @tasq-run/extension-sdk @tasq-run/core @tasq-run/protocol-adapters @tasq-run/mcp @tasq-run/console @tasq-run/cli)
+          for package_name in "${packages[@]}"; do
+            filename="$(npm pack "${package_name}@${version}" --pack-destination dist/packages --json | jq -r '.[0].filename')"
+            tarball="dist/packages/$filename"
+            bun scripts/release/verify-npm-publication.ts \
+              --package "$package_name" \
+              --version "$version" \
+              --source-commit "${{ inputs.source_commit }}" \
+              --tarball "$tarball"
+          done

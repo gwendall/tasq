@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.lifecycle-certification.v1",
-  "status": "candidate-certified-publication-pending",
+  "status": "candidate-certified-published-replay-ready",
   "productShape": "tasq-local",
   "supportedTargets": ["darwin-arm64", "linux-x64-gnu"],
   "releaseAssets": {
@@ -60,7 +60,9 @@
     ]
   },
   "publishedArtifactEvidence": {
-    "status": "not-run-no-public-release-exists",
+    "status": "ready-v0.1.0-published",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
     "requiredBeforeCompletion": [
       "verify-each-published-asset-attestation",
       "run-clean-room-journey-from-downloaded-assets-on-both-targets",

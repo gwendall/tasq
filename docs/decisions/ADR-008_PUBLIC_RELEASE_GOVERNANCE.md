@@ -3,15 +3,15 @@
 > **Status:** Accepted — 2026-07-20
 > **Decision owner:** `@gwendall`
 > **Machine contract:** `../releases/PUBLIC_RELEASE_POLICY.json`
-> **Execution:** TQ-603 may prepare artifacts, but publication remains blocked
-> until every external ownership and provenance precondition is verified.
+> **Execution:** TQ-603 published protected `v0.1.0` after every external
+> ownership and provenance precondition was verified.
 
 ## 1. Context
 
 Tasq Core and Tasq Local originated inside a larger private monorepo. Their
 standalone source now lives in the public canonical Tasq repository. Seven
-bootstrap package identities exist under a non-default prerelease tag, while
-the first supported packages and downloadable release remain pending.
+bootstrap package identities exist under a non-default prerelease tag, and the
+first supported packages and downloadable release are now `v0.1.0`.
 Publishing directly from the original monorepo
 would blur ownership, expose unrelated history and make the public build
 impossible to reproduce independently.
@@ -187,10 +187,9 @@ a long-lived npm token is not a release design.
 
 ## 4. Consequences and gates
 
-TQ-602 is a decision checkpoint, not a release. Core and Local source are now
-public alpha, while `../concepts/PRODUCT_SURFACE_MATRIX.json` keeps their
-supported distribution disabled until TQ-603 produces the first protected
-release. TQ-603 must stop before publication if repository or npm
+TQ-602 is a decision checkpoint, not a release. Core and Local are now a
+published public alpha at `v0.1.0`; their exact distribution state remains in
+`../concepts/PRODUCT_SURFACE_MATRIX.json`. TQ-603 must stop before any future publication if repository or npm
 ownership, trusted publishing, artifact attestation, license closure or target
 certification is absent.
 
