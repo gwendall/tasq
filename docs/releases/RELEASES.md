@@ -15,11 +15,16 @@ backup, rollback and portable create-only import are documented in
 `../guides/DATA_SAFETY.md`.
 
 npm packages use trusted publishing with provenance. Long-lived maintainer
-tokens and locally built release artifacts are forbidden. Published-package support does
-not begin until the exact alpha authorization and registry gates pass, TQ-603
-publishes artifacts and TQ-604 certifies their complete lifecycle without a
-repository checkout. TQ-607 remains the retained-data gate for stable
-graduation, not for the explicitly labeled pre-1.0 alpha.
+tokens and locally built release artifacts are forbidden. npm's package-exists
+precondition is handled once by the protected `bootstrap-npm.yml` workflow: it
+uses a revocable granular environment secret to publish attested
+`0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
+the secret and token are removed after `release.yml` trust is verified for all
+seven packages. Published-package support does not begin until the exact alpha
+authorization and registry gates pass, TQ-603 publishes artifacts and TQ-604
+certifies their complete lifecycle without a repository checkout. TQ-607
+remains the retained-data gate for stable graduation, not for the explicitly
+labeled pre-1.0 alpha.
 
 The implemented candidate builder is:
 

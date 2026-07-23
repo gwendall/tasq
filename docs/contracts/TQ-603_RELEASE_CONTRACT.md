@@ -58,10 +58,11 @@ provenance and publish it. The attestation binds the artifact digest to the
 repository, workflow and commit; it does not assert that the software is bug
 free. Consumers must verify both checksums and attestation.
 
-The npm job pins npm CLI 11.5.1, the minimum client that supports OIDC trusted
-publishing, and fails before building packages if that exact client is not
-active. The job receives `id-token: write` only from the protected workflow and
-does not use a long-lived npm publish token.
+The npm job pins npm CLI 11.18.0, the first pinned client used by this repository
+that supports both OIDC trusted publishing and the `npm trust` management
+command, and fails before building packages if that exact client is not active.
+The job receives `id-token: write` only from the protected workflow and does not
+use a long-lived npm publish token.
 
 The package candidate test builds the complete set twice and compares every
 byte. It extracts every tarball, rejects private coordinates, workspace
@@ -102,6 +103,33 @@ and private vulnerability reporting are active. Gate 1, TQ-321 and the TQ-608
 source candidate are passed. npm `@tasq` scope control and trusted publishing
 remain external blockers. Therefore source is public alpha, while packages and
 downloadable artifacts are not published.
+
+### First-package bootstrap
+
+npm requires a package to exist before a trusted publisher can be configured.
+The one-time `bootstrap-npm.yml` workflow closes that circular dependency
+without publishing laptop-built bytes:
+
+1. create or verify the npm organization `tasq` and enable account-level 2FA;
+2. create a short-lived granular bootstrap token with write access to the
+   `@tasq` scope and place it only in the protected `release` environment as
+   `NPM_BOOTSTRAP_TOKEN`;
+3. dispatch the workflow from `main` with the exact current 40-character commit
+   and the literal confirmation `bootstrap-seven-packages`;
+4. let protected CI run the entire handoff suite, build deterministic
+   `0.1.0-alpha.0` candidates, attest them, and publish them only under the
+   non-default `alpha-bootstrap` dist-tag;
+5. configure all seven packages with `npm trust github`, repository
+   `gwendall/tasq`, workflow `release.yml`, environment `release`, and
+   `--allow-publish`;
+6. verify every trust record, then immediately delete the GitHub environment
+   secret and revoke the bootstrap token.
+
+The bootstrap is resumable after a partial registry failure: an existing
+version is skipped only when its SHA-512 integrity, `gitHead`, version, package
+name and canonical repository exactly match the rebuilt candidate. Any drift
+fails closed. The protected stable tag workflow never reads the bootstrap
+secret and publishes `0.1.0` only through OIDC.
 
 TQ-607 is deliberately not an alpha-publication blocker after the maintainer's
 2026-07-23 strategy decision. It continues unchanged as retained-data evidence

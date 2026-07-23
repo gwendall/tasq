@@ -216,6 +216,18 @@
     "authorizedAt": "2026-07-23",
     "rationale": "Publish Tasq Local as an explicitly labeled public alpha to obtain real adopter feedback while retained-data dogfood continues as the stable-graduation gate."
   },
+  "npmBootstrap": {
+    "state": "workflow_ready_not_dispatched",
+    "workflow": "bootstrap-npm.yml",
+    "sourceRef": "refs/heads/main",
+    "version": "0.1.0-alpha.0",
+    "distTag": "alpha-bootstrap",
+    "environment": "release",
+    "secretName": "NPM_BOOTSTRAP_TOKEN",
+    "secretRetention": "delete_immediately_after_all_trust_records_are_verified",
+    "tokenRetention": "revoke_immediately_after_all_trust_records_are_verified",
+    "publishedSupportGranted": false
+  },
   "publishedRelease": null,
   "externalPublicationGateStatus": {
     "maintainer_public_alpha_authorization": true,
@@ -248,6 +260,7 @@
     "releaseTagsMutable": false,
     "releaseEnvironment": "release",
     "releaseEnvironmentTagPolicyVerified": true,
+    "releaseEnvironmentBootstrapMainPolicyRequired": true,
     "privateVulnerabilityReporting": true
   }
 }
