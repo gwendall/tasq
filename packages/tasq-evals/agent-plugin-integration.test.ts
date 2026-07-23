@@ -139,6 +139,14 @@ describe("zero-context agent integration candidate", () => {
     });
     expect(behavioral.trials).toHaveLength(2);
     expect(behavioral.trials.every((trial: { pass: boolean }) => trial.pass)).toBe(true);
+    const publicComponents = behavioral.releaseArtifact.bundledComponents.filter(
+      (component: { name: string }) => component.name.startsWith("@tasq"),
+    );
+    expect(publicComponents.length).toBeGreaterThan(0);
+    expect(publicComponents.every((component: { name: string; purl: string }) => (
+      component.name.startsWith("@tasq-run/")
+      && component.purl.startsWith(`pkg:npm/%40${component.name.slice(1)}@`)
+    ))).toBe(true);
     expect(certificate.source.ref).toMatch(/^[0-9a-f]{40}$/);
     for (const [path, digest] of Object.entries(certificate.source.sha256 as Record<string, string>)) {
       expect(path.length).toBeGreaterThan(0);
