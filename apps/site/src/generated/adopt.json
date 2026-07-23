@@ -20,11 +20,11 @@
         },
         {
           "path": "docs/roadmap/BACKLOG.json",
-          "sha256": "c45cfbbbea14183d19a78286a1dbb46d8624126fca06bbb33eb81f3fed1ff1dd"
+          "sha256": "46993fd1888034fba7196fd8b36efb1af7af07d8448d8520d5dbd31def1f777c"
         },
         {
           "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
-          "sha256": "6b9a46a60668c10c00dcb8873045ee2cfca76fbf86dfe462678c5c15e2c06821"
+          "sha256": "4e32d41f20b35ecb1e912ff1787e2cd2ca52e52ff2e0912206c9591603f1c147"
         }
       ]
     }

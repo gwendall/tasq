@@ -45,8 +45,12 @@
       "boundary": "static ledger-free product and documentation site; not Tasq Server, remote MCP, hosted Console or a package-release claim"
     },
     "npmScopeControl": {
-      "state": "unverified",
-      "observation": "@tasq-run/schema is not published; this environment has no valid npm identity, which is not evidence of scope ownership"
+      "state": "verified",
+      "verifiedAt": "2026-07-23",
+      "operator": "gwendall",
+      "organization": "tasq-run",
+      "evidence": "authenticated npm team ls tasq-run returned tasq-run:developers",
+      "boundary": "organization control is verified; package identities and trusted publishers still require bootstrap"
     },
     "npmTrustedPublishing": {
       "state": "unverified",

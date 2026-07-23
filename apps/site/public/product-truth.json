@@ -33,7 +33,7 @@
       "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": true,
       "public_source_launch_authorized": true,
-      "npm_scope_control_verified": false,
+      "npm_scope_control_verified": true,
       "trusted_publishing_configured": false,
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
@@ -631,12 +631,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "c45cfbbbea14183d19a78286a1dbb46d8624126fca06bbb33eb81f3fed1ff1dd"
+      "sha256": "46993fd1888034fba7196fd8b36efb1af7af07d8448d8520d5dbd31def1f777c"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "6b9a46a60668c10c00dcb8873045ee2cfca76fbf86dfe462678c5c15e2c06821"
+      "sha256": "4e32d41f20b35ecb1e912ff1787e2cd2ca52e52ff2e0912206c9591603f1c147"
     }
   ]
 }
