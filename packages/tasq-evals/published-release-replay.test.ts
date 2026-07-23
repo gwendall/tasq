@@ -59,10 +59,13 @@ describe.skipIf(releaseDirectory === undefined || target === null)("published re
     ]);
     expect(installed, installed.stderr).toMatchObject({ exitCode: 0, stderr: "" });
     expect(JSON.parse(installed.stdout)).toMatchObject({ version, target });
-    expect(JSON.parse(await readFile(
+    const releaseManifest = JSON.parse(await readFile(
       join(releaseDirectory!, `${stem}.release.json`),
       "utf8",
-    ))).toMatchObject({ version, source: { commit: sourceCommit }, target });
+    ));
+    expect(releaseManifest).toMatchObject({ version, source: { commit: sourceCommit }, target });
+    const publishedStoreFormat = releaseManifest.compatibility?.storeFormat?.current;
+    expect(publishedStoreFormat).toBeNumber();
 
     const databasePath = join(home, "db.sqlite");
     const seeded = createClient({ url: `file:${databasePath}` });
@@ -84,7 +87,9 @@ describe.skipIf(releaseDirectory === undefined || target === null)("published re
     const verified = createClient({ url: `file:${databasePath}` });
     const migrations = await verified.execute("SELECT count(*) AS count FROM _migration");
     await verified.close();
-    expect(Number(migrations.rows[0]?.count)).toBe(26);
+    // Store formats are zero-based migration identifiers, so format N has
+    // exactly N + 1 applied rows (0000 through 00NN, inclusive).
+    expect(Number(migrations.rows[0]?.count)).toBe(publishedStoreFormat + 1);
 
     const receipts = (await readdir(`${databasePath}.tasq-migrations`))
       .filter((name) => name.startsWith("receipt-") && name.endsWith(".json"));
@@ -95,7 +100,7 @@ describe.skipIf(releaseDirectory === undefined || target === null)("published re
     ))).toMatchObject({
       status: "complete",
       source: { format: 5 },
-      target: { format: 25 },
+      target: { format: publishedStoreFormat },
       snapshot: { verification: { ok: true } },
     });
 
