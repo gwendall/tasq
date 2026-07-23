@@ -19,13 +19,21 @@ describe("public site truth", () => {
     expect(unimplemented.every((entry) => entry.entrypoint === null)).toBe(true);
   });
 
-  test("keeps the public source alpha distinct from a published release", () => {
-    expect(productTruth.release.published).toBe(false);
-    expect(productTruth.release.installAction).toBe("build_from_source");
+  test("keeps source and published alpha states internally coherent", () => {
     expect(productTruth.release.website).toBe("https://tasq.run");
     expect(productTruth.release.repositoryState).toBe("public-alpha-source");
     expect(productTruth.release.publicPackages).toHaveLength(7);
-    expect(productTruth.productShapes.every((entry) => !entry.publiclyDistributed)).toBe(true);
+    if (productTruth.release.published) {
+      expect(productTruth.release.status).toBe("published-alpha");
+      expect(productTruth.release.installAction).toBe("install_release");
+      expect(productTruth.release.version).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(productTruth.release.githubRelease).toMatch(/^https:\/\/github\.com\/gwendall\/tasq\/releases\/tag\/v/);
+      expect(productTruth.productShapes.find((entry) => entry.id === "local")?.publiclyDistributed).toBe(true);
+    } else {
+      expect(productTruth.release.installAction).toBe("build_from_source");
+      expect(productTruth.release.version).toBeNull();
+      expect(productTruth.productShapes.every((entry) => !entry.publiclyDistributed)).toBe(true);
+    }
   });
 
   test("publishes the deployed site as a certified ledger-free surface", () => {

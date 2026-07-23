@@ -9,44 +9,91 @@
     "$schema": { "const": "/schemas/public-adoption.v1.schema.json" },
     "contractVersion": { "const": "tasq.public-adoption.v1" },
     "product": { "const": "Tasq Local" },
-    "support": { "const": "implemented_candidate_not_published" },
+    "support": {
+      "enum": ["implemented_candidate_not_published", "implemented_certified"]
+    },
     "distribution": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["mode", "published", "repository", "repositoryAccess", "preconditions", "sourceRef", "sourceRefMutable", "integrity"],
-      "properties": {
-        "mode": { "const": "source_build" },
-        "published": { "const": false },
-        "repository": { "type": "string", "format": "uri" },
-        "repositoryAccess": { "const": "public" },
-        "preconditions": {
-          "type": "array",
-          "const": []
-        },
-        "sourceRef": { "type": "string", "minLength": 1 },
-        "sourceRefMutable": { "const": true },
-        "integrity": {
+      "oneOf": [
+        {
           "type": "object",
           "additionalProperties": false,
-          "required": ["kind", "sourceContracts"],
+          "required": ["mode", "published", "repository", "repositoryAccess", "preconditions", "sourceRef", "sourceRefMutable", "integrity"],
           "properties": {
-            "kind": { "const": "repository-contract-digests" },
-            "sourceContracts": {
-              "type": "array",
-              "minItems": 3,
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["path", "sha256"],
-                "properties": {
-                  "path": { "type": "string", "minLength": 1 },
-                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            "mode": { "const": "source_build" },
+            "published": { "const": false },
+            "repository": { "type": "string", "format": "uri" },
+            "repositoryAccess": { "const": "public" },
+            "preconditions": { "type": "array", "const": [] },
+            "sourceRef": { "type": "string", "minLength": 1 },
+            "sourceRefMutable": { "const": true },
+            "integrity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "sourceContracts"],
+              "properties": {
+                "kind": { "const": "repository-contract-digests" },
+                "sourceContracts": {
+                  "type": "array",
+                  "minItems": 3,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["path", "sha256"],
+                    "properties": {
+                      "path": { "type": "string", "minLength": 1 },
+                      "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                    }
+                  }
                 }
               }
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "published", "version", "tag", "repository", "githubRelease", "packages", "cliTargets", "integrity"],
+          "properties": {
+            "mode": { "const": "npm_and_github_release" },
+            "published": { "const": true },
+            "version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+            "tag": { "type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+            "repository": { "type": "string", "format": "uri" },
+            "githubRelease": { "type": "string", "format": "uri" },
+            "packages": {
+              "type": "array",
+              "minItems": 7,
+              "maxItems": 7,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "version"],
+                "properties": {
+                  "name": { "type": "string", "pattern": "^@tasq/[a-z-]+$" },
+                  "version": { "type": "string", "minLength": 1 }
+                }
+              }
+            },
+            "cliTargets": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "integrity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "sourceCommit", "releaseManifestPattern", "checksumPattern"],
+              "properties": {
+                "kind": { "const": "npm-provenance-and-github-attestation" },
+                "sourceCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+                "releaseManifestPattern": { "type": "string", "minLength": 1 },
+                "checksumPattern": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
         }
-      }
+      ]
     },
     "requirements": {
       "type": "array",
@@ -67,13 +114,17 @@
       "required": ["path", "primaryAction"],
       "properties": {
         "path": { "const": "/docs/getting-started/" },
-        "primaryAction": { "const": "build_from_source" }
+        "primaryAction": { "enum": ["build_from_source", "install_release"] }
       }
     },
     "agent": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["acquisition", "executableRelativePath", "onboardArgvTemplate", "placeholders"],
+      "required": ["acquisition", "onboardArgvTemplate", "placeholders"],
+      "oneOf": [
+        { "required": ["executableRelativePath"] },
+        { "required": ["executablePathTemplate"] }
+      ],
       "properties": {
         "acquisition": {
           "type": "array",
@@ -91,6 +142,7 @@
           }
         },
         "executableRelativePath": { "const": "dist/cli/index.js" },
+        "executablePathTemplate": { "const": "{installPrefix}/node_modules/.bin/tasq" },
         "onboardArgvTemplate": { "type": "array", "minItems": 8, "items": { "type": "string" } },
         "placeholders": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string", "pattern": "^\\{[A-Za-z]+\\}$" } }
       }

@@ -27,6 +27,7 @@
       "linux-x64-gnu"
     ],
     "gates": {
+      "maintainer_public_alpha_authorization": true,
       "data_safety_source_candidate": true,
       "data_safety_published_byte_replay": false,
       "private_multi_app_dogfood_accepted": false,
@@ -36,8 +37,13 @@
       "trusted_publishing_configured": false,
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
-      "candidate_targets_clean_room_certified": true
-    }
+      "candidate_targets_clean_room_certified": true,
+      "agent_integration_candidate_certified": true
+    },
+    "version": null,
+    "tag": null,
+    "sourceCommit": null,
+    "githubRelease": null
   },
   "productShapes": [
     {
@@ -448,7 +454,8 @@
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
-    "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
+    "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
+    "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ],
   "backlog": [
@@ -465,14 +472,8 @@
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export"
     },
     {
-      "id": "TQ-607",
-      "status": "in_progress_dogfood",
-      "milestone": "private-dogfood",
-      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before a package-release decision"
-    },
-    {
       "id": "TQ-603",
-      "status": "pending",
+      "status": "in_progress_external_gate",
       "milestone": "public-distribution",
       "outcome": "Publish seven packages and native artifacts from protected OIDC CI with attestations"
     },
@@ -529,6 +530,12 @@
       "status": "candidate_done_publication_gate",
       "milestone": "runtime-consumers",
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
+    },
+    {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation"
     },
     {
       "id": "TQ-801",
@@ -619,17 +626,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "27793b8052465b44b0b9f1651925d144b11cf7e9c53ecc24eafd528a30e90394"
+      "sha256": "c9c9d5b4e0ceb9939356877b940a8a3479a5ef972c082c1eb310bdae8d34edd5"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "adb8c336b0bfe921462732890893836d6c5d79b981d9fd8d4c18fad56bf04de2"
+      "sha256": "c3d33e53a93f33198e610b3baf6b7cf8ac7eecba1ba1b1a510b8befed7de77aa"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "eb8fc7985634226cac8fb90f83681cd2670dbd30f50042e3ff26b79e71da1d30"
+      "sha256": "476b5a17d73cc2438ecfb089e6e2089f9d7a822ab75d3410b4775a8955960157"
     }
   ]
 }

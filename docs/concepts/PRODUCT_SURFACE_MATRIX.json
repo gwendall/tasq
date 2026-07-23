@@ -278,7 +278,8 @@
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
-    "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
+    "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
+    "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"
   ]
 }

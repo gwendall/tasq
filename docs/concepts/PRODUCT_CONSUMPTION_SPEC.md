@@ -66,8 +66,10 @@ authentication.
 certified on Linux/macOS, including foreground Console discovery from the
 installed artifact, and TQ-321 zero-context Codex/Claude integration is
 certified. Public package and native-release publication are paused behind the
-TQ-607 dogfood decision and the external TQ-603 registry gate; the TQ-608
-source migration candidate is passed and awaits protected-byte replay.
+external TQ-603 npm scope/bootstrap and trusted-publishing gates; the
+maintainer authorized `v0.1.0` as a labeled public alpha on 2026-07-23. The
+TQ-608 source migration candidate is passed and awaits protected-byte replay.
+TQ-607 continues as the stable-graduation gate.
 
 ### 2.3 Tasq Server
 

@@ -294,7 +294,7 @@ marketing drift, private data or an invented release path?*
 
 The generator validates three canonical machine contracts and writes identical
 application and public JSON snapshots with source digests. Bun tests reject
-stale truth, absent-surface entrypoints, unpublished install claims, API/Console
+stale truth, absent-surface entrypoints, release-gated install claims, API/Console
 coupling and ambient clock reads. The optimized Next.js static export must
 produce every consumer route. Playwright checks the homepage, documentation,
 machine status endpoint and 390px responsive path in a dedicated CI job.

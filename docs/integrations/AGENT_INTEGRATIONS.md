@@ -64,12 +64,14 @@ project-local registration is preferable.
 
 ## Executable acquisition and MCP
 
-The plugin contains instructions, not an unpublished binary. If `tasq` is
-absent, the skill reads the public
+The plugin contains instructions, not a binary. If `tasq` is absent, the skill
+reads the public
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) manifest, versioned at
 [`apps/site/public/adopt.json`](../../apps/site/public/adopt.json), and executes
-one declared source-build recipe. It explicitly rejects the unrelated unscoped
-npm package named `tasq`.
+one declared acquisition recipe. Before the protected release this is the
+source-build path; after publication the same contract selects the exact
+scoped package version and install prefix. It explicitly rejects the unrelated
+unscoped npm package named `tasq`.
 
 No static `.mcp.json` is shipped. A valid local MCP launch is bound to an
 explicit executable, space, actor and capability set, so a generic plugin

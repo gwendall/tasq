@@ -16,9 +16,10 @@ backup, rollback and portable create-only import are documented in
 
 npm packages use trusted publishing with provenance. Long-lived maintainer
 tokens and locally built release artifacts are forbidden. Published-package support does
-not begin until TQ-607 records a private-dogfood `go`, TQ-603 publishes
-artifacts and TQ-604 certifies their complete lifecycle without a repository
-checkout.
+not begin until the exact alpha authorization and registry gates pass, TQ-603
+publishes artifacts and TQ-604 certifies their complete lifecycle without a
+repository checkout. TQ-607 remains the retained-data gate for stable
+graduation, not for the explicitly labeled pre-1.0 alpha.
 
 The implemented candidate builder is:
 

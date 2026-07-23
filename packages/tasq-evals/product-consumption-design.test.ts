@@ -42,6 +42,14 @@ const releasePolicy = JSON.parse(readFileSync(
   status: string;
   identity: { repositoryState: string };
   externalPublicationGateStatus: Record<string, boolean>;
+  releaseAuthorization: {
+    state: string;
+    version: string;
+    channel: string;
+    decision: string;
+    authorizedBy: string;
+  };
+  publishedRelease: null | Record<string, unknown>;
   repositoryControls: {
     requiredPullRequest: boolean;
     requiredChecks: string[];
@@ -228,7 +236,8 @@ describe("TQ-601 product consumption design", () => {
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_deployed_at_tasq_run",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
-      "package_publication_requires_agent_integration_migration_hardening_private_multi_app_dogfood_and_explicit_go_decision",
+      "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
+      "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
       "device_time_is_only_read_by_the_system_clock_adapter",
     ]) {
       expect(matrix.criticalTruths, `missing critical truth: ${truth}`).toContain(truth);
@@ -251,12 +260,23 @@ describe("TQ-601 product consumption design", () => {
       },
     });
     expect(releasePolicy.externalPublicationGateStatus).toMatchObject({
+      maintainer_public_alpha_authorization: true,
       private_multi_app_dogfood_accepted: false,
       canonical_repository_control_verified: true,
       public_source_launch_authorized: true,
       npm_scope_control_verified: false,
       trusted_publishing_configured: false,
       tag_protection_configured: true,
+    });
+    expect(releasePolicy).toMatchObject({
+      releaseAuthorization: {
+        state: "pending_external_registry",
+        version: "0.1.0",
+        channel: "public-alpha",
+        decision: "go",
+        authorizedBy: "@gwendall",
+      },
+      publishedRelease: null,
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_candidate_not_published");

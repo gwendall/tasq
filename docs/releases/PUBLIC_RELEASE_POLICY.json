@@ -44,7 +44,7 @@
       "firstRelease": true
     },
     {
-      "source": "packages/tasq-service",
+      "source": "packages/tasq-core",
       "publicName": "@tasq/core",
       "tier": "public-stable-kernel-entrypoint-only",
       "firstRelease": true
@@ -159,16 +159,66 @@
     "mutableTagsAllowed": false
   },
   "externalPublicationPreconditions": [
-    "private_multi_app_dogfood_accepted",
+    "maintainer_public_alpha_authorization",
     "canonical_repository_control_verified",
     "public_source_launch_authorized",
     "npm_scope_control_verified",
     "trusted_publishing_configured",
     "tag_protection_configured",
     "license_and_third_party_notice_closure_verified",
-    "candidate_targets_clean_room_certified"
+    "candidate_targets_clean_room_certified",
+    "agent_integration_candidate_certified",
+    "data_safety_source_candidate"
   ],
+  "releaseChannels": {
+    "public-alpha": {
+      "blockers": [
+        "maintainer_public_alpha_authorization",
+        "canonical_repository_control_verified",
+        "public_source_launch_authorized",
+        "npm_scope_control_verified",
+        "trusted_publishing_configured",
+        "tag_protection_configured",
+        "license_and_third_party_notice_closure_verified",
+        "candidate_targets_clean_room_certified",
+        "agent_integration_candidate_certified",
+        "data_safety_source_candidate"
+      ],
+      "nonBlockingEvidence": [
+        "private_multi_app_dogfood_accepted",
+        "data_safety_published_byte_replay"
+      ]
+    },
+    "stable": {
+      "blockers": [
+        "maintainer_public_alpha_authorization",
+        "canonical_repository_control_verified",
+        "public_source_launch_authorized",
+        "npm_scope_control_verified",
+        "trusted_publishing_configured",
+        "tag_protection_configured",
+        "license_and_third_party_notice_closure_verified",
+        "candidate_targets_clean_room_certified",
+        "agent_integration_candidate_certified",
+        "data_safety_source_candidate",
+        "private_multi_app_dogfood_accepted",
+        "data_safety_published_byte_replay"
+      ],
+      "nonBlockingEvidence": []
+    }
+  },
+  "releaseAuthorization": {
+    "state": "pending_external_registry",
+    "version": "0.1.0",
+    "channel": "public-alpha",
+    "decision": "go",
+    "authorizedBy": "@gwendall",
+    "authorizedAt": "2026-07-23",
+    "rationale": "Publish Tasq Local as an explicitly labeled public alpha to obtain real adopter feedback while retained-data dogfood continues as the stable-graduation gate."
+  },
+  "publishedRelease": null,
   "externalPublicationGateStatus": {
+    "maintainer_public_alpha_authorization": true,
     "data_safety_source_candidate": true,
     "data_safety_published_byte_replay": false,
     "private_multi_app_dogfood_accepted": false,
@@ -178,7 +228,8 @@
     "trusted_publishing_configured": false,
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
-    "candidate_targets_clean_room_certified": true
+    "candidate_targets_clean_room_certified": true,
+    "agent_integration_candidate_certified": true
   },
   "repositoryControls": {
     "enforcementState": "active-public-repository",

@@ -13,7 +13,7 @@ const roadmap = JSON.parse(readFileSync(resolve(root, "docs/roadmap/BACKLOG.json
   repositoryVisibility: string;
   statusVocabulary: string[];
   invariants: string[];
-  externalGates: Record<string, { state: string; observation?: string }>;
+  externalGates: Record<string, { state: string; observation?: string; [key: string]: unknown }>;
   completedPrerequisites: string[];
   decisions: Array<{ id: string; status: string; blocks: string[]; question: string }>;
   executionOrder: string[];
@@ -133,7 +133,10 @@ describe("canonical Tasq roadmap", () => {
     expect(roadmap.externalGates).toMatchObject({
       privateMultiAppDogfood: {
         state: "in_progress",
+        blocks: "stable_graduation",
+        publicAlphaBlocking: false,
       },
+      maintainerPublicAlphaAuthorization: { state: "complete" },
       publicSourceLaunch: {
         state: "complete_public_alpha",
       },
@@ -142,7 +145,11 @@ describe("canonical Tasq roadmap", () => {
         observation: expect.stringContaining("not evidence of scope ownership"),
       },
       npmTrustedPublishing: { state: "unverified" },
-      firstProtectedRelease: { state: "not_run" },
+      firstProtectedRelease: {
+        state: "not_run",
+        channel: "public_alpha",
+        version: "0.1.0",
+      },
       publishedLifecycleCertification: { state: "blocked_by_first_protected_release" },
       publishedAdoptionCertification: { state: "blocked_by_first_protected_release" },
       publishedInteractiveRuntimeCertification: { state: "blocked_by_first_protected_release" },
@@ -194,11 +201,11 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-603")).toMatchObject({
       id: "TQ-603",
-      status: "pending",
-      dependsOn: ["TQ-321", "TQ-608", "TQ-607"],
+      status: "in_progress_external_gate",
+      dependsOn: ["TQ-321", "TQ-608"],
       remaining: [
-        "complete-private-dogfood-go",
         "verify-npm-scope-control",
+        "bootstrap-first-package-versions",
         "configure-npm-trusted-publishing",
         "publish-first-protected-release",
       ],
@@ -226,6 +233,7 @@ describe("canonical Tasq roadmap", () => {
     expect(releaseWorkflow).toContain("id-token: write");
     expect(releaseWorkflow).toContain("npm install --global npm@11.5.1");
     expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.5.1"');
+    expect(releaseWorkflow).toContain("verify-release-authorization.ts");
     expect(releaseWorkflow).not.toContain("NODE_AUTH_TOKEN");
   });
 

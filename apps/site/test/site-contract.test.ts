@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { readdir, readFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 const siteRoot = resolve(import.meta.dir, "..");
@@ -30,9 +31,10 @@ describe("public site boundary", () => {
     expect(source).not.toMatch(/\bperformance\.now\s*\(/);
   });
 
-  test("does not advertise a nonexistent install or remote surface", async () => {
+  test("guards package installation behind generated release truth and never invents remote surfaces", async () => {
     const source = await sourceText();
-    expect(source).not.toMatch(/npm\s+(?:i|install)\s+@tasq\//i);
+    expect(source).toContain("productTruth.release.published");
+    expect(source).toContain("@tasq/cli@");
     expect(source).not.toMatch(/curl[^\n]+(?:install|releases\/download)/i);
     expect(source).not.toMatch(/remote MCP (?:is )?(?:available|shipped)/i);
     expect(source).not.toMatch(/self-host(?:ed|ing)[^\n]+(?:available|shipped|ready)/i);
@@ -101,20 +103,33 @@ describe("public site boundary", () => {
     ]);
     expect(publicRaw).toBe(internalRaw);
     const adoption = JSON.parse(publicRaw);
-    expect(adoption).toMatchObject({
-      contractVersion: "tasq.public-adoption.v1",
-      support: "implemented_candidate_not_published",
-      distribution: {
-        mode: "source_build",
-        published: false,
-        repositoryAccess: "public",
-        preconditions: [],
-        sourceRefMutable: true,
-      },
-      human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
-      agent: { executableRelativePath: "dist/cli/index.js" },
-    });
-    expect(adoption.invariants).not.toContain("private_prelaunch_repository_requires_authorized_access");
+    expect(adoption.contractVersion).toBe("tasq.public-adoption.v1");
+    if (adoption.distribution.published) {
+      expect(adoption).toMatchObject({
+        support: "implemented_certified",
+        distribution: {
+          mode: "npm_and_github_release",
+          version: expect.stringMatching(/^\d+\.\d+\.\d+$/),
+          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq/cli" })]),
+          integrity: { kind: "npm-provenance-and-github-attestation" },
+        },
+        human: { path: "/docs/getting-started/", primaryAction: "install_release" },
+        agent: { executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq" },
+      });
+    } else {
+      expect(adoption).toMatchObject({
+        support: "implemented_candidate_not_published",
+        distribution: {
+          mode: "source_build",
+          repositoryAccess: "public",
+          preconditions: [],
+          sourceRefMutable: true,
+        },
+        human: { path: "/docs/getting-started/", primaryAction: "build_from_source" },
+        agent: { executableRelativePath: "dist/cli/index.js" },
+      });
+      expect(adoption.invariants).not.toContain("private_prelaunch_repository_requires_authorized_access");
+    }
     const declared = new Set<string>(adoption.agent.placeholders as string[]);
     const serializedVectors = JSON.stringify([
       ...adoption.agent.acquisition.flatMap((step: { cwd: string; argv: string[] }) => [step.cwd, ...step.argv]),
@@ -125,6 +140,78 @@ describe("public site boundary", () => {
     for (const step of adoption.agent.acquisition) {
       expect(step.argv).not.toContain("sh");
       expect(step.argv.join(" ")).not.toMatch(/&&|\|\||[|;]/);
+    }
+  });
+
+  test("generates a complete install contract from immutable published coordinates", async () => {
+    const scratch = await mkdtemp(resolve(tmpdir(), "tasq-published-adoption-"));
+    try {
+      const [policy, matrix] = await Promise.all([
+        Bun.file(resolve(siteRoot, "../../docs/releases/PUBLIC_RELEASE_POLICY.json")).json(),
+        Bun.file(resolve(siteRoot, "../../docs/concepts/PRODUCT_SURFACE_MATRIX.json")).json(),
+      ]);
+      policy.status = "published-alpha";
+      policy.publishedRelease = {
+        version: "0.1.0",
+        tag: "v0.1.0",
+        sourceCommit: "a".repeat(40),
+        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+        publishedPackages: policy.packages
+          .flatMap((entry: { firstRelease: boolean; publicName: string | null }) => (
+            entry.firstRelease && entry.publicName
+              ? [{ name: entry.publicName, version: "0.1.0" }]
+              : []
+          )),
+      };
+      matrix.productShapes = matrix.productShapes.map((shape: { id: string; publiclyDistributed: boolean }) => ({
+        ...shape,
+        publiclyDistributed: shape.id === "core" || shape.id === "local"
+          ? true
+          : shape.publiclyDistributed,
+      }));
+      const policyPath = resolve(scratch, "policy.json");
+      const matrixPath = resolve(scratch, "matrix.json");
+      await Promise.all([
+        writeFile(policyPath, `${JSON.stringify(policy)}\n`, "utf8"),
+        writeFile(matrixPath, `${JSON.stringify(matrix)}\n`, "utf8"),
+      ]);
+      const child = Bun.spawn([
+        process.execPath,
+        resolve(siteRoot, "scripts/generate-truth.ts"),
+        "--policy", policyPath,
+        "--matrix", matrixPath,
+        "--stdout",
+      ], { stdout: "pipe", stderr: "pipe" });
+      const [exitCode, stdout, stderr] = await Promise.all([
+        child.exited,
+        new Response(child.stdout).text(),
+        new Response(child.stderr).text(),
+      ]);
+      expect(exitCode, stderr).toBe(0);
+      const generated = JSON.parse(stdout);
+      expect(generated.truth.release).toMatchObject({
+        published: true,
+        installAction: "install_release",
+        version: "0.1.0",
+        tag: "v0.1.0",
+      });
+      expect(generated.adoption).toMatchObject({
+        support: "implemented_certified",
+        distribution: {
+          mode: "npm_and_github_release",
+          published: true,
+          version: "0.1.0",
+          packages: expect.arrayContaining([expect.objectContaining({ name: "@tasq/cli" })]),
+          integrity: {
+            kind: "npm-provenance-and-github-attestation",
+            sourceCommit: "a".repeat(40),
+          },
+        },
+        human: { primaryAction: "install_release" },
+        agent: { executablePathTemplate: "{installPrefix}/node_modules/.bin/tasq" },
+      });
+    } finally {
+      await rm(scratch, { recursive: true, force: true });
     }
   });
 });
