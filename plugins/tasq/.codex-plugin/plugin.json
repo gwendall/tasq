@@ -1,6 +1,6 @@
 {
   "name": "tasq",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Coordinate durable commitments across humans and AI agents through an explicit local Tasq space.",
   "author": {
     "name": "Gwendall Esnault",

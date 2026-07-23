@@ -258,7 +258,7 @@
     },
     {
       "id": "TQ-610",
-      "status": "pending",
+      "status": "in_progress_implementation",
       "milestone": "public-adoption",
       "dependsOn": ["TQ-609"],
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous",
@@ -272,7 +272,13 @@
         "add-isolated-demo-journey",
         "freeze-non-secret-explicit-project-rendezvous-contract"
       ],
-      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+      "evidence": [
+        "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md",
+        "docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md",
+        "apps/site/test/public-commands.test.ts",
+        "packages/tasq-cli/test/e2e.test.ts",
+        "packages/tasq-evals/agent-plugin-integration.test.ts"
+      ]
     },
     {
       "id": "TQ-611",

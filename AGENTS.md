@@ -39,6 +39,11 @@ dogfood are the remaining external gates. TQ-608 is complete for the current
 release; read
 [TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
 [DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
+TQ-610's acquisition and universal-agent source implementation is in
+[TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
+The public `v0.1.0` installer and static agent entrypoints are usable; `setup`,
+`demo` and `agent install` remain candidate-only until the authorized
+`v0.1.1` protected release and downloaded-byte certification pass.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

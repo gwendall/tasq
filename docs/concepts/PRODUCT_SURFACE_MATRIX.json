@@ -121,7 +121,7 @@
       "id": "public_site",
       "support": "implemented_certified",
       "transport": "public_https_static_files",
-      "entrypoint": "https://tasq.run; https://tasq.run/product-truth.json; https://tasq.run/adopt.json",
+      "entrypoint": "https://tasq.run; /product-truth.json; /adopt.json; /SKILL.md; /agents/; /llms.txt; /integration.json",
       "mutations": false,
       "authorityBoundary": "versioned_repository_truth_no_ledger_access"
     },
@@ -232,6 +232,16 @@
       "id": "public_install_to_first_agent",
       "support": "implemented_certified",
       "steps": ["discover_product", "install", "verify", "onboard", "connect_agent"]
+    },
+    {
+      "id": "generic_agent_from_public_pointer",
+      "support": "implemented_certified",
+      "steps": ["read_public_skill", "select_pinned_acquisition", "bind_explicit_rendezvous", "register_host_mcp", "onboard", "bounded_read"]
+    },
+    {
+      "id": "simple_human_first_run",
+      "support": "implemented_candidate_not_published",
+      "steps": ["setup_explicit_space_and_actor", "add", "list", "done"]
     },
     {
       "id": "human_local_monitoring",

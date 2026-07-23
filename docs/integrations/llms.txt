@@ -1,0 +1,17 @@
+# Tasq
+
+Tasq is a local-first durable coordination ledger for humans and independent
+agents. It coordinates shared commitments, claims, attempts, evidence and audit
+history. It does not replace an agent runtime's private scratchpad.
+
+Agent instructions: https://tasq.run/SKILL.md
+Human setup: https://tasq.run/docs/getting-started/
+Agent integrations: https://tasq.run/agents/
+Machine acquisition: https://tasq.run/adopt.json
+Machine integration: https://tasq.run/integration.json
+Product truth: https://tasq.run/product-truth.json
+Source: https://github.com/gwendall/tasq
+
+Current boundary: Tasq Local 0.1.0 is published for macOS ARM64 and Linux x64
+GNU. Local actors coordinate only when they share the same store and exact
+space. Tasq Server, remote MCP and Cloud are not shipped.

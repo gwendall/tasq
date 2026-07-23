@@ -97,6 +97,33 @@ const adoptionOutputPaths = [
   resolve(repoRoot, "apps/site/src/generated/adopt.json"),
   resolve(repoRoot, "apps/site/public/adopt.json"),
 ];
+const installerSourcePath = resolve(repoRoot, "scripts/release/install-v0.1.0.sh");
+const installerOutputPaths = [
+  resolve(repoRoot, "apps/site/public/install.sh"),
+  resolve(repoRoot, "apps/site/public/install-v0.1.0.sh"),
+];
+const publicEntryCopies = [
+  {
+    source: "plugins/tasq/skills/tasq/SKILL.md",
+    output: "apps/site/public/SKILL.md",
+  },
+  {
+    source: "docs/integrations/AGENT_INTEGRATIONS.json",
+    output: "apps/site/public/integration.json",
+  },
+  {
+    source: "docs/integrations/PROJECT_RENDEZVOUS.schema.json",
+    output: "apps/site/public/schemas/project-rendezvous.v1.schema.json",
+  },
+  {
+    source: "docs/integrations/PROJECT_RENDEZVOUS.example.json",
+    output: "apps/site/public/project-rendezvous.example.json",
+  },
+  {
+    source: "docs/integrations/llms.txt",
+    output: "apps/site/public/llms.txt",
+  },
+] as const;
 
 async function readJson<T>(relativePath: string): Promise<{ raw: string; value: T }> {
   const raw = await readFile(resolve(repoRoot, relativePath), "utf8");
@@ -353,6 +380,11 @@ if (published && !publishedAdoption) {
 }
 const adoption = published ? publishedAdoption : sourceAdoption;
 const adoptionSerialized = `${JSON.stringify(adoption, null, 2)}\n`;
+const installerSerialized = await readFile(installerSourcePath, "utf8");
+const publicEntries = await Promise.all(publicEntryCopies.map(async ({ source, output }) => ({
+  outputPath: resolve(repoRoot, output),
+  serialized: await readFile(resolve(repoRoot, source), "utf8"),
+})));
 
 async function checkOutputs(paths: string[], expected: string): Promise<void> {
   for (const outputPath of paths) {
@@ -368,9 +400,15 @@ if (process.argv.includes("--stdout")) {
 } else if (process.argv.includes("--check")) {
   await checkOutputs(truthOutputPaths, serialized);
   await checkOutputs(adoptionOutputPaths, adoptionSerialized);
+  await checkOutputs(installerOutputPaths, installerSerialized);
+  for (const entry of publicEntries) {
+    await checkOutputs([entry.outputPath], entry.serialized);
+  }
 } else {
   await Promise.all([
     ...truthOutputPaths.map((outputPath) => writeFile(outputPath, serialized, "utf8")),
     ...adoptionOutputPaths.map((outputPath) => writeFile(outputPath, adoptionSerialized, "utf8")),
+    ...installerOutputPaths.map((outputPath) => writeFile(outputPath, installerSerialized, { encoding: "utf8", mode: 0o755 })),
+    ...publicEntries.map(({ outputPath, serialized }) => writeFile(outputPath, serialized, "utf8")),
   ]);
 }

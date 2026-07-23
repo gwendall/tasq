@@ -59,6 +59,7 @@ import { summaryCmd } from "./commands/summary.js";
 import { contextLinkCmd } from "./commands/context-link.js";
 import { webCmd } from "./commands/web.js";
 import { portableExportCmd, portableImportCmd } from "./commands/portable.js";
+import { agentCmd, demoCmd, setupCmd } from "./commands/adoption.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -68,6 +69,9 @@ const COMMON_FLAGS = ["json", "j", "actor", "tenant", "help", "h"] as const;
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
+    setup: ["space"],
+    demo: [],
+    agent: ["space", "capabilities", "executable", "target", "apply"],
     onboard: ["space", "capabilities"],
     resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
     mcp: ["capabilities"],
@@ -128,8 +132,11 @@ ${color.bold("USAGE")}
   tasq <command> [args...] [--json]
 
 ${color.bold("SETUP")}
+  setup --space <id> --actor <label>
+                                persist one explicit human space + attribution
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes
+  demo [--json]                 isolated add → list → done journey; no live data
   init                          create ~/.tasq/db.sqlite + config
   config [show|get|set <k> <v>] manage ~/.tasq/config.json
 
@@ -176,6 +183,8 @@ ${color.bold("DEPENDENCIES")}
                                  remove a dependency edge
 
 ${color.bold("AGENT COORDINATION")}
+  agent install codex|claude|generic --space <id> --actor <label>
+                                 preview an exact host-bound MCP registration
   claim <id> [--for 30m]         atomically claim work (repeat to heartbeat)
   release <id>                   release the current claim
   attempt start <id> [...]       record one concrete execution
@@ -311,6 +320,12 @@ export async function main(
     switch (command) {
       case "init":
         return await init(args);
+      case "setup":
+        return await setupCmd(args, clock);
+      case "demo":
+        return await demoCmd(args, executable);
+      case "agent":
+        return await agentCmd(args, executable);
       case "onboard":
         return await onboardCmd(args, clock, executable);
       case "resource":

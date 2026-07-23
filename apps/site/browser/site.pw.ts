@@ -38,6 +38,29 @@ test("documentation gives a complete causal onboarding path", async ({ page }) =
   await expect(page.getByRole("heading", { level: 1 })).toContainText("without sharing a runtime");
 });
 
+test("an unknown agent can discover host recipes and stable machine entrypoints", async ({ page }) => {
+  await page.goto("/agents/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("same work");
+  await expect(page.getByText("codex mcp add tasq", { exact: false })).toBeVisible();
+  await expect(page.getByText("claude mcp add tasq", { exact: false })).toBeVisible();
+  await expect(page.getByText("A project file is a pointer, never permission.")).toBeVisible();
+
+  const [skill, integration, llms, rendezvous] = await Promise.all([
+    page.request.get("/SKILL.md"),
+    page.request.get("/integration.json"),
+    page.request.get("/llms.txt"),
+    page.request.get("/schemas/project-rendezvous.v1.schema.json"),
+  ]);
+  expect(skill.ok()).toBe(true);
+  expect(await skill.text()).toContain("Never infer a space");
+  expect(integration.ok()).toBe(true);
+  expect((await integration.json()).contractVersion).toBe("tasq.agent-integrations.v1");
+  expect(llms.ok()).toBe(true);
+  expect(await llms.text()).toContain("Current boundary:");
+  expect(rendezvous.ok()).toBe(true);
+  expect((await rendezvous.json()).additionalProperties).toBe(false);
+});
+
 test("status page is traceable to machine contracts", async ({ page }) => {
   await page.goto("/status/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("pretend it shipped");

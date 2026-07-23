@@ -63,6 +63,9 @@ export const DOCTOR_USAGE = "doctor [--fix-permissions] [--repair-outbox]   veri
 export const JOURNAL_USAGE =
   "journal checkpoint --accept-database --reason <text> [--dry-run]   archive the current segment and accept the DB cursor baseline";
 export const INIT_USAGE = "init   create ~/.tasq/db.sqlite + config";
+export const SETUP_USAGE = "setup --space <id> --actor <stable-label> [--json]   persist one explicit human default";
+export const DEMO_USAGE = "demo [--json]   run add -> list -> done inside a temporary isolated TASQ_HOME";
+export const AGENT_USAGE = "agent install <codex|claude|generic> --space <id> --actor <label> [--capabilities read,propose,coordinate] [--executable <absolute-path>] [--target <absolute-path>] [--apply] [--json]";
 export const ONBOARD_USAGE = "onboard --space <id> --actor <stable-label> [--capabilities read,propose,coordinate] --json";
 export const RESOURCE_USAGE = `resource acquire <key> --idempotency-key <key> [--for 30m] [--metadata <json>]
 resource renew <key> --lease <id> --fence <n> --revision <n> --idempotency-key <key> [--for 30m]
@@ -227,6 +230,12 @@ export function commandUsage(command: string): string | undefined {
       return CONFIG_USAGE;
     case "init":
       return INIT_USAGE;
+    case "setup":
+      return SETUP_USAGE;
+    case "demo":
+      return DEMO_USAGE;
+    case "agent":
+      return AGENT_USAGE;
     case "onboard":
       return ONBOARD_USAGE;
     case "resource":

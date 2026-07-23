@@ -8,6 +8,13 @@ or transient todos into the shared ledger.
 The machine-readable source for versions, paths and argv recipes is
 [`AGENT_INTEGRATIONS.json`](AGENT_INTEGRATIONS.json).
 
+Public zero-context entrypoints are stable at
+[`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
+[`tasq.run/agents`](https://tasq.run/agents/),
+[`tasq.run/llms.txt`](https://tasq.run/llms.txt) and
+[`tasq.run/integration.json`](https://tasq.run/integration.json). The public
+copies are generated from this repository and cannot drift independently.
+
 ## What to give an agent
 
 Installation alone does not identify a ledger. Give the agent this explicit
@@ -62,22 +69,46 @@ Claude also supports `project` and `local` scopes. Replace `user` consistently
 in both install and uninstall commands when repository-wide or private
 project-local registration is preferable.
 
-## Executable acquisition and MCP
+## Executable acquisition
+
+Try the exact scoped package without persistent installation:
+
+```bash
+bunx @tasq-run/cli@0.1.0 version
+npm exec --yes --package=@tasq-run/cli@0.1.0 -- tasq version
+```
+
+For a persistent native lifecycle, download and inspect the versioned
+installer before executing it:
+
+```bash
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.0.sh
+less /tmp/tasq-install.sh
+sh /tmp/tasq-install.sh --dry-run --version 0.1.0 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.1.0 --prefix "$HOME/.local"
+```
+
+The script selects only a certified platform, authenticates the downloaded
+checksum manifest against a digest pinned in repository source, verifies each
+release asset and delegates side-by-side activation to the certified lifecycle
+installer. It never edits a shell startup file. `--uninstall` removes managed
+program bytes while preserving `TASQ_HOME`, ledgers and backups.
+
+## MCP registration
 
 The plugin contains instructions, not a binary. If `tasq` is absent, the skill
 reads the public
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) manifest, versioned at
 [`apps/site/public/adopt.json`](../../apps/site/public/adopt.json), and executes
-one declared acquisition recipe. Before the protected release this is the
-source-build path; after publication the same contract selects the exact
-scoped package version and install prefix. It explicitly rejects the unrelated
-unscoped npm package named `tasq`.
+one declared, immutable package acquisition recipe. It explicitly rejects the
+unrelated unscoped npm package named `tasq`.
 
-No static `.mcp.json` is shipped. A valid local MCP launch is bound to an
-explicit executable, space, actor and capability set, so a generic plugin
-cannot choose it safely. When the host already exposes Tasq MCP tools, the
-skill starts with `tasq_discover`. Otherwise it uses the complete CLI JSON
-fallback:
+No ambient project `.mcp.json` is shipped. Parameterized Codex, Claude Code and
+generic MCP recipes are published in `AGENT_INTEGRATIONS.json`; each requires
+an explicit absolute executable, space, actor and capability set. The host
+still asks for trust according to its own policy. When the host already exposes
+Tasq MCP tools, the skill starts with `tasq_discover`. Otherwise it uses the
+complete CLI JSON fallback:
 
 ```bash
 tasq onboard --space <explicit-space> --actor <stable-label> \
@@ -85,8 +116,22 @@ tasq onboard --space <explicit-space> --actor <stable-label> \
 ```
 
 To configure MCP, obtain `transport.mcp.stdio` from that onboarding response
-and register its exact argv through the host's native MCP settings. Do not
-reconstruct it from prose.
+and register its exact argv through the host's native MCP settings, or use the
+equivalent parameterized host recipe. Do not reconstruct it from prose.
+
+## Project rendezvous
+
+[`PROJECT_RENDEZVOUS.schema.json`](PROJECT_RENDEZVOUS.schema.json) freezes one
+non-secret Local pointer: `TASQ_HOME`, an exact space, the public skill URL and
+requested capabilities. It has no token, credential, actor identity, grant or
+effect authority. Tasq never scans the current directory for this descriptor.
+A user or trusted project instruction must activate it explicitly, and the
+runtime must still supply its own stable actor label.
+
+The `setup`, `demo` and deterministic `agent install` helper are implemented
+for the next CLI release and remain
+`implemented_candidate_not_published` until immutable package and native
+artifacts containing them pass the protected release gate.
 
 ## Current certification boundary
 

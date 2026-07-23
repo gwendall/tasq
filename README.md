@@ -67,12 +67,14 @@ An attempt succeeding never completes its commitment automatically.
 Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
 ```bash
-npm install --prefix .tasq-runtime --ignore-scripts @tasq-run/cli@0.1.0
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.1.0.sh
+sh /tmp/tasq-install.sh --dry-run --version 0.1.0 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.1.0 --prefix "$HOME/.local"
 
 # Keep this evaluation isolated from any existing Tasq ledger.
 export TASQ_HOME="$PWD/.tasq"
 
-./.tasq-runtime/node_modules/.bin/tasq onboard \
+"$HOME/.local/bin/tasq" onboard \
   --space demo/local \
   --actor demo:user \
   --capabilities read,propose,coordinate \
@@ -89,6 +91,10 @@ The current machine-readable acquisition contract is available at
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
 immutable `v0.1.0` npm and GitHub release coordinates, the supported targets,
 the explicit install prefix, and the exact onboarding argument vector.
+The generic agent entrypoints are
+[`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
+[`tasq.run/agents`](https://tasq.run/agents/) and
+[`tasq.run/integration.json`](https://tasq.run/integration.json).
 
 ## Give Tasq to an agent
 
@@ -96,7 +102,7 @@ Once the executable is available, a new agent needs only an explicit space,
 stable actor label, and capability envelope:
 
 ```bash
-"$HOME/.local/share/tasq/node_modules/.bin/tasq" onboard \
+"$HOME/.local/bin/tasq" onboard \
   --space robotics/team-a \
   --actor codex:gwendall \
   --capabilities read,propose,coordinate \

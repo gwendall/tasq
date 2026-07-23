@@ -1,0 +1,13 @@
+{
+  "contractVersion": "tasq.project-rendezvous.v1",
+  "activation": "explicit-user-or-trusted-project-instruction-required",
+  "transport": {
+    "kind": "local",
+    "homeReference": "TASQ_HOME"
+  },
+  "space": "robotics/team-a",
+  "agentInstructions": {
+    "url": "https://tasq.run/SKILL.md"
+  },
+  "requestedCapabilities": ["read", "propose", "coordinate"]
+}

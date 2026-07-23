@@ -35,7 +35,9 @@ describe("public site boundary", () => {
     const source = await sourceText();
     expect(source).toContain("productTruth.release.published");
     expect(source).toContain("@tasq-run/cli@");
-    expect(source).not.toMatch(/curl[^\n]+(?:install|releases\/download)/i);
+    expect(source).toContain("https://tasq.run/install-v0.1.0.sh");
+    expect(source).not.toMatch(/curl[^\n]*\|\s*(?:ba)?sh/i);
+    expect(source).not.toMatch(/curl[^\n]+releases\/download/i);
     expect(source).not.toMatch(/remote MCP (?:is )?(?:available|shipped)/i);
     expect(source).not.toMatch(/self-host(?:ed|ing)[^\n]+(?:available|shipped|ready)/i);
   });
@@ -91,6 +93,32 @@ describe("public site boundary", () => {
       readFile(resolve(siteRoot, "public/product-truth.json"), "utf8"),
     ]);
     expect(publicAsset).toBe(internal);
+  });
+
+  test("publishes generated generic-agent entrypoints and a non-authoritative rendezvous schema", async () => {
+    const copies = [
+      ["../../plugins/tasq/skills/tasq/SKILL.md", "public/SKILL.md"],
+      ["../../docs/integrations/AGENT_INTEGRATIONS.json", "public/integration.json"],
+      ["../../docs/integrations/llms.txt", "public/llms.txt"],
+      ["../../docs/integrations/PROJECT_RENDEZVOUS.schema.json", "public/schemas/project-rendezvous.v1.schema.json"],
+    ] as const;
+    for (const [source, output] of copies) {
+      expect(await readFile(resolve(siteRoot, source), "utf8")).toBe(
+        await readFile(resolve(siteRoot, output), "utf8"),
+      );
+    }
+    const schema = JSON.parse(await readFile(
+      resolve(siteRoot, "public/schemas/project-rendezvous.v1.schema.json"),
+      "utf8",
+    ));
+    expect(schema.additionalProperties).toBe(false);
+    expect(schema.properties.activation.const).toBe(
+      "explicit-user-or-trusted-project-instruction-required",
+    );
+    expect(schema.properties).not.toHaveProperty("token");
+    expect(schema.properties).not.toHaveProperty("credentials");
+    expect(schema.properties).not.toHaveProperty("authority");
+    expect(schema.properties).not.toHaveProperty("effects");
   });
 
   test("uses the public domain as canonical metadata", async () => {
