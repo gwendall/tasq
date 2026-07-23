@@ -64,7 +64,7 @@ An attempt succeeding never completes its commitment automatically.
 
 ## Try the public alpha
 
-Requirements: Bun 1.3+ and npm 11.5+.
+Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
 ```bash
 npm install --prefix .tasq-runtime --ignore-scripts @tasq-run/cli@0.1.0
@@ -86,8 +86,9 @@ before using a long-lived ledger.
 
 The current machine-readable acquisition contract is available at
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
-[`apps/site/public/adopt.json`](apps/site/public/adopt.json). It deliberately
-declares a mutable source build until protected release artifacts exist.
+[`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
+immutable `v0.1.0` npm and GitHub release coordinates, the supported targets,
+the explicit install prefix, and the exact onboarding argument vector.
 
 ## Give Tasq to an agent
 
@@ -95,7 +96,7 @@ Once the executable is available, a new agent needs only an explicit space,
 stable actor label, and capability envelope:
 
 ```bash
-tasq onboard \
+"$HOME/.local/share/tasq/node_modules/.bin/tasq" onboard \
   --space robotics/team-a \
   --actor codex:gwendall \
   --capabilities read,propose,coordinate \

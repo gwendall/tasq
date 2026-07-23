@@ -62,7 +62,7 @@
     },
     {
       "runtime": "npm",
-      "version": ">=11.5.1"
+      "version": ">=10"
     }
   ],
   "human": {

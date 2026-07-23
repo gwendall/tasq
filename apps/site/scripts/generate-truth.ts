@@ -309,7 +309,7 @@ const publishedAdoption = release ? {
   requirements: [
     { runtime: "node", version: rootPackageFile.value.engines.node },
     { runtime: "bun", version: rootPackageFile.value.engines.bun },
-    { runtime: "npm", version: ">=11.5.1" },
+    { runtime: "npm", version: ">=10" },
   ],
   human: {
     path: "/docs/getting-started/",

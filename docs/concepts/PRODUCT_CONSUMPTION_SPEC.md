@@ -42,9 +42,10 @@ The profile-neutral embedded TypeScript kernel:
 Core owns no network listener, login, browser session, provider credential,
 workflow runtime, human policy or hosted control plane.
 
-**Current state:** implemented in the canonical standalone repository; the
-seven `@tasq-run/*` packages are release candidates, not yet a published public
-SDK distribution.
+**Current state:** implemented in the canonical standalone repository. The
+seven `@tasq-run/*@0.1.0` packages are published from protected OIDC CI with npm
+provenance. Core is a low-level embedded API; a smaller high-level client is a
+separate roadmap item, not an API that the current package pretends to expose.
 
 ### 2.2 Tasq Local
 
@@ -200,9 +201,9 @@ identity.
 services, and map external runtime tasks to attempts/artifacts rather than
 completion.
 
-**Support:** implemented and clean-room tested from candidate package bytes.
-Compatibility, installation and support policy are defined, but no protected
-public package release exists yet.
+**Support:** implemented and clean-room tested from the exact published
+`@tasq-run/core@0.1.0` tarball on macOS arm64 and Linux x64. The current surface
+is intentionally low level and Bun-oriented.
 
 ### 4.6 Interactive agent runtime or control-plane integrator
 
@@ -273,21 +274,23 @@ provenance matters.
 **Support:** the static application and export are implemented and tested in
 the public canonical repository and deployed at <https://tasq.run>.
 
-**Non-claim:** the site is not the Local Console, a Tasq ledger API, a remote
-MCP endpoint or evidence that packages have been published.
+**Non-claim:** the site is not the Local Console, a Tasq ledger API or a remote
+MCP endpoint. Package publication is proven separately by the release
+certification and immutable registry coordinates linked from the site.
 
 For a machine starting before it has an executable, `/adopt.json` is the
-versioned causal pointer. It returns acquisition argv, working-directory and
-placeholder contracts, then an onboarding argv template. The current contract
-is explicitly mutable source-build guidance, not a protected-release claim.
+versioned causal pointer. It returns the published package coordinates,
+acquisition argv, working-directory and placeholder contracts, then an
+onboarding argv template. Its integrity block binds the immutable release
+commit, checksums and GitHub attestation pattern.
 
 ## 5. Use-case map
 
 | Use case | Kernel fit | Product readiness | Missing outer layer |
 |---|---|---|---|
-| Local coding-agent handoff | Excellent | Ready locally | Protected public release channel |
+| Local coding-agent handoff | Excellent | Published public alpha | Cross-machine Server transport |
 | Interactive agent control plane | Excellent | Published-package conformance complete | Runtime-specific integration and deployment |
-| Multi-agent contention on one host | Excellent | Ready locally | Protected public release channel |
+| Multi-agent contention on one host | Excellent | Published public alpha | Cross-machine Server transport |
 | Robotics resource coordination | Excellent | Kernel/CLI ready | Robot adapter and fence enforcement |
 | Research with human acceptance | Excellent | Kernel ready | Domain UI and evidence policy |
 | Deployment operations | Excellent | Kernel/reference connector ready | Production connector and credentials |
@@ -338,14 +341,11 @@ learn -> install -> verify -> create/join workspace -> connect first agent
       -> upgrade -> backup/restore -> uninstall without data loss
 ```
 
-Today, behavior from `create/join workspace` onward is substantially proven,
-and candidate acquisition/install/upgrade/uninstall is clean-room tested.
-ADR-008 has fixed the Tasq identity, Apache-2.0 license, `@tasq-run/*` package
-boundary and dedicated repository. That repository is now a public-source
-alpha. TQ-607 still requires retained-data use across three real consumers and
-an explicit decision before package publication resumes. Protected release
-distribution and independent published-byte validation are still absent;
-TQ-603–TQ-606 close that product gap after TQ-321, TQ-608 and a TQ-607 `go`.
+The complete Local journey is certified from the exact published `v0.1.0`
+packages and native assets on macOS arm64 and Linux x64. ADR-008 fixes the Tasq
+identity, Apache-2.0 license, `@tasq-run/*` package boundary and dedicated
+repository. TQ-607 continues to accumulate retained-data use across three real
+consumers and blocks stable graduation, not use of the labeled public alpha.
 
 The later server journey is:
 

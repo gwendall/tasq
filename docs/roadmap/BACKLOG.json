@@ -242,21 +242,19 @@
     },
     {
       "id": "TQ-609",
-      "status": "in_progress_implementation",
+      "status": "done",
       "milestone": "public-adoption",
       "dependsOn": ["TQ-603", "TQ-604", "TQ-605", "TQ-704"],
       "outcome": "Make every public command, example, product promise and Local limitation exact, executable and generated from current release truth",
-      "remaining": [
-        "fix-prefix-install-path-contract",
-        "remove-rendered-command-diff-markers",
-        "replace-illustrative-onboarding-json-with-real-contract",
-        "remove-nonexistent-sdk-api-example",
-        "update-pre-publication-prose",
-        "lead-with-concrete-multi-agent-coordination-problem",
-        "show-real-local-console-and-local-only-boundary",
-        "execute-every-displayed-command-in-ci"
-      ],
-      "evidence": ["docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md"]
+      "remaining": [],
+      "evidence": [
+        "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md",
+        "apps/site/test/public-commands.test.ts",
+        "apps/site/browser/site.pw.ts",
+        "apps/site/public/console-local.png",
+        "README.md",
+        "docs/concepts/PRODUCT_CONSUMPTION_SPEC.md"
+      ]
     },
     {
       "id": "TQ-610",

@@ -44,7 +44,7 @@ export default async function DocRoute({ params }: { params: Promise<{ slug: str
             {section.bullets ? (
               <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
             ) : null}
-            {section.code ? <div className="mt-6"><CodeWindow title="example">{section.code}</CodeWindow></div> : null}
+            {section.code ? <div className="mt-6"><CodeWindow title={section.codeTitle ?? "example"}>{section.code}</CodeWindow></div> : null}
             {section.callout ? (
               <div className="docs-callout"><Info aria-hidden="true" /><p>{section.callout}</p></div>
             ) : null}
