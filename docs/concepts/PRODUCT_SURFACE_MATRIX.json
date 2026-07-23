@@ -240,7 +240,7 @@
     },
     {
       "id": "simple_human_first_run",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": ["setup_explicit_space_and_actor", "add", "list", "done"]
     },
     {

@@ -24,37 +24,37 @@
     "agents": "https://tasq.run/agents/",
     "llms": "https://tasq.run/llms.txt",
     "integration": "https://tasq.run/integration.json",
-    "installer": "https://tasq.run/install-v0.1.0.sh"
+    "installer": "https://tasq.run/install-v0.1.1.sh"
   },
   "acquisition": {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "quickTry": [
-      ["bunx", "@tasq-run/cli@0.1.0", "version"],
-      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.0", "--", "tasq", "version"]
+      ["bunx", "@tasq-run/cli@0.1.1", "version"],
+      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.1", "--", "tasq", "version"]
     ],
     "persistentInstall": [
       "sh",
       "{downloadedInstallerPath}",
       "--version",
-      "0.1.0",
+      "0.1.1",
       "--prefix",
       "{absolutePrefix}"
     ],
     "inspectBeforeRun": [
-      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.1.0.sh"],
-      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.1.0", "--prefix", "{absolutePrefix}"]
+      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.1.1.sh"],
+      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.1.1", "--prefix", "{absolutePrefix}"]
     ],
     "uninstallPreservesData": true
   },
   "simpleHumanJourney": {
-    "support": "implemented_candidate_not_published",
+    "support": "implemented_certified",
     "minimumVersion": "0.1.1",
     "setupArgv": ["tasq", "setup", "--space", "{space}", "--actor", "{actor}"],
     "verbs": ["add", "list", "done"],
     "advancedCoordinationRequired": false
   },
   "isolatedDemo": {
-    "support": "implemented_candidate_not_published",
+    "support": "implemented_certified",
     "minimumVersion": "0.1.1",
     "argv": ["tasq", "demo", "--json"],
     "liveHomeConsulted": false,
@@ -117,7 +117,7 @@
       }
     },
     "deterministicHelper": {
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "minimumVersion": "0.1.1",
       "argv": ["tasq", "agent", "install", "{codex|claude|generic}", "--space", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}", "--json"]
     }

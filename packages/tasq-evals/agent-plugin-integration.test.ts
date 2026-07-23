@@ -59,7 +59,7 @@ describe("zero-context agent integration candidate", () => {
       agents: "https://tasq.run/agents/",
       llms: "https://tasq.run/llms.txt",
       integration: "https://tasq.run/integration.json",
-      installer: "https://tasq.run/install-v0.1.0.sh",
+      installer: "https://tasq.run/install-v0.1.1.sh",
     });
   });
 
@@ -88,8 +88,8 @@ describe("zero-context agent integration candidate", () => {
   test("freezes executable acquisition, MCP hosts and a non-secret project pointer", () => {
     const contract = readJson("docs/integrations/AGENT_INTEGRATIONS.json");
     expect(contract.acquisition.quickTry).toEqual([
-      ["bunx", "@tasq-run/cli@0.1.0", "version"],
-      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.0", "--", "tasq", "version"],
+      ["bunx", "@tasq-run/cli@0.1.1", "version"],
+      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.1", "--", "tasq", "version"],
     ]);
     expect(Object.keys(contract.mcp.hostRecipes)).toEqual(["codex", "claude", "generic"]);
     for (const host of ["codex", "claude"] as const) {
@@ -236,5 +236,41 @@ describe("zero-context agent integration candidate", () => {
     expect(behavioral.trials.every((trial: { pass: boolean; humanInterventions: number }) => (
       trial.pass && trial.humanInterventions === 0
     ))).toBe(true);
+  });
+
+  test("binds the shipped onboarding paths to certified v0.1.1 bytes", () => {
+    const certification = readJson("docs/contracts/TQ-610_RELEASE_CERTIFICATION.json");
+    const installer = readFileSync(resolve(root, "scripts/release/install-v0.1.1.sh"), "utf8");
+    expect(certification).toMatchObject({
+      contractVersion: "tasq.tq610-release-certification.v1",
+      status: "passed",
+      version: "0.1.1",
+      tag: "v0.1.1",
+      sourceCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
+      publication: {
+        npmTrustedPublishingPassed: true,
+        nativeTargets: ["darwin-arm64", "linux-x64-gnu"],
+        assetCount: 10,
+      },
+      postReleaseCertification: {
+        registryTarballsMatched: true,
+        attestationsVerified: true,
+        lifecyclePassed: true,
+        migrationPassed: true,
+        publicAdoptionPassed: true,
+        interactiveRuntimePassed: true,
+      },
+      acquisition: {
+        simpleHumanJourney: "implemented_certified",
+        isolatedDemo: "implemented_certified",
+        agentInstallHelper: "implemented_certified",
+        publicAgentEntrypoints: "implemented_certified",
+      },
+      remaining: [],
+    });
+    for (const digest of Object.values(certification.checksumManifests as Record<string, string>)) {
+      expect(digest).toMatch(/^sha256:[a-f0-9]{64}$/);
+      expect(installer).toContain(digest.slice("sha256:".length));
+    }
   });
 });

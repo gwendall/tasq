@@ -6,38 +6,38 @@
   "distribution": {
     "mode": "npm_and_github_release",
     "published": true,
-    "version": "0.1.0",
-    "tag": "v0.1.0",
+    "version": "0.1.1",
+    "tag": "v0.1.1",
     "repository": "https://github.com/gwendall/tasq",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
     "packages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.1.0"
+        "version": "0.1.1"
       }
     ],
     "cliTargets": [
@@ -46,9 +46,9 @@
     ],
     "integrity": {
       "kind": "npm-provenance-and-github-attestation",
-      "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-      "releaseManifestPattern": "tasq-v0.1.0-{target}.release.json",
-      "checksumPattern": "tasq-v0.1.0-{target}.SHA256SUMS"
+      "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
+      "releaseManifestPattern": "tasq-v0.1.1-{target}.release.json",
+      "checksumPattern": "tasq-v0.1.1-{target}.SHA256SUMS"
     }
   },
   "requirements": [
@@ -80,7 +80,7 @@
           "--prefix",
           "{installPrefix}",
           "--ignore-scripts",
-          "@tasq-run/cli@0.1.0"
+          "@tasq-run/cli@0.1.1"
         ],
         "mutatesHost": true
       }

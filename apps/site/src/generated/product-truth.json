@@ -40,10 +40,10 @@
       "candidate_targets_clean_room_certified": true,
       "agent_integration_candidate_certified": true
     },
-    "version": "0.1.0",
-    "tag": "v0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.0"
+    "version": "0.1.1",
+    "tag": "v0.1.1",
+    "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1"
   },
   "productShapes": [
     {
@@ -398,7 +398,7 @@
     },
     {
       "id": "simple_human_first_run",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": [
         "setup_explicit_space_and_actor",
         "add",
@@ -543,7 +543,7 @@
     },
     {
       "id": "TQ-610",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "public-adoption",
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous"
     },
@@ -684,17 +684,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "dcf3bda8fdf0ec007b3c2c4e318a4bc9ad1288260b2c5d43fda97376c8c8e5bb"
+      "sha256": "7ef1a718d422554cd93ea1ca6513454dce7a4df535d675b753b512e3d009d2c8"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "24b5c5c67b7e259ab32b0e132588daab483d00d917e0a42d40fac470a6956d80"
+      "sha256": "14c8840444b95d6e061fae04707f577b909a5f8e2403a8a29afe2b5e0505b461"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "35b2d6a6aef207dcdff911dfafeecdcefcdb43d86b5f735d0681b2038253e7bf"
+      "sha256": "3e2ccf36f274e239c0b21a51db081ca4b2a29fdddcfd2d62fd30a698bbbfa2b5"
     }
   ]
 }

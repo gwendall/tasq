@@ -1,16 +1,16 @@
 # TQ-610 - Acquisition lifecycle and universal agent entrypoint
 
-**Status:** implementation and public-main native agent certification complete;
-protected `v0.1.1` publication and downloaded-byte recertification pending
+**Status:** complete; protected `v0.1.1` publication, downloaded-byte
+certification and native agent certification passed
 
 ## Outcome
 
 Tasq now has a progressive adoption path that does not require repository
 knowledge:
 
-1. `bunx @tasq-run/cli@0.1.0 version` and the equivalent pinned `npm exec`
+1. `bunx @tasq-run/cli@0.1.1 version` and the equivalent pinned `npm exec`
    command prove the package identity without persistent installation.
-2. `https://tasq.run/install-v0.1.0.sh` is a repository-owned, inspectable
+2. `https://tasq.run/install-v0.1.1.sh` is a repository-owned, inspectable
    lifecycle bootstrap. It selects only a certified host target, authenticates
    the release checksum manifest against a digest pinned in source, verifies
    every downloaded asset and delegates atomic side-by-side activation to the
@@ -68,10 +68,16 @@ argument boundary.
   public `main` commit `bbab02d`, the exact behavioral-evidence digest and
   zero-intervention native Codex/Claude trials.
 
-## Remaining release gate
+## Release evidence
 
-`setup`, `demo` and `agent install` are source candidates until the protected
-`v0.1.1` tag workflow publishes immutable npm/native bytes and the
-cross-platform downloaded-byte certification passes. Public machine truth
-continues to label those three commands
-`implemented_candidate_not_published` until that evidence exists.
+Protected workflow run
+[`30037044905`](https://github.com/gwendall/tasq/actions/runs/30037044905)
+published the immutable `v0.1.1` npm/native release from source commit
+`1005f16642c23f3a470838055ea2d701c1eaa395`. Post-release run
+[`30037272412`](https://github.com/gwendall/tasq/actions/runs/30037272412)
+matched every registry tarball and replayed attestations, lifecycle, migration,
+public adoption and interactive runtime on both supported targets. Public
+machine truth therefore labels `setup`, `demo` and `agent install`
+`implemented_certified`. The exact release coordinates, checksum-manifest
+digests and zero-remaining-work assertion are frozen in
+`TQ-610_RELEASE_CERTIFICATION.json`.

@@ -1,6 +1,6 @@
 # TQ-603 public release contract
 
-**Status:** protected `v0.1.0` packages and native assets published;
+**Status:** protected `v0.1.1` packages and native assets published;
 post-release exact-byte replays active
 **Contracts:** `tasq.public-release.v1`, `tasq.public-packages.v1`, `tasq.public-source-export.v1`
 
@@ -51,8 +51,8 @@ The lifecycle candidate extends that clean-room gate through side-by-side
 install, two-agent contention/recovery, Console inspection, backup, upgrade,
 snapshot-and-binary rollback and data-preserving uninstall. See
 `TQ-604_LIFECYCLE_CERTIFICATION.md`. Published-byte certification passed
-against the immutable `v0.1.0` download on both supported targets in run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266).
+against the immutable `v0.1.1` download on both supported targets in run
+[30037272412](https://github.com/gwendall/tasq/actions/runs/30037272412).
 
 A local output is always an **unpublishable candidate**. Only the protected tag
 workflow in the canonical repository may attach GitHub/Sigstore build
@@ -107,7 +107,7 @@ protected candidate under the non-default `alpha-bootstrap` tag, their registry
 integrity and `gitHead` match, and every identity is bound to the protected
 release workflow through npm OIDC. The GitHub bootstrap secret is deleted and
 the granular token is revoked. See
-`TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json`. The supported `v0.1.0` packages and
+`TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json`. The current supported `v0.1.1` packages and
 downloadable artifacts were published from protected run
 [30011315256](https://github.com/gwendall/tasq/actions/runs/30011315256);
 their immutable coordinates and recovery of the final GitHub Release step are

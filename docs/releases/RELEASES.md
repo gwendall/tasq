@@ -20,8 +20,8 @@ precondition is handled once by the protected `bootstrap-npm.yml` workflow: it
 uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
-seven packages. `v0.1.0` and all seven packages are now published; TQ-604
-certifies their complete lifecycle without a repository checkout on both
+seven packages. Current `v0.1.1` and all seven packages are published; the
+post-release workflow certifies their complete lifecycle without a repository checkout on both
 supported targets. TQ-607 remains the retained-data gate for stable graduation,
 not for the explicitly labeled pre-1.0 alpha.
 
@@ -29,7 +29,7 @@ The implemented candidate builder is:
 
 ```bash
 bun scripts/release/build-public-release.ts \
-  --version 0.1.0 \
+  --version 0.1.1 \
   --source-commit <40-character-git-commit> \
   --target darwin-arm64 \
   --outdir ./release

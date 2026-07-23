@@ -54,13 +54,13 @@ availability starts only after an explicitly authorized protected attested
 release.
 
 Public source launch occurred on 2026-07-22 and protected public alpha
-`v0.1.0` was published on 2026-07-23. TQ-607 private dogfood remains the
+`v0.1.1` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
 stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may install `0.1.0`, build from
+`go`, `extend` or `no_go` decision. Early users may install `0.1.1`, build from
 source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
@@ -74,8 +74,8 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. Those assets are published at immutable `v0.1.0`. Protected run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
+`TASQ_HOME`. The current assets are published at immutable `v0.1.1`. Protected run
+[30037272412](https://github.com/gwendall/tasq/actions/runs/30037272412)
 downloaded them, verified every attestation and passed the lifecycle on both
 supported targets, closing TQ-604.
 
@@ -90,7 +90,7 @@ TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
 discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
 are certified without a checkout or hidden service; the same path now also
-passes from exact `v0.1.0` published bytes on both supported targets.
+passes from exact `v0.1.1` published bytes on both supported targets.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
@@ -111,12 +111,10 @@ TQ-610's source implementation now provides two pinned no-install package
 runners, a repository-owned versioned native lifecycle bootstrap, stable
 `/SKILL.md`, `/agents`, `/llms.txt` and `/integration.json` entrypoints, exact
 Codex/Claude/generic MCP registration recipes and a non-secret project
-rendezvous schema that is never activated from cwd. The `v0.1.0` installer
-path is executable and tested against the real published assets. One-command
-human `setup`, the isolated `demo` and the deterministic `agent install`
-helper are implemented and tested in source, but remain
-`implemented_candidate_not_published` until protected `v0.1.1` package/native
-publication and downloaded-byte recertification pass. See
+rendezvous schema that is never activated from cwd. The `v0.1.1` installer,
+one-command human `setup`, isolated `demo` and deterministic `agent install`
+helper are published and pass downloaded-byte certification on macOS ARM64
+and Linux x64 GNU. These paths are `implemented_certified`. See
 `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
 
 TQ-321 certifies integrations `0.1.1` and `0.1.2` on native Codex and Claude
@@ -142,7 +140,7 @@ receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
-Exact `v0.1.0` published bytes now migrate the populated format-5 fixture and
+Exact `v0.1.1` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. Exact N-2 protected lines become a
 mandatory boundary once three protected release lines exist; see
 `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
@@ -163,8 +161,8 @@ artifacts/evidence, cursor-only restart across separate adapter processes,
 stale claim/fence rejection at the protected effect gate and explicit
 completion. No new Core entity or runtime-specific enum was required. Local autonomous onboarding now
 also advertises additive retry-safe attempt recipes and an exact audit-resume
-recipe. Protected run 30015923266 replayed the same fixture from exact
-`@tasq-run/*@0.1.0` registry tarballs on both targets, closing TQ-320. The
+recipe. Protected run 30037272412 replayed the same fixture from exact
+`@tasq-run/*@0.1.1` registry tarballs on both targets, closing TQ-320. The
 private Denshin journey remains separate product-learning evidence.
 
 The same clean-room trial found and closed an Embedded Core packaging gap:

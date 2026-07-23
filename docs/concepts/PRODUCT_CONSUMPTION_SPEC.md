@@ -43,7 +43,7 @@ Core owns no network listener, login, browser session, provider credential,
 workflow runtime, human policy or hosted control plane.
 
 **Current state:** implemented in the canonical standalone repository. The
-seven `@tasq-run/*@0.1.0` packages are published from protected OIDC CI with npm
+seven `@tasq-run/*@0.1.1` packages are published from protected OIDC CI with npm
 provenance. Core is a low-level embedded API; a smaller high-level client is a
 separate roadmap item, not an API that the current package pretends to expose.
 
@@ -66,9 +66,9 @@ authentication.
 **Current state:** behavior and candidate install/upgrade/uninstall are
 certified on Linux/macOS, including foreground Console discovery from the
 installed artifact, and TQ-321 zero-context Codex/Claude integration is
-certified. The seven `@tasq-run/*@0.1.0` packages and the attested native
+certified. The seven `@tasq-run/*@0.1.1` packages and the attested native
 macOS-arm64/Linux-x64 assets are published from protected OIDC CI at immutable
-tag `v0.1.0`; the historical non-default bootstrap tag is not a supported
+tag `v0.1.1`; the historical non-default bootstrap tag is not a supported
 install channel. TQ-608 is certified from the exact published release on both
 supported targets.
 TQ-607 continues as the stable-graduation gate.
@@ -118,14 +118,14 @@ product to be useful.
 | Local CLI | `tasq ...` | Published public alpha | Bun 1.3+; macOS arm64 and Linux x64 |
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; no remote MCP |
-| Embedded Core | `@tasq-run/core@0.1.0` | Published public alpha | Trusted in-process integration; no runtime ownership |
+| Embedded Core | `@tasq-run/core@0.1.1` | Published public alpha | Trusted in-process integration; no runtime ownership |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
 | Generic agent entrypoints | `/SKILL.md`; `/agents/`; `/llms.txt`; `/integration.json` | Implemented static guidance and host recipes | Explicit executable/store/space/actor still required |
-| Progressive human setup | `tasq setup`; `tasq demo` | Implemented source candidate for `v0.1.1` | Not public until protected downloaded-byte certification |
+| Progressive human setup | `tasq setup`; `tasq demo` | Published and certified in `v0.1.1` | Explicit space and actor; demo is isolated |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
-| Protocol adapters | `@tasq-run/protocol-adapters@0.1.0` | Published public alpha | Mapping only; no transport or completion authority |
-| Extension SDK | `@tasq-run/extension-sdk@0.1.0` | Published public alpha | Trusted in-process code; no provider authority |
+| Protocol adapters | `@tasq-run/protocol-adapters@0.1.1` | Published public alpha | Mapping only; no transport or completion authority |
+| Extension SDK | `@tasq-run/extension-sdk@0.1.1` | Published public alpha | Trusted in-process code; no provider authority |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
@@ -209,7 +209,7 @@ services, and map external runtime tasks to attempts/artifacts rather than
 completion.
 
 **Support:** implemented and clean-room tested from the exact published
-`@tasq-run/core@0.1.0` tarball on macOS arm64 and Linux x64. The current surface
+`@tasq-run/core@0.1.1` tarball on macOS arm64 and Linux x64. The current surface
 is intentionally low level and Bun-oriented.
 
 ### 4.6 Interactive agent runtime or control-plane integrator
@@ -227,7 +227,7 @@ success alone.
 **Support:** the required kernel records and embedded/CLI/local-MCP integration
 surfaces exist. TQ-304 certifies durable workflow runtimes; the distinct
 interactive conversation/run shape is certified from clean-room candidates
-and the exact published `0.1.0` package tarballs on both supported targets.
+and the exact published `0.1.1` package tarballs on both supported targets.
 
 **Non-claim:** Tasq does not launch the agent, stream its terminal, own its
 conversation, choose its machine or authenticate a remote control plane.
@@ -355,7 +355,7 @@ learn -> install -> verify -> create/join workspace -> connect first agent
       -> upgrade -> backup/restore -> uninstall without data loss
 ```
 
-The complete Local journey is certified from the exact published `v0.1.0`
+The complete Local journey is certified from the exact published `v0.1.1`
 packages and native assets on macOS arm64 and Linux x64. ADR-008 fixes the Tasq
 identity, Apache-2.0 license, `@tasq-run/*` package boundary and dedicated
 repository. TQ-607 continues to accumulate retained-data use across three real

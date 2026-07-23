@@ -1,0 +1,46 @@
+{
+  "contractVersion": "tasq.tq610-release-certification.v1",
+  "status": "passed",
+  "version": "0.1.1",
+  "tag": "v0.1.1",
+  "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
+  "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
+  "publication": {
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037044905",
+    "publishedAt": "2026-07-23T19:15:44Z",
+    "npmTrustedPublishingPassed": true,
+    "nativeTargets": ["darwin-arm64", "linux-x64-gnu"],
+    "assetCount": 10
+  },
+  "postReleaseCertification": {
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037272412",
+    "certifiedAt": "2026-07-23T19:17:28Z",
+    "registryTarballsMatched": true,
+    "attestationsVerified": true,
+    "lifecyclePassed": true,
+    "migrationPassed": true,
+    "publicAdoptionPassed": true,
+    "interactiveRuntimePassed": true
+  },
+  "checksumManifests": {
+    "darwin-arm64": "sha256:153559265b9ec788cb5be8c94c267006c525090fcc268df2c00fd38ba26a2637",
+    "linux-x64-gnu": "sha256:257ea51b3f22c42166bb84fe36aebfdd5bf3ef8bafc5798a3c12f178ecb4415f"
+  },
+  "publicInstaller": {
+    "current": "https://tasq.run/install.sh",
+    "versioned": "https://tasq.run/install-v0.1.1.sh",
+    "previousVersionRetained": "https://tasq.run/install-v0.1.0.sh",
+    "shellStartupMutation": false,
+    "uninstallPreservesData": true
+  },
+  "acquisition": {
+    "quickTryPassed": true,
+    "persistentInstallPassed": true,
+    "simpleHumanJourney": "implemented_certified",
+    "isolatedDemo": "implemented_certified",
+    "agentInstallHelper": "implemented_certified",
+    "publicAgentEntrypoints": "implemented_certified",
+    "nativeAgentCertification": "TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json"
+  },
+  "remaining": []
+}

@@ -241,47 +241,47 @@
     "publishedSupportGranted": false
   },
   "publishedRelease": {
-    "version": "0.1.0",
-    "tag": "v0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30011315256",
-    "publishedAt": "2026-07-23T13:31:46Z",
+    "version": "0.1.1",
+    "tag": "v0.1.1",
+    "sourceCommit": "1005f16642c23f3a470838055ea2d701c1eaa395",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037044905",
+    "publishedAt": "2026-07-23T19:15:44Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.1.0"
+        "version": "0.1.1"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.1.0"
+        "version": "0.1.1"
       }
     ],
     "certification": "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
     "postReleaseCertification": {
       "status": "passed",
-      "certifiedAt": "2026-07-23T14:29:19Z",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+      "certifiedAt": "2026-07-23T19:17:28Z",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30037272412",
       "targets": ["darwin-arm64", "linux-x64-gnu"],
       "registryTarballsMatched": true,
       "downloadedByteLifecyclePassed": true,

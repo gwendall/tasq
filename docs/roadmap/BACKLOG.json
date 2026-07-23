@@ -258,24 +258,16 @@
     },
     {
       "id": "TQ-610",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "public-adoption",
       "dependsOn": ["TQ-609"],
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous",
-      "remaining": [
-        "publish-versioned-verified-install-script",
-        "certify-bunx-and-npm-exec-try-paths",
-        "ship-explicit-human-setup-and-three-command-simple-journey",
-        "publish-skill-agents-and-llms-entrypoints",
-        "add-deterministic-agent-install-helper",
-        "publish-mcp-host-configurations",
-        "add-isolated-demo-journey",
-        "freeze-non-secret-explicit-project-rendezvous-contract"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md",
         "docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md",
         "docs/contracts/TQ-610_AGENT_ENTRYPOINT_CERTIFICATION.json",
+        "docs/contracts/TQ-610_RELEASE_CERTIFICATION.json",
         "evidence/tq-321/latest.json",
         "apps/site/test/public-commands.test.ts",
         "packages/tasq-cli/test/e2e.test.ts",
