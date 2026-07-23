@@ -121,6 +121,8 @@ product to be useful.
 | Embedded Core | `@tasq-run/core@0.1.0` | Published public alpha | Trusted in-process integration; no runtime ownership |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
+| Generic agent entrypoints | `/SKILL.md`; `/agents/`; `/llms.txt`; `/integration.json` | Implemented static guidance and host recipes | Explicit executable/store/space/actor still required |
+| Progressive human setup | `tasq setup`; `tasq demo` | Implemented source candidate for `v0.1.1` | Not public until protected downloaded-byte certification |
 | Markdown | `tasq projection` | Implemented projection | Never a write surface |
 | Protocol adapters | `@tasq-run/protocol-adapters@0.1.0` | Published public alpha | Mapping only; no transport or completion authority |
 | Extension SDK | `@tasq-run/extension-sdk@0.1.0` | Published public alpha | Trusted in-process code; no provider authority |
@@ -142,9 +144,10 @@ product to be useful.
 **Irreducible input:** an executable pointer, explicit workspace, stable actor
 label, requested capability envelope and task intent.
 
-**Path:** execute `tasq onboard`, validate the versioned response, then execute
-only returned argument-array recipes. Read before mutation. Persist returned
-IDs and event cursors.
+**Path:** acquire the executable from `/adopt.json`, or start from the stable
+`/SKILL.md` and `/integration.json` pointers; execute `tasq onboard`, validate
+the versioned response, then execute only returned argument-array recipes.
+Read before mutation. Persist returned IDs and event cursors.
 
 **Support:** certified across Python, Node, POSIX+jq, Codex, Claude Code and
 OpenCode configurations.
@@ -162,7 +165,8 @@ registered.
 
 **Support:** implemented for read, propose and coordinate; effect capability
 requires a trusted embedded authority resolver and is absent from generic
-stdio.
+stdio. Exact Codex, Claude Code and generic host recipes are published without
+ambient registration.
 
 **Non-claim:** an MCP client cannot choose another workspace, grant itself a
 capability, self-approve an effect or use the current transport remotely.
@@ -173,10 +177,13 @@ capability, self-approve an effect or use the current transport remotely.
 agent activity.
 
 **Path:** mutate with the CLI; use human CLI output, Markdown projection and
-Local Console for inspection.
+Local Console for inspection. The `v0.1.1` source candidate adds one explicit
+`setup` command and a temporary isolated `demo` before the simple
+`add -> list -> done` journey.
 
-**Support:** complete for technical users, incomplete for users who require a
-form-based task manager or mobile UI.
+**Support:** complete for technical users. Progressive setup is implemented
+but not yet in protected published bytes. A form-based task manager and mobile
+UI remain outside the current product.
 
 ### 4.4 Human operator
 
@@ -283,6 +290,13 @@ versioned causal pointer. It returns the published package coordinates,
 acquisition argv, working-directory and placeholder contracts, then an
 onboarding argv template. Its integrity block binds the immutable release
 commit, checksums and GitHub attestation pattern.
+
+For a machine starting without host-specific integration knowledge,
+`/integration.json` supplies the versioned public entrypoints, pinned try
+commands and parameterized MCP recipes. A project rendezvous descriptor is
+accepted only when a user or trusted project instruction points to it
+explicitly; Tasq never searches cwd for one, and the descriptor contains no
+actor identity, credential or effect authority.
 
 ## 5. Use-case map
 

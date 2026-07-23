@@ -32,19 +32,27 @@ export const docPages: DocPage[] = [
         : "Clone and build Tasq Local from the public canonical source, create a workspace, then hand any shell-capable agent a bounded onboarding response.",
     sections: [
       {
+        title: "Try it without installing",
+        body: [
+          "Use either supported package runner to execute the exact scoped public package once. This does not create a persistent Tasq program installation or touch a ledger.",
+        ],
+        code: publicCodeExamples.quickTry.display,
+        codeTitle: publicCodeExamples.quickTry.title,
+      },
+      {
         title: published ? "Install the public alpha" : "Current installation path",
         body: [
           published
-            ? `Tasq Local ${releaseVersion} is a public alpha. Install the scoped CLI into an explicit prefix, then invoke the exact executable path shown below. Removing that prefix never removes your ledger.`
+            ? `Tasq Local ${releaseVersion} is a public alpha. The versioned installer selects only a certified platform asset, verifies the pinned checksum manifest and installs side by side without editing your shell files.`
             : "Tasq is public alpha source. There is no published npm package or downloadable release yet, so clone the canonical repository and use the deterministic source-build path below.",
         ],
         code: published
-          ? publicCodeExamples.install.display
+          ? publicCodeExamples.nativeInstall.display
           : "git clone https://github.com/gwendall/tasq.git\ncd tasq\npnpm install --frozen-lockfile\npnpm typecheck && pnpm test\npnpm build:cli\n./dist/cli/index.js version",
-        codeTitle: published ? publicCodeExamples.install.title : "source build",
+        codeTitle: published ? publicCodeExamples.nativeInstall.title : "source build",
         callout:
           published
-            ? "Do not install the unrelated unscoped package named tasq. The official package is @tasq-run/cli; its executable is tasq. Verify the exact version and provenance through the linked GitHub release or /adopt.json."
+            ? "Inspect the downloaded script before running it. Uninstall removes only managed program files; TASQ_HOME, the ledger and backups remain untouched. The npm-prefix path remains available in /adopt.json for machine acquisition."
             : "Do not install the unrelated unscoped npm package named tasq. Future packages use the @tasq-run scope; the executable remains tasq. Machine consumers can fetch /adopt.json for the same public source-build path as argv arrays.",
       },
       {

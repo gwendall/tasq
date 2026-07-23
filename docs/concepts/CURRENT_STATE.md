@@ -107,9 +107,24 @@ Console inspection. The exact published-byte replay now passes on both targets.
 One independent real-human blind session remains the sole external gate; no
 human-usability completion is inferred from the automated proxy.
 
-TQ-321 now certifies native integrations for Codex and Claude Code. Both host
-marketplaces install the same versioned safety skill and pass isolated
-clean-home install, two-process behavioral and uninstall trials. The skill obtains an absent
+TQ-610's source implementation now provides two pinned no-install package
+runners, a repository-owned versioned native lifecycle bootstrap, stable
+`/SKILL.md`, `/agents`, `/llms.txt` and `/integration.json` entrypoints, exact
+Codex/Claude/generic MCP registration recipes and a non-secret project
+rendezvous schema that is never activated from cwd. The `v0.1.0` installer
+path is executable and tested against the real published assets. One-command
+human `setup`, the isolated `demo` and the deterministic `agent install`
+helper are implemented and tested in source, but remain
+`implemented_candidate_not_published` until protected `v0.1.1` package/native
+publication and downloaded-byte recertification pass. See
+`../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
+
+TQ-321 certifies integration `0.1.1` on native Codex and Claude Code.
+Integration `0.1.2`, changed by TQ-610, is explicitly a candidate until the
+same public-main native harness emits a new certificate. Both host marketplaces
+install the same versioned safety skill and the certified version passes
+isolated clean-home install, two-process behavioral and uninstall trials. The
+skill obtains an absent
 executable through `/adopt.json`, requires an explicit space and stable actor,
 uses already host-bound MCP when present and otherwise starts with CLI JSON
 onboarding. It never mirrors a runtime scratchpad. Both blind agents read before

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
@@ -41,6 +41,8 @@ afterAll(async () => {
 describe("displayed public commands", () => {
   test("keeps every code example classified and free of rendered diff markers", () => {
     expect(Object.keys(publicCodeExamples)).toEqual([
+      "quickTry",
+      "nativeInstall",
       "install",
       "onboard",
       "mcp",
@@ -54,6 +56,35 @@ describe("displayed public commands", () => {
       expect(example.display).not.toMatch(/(?:^|\n)\s*\+/);
     }
   });
+
+  test("executes both exact one-shot package runners", async () => {
+    const result = await runShell(publicCodeExamples.quickTry.display);
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout.trim().split("\n")).toEqual(["0.1.0", "0.1.0"]);
+  }, 30_000);
+
+  test("runs the generated verified installer lifecycle without touching data", async () => {
+    const prefix = resolve(home, "native-prefix");
+    const liveHome = resolve(home, "live-tasq-home");
+    await mkdir(liveHome, { recursive: true });
+    const marker = resolve(liveHome, "ledger-marker");
+    await writeFile(marker, "preserve-me");
+    const installer = resolve(repositoryRoot, "apps/site/public/install-v0.1.0.sh");
+
+    const dryRun = await runShell(`sh "${installer}" --dry-run --version 0.1.0 --prefix "${prefix}"`);
+    expect(dryRun.exitCode, dryRun.stderr).toBe(0);
+    expect(dryRun.stdout).toContain("checksum-of-checksums");
+
+    const install = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --version 0.1.0 --prefix "${prefix}"`);
+    expect(install.exitCode, install.stderr).toBe(0);
+    const version = await runShell(`"${prefix}/bin/tasq" version`);
+    expect(version.exitCode, version.stderr).toBe(0);
+    expect(version.stdout.trim()).toBe("0.1.0");
+
+    const uninstall = await runShell(`TASQ_HOME="${liveHome}" sh "${installer}" --uninstall --version 0.1.0 --prefix "${prefix}"`);
+    expect(uninstall.exitCode, uninstall.stderr).toBe(0);
+    expect(await readFile(marker, "utf8")).toBe("preserve-me");
+  }, 120_000);
 
   test("installs the exact published CLI and executes every displayed Local command", async () => {
     const install = await runShell(publicCodeExamples.install.display);

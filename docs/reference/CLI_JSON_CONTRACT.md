@@ -105,6 +105,27 @@ that would duplicate domain data and break the existing raw-object interface.
 If an incompatible v2 is ever required, it must be opt-in through a new CLI
 surface before the v1 surface is retired.
 
+## Progressive adoption envelopes
+
+These source-candidate commands are independently versioned and become public
+only in the protected `v0.1.1` release:
+
+- `tasq setup --space <id> --actor <label> --json` returns
+  `tasq.human-setup.v1` with `contractVersion`, `disposition`, `space`,
+  `actor`, `configPath`, `nextArgv` and `boundary`. It validates identities and
+  joins the space before atomically persisting the selected human defaults.
+- `tasq demo --json` returns `tasq.isolated-demo.v1` with
+  `contractVersion`, `isolation`, `liveHomeConsulted`, `setup`, `created`,
+  `before`, `completed` and `after`. Every nested command executes in a
+  temporary `TASQ_HOME` removed before the parent command exits.
+- `tasq agent install <host> ... --json` returns
+  `tasq.agent-install-plan.v1` with `contractVersion`, `host`, `executable`,
+  `space`, `actor`, `capabilities`, `mutatesHost`, `applyArgv`,
+  `genericTarget`, `configuration`, `authority` and `applied`. Preview is the
+  default. `--apply` delegates Codex/Claude mutation to the host CLI; generic
+  application creates one explicit absolute target and refuses overwrite.
+  Requested capabilities never grant effect authority.
+
 ## Executable, backup and portability envelopes
 
 These additive operational surfaces are independently versioned:

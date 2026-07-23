@@ -248,6 +248,110 @@ describe("CLI meta commands", () => {
   });
 });
 
+describe("progressive public adoption", () => {
+  it("persists one explicit human setup then supports bare add, list and done", async () => {
+    const home = await freshHome();
+    const setup = JSON.parse((await runOk(home, [
+      "setup", "--space", "personal/default", "--actor", "gwendall", "--json",
+    ])).stdout);
+    expect(setup).toMatchObject({
+      contractVersion: "tasq.human-setup.v1",
+      disposition: "created",
+      space: "personal/default",
+      actor: "gwendall",
+      boundary: "local-explicit-store",
+    });
+
+    const created = JSON.parse((await runOk(home, [
+      "add", "Buy milk", "--next", "Open the shopping list", "--json",
+    ])).stdout);
+    const listed = JSON.parse((await runOk(home, ["list", "--json"])).stdout);
+    expect(listed.map((task: { id: string }) => task.id)).toContain(created.id);
+    const completed = JSON.parse((await runOk(home, ["done", created.id, "--json"])).stdout);
+    expect(completed.status).toBe("done");
+
+    const config = JSON.parse((await runOk(home, ["config", "show", "--json"])).stdout);
+    expect(config).toMatchObject({ tenantId: "personal/default", defaultActor: "gwendall" });
+    const inspected = JSON.parse((await runOk(home, ["inspect", created.id, "--json"])).stdout);
+    expect(inspected.claims).toEqual([]);
+    expect(inspected.attempts).toEqual([]);
+    expect(inspected.evidence).toEqual([]);
+  });
+
+  it("runs the demo in a temporary home without changing a live ledger", async () => {
+    const home = await freshHome();
+    await runOk(home, [
+      "setup", "--space", "live/private", "--actor", "gwendall", "--json",
+    ]);
+    await runOk(home, ["add", "Keep this live", "--json"]);
+    const dbPath = join(home, ".tasq", "db.sqlite");
+    const before = readFileSync(dbPath);
+
+    const demo = JSON.parse((await runOk(home, ["demo", "--json"])).stdout);
+    expect(demo).toMatchObject({
+      contractVersion: "tasq.isolated-demo.v1",
+      isolation: "temporary-home-removed-after-run",
+      liveHomeConsulted: false,
+      completed: { status: "done" },
+    });
+    expect(demo.after.claims).toEqual([]);
+    expect(demo.after.attempts).toEqual([]);
+    expect(demo.after.evidence).toEqual([]);
+    expect(readFileSync(dbPath)).toEqual(before);
+    const live = JSON.parse((await runOk(home, ["list", "--json"])).stdout);
+    expect(live).toHaveLength(1);
+    expect(live[0].title).toBe("Keep this live");
+  });
+
+  it("previews exact host MCP registration and writes generic config only explicitly", async () => {
+    const home = await freshHome();
+    const plan = JSON.parse((await runOk(home, [
+      "agent", "install", "codex",
+      "--space", "robotics/team-a",
+      "--actor", "codex:gwendall",
+      "--capabilities", "read,coordinate",
+      "--json",
+    ])).stdout);
+    expect(plan).toMatchObject({
+      contractVersion: "tasq.agent-install-plan.v1",
+      host: "codex",
+      space: "robotics/team-a",
+      actor: "codex:gwendall",
+      capabilities: ["read", "coordinate"],
+      mutatesHost: false,
+      applied: false,
+      authority: {
+        effectAuthority: "not_granted",
+        repositoryDescriptorActivation: "explicit-trust-required",
+      },
+    });
+    expect(plan.applyArgv.slice(0, 6)).toEqual(["codex", "mcp", "add", "tasq", "--", plan.executable]);
+    expect(existsSync(join(home, ".codex", "config.toml"))).toBe(false);
+
+    const target = join(home, "generic", "mcp.json");
+    const applied = JSON.parse((await runOk(home, [
+      "agent", "install", "generic",
+      "--space", "robotics/team-a",
+      "--actor", "generic:gwendall",
+      "--target", target,
+      "--apply",
+      "--json",
+    ])).stdout);
+    expect(applied.applied).toBe(true);
+    expect(JSON.parse(readFileSync(target, "utf8"))).toEqual(applied.configuration);
+    const overwrite = await runCli(home, [
+      "agent", "install", "generic",
+      "--space", "robotics/team-a",
+      "--actor", "generic:gwendall",
+      "--target", target,
+      "--apply",
+      "--json",
+    ]);
+    expect(overwrite.exitCode).toBe(1);
+    expect(overwrite.stderr).toContain("refusing to overwrite");
+  });
+});
+
 describe("autonomous zero-integrator bootstrap", () => {
   it("creates then joins an explicit space and returns scoped executable argv recipes", async () => {
     const home = await freshHome();

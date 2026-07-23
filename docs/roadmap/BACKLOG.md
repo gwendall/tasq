@@ -168,13 +168,16 @@ Server/Cloud breadth remains behind published-byte Local certification.
   removed. Site tests execute the displayed install, onboarding, MCP, Console,
   operations and Core examples against the published release; browser
   acceptance verifies the real Local Console evidence and Local-only boundary.
-- **TQ-610:** provide verified `bunx`/`npm exec` try paths, a versioned
-  checksum/provenance-verifying persistent installer, stable `/SKILL.md`,
-  `/agents` and `/llms.txt` entrypoints, deterministic host integration,
-  copyable MCP configurations, an isolated demo, an explicit non-secret
-  project rendezvous contract and one human setup followed by the
-  `add -> list -> done` simple journey. Advanced coordination stays outside the
-  first-run path.
+- **TQ-610 — implementation complete, release certification in progress:**
+  verified `bunx`/`npm exec` try paths, the versioned checksum-authenticating
+  persistent installer, stable `/SKILL.md`, `/agents`, `/llms.txt` and
+  `/integration.json` entrypoints, explicit Codex/Claude/generic MCP recipes,
+  an isolated demo, the non-secret project rendezvous schema and the one-command
+  human setup are implemented. The current `v0.1.0` installer is executable
+  from public source. `setup`, `demo` and `agent install` remain candidate-only
+  until protected `v0.1.1` npm/native publication and downloaded-byte
+  recertification pass. See
+  `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
 - **TQ-611:** expose a real high-level local TypeScript client with explicit
   workspace, actor and clock. Certify the actual Bun/Node boundary, publish
   compiled ESM and declarations where supported, and generate every SDK

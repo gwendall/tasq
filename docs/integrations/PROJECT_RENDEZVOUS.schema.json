@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tasq.run/schemas/project-rendezvous.v1.schema.json",
+  "title": "Tasq explicit project rendezvous descriptor v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "activation",
+    "transport",
+    "space",
+    "agentInstructions",
+    "requestedCapabilities"
+  ],
+  "properties": {
+    "contractVersion": { "const": "tasq.project-rendezvous.v1" },
+    "activation": { "const": "explicit-user-or-trusted-project-instruction-required" },
+    "transport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "homeReference"],
+      "properties": {
+        "kind": { "const": "local" },
+        "homeReference": { "const": "TASQ_HOME" }
+      }
+    },
+    "space": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "agentInstructions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url"],
+      "properties": {
+        "url": { "const": "https://tasq.run/SKILL.md" }
+      }
+    },
+    "requestedCapabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["read", "propose", "coordinate"] },
+      "contains": { "const": "read" }
+    }
+  }
+}

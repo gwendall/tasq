@@ -215,12 +215,12 @@
   },
   "releaseAuthorization": {
     "state": "authorized",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-07-23",
-    "rationale": "Publish Tasq Local as an explicitly labeled public alpha to obtain real adopter feedback while retained-data dogfood continues as the stable-graduation gate."
+    "rationale": "Publish the backwards-compatible acquisition and universal agent-onboarding increment so public users can install, demo and configure Tasq without repository knowledge. Retained-data dogfood remains the stable-graduation gate."
   },
   "npmBootstrap": {
     "state": "completed",
@@ -302,7 +302,7 @@
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true,
-    "agent_integration_candidate_certified": true
+    "agent_integration_candidate_certified": false
   },
   "repositoryControls": {
     "enforcementState": "active-public-repository",

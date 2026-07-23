@@ -38,7 +38,7 @@
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
       "candidate_targets_clean_room_certified": true,
-      "agent_integration_candidate_certified": true
+      "agent_integration_candidate_certified": false
     },
     "version": "0.1.0",
     "tag": "v0.1.0",
@@ -179,7 +179,7 @@
       "id": "public_site",
       "support": "implemented_certified",
       "transport": "public_https_static_files",
-      "entrypoint": "https://tasq.run; https://tasq.run/product-truth.json; https://tasq.run/adopt.json",
+      "entrypoint": "https://tasq.run; /product-truth.json; /adopt.json; /SKILL.md; /agents/; /llms.txt; /integration.json",
       "mutations": false,
       "authorityBoundary": "versioned_repository_truth_no_ledger_access"
     },
@@ -385,6 +385,28 @@
       ]
     },
     {
+      "id": "generic_agent_from_public_pointer",
+      "support": "implemented_certified",
+      "steps": [
+        "read_public_skill",
+        "select_pinned_acquisition",
+        "bind_explicit_rendezvous",
+        "register_host_mcp",
+        "onboard",
+        "bounded_read"
+      ]
+    },
+    {
+      "id": "simple_human_first_run",
+      "support": "implemented_candidate_not_published",
+      "steps": [
+        "setup_explicit_space_and_actor",
+        "add",
+        "list",
+        "done"
+      ]
+    },
+    {
       "id": "human_local_monitoring",
       "support": "implemented_local_only",
       "steps": [
@@ -521,7 +543,7 @@
     },
     {
       "id": "TQ-610",
-      "status": "pending",
+      "status": "in_progress_implementation",
       "milestone": "public-adoption",
       "outcome": "Provide verified try and persistent-install paths plus a stable generic-agent entrypoint, MCP host recipes and safe project rendezvous"
     },
@@ -662,17 +684,17 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "86c6bbbbb195222d27245995944663f88703e1097c74b1bd766a25d1cc01b8cf"
+      "sha256": "dcf3bda8fdf0ec007b3c2c4e318a4bc9ad1288260b2c5d43fda97376c8c8e5bb"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "70e532c3a796164077b981d6006341b23d1366e61984ccdeed21aca818ac6fd6"
+      "sha256": "c1c0adf2cb9988db990bc4e95260a607f57d7f6a93049cd83780cec5f1b5506c"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "551ae77d0849c9e6b45e26c9aa0aee7bce3b46ac097e9faf11258e6eb0d751de"
+      "sha256": "32cb371612902daf7236e03909de8010192f97f5aa45a953a0ae13ecc9738ed8"
     }
   ]
 }

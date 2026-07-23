@@ -11,6 +11,7 @@ const policy = await Bun.file(resolve(root, "docs/releases/PUBLIC_RELEASE_POLICY
   packages: Array<Record<string, unknown>>;
 };
 const sourceCommit = "a".repeat(40);
+const authorizedVersion = String(policy.releaseAuthorization.version);
 let scratch = "";
 
 beforeAll(async () => {
@@ -32,11 +33,12 @@ function authorizedPolicy() {
       ...policy.externalPublicationGateStatus,
       npm_scope_control_verified: true,
       trusted_publishing_configured: true,
+      agent_integration_candidate_certified: true,
     },
   };
 }
 
-async function verify(candidate: unknown, version = "0.1.0") {
+async function verify(candidate: unknown, version = authorizedVersion) {
   const path = join(scratch, `policy-${crypto.randomUUID()}.json`);
   await writeFile(path, `${JSON.stringify(candidate)}\n`, "utf8");
   const child = Bun.spawn([
@@ -61,7 +63,7 @@ describe("protected public release authorization", () => {
     expect(result.exitCode).toBe(0);
     expect(JSON.parse(result.stdout)).toEqual({
       contractVersion: "tasq.release-authorization.v1",
-      version: "0.1.0",
+      version: authorizedVersion,
       sourceCommit,
       channel: "public-alpha",
       authorizedBy: "@gwendall",
@@ -103,9 +105,9 @@ describe("protected public release authorization", () => {
     expect(missing.exitCode).not.toBe(0);
     expect(missing.stderr).toContain("required gate trusted_publishing_configured is not verified");
 
-    const versionDrift = await verify(authorizedPolicy(), "0.1.1");
+    const versionDrift = await verify(authorizedPolicy(), "0.1.2");
     expect(versionDrift.exitCode).not.toBe(0);
-    expect(versionDrift.stderr).toContain("authorized version 0.1.0 does not match 0.1.1");
+    expect(versionDrift.stderr).toContain(`authorized version ${authorizedVersion} does not match 0.1.2`);
 
     const scopeDrift = authorizedPolicy() as ReturnType<typeof authorizedPolicy> & {
       identity: { npmScope: string };

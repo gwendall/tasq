@@ -353,7 +353,7 @@
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
-    "surface": ["onboard", "mcp", "web", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
+    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
     "compatibility": ["complete", "rm", "brief"]
   },
   "events": {
@@ -472,6 +472,9 @@
     "ProgressV1": { "owner": "profile", "fields": ["counts", "percentDone", "eta"], "countsFields": ["total", "open", "in_progress", "blocked", "done", "cancelled", "denominator"], "etaFields": ["meanCompletionIntervalMs", "remainingMs", "sampleSize", "estimatedCompletionAt"] },
     "DeadlineSweepV1": { "owner": "kernel_generalize", "fields": ["sweepNow", "evaluated", "satisfied", "expired", "alreadyTerminal", "results", "errors"], "resultFields": ["condition", "outcome", "sweepNow", "reconciliations", "fallbackResultTaskId"], "errorFields": ["conditionId", "message"] },
     "InitResultV1": { "owner": "surface", "fields": ["ok", "configPath", "dbPath", "projectionTarget", "tenantId"] },
+    "HumanSetupV1": { "owner": "surface", "fields": ["contractVersion", "disposition", "space", "actor", "configPath", "nextArgv", "boundary"] },
+    "IsolatedDemoV1": { "owner": "surface", "fields": ["contractVersion", "isolation", "liveHomeConsulted", "setup", "created", "before", "completed", "after"] },
+    "AgentInstallPlanV1": { "owner": "surface", "fields": ["contractVersion", "host", "executable", "space", "actor", "capabilities", "mutatesHost", "applyArgv", "genericTarget", "configuration", "authority", "applied"], "authorityFields": ["actorAuthentication", "effectAuthority", "repositoryDescriptorActivation"] },
     "ConfigV1": { "owner": "surface", "fields": ["dbPath", "projectionTarget", "tenantId", "defaultActor", "eventJournalPath"], "dynamicForms": ["config get returns exactly the requested config key", "config set returns ok plus exactly the requested config key"] },
     "ExecutableVersionV1": { "owner": "surface", "fields": ["contractVersion", "version", "storeFormat"] },
     "BackupResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "sizeBytes", "sha256", "verified", "eventCursor", "storeFormat", "rollbackRule", "rotated"] },

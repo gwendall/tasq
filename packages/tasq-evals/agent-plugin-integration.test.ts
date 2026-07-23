@@ -17,14 +17,19 @@ describe("zero-context agent integration candidate", () => {
 
     expect(contract).toMatchObject({
       contractVersion: "tasq.agent-integrations.v1",
-      integrationVersion: "0.1.1",
+      revision: 3,
+      integrationVersion: "0.1.2",
       rendezvous: {
         required: ["space", "actor", "capabilities"],
         spaceInference: "forbidden",
         actorInference: "forbidden",
+        activation: "explicit-user-or-trusted-project-instruction",
+        autoDiscoveryFromCwd: false,
+        credentialsAllowed: false,
       },
       mcp: {
-        staticRegistrationShipped: false,
+        staticRegistrationShipped: true,
+        staticRegistrationKind: "parameterized-host-recipes-without-authority",
         discoveryTool: "tasq_discover",
       },
     });
@@ -49,6 +54,13 @@ describe("zero-context agent integration candidate", () => {
     expect(openai).toContain("Use $tasq");
     expect(existsSync(resolve(root, "plugins/tasq/.mcp.json"))).toBe(false);
     expect(existsSync(resolve(root, ".mcp.json"))).toBe(false);
+    expect(contract.publicEntrypoints).toEqual({
+      skill: "https://tasq.run/SKILL.md",
+      agents: "https://tasq.run/agents/",
+      llms: "https://tasq.run/llms.txt",
+      integration: "https://tasq.run/integration.json",
+      installer: "https://tasq.run/install-v0.1.0.sh",
+    });
   });
 
   test("teaches a blind agent safe acquisition and durable-only coordination", () => {
@@ -71,6 +83,30 @@ describe("zero-context agent integration candidate", () => {
     for (const text of required) expect(skill, `missing safety contract: ${text}`).toContain(text);
     expect(skill).not.toMatch(/TODO|FIXME|Local developer|example-plugin/);
     expect(skill).not.toContain("npm install tasq");
+  });
+
+  test("freezes executable acquisition, MCP hosts and a non-secret project pointer", () => {
+    const contract = readJson("docs/integrations/AGENT_INTEGRATIONS.json");
+    expect(contract.acquisition.quickTry).toEqual([
+      ["bunx", "@tasq-run/cli@0.1.0", "version"],
+      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.1.0", "--", "tasq", "version"],
+    ]);
+    expect(Object.keys(contract.mcp.hostRecipes)).toEqual(["codex", "claude", "generic"]);
+    for (const host of ["codex", "claude"] as const) {
+      const serialized = JSON.stringify(contract.mcp.hostRecipes[host].argv);
+      for (const required of ["{tasqExecutable}", "{space}", "{actor}", "{capabilities}"]) {
+        expect(serialized).toContain(required);
+      }
+    }
+
+    const schema = readJson("docs/integrations/PROJECT_RENDEZVOUS.schema.json");
+    const example = readJson("docs/integrations/PROJECT_RENDEZVOUS.example.json");
+    expect(schema.additionalProperties).toBe(false);
+    expect(Object.keys(example).sort()).toEqual(schema.required.slice().sort());
+    expect(example.activation).toBe("explicit-user-or-trusted-project-instruction-required");
+    expect(example.transport).toEqual({ kind: "local", homeReference: "TASQ_HOME" });
+    expect(JSON.stringify(schema)).not.toMatch(/token|credential|effectAuthority|grant/i);
+    expect(JSON.stringify(example)).not.toMatch(/token|credential|secret|authority|effect/i);
   });
 
   test("publishes exact native install and symmetric uninstall argv", () => {
