@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.public-adoption-certification.v1",
   "status": "published-bytes-certified-human-gate-pending",
-  "updatedAt": "2026-07-22",
+  "updatedAt": "2026-07-23",
   "repositoryAccess": {
     "state": "public-alpha",
     "requiredPrecondition": null,
@@ -34,10 +34,10 @@
   },
   "publishedArtifactEvidence": {
     "status": "passed",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "certifiedAt": "2026-07-23T14:29:19Z",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "certifiedAt": "2026-07-23T20:34:11Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
     "targets": ["darwin-arm64", "linux-x64-gnu"]
   },
   "independentHumanEvidence": {

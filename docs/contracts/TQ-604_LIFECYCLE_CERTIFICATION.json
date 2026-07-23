@@ -61,20 +61,20 @@
   },
   "publishedArtifactEvidence": {
     "status": "passed",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "certifiedAt": "2026-07-23T14:29:19Z",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
-    "certificationSourceCommit": "d02ba152e0a65158180d863733006b3f21062e5b",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "certifiedAt": "2026-07-23T20:34:11Z",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+    "certificationSourceCommit": "ff35ce065d63a8aaa21617a03d03af1ed9b87a5a",
     "registryTarballsMatched": true,
     "targets": {
       "darwin-arm64": {
         "status": "passed",
-        "job": "https://github.com/gwendall/tasq/actions/runs/30015923266/job/89235786083"
+        "job": "https://github.com/gwendall/tasq/actions/runs/30042551026/job/89325762345"
       },
       "linux-x64-gnu": {
         "status": "passed",
-        "job": "https://github.com/gwendall/tasq/actions/runs/30015923266/job/89235786045"
+        "job": "https://github.com/gwendall/tasq/actions/runs/30042551026/job/89325762481"
       }
     },
     "verified": [

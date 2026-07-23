@@ -1,6 +1,6 @@
 # TQ-604 clean-room lifecycle certification
 
-**Status:** complete for `v0.1.0`; exact published bytes certified on both
+**Status:** complete for `v0.2.0`; exact published bytes certified on both
 supported targets
 **Machine contract:** `TQ-604_LIFECYCLE_CERTIFICATION.json`
 
@@ -33,20 +33,20 @@ artifact attestation before running the installer.
 Given the five files for one version and target:
 
 ```bash
-bun tasq-v0.1.0-darwin-arm64.install.ts install \
-  --archive tasq-v0.1.0-darwin-arm64.tar.gz \
-  --manifest tasq-v0.1.0-darwin-arm64.release.json \
-  --checksums tasq-v0.1.0-darwin-arm64.SHA256SUMS \
+bun tasq-v0.2.0-darwin-arm64.install.ts install \
+  --archive tasq-v0.2.0-darwin-arm64.tar.gz \
+  --manifest tasq-v0.2.0-darwin-arm64.release.json \
+  --checksums tasq-v0.2.0-darwin-arm64.SHA256SUMS \
   --prefix "$HOME/.local"
 
-bun tasq-v0.1.0-darwin-arm64.install.ts activate \
-  --version 0.1.0 --target darwin-arm64 --prefix "$HOME/.local"
+bun tasq-v0.2.0-darwin-arm64.install.ts activate \
+  --version 0.2.0 --target darwin-arm64 --prefix "$HOME/.local"
 
-bun tasq-v0.1.0-darwin-arm64.install.ts uninstall \
-  --version 0.1.0 --target darwin-arm64 --prefix "$HOME/.local"
+bun tasq-v0.2.0-darwin-arm64.install.ts uninstall \
+  --version 0.2.0 --target darwin-arm64 --prefix "$HOME/.local"
 ```
 
-Version `0.1.0` is published at the immutable GitHub release. Linux uses target
+Version `0.2.0` is published at the immutable GitHub release. Linux uses target
 `linux-x64-gnu`.
 
 ## Upgrade and rollback
@@ -85,8 +85,8 @@ the explicit injected `Clock` boundary.
 ## Published certification result
 
 Protected certification run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
-downloaded the exact `v0.1.0` release, verified every GitHub artifact
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+downloaded the exact `v0.2.0` release, verified every GitHub artifact
 attestation and ran the complete lifecycle on `darwin-arm64` and
 `linux-x64-gnu`. It also replayed the format-5-to-format-25 migration, installed
 Console inspection, public adoption and the published-package interactive

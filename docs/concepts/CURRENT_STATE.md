@@ -54,13 +54,13 @@ availability starts only after an explicitly authorized protected attested
 release.
 
 Public source launch occurred on 2026-07-22 and protected public alpha
-`v0.1.1` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
+`v0.2.0` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
 stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may install `0.1.1`, build from
+`go`, `extend` or `no_go` decision. Early users may install `0.2.0`, build from
 source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
@@ -74,8 +74,8 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. The current assets are published at immutable `v0.1.1`. Protected run
-[30037272412](https://github.com/gwendall/tasq/actions/runs/30037272412)
+`TASQ_HOME`. The current assets are published at immutable `v0.2.0`. Protected run
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
 downloaded them, verified every attestation and passed the lifecycle on both
 supported targets, closing TQ-604.
 
@@ -90,7 +90,7 @@ TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
 discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
 are certified without a checkout or hidden service; the same path now also
-passes from exact `v0.1.1` published bytes on both supported targets.
+passes from exact `v0.2.0` published bytes on both supported targets.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
@@ -140,7 +140,7 @@ receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
-Exact `v0.1.1` published bytes now migrate the populated format-5 fixture and
+Exact `v0.2.0` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. Exact N-2 protected lines become a
 mandatory boundary once three protected release lines exist; see
 `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
@@ -161,8 +161,8 @@ artifacts/evidence, cursor-only restart across separate adapter processes,
 stale claim/fence rejection at the protected effect gate and explicit
 completion. No new Core entity or runtime-specific enum was required. Local autonomous onboarding now
 also advertises additive retry-safe attempt recipes and an exact audit-resume
-recipe. Protected run 30037272412 replayed the same fixture from exact
-`@tasq-run/*@0.1.1` registry tarballs on both targets, closing TQ-320. The
+recipe. Protected run 30042551026 replayed the same fixture from exact
+`@tasq-run/*@0.2.0` registry tarballs on both targets, closing TQ-320. The
 private Denshin journey remains separate product-learning evidence.
 
 The same clean-room trial found and closed an Embedded Core packaging gap:
@@ -172,15 +172,18 @@ read-only registry queries now live in Core; the Local service only adds
 bundled compatibility provisioning. Manifest installation never loads code or
 grants effect authority.
 
-TQ-611 now provides the source-candidate `createLocalTasq` interface inside
+TQ-611 now provides the published `createLocalTasq` interface inside
 `@tasq-run/core`. One explicit call owns store opening, checksum-pinned
 migrations, coordination-space/principal bootstrap and repeated operation
 context while keeping URL, workspace, actor and `Clock` mandatory. The
-generated Core, Schema and Extension SDK candidates contain compiled ESM plus
-declarations and pass fresh Node 22 and Bun same-ledger restart tests. The
-currently published `0.1.1` Core remains the prior low-level Bun-oriented
-surface; protected `v0.2.0` publication and exact-byte replay are still
-required before the public site or support matrix claims the new interface.
+published `0.2.0` Core, Schema and Extension SDK packages contain compiled ESM
+plus declarations and pass fresh Node 22 and Bun same-ledger restart tests
+from exact registry tarballs. The CLI, MCP, Console and protocol adapters
+remain Bun-only. Protected publication run
+[30041513292](https://github.com/gwendall/tasq/actions/runs/30041513292)
+and post-release certification run
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+close the interface's release gate.
 See `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
 
 The shortest verified loop is:

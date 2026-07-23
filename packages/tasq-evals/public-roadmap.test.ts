@@ -265,7 +265,7 @@ describe("canonical Tasq roadmap", () => {
       evidence: [
         "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
         "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
-        "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
+        "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-604")).toMatchObject({
@@ -274,7 +274,7 @@ describe("canonical Tasq roadmap", () => {
       remaining: [],
       evidence: [
         "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
-        "https://github.com/gwendall/tasq/actions/runs/30015923266",
+        "https://github.com/gwendall/tasq/actions/runs/30042551026",
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-605")).toMatchObject({
@@ -337,19 +337,19 @@ describe("canonical Tasq roadmap", () => {
     expect(releaseCertification).toMatchObject({
       contractVersion: "tasq.public-release-certification.v1",
       status: "published",
-      version: "0.1.1",
-      tag: "v0.1.1",
-      sourceCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
+      version: "0.2.0",
+      tag: "v0.2.0",
+      sourceCommit: "28f4d77477e81ae2277f73f326c8703e7124f192",
       workflow: {
-        runId: 30037044905,
+        runId: 30041513292,
         identityJob: "passed",
         nativeBuildJobs: { "darwin-arm64": "passed", "linux-x64-gnu": "passed" },
         npmTrustedPublishingJob: "passed",
         githubReleaseJob: "passed",
       },
       githubRelease: {
-        url: "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
-        targetCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
+        url: "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+        targetCommit: "28f4d77477e81ae2277f73f326c8703e7124f192",
         prerelease: false,
         assetCount: 10,
       },
@@ -366,7 +366,7 @@ describe("canonical Tasq roadmap", () => {
     });
     expect(releaseCertification.npm.packages).toHaveLength(7);
     for (const entry of releaseCertification.npm.packages) {
-      expect(entry.version).toBe("0.1.1");
+      expect(entry.version).toBe("0.2.0");
       expect(entry.integrity).toMatch(/^sha512-/);
     }
   });

@@ -65,8 +65,16 @@
       "version": "0.1.0",
       "completedAt": "2026-07-23",
       "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-      "evidence": "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
+      "evidence": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
       "requires": ["maintainerPublicAlphaAuthorization", "publicSourceLaunch", "npmScopeControl", "npmTrustedPublishing"]
+    },
+    "currentProtectedRelease": {
+      "state": "complete",
+      "channel": "public_alpha",
+      "version": "0.2.0",
+      "completedAt": "2026-07-23",
+      "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+      "evidence": "docs/contracts/TQ-611_RELEASE_CERTIFICATION.json"
     },
     "maintainerPublicAlphaAuthorization": {
       "state": "complete",
@@ -78,25 +86,25 @@
       "state": "complete",
       "completedAt": "2026-07-23",
       "evidence": "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026"
     },
     "publishedConsoleLifecycleCertification": {
       "state": "complete",
       "completedAt": "2026-07-23",
       "evidence": "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026"
     },
     "publishedAdoptionCertification": {
       "state": "automated_complete_human_pending",
       "completedAt": "2026-07-23",
       "evidence": "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026"
     },
     "publishedInteractiveRuntimeCertification": {
       "state": "complete",
       "completedAt": "2026-07-23",
       "evidence": "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026"
     },
     "independentBlindHumanAdoption": {
       "state": "not_run",
@@ -187,7 +195,7 @@
       "evidence": [
         "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
         "docs/contracts/TQ-603_RELEASE_CERTIFICATION.json",
-        "https://github.com/gwendall/tasq/releases/tag/v0.1.0"
+        "https://github.com/gwendall/tasq/releases/tag/v0.2.0"
       ]
     },
     {
@@ -197,7 +205,7 @@
       "dependsOn": ["TQ-603"],
       "outcome": "Certify install, onboarding, contention, Console, backup, upgrade, restore and data-preserving uninstall from published bytes",
       "remaining": [],
-      "evidence": ["docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/actions/runs/30015923266"]
+      "evidence": ["docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json", "https://github.com/gwendall/tasq/actions/runs/30042551026"]
     },
     {
       "id": "TQ-701",
@@ -230,7 +238,7 @@
       "dependsOn": ["TQ-603", "TQ-703"],
       "outcome": "Console lifecycle works from installed Tasq Local without checkout-relative assets or hidden listeners",
       "remaining": [],
-      "evidence": ["docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md", "https://github.com/gwendall/tasq/actions/runs/30015923266"]
+      "evidence": ["docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md", "https://github.com/gwendall/tasq/actions/runs/30042551026"]
     },
     {
       "id": "TQ-605",
@@ -276,21 +284,21 @@
     },
     {
       "id": "TQ-611",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "embedded-sdk",
       "dependsOn": ["TQ-609"],
       "outcome": "Expose a real high-level local TypeScript client with explicit workspace, identity and clock plus an honestly certified Bun and Node runtime boundary",
-      "remaining": [
-        "publish-v0.2.0-through-protected-release",
-        "certify-node-and-bun-from-exact-published-tarballs",
-        "update-public-site-and-runtime-truth"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md",
         "docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md",
         "docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.json",
+        "docs/contracts/TQ-611_RELEASE_CERTIFICATION.json",
         "packages/tasq-core/test/local-client.test.ts",
-        "packages/tasq-cli/test/public-packages.test.ts"
+        "packages/tasq-cli/test/public-packages.test.ts",
+        "packages/tasq-evals/published-embedded-client.test.ts",
+        "https://github.com/gwendall/tasq/actions/runs/30041513292",
+        "https://github.com/gwendall/tasq/actions/runs/30042551026"
       ]
     },
     {

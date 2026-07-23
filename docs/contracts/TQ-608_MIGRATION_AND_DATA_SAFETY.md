@@ -111,8 +111,8 @@ upgrades populated format-0 and format-5 fixtures and rejects checksum drift or
 non-contiguous history.
 
 The machine summary is `TQ-608_MIGRATION_CERTIFICATION.json`. Protected run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
-downloaded and attestation-verified `v0.1.0` on both supported targets, migrated
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+downloaded and attestation-verified `v0.2.0` on both supported targets, migrated
 the populated format-5 fixture to format 25 and passed the post-migration
 receipt and doctor checks. A real POSIX file-size quota additionally proves
 that snapshot exhaustion leaves the source format unchanged and any partial

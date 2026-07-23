@@ -294,10 +294,10 @@ describe("TQ-601 product consumption design", () => {
         authorizedBy: "@gwendall",
       },
       publishedRelease: {
-        version: "0.1.1",
-        tag: "v0.1.1",
-        sourceCommit: "1005f16642c23f3a470838055ea2d701c1eaa395",
-        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.1.1",
+        version: "0.2.0",
+        tag: "v0.2.0",
+        sourceCommit: "28f4d77477e81ae2277f73f326c8703e7124f192",
+        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
       },
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
@@ -329,7 +329,7 @@ describe("TQ-601 product consumption design", () => {
       },
       publishedArtifactEvidence: {
         status: "passed",
-        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30015923266",
+        workflowRun: "https://github.com/gwendall/tasq/actions/runs/30042551026",
       },
       tq604Complete: true,
     });

@@ -61,11 +61,11 @@
     "packages/tasq-cli/test/public-release.test.ts"
   ],
   "publishedReleaseEvidence": {
-    "version": "0.1.0",
-    "sourceCommit": "0f5357ea10e0eb9f86f143a4fc38030624238bd2",
-    "release": "https://github.com/gwendall/tasq/releases/tag/v0.1.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30015923266",
-    "certifiedAt": "2026-07-23T14:29:19Z",
+    "version": "0.2.0",
+    "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+    "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30042551026",
+    "certifiedAt": "2026-07-23T20:34:11Z",
     "targets": ["darwin-arm64", "linux-x64-gnu"],
     "sourceFixtureFormat": 5,
     "targetFormat": 25,

@@ -1,6 +1,6 @@
 # TQ-320 — interactive agent-runtime consumer conformance
 
-> **Status:** complete; candidate and exact protected `0.1.0` package replays
+> **Status:** complete; candidate and exact protected `0.2.0` package replays
 > pass on both supported targets
 > **Proposed contract:** `tasq.interactive-runtime-consumer.v1`
 > **Motivating consumer:** Denshin-style machine, terminal and agent-session
@@ -159,8 +159,8 @@ demonstrates the concrete gap in at least one second unrelated runtime shape.
 TQ-320 depends on the completed TQ-304 runtime recipes and TQ-501 bounded
 context contract. Candidate execution was deliberately completed before
 TQ-603 from deterministic installable package tarballs. Protected run
-[30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
-then consumed the exact `@tasq-run/*@0.1.0` registry tarballs on both supported
+[30042551026](https://github.com/gwendall/tasq/actions/runs/30042551026)
+then consumed the exact `@tasq-run/*@0.2.0` registry tarballs on both supported
 targets and closed the publication gate. TQ-320 does not block internal TQ-805
 Server work.
 
