@@ -126,10 +126,19 @@ async function register(
   now = NOW,
 ): Promise<void> {
   const clock = createMutableClock(now);
+  const principalId = localPrincipalId(
+    WORKSPACE,
+    replicaId === REPLICA_A
+      ? "agent-a"
+      : replicaId === REPLICA_B
+        ? "agent-b"
+        : "agent-c",
+  );
   await registerReplicationReplica(authority.db, {
     workspaceId: WORKSPACE,
     replicaId,
     generationId,
+    principalId,
     clock,
   });
   await initializeLocalReplica(client.db, {
@@ -320,6 +329,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_A,
       generationId: GENERATION_A,
       authenticatedReplicaId: REPLICA_A,
+      authenticatedPrincipalId: principalA,
       cursor: null,
       clock: authorityClock,
     });
@@ -328,6 +338,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_B,
       generationId: GENERATION_B,
       authenticatedReplicaId: REPLICA_B,
+      authenticatedPrincipalId: principalB,
       cursor: null,
       clock: authorityClock,
     });
@@ -346,6 +357,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_B,
       generationId: GENERATION_B,
       authenticatedReplicaId: REPLICA_B,
+      authenticatedPrincipalId: principalB,
       cursor: createResponse.cursor,
       clock: authorityClock,
     });
@@ -395,6 +407,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_A,
       generationId: GENERATION_A,
       authenticatedReplicaId: REPLICA_A,
+      authenticatedPrincipalId: principalA,
       cursor: currentA.nextCursor,
       clock: authorityClock,
     });
@@ -417,6 +430,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_A,
       generationId: GENERATION_A,
       authenticatedReplicaId: REPLICA_A,
+      authenticatedPrincipalId: principalA,
       cursor: sourceHead.nextCursor,
       clock: authorityClock,
     });
@@ -468,6 +482,7 @@ describe("TQ-406 sync chaos and recovery", () => {
       replicaId: REPLICA_A,
       generationId: GENERATION_A,
       authenticatedReplicaId: REPLICA_A,
+      authenticatedPrincipalId: principalA,
       cursor: sourceHead.nextCursor,
       clock: createMutableClock(recoveryNow),
     })).rejects.toMatchObject({ code: "replica_stale" });

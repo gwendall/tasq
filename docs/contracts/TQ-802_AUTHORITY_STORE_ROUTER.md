@@ -2,7 +2,8 @@
 
 > **Status:** implemented and repository-certified — 2026-07-21
 > **Machine certificate:** `TQ-802_AUTHORITY_STORE_CERTIFICATION.json`
-> **Remote surface status:** not implemented
+> **Remote surface status:** implemented later as an unpublished TQ-803–TQ-809
+> Server source candidate
 
 ## Outcome
 
@@ -12,7 +13,8 @@ decision, and opens a workspace ledger only after an allow through an exact
 host-configured opaque storage binding.
 
 No listener, HTTP route, credential verifier, browser session, remote MCP
-transport or deployable server is part of this checkpoint.
+transport or deployable server was part of this checkpoint; those outer layers
+are composed separately by the later Server source candidate.
 
 ## Storage boundary
 

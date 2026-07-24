@@ -11,7 +11,7 @@
  * silently fail.
  */
 
-import { and, asc, desc, eq, inArray, isNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { createHash } from "node:crypto";
 import {
   task,
@@ -1462,6 +1462,9 @@ export interface ListTasksOptions extends TaskServiceContext {
   /** Override now() — useful for tests. */
   now?: number;
   limit?: number;
+  /** Exclusive stable cursor for the `updatedAt DESC, id DESC` ordering. */
+  beforeUpdatedAt?: number;
+  beforeId?: string;
 }
 
 export async function listTasks(
@@ -1491,6 +1494,19 @@ export async function listTasks(
       if (orExpr) filters.push(orExpr);
     }
   }
+  if ((options.beforeUpdatedAt === undefined) !== (options.beforeId === undefined)) {
+    throw new Error("beforeUpdatedAt and beforeId must be provided together");
+  }
+  if (options.beforeUpdatedAt !== undefined && options.beforeId !== undefined) {
+    if (!Number.isSafeInteger(options.beforeUpdatedAt) || options.beforeUpdatedAt < 0 || !options.beforeId) {
+      throw new Error("invalid task list cursor");
+    }
+    const cursor = or(
+      lt(task.updatedAt, options.beforeUpdatedAt),
+      and(eq(task.updatedAt, options.beforeUpdatedAt), lt(task.id, options.beforeId)),
+    );
+    if (cursor) filters.push(cursor);
+  }
 
   // Apply defer visibility before LIMIT. Filtering after limiting could return
   // an empty/short page even when older visible tasks existed.
@@ -1504,7 +1520,7 @@ export async function listTasks(
     .select()
     .from(task)
     .where(and(...filters))
-    .orderBy(desc(task.updatedAt))
+    .orderBy(desc(task.updatedAt), desc(task.id))
     .limit(options.limit ?? 100);
 
   return rows.map(parseTask);

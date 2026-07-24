@@ -1,0 +1,27 @@
+{
+  "contractVersion": "tasq.cloud-bff-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-902",
+  "proof": {
+    "canonicalHttpsOrigin": true,
+    "httpOnlyHostCookie": true,
+    "sessionBoundCsrf": true,
+    "exactOriginCheck": true,
+    "crossTenantSession": "denied",
+    "serverBearerExposedToBrowser": false,
+    "downstreamCookiesForwarded": false,
+    "downstreamSetCookieForwarded": false,
+    "remoteEffects": "unconditionally_denied"
+  },
+  "evidence": [
+    "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+    "packages/tasq-cloud-control-plane/src/index.ts"
+  ],
+  "remainingExternalGate": [
+    "deployed_browser_matrix",
+    "identity_provider_callback_and_logout_drill",
+    "independent_web_security_review"
+  ],
+  "hostedConsoleAvailable": false
+}

@@ -62,6 +62,38 @@ proposal, challenge and validation records across Core, embedded client, CLI,
 local MCP and Console. The protected release and downloaded-byte certification
 are frozen in
 [TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json](docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json).
+ADR-009 is accepted. TQ-613–TQ-615 implement purpose-bound signed statements,
+authority-owned signing-credential lifecycle and append-only exact bindings;
+TQ-616 remains behind protected downloaded-artifact and unbriefed-agent gates.
+Signatures authenticate exact bytes and principal, never truth, completion or
+effect authority. Read
+[the ADR](docs/decisions/ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md),
+[the full stack contract](docs/contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md)
+and [the machine threat matrix](docs/contracts/SIGNED_STATEMENT_ACCEPTANCE.json)
+before changing signatures, credential lifecycle, portable authorship,
+replication origin or signed approvals.
+TQ-805's host-integrated remote MCP adapter is implemented and certified in
+[TQ-805_REMOTE_MCP.md](docs/contracts/TQ-805_REMOTE_MCP.md). It authenticates
+each Streamable HTTP request and projects tools through the existing
+TQ-803/TQ-804 handler and ADR-004 guard; it is not a listener or deployable
+Server.
+TQ-809 adds the repository-certified `@tasq-run/client` source candidate,
+`tasq remote` CLI profiles, one-use enrollment and digest-only opaque
+credentials; read
+[TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md](docs/contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md)
+and [ADR-010](docs/decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md).
+TQ-807 adds a runnable daemon/container candidate, RS256 verification, real
+Core operations, durable remote receipts, an authenticated guarded Console and
+operator lifecycle; read
+[TQ-807_DEPLOYABLE_SERVER.md](docs/contracts/TQ-807_DEPLOYABLE_SERVER.md).
+TQ-806 adds principal-bound authenticated offline replication with atomically
+persisted signed origins; live claims, leases, approvals and effects remain
+online-only. TQ-810 adds a thin Python remote client source candidate.
+TQ-901–TQ-905 add the private provider-neutral Cloud control-plane/BFF source
+candidate; no managed service is deployed. TQ-906 keeps remote effects disabled
+pending independent review. Neither Server, remote clients nor Cloud are in
+published `v0.3.0`; never treat an actor label, project descriptor or database
+URL as remote authentication.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by

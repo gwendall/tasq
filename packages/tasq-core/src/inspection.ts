@@ -25,6 +25,7 @@ import {
   principal,
   reconciliation,
   resolutionContract,
+  signedStatementBinding,
   taskAttempt,
   taskClaim,
   taskEvidence,
@@ -34,6 +35,7 @@ import {
 } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "./db.js";
 import { getCommitment } from "./commitments.js";
+import { getSignedStatementProof } from "./service/signed-statements.js";
 import { serviceNow } from "./util/clock.js";
 
 export const INSPECTION_CONTRACT_VERSION = "tasq.inspect.v1" as const;
@@ -156,6 +158,33 @@ export async function inspectCommitmentInTransaction(
       inArray(effectReceipt.effectId, effectIds),
     )).orderBy(asc(effectReceipt.recordedAt));
 
+  const artifactIds = artifactRows.map((row) => row.id);
+  const proposalIds = proposalRows.map((row) => row.id);
+  const approvalIds = approvalRows.map((row) => row.id);
+  const signedBindingPredicates = [
+    ...(artifactIds.length === 0 ? [] : [and(
+      eq(signedStatementBinding.recordType, "artifact"),
+      inArray(signedStatementBinding.recordId, artifactIds),
+    )]),
+    ...(proposalIds.length === 0 ? [] : [and(
+      eq(signedStatementBinding.recordType, "completion_proposal"),
+      inArray(signedStatementBinding.recordId, proposalIds),
+    )]),
+    ...(approvalIds.length === 0 ? [] : [and(
+      eq(signedStatementBinding.recordType, "effect_approval"),
+      inArray(signedStatementBinding.recordId, approvalIds),
+    )]),
+  ];
+  const signedBindingRows = signedBindingPredicates.length === 0 ? [] : await db.select()
+    .from(signedStatementBinding).where(and(
+      eq(signedStatementBinding.tenantId, options.workspaceId),
+      or(...signedBindingPredicates),
+    )).orderBy(asc(signedStatementBinding.createdAt), asc(signedStatementBinding.id));
+  const signedStatementProofs = (await Promise.all(
+    [...new Set(signedBindingRows.map((row) => row.statementId))]
+      .map((statementId) => getSignedStatementProof(db, statementId, options.workspaceId)),
+  )).filter((proof): proof is NonNullable<typeof proof> => proof !== null);
+
   const conditionIds = conditionRows.map((row) => row.id);
   const reconciliationRows = conditionIds.length === 0 ? [] : await db.select()
     .from(reconciliation).where(and(
@@ -211,6 +240,11 @@ export async function inspectCommitmentInTransaction(
   for (const row of contextLinkRows) principalIds.add(row.principalId);
   for (const row of externalRefRows) principalIds.add(row.createdByPrincipalId);
   for (const row of eventRows) if (row.principalId) principalIds.add(row.principalId);
+  for (const proof of signedStatementProofs) {
+    principalIds.add(proof.statement.issuerPrincipalId);
+    for (const verification of proof.verifications) principalIds.add(verification.principalId);
+    for (const binding of proof.bindings) principalIds.add(binding.createdByPrincipalId);
+  }
   const principalRows = principalIds.size === 0 ? [] : await db.select().from(principal).where(and(
     eq(principal.tenantId, options.workspaceId), inArray(principal.id, [...principalIds]),
   )).orderBy(asc(principal.createdAt));
@@ -301,6 +335,7 @@ export async function inspectCommitmentInTransaction(
       trustRecordIds: jsonArray(trustRecordIds),
       policy: { uri: policyUri, version: policyVersion, implementationDigest },
     })),
+    signedStatementProofs,
     conditions: conditionRows.map(({ tenantId: workspaceId, taskId: commitmentId, kind, typeUri,
       schemaVersion, evaluatorUri, evaluatorVersion, evaluatorImplementationDigest,
       parameters, fallbackSpec, ...row }) => ({
@@ -386,6 +421,7 @@ export function renderCommitmentInspection(snapshot: CommitmentInspection): stri
     `- Assignments / claims / attempts: ${snapshot.assignments.length} / ${snapshot.claims.length} / ${snapshot.attempts.length}`,
     `- Artifacts / evidence / completions: ${snapshot.artifacts.length} / ${snapshot.evidence.length} / ${snapshot.completionRecords.length}`,
     `- Resolution contracts / proposals / decisions: ${snapshot.resolutionContracts.length} / ${snapshot.completionProposals.length} / ${snapshot.validationDecisions.length}`,
+    `- Accepted signed statements: ${snapshot.signedStatementProofs.length}`,
     `- External context links: ${snapshot.externalContextLinks.length}`,
     `- Effects / approvals / receipts: ${snapshot.effects.length} / ${snapshot.effectApprovals.length} / ${snapshot.effectReceipts.length}`,
     `- Conditions / observations / reconciliations: ${snapshot.conditions.length} / ${snapshot.observations.length} / ${snapshot.reconciliations.length}`,

@@ -1,0 +1,29 @@
+{
+  "contractVersion": "tasq.remote-effects-review-gate.v1",
+  "status": "pending_independent_review",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-906",
+  "currentInvariant": {
+    "serverEffectsEnabled": false,
+    "cloudBffEffectsRoute": "denied",
+    "remoteDispatchOperationRegistered": false,
+    "signatureGrantsEffectAuthority": false,
+    "completionGrantsEffectAuthority": false,
+    "billingOrSupportGrantsEffectAuthority": false
+  },
+  "prerequisites": {
+    "ADR-005": "accepted",
+    "TQ-612": "done",
+    "TQ-616": "candidate_done_external_gate",
+    "TQ-905": "candidate_done_external_gate"
+  },
+  "remainingGate": [
+    "published_artifact_signed_statement_certification",
+    "exact_deployed_connector_permit_receipt_chain",
+    "live_revocation_and_compromise_races",
+    "independent_evidence_and_authority_review",
+    "protected_deployment_rollback_and_incident_drill"
+  ],
+  "canCurrentAuthorSelfApprove": false,
+  "remoteEffectsAvailable": false
+}

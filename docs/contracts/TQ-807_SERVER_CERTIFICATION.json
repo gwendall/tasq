@@ -1,0 +1,95 @@
+{
+  "contractVersion": "tasq.server-certification.v1",
+  "status": "repository_and_local_container_certified",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-807",
+  "aggregateSourceDigest": "sha256:0f04c5dbdebbb51fdfb302bb78701440354a562ca71f9f37abc988ffab7dbcbb",
+  "runtime": {
+    "entrypoint": "packages/tasq-server/src/daemon.ts",
+    "commands": [
+      "serve",
+      "check",
+      "bootstrap",
+      "enroll",
+      "revoke-credential",
+      "revoke-grant",
+      "backup",
+      "restore"
+    ],
+    "publicUrl": "canonical_https_origin",
+    "nonLoopbackBindRequiresTlsProxyAcknowledgement": true,
+    "effectsEnabled": false,
+    "connectorsBundled": false
+  },
+  "credentials": {
+    "jwtProfile": "oauth_access_jwt_at+jwt_rs256_static_public_jwk",
+    "opaqueProfile": "tq809_one_use_enrollment_and_live_introspection",
+    "privateKeysStored": false,
+    "actorClaimAuthenticates": false,
+    "liveAuthorityGuardAfterVerification": true
+  },
+  "storage": {
+    "authority": "checksum_migrated_libsql",
+    "workspace": "createLocalTasq_core_ledger",
+    "mutationReceipts": "immutable_separate_libsql",
+    "stableReadCursor": "updatedAt_desc_id_desc",
+    "backup": "sqlite_vacuum_into_sha256_manifest",
+    "restore": "config_bound_checksum_verified_create_only"
+  },
+  "hostedConsole": {
+    "mode": "same_origin_read_only_bff",
+    "cookie": "Secure_HttpOnly_SameSite_Strict",
+    "guardedRestOnEveryPage": true,
+    "mutationSurface": false
+  },
+  "operationalEndpoints": [
+    "/healthz",
+    "/readyz",
+    "/version",
+    "/support",
+    "/metrics"
+  ],
+  "localContainerEvidence": {
+    "script": "scripts/server-container-smoke.ts",
+    "dockerfile": "deploy/server/Dockerfile",
+    "platformObserved": "linux/arm64",
+    "imageIdObserved": "sha256:d4b86f9bff677a97fa569abe365d261eb790271d63f0fdd615a1005c1d8d47bf",
+    "bootstrap": "passed",
+    "health": "passed",
+    "published": false
+  },
+  "certifiedProperties": [
+    "strict_versioned_operator_configuration",
+    "deterministic_idempotent_authority_bootstrap",
+    "rs256_signature_issuer_audience_time_key_and_scope_validation",
+    "one_use_opaque_enrollment_and_next_request_revocation",
+    "host_owned_workspace_storage_routing",
+    "real_core_registered_operations",
+    "stable_lossless_commitment_cursor",
+    "durable_exact_remote_mutation_replay",
+    "claim_and_resource_contention",
+    "same_rest_mcp_domain_and_authority",
+    "authenticated_read_only_console_bff",
+    "workspace_free_bounded_metrics",
+    "all_bindings_migrated_before_readiness",
+    "backup_restore_retains_authority_domain_and_receipts",
+    "real_daemon_process_lifecycle",
+    "real_linux_container_bootstrap_and_health"
+  ],
+  "evidence": [
+    "packages/tasq-server/test/jwt.test.ts",
+    "packages/tasq-server/test/enrollment.test.ts",
+    "packages/tasq-server/test/workspace.test.ts",
+    "packages/tasq-server/test/runtime.test.ts",
+    "packages/tasq-server/test/daemon.test.ts",
+    "packages/tasq-core/test/local-client.test.ts",
+    "scripts/server-container-smoke.ts"
+  ],
+  "remainingExternalGate": [
+    "protected_ci_multi_arch_image",
+    "immutable_registry_digest",
+    "published_sbom_checksums_and_provenance"
+  ],
+  "tq807ImplementationComplete": true,
+  "tq807Shipped": false
+}

@@ -95,8 +95,9 @@ raw JSON-RPC client with no MCP SDK or Tasq import.
 
 ## Deliberate limits
 
-- The shipped transport is local stdio. Streamable HTTP, remote auth, session
-  binding, rate limits and hosted tenancy are not implemented.
+- The shipped transport is local stdio. Streamable HTTP and remote
+  authentication exist only in the unpublished TQ-805/TQ-807 Server source
+  candidate; no hosted endpoint or Server artifact is shipped.
 - Tool annotations are usability metadata; closed registration and service
   invariants are the security controls.
 - Effect begin returns a permit but performs no provider I/O. A conformant

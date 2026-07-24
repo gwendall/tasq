@@ -2,7 +2,7 @@
 
 **Status:** active execution specification
 
-**Updated:** 2026-07-23
+**Updated:** 2026-07-24
 
 **Machine authority:** [`BACKLOG.json`](BACKLOG.json)
 
@@ -64,9 +64,9 @@ mirroring of every Codex or Claude todo.
 | Agent plugins | Codex and Claude Code certified | Add a stable generic-agent entrypoint and project rendezvous contract |
 | Local Console | Installed, loopback-only, read-only | Make it visible in onboarding with a real screenshot and start/status commands |
 | Embedded Core | Published Bun-oriented TypeScript package | Add a deep local client facade and certify the actual runtime boundary |
-| Python | No supported package | Document CLI JSON now; build a remote client only after Server API stability |
-| Multi-machine | No supported path | Ship an online central Server before optional offline replication |
-| Cloud | Not implemented | Operate the certified Server contract as a thin managed alpha |
+| Python | Dependency-free remote source candidate | Publish with provenance and replay the downloaded wheel against the exact Server digest |
+| Multi-machine | Online Server plus authenticated offline-replication source candidates | Publish exact artifacts and run a clean-room multi-machine trial |
+| Cloud | Private provider-neutral control-plane/BFF source candidate | Bind real infrastructure and pass independent operations/security gates |
 
 The 2026-07-23 audit found the following release-blocking adoption defects:
 
@@ -101,8 +101,9 @@ release is valid. TQ-609 closes them before another broad product claim.
    Server instead of blocking it.
 5. **Cloud follows a certified Server.** Cloud initially adds managed
    provisioning and operations, not another kernel or protocol.
-6. **Effects remain disabled remotely.** TQ-906 still requires ADR-005 and an
-   independent authority/evidence review.
+6. **Effects remain disabled remotely.** ADR-005 and TQ-612 are complete, but
+   TQ-906 still requires TQ-616 published-artifact evidence, the exact deployed
+   connector chain and an independent authority/evidence review.
 7. **TypeScript remains the reference embedded SDK.** Python first uses CLI
    JSON locally and later receives a remote API client; no second Python kernel
    is planned.
@@ -150,13 +151,16 @@ at all.
 | parallel after ADR-005 | TQ-612 | Independently validated, contestable completion policies | High-trust completion, TQ-906 |
 | 4 | TQ-606 | Independent human completes the public Local adoption journey | Public adoption closure |
 | parallel | TQ-607 | Retained three-consumer dogfood and stable decision | Stable graduation |
-| 5 | TQ-805 | Remote MCP uses the same ADR-004 guard as REST | TQ-807 |
-| 6 | TQ-809 | Remote CLI/client, enrollment and online workspace rendezvous | TQ-807 |
-| 7 | TQ-807 | Deployable online Tasq Server artifact and operator lifecycle | TQ-808 |
-| 8 | TQ-808 | Hostile multi-surface self-host certification | Cloud, offline sync, remote SDKs |
-| 9 | TQ-901–TQ-905 | Thin managed Cloud alpha and its operations proof | Managed availability |
-| parallel after TQ-808 | TQ-806 | Authenticated optional offline replication | Cross-device offline support |
-| parallel after TQ-808 | TQ-810 | Generated/supported remote client SDKs, beginning with Python | Cross-language adoption |
+| 5 | TQ-805 — done | Remote MCP uses the same ADR-004 guard as REST | TQ-807 |
+| 6 | TQ-809 — done | Remote CLI/client, enrollment and online workspace rendezvous | TQ-807 |
+| 7 | TQ-807 — candidate done | Deployable online Tasq Server artifact and operator lifecycle | TQ-808 |
+| 8 | TQ-808 — candidate done | Hostile multi-surface self-host certification | Cloud, offline sync, remote SDKs |
+| 9 | TQ-811 — candidate done | Minimal authenticated human action loop over registered Server operations | Daily human/agent collaboration |
+| 10 | TQ-812 — candidate done | GitHub Issues, PR, check and deployment bridge with explicit authority | Existing-work adoption |
+| 11 | TQ-813 — candidate done | Retry-safe assignment, blocking, expiry, recovery and validation attention loop | Timely coordination |
+| 12 | TQ-901–TQ-905 — candidate done | Thin managed Cloud source and hostile operations proof | External managed deployment gates |
+| parallel after TQ-808 | TQ-806 — candidate done | Authenticated optional offline replication | Published artifacts and multi-machine trial |
+| parallel after TQ-808 | TQ-810 — candidate done | Remote schema and Python client | PyPI/provenance/exact-digest replay |
 | last | TQ-906 | Reviewed remote effects, disabled by default until accepted | Remote effect support |
 
 Items in the same “parallel” band may proceed concurrently, but each item keeps
@@ -183,7 +187,7 @@ its own dependencies and evidence gate.
 - Lead the homepage with the concrete human/Codex/Claude coordination failure,
   then show the claim/attempt/evidence recovery loop.
 - State beside the main promise that Local coordinates processes sharing one
-  store on one machine; another machine requires future Server.
+  store on one machine; another machine requires a published Server.
 - Add a real Local Console screenshot and the exact `tasq web` /
   `tasq web status` commands.
 - Put architecture, product-shape matrices and implementation chronology after
@@ -424,24 +428,27 @@ No synthetic test can replace its minimum duration or maintainer decision.
 
 ## 10. TQ-805 — Guarded remote MCP
 
-**Status:** pending
+**Status:** done — host-integrated surface only
 
 **Depends on:** TQ-804
 
-- Map every remote MCP tool to exactly one registered ADR-004 action.
-- Use the same credential verifier, subject binding, workspace router, live
-  authorization decision and injected request time as REST.
-- Negotiate capabilities without allowing a client to self-grant them.
-- Preserve idempotency, exclusive cursor semantics and typed unknown outcomes.
-- Prove REST/MCP parity for equivalent read and mutation operations.
-- Keep remote effects absent.
+`createHostedMcpHandler` now authenticates each exact Streamable HTTP request,
+discards raw credentials before tool dispatch and projects bounded read tools
+plus one collision-checked tool per registered mutation operation through the
+same TQ-803/TQ-804 handler. Tool presence is never authority; every call uses
+the same subject binding, workspace router, live decision, idempotency and
+request-wide injected time as REST.
 
-Acceptance requires hostile cross-workspace, revoked-session, confused-deputy,
-cursor and duplicate-mutation tests through both transports.
+The official MCP client and clean-room eval prove exact replay, conflicting
+key denial, immediate revocation and foreign-workspace isolation. V1 is
+stateless and retains Tasq event cursors as its durable resume mechanism.
+Remote effects, listeners, concrete verifiers and deployable Server lifecycle
+remain absent. Evidence is frozen in
+`../contracts/TQ-805_REMOTE_MCP_CERTIFICATION.json`.
 
 ## 11. TQ-809 — Remote CLI, client and enrollment
 
-**Status:** pending
+**Status:** done — repository-certified source candidate; not in published `v0.3.0`
 
 **Depends on:** TQ-804, TQ-611
 
@@ -473,9 +480,25 @@ cursor and duplicate-mutation tests through both transports.
 - CLI, REST and MCP inspect the same canonical records and cursors.
 - Removing local client state does not delete server data.
 
+### Implementation evidence
+
+`@tasq-run/client` is a Fetch-only package candidate with no Core or database
+dependency. `tasq remote` owns explicit named profiles and private credential
+files. The authority store owns one-use enrollment and revocable opaque
+credential digests; every subsequent request still crosses the live ADR-004
+guard. Two clean clients pass claim/resource contention, exact lost-response
+replay, next-request revocation and REST/official-MCP cursor parity.
+
+See
+[`TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md`](../contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md)
+and
+[`TQ-809_REMOTE_CLIENT_CERTIFICATION.json`](../contracts/TQ-809_REMOTE_CLIENT_CERTIFICATION.json).
+Those pieces were deliberately absent from TQ-809 itself. TQ-807 now supplies
+them as a separate unpublished Server source candidate.
+
 ## 12. TQ-807 — Deployable online Tasq Server
 
-**Status:** pending
+**Status:** source candidate complete; publication and operator gates open
 
 **Depends on:** TQ-805, TQ-809
 
@@ -512,6 +535,9 @@ first deployable online Server.
 
 ## 13. TQ-808 — Self-hosted hostile certification
 
+**Status:** repository hostile candidate complete; published-image,
+cross-platform clean-room and unbriefed-operator gates open
+
 TQ-808 closes only when the packaged Server, rather than an in-process handler,
 passes:
 
@@ -525,14 +551,52 @@ passes:
 - bounded event streaming, cursor expiry and support-bundle redaction;
 - a previously unbriefed operator deployment.
 
-Only this gate may change Server from planned/integration-required to a shipped
-self-hostable product.
+Only this gate may change Server from an unpublished source candidate to a
+shipped self-hostable product.
 
-## 14. TQ-806 — Optional authenticated offline replication
+## 14. TQ-613–TQ-616 — Purpose-bound signed statements
 
-**Status:** pending after TQ-808
+**Status:** ADR-009 accepted; TQ-613–TQ-615 complete in source; TQ-616
+protected-artifact and unbriefed-agent gates open
 
-**Depends on:** TQ-405, TQ-808
+**Depends on:** TQ-802, TQ-808, TQ-612, TQ-205 and TQ-405
+
+The signed-statement program adds portable principal authorship after the first
+Server is hostile-certified. It does not delay the initial online Server and it
+does not make signatures mandatory for simple Local commitments.
+
+- TQ-613 freezes the canonical payload, typed DSSE-style envelope, baseline
+  Ed25519 profile, purpose registry and cross-language verification vectors.
+- TQ-614 adds authority-owned public signing credentials, proof-of-possession
+  enrollment, isolation classes, rotation, suspension, revocation, compromise,
+  retirement, recovery and purpose-constrained signer/verifier interfaces.
+- TQ-615 persists append-only statements and verification records and binds
+  them through typed services to artifacts, completion resolution, effect
+  approvals, replication operations and workspace checkpoints. It integrates
+  Core, CLI, MCP, Console, doctor, backup and portable data without exposing
+  private keys or an arbitrary-byte signing oracle.
+- TQ-616 runs hostile cross-surface, cross-language, revocation-race,
+  migration, restore and published-byte certification.
+
+Acceptance preserves five independent questions:
+
+1. do the bytes match their digest;
+2. did the credential sign the exact purpose-bound statement;
+3. was that credential bound to the principal at acceptance;
+4. was the principal authorized or eligible for this action;
+5. did the statement actually satisfy the semantic policy.
+
+The full design and threat matrix are
+[`TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md`](../contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md)
+and
+[`SIGNED_STATEMENT_ACCEPTANCE.json`](../contracts/SIGNED_STATEMENT_ACCEPTANCE.json).
+
+## 15. TQ-806 — Optional authenticated offline replication
+
+**Status:** source candidate complete; published Server/client and clean-room
+multi-machine gates open
+
+**Depends on:** TQ-405, TQ-808, TQ-616
 
 Offline replication is an enhancement to a working online authority, not the
 first multi-machine transport.
@@ -548,7 +612,9 @@ first multi-machine transport.
 - Certify long disconnect, malicious reorder/duplication, stale backup and
   authority-epoch rotation.
 
-## 15. TQ-901–TQ-905 — Thin managed Cloud alpha
+## 16. TQ-901–TQ-905 — Thin managed Cloud alpha
+
+**Status:** source candidates complete; deployed operations gates open
 
 Cloud operates the same Server contracts. The initial alpha includes:
 
@@ -573,11 +639,25 @@ Cloud acceptance requires multi-tenant isolation, restore drills, complete
 export/delete behavior, revocation and support-access audit. A deployment URL
 or successful demo is not sufficient.
 
-## 16. TQ-810 — Remote cross-language SDKs
+The repository source candidate now implements and tests every listed
+control-plane boundary except service health, which remains the exact Server
+runtime health contract rather than a second Cloud truth. The hostile fixture
+covers two-tenant isolation, a concurrent quota race, sessions/CSRF/origin,
+device/recovery/tenant revocation, provisioning recovery, export, retention,
+backup/restore, credential-reference rotation, support expiry/revocation,
+incident/billing separation and deletion retry. See TQ-901 through TQ-905 in
+`../contracts/`.
 
-**Status:** pending after TQ-808
+This does not satisfy Cloud acceptance by itself. Real provider bindings,
+secret-manager rotation, off-site restore, region failover, protected deployed
+artifacts, independent security review and an unbriefed operator incident drill
+remain external gates. Consequently `managedCloudAvailable` remains false.
 
-**Depends on:** TQ-808
+## 17. TQ-810 — Remote cross-language SDKs
+
+**Status:** source candidate complete; publication gate open
+
+**Depends on:** TQ-808, TQ-616
 
 - Publish the stable remote API schema/OpenAPI document.
 - Generate a client conformance suite from protocol examples and failure
@@ -592,7 +672,7 @@ Before TQ-810, Python documentation shows `subprocess` plus `--json`, argument
 arrays, explicit space/actor, typed error handling and cursor persistence. It
 must not concatenate ledger prose into a shell command.
 
-## 17. Verification matrix
+## 18. Verification matrix
 
 | Change type | Minimum focused checks | Handoff gate |
 |---|---|---|
@@ -601,6 +681,7 @@ must not concatenate ledger prose into a shell command.
 | Agent integration | isolated home; real host install/use/uninstall; hostile instructions | machine certificate plus blind trial |
 | Local SDK | fresh consumer package; Bun/Node matrix; restart/data retention | package clean-room certificate |
 | Remote transport | cross-workspace, revocation, idempotency, cursor and clock tests | hostile multi-surface eval |
+| Signed statements | canonical/signature vectors, key lifecycle, purpose isolation, revocation race, no-secret scan | hostile cross-language and published-byte certificate |
 | Server artifact | clean deployment, backup/restore/upgrade/rollback, SBOM | protected image and operator trial |
 | Cloud | tenancy, deletion/export, key rotation, incident/restore, support audit | independent operational review |
 | Offline replication | loss/reorder/duplicate/conflict/expiry/old-backup tests | chaos and recovery certificate |
@@ -614,7 +695,7 @@ Every completed item also updates:
 5. `BACKLOG.json` and `BACKLOG.md`;
 6. affected site, root and package documentation.
 
-## 18. Definition of done for the program
+## 19. Definition of done for the program
 
 The program is complete when:
 

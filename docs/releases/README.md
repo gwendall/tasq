@@ -8,5 +8,7 @@
 - [`PUBLIC_SOURCE_MANIFEST.json`](PUBLIC_SOURCE_MANIFEST.json) — frozen
   provenance for the initial standalone export, not a live file inventory.
 
-The public repository is currently a source alpha. npm packages and protected
-download artifacts do not exist until the external publication gates pass.
+The public repository and protected Local `v0.3.0` npm/native artifacts are
+published alpha. Server, remote clients, Python and Cloud remain source
+candidates until their own external publication, deployment and clean-room
+gates pass.

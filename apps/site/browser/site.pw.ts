@@ -20,7 +20,8 @@ test("homepage explains the product and its generated release boundary", async (
     exact: false,
   })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
-  await expect(page.getByRole("table")).toContainText("Not built");
+  await expect(page.getByRole("table")).toContainText("Tasq Server");
+  await expect(page.getByRole("table")).toContainText("Candidate");
   if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq-run/");
 });
 
@@ -68,7 +69,8 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   await expect(page.getByText("docs/releases/PUBLIC_RELEASE_POLICY.json")).toBeVisible();
   const surfaces = page.getByRole("table");
   await expect(surfaces).toContainText("Rest");
-  await expect(surfaces).toContainText("none");
+  await expect(surfaces).toContainText("Cloud Bff");
+  await expect(surfaces).toContainText("Candidate");
   const response = await page.request.get("/product-truth.json");
   expect(response.ok()).toBe(true);
   expect((await response.json()).contractVersion).toBe("tasq.public-site-truth.v1");

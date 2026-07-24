@@ -1,0 +1,36 @@
+{
+  "contractVersion": "tasq.hosted-human-actions-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-811",
+  "surface": [
+    "commitment_create",
+    "claim_acquire",
+    "commitment_block",
+    "evidence_append",
+    "evidence_trust_attest_unverified",
+    "completion_propose",
+    "completion_attest"
+  ],
+  "invariants": {
+    "sameOriginRequired": true,
+    "cookie": "Secure_HttpOnly_SameSite_Strict_Host_prefix",
+    "boundedFormBytes": 4096,
+    "allMutationsUseRegisteredRestOperation": true,
+    "allMutationsUseLiveAuthorityGuard": true,
+    "directConsoleCoreMutationPath": false,
+    "unverifiedAttributionIsNotAuthenticity": true,
+    "independentValidationEnforcedByCore": true
+  },
+  "evidence": [
+    "packages/tasq-server/src/hosted-console.ts",
+    "packages/tasq-server/src/workspace.ts",
+    "packages/tasq-server/test/runtime.test.ts",
+    "packages/tasq-server/test/workspace.test.ts",
+    "packages/tasq-authority/test/authority.test.ts"
+  ],
+  "remainingExternalGate": [
+    "exact_published_server_image_browser_replay",
+    "tq807_tq808_server_publication"
+  ]
+}

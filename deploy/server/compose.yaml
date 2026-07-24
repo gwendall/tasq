@@ -1,0 +1,48 @@
+services:
+  tasq:
+    build:
+      context: ../..
+      dockerfile: deploy/server/Dockerfile
+    restart: unless-stopped
+    command: ["serve", "--config", "/etc/tasq/server.json"]
+    environment:
+      TASQ_SERVER_ENROLLMENT_PEPPER: "${TASQ_SERVER_ENROLLMENT_PEPPER:?set a canonical 32-byte base64url secret}"
+    volumes:
+      - ./server.json:/etc/tasq/server.json:ro
+      - ./bootstrap.json:/etc/tasq/bootstrap.json:ro
+      - tasq-data:/var/lib/tasq
+    expose:
+      - "8787"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on:
+      tasq:
+        condition: service_healthy
+    environment:
+      TASQ_DOMAIN: "${TASQ_DOMAIN:?set the public hostname}"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  tasq-data:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,69 @@
+{
+  "contractVersion": "tasq.signed-statement-hostile-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-616",
+  "testedArtifact": "source_and_local_built_candidate",
+  "criticalThreats": {
+    "SS-CONTENT-01": "passed",
+    "SS-CONTENT-02": "passed",
+    "SS-CONTENT-03": "passed",
+    "SS-CONTENT-04": "passed",
+    "SS-IDENTITY-01": "passed",
+    "SS-IDENTITY-02": "passed",
+    "SS-AUTH-01": "passed_separate_verification_and_authority",
+    "SS-AUTH-02": "passed_typed_binder",
+    "SS-AUTH-03": "passed_existing_permit_fence_receipt_gate_unchanged",
+    "SS-REPLAY-01": "passed",
+    "SS-REPLAY-02": "passed",
+    "SS-REPLAY-03": "passed_domain_cas_remains_separate",
+    "SS-CREDENTIAL-01": "passed",
+    "SS-CREDENTIAL-02": "passed",
+    "SS-CREDENTIAL-03": "passed",
+    "SS-SECRET-01": "passed",
+    "SS-SECRET-02": "passed",
+    "SS-REPLICATION-01": "passed_authority_required_operations_remain_online",
+    "SS-REPLICATION-02": "passed_complete_unit_or_omitted",
+    "SS-PERSISTENCE-01": "passed",
+    "SS-SEMANTIC-01": "passed",
+    "SS-SEMANTIC-02": "passed",
+    "SS-UX-01": "passed"
+  },
+  "nonCriticalThreats": {
+    "SS-PERSISTENCE-02": "honest_non_claim_external_witness_required"
+  },
+  "crossLanguage": {
+    "bun": "passed",
+    "nodeCryptoContract": "passed",
+    "pythonIndependentVerifier": "passed"
+  },
+  "recovery": {
+    "processKillMigrationBoundaries": "passed",
+    "lostResponseExactReplay": "passed",
+    "portableRestore": "passed",
+    "olderBackupRule": "restore_matching_binary_and_snapshot"
+  },
+  "authorityConcurrency": {
+    "revocationRace": "fail_closed_then_retry_after_admitted_commit",
+    "restRemoteMcpGuard": "shared_authorizeAndExecuteAt_gate"
+  },
+  "evidence": [
+    "packages/tasq-extension-sdk/test/signed-statements.test.ts",
+    "packages/tasq-core/test/signed-statements.test.ts",
+    "packages/tasq-service/test/data-safety.test.ts",
+    "packages/tasq-service/test/signed-statements.test.ts",
+    "packages/tasq-server/test/signing-credentials.test.ts",
+    "packages/tasq-server/test/workspace.test.ts",
+    "packages/tasq-evals/signed-statement-cross-language.test.ts",
+    "packages/tasq-evals/fixtures/verify-signed-statement-vector.py",
+    "packages/tasq-inspector/test/inspector.test.ts"
+  ],
+  "remainingExternalGate": [
+    "protected_release_workflow",
+    "exact_downloaded_bytes",
+    "supported_macos_arm64_and_linux_x64",
+    "node_bun_python_clean_room",
+    "unbriefed_agent_and_operator_trial"
+  ],
+  "publicSupportClaim": false
+}

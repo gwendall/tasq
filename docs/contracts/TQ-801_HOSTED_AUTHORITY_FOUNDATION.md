@@ -2,7 +2,8 @@
 
 > **Status:** implemented and repository-certified — 2026-07-21
 > **Machine certificate:** `TQ-801_AUTHORITY_CERTIFICATION.json`
-> **Remote surface status:** not implemented
+> **Remote surface status:** implemented later as an unpublished Server source
+> candidate by TQ-803–TQ-809
 
 ## Outcome
 
@@ -11,9 +12,10 @@ before a future hosted adapter may call the kernel. It turns a previously
 verified external identity plus one current workspace-authority snapshot into
 one strict allow/deny decision at one injected timestamp.
 
-This closes the first implementation slice of ADR-004. It does not implement
-credential verification, persistence, routing, audit, REST, remote MCP, a
-hosted Console or a deployable server.
+This closed the first implementation slice of ADR-004. The evaluator itself
+does not implement credential verification, persistence, routing, audit or a
+listener; those outer layers are now composed by the unpublished TQ-802–TQ-809
+Server source candidate.
 
 ## Contracts
 
@@ -24,7 +26,7 @@ hosted Console or a deployable server.
   action upper bounds without storing credentials;
 - versioned subject bindings, principals, permission sets, grants,
   delegations and effect eligibility DTOs;
-- 16 immutable `urn:tasq:action:*` definitions, each pinned by version and
+- 21 immutable `urn:tasq:action:*` definitions, each pinned by version and
   implementation digest;
 - `tasq.authorization-request.v1` and
   `tasq.authorization-decision.v1`;

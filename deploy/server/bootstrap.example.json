@@ -1,0 +1,28 @@
+{
+  "contractVersion": "tasq.server-bootstrap.v1",
+  "hostTenantId": "self-host",
+  "createdAt": 1784860800000,
+  "workspaces": [
+    {
+      "id": "team/main",
+      "principals": [
+        {
+          "id": "owner",
+          "kind": "human",
+          "issuer": "https://identity.example.com/",
+          "subject": "replace-with-your-oidc-subject",
+          "method": "oidc",
+          "role": "coordinator"
+        },
+        {
+          "id": "agent",
+          "kind": "agent",
+          "issuer": "https://tasks.example.com/",
+          "subject": "agent-subject",
+          "method": "oauth_introspection",
+          "role": "coordinator"
+        }
+      ]
+    }
+  ]
+}

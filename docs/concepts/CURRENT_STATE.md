@@ -1,24 +1,33 @@
 # Current state
 
-**Updated:** 2026-07-23
+**Updated:** 2026-07-24
 
 Tasq currently ships source for two local product shapes:
 
 - **Core:** an embeddable, profile-neutral coordination kernel;
 - **Local:** the CLI, local stdio MCP transport and read-only loopback Console.
 
-Server, remote MCP and Cloud are planned, not implemented. Host-integrated
-read and registered-mutation REST handlers exist, but no deployable endpoint ships. Provider
-connectors, domain policy and agent runtimes remain outside Core.
+Server now has a repository-certified daemon and Linux container candidate.
+Cloud now has a private, provider-neutral control-plane and same-origin BFF
+source candidate. Server composes guarded REST, stateless remote MCP, one-use
+enrollment, real Core operations and an authenticated Console with a small
+TQ-811 guarded human action surface. Cloud adds isolated provisioning,
+sessions, identity lifecycle, quota, export/delete, backup/restore, opaque
+credential-reference rotation and operations records around that Server
+contract. No immutable public Server image, managed Cloud deployment or public
+remote endpoint ships yet.
+Provider connectors, domain policy and agent runtimes remain outside Core.
 
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;
-16 exact action identities; and a pure deny-by-default evaluator. It consumes
+19 exact action identities, including separate evidence-trust, completion proposal and decision
+authority; and a pure deny-by-default evaluator. It consumes
 one injected clock snapshot and has no transport, credential verification,
 persistence, store routing or kernel dependency. Consequently it creates no
-new human or agent entrypoint and does not change the `not_implemented` Server,
-REST, remote MCP or hosted Console support claims.
+new human or agent entrypoint. Later TQ-803–TQ-805 host-integrated adapters own
+the current REST/MCP integration-required support, while runnable Server and
+hosted Console claims remain `not_implemented`.
 
 TQ-802 is now also implemented internally. `@tasq-internal/server` persists
 host/workspace routing, principals, issuer/subject bindings, immutable
@@ -30,9 +39,8 @@ TQ-803 wraps that boundary in a Fetch-compatible authenticated read handler.
 It publishes RFC 9728 discovery, accepts identity only from a host-supplied
 credential verifier, authorizes every request live, supports bounded
 commitment reads and payload-free event metadata, and captures one injected
-clock snapshot per request. It is an integration entrypoint, not a listener or
-deployable Server; concrete OIDC/JWKS/introspection adapters are not yet
-provided.
+clock snapshot per request. By itself it remains an integration entrypoint;
+TQ-807 now supplies the concrete verifier and listener composition.
 
 TQ-804 adds a public state-free operation catalog and host-integrated guarded
 mutation handler. Every mutation requires caller-scoped durable idempotency,
@@ -41,14 +49,56 @@ holds a `BEGIN IMMEDIATE` writer gate through the host's domain commit, so a
 concurrent revocation cannot cross an admitted mutation. The separate
 databases are honestly serialized rather than described as cross-database
 ACID; a lost boundary returns typed unknown outcome and exact-retry recovery.
-No bundled operation adapter, listener or deployable Server exists yet.
+TQ-807 now supplies the bundled Core operation adapter, receipt store and
+listener without changing this separate-database recovery boundary. TQ-811
+adds bounded same-origin browser forms for create, claim, block, evidence,
+explicit unverified evidence-trust attribution, completion proposal and
+independent approval. Each form re-enters this exact operation catalog and
+guard; the Console contains no direct Core mutation path.
+
+TQ-805 adds a stateless MCP Streamable HTTP adapter inside the same private
+Server package. It authenticates each exact MCP request, discards the raw
+credential before tool dispatch and projects bounded reads plus dynamically
+registered mutation tools through the existing TQ-803/TQ-804 Fetch handler.
+Consequently REST and MCP share subject binding, live grants, isolated routing,
+decision audit, idempotency and revocation serialization. Official-client
+tests and a clean-room eval prove reads, exact replay, conflicting-key denial,
+immediate revocation and no foreign-workspace opener. The adapter remains
+stateless; TQ-807 exposes it through the candidate daemon without adding a
+stateful MCP session.
+
+TQ-809 adds the Fetch-only `@tasq-run/client` source candidate and `tasq
+remote` CLI workflow. Endpoint, workspace and credential profile are explicit;
+actor text never authenticates. The authority control plane now supports
+expiring one-use human-device/workload enrollment, atomically consumed into a
+revocable opaque credential while storing only host-peppered digests. The
+client exposes bounded reads, registered idempotent mutations, exclusive
+event resume and typed cursor-retention recovery. Two-client claim/resource
+contention, lost-response replay, next-request revocation, private CLI
+credential modes and REST/official-MCP record/cursor parity pass. This closes
+the host-integrated TQ-809 slice; `@tasq-run/client` remains absent from
+published `v0.3.0`.
+
+TQ-807 now composes those layers into a runnable Bun daemon and reference
+Docker/Compose deployment. Strict versioned config binds a canonical HTTPS
+origin, static RS256 public JWKs, JWT scope upper bounds and opaque workspace
+storage slots. A single Server-owned Core adapter implements registered
+commitment, claim, attempt, evidence and resource operations; a separate
+immutable receipt store preserves exact remote replay. The same-origin hosted
+Console exchanges a checked bearer credential for a Secure HttpOnly cookie
+and re-enters guarded REST for every read. Deterministic bootstrap, health,
+readiness, bounded metrics, online checksummed backup and create-only restore
+pass daemon, restart and real container tests. TQ-807 is
+`candidate_done_external_gate`: protected multi-architecture image
+publication, SBOM, checksums and provenance remain.
 
 This is the public canonical source repository. `main` requires pull requests,
 green macOS and Linux verification, conversation resolution and linear history;
 deletion and non-fast-forward updates are blocked. `v*` tags are immutable,
 the `release` environment accepts only `v*`, secret scanning and push protection
-are enabled, and private vulnerability reporting is active. The repository contains seven intended
-public package sources and private compatibility, example and eval workspaces.
+are enabled, and private vulnerability reporting is active. The repository
+contains the seven published package sources plus one ADR-010 remote-client
+package candidate and private compatibility, example and eval workspaces.
 A package is not available merely because its source exists here; npm
 availability starts only after an explicitly authorized protected attested
 release.
@@ -202,6 +252,43 @@ and post-release run
 [30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
 certify both native targets and all seven registry tarballs. See
 `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
+
+ADR-009 and TQ-613 freeze the next trust layer: purpose-bound signed
+statements, public signing-credential lifecycle and explicit verification
+records. TQ-614 implements authority-owned Ed25519 credential enrollment and
+lifecycle. TQ-615 persists append-only statements, verification proofs, nonce
+use and exact bindings to artifacts, completion resolution, effect approvals,
+replication operations and checkpoints. Cross-language canonical vectors,
+purpose/routing isolation, untrusted-root rejection, lifecycle failures,
+revocation races, transaction composition and portable pruning pass. A valid
+signature authenticates bytes and principal only; it never establishes truth,
+completion or effect authority. TQ-616 remains
+`candidate_done_external_gate` until exact protected downloaded artifacts,
+supported-platform replay and an unbriefed-agent trial pass.
+
+TQ-806 binds every replica generation to one authenticated principal. Server
+push requires exactly one accepted purpose-bound signed origin per operation
+and persists each operation plus proof in the same domain transaction.
+Pull also requires the owning principal. Claims, leases, approvals and effects
+remain online-only. Existing reorder, duplicate, conflict, cursor-expiry,
+process-kill and old-backup chaos evidence still passes; published Server and
+client artifacts plus a clean-room multi-machine trial remain external.
+
+TQ-810 adds a checked-in OpenAPI 3.1 remote contract and dependency-free
+Python 3.11+ client for reads, event cursors, operation discovery, idempotent
+mutation and enrollment. It is deliberately transport-only and contains no
+Core, SQLite or migration logic. PyPI publication, provenance and exact
+downloaded-wheel replay against the published Server digest remain open.
+
+TQ-901–TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
+tests pass colliding names, isolated storage bindings, concurrent quota,
+cross-tenant denial, BFF CSRF/origin rules, revocation epochs, provider
+reconciliation, rotation, backup/restore, retention, support and deletion
+recovery. Raw identity subjects, session tokens and Server bearer credentials
+are not stored. Real provider, secret-manager, multi-region, operations and
+independent security evidence remain external, so Tasq Cloud is not available.
+TQ-906 remains pending independent review; Server and Cloud both keep remote
+effects disabled.
 
 The shortest verified loop is:
 

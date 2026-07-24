@@ -1,6 +1,7 @@
 import { createClient, type Client, type Transaction } from "@libsql/client";
 import type { Clock } from "@tasq-run/schema";
 import {
+  ActionIdentity,
   AuthorityEligibility,
   AuthorityPrincipal,
   AuthorizationDecision,
@@ -11,7 +12,7 @@ import {
   SubjectBinding,
   digestAuthorityValue,
   evaluateAuthorization,
-  type ActionIdentity,
+  getRegisteredAction,
   type AuthorityEligibility as AuthorityEligibilityValue,
   type AuthorityPrincipal as AuthorityPrincipalValue,
   type AuthorizationDecision as AuthorizationDecisionValue,
@@ -29,6 +30,49 @@ const Id = z.string().min(1).max(500).refine((value) => value === value.trim() &
 const AuditTargetId = z.string().min(1).max(1_000).refine((value) => value === value.trim() && !/[\u0000-\u001f\u007f]/.test(value));
 const WorkspaceId = z.string().min(1).max(200).regex(/^[a-zA-Z0-9][a-zA-Z0-9._/-]*$/);
 const UnixMs = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+const Digest = z.string().regex(/^sha256:[0-9a-f]{64}$/);
+
+const EnrollmentRecordSchema = z.object({
+  id: Id,
+  workspaceId: WorkspaceId,
+  principalId: Id,
+  issuer: z.string().url(),
+  subject: Id,
+  clientKind: z.enum(["human_device", "workload_agent"]),
+  tokenDigest: Digest,
+  actionUpperBound: z.array(ActionIdentity).min(1),
+  createdAt: UnixMs,
+  expiresAt: UnixMs,
+  accessExpiresAt: UnixMs,
+  consumedAt: UnixMs.nullable(),
+  revokedAt: UnixMs.nullable(),
+}).strict();
+export type EnrollmentRecord = z.infer<typeof EnrollmentRecordSchema>;
+
+const AccessCredentialRecordSchema = z.object({
+  id: Id,
+  enrollmentId: Id,
+  workspaceId: WorkspaceId,
+  principalId: Id,
+  issuer: z.string().url(),
+  subject: Id,
+  clientKind: z.enum(["human_device", "workload_agent"]),
+  tokenDigest: Digest,
+  actionUpperBound: z.array(ActionIdentity).min(1),
+  issuedAt: UnixMs,
+  expiresAt: UnixMs,
+  status: z.enum(["active", "revoked"]),
+  revision: z.number().int().positive(),
+  revokedAt: UnixMs.nullable(),
+}).strict();
+export type AccessCredentialRecord = z.infer<typeof AccessCredentialRecordSchema>;
+
+export class EnrollmentStoreError extends Error {
+  constructor(readonly code: "not_found" | "expired" | "consumed" | "revoked" | "invalid_binding") {
+    super(code);
+    this.name = "EnrollmentStoreError";
+  }
+}
 
 export const AuthorityMutationContext = z.object({
   operationId: Id,
@@ -178,6 +222,59 @@ function portableJson(value: unknown): string {
   return JSON.stringify(value);
 }
 
+function exactRegisteredActions(value: unknown): ActionIdentity[] {
+  const parsed = z.array(ActionIdentity).min(1).max(32).parse(value);
+  const sorted = [...parsed].sort((left, right) => left.uri.localeCompare(right.uri));
+  if (new Set(sorted.map(({ uri }) => uri)).size !== sorted.length) {
+    throw new EnrollmentStoreError("invalid_binding");
+  }
+  for (const action of sorted) {
+    const registered = getRegisteredAction(action.uri);
+    if (!registered || registered.version !== action.version
+      || registered.implementationDigest !== action.implementationDigest) {
+      throw new EnrollmentStoreError("invalid_binding");
+    }
+  }
+  return sorted;
+}
+
+function enrollmentFromRow(row: Record<string, unknown>): EnrollmentRecord {
+  return EnrollmentRecordSchema.parse({
+    id: text(row, "id"),
+    workspaceId: text(row, "workspace_id"),
+    principalId: text(row, "principal_id"),
+    issuer: text(row, "issuer"),
+    subject: text(row, "subject"),
+    clientKind: text(row, "client_kind"),
+    tokenDigest: text(row, "token_digest"),
+    actionUpperBound: json(row, "action_upper_bound_json"),
+    createdAt: integer(row, "created_at"),
+    expiresAt: integer(row, "expires_at"),
+    accessExpiresAt: integer(row, "access_expires_at"),
+    consumedAt: nullableInteger(row, "consumed_at"),
+    revokedAt: nullableInteger(row, "revoked_at"),
+  });
+}
+
+function credentialFromRow(row: Record<string, unknown>): AccessCredentialRecord {
+  return AccessCredentialRecordSchema.parse({
+    id: text(row, "id"),
+    enrollmentId: text(row, "enrollment_id"),
+    workspaceId: text(row, "workspace_id"),
+    principalId: text(row, "principal_id"),
+    issuer: text(row, "issuer"),
+    subject: text(row, "subject"),
+    clientKind: text(row, "client_kind"),
+    tokenDigest: text(row, "token_digest"),
+    actionUpperBound: json(row, "action_upper_bound_json"),
+    issuedAt: integer(row, "issued_at"),
+    expiresAt: integer(row, "expires_at"),
+    status: text(row, "status"),
+    revision: integer(row, "revision"),
+    revokedAt: nullableInteger(row, "revoked_at"),
+  });
+}
+
 async function rollback(transaction: Transaction): Promise<void> {
   try {
     await transaction.rollback();
@@ -214,6 +311,21 @@ export class AuthorityStore {
 
   async close(): Promise<void> {
     this.client.close();
+  }
+
+  async getWorkspaceAuthorityState(workspaceIdInput: string): Promise<{
+    workspaceId: string;
+    storageBindingId: string;
+    status: "enabled" | "disabled";
+    authorityRevision: number;
+  } | null> {
+    const workspaceId = WorkspaceId.parse(workspaceIdInput);
+    const result = await this.client.execute({
+      sql: "SELECT workspace_id, storage_binding_id, status, authority_revision FROM hosted_workspace WHERE workspace_id = ?",
+      args: [workspaceId],
+    });
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    return row ? workspaceFromRow(row) : null;
   }
 
   private async findIdempotent(
@@ -724,6 +836,226 @@ export class AuthorityStore {
         if (result.rowsAffected !== 1) throw new AuthorityStoreError("revision_conflict", "eligibility revision changed");
       },
     });
+  }
+
+  async createEnrollment(input: {
+    enrollment: Omit<EnrollmentRecord, "consumedAt" | "revokedAt">;
+    context: AuthorityMutationContext;
+  }): Promise<AuthorityMutationResult> {
+    const enrollment = EnrollmentRecordSchema.parse({
+      ...input.enrollment,
+      actionUpperBound: exactRegisteredActions(input.enrollment.actionUpperBound),
+      consumedAt: null,
+      revokedAt: null,
+    });
+    if (enrollment.expiresAt <= enrollment.createdAt
+      || enrollment.accessExpiresAt <= enrollment.createdAt) {
+      throw new EnrollmentStoreError("expired");
+    }
+    return this.workspaceMutation({
+      workspaceId: enrollment.workspaceId,
+      operation: "enrollment.create",
+      targetType: "enrollment",
+      targetId: enrollment.id,
+      context: input.context,
+      request: {
+        id: enrollment.id,
+        principalId: enrollment.principalId,
+        issuer: enrollment.issuer,
+        subject: enrollment.subject,
+        clientKind: enrollment.clientKind,
+        tokenDigest: enrollment.tokenDigest,
+        actionUpperBound: enrollment.actionUpperBound,
+        createdAt: enrollment.createdAt,
+        expiresAt: enrollment.expiresAt,
+        accessExpiresAt: enrollment.accessExpiresAt,
+      },
+      apply: async (transaction) => {
+        const binding = await transaction.execute({
+          sql: `SELECT b.id FROM subject_binding b
+                JOIN authority_principal p ON p.workspace_id = b.workspace_id AND p.id = b.principal_id
+                WHERE b.workspace_id = ? AND b.principal_id = ? AND b.issuer = ? AND b.subject = ?
+                  AND b.status = 'enabled' AND p.status = 'enabled'`,
+          args: [enrollment.workspaceId, enrollment.principalId, enrollment.issuer, enrollment.subject],
+        });
+        if (binding.rows.length !== 1) throw new EnrollmentStoreError("invalid_binding");
+        await transaction.execute({
+          sql: `INSERT INTO hosted_enrollment(
+                  id, workspace_id, principal_id, issuer, subject, client_kind, token_digest,
+                  action_upper_bound_json, created_at, expires_at, access_expires_at, consumed_at, revoked_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)`,
+          args: [
+            enrollment.id, enrollment.workspaceId, enrollment.principalId, enrollment.issuer,
+            enrollment.subject, enrollment.clientKind, enrollment.tokenDigest,
+            portableJson(enrollment.actionUpperBound), enrollment.createdAt, enrollment.expiresAt,
+            enrollment.accessExpiresAt,
+          ],
+        });
+      },
+    });
+  }
+
+  /**
+   * Atomically consumes one bootstrap token and creates its opaque access
+   * credential. Raw tokens never enter this store; callers provide only
+   * peppered digests and return the credential secret once after commit.
+   */
+  async redeemEnrollment(input: {
+    workspaceId: string;
+    enrollmentTokenDigest: string;
+    credentialId: string;
+    credentialTokenDigest: string;
+    auditEventId: string;
+  }): Promise<AccessCredentialRecord> {
+    const workspaceId = WorkspaceId.parse(input.workspaceId);
+    const enrollmentTokenDigest = Digest.parse(input.enrollmentTokenDigest);
+    const credentialId = Id.parse(input.credentialId);
+    const credentialTokenDigest = Digest.parse(input.credentialTokenDigest);
+    const auditEventId = Id.parse(input.auditEventId);
+    const now = requiredClockNow(this.clock);
+    const transaction = await beginAuthorityWrite(this.client);
+    try {
+      const found = await transaction.execute({
+        sql: `SELECT e.* FROM hosted_enrollment e
+              JOIN hosted_workspace w ON w.workspace_id = e.workspace_id AND w.status = 'enabled'
+              JOIN authority_principal p ON p.workspace_id = e.workspace_id
+                AND p.id = e.principal_id AND p.status = 'enabled'
+              JOIN subject_binding b ON b.workspace_id = e.workspace_id
+                AND b.principal_id = e.principal_id AND b.issuer = e.issuer
+                AND b.subject = e.subject AND b.status = 'enabled'
+              WHERE e.workspace_id = ? AND e.token_digest = ?`,
+        args: [workspaceId, enrollmentTokenDigest],
+      });
+      const row = found.rows[0] as Record<string, unknown> | undefined;
+      if (!row) throw new EnrollmentStoreError("not_found");
+      const enrollment = enrollmentFromRow(row);
+      if (enrollment.revokedAt !== null) throw new EnrollmentStoreError("revoked");
+      if (enrollment.consumedAt !== null) throw new EnrollmentStoreError("consumed");
+      if (now >= enrollment.expiresAt) throw new EnrollmentStoreError("expired");
+      const credentialExpiresAt = enrollment.accessExpiresAt;
+      if (credentialExpiresAt <= now) {
+        throw new EnrollmentStoreError("expired");
+      }
+      const consumed = await transaction.execute({
+        sql: `UPDATE hosted_enrollment SET consumed_at = ?
+              WHERE id = ? AND consumed_at IS NULL AND revoked_at IS NULL`,
+        args: [now, enrollment.id],
+      });
+      if (consumed.rowsAffected !== 1) throw new EnrollmentStoreError("consumed");
+      await transaction.execute({
+        sql: `INSERT INTO hosted_access_credential(
+                id, enrollment_id, workspace_id, principal_id, issuer, subject, client_kind,
+                token_digest, action_upper_bound_json, issued_at, expires_at, status, revision, revoked_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 1, NULL)`,
+        args: [
+          credentialId, enrollment.id, enrollment.workspaceId, enrollment.principalId,
+          enrollment.issuer, enrollment.subject, enrollment.clientKind, credentialTokenDigest,
+          portableJson(enrollment.actionUpperBound), now, credentialExpiresAt,
+        ],
+      });
+      const credential = AccessCredentialRecordSchema.parse({
+        id: credentialId,
+        enrollmentId: enrollment.id,
+        workspaceId: enrollment.workspaceId,
+        principalId: enrollment.principalId,
+        issuer: enrollment.issuer,
+        subject: enrollment.subject,
+        clientKind: enrollment.clientKind,
+        tokenDigest: credentialTokenDigest,
+        actionUpperBound: enrollment.actionUpperBound,
+        issuedAt: now,
+        expiresAt: credentialExpiresAt,
+        status: "active",
+        revision: 1,
+        revokedAt: null,
+      });
+      await transaction.execute({
+        sql: `INSERT INTO authority_audit(
+                event_id, workspace_id, occurred_at, actor_principal_id, event_type,
+                target_type, target_id, authority_revision, request_digest, reason, payload_json
+              ) SELECT ?, workspace_id, ?, ?, 'enrollment.redeem',
+                  'access_credential', ?, authority_revision, ?, 'one-use remote enrollment',
+                  ? FROM hosted_workspace WHERE workspace_id = ?`,
+        args: [
+          auditEventId, now, credential.principalId, credentialId,
+          digestAuthorityValue({
+            enrollmentId: enrollment.id,
+            credentialId,
+            credentialTokenDigest,
+            credentialExpiresAt,
+          }),
+          portableJson({
+            enrollmentId: enrollment.id,
+            credentialId,
+            clientKind: enrollment.clientKind,
+            expiresAt: credentialExpiresAt,
+          }),
+          workspaceId,
+        ],
+      });
+      await transaction.commit();
+      return credential;
+    } catch (error) {
+      await rollback(transaction);
+      throw mapAuthorityStoreError(error);
+    }
+  }
+
+  async revokeEnrollment(input: {
+    workspaceId: string;
+    enrollmentId: string;
+    context: AuthorityMutationContext;
+  }): Promise<AuthorityMutationResult> {
+    return this.workspaceMutation({
+      workspaceId: input.workspaceId,
+      operation: "enrollment.revoke",
+      targetType: "enrollment",
+      targetId: Id.parse(input.enrollmentId),
+      context: input.context,
+      request: {},
+      apply: async (transaction, now) => {
+        const result = await transaction.execute({
+          sql: `UPDATE hosted_enrollment SET revoked_at = ?
+                WHERE workspace_id = ? AND id = ? AND consumed_at IS NULL AND revoked_at IS NULL`,
+          args: [now, input.workspaceId, input.enrollmentId],
+        });
+        if (result.rowsAffected !== 1) throw new EnrollmentStoreError("consumed");
+      },
+    });
+  }
+
+  async revokeAccessCredential(input: {
+    workspaceId: string;
+    credentialId: string;
+    expectedCredentialRevision: number;
+    context: AuthorityMutationContext;
+  }): Promise<AuthorityMutationResult> {
+    return this.workspaceMutation({
+      workspaceId: input.workspaceId,
+      operation: "access_credential.revoke",
+      targetType: "access_credential",
+      targetId: Id.parse(input.credentialId),
+      context: input.context,
+      request: { expectedCredentialRevision: input.expectedCredentialRevision },
+      apply: async (transaction, now) => {
+        const result = await transaction.execute({
+          sql: `UPDATE hosted_access_credential
+                SET status = 'revoked', revision = revision + 1, revoked_at = ?
+                WHERE workspace_id = ? AND id = ? AND status = 'active' AND revision = ?`,
+          args: [now, input.workspaceId, input.credentialId, input.expectedCredentialRevision],
+        });
+        if (result.rowsAffected !== 1) throw new EnrollmentStoreError("revoked");
+      },
+    });
+  }
+
+  async findAccessCredential(tokenDigest: string): Promise<AccessCredentialRecord | null> {
+    const result = await this.client.execute({
+      sql: "SELECT * FROM hosted_access_credential WHERE token_digest = ?",
+      args: [Digest.parse(tokenDigest)],
+    });
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    return row ? credentialFromRow(row) : null;
   }
 
   private principalFromRow(row: Record<string, unknown>): AuthorityPrincipalValue {

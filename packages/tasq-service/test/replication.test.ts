@@ -88,7 +88,23 @@ async function addReplica(
   generationId: string,
   clock: ReturnType<typeof createMutableClock>,
 ): Promise<void> {
-  await registerReplicationReplica(authority.db, { workspaceId: WORKSPACE, replicaId, generationId, clock });
+  const principalId = localPrincipalId(
+    WORKSPACE,
+    replicaId === REPLICA_A
+      ? "agent-a"
+      : replicaId === REPLICA_B
+        ? "agent-b"
+        : replicaId === REPLICA_C
+          ? "agent-c"
+          : "agent-d",
+  );
+  await registerReplicationReplica(authority.db, {
+    workspaceId: WORKSPACE,
+    replicaId,
+    generationId,
+    principalId,
+    clock,
+  });
   await initializeLocalReplica(client.db, {
     workspaceId: WORKSPACE,
     replicaId,
@@ -507,6 +523,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
         authenticatedReplicaId: REPLICA_B,
+        authenticatedPrincipalId: h.principalB,
         cursor: null,
         clock: h.authorityClock,
       })).rejects.toMatchObject({ code: "unauthenticated_origin" });
@@ -515,6 +532,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
         authenticatedReplicaId: REPLICA_A,
+        authenticatedPrincipalId: h.principalA,
         cursor: null,
         clock: h.authorityClock,
       });
@@ -528,6 +546,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
         authenticatedReplicaId: REPLICA_A,
+        authenticatedPrincipalId: h.principalA,
         cursor: beforeRestore.nextCursor,
         clock: h.authorityClock,
       });
@@ -576,12 +595,14 @@ describe("TQ-405 explicit replication", () => {
         workspaceId: WORKSPACE,
         replicaId: REPLICA_B,
         generationId: GENERATION_B,
+        principalId: h.principalB,
         clock: h.authorityClock,
       });
       await registerReplicationReplica(h.authority.db, {
         workspaceId: WORKSPACE,
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
+        principalId: h.principalA,
         clock: h.authorityClock,
       });
       h.authorityClock.advance(2 * 24 * 60 * 60 * 1_000);
@@ -611,6 +632,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
         authenticatedReplicaId: REPLICA_A,
+        authenticatedPrincipalId: h.principalA,
         cursor: null,
         clock: h.authorityClock,
       });
@@ -619,6 +641,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_B,
         generationId: GENERATION_B,
         authenticatedReplicaId: REPLICA_B,
+        authenticatedPrincipalId: h.principalB,
         cursor: null,
         clock: h.authorityClock,
       });
@@ -633,6 +656,7 @@ describe("TQ-405 explicit replication", () => {
         replicaId: REPLICA_A,
         generationId: GENERATION_A,
         authenticatedReplicaId: REPLICA_A,
+        authenticatedPrincipalId: h.principalA,
         cursor: staleCursor,
         clock: h.authorityClock,
       });

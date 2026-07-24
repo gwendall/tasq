@@ -1,0 +1,405 @@
+{
+  "contractVersion": "tasq.signed-statement-acceptance.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "decision": "docs/decisions/ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md",
+  "implementationContract": "docs/contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md",
+  "currentSupport": "source_candidate_implements_credential_authority_typed_domain_acceptance_and_all_current_read_surfaces_but_public_support_awaits_protected_downloaded_byte_certification",
+  "guarantees": [
+    "signature_covers_exact_canonical_payload_and_payload_type",
+    "workspace_audience_purpose_subject_action_and_validity_are_signed",
+    "credential_public_material_is_immutable_per_credential_identity",
+    "private_signing_material_never_enters_tasq",
+    "verification_authorization_validation_and_execution_remain_distinct",
+    "typed_domain_binders_are_required_before_a_statement_can_affect_state",
+    "simple_local_commitments_remain_unsigned_by_default",
+    "historical_unsigned_records_are_never_fabricated_as_signed"
+  ],
+  "nonClaims": [
+    "signature_proves_semantic_truth",
+    "signature_alone_grants_authorization",
+    "signature_prevents_record_deletion",
+    "signature_prevents_complete_database_rollback",
+    "shared_same_user_software_key_resists_all_local_processes",
+    "signed_effect_approval_replaces_connector_permit_or_provider_receipt",
+    "release_attestation_grants_workspace_authority",
+    "tasq_operates_a_public_key_infrastructure_or_transparency_log"
+  ],
+  "assuranceLevels": [
+    {
+      "id": "unsigned_local",
+      "claim": "append_only_local_attribution"
+    },
+    {
+      "id": "authenticated_transport",
+      "claim": "surface_authenticated_request_principal"
+    },
+    {
+      "id": "signed_principal_statement",
+      "claim": "portable_exact_statement_verified_at_acceptance"
+    },
+    {
+      "id": "witnessed_statement",
+      "claim": "statement_observed_by_independent_witness_or_timestamp"
+    },
+    {
+      "id": "policy_accepted_statement",
+      "claim": "eligible_authority_or_validation_policy_accepted_the_statement"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "ed25519_software_or_workload",
+      "state": "required_for_tq_613",
+      "requirements": [
+        "rfc_8032_ed25519",
+        "pinned_public_key_encoding",
+        "dsse_style_preauthentication_encoding",
+        "one_signer_per_statement",
+        "positive_and_negative_cross_language_vectors"
+      ]
+    },
+    {
+      "id": "webauthn_human",
+      "state": "required_design_optional_implementation",
+      "requirements": [
+        "statement_digest_in_server_challenge",
+        "rp_id_origin_challenge_and_credential_verification",
+        "single_use_nonce",
+        "explicit_user_presence_and_verification_policy",
+        "no_generic_document_signature_claim"
+      ]
+    },
+    {
+      "id": "keyless_workload",
+      "state": "future_adapter",
+      "requirements": [
+        "identity_bound_ephemeral_certificate",
+        "trusted_time_or_transparency_evidence",
+        "issuer_audience_subject_and_workflow_constraints",
+        "no_private_workspace_content_disclosure_by_default"
+      ]
+    }
+  ],
+  "purposes": [
+    "artifact_authorship",
+    "artifact_acceptance",
+    "completion_attestation",
+    "effect_approval",
+    "replication_operation_origin",
+    "workspace_checkpoint"
+  ],
+  "surfaceMatrix": [
+    {
+      "surface": "schema",
+      "required": [
+        "payload_bundle_credential_and_verification_schemas",
+        "canonicalization_pae_digest_and_signature_vectors",
+        "typed_problem_envelopes"
+      ]
+    },
+    {
+      "surface": "core",
+      "required": [
+        "append_only_statement_and_verification_records",
+        "purpose_registry_and_typed_domain_binders",
+        "inspection_discovery_export_import_and_doctor",
+        "no_private_key_or_generic_sign_api"
+      ]
+    },
+    {
+      "surface": "extension_sdk",
+      "required": [
+        "profile_and_purpose_conformance_testkit",
+        "constrained_signer_and_verifier_interfaces",
+        "ephemeral_test_keys_only"
+      ]
+    },
+    {
+      "surface": "local_cli",
+      "required": [
+        "unsigned_default_journey_unchanged",
+        "configured_signer_reference_only",
+        "no_private_key_or_signature_secret_in_argv",
+        "typed_inspection_and_reverification"
+      ]
+    },
+    {
+      "surface": "local_mcp",
+      "required": [
+        "host_selected_capabilities",
+        "no_arbitrary_byte_signing_tool",
+        "purpose_scoped_preview_before_human_ceremony",
+        "prose_cannot_select_profile_or_widen_authority"
+      ]
+    },
+    {
+      "surface": "server_authority",
+      "required": [
+        "credential_event_and_trust_root_store",
+        "proof_of_possession_enrollment",
+        "rotation_suspension_revocation_compromise_retirement_and_recovery",
+        "credential_check_serialized_with_domain_mutation",
+        "rest_and_remote_mcp_guard_parity"
+      ]
+    },
+    {
+      "surface": "resolution",
+      "required": [
+        "signature_can_support_but_not_replace_evidence_trust",
+        "self_validation_and_eligibility_remain_policy",
+        "later_compromise_appends_finding_not_history_rewrite"
+      ]
+    },
+    {
+      "surface": "effects",
+      "required": [
+        "signed_approval_binds_effect_occurrence_and_request_digest",
+        "current_approval_revision_claim_fence_permit_policy_and_receipt_still_required",
+        "remote_effects_remain_disabled_until_tq_906"
+      ]
+    },
+    {
+      "surface": "replication",
+      "required": [
+        "signed_origin_binds_operation_dot_and_complete_digest",
+        "transport_and_statement_identity_both_verified",
+        "signature_mismatch_is_hard_rejection_not_conflict",
+        "offline_signature_never_grants_authority_required_operations"
+      ]
+    },
+    {
+      "surface": "console",
+      "required": [
+        "specific_assurance_and_credential_lifecycle_labels",
+        "no_ambiguous_verified_badge",
+        "no_secret_or_unbounded_proof_rendering"
+      ]
+    },
+    {
+      "surface": "portable_data",
+      "required": [
+        "public_credential_history_statement_and_verification_preserved",
+        "private_keys_never_exported",
+        "unknown_profiles_inert_or_rejected",
+        "proof_dependent_state_not_partially_replicated"
+      ]
+    },
+    {
+      "surface": "cross_language",
+      "required": [
+        "typescript_node_bun_and_python_vector_parity",
+        "thin_clients_do_not_reimplement_authorization_or_migrations"
+      ]
+    }
+  ],
+  "threats": [
+    {
+      "id": "SS-CONTENT-01",
+      "attack": "alter_payload_and_reuse_signature",
+      "requiredOutcome": "reject_before_domain_mutation",
+      "critical": true
+    },
+    {
+      "id": "SS-CONTENT-02",
+      "attack": "change_workspace_audience_purpose_subject_action_or_payload_type",
+      "requiredOutcome": "signature_verification_fails",
+      "critical": true
+    },
+    {
+      "id": "SS-CONTENT-03",
+      "attack": "duplicate_keys_unsafe_numbers_unicode_or_canonicalization_ambiguity",
+      "requiredOutcome": "reject_before_hashing_or_verification",
+      "critical": true
+    },
+    {
+      "id": "SS-CONTENT-04",
+      "attack": "signature_wrapping_duplicate_signature_or_partial_coverage",
+      "requiredOutcome": "reject_bundle",
+      "critical": true
+    },
+    {
+      "id": "SS-IDENTITY-01",
+      "attack": "credential_bound_to_another_principal_workspace_or_trust_root",
+      "requiredOutcome": "deny_and_audit_secret_minimized_reason",
+      "critical": true
+    },
+    {
+      "id": "SS-IDENTITY-02",
+      "attack": "actor_label_substitution",
+      "requiredOutcome": "server_derived_credential_binding_wins",
+      "critical": true
+    },
+    {
+      "id": "SS-AUTH-01",
+      "attack": "valid_signature_from_ineligible_principal",
+      "requiredOutcome": "verification_may_pass_but_authorization_or_validation_denies",
+      "critical": true
+    },
+    {
+      "id": "SS-AUTH-02",
+      "attack": "artifact_authorship_signature_replayed_as_effect_approval",
+      "requiredOutcome": "purpose_and_typed_binder_reject",
+      "critical": true
+    },
+    {
+      "id": "SS-AUTH-03",
+      "attack": "signed_approval_bypasses_effect_permit_fence_policy_or_receipt",
+      "requiredOutcome": "effect_dispatch_fails_closed",
+      "critical": true
+    },
+    {
+      "id": "SS-REPLAY-01",
+      "attack": "statement_id_reused_with_different_bytes",
+      "requiredOutcome": "integrity_conflict_without_partial_state",
+      "critical": true
+    },
+    {
+      "id": "SS-REPLAY-02",
+      "attack": "nonce_reused_expired_or_raced",
+      "requiredOutcome": "at_most_one_acceptance",
+      "critical": true
+    },
+    {
+      "id": "SS-REPLAY-03",
+      "attack": "valid_statement_with_stale_expected_revision",
+      "requiredOutcome": "signature_verifies_but_domain_cas_rejects",
+      "critical": true
+    },
+    {
+      "id": "SS-CREDENTIAL-01",
+      "attack": "signature_after_suspension_revocation_expiry_or_compromise_boundary",
+      "requiredOutcome": "deny_according_to_frozen_policy_and_authority_time",
+      "critical": true
+    },
+    {
+      "id": "SS-CREDENTIAL-02",
+      "attack": "rotation_rebinds_existing_credential_id",
+      "requiredOutcome": "immutable_key_identity_rejects",
+      "critical": true
+    },
+    {
+      "id": "SS-CREDENTIAL-03",
+      "attack": "unauthenticated_self_enrollment_or_recovery_escalation",
+      "requiredOutcome": "deny_before_credential_creation",
+      "critical": true
+    },
+    {
+      "id": "SS-SECRET-01",
+      "attack": "private_material_enters_database_log_env_argv_prompt_support_or_export",
+      "requiredOutcome": "test_and_release_failure",
+      "critical": true
+    },
+    {
+      "id": "SS-SECRET-02",
+      "attack": "agent_uses_signer_as_arbitrary_byte_oracle",
+      "requiredOutcome": "purpose_scoped_signer_denies",
+      "critical": true
+    },
+    {
+      "id": "SS-REPLICATION-01",
+      "attack": "signed_offline_operation_requests_claim_approval_dispatch_key_change_or_conflict_resolution",
+      "requiredOutcome": "authority_required_class_rejects",
+      "critical": true
+    },
+    {
+      "id": "SS-REPLICATION-02",
+      "attack": "proof_dependent_record_replicated_without_complete_statement_and_credential_snapshot",
+      "requiredOutcome": "projection_version_rejects",
+      "critical": true
+    },
+    {
+      "id": "SS-PERSISTENCE-01",
+      "attack": "direct_sql_modifies_statement_signature_verification_or_binding",
+      "requiredOutcome": "sqlite_guard_and_doctor_detect",
+      "critical": true
+    },
+    {
+      "id": "SS-PERSISTENCE-02",
+      "attack": "database_rolls_back_after_later_valid_statement",
+      "requiredOutcome": "no_rollback_resistance_claim_without_external_checkpoint_or_witness",
+      "critical": false
+    },
+    {
+      "id": "SS-SEMANTIC-01",
+      "attack": "signature_treated_as_truth_completion_or_source_verification",
+      "requiredOutcome": "separate_policy_decision_required",
+      "critical": true
+    },
+    {
+      "id": "SS-SEMANTIC-02",
+      "attack": "release_attestation_treated_as_workspace_principal_authority",
+      "requiredOutcome": "trust_domain_mismatch_rejects",
+      "critical": true
+    },
+    {
+      "id": "SS-UX-01",
+      "attack": "surface_displays_timeless_or_ambiguous_verified_label",
+      "requiredOutcome": "browser_and_contract_test_failure",
+      "critical": true
+    }
+  ],
+  "delivery": [
+    {
+      "id": "TQ-613",
+      "status": "done",
+      "outcome": "Freeze portable payload, signature bundle, purpose/profile descriptors, Ed25519 verification and cross-language vectors",
+      "evidence": [
+        "packages/tasq-schema/src/signatures.ts",
+        "packages/tasq-extension-sdk/src/signed-statements.ts",
+        "packages/tasq-extension-sdk/test/signed-statements.test.ts",
+        "packages/tasq-evals/signed-statement-cross-language.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-614",
+      "status": "done",
+      "dependsOn": ["TQ-613", "TQ-802"],
+      "outcome": "Implement credential authority, lifecycle, recovery and constrained signer/verifier boundary",
+      "evidence": [
+        "packages/tasq-server/src/signing-credentials.ts",
+        "packages/tasq-server/src/migration.ts",
+        "packages/tasq-server/test/signing-credentials.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-615",
+      "status": "done",
+      "dependsOn": ["TQ-614", "TQ-612", "TQ-205", "TQ-405"],
+      "outcome": "Integrate append-only signed statements across artifacts, resolution, effects, replication, checkpoints and every current surface",
+      "evidence": [
+        "docs/contracts/TQ-615_SIGNED_STATEMENT_CERTIFICATION.json",
+        "packages/tasq-core/src/service/signed-statements.ts",
+        "packages/tasq-core/test/signed-statements.test.ts",
+        "packages/tasq-server/test/workspace.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-616",
+      "status": "candidate_done_external_gate",
+      "dependsOn": ["TQ-615", "TQ-808"],
+      "outcome": "Pass hostile cross-surface, cross-language, revocation-race, migration, restore and published-byte certification",
+      "evidence": [
+        "docs/contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.json",
+        "packages/tasq-server/test/signing-credentials.test.ts",
+        "packages/tasq-evals/signed-statement-cross-language.test.ts",
+        "packages/tasq-service/test/data-safety.test.ts"
+      ],
+      "remainingExternalGate": "protected_downloaded_byte_certification"
+    }
+  ],
+  "releaseGate": {
+    "required": [
+      "adr_009_accepted",
+      "tq_613_complete",
+      "tq_614_complete",
+      "tq_615_complete",
+      "tq_616_complete",
+      "tq_608_data_safety_pass",
+      "node_bun_python_vector_parity",
+      "rest_remote_mcp_guard_parity",
+      "protected_published_byte_certification"
+    ],
+    "criticalFailureRule": "any_critical_threat_failure_blocks_the_support_claim"
+  }
+}

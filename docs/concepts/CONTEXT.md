@@ -70,6 +70,21 @@ A stable reference to a human, agent, service or runtime participating in a
 workspace.
 _Avoid_: Actor label as authority
 
+**Signing credential**:
+A public verification method bound to one principal and trust domain; its
+private signing capability remains outside Tasq.
+_Avoid_: API token, actor label, private key record
+
+**Signed statement**:
+An immutable, purpose-bound assertion that one signing credential signed exact
+canonical bytes for a named workspace, audience and subject.
+_Avoid_: Signed document, authorization, proof of truth
+
+**Statement purpose**:
+A registered versioned identity defining what a signed statement means and
+which typed service may consume it.
+_Avoid_: Free-form signature label, permission
+
 **Assignment**:
 A durable record of responsibility or delegation for a commitment.
 _Avoid_: Claim, permission
@@ -112,6 +127,11 @@ An immutable, authority-attributed statement about the authenticity, validity
 and retention of one exact evidence record; correction or revocation appends a
 new trust record.
 _Avoid_: Reputation score, evidence content
+
+**Signature verification record**:
+An immutable result stating whether one signed statement passed a specific
+signature profile, credential snapshot and trust root at one authority time.
+_Avoid_: Timeless verified flag, authorization decision
 
 **Resolution contract**:
 An immutable policy snapshot that freezes criteria, evidence constraints,

@@ -20,12 +20,18 @@ clean CI build emits:
   compatibility, file digests and provenance policy;
 - `tasq-v<version>-<target>.SHA256SUMS`, independent SHA-256 checksums.
 
-The same explicit inputs also produce seven public npm candidates:
+Published `v0.3.0` produced seven public npm candidates:
 `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`, `@tasq-run/mcp`,
 `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters` and `@tasq-run/console`. Their
 tarballs are accompanied by `tasq.public-packages.v1` release metadata, a
 CycloneDX 1.6 dependency graph and a shared checksum file. The internal
 `@kami/*` manifests are never republished.
+
+After ADR-010/TQ-809, the current candidate builder also emits an eighth
+compiled package, `@tasq-run/client`. This changes no historical `v0.3.0`
+certificate and grants no npm availability: a future protected release must
+first configure its trusted publisher, provenance, SBOM and clean-room runtime
+evidence.
 
 The build receives `version`, `sourceCommit` and `target` explicitly. It omits
 wall-clock metadata. Release tooling is covered by the same architecture test

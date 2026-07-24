@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-07-23",
+  "updatedAt": "2026-07-24",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -12,6 +12,7 @@
     "in_progress_external_gate",
     "candidate_done_publication_gate",
     "candidate_done_external_gate",
+    "pending_independent_review",
     "pending"
   ],
   "invariants": [
@@ -21,6 +22,7 @@
     "device_clock_is_read_only_by_systemClock_composition",
     "local_console_remains_loopback_and_read_only",
     "remote_surfaces_require_adr_004_guard",
+    "signature_verification_never_implies_authorization_validation_or_truth",
     "stable_package_release_requires_operational_hardening_and_external_evidence",
     "published_claims_require_external_evidence"
   ],
@@ -113,6 +115,7 @@
   },
   "completedPrerequisites": [
     "TQ-304",
+    "TQ-205",
     "TQ-311",
     "TQ-312",
     "TQ-318",
@@ -131,6 +134,12 @@
       "status": "accepted",
       "blocks": ["TQ-906"],
       "question": "Evidence trust, authenticity, supersession, revocation and retention"
+    },
+    {
+      "id": "ADR-009",
+      "status": "accepted",
+      "blocks": ["TQ-613", "TQ-614", "TQ-615", "TQ-616", "TQ-806", "TQ-906"],
+      "question": "Purpose-bound signed statements, principal signing credentials, key lifecycle and portable authorship"
     }
   ],
   "executionOrder": [
@@ -159,6 +168,13 @@
     "TQ-809",
     "TQ-807",
     "TQ-808",
+    "TQ-811",
+    "TQ-812",
+    "TQ-813",
+    "TQ-613",
+    "TQ-614",
+    "TQ-615",
+    "TQ-616",
     "TQ-806",
     "TQ-810",
     "TQ-901",
@@ -392,87 +408,303 @@
     },
     {
       "id": "TQ-805",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-804"],
-      "outcome": "Remote MCP through the identical guard with REST capability parity"
+      "outcome": "Remote MCP through the identical guard with REST capability parity",
+      "evidence": [
+        "docs/contracts/TQ-805_REMOTE_MCP.md",
+        "docs/contracts/TQ-805_REMOTE_MCP_CERTIFICATION.json",
+        "packages/tasq-server/test/remote-mcp.test.ts",
+        "packages/tasq-evals/hosted-remote-mcp.test.ts"
+      ]
     },
     {
       "id": "TQ-809",
-      "status": "pending",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-804", "TQ-611"],
-      "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority"
+      "outcome": "Remote CLI and TypeScript client with bounded enrollment, revocation, event resume and one central online Server authority",
+      "evidence": [
+        "docs/decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md",
+        "docs/contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md",
+        "docs/contracts/TQ-809_REMOTE_CLIENT_CERTIFICATION.json",
+        "packages/tasq-evals/remote-client-enrollment.test.ts"
+      ]
     },
     {
       "id": "TQ-807",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-805", "TQ-809"],
-      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts"
+      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts",
+      "remaining": [
+        "publish_immutable_multi_arch_image_sbom_checksums_and_provenance"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-807_DEPLOYABLE_SERVER.md",
+        "docs/contracts/TQ-807_SERVER_CERTIFICATION.json",
+        "deploy/server/README.md"
+      ]
     },
     {
       "id": "TQ-808",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-807"],
-      "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification"
+      "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification",
+      "remaining": [
+        "protected_multi_arch_image_and_provenance",
+        "macos_and_linux_clients_against_exact_published_digest",
+        "previously_unbriefed_operator_deployment"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-808_SELF_HOSTED_HOSTILE_CERTIFICATION.md",
+        "docs/contracts/TQ-808_SERVER_HOSTILE_CERTIFICATION.json",
+        "packages/tasq-evals/self-hosted-server-hostile.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-811",
+      "status": "candidate_done_external_gate",
+      "milestone": "hosted-human-loop",
+      "dependsOn": ["TQ-808"],
+      "outcome": "Add a deliberately small authenticated human action surface for create, claim, block, evidence, completion proposal and approval through the identical Server guard without turning Console into a second domain service",
+      "remaining": [
+        "exact_published_server_image_browser_replay",
+        "tq807_tq808_server_publication"
+      ],
+      "evidenceTarget": [
+        "docs/contracts/TQ-811_HOSTED_HUMAN_ACTIONS.md",
+        "docs/contracts/TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
+        "packages/tasq-server/test/runtime.test.ts",
+        "packages/tasq-server/test/workspace.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-812",
+      "status": "done",
+      "milestone": "tracker-integration",
+      "dependsOn": ["TQ-808", "TQ-612"],
+      "outcome": "Ship a GitHub Issues bridge with explicit field authority, immutable external references and typed issue, pull-request, check and deployment observations without implicit completion or unbounded bidirectional sync",
+      "evidenceTarget": [
+        "docs/contracts/TQ-812_GITHUB_BRIDGE.md",
+        "docs/contracts/TQ-812_GITHUB_BRIDGE_CERTIFICATION.json",
+        "packages/tasq-github-bridge/test/github-bridge.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-813",
+      "status": "done",
+      "milestone": "attention-loop",
+      "dependsOn": ["TQ-808"],
+      "outcome": "Deliver bounded retry-safe attention notifications for assignment, blocking, expiring authority, recovery, validation and challenge through a generic webhook sink before provider-specific channels",
+      "evidenceTarget": [
+        "docs/contracts/TQ-813_ATTENTION_WEBHOOK.md",
+        "docs/contracts/TQ-813_ATTENTION_WEBHOOK_CERTIFICATION.json",
+        "packages/tasq-webhook-notifier/test/webhook-notifier.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-613",
+      "status": "done",
+      "milestone": "signed-statements",
+      "dependsOn": ["ADR-009"],
+      "outcome": "Freeze a portable purpose-bound signed-statement payload, DSSE-style envelope, Ed25519 profile and cross-language canonical verification vectors",
+      "evidenceTarget": [
+        "docs/decisions/ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md",
+        "docs/contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md",
+        "docs/contracts/SIGNED_STATEMENT_ACCEPTANCE.json"
+      ]
+    },
+    {
+      "id": "TQ-614",
+      "status": "done",
+      "milestone": "signed-statements",
+      "dependsOn": ["TQ-613", "TQ-802"],
+      "outcome": "Implement authority-owned signing credential enrollment, isolation classes, rotation, suspension, revocation, compromise, retirement, recovery and constrained signer/verifier interfaces",
+      "evidenceTarget": [
+        "docs/contracts/TQ-614_SIGNING_CREDENTIAL_AUTHORITY.md",
+        "packages/tasq-server/test/signing-credentials.test.ts",
+        "packages/tasq-extension-sdk/test/signed-statements.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-615",
+      "status": "done",
+      "milestone": "signed-statements",
+      "dependsOn": ["TQ-614", "TQ-612", "TQ-205", "TQ-405"],
+      "outcome": "Persist append-only statements and verification records and bind them explicitly to artifacts, completion resolution, effect approvals, replication operations and workspace checkpoints across Core, CLI, MCP, Console and portable data",
+      "evidence": [
+        "docs/contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md",
+        "docs/contracts/TQ-615_SIGNED_STATEMENT_CERTIFICATION.json",
+        "packages/tasq-core/test/signed-statements.test.ts",
+        "packages/tasq-service/test/signed-statements.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-616",
+      "status": "candidate_done_external_gate",
+      "milestone": "signed-statements",
+      "dependsOn": ["TQ-615", "TQ-808"],
+      "outcome": "Pass hostile cross-surface, cross-language, revocation-race, migration, restore and protected published-byte certification without treating signatures as truth or authority",
+      "remaining": [
+        "protected_release_workflow",
+        "exact_downloaded_bytes",
+        "supported_macos_arm64_and_linux_x64",
+        "node_bun_python_clean_room",
+        "unbriefed_agent_and_operator_trial"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.md",
+        "docs/contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.json",
+        "packages/tasq-evals/signed-statement-cross-language.test.ts",
+        "packages/tasq-server/test/workspace.test.ts"
+      ]
     },
     {
       "id": "TQ-806",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "self-hosted-server",
-      "dependsOn": ["TQ-405", "TQ-808"],
-      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
+      "dependsOn": ["TQ-405", "TQ-808", "TQ-616"],
+      "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority",
+      "remaining": [
+        "protected_published_server_digest",
+        "supported_client_artifacts",
+        "clean_room_multi_machine_trial"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md",
+        "docs/contracts/TQ-806_OFFLINE_REPLICATION_CERTIFICATION.json",
+        "packages/tasq-server/test/workspace.test.ts",
+        "packages/tasq-evals/sync-chaos-recovery.test.ts"
+      ]
     },
     {
       "id": "TQ-810",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "remote-sdks",
-      "dependsOn": ["TQ-808"],
-      "outcome": "Publish stable remote API schemas and thin cross-language clients beginning with Python, without reimplementing the kernel"
+      "dependsOn": ["TQ-808", "TQ-616"],
+      "outcome": "Publish stable remote API schemas and thin cross-language clients beginning with Python, without reimplementing the kernel",
+      "remaining": [
+        "publish_python_wheel_with_provenance",
+        "download_exact_wheel_from_registry",
+        "run_against_exact_published_server_digest"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-810_REMOTE_SDKS.md",
+        "docs/contracts/TQ-810_REMOTE_SDK_CERTIFICATION.json",
+        "clients/python/tests/test_client.py",
+        "packages/tasq-evals/python-remote-client.test.ts"
+      ]
     },
     {
       "id": "TQ-901",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "managed-cloud",
       "dependsOn": ["TQ-808"],
-      "outcome": "Tenant control plane and isolated workspace provisioning"
+      "outcome": "Tenant control plane and isolated workspace provisioning",
+      "remaining": [
+        "deploy_control_plane_with_production_database",
+        "bind_real_secret_manager_and_server_image_digest",
+        "independent_multi_tenant_infrastructure_review"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-901_MANAGED_CLOUD_CONTROL_PLANE.md",
+        "docs/contracts/TQ-901_CLOUD_CONTROL_PLANE_CERTIFICATION.json",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     },
     {
       "id": "TQ-902",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "managed-cloud",
       "dependsOn": ["TQ-901"],
-      "outcome": "Same-origin hosted BFF sessions and authenticated Console integration"
+      "outcome": "Same-origin hosted BFF sessions and authenticated Console integration",
+      "remaining": [
+        "deployed_browser_matrix",
+        "identity_provider_callback_and_logout_drill",
+        "independent_web_security_review"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-902_CLOUD_BFF_AND_CONSOLE.md",
+        "docs/contracts/TQ-902_CLOUD_BFF_CERTIFICATION.json",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     },
     {
       "id": "TQ-903",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "managed-cloud",
       "dependsOn": ["TQ-901"],
-      "outcome": "Human-device and workload onboarding, recovery and revocation"
+      "outcome": "Human-device and workload onboarding, recovery and revocation",
+      "remaining": [
+        "real_oidc_integration",
+        "real_secret_manager_workload_issuance",
+        "operator_recovery_and_revocation_drill"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-903_CLOUD_IDENTITY_LIFECYCLE.md",
+        "docs/contracts/TQ-903_CLOUD_IDENTITY_CERTIFICATION.json",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     },
     {
       "id": "TQ-904",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "managed-cloud",
       "dependsOn": ["TQ-901"],
-      "outcome": "Quotas, retention, export/delete, incident, support and billing boundaries"
+      "outcome": "Quotas, retention, export/delete, incident, support and billing boundaries",
+      "remaining": [
+        "provider_backup_restore_drill",
+        "provider_key_rotation_drill",
+        "provider_export_and_verified_byte_deletion",
+        "on_call_incident_and_support_access_drill"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-904_CLOUD_OPERATIONS.md",
+        "docs/contracts/TQ-904_CLOUD_OPERATIONS_CERTIFICATION.json",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     },
     {
       "id": "TQ-905",
-      "status": "pending",
+      "status": "candidate_done_external_gate",
       "milestone": "managed-cloud",
-      "dependsOn": ["TQ-902", "TQ-903", "TQ-904"],
-      "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification"
+      "dependsOn": ["TQ-902", "TQ-903", "TQ-904", "TQ-616"],
+      "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification",
+      "remaining": [
+        "exact_published_server_image_and_control_plane_deployment",
+        "real_secret_manager_rotation",
+        "off_site_backup_restore_and_region_failover",
+        "independent_multi_tenant_security_review",
+        "previously_unbriefed_operator_incident_drill"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-905_MANAGED_CLOUD_HOSTILE_CERTIFICATION.md",
+        "docs/contracts/TQ-905_CLOUD_HOSTILE_CERTIFICATION.json",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     },
     {
       "id": "TQ-906",
-      "status": "pending",
+      "status": "pending_independent_review",
       "milestone": "managed-cloud",
-      "dependsOn": ["TQ-905", "ADR-005", "TQ-612"],
-      "outcome": "Remote effects only after independent evidence and authority review; disabled by default"
+      "dependsOn": ["TQ-905", "ADR-005", "TQ-612", "TQ-616"],
+      "outcome": "Remote effects only after independent evidence and authority review; disabled by default",
+      "remaining": [
+        "published_artifact_signed_statement_certification",
+        "exact_deployed_connector_permit_receipt_chain",
+        "live_revocation_and_compromise_races",
+        "independent_evidence_and_authority_review",
+        "protected_deployment_rollback_and_incident_drill"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-906_REMOTE_EFFECTS_REVIEW_GATE.md",
+        "docs/contracts/TQ-906_REMOTE_EFFECTS_REVIEW_GATE.json",
+        "packages/tasq-server/test/runtime.test.ts",
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
     }
   ]
 }

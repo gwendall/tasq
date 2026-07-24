@@ -40,6 +40,7 @@ const importRewrites = new Map([
   ["@tasq-run/mcp", "@tasq-run/mcp"],
   ["@tasq-run/protocol-adapters", "@tasq-run/protocol-adapters"],
   ["@tasq-run/console", "@tasq-run/console"],
+  ["@tasq-run/client", "@tasq-run/client"],
 ]);
 
 function requiredFlag(name: string): string {
@@ -165,6 +166,16 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       dependencies: { "@tasq-run/core": version, "@tasq-run/schema": version },
       copyMode: "all-source",
       runtime: "bun",
+    },
+    {
+      name: "@tasq-run/client",
+      sourceDirectory: "tasq-client",
+      description: "Runtime-neutral authenticated remote client for Tasq Server.",
+      entrypoint: "./dist/index.js",
+      exports: { ".": "./dist/index.js" },
+      dependencies: await selectedDependencies("tasq-client", ["zod"]),
+      copyMode: "compiled-esm",
+      runtime: "bun-node",
     },
     {
       name: "@tasq-run/cli",
@@ -310,6 +321,8 @@ async function packageUsage(definition: PublicPackage): Promise<string> {
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nUse the pure MCP Tasks and A2A mappings to import external execution state as attempts and artifacts. Remote success never becomes commitment completion without a separate evidence-aware decision.`;
     case "@tasq-run/console":
       return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nEmbed the bounded read models and loopback Console server in a trusted local composition. The Console is read-only, foreground and loopback-only; it is not an authenticated hosted UI or an agent API.`;
+    case "@tasq-run/client":
+      return `## Start\n\n\`\`\`bash\n${install}\n\`\`\`\n\nCreate one explicit remote client with \`createRemoteTasq({ endpoint, workspaceId, accessToken })\`. The client uses guarded HTTPS only; it contains no database, migrations, kernel or authority cache. Use one-use enrollment through the CLI or \`redeemRemoteEnrollment\`, persist event cursors and repeat lost mutations with the exact same idempotency key and request ID.`;
     default:
       throw new Error(`Missing public package README guidance for ${definition.name}`);
   }
@@ -475,7 +488,7 @@ async function main(): Promise<void> {
     runtime: {
       default: { name: "bun", minimumVersion: "1.3.0" },
       compiledEsm: {
-        packages: ["@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
+        packages: ["@tasq-run/client", "@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
         supported: [
           { name: "bun", minimumVersion: "1.3.0" },
           { name: "node", minimumVersion: "22.0.0" },

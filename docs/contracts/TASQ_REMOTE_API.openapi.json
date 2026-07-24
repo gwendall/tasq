@@ -1,0 +1,408 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Tasq Server remote API",
+    "version": "1.0.0",
+    "description": "Authenticated thin-client contract. The operation catalog owns domain operation schemas; clients do not reimplement the kernel."
+  },
+  "servers": [{ "url": "https://server.example/" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/operations": {
+      "get": {
+        "operationId": "listOperations",
+        "responses": {
+          "200": {
+            "description": "Registered operation catalog",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OperationCatalog" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/v1/workspaces/{workspaceId}/commitments": {
+      "get": {
+        "operationId": "listCommitments",
+        "parameters": [
+          { "$ref": "#/components/parameters/WorkspaceId" },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": { "type": "string", "minLength": 1, "maxLength": 2000 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bounded commitment page",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommitmentPage" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/v1/workspaces/{workspaceId}/commitments/{commitmentId}": {
+      "get": {
+        "operationId": "getCommitment",
+        "parameters": [
+          { "$ref": "#/components/parameters/WorkspaceId" },
+          {
+            "name": "commitmentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "minLength": 1, "maxLength": 500 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One commitment",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommitmentResponse" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/v1/workspaces/{workspaceId}/events": {
+      "get": {
+        "operationId": "listEvents",
+        "parameters": [
+          { "$ref": "#/components/parameters/WorkspaceId" },
+          {
+            "name": "after",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payload-free event metadata after an exclusive sequence",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EventPage" }
+              }
+            }
+          },
+          "410": { "$ref": "#/components/responses/Problem" },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/v1/workspaces/{workspaceId}/operations/{operationId}": {
+      "post": {
+        "operationId": "executeOperation",
+        "parameters": [
+          { "$ref": "#/components/parameters/WorkspaceId" },
+          {
+            "name": "operationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9._-]{0,99}$"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "minLength": 1, "maxLength": 500 }
+          },
+          { "$ref": "#/components/parameters/RequestId" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MutationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Durable mutation result or exact replay",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MutationResponse" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/v1/workspaces/{workspaceId}/enrollments/redeem": {
+      "post": {
+        "operationId": "redeemEnrollment",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/WorkspaceId" },
+          { "$ref": "#/components/parameters/RequestId" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["contractVersion", "enrollmentToken"],
+                "properties": {
+                  "contractVersion": { "const": "tasq.remote-enrollment.v1" },
+                  "enrollmentToken": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 2000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One-time credential response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EnrollmentResponse" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "parameters": {
+      "WorkspaceId": {
+        "name": "workspaceId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$"
+        }
+      },
+      "RequestId": {
+        "name": "x-tasq-request-id",
+        "in": "header",
+        "required": true,
+        "schema": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "responses": {
+      "Problem": {
+        "description": "Typed failure; no success may be inferred",
+        "content": {
+          "application/problem+json": {
+            "schema": { "$ref": "#/components/schemas/Problem" }
+          },
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Problem" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Commitment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "workspaceId",
+          "title",
+          "status",
+          "revision",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "workspaceId": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "string" },
+          "revision": { "type": "integer", "minimum": 1 },
+          "createdAt": { "type": "integer", "minimum": 0 },
+          "updatedAt": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "CommitmentPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contractVersion",
+          "requestId",
+          "decisionId",
+          "evaluatedAt",
+          "items",
+          "nextCursor"
+        ],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-commitment-page.v1" },
+          "requestId": { "type": "string" },
+          "decisionId": { "type": "string" },
+          "evaluatedAt": { "type": "integer", "minimum": 0 },
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": { "$ref": "#/components/schemas/Commitment" }
+          },
+          "nextCursor": { "type": ["string", "null"] }
+        }
+      },
+      "CommitmentResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contractVersion",
+          "requestId",
+          "decisionId",
+          "evaluatedAt",
+          "item"
+        ],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-commitment.v1" },
+          "requestId": { "type": "string" },
+          "decisionId": { "type": "string" },
+          "evaluatedAt": { "type": "integer", "minimum": 0 },
+          "item": { "$ref": "#/components/schemas/Commitment" }
+        }
+      },
+      "EventPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contractVersion",
+          "requestId",
+          "decisionId",
+          "evaluatedAt",
+          "items",
+          "nextSequence"
+        ],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-event-metadata-page.v1" },
+          "requestId": { "type": "string" },
+          "decisionId": { "type": "string" },
+          "evaluatedAt": { "type": "integer", "minimum": 0 },
+          "items": { "type": "array", "maxItems": 100, "items": { "type": "object" } },
+          "nextSequence": { "type": ["integer", "null"], "minimum": 1 }
+        }
+      },
+      "OperationCatalog": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractVersion", "operations"],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-operation-catalog.v1" },
+          "operations": { "type": "array", "maxItems": 64, "items": { "type": "object" } }
+        }
+      },
+      "MutationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contractVersion", "resource", "expectedRevision", "input"],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-mutation-request.v1" },
+          "resource": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "id"],
+            "properties": {
+              "kind": {
+                "enum": ["workspace", "commitment", "resource", "effect", "replica"]
+              },
+              "id": { "type": "string", "minLength": 1, "maxLength": 500 }
+            }
+          },
+          "expectedRevision": { "type": ["integer", "null"], "minimum": 1 },
+          "input": true
+        }
+      },
+      "MutationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contractVersion",
+          "requestId",
+          "decisionId",
+          "evaluatedAt",
+          "authorityRevision",
+          "outcome"
+        ],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-mutation-response.v1" },
+          "requestId": { "type": "string" },
+          "decisionId": { "type": "string" },
+          "evaluatedAt": { "type": "integer", "minimum": 0 },
+          "authorityRevision": { "type": "integer", "minimum": 0 },
+          "outcome": { "type": "object" }
+        }
+      },
+      "EnrollmentResponse": {
+        "type": "object",
+        "required": [
+          "contractVersion",
+          "requestId",
+          "credentialId",
+          "workspaceId",
+          "principalId",
+          "clientKind",
+          "accessToken",
+          "issuedAt",
+          "expiresAt",
+          "actionUpperBound"
+        ],
+        "properties": {
+          "contractVersion": { "const": "tasq.remote-enrollment.v1" },
+          "requestId": { "type": "string" },
+          "credentialId": { "type": "string" },
+          "workspaceId": { "type": "string" },
+          "principalId": { "type": "string" },
+          "clientKind": { "enum": ["human_device", "workload_agent"] },
+          "accessToken": { "type": "string", "minLength": 32, "maxLength": 2000 },
+          "issuedAt": { "type": "integer", "minimum": 0 },
+          "expiresAt": { "type": "integer", "minimum": 0 },
+          "actionUpperBound": { "type": "array", "minItems": 1, "items": { "type": "object" } }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "required": ["contractVersion", "code", "requestId"],
+        "properties": {
+          "contractVersion": { "const": "tasq.hosted-problem.v1" },
+          "code": { "type": "string" },
+          "requestId": { "type": "string" },
+          "decisionId": { "type": ["string", "null"] },
+          "oldestSequence": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

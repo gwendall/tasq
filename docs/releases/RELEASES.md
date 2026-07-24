@@ -25,6 +25,11 @@ post-release workflow certifies their complete lifecycle without a repository ch
 supported targets. TQ-607 remains the retained-data gate for stable graduation,
 not for the explicitly labeled pre-1.0 alpha.
 
+ADR-010 adds `@tasq-run/client` as an eighth deterministic candidate for the
+next authorized release. It is not part of `v0.3.0`, has no npm support claim
+yet and must receive its own trusted-publisher/provenance and clean-room gate
+before publication.
+
 The implemented candidate builder is:
 
 ```bash

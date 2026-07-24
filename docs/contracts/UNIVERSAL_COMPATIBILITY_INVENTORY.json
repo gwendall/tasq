@@ -130,7 +130,7 @@
       "exportName": "replicationReplica",
       "recordOwner": "kernel",
       "fieldGroups": {
-        "kernel": ["workspaceId", "replicaId", "generationId", "status", "acceptedCounter", "acceptedDigest", "acknowledgedSequence", "registeredAt", "lastContactAt", "updatedAt"]
+        "kernel": ["workspaceId", "replicaId", "generationId", "principalId", "status", "acceptedCounter", "acceptedDigest", "acknowledgedSequence", "registeredAt", "lastContactAt", "updatedAt"]
       }
     },
     "replication_outgoing_operation": {
@@ -166,6 +166,53 @@
       "recordOwner": "internal",
       "fieldGroups": {
         "internal": ["workspaceId", "recordType", "recordId", "stateDigest", "coveredSequence", "updatedAt"]
+      }
+    },
+    "workspace_checkpoint": {
+      "exportName": "workspaceCheckpoint",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "authorityEpoch", "eventCursor", "rootContractUri", "rootContractVersion", "rootDigest", "exportedRecordCount", "createdByPrincipalId", "createdAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "accepted_signing_credential_snapshot": {
+      "exportName": "acceptedSigningCredentialSnapshot",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["credentialId", "credentialRevision", "principalId", "profileUri", "profileVersion", "publicMaterialJson", "publicMaterialDigest", "trustRootDigest", "isolationClass", "statusAtAcceptance", "validFrom", "expiresAt", "replacesCredentialId", "enrollmentMethod", "enrollmentEvidenceDigest", "credentialDigest", "capturedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "signed_statement": {
+      "exportName": "signedStatement",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["statementId", "issuerPrincipalId", "credentialId", "purposeUri", "purposeVersion", "subjectTypeUri", "subjectId", "subjectDigest", "payloadJson", "payloadDigest", "bundleJson", "bundleDigest", "acceptedAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "signature_verification_record": {
+      "exportName": "signatureVerificationRecord",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "statementId", "statementDigest", "bundleDigest", "credentialId", "credentialRevision", "credentialDigest", "principalId", "trustRootDigest", "profileUri", "profileVersion", "verifierImplementationDigest", "verifiedAt", "credentialStateAtVerification", "outcome", "reasonCode", "supportingProofDigestsJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "signed_statement_nonce": {
+      "exportName": "signedStatementNonce",
+      "recordOwner": "internal",
+      "fieldGroups": {
+        "internal": ["tenantId", "purposeUri", "nonce", "statementId", "consumedAt"]
+      }
+    },
+    "signed_statement_binding": {
+      "exportName": "signedStatementBinding",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "statementId", "verificationId", "bindingKind", "recordType", "recordId", "recordDigest", "createdByPrincipalId", "createdAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
       }
     },
     "task_dependency": {
@@ -389,11 +436,11 @@
     }
   },
   "commands": {
-    "kernel": ["claim", "release", "attempt", "evidence", "resolution", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
+    "kernel": ["claim", "release", "attempt", "evidence", "resolution", "signature", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
-    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
+    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "remote", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
     "compatibility": ["complete", "rm", "brief"]
   },
   "events": {

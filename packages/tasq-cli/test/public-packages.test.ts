@@ -10,6 +10,7 @@ const version = "0.1.0-test.1";
 const sourceCommit = "0123456789abcdef0123456789abcdef01234567";
 const packageNames = [
   "@tasq-run/cli",
+  "@tasq-run/client",
   "@tasq-run/console",
   "@tasq-run/core",
   "@tasq-run/extension-sdk",
@@ -89,7 +90,7 @@ describe("Tasq public npm package candidates", () => {
     expect(await build(second)).toMatchObject({ exitCode: 0, stderr: "" });
 
     const names = (await readdir(first)).sort();
-    expect(names).toHaveLength(10);
+    expect(names).toHaveLength(11);
     for (const name of names) {
       expect(await digest(join(first, name)), name).toBe(await digest(join(second, name)));
     }
@@ -106,7 +107,7 @@ describe("Tasq public npm package candidates", () => {
       provenance: { localArtifactsPublishable: false },
       runtime: {
         compiledEsm: {
-          packages: ["@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
+          packages: ["@tasq-run/client", "@tasq-run/core", "@tasq-run/schema", "@tasq-run/extension-sdk"],
           supported: [
             { name: "bun", minimumVersion: "1.3.0" },
             { name: "node", minimumVersion: "22.0.0" },
@@ -135,7 +136,7 @@ describe("Tasq public npm package candidates", () => {
       const packagedReadme = await readFile(join(packageRoot, "README.md"), "utf8");
       expect(packagedReadme).toContain(`# ${manifest.name}`);
       expect(packagedReadme).toContain(`npm install ${manifest.name}`);
-      if (["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core"].includes(manifest.name)) {
+      if (["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core", "@tasq-run/client"].includes(manifest.name)) {
         expect(packagedReadme).toContain("Bun 1.3+ and Node.js 22+");
         expect(manifest.engines).toEqual({ bun: ">=1.3.0", node: ">=22" });
       } else {
@@ -227,6 +228,7 @@ describe("Tasq public npm package candidates", () => {
       import * as mcp from "@tasq-run/mcp";
       import * as adapters from "@tasq-run/protocol-adapters";
       import * as consolePackage from "@tasq-run/console";
+      import { createRemoteTasq } from "@tasq-run/client";
       const root = await mkdtemp(join(tmpdir(), "tasq-installed-core-"));
       const clock = createMutableClock(1900000000000);
       const handle = await openDb({ url: "file:" + join(root, "db.sqlite"), wal: false });
@@ -246,7 +248,8 @@ describe("Tasq public npm package candidates", () => {
           createdAt: done.createdAt,
           completedAt: done.completedAt,
           packageEntrypointsLoaded: [schema, extensionSdk, mcp, adapters, consolePackage]
-            .every((module) => Object.keys(module).length > 0),
+            .every((module) => Object.keys(module).length > 0) &&
+            createRemoteTasq({ endpoint: "https://server.example/", workspaceId: "space", accessToken: "x" }).workspaceId === "space",
         }));
       } finally {
         await handle.close();
@@ -285,6 +288,30 @@ describe("Tasq public npm package candidates", () => {
     const secondBun = await run([process.execPath, "run", nodeExample], consumer, { TASQ_DB_URL: bunStore });
     expect(secondBun.exitCode, secondBun.stderr).toBe(0);
     expect(JSON.parse(secondBun.stdout)).toEqual(firstBunResult);
+
+    const remoteExample = join(consumer, "remote-client.mjs");
+    await writeFile(remoteExample, `
+      import { createRemoteTasq } from "@tasq-run/client";
+      const client = createRemoteTasq({
+        endpoint: "https://server.example/",
+        workspaceId: "remote/space",
+        accessToken: "not-used-before-fetch",
+      });
+      process.stdout.write(JSON.stringify({
+        contractVersion: client.contractVersion,
+        endpoint: client.endpoint,
+        workspaceId: client.workspaceId,
+      }));
+    `, "utf8");
+    for (const runtime of [["node"], [process.execPath, "run"]]) {
+      const result = await run([...runtime, remoteExample], consumer);
+      expect(result.exitCode, result.stderr).toBe(0);
+      expect(JSON.parse(result.stdout)).toEqual({
+        contractVersion: "tasq.remote-client.v1",
+        endpoint: "https://server.example/",
+        workspaceId: "remote/space",
+      });
+    }
 
     const cli = join(consumer, "node_modules", ".bin", "tasq");
     expect(await run([cli, "--version"], consumer)).toMatchObject({ exitCode: 0, stdout: `${version}\n`, stderr: "" });

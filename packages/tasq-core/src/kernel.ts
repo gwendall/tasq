@@ -21,6 +21,19 @@ import {
 } from "./discovery.js";
 
 export {
+  acceptSignedStatement,
+  getSignedStatement,
+  getSignedStatementBinding,
+  getSignedStatementProof,
+  listSignedStatementBindings,
+  prepareSignedStatementAcceptance,
+  SIGNED_STATEMENT_PURPOSES,
+} from "./service/signed-statements.js";
+export type {
+  PreparedSignedStatementAcceptance,
+} from "./service/signed-statements.js";
+
+export {
   openDb,
   defaultDbUrl,
   committedMutationCount,
@@ -271,6 +284,8 @@ export type {
 export {
   PORTABLE_EXPORT_CONTRACT_VERSION,
   PORTABLE_EXPORT_OMISSIONS,
+  PORTABLE_WORKSPACE_ROOT_URI,
+  createPortableWorkspaceCheckpoint,
   exportPortableStore,
   importPortableStore,
   validatePortableExport,

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tasq-remote"
+version = "0.1.0"
+description = "Thin authenticated Python client for Tasq Server"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Tasq contributors" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://tasq.run"
+Repository = "https://github.com/gwendall/tasq"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tasq_remote"]

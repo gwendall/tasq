@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tasq-run/client": "workspace:*",
     "@tasq-run/console": "workspace:*",
     "@tasq-run/mcp": "workspace:*",
     "@tasq-run/schema": "workspace:*",

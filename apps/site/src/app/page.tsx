@@ -264,7 +264,7 @@ export default function HomePage() {
             <p className="text-sm leading-6">
               <strong>Today:</strong>{" "}
               {published
-                ? `Local ${releaseVersion} is a protected public alpha. Server, remote MCP and Cloud are still not shipped.`
+                ? `Local ${releaseVersion} is a protected public alpha. Server, remote clients and Cloud have source candidates but are still not shipped.`
                 : "Generated release truth currently withholds package coordinates. Use the canonical source path from /adopt.json."}
             </p>
             <Button asChild variant="outline" size="sm"><Link href="/status">Inspect product truth <ArrowRight className="size-3.5" /></Link></Button>

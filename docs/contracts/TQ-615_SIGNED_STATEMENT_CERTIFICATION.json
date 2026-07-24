@@ -1,0 +1,58 @@
+{
+  "contractVersion": "tasq.signed-statement-integration-certification.v1",
+  "status": "done_in_source",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-615",
+  "signedStatementMigration": 27,
+  "currentSourceStoreFormat": 28,
+  "durableRecords": [
+    "signed_statement",
+    "signature_verification_record",
+    "accepted_signing_credential_snapshot",
+    "signed_statement_nonce",
+    "signed_statement_binding",
+    "workspace_checkpoint"
+  ],
+  "typedBinders": [
+    "artifact_authorship",
+    "artifact_acceptance",
+    "completion_attestation",
+    "effect_approval",
+    "replication_operation_origin",
+    "workspace_checkpoint"
+  ],
+  "surfaces": {
+    "core": "accept_and_read",
+    "embeddedClient": "read",
+    "serverRest": "guarded_accept",
+    "serverRemoteMcp": "same_guarded_operation_catalog",
+    "localCli": "read",
+    "localMcp": "read",
+    "console": "bounded_read_projection",
+    "portableData": "complete_retained_proof_chain"
+  },
+  "assurance": {
+    "signature": "valid_at_acceptance",
+    "currentCredentialState": "not_asserted_by_workspace_store",
+    "semanticTruth": "not_asserted_by_signature",
+    "authorization": "not_granted_by_signature",
+    "rollbackResistance": "requires_external_witness"
+  },
+  "privateKeyMaterial": "not_accepted_or_stored",
+  "unsignedJourney": "unchanged",
+  "replicationPortableRule": "omit_replication_origin_proof_with_omitted_replication_authority_state",
+  "evidence": [
+    "packages/tasq-core/src/migrations/0027_signed_statements.sql",
+    "packages/tasq-core/src/service/signed-statements.ts",
+    "packages/tasq-core/test/signed-statements.test.ts",
+    "packages/tasq-service/src/doctor.ts",
+    "packages/tasq-service/test/signed-statements.test.ts",
+    "packages/tasq-server/src/workspace.ts",
+    "packages/tasq-server/test/workspace.test.ts",
+    "packages/tasq-cli/src/commands/signature.ts",
+    "packages/tasq-mcp/src/index.ts",
+    "packages/tasq-inspector/src/render.ts"
+  ],
+  "publicSupportClaim": false,
+  "nextGate": "TQ-616"
+}

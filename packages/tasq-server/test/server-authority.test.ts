@@ -16,6 +16,11 @@ import {
 } from "@tasq-internal/authority";
 import {
   AUTHORITY_MIGRATION_DIGEST,
+  AUTHORITY_MIGRATION_NAME,
+  ENROLLMENT_MIGRATION_DIGEST,
+  ENROLLMENT_MIGRATION_NAME,
+  SIGNING_CREDENTIAL_MIGRATION_DIGEST,
+  SIGNING_CREDENTIAL_MIGRATION_NAME,
   AuthorityStoreError,
   IsolatedWorkspaceRouter,
   openAuthorityStore,
@@ -205,16 +210,23 @@ async function bootstrapWorkspace(input: {
 }
 
 describe("TQ-802 authority migrations and mutation ledger", () => {
-  test("applies one checksum-pinned migration idempotently without ambient time", async () => {
+  test("applies every checksum-pinned migration idempotently without ambient time", async () => {
     const f = await fixture();
     const afterFirstOpen = f.clock.calls;
     await f.store.close();
     const reopened = await openAuthorityStore({ url: `file:${f.path}`, clock: f.clock });
     const client = createClient({ url: `file:${f.path}` });
-    const migrations = await client.execute("SELECT name, digest, applied_at FROM authority_migration");
-    expect(migrations.rows).toHaveLength(1);
-    expect(migrations.rows[0]?.["digest"]).toBe(AUTHORITY_MIGRATION_DIGEST);
-    expect(migrations.rows[0]?.["applied_at"]).toBe(NOW);
+    const migrations = await client.execute("SELECT name, digest, applied_at FROM authority_migration ORDER BY name");
+    expect(migrations.rows).toHaveLength(3);
+    expect(migrations.rows.map((row) => ({
+      name: row["name"],
+      digest: row["digest"],
+      appliedAt: row["applied_at"],
+    }))).toEqual([
+      { name: AUTHORITY_MIGRATION_NAME, digest: AUTHORITY_MIGRATION_DIGEST, appliedAt: NOW },
+      { name: ENROLLMENT_MIGRATION_NAME, digest: ENROLLMENT_MIGRATION_DIGEST, appliedAt: NOW },
+      { name: SIGNING_CREDENTIAL_MIGRATION_NAME, digest: SIGNING_CREDENTIAL_MIGRATION_DIGEST, appliedAt: NOW },
+    ]);
     expect(f.clock.calls).toBe(afterFirstOpen + 1);
     client.close();
     await reopened.close();
@@ -230,9 +242,13 @@ describe("TQ-802 authority migrations and mutation ledger", () => {
       openAuthorityStore({ url, clock }),
     ]);
     const client = createClient({ url });
-    const migrations = await client.execute("SELECT name, digest FROM authority_migration");
-    expect(migrations.rows).toHaveLength(1);
-    expect(migrations.rows[0]?.["digest"]).toBe(AUTHORITY_MIGRATION_DIGEST);
+    const migrations = await client.execute("SELECT name, digest FROM authority_migration ORDER BY name");
+    expect(migrations.rows).toHaveLength(3);
+    expect(migrations.rows.map((row) => [row["name"], row["digest"]])).toEqual([
+      [AUTHORITY_MIGRATION_NAME, AUTHORITY_MIGRATION_DIGEST],
+      [ENROLLMENT_MIGRATION_NAME, ENROLLMENT_MIGRATION_DIGEST],
+      [SIGNING_CREDENTIAL_MIGRATION_NAME, SIGNING_CREDENTIAL_MIGRATION_DIGEST],
+    ]);
     client.close();
     await first.close();
     await second.close();

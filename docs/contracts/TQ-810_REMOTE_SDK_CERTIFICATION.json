@@ -1,0 +1,33 @@
+{
+  "contractVersion": "tasq.remote-sdk-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-810",
+  "apiSchema": "docs/contracts/TASQ_REMOTE_API.openapi.json",
+  "clients": {
+    "typescript": {
+      "path": "packages/tasq-client",
+      "runtime": ["node_22", "bun_1_3"],
+      "state": "source_candidate"
+    },
+    "python": {
+      "path": "clients/python",
+      "runtime": ["python_3_11_plus"],
+      "dependencies": [],
+      "kernelReimplementation": false,
+      "state": "source_candidate"
+    }
+  },
+  "evidence": [
+    "packages/tasq-client/test/client.test.ts",
+    "clients/python/tests/test_client.py",
+    "packages/tasq-evals/python-remote-client.test.ts",
+    "docs/contracts/TASQ_REMOTE_API.openapi.json"
+  ],
+  "remainingExternalGate": [
+    "publish_python_wheel_with_provenance",
+    "download_exact_wheel_from_registry",
+    "run_against_exact_published_server_digest"
+  ],
+  "publicPythonSupportClaim": false
+}

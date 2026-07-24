@@ -11,6 +11,7 @@ import {
 } from "@tasq-internal/authority";
 import {
   CredentialVerificationError,
+  HostedCursorExpiredError,
   IsolatedWorkspaceRouter,
   createHostedReadHandler,
   openAuthorityStore,
@@ -313,6 +314,26 @@ describe("TQ-803 guarded read-only REST", () => {
       eventType: "task.updated", actorPrincipalId: "reader", createdAt: NOW - 50,
     });
     expect(JSON.stringify(eventBody)).not.toContain("payload");
+  });
+
+  test("makes retained event cursor expiry explicit and recoverable", async () => {
+    const response = await handler({
+      routedWorkspace: {
+        ...workspace,
+        async listEventMetadata() {
+          throw new HostedCursorExpiredError(42);
+        },
+      },
+    })(request("/v1/workspaces/robotics%2Fteam-a/events?after=6&limit=1", {
+      headers: { authorization: "Bearer valid-token" },
+    }, "expired-events"));
+    expect(response.status).toBe(410);
+    expect(await response.json()).toMatchObject({
+      contractVersion: "tasq.hosted-problem.v1",
+      code: "cursor_expired",
+      requestId: "expired-events",
+      oldestSequence: 42,
+    });
   });
 
   test("denies another workspace without invoking any workspace opener", async () => {

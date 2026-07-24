@@ -47,9 +47,14 @@ let replacement agents resume without replay gaps.
 - **Data safety** — verified pre-migration snapshots, doctor checks, backups,
   bounded export/import, and explicit store compatibility metadata.
 
-Tasq Server, remote MCP, hosted Console, and Tasq Cloud are roadmap products.
-The repository contains internal foundations for them, but no deployable remote
-service is shipped.
+Tasq Server now has a repository-certified daemon and Docker/Compose
+candidate with remote REST/MCP, enrollment and a hosted Console whose small
+human action surface reuses the same live authorization guard.
+Authenticated offline replication, a thin Python remote client and a private
+provider-neutral Cloud control-plane/BFF also exist as repository source
+candidates. No immutable public Server image, PyPI client, managed Cloud
+deployment or public remote endpoint ships yet. Remote effects remain
+disabled pending independent review.
 
 ## The core concepts
 
@@ -150,6 +155,16 @@ The exact registry and release bytes pass the published lifecycle, migration,
 adoption and interactive-runtime matrix on macOS ARM64 and Linux x64. The
 compiled Core dependency closure additionally passes the same fresh-install
 and same-ledger restart program under Node 22 and Bun.
+
+ADR-010 adds `@tasq-run/client` as an eighth remote-client source candidate.
+It builds deterministically and passes repository tests, but it is not present
+in `v0.3.0` or npm yet. TQ-807's Server container candidate is likewise not a
+published artifact; its exact self-hosting runbook is in
+[`deploy/server/README.md`](deploy/server/README.md).
+The dependency-free Python client source is in [`clients/python`](clients/python)
+and the private managed-service composition is in
+[`packages/tasq-cloud-control-plane`](packages/tasq-cloud-control-plane);
+neither is a published or deployed product.
 
 ## Status and feedback
 

@@ -22,6 +22,7 @@ import type {
   Metadata,
   ResolutionContract,
   ResolutionContractInsert,
+  SignedStatementBinding,
   TaskAttempt,
   TaskClaim,
   TaskEvidence,
@@ -108,6 +109,10 @@ import {
   type RenewResourceLeaseOptions,
   type VerifyResourceFenceOptions,
 } from "./service/resources.js";
+import {
+  getSignedStatementProof,
+  listSignedStatementBindings,
+} from "./service/signed-statements.js";
 import {
   bootstrapCoordinationSpace,
   type BootstrapCoordinationSpaceResult,
@@ -286,6 +291,14 @@ export interface LocalTasqClient {
     list(options?: Omit<ListResourceWorldOptions, BoundResourceContext>): ReturnType<typeof listResourceWorld>;
   };
   readonly inspect: (commitmentId: string) => Promise<CommitmentInspection | null>;
+  readonly signedStatements: {
+    get(statementId: string): ReturnType<typeof getSignedStatementProof>;
+    listBindings(input?: {
+      recordType?: string;
+      recordId?: string;
+      statementId?: string;
+    }): Promise<SignedStatementBinding[]>;
+  };
   readonly events: {
     get(id: string): Promise<Event | null>;
     list(options?: Omit<ListEventsOptions, "tenantId">): Promise<Event[]>;
@@ -459,6 +472,15 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
       },
       inspect: (id) =>
         inspectCommitment(handle.db, id, { workspaceId: options.workspaceId, clock: options.clock }),
+      signedStatements: {
+        get: (statementId) =>
+          getSignedStatementProof(handle.db, statementId, options.workspaceId),
+        listBindings: (input = {}) =>
+          listSignedStatementBindings(handle.db, {
+            tenantId: options.workspaceId,
+            ...input,
+          }),
+      },
       events: {
         get: (id) => getEvent(handle.db, id, options.workspaceId),
         list: (listOptions = {}) =>

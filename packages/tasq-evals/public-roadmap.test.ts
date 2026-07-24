@@ -126,6 +126,7 @@ describe("canonical Tasq roadmap", () => {
         "in_progress_external_gate",
         "candidate_done_publication_gate",
         "candidate_done_external_gate",
+        "pending_independent_review",
         "pending",
       ],
     });
@@ -166,6 +167,32 @@ describe("canonical Tasq roadmap", () => {
       status: "done",
       evidence: ["docs/contracts/TQ-804_GUARDED_MUTATION_REST.md", "docs/contracts/TQ-804_MUTATION_REST_CERTIFICATION.json"],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-809")).toMatchObject({
+      status: "done",
+      evidence: [
+        "docs/decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md",
+        "docs/contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md",
+        "docs/contracts/TQ-809_REMOTE_CLIENT_CERTIFICATION.json",
+        "packages/tasq-evals/remote-client-enrollment.test.ts",
+      ],
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-807")).toMatchObject({
+      status: "candidate_done_external_gate",
+      remaining: ["publish_immutable_multi_arch_image_sbom_checksums_and_provenance"],
+      evidence: [
+        "docs/contracts/TQ-807_DEPLOYABLE_SERVER.md",
+        "docs/contracts/TQ-807_SERVER_CERTIFICATION.json",
+        "deploy/server/README.md",
+      ],
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-808")).toMatchObject({
+      status: "candidate_done_external_gate",
+      remaining: [
+        "protected_multi_arch_image_and_provenance",
+        "macos_and_linux_clients_against_exact_published_digest",
+        "previously_unbriefed_operator_deployment",
+      ],
+    });
     expect(roadmap.items.find(({ id }) => id === "TQ-320")).toMatchObject({
       status: "done",
       milestone: "runtime-consumers",
@@ -176,11 +203,24 @@ describe("canonical Tasq roadmap", () => {
         "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
       ],
     });
-    for (const item of roadmap.items.filter(({ milestone, id }) => (
-      (milestone === "self-hosted-server" || milestone === "managed-cloud") && !["TQ-801", "TQ-802", "TQ-803", "TQ-804"].includes(id)
-    ))) {
-      expect(item.status, `${item.id}: remote roadmap overstated`).toBe("pending");
+    for (const id of ["TQ-806", "TQ-810", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
+      const item = roadmap.items.find((candidate) => candidate.id === id);
+      expect(item?.status, `${id}: source candidate status`).toBe(
+        "candidate_done_external_gate",
+      );
+      expect(item?.remaining?.length, `${id}: external gate must remain explicit`)
+        .toBeGreaterThan(0);
     }
+    expect(roadmap.items.find(({ id }) => id === "TQ-906")).toMatchObject({
+      status: "pending_independent_review",
+      remaining: [
+        "published_artifact_signed_statement_certification",
+        "exact_deployed_connector_permit_receipt_chain",
+        "live_revocation_and_compromise_races",
+        "independent_evidence_and_authority_review",
+        "protected_deployment_rollback_and_incident_drill",
+      ],
+    });
   });
 
   test("states the real publication blockers without inventing ownership", () => {

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it, setDefaultTimeout } from "bun:test";
 import {
   existsSync,
   mkdirSync,
@@ -27,6 +27,7 @@ const PRE_AGENTIC_FIXTURE = fileURLToPath(
   new URL("./fixtures/pre-0006-populated.sql", import.meta.url),
 );
 const temporaryRoots: string[] = [];
+setDefaultTimeout(30_000);
 
 afterEach(() => {
   while (temporaryRoots.length > 0) {
@@ -69,7 +70,7 @@ describe("migration data-safety envelope", () => {
         afterFormat: STORE_FORMAT_COMPATIBILITY.current,
         migrationRequired: true,
         irreversible: true,
-        receipt: { status: "complete", sourceFormat: 5, targetFormat: 26 },
+        receipt: { status: "complete", sourceFormat: 5, targetFormat: 28 },
       });
       const receipt = JSON.parse(readFileSync(result.receipt!.path, "utf8"));
       expect(receipt).toMatchObject({
@@ -77,13 +78,13 @@ describe("migration data-safety envelope", () => {
         status: "complete",
         recoveredAfterRestart: false,
         source: { format: 5, eventCursor: expect.any(Number) },
-        target: { format: 26 },
+        target: { format: 28 },
         snapshot: {
           path: result.receipt!.snapshotPath,
           sha256: result.receipt!.snapshotSha256,
           verification: { ok: true },
         },
-        postVerification: { schemaFormat: 26, service: { ok: true, issues: [] } },
+        postVerification: { schemaFormat: 28, service: { ok: true, issues: [] } },
       });
       expect(statSync(result.receipt!.snapshotPath).mode & 0o777).toBe(0o600);
       expect(statSync(result.receipt!.path).mode & 0o777).toBe(0o600);
@@ -135,11 +136,11 @@ describe("migration data-safety envelope", () => {
         runMigrations(left.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
         runMigrations(right.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
       ]);
-      expect(results.reduce((count, result) => count + result.applied.length, 0)).toBe(21);
+      expect(results.reduce((count, result) => count + result.applied.length, 0)).toBe(23);
       expect(results.filter((result) => result.receipt?.status === "complete")).toHaveLength(1);
       expect(results.filter((result) => result.receipt === null)).toHaveLength(1);
       expect(receiptDocuments(seeded.path).map((receipt) => receipt.status)).toEqual(["complete"]);
-      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(27);
+      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(29);
     } finally {
       await left.close();
       await right.close();
@@ -190,8 +191,8 @@ describe("migration data-safety envelope", () => {
           now: 1_700_000_000_175,
           installReferenceExtension: false,
         });
-        expect(result.afterFormat, boundary).toBe(26);
-        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(27);
+        expect(result.afterFormat, boundary).toBe(28);
+        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(29);
         expect(receiptDocuments(seeded.path).some((receipt) => receipt.status === "snapshot_verified")).toBe(false);
       } finally {
         await resumed.close();
@@ -246,7 +247,7 @@ describe("migration data-safety envelope", () => {
         now: 1_700_000_000_176,
         installReferenceExtension: false,
       });
-      expect(resumed).toMatchObject({ afterFormat: 26, receipt: { status: "complete" } });
+      expect(resumed).toMatchObject({ afterFormat: 28, receipt: { status: "complete" } });
     } finally {
       await afterFailure.close();
     }
@@ -271,11 +272,11 @@ describe("migration data-safety envelope", () => {
         postMigrationCheck: async () => ({ ok: true, issues: [] }),
       });
       expect(resumed.applied).toEqual([]);
-      expect(resumed.receipt).toMatchObject({ status: "complete", sourceFormat: 5, targetFormat: 26 });
+      expect(resumed.receipt).toMatchObject({ status: "complete", sourceFormat: 5, targetFormat: 28 });
       expect(JSON.parse(readFileSync(first.receipt!.path, "utf8"))).toMatchObject({
         status: "complete",
         recoveredAfterRestart: true,
-        postVerification: { schemaFormat: 26, service: { ok: true } },
+        postVerification: { schemaFormat: 28, service: { ok: true } },
       });
     } finally {
       await opened.close();
@@ -324,7 +325,7 @@ describe("migration data-safety envelope", () => {
       expect(problem).toBeInstanceOf(MigrationSafetyError);
       expect(problem!.toJSON()).toMatchObject({
         code: "migration_postcheck_failed",
-        receipt: { status: "failed", sourceFormat: 5, targetFormat: 26 },
+        receipt: { status: "failed", sourceFormat: 5, targetFormat: 28 },
         restore: {
           snapshotPath: expect.any(String),
           requiredStoreFormat: 5,
