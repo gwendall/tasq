@@ -153,11 +153,12 @@ function mapAuthorityStoreError(error: unknown): unknown {
 function isAuthorityBusy(error: unknown): boolean {
   if (error instanceof AuthorityStoreError) return error.code === "authority_busy";
   if (typeof error === "object" && error !== null && "code" in error
-    && String((error as { code: unknown }).code) === "SQLITE_BUSY") return true;
+    && String((error as { code: unknown }).code).startsWith("SQLITE_BUSY")) return true;
   return /SQLITE_BUSY|database is locked/i.test(error instanceof Error ? error.message : String(error));
 }
 
 const COLD_START_BUSY_RETRIES = 256;
+const coldStartRetryDelayMs = (attempt: number): number => Math.min(2 ** Math.min(attempt, 5), 25);
 
 async function initializeAuthorityClient(client: Client, url: string, appliedAt: number): Promise<void> {
   for (let attempt = 0; attempt < COLD_START_BUSY_RETRIES; attempt += 1) {
@@ -170,9 +171,11 @@ async function initializeAuthorityClient(client: Client, url: string, appliedAt:
       return;
     } catch (error) {
       if (!isAuthorityBusy(error) || attempt === COLD_START_BUSY_RETRIES - 1) throw error;
-      // Yield without consulting wall time. Cold initialization is idempotent,
-      // and another process can finish the SQLite mode/migration transition.
-      await new Promise<void>((resolve) => setImmediate(resolve));
+      // Restart after SQLITE_BUSY_SNAPSHOT with a bounded scheduling backoff.
+      // Cold initialization is idempotent; the delay lets the process holding
+      // the migration write lock commit before this connection takes a fresh
+      // snapshot. No product timestamp or injected-clock decision depends on it.
+      await new Promise<void>((resolve) => setTimeout(resolve, coldStartRetryDelayMs(attempt)));
     }
   }
 }

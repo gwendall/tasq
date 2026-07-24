@@ -111,7 +111,7 @@ describe("TQ-802 clean-process storage foundation", () => {
     ]);
     const store = await openAuthorityStore({ url, clock: { now: () => NOW } });
     await store.close();
-  });
+  }, 30_000);
 
   test("reopens durable authority and touches only the authorized opaque binding", async () => {
     const root = mkdtempSync(join(tmpdir(), "tasq-authority-reopen-"));
