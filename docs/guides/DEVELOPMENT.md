@@ -109,7 +109,7 @@ exact owning contract or missing decision rather than silently widening scope.
 | Bundled domain compatibility type/evaluator | `packages/tasq-reference-extension/` | Manifest/runtime parity tests |
 | Reference provider connector | `packages/tasq-reference-connectors/` | Conformance and kernel-composition eval |
 | MCP Tasks or A2A mapping | `packages/tasq-protocol-adapters/` | Protocol tests; no implicit commitment completion |
-| Future Server authority/HTTP foundation | `packages/tasq-authority/`, `packages/tasq-server/` | ADR-004 guard, hostile cross-workspace/revocation evals |
+| Server authority/HTTP source candidate | `packages/tasq-authority/`, `packages/tasq-server/` | ADR-004 guard, hostile cross-workspace/revocation evals, deployable-candidate truth |
 | Public product/docs site | `apps/site/` | Generated truth check, static build and browser test |
 | Agent journey or cross-layer product proof | `packages/tasq-evals/` | Observable black-box assertions, not implementation shortcuts |
 | Public support or release claim | Root human contract plus matching JSON truth | Clean-room evidence and release-policy gate |

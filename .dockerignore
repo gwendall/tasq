@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+**/node_modules
+**/dist
+**/.next
+evidence
+artifacts
+.env
+**/.env
+**/*.sqlite
+**/*.sqlite-*

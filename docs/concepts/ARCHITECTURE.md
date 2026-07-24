@@ -15,13 +15,17 @@ profile, while a minimal `@tasq-run/core` composition boots without loading it.
 The kernel and the product are deliberately distinct:
 
 ```text
-Tasq Cloud (future managed operation)
-└── Tasq Server (future authenticated REST/remote MCP/event transport)
+Tasq Cloud (private provider-neutral source candidate, not deployed)
+└── Tasq Server (implemented source/container candidate, not published)
     ├── authority DTOs + pure guard (implemented internally, TQ-801)
     ├── authority control plane + opaque ledger router (implemented, TQ-802)
     ├── host-integrated authenticated read REST handler (implemented, TQ-803)
     ├── registered guarded mutation REST handler (implemented, TQ-804)
-    ├── concrete verifiers/listener/domain adapters/MCP (future, TQ-805+)
+    ├── host-integrated stateless remote MCP adapter (implemented, TQ-805)
+    ├── remote client + one-use enrollment/opaque introspection (implemented candidate, TQ-809)
+    ├── RS256 + opaque verifiers, daemon and Core adapter (implemented, TQ-807)
+    ├── authenticated guarded Console + receipt store (implemented, TQ-807/TQ-811)
+    ├── authenticated signed-origin offline replication (implemented candidate, TQ-806)
     └── Tasq Core (implemented embedded kernel)
 
 Tasq Local (implemented single-host reference product)
@@ -31,7 +35,9 @@ Tasq Local (implemented single-host reference product)
 └── Tasq Core + one local LibSQL ledger
 ```
 
-Server and Cloud are not deployed behavior. They must reuse Core through the
+Cloud has a private control-plane/BFF source candidate but is not deployed
+behavior. Server has a local container candidate but no
+published image or public endpoint. Both must reuse Core through the
 ADR-004 identity/routing/authorization guard, not fork state or expose current
 local listeners remotely. `PRODUCT_CONSUMPTION_SPEC.md` owns the product
 contract and `PRODUCT_SURFACE_MATRIX.json` owns its machine-readable support
@@ -42,10 +48,13 @@ TQ-801 implements only the pure middle of that future guard in
 verified identity; the TQ-802 authority store/router supplies current bindings
 and grants; and only an allowed decision may precede a ledger/kernel call.
 The pure package intentionally imports neither HTTP, persistence nor Core.
-The private Server package owns persistence/routing and the TQ-803/TQ-804
-Fetch-compatible read and registered-mutation adapters. It still owns no
-network listener, concrete credential verification, bundled domain operation
-adapter or kernel composition.
+The private Server package owns persistence/routing and the
+TQ-803/TQ-805/TQ-809 Fetch-compatible adapters. TQ-807 adds strict
+configuration, an RS256 verifier, Bun listener, Core operation adapter,
+immutable receipt store, hosted Console BFF and operator lifecycle. The
+public-candidate
+`@tasq-run/client` is Fetch-only and owns no kernel, database, migrations or
+authority cache.
 
 ## At a glance
 
@@ -200,9 +209,9 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
   and projection adapters.
 - `tasq-inspector` is a read-only sibling surface over the strict kernel. It
   owns no storage or policy, and kernel/service never import it.
-- `tasq-cli` is one of several possible interfaces. MCP, the local inspector
-  and the integration-required hosted REST handlers are current siblings;
-  remote MCP and hosted UI remain future adapters.
+- `tasq-cli` is one of several possible interfaces. MCP, the local inspector,
+  hosted REST, remote MCP and hosted UI are current siblings at different
+  support levels; the remote surfaces remain unpublished candidates.
   ADR-004 now fixes their composition order: trusted transport -> verified
   issuer/subject -> workspace binding/router -> live authorization decision ->
   kernel. They may never expose the raw kernel first.
@@ -420,7 +429,8 @@ does not regenerate the file.
 
 - Single binary, no server process, zero ops
 - WAL mode = safe concurrent writes from multiple CLI processes
-- Same engine local + future cloud (Turso) = no dialect divergence
+- Same LibSQL-compatible engine across Local and the Server/Cloud source
+  candidates = no separate application-level query dialect
 - FTS5 native if we want search later
 - File is portable, inspectable with `sqlite3` CLI
 
@@ -447,7 +457,7 @@ Ordered manual SQL files + a small runner. Reasons:
 - Task-scoped mutations emit ordered audit events; unrelated observations keep immutable provenance until reconciliation
 - Validation happens once, in one place (Zod schemas)
 - ACL / FK / state-machine checks live next to the mutations they govern
-- Future surfaces (MCP, REST) share invariants without code dup
+- All surfaces (CLI, MCP, REST and inspectors) share invariants without code duplication
 
 ### Why UUIDv7 (not v4 or auto-increment) ?
 
@@ -466,7 +476,7 @@ The accepted current invariants are intended to evolve into this dependency
 shape without destructive migration:
 
 ```text
-tasq-surfaces (CLI / embedded / future MCP and REST)
+tasq-surfaces (CLI / embedded / MCP / REST / inspectors)
                          │
                          ▼
 tasq-kernel  ◀── tasq-extension-contract
@@ -528,6 +538,21 @@ implements its pure authority contracts and evaluator, while its machine
 matrix and all remote surfaces remain explicitly unshipped. `CURRENT_STATE.md`
 is the implemented compatibility boundary.
 
+ADR-009 and TQ-613–TQ-615 implement the further trust seam: public signing
+credentials live in the authority/control plane, private signing capabilities
+remain in host-owned signers, and append-only signed statements plus
+verification records live with the workspace records they support.
+Purpose-specific binders connect those proofs to artifacts, resolution,
+effects, replication or checkpoints; no generic signature may reach a domain
+mutation. TQ-616 remains a protected-artifact and unbriefed-agent gate, so this
+is a repository source candidate rather than published support.
+
+TQ-901–TQ-905 add a private provider-neutral Cloud control plane beside Server,
+never inside Core. It owns tenant/workspace lifecycle, same-origin browser
+sessions, opaque deployment/secret references, quota and operations records.
+Its BFF re-enters the exact Server guard and unconditionally excludes remote
+effects. A source candidate is not a deployed managed service.
+
 ## File layout
 
 ```
@@ -547,6 +572,7 @@ is the implemented compatibility boundary.
 │   ├── tasq-filesystem-watcher/ ── DB-free read-only connector + CLI
 │   ├── tasq-protocol-adapters/ ── version-pinned MCP Tasks/A2A import boundary
 │   ├── tasq-inspector/ ── loopback GET/HEAD HTML/JSON projection + browser tests
+│   ├── tasq-cloud-control-plane/ ── private provider-neutral managed-service candidate
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-server/ ── durable authority control plane + opaque ledger router
 │   ├── tasq-service/   ── @tasq-internal/local-service   (Core forwarders + Local compatibility + tests)

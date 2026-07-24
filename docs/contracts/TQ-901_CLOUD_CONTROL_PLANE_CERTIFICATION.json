@@ -1,0 +1,26 @@
+{
+  "contractVersion": "tasq.cloud-control-plane-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-901",
+  "implementation": "packages/tasq-cloud-control-plane",
+  "proof": {
+    "tenantScopedWorkspaceIdentity": true,
+    "opaqueUniqueStorageBindings": true,
+    "intentBeforeProviderIo": true,
+    "stableProvisioningReconciliation": true,
+    "concurrentQuotaRace": "exactly_one_workspace_admitted",
+    "hostInjectedAuthorization": true,
+    "tenantScopedAudit": true
+  },
+  "evidence": [
+    "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+    "packages/tasq-cloud-control-plane/src/index.ts"
+  ],
+  "remainingExternalGate": [
+    "deploy_control_plane_with_production_database",
+    "bind_real_secret_manager_and_server_image_digest",
+    "independent_multi_tenant_infrastructure_review"
+  ],
+  "managedCloudAvailable": false
+}

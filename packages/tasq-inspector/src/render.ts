@@ -260,6 +260,41 @@ function contextSection(snapshot: CommitmentInspection): string {
   </li>`).join("")}</ol>`;
 }
 
+function signedProofSection(snapshot: CommitmentInspection): string {
+  if (snapshot.signedStatementProofs.length === 0) {
+    return empty("No accepted signed statement is bound to this commitment graph.");
+  }
+  return `<ol class="record-stack">${snapshot.signedStatementProofs.map((proof) => {
+    const latest = proof.verifications.at(-1);
+    return `<li class="record">
+      <header><div><p class="record-kind">Purpose-bound signed statement</p><h3>${identifier(proof.statement.statementId)}</h3></div>${status("valid at acceptance")}</header>
+      ${definitionRows([
+        ["Purpose", `${proof.statement.purposeUri}@${proof.statement.purposeVersion}`],
+        ["Issuer principal", proof.statement.issuerPrincipalId],
+        ["Credential", proof.statement.credentialId],
+        ["Credential isolation", proof.credentialSnapshot.credential.isolationClass],
+        ["Credential revision", proof.credentialSnapshot.credential.revision],
+        ["Statement digest", proof.statement.payloadDigest],
+        ["Accepted", time(proof.statement.acceptedAt)],
+        ["Credential state then", latest?.credentialStateAtVerification ?? "Unavailable"],
+        ["Current credential state", "Not asserted by this workspace snapshot"],
+      ])}
+      <p class="notice">The signature proves exact bytes at acceptance. It does not by itself prove semantic truth, current credential status, completion or authority.</p>
+      <div class="nested-records">
+        <h4>Typed bindings</h4>
+        ${proof.bindings.map((binding) => `<article class="nested-record">
+          <div class="nested-heading"><strong>${escapeHtml(binding.bindingKind)}</strong><time>${escapeHtml(time(binding.createdAt))}</time></div>
+          ${definitionRows([
+            ["Record", `${binding.recordType}:${binding.recordId}`],
+            ["Record digest", binding.recordDigest],
+            ["Verification", binding.verificationId],
+          ])}
+        </article>`).join("")}
+      </div>
+    </li>`;
+  }).join("")}</ol>`;
+}
+
 function auditSection(snapshot: CommitmentInspection): string {
   if (snapshot.events.length === 0) return empty("No task-scoped audit events.");
   return `<div class="table-scroll"><table>
@@ -297,12 +332,14 @@ export function renderCommitmentPage(snapshot: CommitmentInspection): string {
       <a href="#waits">Waits and facts <span>${snapshot.conditions.length}</span></a>
       <a href="#effects">Effects and authority <span>${snapshot.effects.length}</span></a>
       <a href="#execution">Execution and proof <span>${snapshot.attempts.length}</span></a>
+      <a href="#signed-proof">Signed proof <span>${snapshot.signedStatementProofs.length}</span></a>
       <a href="#context">External context <span>${snapshot.externalContextLinks.length}</span></a>
       <a href="#audit">Audit <span>${snapshot.events.length}</span></a>
     </nav>
     <section id="waits" class="detail-section"><div class="section-heading"><h2>Waits and facts</h2><p>Condition, observation and reconciliation stay distinct.</p></div>${waitsSection(snapshot)}</section>
     <section id="effects" class="detail-section"><div class="section-heading"><h2>Effects and authority</h2><p>Intent, permission and provider outcome are separate records.</p></div>${effectsSection(snapshot)}</section>
     <section id="execution" class="detail-section"><div class="section-heading"><h2>Execution and proof</h2><p>A successful attempt does not complete the commitment.</p></div>${executionSection(snapshot)}</section>
+    <section id="signed-proof" class="detail-section"><div class="section-heading"><h2>Signed proof</h2><p>Cryptographic validity, live credential state, authorization and semantic truth remain separate.</p></div>${signedProofSection(snapshot)}</section>
     <section id="context" class="detail-section"><div class="section-heading"><h2>External context</h2><p>Pointers are actor-provided data. They grant no access or authority.</p></div>${contextSection(snapshot)}</section>
     <section id="audit" class="detail-section"><div class="section-heading"><h2>Ordered audit</h2><p>Resume after event sequence ${snapshot.resumeCursor.afterEventSequence}.</p></div>${auditSection(snapshot)}</section>
     <footer class="snapshot-footer">

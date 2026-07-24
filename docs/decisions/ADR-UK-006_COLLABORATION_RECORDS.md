@@ -4,8 +4,9 @@
 > **Decision:** stable principals, explicit assignments, directed commitment
 > relations, immutable artifacts/external references/completion records and
 > optimistic revisions.
-> **Implements:** UK-006; constrains UK-007–UK-011 and ADR-004/005. ADR-004's
-> hosted design is now accepted but not implemented; ADR-005 remains future.
+> **Implements:** UK-006; constrains UK-007–UK-011 and ADR-004/005. ADR-004 and
+> ADR-005 are accepted; their Server/Cloud compositions are source candidates
+> whose external release and deployment gates remain open.
 
 ## 1. Context
 

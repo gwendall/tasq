@@ -93,6 +93,8 @@ export interface ListCommitmentsOptions {
   includeDeleted?: boolean;
   includeDeferred?: boolean;
   limit?: number;
+  /** Exclusive stable cursor for `updatedAt DESC, id DESC`. */
+  before?: { updatedAt: number; id: string };
   clock?: Clock;
   now?: number;
 }
@@ -147,6 +149,8 @@ export async function listCommitments(
     includeDeleted: options.includeDeleted,
     includeScheduled: options.includeDeferred,
     limit: options.limit,
+    beforeUpdatedAt: options.before?.updatedAt,
+    beforeId: options.before?.id,
     clock: options.clock,
     now: options.now,
   });

@@ -10,6 +10,7 @@
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "@tasq-run/cli": "workspace:*",
+    "@tasq-run/client": "workspace:*",
     "@tasq-internal/filesystem-watcher": "workspace:*",
     "@tasq-run/mcp": "workspace:*",
     "@tasq-run/extension-sdk": "workspace:*",

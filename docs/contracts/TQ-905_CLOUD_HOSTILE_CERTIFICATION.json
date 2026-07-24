@@ -1,0 +1,37 @@
+{
+  "contractVersion": "tasq.cloud-hostile-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-905",
+  "testedArtifact": "repository_cloud_control_plane_source_candidate",
+  "hostileDimensions": {
+    "tenants": 2,
+    "collidingWorkspaceNames": "isolated",
+    "crossTenantWorkspaceRead": "empty",
+    "crossTenantRotationIdentity": "denied",
+    "crossTenantBackupRestore": "denied",
+    "concurrentQuotaRace": "exactly_one_admitted",
+    "administratorDenial": "fail_closed",
+    "csrfAndOrigin": "fail_closed",
+    "remoteEffects": "denied",
+    "deviceRecoveryTenantRevocation": "sessions_invalidated",
+    "providerFailureReconciliation": "passed",
+    "deletionUnknownOutcomeRetry": "passed",
+    "rawSensitiveValueScan": "passed"
+  },
+  "evidence": [
+    "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+    "docs/contracts/TQ-901_CLOUD_CONTROL_PLANE_CERTIFICATION.json",
+    "docs/contracts/TQ-902_CLOUD_BFF_CERTIFICATION.json",
+    "docs/contracts/TQ-903_CLOUD_IDENTITY_CERTIFICATION.json",
+    "docs/contracts/TQ-904_CLOUD_OPERATIONS_CERTIFICATION.json"
+  ],
+  "remainingExternalGate": [
+    "exact_published_server_image_and_control_plane_deployment",
+    "real_secret_manager_rotation",
+    "off_site_backup_restore_and_region_failover",
+    "independent_multi_tenant_security_review",
+    "previously_unbriefed_operator_incident_drill"
+  ],
+  "managedCloudAvailable": false
+}

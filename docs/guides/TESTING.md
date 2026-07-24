@@ -78,7 +78,7 @@ deny-by-default decision without transport, persistence, kernel or device-time
 coupling?*
 
 The TQ-801 suite freezes strict identity/binding/grant/delegation/decision
-contracts and 16 exact action identities. It covers live revocation, complete
+contracts and 19 exact action identities. It covers live revocation, complete
 snapshot digests, two-issuer subject collision, delegated subject/actor
 intersection, sender constraints, effect eligibility, corrupt snapshots and
 one injected-clock capture. The separate clean-room eval exercises human,
@@ -106,13 +106,25 @@ idempotency, exact replay/conflict, redaction, cross-workspace denial,
 denial and exact recovery after a domain commit returns a corrupt outcome.
 The certificate explicitly rejects a false cross-database ACID claim.
 
+TQ-807–TQ-810 add real daemon/container, official REST/MCP/CLI parity,
+multi-issuer isolation, signed credential lifecycle, principal-bound
+replication and Python remote-client tests. TQ-901–TQ-905 add a private Cloud
+control-plane suite with two colliding tenants, concurrent quota admission,
+same-origin/CSRF BFF failures, device/recovery/tenant revocation, provider
+reconciliation, key-reference rotation, backup/restore, retention,
+support-access and deletion-uncertainty recovery. The companion eval prevents
+source-candidate evidence from becoming a shipped Cloud or remote-effects
+claim.
+
 ```bash
 pnpm --filter @tasq-internal/authority test
 pnpm --filter @tasq-internal/server test
+pnpm --filter @tasq-internal/cloud-control-plane test
 pnpm --filter @tasq-internal/evals test -- hosted-authority-foundation.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-authority-store-router.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-read-rest.test.ts
 pnpm --filter @tasq-internal/evals test -- hosted-mutation-rest.test.ts
+pnpm --filter @tasq-internal/evals test -- managed-cloud-source-certification.test.ts
 ```
 
 ### 7. Service tests (`packages/tasq-service/test/`)

@@ -84,13 +84,14 @@ because their invariants, lifetimes and authority differ.
 | Output | artifact | Kernel | Implemented |
 | Proof | evidence | Kernel | Implemented |
 | Validation | proposal → decision → completion | Kernel/policy seam | Contracts, trust, proposals, challenges and decisions implemented by TQ-612 |
+| Cryptographic authorship | signed statement + signing credential | Trust/authority seam | TQ-613–TQ-615 source candidate implemented; TQ-616 published-artifact gate open |
 | External action | effect → approval → receipt | Kernel/connector seam | Implemented locally; remote effects remain disabled |
 | Provenance | principal, event, external reference | Kernel | Implemented |
 | Recovery | revision, idempotency, cursor, backup | Durability | Implemented locally |
 | Priority and urgency | policy projection | Planning profile | Implemented in bundled life-planning policy, not universal |
 | Estimate, cost and value | policy/profile data | Policy | Compatibility fields exist; no universal meaning |
 | Capability matching | assignment policy over principal references | Policy/extension | Deliberately not kernel-owned |
-| Visibility and permission | authenticated workspace authority | Server composition | Local attribution exists; Server work remains planned |
+| Visibility and permission | authenticated workspace authority | Server composition | Local attribution plus repository-certified Server source candidate; no published endpoint |
 | Reminder and notification | delivery/runtime behavior | Runtime/connector | Deliberately outside kernel |
 | Conversation and memory | external context references | Runtime/external system | Tasq stores pointers, not bodies |
 
@@ -258,6 +259,15 @@ evidence only when bound to a criterion with provenance.
 
 Evidence can exist without proving the claim. TQ-612 adds versioned
 deterministic, attested, optimistic and adjudicated validation decisions.
+
+### Digest versus signature versus authority
+
+A digest identifies exact bytes. A signed statement proves that a credential
+signed exact purpose-bound bytes. A credential binding maps that verification
+method to a principal. A live authority or validation policy still decides
+whether the principal may perform the action or whether the statement is
+sufficient. ADR-009 keeps all four facts separate so a signed artifact cannot
+silently become self-approval.
 
 ### World facts versus interpretation
 

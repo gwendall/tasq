@@ -1,0 +1,8 @@
+{
+  "contractVersion": "tasq.signed-statement-vector.v1",
+  "payload": "eyJjb250cmFjdFZlcnNpb24iOiJ0YXNxLnNpZ25lZC1zdGF0ZW1lbnQudjEiLCJ0ZXN0IjoiY3Jvc3MtbGFuZ3VhZ2UifQ",
+  "payloadType": "application/vnd.tasq.signed-statement.v1+json",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAB96kT34znmijZPU4jrQqJ5/M3oHAraQ8D0IPUxDibq8=\n-----END PUBLIC KEY-----\n",
+  "signature": "tAWCVDDKSxOpeCSYqVpOUe4f254yiPxfpMmPQHb0mWQj0qe4f8pKS2SPWV_3U453DUo7VF0vd2qQYf4Ce3KDAw",
+  "pae": "RFNTRXYxIDQ1IGFwcGxpY2F0aW9uL3ZuZC50YXNxLnNpZ25lZC1zdGF0ZW1lbnQudjEranNvbiA3MCB7ImNvbnRyYWN0VmVyc2lvbiI6InRhc3Euc2lnbmVkLXN0YXRlbWVudC52MSIsInRlc3QiOiJjcm9zcy1sYW5ndWFnZSJ9"
+}

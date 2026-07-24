@@ -27,3 +27,4 @@ export * from "./context-links.js";
 export * from "./inspector.js";
 export * from "./console.js";
 export * from "./resolution.js";
+export * from "./signatures.js";

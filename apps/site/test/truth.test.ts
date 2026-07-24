@@ -15,7 +15,6 @@ describe("public site truth", () => {
 
   test("never gives an entrypoint to an unimplemented surface", () => {
     const unimplemented = productTruth.surfaces.filter((entry) => entry.support === "not_implemented");
-    expect(unimplemented.length).toBeGreaterThan(0);
     expect(unimplemented.every((entry) => entry.entrypoint === null)).toBe(true);
   });
 

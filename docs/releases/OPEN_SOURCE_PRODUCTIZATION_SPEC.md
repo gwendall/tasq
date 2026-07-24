@@ -78,15 +78,19 @@ unrelated project; only the executable uses that unscoped name.
 | `@tasq-run/console` | `tasq-inspector` | Read-only local operator surface |
 | `@tasq-run/extension-sdk` | `tasq-extension-sdk` | Manifest/runtime and connector-conformance contracts |
 | `@tasq-run/protocol-adapters` | `tasq-protocol-adapters` | Pure MCP Tasks/A2A mappings, no transport authority |
+| `@tasq-run/client` | `tasq-client` | ADR-010 Fetch-only remote client candidate; not present in published `v0.3.0` |
 | No first-release package | watcher/reference/profile packages | Repository examples without provider support promises |
 | No public package | eval harnesses/fixtures | Repository and release tooling |
 
 Public APIs must have explicit entrypoints. Deep imports, migration internals,
 test fixtures and monorepo aliases are not compatibility promises.
 
-TQ-611 keeps the high-level local client in `@tasq-run/core`: it composes the
-same in-process kernel and store, so a separate `@tasq-run/client` would add a
-shallow versioning layer without a distinct adapter. Published `v0.3.0`
+TQ-611 keeps the high-level **local** client in `@tasq-run/core`: it composes
+the same in-process kernel and store, so a separate local client package would
+add a shallow versioning layer without a distinct adapter. ADR-010 later adds
+`@tasq-run/client` for the genuinely different remote Fetch boundary; it has
+no Core or database dependency and remains an unpublished source candidate.
+Published `v0.3.0`
 compiles Core, Schema and Extension SDK to ESM plus declarations and certifies
 that closure under both Bun 1.3+ and Node 22+ from exact registry tarballs. Other public
 TypeScript packages retain their Bun-only support boundary.

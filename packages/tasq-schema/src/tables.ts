@@ -1661,6 +1661,7 @@ export const replicationReplica = sqliteTable(
     workspaceId: text("workspace_id").notNull(),
     replicaId: text("replica_id").notNull(),
     generationId: text("generation_id").notNull(),
+    principalId: text("principal_id").notNull(),
     status: text("status").notNull().default("active"),
     acceptedCounter: integer("accepted_counter").notNull().default(0),
     acceptedDigest: text("accepted_digest"),
@@ -1672,6 +1673,11 @@ export const replicationReplica = sqliteTable(
   (t) => ({
     pk: primaryKey({ columns: [t.workspaceId, t.replicaId, t.generationId] }),
     statusIdx: index("idx_replication_replica_status").on(t.workspaceId, t.status, t.lastContactAt),
+    principalIdx: index("idx_replication_replica_principal").on(
+      t.workspaceId,
+      t.principalId,
+      t.status,
+    ),
     statusCheck: check("replication_replica_status_check", sql`${t.status} IN ('active','stale','revoked')`),
     frontierCheck: check(
       "replication_replica_frontier_check",
@@ -1820,6 +1826,168 @@ export const replicationMaterializedRecord = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
+// Purpose-bound signed statements — public proof only, never private keys
+// ──────────────────────────────────────────────────────────────────────
+
+export const workspaceCheckpoint = sqliteTable("workspace_checkpoint", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull(),
+  authorityEpoch: text("authority_epoch").notNull(),
+  eventCursor: integer("event_cursor").notNull(),
+  rootContractUri: text("root_contract_uri").notNull(),
+  rootContractVersion: integer("root_contract_version").notNull(),
+  rootDigest: text("root_digest").notNull(),
+  exportedRecordCount: integer("exported_record_count").notNull(),
+  createdByPrincipalId: text("created_by_principal_id").notNull(),
+  createdAt: integer("created_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  occurrenceUniq: uniqueIndex("uniq_workspace_checkpoint_occurrence").on(
+    t.tenantId, t.authorityEpoch, t.eventCursor, t.rootDigest,
+  ),
+  orderIdx: index("workspace_checkpoint_order").on(t.tenantId, t.eventCursor, t.createdAt),
+  eventCursorCheck: check("workspace_checkpoint_event_cursor_check", sql`${t.eventCursor} >= 0`),
+  rootVersionCheck: check("workspace_checkpoint_root_version_check", sql`${t.rootContractVersion} > 0`),
+  recordCountCheck: check("workspace_checkpoint_record_count_check", sql`${t.exportedRecordCount} >= 0`),
+  metadataCheck: check("workspace_checkpoint_metadata_check", sql`json_valid(${t.metadataJson})`),
+}));
+
+export const acceptedSigningCredentialSnapshot = sqliteTable(
+  "accepted_signing_credential_snapshot",
+  {
+    tenantId: text("tenant_id").notNull(),
+    credentialId: text("credential_id").notNull(),
+    credentialRevision: integer("credential_revision").notNull(),
+    principalId: text("principal_id").notNull(),
+    profileUri: text("profile_uri").notNull(),
+    profileVersion: integer("profile_version").notNull(),
+    publicMaterialJson: text("public_material_json").notNull(),
+    publicMaterialDigest: text("public_material_digest").notNull(),
+    trustRootDigest: text("trust_root_digest").notNull(),
+    isolationClass: text("isolation_class").notNull(),
+    statusAtAcceptance: text("status_at_acceptance").notNull(),
+    validFrom: text("valid_from").notNull(),
+    expiresAt: text("expires_at"),
+    replacesCredentialId: text("replaces_credential_id"),
+    enrollmentMethod: text("enrollment_method").notNull(),
+    enrollmentEvidenceDigest: text("enrollment_evidence_digest").notNull(),
+    credentialDigest: text("credential_digest").notNull(),
+    capturedAt: integer("captured_at").notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.tenantId, t.credentialId, t.credentialRevision] }),
+    principalIdx: index("accepted_signing_credential_principal").on(
+      t.tenantId,
+      t.principalId,
+      t.capturedAt,
+    ),
+    revisionCheck: check(
+      "accepted_signing_credential_revision_check",
+      sql`${t.credentialRevision} > 0`,
+    ),
+    profileVersionCheck: check(
+      "accepted_signing_credential_profile_version_check",
+      sql`${t.profileVersion} > 0`,
+    ),
+    materialJsonCheck: check(
+      "accepted_signing_credential_material_json_check",
+      sql`json_valid(${t.publicMaterialJson})`,
+    ),
+  }),
+);
+
+export const signedStatement = sqliteTable("signed_statement", {
+  statementId: text("statement_id").primaryKey(),
+  tenantId: text("tenant_id").notNull(),
+  issuerPrincipalId: text("issuer_principal_id").notNull(),
+  credentialId: text("credential_id").notNull(),
+  purposeUri: text("purpose_uri").notNull(),
+  purposeVersion: integer("purpose_version").notNull(),
+  subjectTypeUri: text("subject_type_uri").notNull(),
+  subjectId: text("subject_id").notNull(),
+  subjectDigest: text("subject_digest").notNull(),
+  payloadJson: text("payload_json").notNull(),
+  payloadDigest: text("payload_digest").notNull(),
+  bundleJson: text("bundle_json").notNull(),
+  bundleDigest: text("bundle_digest").notNull(),
+  acceptedAt: integer("accepted_at").notNull(),
+}, (t) => ({
+  tenantIdentityUniq: uniqueIndex("uniq_signed_statement_tenant_identity").on(t.tenantId, t.statementId),
+  occurrenceUniq: uniqueIndex("uniq_signed_statement_occurrence").on(
+    t.tenantId, t.purposeUri, t.purposeVersion, t.credentialId, t.statementId,
+  ),
+  subjectIdx: index("signed_statement_subject").on(
+    t.tenantId, t.subjectTypeUri, t.subjectId, t.acceptedAt,
+  ),
+  purposeVersionCheck: check("signed_statement_purpose_version_check", sql`${t.purposeVersion} > 0`),
+  payloadJsonCheck: check("signed_statement_payload_json_check", sql`json_valid(${t.payloadJson})`),
+  bundleJsonCheck: check("signed_statement_bundle_json_check", sql`json_valid(${t.bundleJson})`),
+}));
+
+export const signatureVerificationRecord = sqliteTable("signature_verification_record", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull(),
+  statementId: text("statement_id").notNull().references(() => signedStatement.statementId),
+  statementDigest: text("statement_digest").notNull(),
+  bundleDigest: text("bundle_digest").notNull(),
+  credentialId: text("credential_id").notNull(),
+  credentialRevision: integer("credential_revision").notNull(),
+  credentialDigest: text("credential_digest").notNull(),
+  principalId: text("principal_id").notNull(),
+  trustRootDigest: text("trust_root_digest").notNull(),
+  profileUri: text("profile_uri").notNull(),
+  profileVersion: integer("profile_version").notNull(),
+  verifierImplementationDigest: text("verifier_implementation_digest").notNull(),
+  verifiedAt: integer("verified_at").notNull(),
+  credentialStateAtVerification: text("credential_state_at_verification").notNull(),
+  outcome: text("outcome").notNull(),
+  reasonCode: text("reason_code").notNull(),
+  supportingProofDigestsJson: text("supporting_proof_digests_json").notNull(),
+}, (t) => ({
+  tenantIdentityUniq: uniqueIndex("uniq_signature_verification_tenant_identity").on(t.tenantId, t.id),
+  occurrenceUniq: uniqueIndex("uniq_signature_verification_occurrence").on(
+    t.tenantId, t.statementId, t.verifierImplementationDigest, t.verifiedAt,
+  ),
+  statementIdx: index("signature_verification_statement").on(t.tenantId, t.statementId, t.verifiedAt),
+  outcomeCheck: check("signature_verification_outcome_check", sql`${t.outcome} IN ('valid','invalid','indeterminate')`),
+  proofJsonCheck: check("signature_verification_proofs_json_check", sql`json_valid(${t.supportingProofDigestsJson})`),
+}));
+
+export const signedStatementNonce = sqliteTable("signed_statement_nonce", {
+  tenantId: text("tenant_id").notNull(),
+  purposeUri: text("purpose_uri").notNull(),
+  nonce: text("nonce").notNull(),
+  statementId: text("statement_id").notNull().references(() => signedStatement.statementId),
+  consumedAt: integer("consumed_at").notNull(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.tenantId, t.purposeUri, t.nonce] }),
+}));
+
+export const signedStatementBinding = sqliteTable("signed_statement_binding", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull(),
+  statementId: text("statement_id").notNull().references(() => signedStatement.statementId),
+  verificationId: text("verification_id").notNull().references(() => signatureVerificationRecord.id),
+  bindingKind: text("binding_kind").notNull(),
+  recordType: text("record_type").notNull(),
+  recordId: text("record_id").notNull(),
+  recordDigest: text("record_digest").notNull(),
+  createdByPrincipalId: text("created_by_principal_id").notNull(),
+  createdAt: integer("created_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  recordIdx: index("signed_statement_binding_record").on(t.tenantId, t.recordType, t.recordId, t.createdAt),
+  bindingUniq: uniqueIndex("uniq_signed_statement_binding").on(
+    t.tenantId, t.bindingKind, t.recordType, t.recordId, t.statementId,
+  ),
+  kindCheck: check("signed_statement_binding_kind_check", sql`${t.bindingKind} IN (
+    'artifact_authorship','artifact_acceptance','completion_attestation',
+    'effect_approval','replication_operation_origin','workspace_checkpoint'
+  )`),
+  metadataCheck: check("signed_statement_binding_metadata_check", sql`json_valid(${t.metadataJson})`),
+}));
+
+// ──────────────────────────────────────────────────────────────────────
 // Schema bag (for drizzle migrations + service usage)
 // ──────────────────────────────────────────────────────────────────────
 
@@ -1871,4 +2039,10 @@ export const schema = {
   replicationConflict,
   replicationRetiredIdentity,
   replicationMaterializedRecord,
+  workspaceCheckpoint,
+  acceptedSigningCredentialSnapshot,
+  signedStatement,
+  signatureVerificationRecord,
+  signedStatementNonce,
+  signedStatementBinding,
 };

@@ -1,0 +1,78 @@
+{
+  "contractVersion": "tasq.remote-client-certification.v1",
+  "status": "repository_certified",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-809",
+  "aggregateSourceDigest": "sha256:1442a379bd86b55d45dc7fb2377fe37466c95c1b98a9e3939f5f43aacf58aa6e",
+  "controlPlaneMigration": {
+    "name": "0002_remote_enrollment",
+    "digest": "sha256:301ab9b7c250ce948c5e41f8ac5af0b7f88df6e80684bfce8a1fea53c2cdfad0"
+  },
+  "package": {
+    "name": "@tasq-run/client",
+    "state": "source_candidate_not_published",
+    "repositoryCertifiedRuntime": ["bun>=1.3"],
+    "candidateTargetRuntimes": ["node>=22", "fetch-compatible-runtime"],
+    "kernelDependency": false,
+    "databaseDependency": false
+  },
+  "cli": {
+    "commands": [
+      "remote enroll",
+      "remote status",
+      "remote list",
+      "remote show",
+      "remote events",
+      "remote operations",
+      "remote call",
+      "remote logout"
+    ],
+    "profileFileMode": "0600",
+    "profileDirectoryMode": "0700",
+    "cwdInference": false,
+    "actorLabelAuthenticates": false
+  },
+  "enrollment": {
+    "kinds": ["human_device", "workload_agent"],
+    "oneUse": true,
+    "expiring": true,
+    "actionUpperBound": "exact_registered_action_identities",
+    "storedBootstrap": "hmac_sha256_digest_only",
+    "storedAccessCredential": "hmac_sha256_digest_only",
+    "atomicConsumeAndCredentialInsert": true,
+    "livePrincipalAndBindingRequired": true
+  },
+  "certifiedProperties": [
+    "two_clean_client_enrollment",
+    "same_workspace_claim_contention_and_release",
+    "same_workspace_resource_contention_and_release",
+    "lost_response_exact_idempotent_replay",
+    "next_request_grant_revocation",
+    "next_request_access_credential_revocation",
+    "rest_mcp_commitment_parity",
+    "rest_mcp_event_and_cursor_parity",
+    "typed_cursor_expiry_and_oldest_retained_sequence",
+    "private_atomic_local_credential_storage",
+    "logout_preserves_server_records",
+    "actor_text_never_authenticates"
+  ],
+  "evidence": [
+    "packages/tasq-client/test/client.test.ts",
+    "packages/tasq-cli/test/remote-profile.test.ts",
+    "packages/tasq-cli/test/remote-cli.test.ts",
+    "packages/tasq-server/test/enrollment.test.ts",
+    "packages/tasq-server/test/http.test.ts",
+    "packages/tasq-evals/remote-client-enrollment.test.ts"
+  ],
+  "excludedClaims": [
+    "published_client_package",
+    "deployable_server",
+    "public_remote_endpoint",
+    "standards_based_oidc_or_jwt_verifier",
+    "bundled_domain_operations",
+    "hosted_console",
+    "offline_replication",
+    "remote_effects"
+  ],
+  "tq809Complete": true
+}

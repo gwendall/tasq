@@ -160,9 +160,9 @@ function requestFor(
 const fixedClock = (value = NOW) => ({ now: () => value });
 
 describe("TQ-801 registered authority vocabulary", () => {
-  test("freezes sixteen exact, versioned and implementation-bound actions", () => {
-    expect(ACTION_REGISTRY).toHaveLength(16);
-    expect(new Set(ACTION_REGISTRY.map(({ uri }) => uri)).size).toBe(16);
+  test("freezes twenty-one exact, versioned and implementation-bound actions", () => {
+    expect(ACTION_REGISTRY).toHaveLength(21);
+    expect(new Set(ACTION_REGISTRY.map(({ uri }) => uri)).size).toBe(21);
     expect(Object.isFrozen(ACTION_REGISTRY)).toBe(true);
     for (const action of ACTION_REGISTRY) {
       expect(action.uri).toMatch(/^urn:tasq:action:[a-z.]+$/);

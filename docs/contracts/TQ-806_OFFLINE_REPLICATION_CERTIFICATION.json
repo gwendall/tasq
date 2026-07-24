@@ -1,0 +1,50 @@
+{
+  "contractVersion": "tasq.authenticated-offline-replication-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-806",
+  "storeFormat": 28,
+  "serverOperations": [
+    "replication.enroll",
+    "replication.push",
+    "replication.pull"
+  ],
+  "authentication": {
+    "guard": "ADR-004_authorizeAndExecuteAt",
+    "replicaGenerationPrincipalBinding": "immutable",
+    "pushCredentialBinding": "sender_constrained",
+    "signedOriginRequiredPerOperation": true,
+    "transportSignerPrincipalEquality": true
+  },
+  "atomicity": "accepted_operation_and_complete_signed_proof_same_transaction",
+  "offlineOperationClasses": ["offline_speculative"],
+  "onlineOnly": [
+    "claims",
+    "resource_leases",
+    "effect_approvals",
+    "effect_dispatch",
+    "credential_and_authority_changes",
+    "conflict_resolution",
+    "contested_completion"
+  ],
+  "recovery": {
+    "cursorExpiry": "explicit_snapshot",
+    "conflicts": "visible",
+    "oldBackup": "new_authority_epoch_and_all_old_generations_stale",
+    "exactRetry": "idempotent"
+  },
+  "evidence": [
+    "packages/tasq-core/src/migrations/0028_replica_principal_binding.sql",
+    "packages/tasq-core/src/service/replication.ts",
+    "packages/tasq-service/test/replication.test.ts",
+    "packages/tasq-evals/sync-chaos-recovery.test.ts",
+    "packages/tasq-server/src/workspace.ts",
+    "packages/tasq-server/test/workspace.test.ts"
+  ],
+  "remainingExternalGate": [
+    "protected_published_server_digest",
+    "supported_client_artifacts",
+    "clean_room_multi_machine_trial"
+  ],
+  "publicSupportClaim": false
+}

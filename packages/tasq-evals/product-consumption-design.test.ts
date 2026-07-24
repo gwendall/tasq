@@ -105,12 +105,13 @@ describe("TQ-601 product consumption design", () => {
       publiclyDistributed: true,
     });
     expect(byId(matrix.productShapes, "server")).toMatchObject({
-      support: "not_implemented",
-      entrypoints: [],
+      support: "implemented_candidate_not_published",
+      publiclyDistributed: false,
     });
     expect(byId(matrix.productShapes, "cloud")).toMatchObject({
-      support: "accepted_design_not_executed",
-      entrypoints: [],
+      support: "implemented_candidate_not_published",
+      entrypoints: ["cloud_control_plane", "cloud_bff"],
+      publiclyDistributed: false,
     });
   });
 
@@ -150,17 +151,50 @@ describe("TQ-601 product consumption design", () => {
       authorityBoundary: "versioned_repository_truth_no_ledger_access",
     });
     expect(byId(matrix.surfaces, "rest")).toMatchObject({
-      support: "implemented_integration_required",
-      entrypoint: "@tasq-internal/server createHostedReadHandler; createHostedHttpHandler",
+      support: "implemented_candidate_not_published",
+      entrypoint: "Tasq Server /v1/workspaces/{workspace}/...",
       mutations: true,
     });
-    for (const id of ["remote_mcp", "hosted_console"]) {
-      expect(byId(matrix.surfaces, id)).toMatchObject({
-        support: "not_implemented",
-        entrypoint: null,
-        mutations: false,
+    expect(byId(matrix.surfaces, "remote_mcp")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      entrypoint: "@tasq-internal/server createHostedMcpHandler",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "remote_typescript")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      entrypoint: "@tasq-run/client createRemoteTasq({ endpoint, workspaceId, accessToken })",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "remote_cli")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "remote_enrollment")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "hosted_console")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      entrypoint: "Tasq Server /console",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "signed_statements")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "authenticated_offline_replication"))
+      .toMatchObject({
+        support: "implemented_candidate_not_published",
+        mutations: true,
       });
-    }
+    expect(byId(matrix.surfaces, "remote_python")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      mutations: true,
+    });
+    expect(byId(matrix.surfaces, "cloud_bff")).toMatchObject({
+      support: "implemented_candidate_not_published",
+      mutations: true,
+    });
   });
 
   test("gives every consumer a usable path or an explicit missing dependency", () => {
@@ -201,12 +235,27 @@ describe("TQ-601 product consumption design", () => {
       ],
     });
     expect(byId(matrix.consumers, "remote_agent")).toMatchObject({
-      supportedSurfaces: [],
-      irreducibleInputs: ["hosted_authenticated_transport"],
+      supportedSurfaces: [
+        "remote_typescript",
+        "remote_cli",
+        "remote_mcp",
+        "remote_python",
+      ],
+      irreducibleInputs: [
+        "integrator_supplied_server_endpoint",
+        "workspace_id",
+        "one_use_enrollment_or_access_credential",
+      ],
     });
     expect(byId(matrix.consumers, "self_host_operator")).toMatchObject({
-      supportedSurfaces: [],
-      irreducibleInputs: ["tasq_server_release"],
+      supportedSurfaces: ["server_daemon"],
+      irreducibleInputs: [
+        "tasq_server_candidate_image",
+        "https_domain",
+        "identity_issuer",
+        "public_jwk",
+        "durable_volume",
+      ],
     });
     expect(byId(matrix.consumers, "prospective_adopter")).toMatchObject({
       supportedSurfaces: ["public_site"],
@@ -223,9 +272,12 @@ describe("TQ-601 product consumption design", () => {
       support: "implemented_certified",
       steps: ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "install_release"],
     });
-    for (const id of ["remote_multi_user_collaboration", "self_host_lifecycle"]) {
-      expect(byId(matrix.journeys, id).support).toBe("not_implemented");
-    }
+    expect(byId(matrix.journeys, "remote_multi_user_collaboration").support)
+      .toBe("implemented_candidate_not_published");
+    expect(byId(matrix.journeys, "self_host_lifecycle").support)
+      .toBe("implemented_candidate_not_published");
+    expect(byId(matrix.journeys, "managed_cloud_lifecycle").support)
+      .toBe("implemented_candidate_not_published");
   });
 
   test("locks the first-principles onboarding, authority and clock truths", () => {
@@ -233,11 +285,11 @@ describe("TQ-601 product consumption design", () => {
       "tasq_is_not_only_a_cli",
       "from_scratch_starts_after_executable_or_transport_handoff",
       "same_workspace_text_does_not_bridge_isolated_stores",
-      "mcp_is_local_stdio_not_remote",
+      "published_mcp_is_local_stdio_while_remote_mcp_exists_only_as_an_unpublished_server_candidate",
       "local_console_is_read_only_not_an_agent_api",
-      "host_integrated_read_rest_exists_but_no_deployable_endpoint_ships",
-      "self_hosted_server_is_not_implemented",
-      "hosted_design_is_not_hosted_behavior",
+      "deployable_server_source_and_local_container_candidate_exist_but_no_provenance_published_image_ships",
+      "self_hosted_server_candidate_requires_operator_https_identity_and_durable_storage",
+      "managed_cloud_source_candidate_is_not_a_deployed_or_available_managed_service",
       "canonical_source_repository_is_public_alpha",
       "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
       "first_supported_public_alpha_release_is_published_with_oidc_provenance",
@@ -245,6 +297,12 @@ describe("TQ-601 product consumption design", () => {
       "public_site_is_static_docs_not_console_or_agent_api",
       "public_site_is_deployed_at_tasq_run",
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
+      "hosted_console_is_an_authenticated_guarded_bff_not_the_local_loopback_console",
+      "server_effects_and_provider_connectors_are_disabled_and_absent_by_default",
+      "signed_statement_source_candidate_authenticates_exact_bytes_and_principal_but_never_truth_completion_or_effect_authority",
+      "authenticated_offline_replication_never_extends_live_claim_lease_approval_or_effect_authority",
+      "python_remote_client_source_exists_but_is_not_published_to_pypi",
+      "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
       "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
       "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
       "device_time_is_only_read_by_the_system_clock_adapter",

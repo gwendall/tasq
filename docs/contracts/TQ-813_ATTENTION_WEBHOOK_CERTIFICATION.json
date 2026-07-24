@@ -1,0 +1,31 @@
+{
+  "contractVersion": "tasq.attention-webhook-certification.v1",
+  "status": "done",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-813",
+  "attentionKinds": [
+    "assignment",
+    "blocked",
+    "authority_expiring",
+    "recovery_required",
+    "validation_requested",
+    "completion_challenged"
+  ],
+  "delivery": {
+    "transactionalIntent": "existing_tq401_tq402_outbox",
+    "stableDeliveryIdentity": true,
+    "canonicalPayloadDigest": true,
+    "signature": "hmac_sha256",
+    "redirects": "forbidden",
+    "exactAcknowledgementRequired": true,
+    "explicitBackpressure": "retry_same_delivery",
+    "unknownTransport": "indeterminate",
+    "providerSpecificChannels": "outside_kernel"
+  },
+  "evidence": [
+    "packages/tasq-webhook-notifier/src/index.ts",
+    "packages/tasq-webhook-notifier/test/webhook-notifier.test.ts",
+    "docs/contracts/TQ-401_TRANSACTIONAL_OUTBOX.md",
+    "docs/contracts/TQ-402_OUTBOX_DRAIN_AND_REPAIR.md"
+  ]
+}

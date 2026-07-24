@@ -1,0 +1,47 @@
+{
+  "contractVersion": "tasq.server-hostile-certification.v1",
+  "status": "candidate_done_external_gate",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-808",
+  "testedArtifact": "production_bun_daemon_and_local_linux_container_candidate",
+  "hostileDimensions": {
+    "independentJwtIssuers": 2,
+    "isolatedWorkspaces": 2,
+    "crossWorkspaceProbe": "denied",
+    "stolenCredential": "denied_outside_exact_binding",
+    "expiredCredential": "denied",
+    "wrongAudience": "denied",
+    "malformedCredential": "denied",
+    "tamperedSignature": "denied",
+    "restMcpCliParity": "passed",
+    "liveGrantRevocationRace": "serialized_then_next_request_denied",
+    "processKillRestart": "exact_receipt_replay_passed",
+    "olderBackupRecovery": "selected_point_restored_without_newer_merge",
+    "supportBundleRedaction": "passed"
+  },
+  "eventCursor": {
+    "pageBounded": true,
+    "exclusiveResume": true,
+    "configuredRetention": "indefinite",
+    "expiryClaim": "not_applicable_without_pruning",
+    "typedFiniteRetentionRecoveryContract": "TQ-809_REMOTE_CLIENT_CERTIFICATION.json"
+  },
+  "regressionFixed": {
+    "name": "credential_identity_changed_between_exact_retries",
+    "cause": "authenticatedAt_sampled_at_request_time",
+    "fix": "authenticatedAt_is_credential_issued_at_authorization_clock_remains_request_scoped"
+  },
+  "evidence": [
+    "packages/tasq-evals/self-hosted-server-hostile.test.ts",
+    "packages/tasq-server/test/runtime.test.ts",
+    "packages/tasq-server/test/daemon.test.ts",
+    "scripts/server-container-smoke.ts"
+  ],
+  "remainingExternalGate": [
+    "protected_multi_arch_image_and_provenance",
+    "macos_and_linux_clients_against_exact_published_digest",
+    "previously_unbriefed_operator_deployment"
+  ],
+  "tq808ImplementationComplete": true,
+  "tq808ShippedCertificationComplete": false
+}

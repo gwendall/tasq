@@ -5,14 +5,18 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-07-23
+**Updated:** 2026-07-24
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** finish the verified acquisition and universal agent
-entrypoint (TQ-610), then rerun the independent blind-human adoption session.
-Continue retained-data dogfood in parallel as the stable-graduation gate.
-After that short repair, build the online central Server path without waiting
-for optional offline replication.
+**Current priority:** TQ-809's remote client/enrollment slice is complete; ship
+the deployable online Server and operator lifecycle (TQ-807), then run the
+packaged hostile multi-surface certification (TQ-808). Continue the independent
+blind-human session and retained-data dogfood in parallel; they gate human
+usability and stable graduation, not Server implementation. ADR-009's
+purpose-bound signed-statement layer follows the first hostile Server
+certification and becomes mandatory before optional offline replication,
+stable cross-language remote clients or remote effects claim portable
+principal authorship.
 
 The detailed task inventory, acceptance criteria and verification routes for
 public adoption through Server and Cloud are in
@@ -255,38 +259,149 @@ Server/Cloud breadth remains behind published-byte Local certification.
   idempotency and holds the live authority writer gate through the host's
   durable domain commit. Cross-database loss becomes typed exact recovery, not
   fake ACID; see `../contracts/TQ-804_GUARDED_MUTATION_REST.md`.
-- **TQ-805:** remote MCP behind the identical guard, with REST/MCP parity.
-- **TQ-809:** add the remote CLI and runtime-neutral TypeScript client with
-  explicit endpoint/workspace selection, bounded enrollment, credential
-  recovery/revocation and cursor-safe event resume. Online clients use one
-  central Server authority and receive no direct database credential.
-- **TQ-807:** deploy an online Server artifact/image with a concrete credential
-  verifier, explicit configuration, same-origin authenticated read-only
-  Console, health, backup, restore and upgrade contracts. TQ-806 no longer
-  blocks this first online product.
-- **TQ-808:** hostile multi-surface certification across issuers, workspaces,
-  revocation races and clean-room self-hosting.
-- **TQ-806:** after TQ-808, add optional authenticated offline replication,
-  visible conflicts, recovery and authority rotation. Offline clients cannot
-  retain expired claim, lease, approval or effect authority.
-- **TQ-810:** after TQ-808, publish stable remote API schemas and thin
-  cross-language clients beginning with Python. No language client
-  reimplements kernel or migration semantics.
+- **TQ-805 — done:** stateless Streamable HTTP remote MCP authenticates each
+  exact request, discards raw credentials and projects registered read and
+  mutation tools through the same TQ-803/TQ-804 handlers and live ADR-004
+  guard. It adds no listener, concrete verifier or deployable Server; see
+  `../contracts/TQ-805_REMOTE_MCP.md`.
+- **TQ-809 — done:** the Fetch-only `@tasq-run/client` source candidate,
+  `tasq remote` CLI profiles and one-use human/workload enrollment now use an
+  explicit endpoint/workspace, private local credential storage, exact
+  idempotent replay, live revocation and cursor-expiry recovery. Two-client
+  claim/resource contention and REST/MCP parity pass. The package is not in
+  published `v0.3.0`, and no deployable endpoint ships; see
+  `../contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md`.
+- **TQ-807 — candidate complete, publication gate:** the Bun daemon and local
+  Linux container now include strict config/bootstrap, concrete RS256 and
+  opaque verification, real Core operations, immutable mutation receipts,
+  same-origin authenticated read-only Console, health/metrics and checksummed
+  backup/restore. The remaining gate is a protected multi-architecture image
+  with immutable registry digest, SBOM, checksums and provenance; see
+  `../contracts/TQ-807_DEPLOYABLE_SERVER.md`.
+- **TQ-808 — candidate complete, external gate:** the production daemon passes
+  two independent issuers/workspaces, hostile credentials, REST/MCP/CLI
+  parity, live revocation race, `SIGKILL` restart, older-backup recovery and
+  support-bundle redaction. Exact published multi-arch client replay and one
+  unbriefed operator deployment remain; see
+  `../contracts/TQ-808_SELF_HOSTED_HOSTILE_CERTIFICATION.md`.
+
+### 7A. Close the first shared-work product loops
+
+These are consumer adapters over the certified Server. They do not add task
+state, provider schemas or notification policy to Core.
+
+- **TQ-811 — candidate complete, Server publication gate:** the authenticated
+  Console now supports create, claim, block, evidence, explicit unverified
+  evidence-trust attribution, completion proposal and independent approval.
+  Every action is a bounded same-origin form translated into the same
+  registered Server operation, live ADR-004 authorization and Core service
+  used by REST and MCP. Console owns no mutation semantics. Exact
+  published-image browser certification remains coupled to TQ-807/TQ-808; see
+  `../contracts/TQ-811_HOSTED_HUMAN_ACTIONS.md`.
+- **TQ-812 — done:** `@tasq-internal/github-bridge` freezes one owner per issue
+  field, produces Core-compatible immutable `external_ref` inputs and verifies
+  exact GitHub webhook bytes before emitting typed issue, pull-request, check
+  and deployment observations. Foreign URLs, signature tampering and
+  unsupported events fail closed. GitHub discussion stays in GitHub and every
+  observation carries `completionMapping: none`; see
+  `../contracts/TQ-812_GITHUB_BRIDGE.md`.
+- **TQ-813 — done:** `@tasq-internal/webhook-notifier` turns assignment,
+  blocking, authority expiry, recovery, validation and challenge attention
+  into a bounded neutral envelope with stable delivery identity, HMAC
+  signature and exact receiver acknowledgement. It is a handler for the
+  existing transactional outbox: explicit 429/503 responses retry the same
+  identity, transport or acknowledgement uncertainty stays indeterminate, and
+  redirects fail closed. Email, Slack and other providers remain downstream
+  adapters; see `../contracts/TQ-813_ATTENTION_WEBHOOK.md`.
+
+The first managed alpha may operate one dedicated certified Server deployment
+per user or team. A shared multi-tenant control plane, billing and broad
+support claims remain TQ-901–TQ-905.
+
+### 7B. Add portable signed statements
+
+- **ADR-009 — accepted:** use a purpose-bound signed statement over canonical
+  bytes, not a generic signed document. Private keys remain host-owned;
+  signature verification, principal binding, live authorization, semantic
+  validation and witnessed presence remain separate.
+- **TQ-613 — done:** strict portable payload/envelope/credential/verification
+  schemas, DSSE PAE, baseline Ed25519 signing and verification, nonce
+  consumption and TypeScript/Python/OpenSSL vectors pass.
+- **TQ-614 — done:** the separate Server authority database now owns
+  proof-of-possession enrollment, explicit isolation classes, immutable public
+  material, rotation/recovery links and CAS-gated
+  suspension/resumption/revocation/compromise/retirement with append-only
+  credential events. The Extension SDK signer is purpose-scoped and has no
+  arbitrary-byte signing entrypoint; see
+  `../contracts/TQ-614_SIGNING_CREDENTIAL_AUTHORITY.md`.
+- **TQ-615 — done in source:** migration 27 persists exact statements,
+  verification records, immutable public credential snapshots, nonces,
+  checkpoints and six typed bindings. Current store format 28 additionally
+  binds replica generations to principals. Core, embedded client, guarded
+  Server, CLI, MCP, Console, doctor and portable-data projections pass; the
+  unsigned journey is unchanged. See
+  `../contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md`.
+- **TQ-616 — candidate done; external gate remains:** the critical machine
+  threat matrix, Python cross-language vector, nonce/identity replay,
+  revocation race, process-loss migration and restore tests pass. Public
+  support still requires the protected exact downloaded-byte, supported
+  platform and unbriefed-agent certification. See
+  `../contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.md`.
+
+The accepted contract is
+[`TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md`](../contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md);
+the machine gate is
+[`SIGNED_STATEMENT_ACCEPTANCE.json`](../contracts/SIGNED_STATEMENT_ACCEPTANCE.json).
+This work does not interrupt TQ-607 retained-data dogfood. Signed statements
+are implemented in the source candidate but remain an unpublished support
+claim until TQ-616's external gate is attached to exact release bytes.
+
+- **TQ-806 — candidate done; external gate remains:** guarded Server
+  enrollment/push/pull now bind each replica generation to one principal and
+  require one atomically persisted signed-origin proof per pushed operation.
+  Existing chaos, cursor, conflict and old-backup recovery pass; claims,
+  leases, approvals and effects remain online-only. See
+  `../contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`.
+- **TQ-810 — candidate done; external gate remains:** the checked-in OpenAPI
+  contract and dependency-free Python 3.11+ client cover reads, event cursors,
+  operation discovery, idempotent mutation and enrollment without embedding
+  Core or migrations. PyPI publication, provenance and downloaded-wheel
+  replay remain. See `../contracts/TQ-810_REMOTE_SDKS.md`.
 
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
 
 ### 8. Build managed Tasq Cloud
 
-- **TQ-901:** tenant control plane and isolated workspace provisioning.
-- **TQ-902:** same-origin hosted BFF sessions and authenticated Console.
-- **TQ-903:** human-device and workload onboarding, recovery and revocation.
-- **TQ-904:** quotas, retention, export/delete, incident, support and billing
-  boundaries.
-- **TQ-905:** multi-tenant isolation, key rotation, recovery and support-access
-  certification.
-- **TQ-906:** remote effects only after ADR-005 and an independent authority
-  review; hosted operation remains effect-disabled by default.
+- **TQ-901 — candidate done; deployed-service gate remains:** the private,
+  provider-neutral control-plane package implements authorized tenant
+  lifecycle, isolated workspace bindings, durable provisioning intent,
+  reconciliation and concurrent quota admission. A production database,
+  provider binding and independent infrastructure review remain.
+- **TQ-902 — candidate done; deployed-browser gate remains:** the same-origin
+  BFF keeps Server credentials out of browsers, binds sessions to tenant and
+  device, requires CSRF plus exact Origin for mutations and strips cookies.
+  Real IdP/browser/security-review evidence remains.
+- **TQ-903 — candidate done; external identity gate remains:** HMACed identity
+  subjects, device-bound sessions, recovery/tenant epochs and revision-checked
+  workload revocation are implemented. Real OIDC, secret-manager issuance and
+  operator recovery drills remain.
+- **TQ-904 — candidate done; operated-provider gate remains:** quotas,
+  expiring exports/backups, retention sweep, retryable deletion, restore,
+  credential-reference rotation, incidents, restricted support and
+  non-authoritative billing are implemented. Provider byte deletion,
+  backup/restore, rotation and on-call evidence remain.
+- **TQ-905 — candidate done; independent operations gate remains:** the
+  two-tenant hostile source matrix passes isolation, quota race, BFF,
+  revocation, reconciliation, rotation, backup/restore, retention and
+  deletion recovery. Exact deployed artifacts, real provider drills,
+  multi-region recovery and independent review remain.
+- **TQ-906 — pending independent review:** ADR-005 and TQ-612 are accepted,
+  but TQ-616 is not published-artifact certified and the current author cannot
+  independently approve their own authority boundary. Server reports effects
+  disabled, Cloud denies every `/effects` path and no remote dispatch
+  operation is registered. See
+  `../contracts/TQ-906_REMOTE_EFFECTS_REVIEW_GATE.md`.
 
 ## Definition of done
 
@@ -308,9 +423,11 @@ maintainer launch decision.
 
 ## Decisions still required
 
-ADR-005 is accepted and TQ-612 is published and certified. TQ-906
-remote effects still requires its own independent authority review and
-deployment evidence; completion trust does not grant effect authority.
+ADR-005 and ADR-009 are accepted. TQ-612 is published and certified;
+TQ-613–TQ-615 are implemented in source, while TQ-616 still requires protected
+published-artifact and unbriefed-agent evidence. TQ-906 remote effects requires
+its own independent authority review and deployment evidence; completion trust
+and a valid principal signature do not grant effect authority.
 
 ## Explicit non-goals
 

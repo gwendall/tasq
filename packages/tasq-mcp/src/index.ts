@@ -39,6 +39,7 @@ import {
   getEffect,
   getCompletionResolutionChain,
   getTasqDiscovery,
+  getSignedStatementProof,
   inspectCommitment,
   listCommitments,
   listCommitmentSummaries,
@@ -48,6 +49,7 @@ import {
   listResourceWorld,
   listEffects,
   listEvents,
+  listSignedStatementBindings,
   negotiateOnboarding,
   proposeEffect,
   proposeCompletion,
@@ -392,6 +394,28 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       tenantId: options.workspaceId,
       ...input,
     } as Parameters<typeof listEvents>[1]) })));
+
+    server.registerTool("tasq_signed_statement_get", {
+      description: "Inspect one exact accepted signed statement. A valid signature is proof over bytes, not truth, completion or authority.",
+      inputSchema: { statementId: Id },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
+    }, ({ statementId }) => guarded(async () => ({
+      proof: await getSignedStatementProof(options.db, statementId, options.workspaceId),
+    })));
+
+    server.registerTool("tasq_signed_statement_binding_list", {
+      description: "Inspect typed bindings from accepted signed statements to domain records without signing, accepting or mutating anything.",
+      inputSchema: {
+        recordType: z.string().trim().min(1).max(120).optional(),
+        recordId: Id.optional(),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
+    }, (input) => guarded(async () => ({
+      items: await listSignedStatementBindings(options.db, {
+        tenantId: options.workspaceId,
+        ...input,
+      }),
+    })));
 
     server.registerTool("tasq_resource_get", {
       description: "Inspect current or historical lease state for one opaque resource key.",

@@ -138,6 +138,43 @@ describe("createLocalTasq", () => {
     })).rejects.toThrow("workspaceId is required");
   });
 
+  test("paginates commitments losslessly when multiple rows share updatedAt", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tasq-local-cursor-"));
+    roots.push(root);
+    const client = await createLocalTasq({
+      url: `file:${join(root, "db.sqlite")}`,
+      workspaceId: "cursor/team",
+      actor: "agent:reader",
+      clock: createMutableClock(2_050_000_000_000),
+      wal: false,
+    });
+    try {
+      for (let index = 0; index < 5; index += 1) {
+        await client.commitments.create(
+          { title: `Commitment ${index}` },
+          { idempotencyKey: `cursor-create-${index}` },
+        );
+      }
+      const first = await client.commitments.list({ limit: 2 });
+      const second = await client.commitments.list({
+        limit: 2,
+        before: { updatedAt: first[1]!.updatedAt, id: first[1]!.id },
+      });
+      const third = await client.commitments.list({
+        limit: 2,
+        before: { updatedAt: second[1]!.updatedAt, id: second[1]!.id },
+      });
+      const all = [...first, ...second, ...third];
+      expect(all).toHaveLength(5);
+      expect(new Set(all.map(({ id }) => id)).size).toBe(5);
+      expect(all.map(({ id }) => id)).toEqual(
+        [...all].sort((left, right) => right.id.localeCompare(left.id)).map(({ id }) => id),
+      );
+    } finally {
+      await client.close();
+    }
+  });
+
   test("exposes the complete validated-completion chain to embedded applications", async () => {
     const root = await mkdtemp(join(tmpdir(), "tasq-local-resolution-"));
     roots.push(root);

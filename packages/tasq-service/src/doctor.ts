@@ -32,6 +32,14 @@ import {
   reconciliation,
   resolutionContract,
   validationDecision,
+  signedStatement,
+  signatureVerificationRecord,
+  signedStatementBinding,
+  signedStatementNonce,
+  acceptedSigningCredentialSnapshot,
+  AcceptedSigningCredentialSnapshotV1,
+  SignedStatementPayloadV1,
+  SignedStatementBundleV1,
   idempotencyKey,
   Effect as EffectZ,
   EffectApproval as EffectApprovalZ,
@@ -69,7 +77,7 @@ import {
 
 export interface DoctorIssue {
   code: string;
-  entityType?: "area" | "goal" | "project" | "task" | "summary" | "context_link" | "principal" | "assignment" | "relation" | "artifact" | "completion" | "resolution_contract" | "evidence_trust" | "completion_proposal" | "completion_challenge" | "validation_decision" | "external_ref" | "event" | "observation" | "reconciliation" | "extension" | "effect" | "effect_approval" | "effect_receipt" | "idempotency";
+  entityType?: "area" | "goal" | "project" | "task" | "summary" | "context_link" | "principal" | "assignment" | "relation" | "artifact" | "completion" | "resolution_contract" | "evidence_trust" | "completion_proposal" | "completion_challenge" | "validation_decision" | "external_ref" | "event" | "observation" | "reconciliation" | "extension" | "effect" | "effect_approval" | "effect_receipt" | "idempotency" | "signed_statement" | "signature_verification" | "signed_statement_binding" | "signing_credential_snapshot";
   entityId?: string;
   message: string;
 }
@@ -1290,6 +1298,111 @@ export async function diagnoseStore(
       }
     } else if (row.outcomeReceiptId != null) {
       issues.push(issue("effect_outcome_receipt_unexpected", "effect", row.id, `Effect ${row.id} references a receipt before an outcome state`));
+    }
+  }
+
+  const [statements, verifications, statementBindings, statementNonces, credentialSnapshots] = await Promise.all([
+    db.select().from(signedStatement).where(eq(signedStatement.tenantId, tenantId)),
+    db.select().from(signatureVerificationRecord).where(eq(signatureVerificationRecord.tenantId, tenantId)),
+    db.select().from(signedStatementBinding).where(eq(signedStatementBinding.tenantId, tenantId)),
+    db.select().from(signedStatementNonce).where(eq(signedStatementNonce.tenantId, tenantId)),
+    db.select().from(acceptedSigningCredentialSnapshot).where(
+      eq(acceptedSigningCredentialSnapshot.tenantId, tenantId),
+    ),
+  ]);
+  const statementById = new Map(statements.map((row) => [row.statementId, row]));
+  const verificationById = new Map(verifications.map((row) => [row.id, row]));
+  const credentialSnapshotByIdentity = new Map(
+    credentialSnapshots.map((row) => [`${row.credentialId}\u0000${row.credentialRevision}`, row]),
+  );
+  for (const row of credentialSnapshots) {
+    try {
+      const snapshot = AcceptedSigningCredentialSnapshotV1.parse({
+        contractVersion: "tasq.accepted-signing-credential-snapshot.v1",
+        workspaceId: row.tenantId,
+        credential: {
+          credentialId: row.credentialId,
+          workspaceId: row.tenantId,
+          principalId: row.principalId,
+          profileUri: row.profileUri,
+          profileVersion: row.profileVersion,
+          publicMaterial: JSON.parse(row.publicMaterialJson),
+          publicMaterialDigest: row.publicMaterialDigest,
+          trustRootDigest: row.trustRootDigest,
+          isolationClass: row.isolationClass,
+          status: row.statusAtAcceptance,
+          revision: row.credentialRevision,
+          validFrom: row.validFrom,
+          ...(row.expiresAt ? { expiresAt: row.expiresAt } : {}),
+          ...(row.replacesCredentialId
+            ? { replacesCredentialId: row.replacesCredentialId }
+            : {}),
+          enrollmentMethod: row.enrollmentMethod,
+          enrollmentEvidenceDigest: row.enrollmentEvidenceDigest,
+        },
+        credentialDigest: row.credentialDigest,
+        capturedAt: row.capturedAt,
+      });
+      if (canonicalizeEffectJson(snapshot.credential.publicMaterial as never) !== row.publicMaterialJson
+        || sha256Digest(row.publicMaterialJson) !== row.publicMaterialDigest
+        || sha256Digest(canonicalizeEffectJson(snapshot.credential as never)) !== row.credentialDigest) {
+        throw new Error("public material or credential digest drifted");
+      }
+    } catch (error) {
+      issues.push(issue(
+        "accepted_signing_credential_snapshot_invalid",
+        "signing_credential_snapshot",
+        `${row.credentialId}@${row.credentialRevision}`,
+        `Accepted signing credential snapshot is invalid: ${error instanceof Error ? error.message : String(error)}`,
+      ));
+    }
+  }
+  for (const row of statements) {
+    try {
+      const payload = SignedStatementPayloadV1.parse(JSON.parse(row.payloadJson));
+      const bundle = SignedStatementBundleV1.parse(JSON.parse(row.bundleJson));
+      if (canonicalizeEffectJson(payload as never) !== row.payloadJson ||
+        canonicalizeEffectJson(bundle as never) !== row.bundleJson ||
+        sha256Digest(row.payloadJson) !== row.payloadDigest ||
+        sha256Digest(row.bundleJson) !== row.bundleDigest ||
+        payload.statementId !== row.statementId || payload.workspaceId !== row.tenantId ||
+        payload.credentialId !== row.credentialId || payload.issuerPrincipalId !== row.issuerPrincipalId ||
+        payload.purpose.uri !== row.purposeUri || payload.purpose.version !== row.purposeVersion ||
+        payload.subject.typeUri !== row.subjectTypeUri || payload.subject.id !== row.subjectId ||
+        payload.subject.digest !== row.subjectDigest) {
+        throw new Error("canonical content, digest or decomposed identity drifted");
+      }
+    } catch (error) {
+      issues.push(issue("signed_statement_invalid", "signed_statement", row.statementId,
+        `Signed statement ${row.statementId} is invalid: ${error instanceof Error ? error.message : String(error)}`));
+    }
+  }
+  for (const row of verifications) {
+    const statement = statementById.get(row.statementId);
+    const credentialSnapshot = credentialSnapshotByIdentity.get(
+      `${row.credentialId}\u0000${row.credentialRevision}`,
+    );
+    if (!statement || statement.payloadDigest !== row.statementDigest ||
+      statement.bundleDigest !== row.bundleDigest || row.outcome !== "valid"
+      || !credentialSnapshot || credentialSnapshot.credentialDigest !== row.credentialDigest) {
+      issues.push(issue("signature_verification_binding_mismatch", "signature_verification", row.id,
+        `Verification ${row.id} does not bind one retained valid statement`));
+    }
+  }
+  for (const row of statementBindings) {
+    const statement = statementById.get(row.statementId);
+    const verification = verificationById.get(row.verificationId);
+    if (!statement || !verification || verification.statementId !== row.statementId ||
+      statement.subjectDigest !== row.recordDigest) {
+      issues.push(issue("signed_statement_binding_mismatch", "signed_statement_binding", row.id,
+        `Signed statement binding ${row.id} has incomplete or mismatched proof`));
+    }
+  }
+  for (const row of statementNonces) {
+    const statement = statementById.get(row.statementId);
+    if (!statement || statement.purposeUri !== row.purposeUri) {
+      issues.push(issue("signed_statement_nonce_mismatch", "signed_statement", row.statementId,
+        `Signed statement nonce ${row.nonce} does not bind its retained purpose`));
     }
   }
 

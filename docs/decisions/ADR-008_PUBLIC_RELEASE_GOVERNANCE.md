@@ -86,6 +86,12 @@ life-planning profile remain repository examples for the first release. Evals
 and clean-room fixtures remain release tooling. Promotion requires independent
 consumer demand, a support owner and its own compatibility gate.
 
+ADR-010 later accepts `packages/tasq-client` as the
+`@tasq-run/client` remote-client candidate. It is not part of the seven-package
+`v0.3.0` historical release and gains no registry support claim until a future
+protected release adds its package build, provenance, SBOM and clean-room
+runtime evidence.
+
 ### 2.4 Repository topology
 
 The project is a dedicated monorepo rooted at the repository root, not a view

@@ -95,6 +95,21 @@ export interface HostedReadWorkspace {
   }>;
 }
 
+/**
+ * Raised by a workspace adapter when an exclusive event cursor predates its
+ * retained history. The client must restart from `oldestSequence - 1` only
+ * after making the gap visible to its operator/policy.
+ */
+export class HostedCursorExpiredError extends Error {
+  readonly oldestSequence: number;
+
+  constructor(oldestSequence: number) {
+    super("event cursor expired");
+    this.name = "HostedCursorExpiredError";
+    this.oldestSequence = z.number().int().positive().parse(oldestSequence);
+  }
+}
+
 export interface CredentialVerificationInput {
   authorization: string;
   dpopProof: string | null;
@@ -409,7 +424,16 @@ function createHostedReadHandlerWithExtensions(
         items,
         nextSequence,
       }, 200, now);
-    } catch {
+    } catch (error) {
+      if (error instanceof HostedCursorExpiredError) {
+        return jsonResponse({
+          contractVersion: "tasq.hosted-problem.v1",
+          code: "cursor_expired",
+          requestId,
+          decisionId: routed.decision.decisionId,
+          oldestSequence: error.oldestSequence,
+        }, 410, now);
+      }
       return problem(500, "read_contract_violation", requestId, now, {}, routed.decision.decisionId);
     }
   };
@@ -451,7 +475,7 @@ const HostedMutationEnvelope = z.object({
   input: z.unknown(),
 }).strict();
 
-const HostedMutationOutcomeSchema = z.object({
+export const HostedMutationOutcomeSchema = z.object({
   contractVersion: z.literal("tasq.hosted-mutation-outcome.v1"),
   workspaceId: WorkspaceId,
   operationId: OperationId,
@@ -636,8 +660,8 @@ export function createHostedHttpHandler(options: HostedHttpOptions): (request: R
   }
   const registered = new Map(operations.map((operation) => {
     const action = getRegisteredAction(operation.actionUri);
-    if (!action || action.uri === ACTION_URIS["workspace.read"] || action.uri === ACTION_URIS["commitment.read"]
-      || action.uri === ACTION_URIS["replication.pull"]) {
+    if (!action || action.uri === ACTION_URIS["workspace.read"] ||
+      action.uri === ACTION_URIS["commitment.read"]) {
       throw new Error(`hosted mutation operation ${operation.id} does not map to a registered mutation action`);
     }
     return [operation.id, { operation: Object.freeze({ ...operation }), action }] as const;

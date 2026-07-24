@@ -2,6 +2,13 @@ import { createHash, randomUUID } from "node:crypto";
 import { chmodSync, existsSync, linkSync, mkdirSync, unlinkSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { createClient, type Client, type InValue } from "@libsql/client";
+import {
+  WorkspaceCheckpointV1,
+  canonicalizeEffectJson,
+  uuidv7,
+  type Metadata,
+  type WorkspaceCheckpointV1 as WorkspaceCheckpoint,
+} from "@tasq-run/schema";
 import { runMigrations, STORE_FORMAT_COMPATIBILITY } from "./migrations/index.js";
 import { verifyDatabaseFile, type DatabaseVerification } from "./db.js";
 
@@ -61,6 +68,12 @@ const PORTABLE_TABLES = [
   { name: "effect", scope: "tenant_id" },
   { name: "effect_approval", scope: "tenant_id" },
   { name: "effect_receipt", scope: "tenant_id" },
+  { name: "workspace_checkpoint", scope: "tenant_id" },
+  { name: "accepted_signing_credential_snapshot", scope: "tenant_id" },
+  { name: "signed_statement", scope: "tenant_id" },
+  { name: "signature_verification_record", scope: "tenant_id" },
+  { name: "signed_statement_nonce", scope: "tenant_id" },
+  { name: "signed_statement_binding", scope: "tenant_id" },
 ] as const;
 
 type PortableScalar = string | number | null;
@@ -93,6 +106,11 @@ export interface PortableExportOptions {
   maxBytes?: number;
 }
 
+export const PORTABLE_WORKSPACE_ROOT_URI =
+  "https://schemas.tasq.dev/checkpoints/portable-workspace-root/v1" as const;
+
+type PortableSqlClient = Pick<Client, "execute">;
+
 export interface PortableImportResult {
   target: string;
   workspaceId: string;
@@ -103,7 +121,7 @@ export interface PortableImportResult {
 
 /** Deterministic, bounded export of durable workspace-owned records. */
 export async function exportPortableStore(
-  client: Client,
+  client: PortableSqlClient,
   workspaceId: string,
   options: PortableExportOptions,
 ): Promise<PortableExportResult> {
@@ -135,6 +153,35 @@ export async function exportPortableStore(
     recordCount += rows.length;
     tables.push({ name: table.name, columns, rows });
   }
+  // Replication authority state is deliberately omitted from portable
+  // workspace exports. Its signed origin proof must travel with that authority
+  // log, never as a dangling proof-dependent binding in an otherwise valid
+  // portable workspace.
+  const bindingTable = tables.find(({ name }) => name === "signed_statement_binding")!;
+  const omittedStatementIds = new Set(bindingTable.rows
+    .filter((row) => row.record_type === "replication_operation")
+    .map((row) => String(row.statement_id)));
+  if (omittedStatementIds.size > 0) {
+    for (const table of tables) {
+      if (["signed_statement", "signature_verification_record", "signed_statement_nonce",
+        "signed_statement_binding"].includes(table.name)) {
+        table.rows = table.rows.filter((row) =>
+          !omittedStatementIds.has(String(row.statement_id)));
+      }
+    }
+    const retainedVerifications = tables
+      .find(({ name }) => name === "signature_verification_record")!.rows;
+    const retainedCredentialIdentities = new Set(retainedVerifications.map((row) =>
+      `${row.credential_id}\u0000${row.credential_revision}`));
+    const credentialTable = tables.find(
+      ({ name }) => name === "accepted_signing_credential_snapshot",
+    )!;
+    credentialTable.rows = credentialTable.rows.filter((row) =>
+      retainedCredentialIdentities.has(
+        `${row.credential_id}\u0000${row.credential_revision}`,
+      ));
+    recordCount = tables.reduce((sum, table) => sum + table.rows.length, 0);
+  }
   const eventTable = tables.find(({ name }) => name === "event")!;
   const eventSequences = eventTable.rows.map((row) => Number(row.sequence));
   const document: PortableExportDocument = {
@@ -157,6 +204,72 @@ export async function exportPortableStore(
     sizeBytes: bytes.byteLength,
     recordCount,
   };
+}
+
+/**
+ * Freeze one exact portable workspace root and cursor inside the same SQLite
+ * write transaction. The checkpoint is public evidence; external witnessing
+ * is still required for rollback-resistance claims.
+ */
+export async function createPortableWorkspaceCheckpoint(
+  client: Client,
+  input: {
+    workspaceId: string;
+    authorityEpoch: string;
+    createdByPrincipalId: string;
+    createdAt: number;
+    metadata?: Metadata;
+    id?: string;
+  },
+): Promise<WorkspaceCheckpoint> {
+  if (!input.workspaceId.trim() || !input.authorityEpoch.trim()
+    || !input.createdByPrincipalId.trim()) {
+    throw new Error("workspace checkpoint identities must not be blank");
+  }
+  const transaction = await client.transaction("write");
+  try {
+    const exported = await exportPortableStore(transaction, input.workspaceId, {
+      now: input.createdAt,
+    });
+    const checkpoint = WorkspaceCheckpointV1.parse({
+      contractVersion: "tasq.workspace-checkpoint.v1",
+      id: input.id ?? uuidv7(input.createdAt),
+      workspaceId: input.workspaceId,
+      authorityEpoch: input.authorityEpoch,
+      eventCursor: exported.document.eventOrdering.maxSequence,
+      rootContract: { uri: PORTABLE_WORKSPACE_ROOT_URI, version: 1 },
+      rootDigest: `sha256:${exported.sha256}`,
+      exportedRecordCount: exported.recordCount,
+      createdByPrincipalId: input.createdByPrincipalId,
+      createdAt: input.createdAt,
+      metadata: input.metadata ?? {},
+    });
+    await transaction.execute({
+      sql: `INSERT INTO workspace_checkpoint(
+              id, tenant_id, authority_epoch, event_cursor, root_contract_uri,
+              root_contract_version, root_digest, exported_record_count,
+              created_by_principal_id, created_at, metadata_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        checkpoint.id,
+        checkpoint.workspaceId,
+        checkpoint.authorityEpoch,
+        checkpoint.eventCursor,
+        checkpoint.rootContract.uri,
+        checkpoint.rootContract.version,
+        checkpoint.rootDigest,
+        checkpoint.exportedRecordCount,
+        checkpoint.createdByPrincipalId,
+        checkpoint.createdAt,
+        canonicalizeEffectJson(checkpoint.metadata as never),
+      ],
+    });
+    await transaction.commit();
+    return checkpoint;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
 }
 
 /** Validate the complete document before creating or mutating a target store. */
@@ -288,7 +401,7 @@ export async function importPortableStore(
   };
 }
 
-async function tableColumns(client: Client, table: string): Promise<string[]> {
+async function tableColumns(client: PortableSqlClient, table: string): Promise<string[]> {
   const result = await client.execute(`PRAGMA table_info(${identifier(table)})`);
   const columns = result.rows
     .sort((left, right) => Number(left["cid"]) - Number(right["cid"]))
@@ -297,7 +410,7 @@ async function tableColumns(client: Client, table: string): Promise<string[]> {
   return columns;
 }
 
-async function tableOrder(client: Client, table: string, fallback: string[]): Promise<string[]> {
+async function tableOrder(client: PortableSqlClient, table: string, fallback: string[]): Promise<string[]> {
   const result = await client.execute(`PRAGMA table_info(${identifier(table)})`);
   const primary = result.rows
     .filter((row) => Number(row["pk"]) > 0)

@@ -68,6 +68,7 @@ describe("UK-009 machine discovery", () => {
         "https://schemas.tasq.dev/capabilities/principals",
         "https://schemas.tasq.dev/capabilities/relations",
         "https://schemas.tasq.dev/capabilities/resource-leases",
+        "https://schemas.tasq.dev/capabilities/signed-statements",
         "https://schemas.tasq.dev/capabilities/spaces",
       ]);
       expect(first.cursors.map((cursor) => [cursor.uri, cursor.fields])).toEqual([

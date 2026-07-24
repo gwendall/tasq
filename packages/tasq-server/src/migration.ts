@@ -239,34 +239,217 @@ BEGIN SELECT RAISE(ABORT, 'authority eligibility cannot be deleted'); END;
 export const AUTHORITY_MIGRATION_DIGEST = `sha256:${createHash("sha256")
   .update(AUTHORITY_MIGRATION_SQL, "utf8").digest("hex")}`;
 
+export const ENROLLMENT_MIGRATION_NAME = "0002_remote_enrollment";
+
+export const ENROLLMENT_MIGRATION_SQL = `
+CREATE TABLE hosted_enrollment (
+  id TEXT PRIMARY KEY,
+  workspace_id TEXT NOT NULL REFERENCES hosted_workspace(workspace_id),
+  principal_id TEXT NOT NULL,
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  client_kind TEXT NOT NULL CHECK (client_kind IN ('human_device', 'workload_agent')),
+  token_digest TEXT NOT NULL UNIQUE,
+  action_upper_bound_json TEXT NOT NULL,
+  created_at INTEGER NOT NULL CHECK (created_at >= 0),
+  expires_at INTEGER NOT NULL CHECK (expires_at > created_at),
+  access_expires_at INTEGER NOT NULL CHECK (access_expires_at > created_at),
+  consumed_at INTEGER,
+  revoked_at INTEGER,
+  CHECK (NOT (consumed_at IS NOT NULL AND revoked_at IS NOT NULL)),
+  FOREIGN KEY (workspace_id, principal_id) REFERENCES authority_principal(workspace_id, id),
+  FOREIGN KEY (workspace_id, issuer, subject) REFERENCES subject_binding(workspace_id, issuer, subject)
+);
+
+CREATE TABLE hosted_access_credential (
+  id TEXT PRIMARY KEY,
+  enrollment_id TEXT NOT NULL UNIQUE REFERENCES hosted_enrollment(id),
+  workspace_id TEXT NOT NULL REFERENCES hosted_workspace(workspace_id),
+  principal_id TEXT NOT NULL,
+  issuer TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  client_kind TEXT NOT NULL CHECK (client_kind IN ('human_device', 'workload_agent')),
+  token_digest TEXT NOT NULL UNIQUE,
+  action_upper_bound_json TEXT NOT NULL,
+  issued_at INTEGER NOT NULL CHECK (issued_at >= 0),
+  expires_at INTEGER NOT NULL CHECK (expires_at > issued_at),
+  status TEXT NOT NULL CHECK (status IN ('active', 'revoked')),
+  revision INTEGER NOT NULL CHECK (revision > 0),
+  revoked_at INTEGER,
+  FOREIGN KEY (workspace_id, principal_id) REFERENCES authority_principal(workspace_id, id),
+  FOREIGN KEY (workspace_id, issuer, subject) REFERENCES subject_binding(workspace_id, issuer, subject),
+  CHECK ((status = 'active' AND revoked_at IS NULL) OR (status = 'revoked' AND revoked_at IS NOT NULL))
+);
+
+CREATE INDEX hosted_enrollment_workspace ON hosted_enrollment(workspace_id, expires_at);
+CREATE INDEX hosted_access_credential_lookup ON hosted_access_credential(token_digest, status);
+CREATE INDEX hosted_access_credential_workspace ON hosted_access_credential(workspace_id, status);
+
+CREATE TRIGGER hosted_enrollment_lifecycle BEFORE UPDATE ON hosted_enrollment
+WHEN NEW.id != OLD.id OR NEW.workspace_id != OLD.workspace_id OR NEW.principal_id != OLD.principal_id
+  OR NEW.issuer != OLD.issuer OR NEW.subject != OLD.subject OR NEW.client_kind != OLD.client_kind
+  OR NEW.token_digest != OLD.token_digest OR NEW.action_upper_bound_json != OLD.action_upper_bound_json
+  OR NEW.created_at != OLD.created_at OR NEW.expires_at != OLD.expires_at
+  OR NEW.access_expires_at != OLD.access_expires_at
+  OR (OLD.consumed_at IS NOT NULL AND NEW.consumed_at IS NOT OLD.consumed_at)
+  OR (OLD.revoked_at IS NOT NULL AND NEW.revoked_at IS NOT OLD.revoked_at)
+  OR (OLD.consumed_at IS NULL AND OLD.revoked_at IS NULL
+      AND NOT ((NEW.consumed_at IS NOT NULL AND NEW.revoked_at IS NULL)
+        OR (NEW.consumed_at IS NULL AND NEW.revoked_at IS NOT NULL)))
+BEGIN SELECT RAISE(ABORT, 'invalid enrollment lifecycle'); END;
+CREATE TRIGGER hosted_enrollment_no_delete BEFORE DELETE ON hosted_enrollment
+BEGIN SELECT RAISE(ABORT, 'enrollment records are retained'); END;
+CREATE TRIGGER hosted_access_credential_lifecycle BEFORE UPDATE ON hosted_access_credential
+WHEN NEW.id != OLD.id OR NEW.enrollment_id != OLD.enrollment_id OR NEW.workspace_id != OLD.workspace_id
+  OR NEW.principal_id != OLD.principal_id OR NEW.issuer != OLD.issuer OR NEW.subject != OLD.subject
+  OR NEW.client_kind != OLD.client_kind OR NEW.token_digest != OLD.token_digest
+  OR NEW.action_upper_bound_json != OLD.action_upper_bound_json OR NEW.issued_at != OLD.issued_at
+  OR NEW.expires_at != OLD.expires_at OR NEW.revision != OLD.revision + 1
+  OR OLD.status = 'revoked' OR NEW.status != 'revoked' OR NEW.revoked_at IS NULL
+BEGIN SELECT RAISE(ABORT, 'invalid access credential lifecycle'); END;
+CREATE TRIGGER hosted_access_credential_no_delete BEFORE DELETE ON hosted_access_credential
+BEGIN SELECT RAISE(ABORT, 'access credential records are retained'); END;
+`;
+
+export const ENROLLMENT_MIGRATION_DIGEST = `sha256:${createHash("sha256")
+  .update(ENROLLMENT_MIGRATION_SQL, "utf8").digest("hex")}`;
+
+export const SIGNING_CREDENTIAL_MIGRATION_NAME = "0003_signing_credentials";
+export const SIGNING_CREDENTIAL_MIGRATION_SQL = `
+CREATE TABLE signing_credential (
+  credential_id TEXT PRIMARY KEY,
+  workspace_id TEXT NOT NULL REFERENCES hosted_workspace(workspace_id),
+  principal_id TEXT NOT NULL,
+  profile_uri TEXT NOT NULL,
+  profile_version INTEGER NOT NULL CHECK (profile_version > 0),
+  public_material_json TEXT NOT NULL CHECK (json_valid(public_material_json)),
+  public_material_digest TEXT NOT NULL,
+  trust_root_digest TEXT NOT NULL,
+  isolation_class TEXT NOT NULL CHECK (isolation_class IN (
+    'shared_user_software','isolated_process','hardware','kms','webauthn','workload_identity'
+  )),
+  status TEXT NOT NULL CHECK (status IN ('pending','active','suspended','revoked','compromised','retired')),
+  revision INTEGER NOT NULL CHECK (revision > 0),
+  valid_from INTEGER NOT NULL CHECK (valid_from >= 0),
+  expires_at INTEGER,
+  replaces_credential_id TEXT REFERENCES signing_credential(credential_id),
+  replaced_by_credential_id TEXT REFERENCES signing_credential(credential_id),
+  enrollment_method TEXT NOT NULL,
+  enrollment_evidence_digest TEXT NOT NULL,
+  created_at INTEGER NOT NULL CHECK (created_at >= 0),
+  activated_at INTEGER,
+  suspended_at INTEGER,
+  revoked_at INTEGER,
+  compromised_at INTEGER,
+  retired_at INTEGER,
+  compromise_effective_at INTEGER,
+  FOREIGN KEY (workspace_id, principal_id) REFERENCES authority_principal(workspace_id, id),
+  CHECK (expires_at IS NULL OR expires_at > valid_from)
+);
+
+CREATE TABLE signing_credential_event (
+  sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_id TEXT NOT NULL UNIQUE,
+  credential_id TEXT NOT NULL REFERENCES signing_credential(credential_id),
+  workspace_id TEXT NOT NULL,
+  principal_id TEXT NOT NULL,
+  event_type TEXT NOT NULL CHECK (event_type IN (
+    'enrolled','activated','rotated','suspended','resumed','revoked','compromised','retired','recovered'
+  )),
+  prior_status TEXT,
+  next_status TEXT NOT NULL,
+  credential_revision INTEGER NOT NULL CHECK (credential_revision > 0),
+  occurred_at INTEGER NOT NULL CHECK (occurred_at >= 0),
+  actor_principal_id TEXT NOT NULL,
+  authority_decision_id TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  payload_json TEXT NOT NULL CHECK (json_valid(payload_json))
+);
+
+CREATE TABLE signing_credential_authorization_use (
+  authority_decision_id TEXT PRIMARY KEY REFERENCES authorization_decision(decision_id),
+  workspace_id TEXT NOT NULL,
+  credential_id TEXT NOT NULL,
+  operation_digest TEXT NOT NULL,
+  used_at INTEGER NOT NULL CHECK (used_at >= 0)
+);
+
+CREATE UNIQUE INDEX signing_credential_material_identity
+  ON signing_credential(workspace_id, profile_uri, profile_version, public_material_digest);
+CREATE INDEX signing_credential_principal
+  ON signing_credential(workspace_id, principal_id, status);
+CREATE INDEX signing_credential_event_order
+  ON signing_credential_event(workspace_id, sequence);
+CREATE INDEX signing_credential_authorization_workspace
+  ON signing_credential_authorization_use(workspace_id, used_at);
+
+CREATE TRIGGER signing_credential_lifecycle BEFORE UPDATE ON signing_credential
+WHEN NEW.credential_id != OLD.credential_id OR NEW.workspace_id != OLD.workspace_id
+  OR NEW.principal_id != OLD.principal_id OR NEW.profile_uri != OLD.profile_uri
+  OR NEW.profile_version != OLD.profile_version
+  OR NEW.public_material_json != OLD.public_material_json
+  OR NEW.public_material_digest != OLD.public_material_digest
+  OR NEW.trust_root_digest != OLD.trust_root_digest
+  OR NEW.isolation_class != OLD.isolation_class
+  OR NEW.valid_from != OLD.valid_from OR NEW.expires_at IS NOT OLD.expires_at
+  OR NEW.replaces_credential_id IS NOT OLD.replaces_credential_id
+  OR NEW.enrollment_method != OLD.enrollment_method
+  OR NEW.enrollment_evidence_digest != OLD.enrollment_evidence_digest
+  OR NEW.created_at != OLD.created_at OR NEW.revision != OLD.revision + 1
+  OR NOT (
+    (OLD.status = 'pending' AND NEW.status IN ('active','revoked'))
+    OR (OLD.status = 'active' AND NEW.status IN ('suspended','revoked','compromised','retired'))
+    OR (OLD.status = 'suspended' AND NEW.status IN ('active','revoked','compromised','retired'))
+  )
+BEGIN SELECT RAISE(ABORT, 'invalid signing credential lifecycle'); END;
+CREATE TRIGGER signing_credential_no_delete BEFORE DELETE ON signing_credential
+BEGIN SELECT RAISE(ABORT, 'signing credentials are retained'); END;
+CREATE TRIGGER signing_credential_event_no_update BEFORE UPDATE ON signing_credential_event
+BEGIN SELECT RAISE(ABORT, 'signing credential events are immutable'); END;
+CREATE TRIGGER signing_credential_event_no_delete BEFORE DELETE ON signing_credential_event
+BEGIN SELECT RAISE(ABORT, 'signing credential events are append-only'); END;
+CREATE TRIGGER signing_credential_authorization_use_no_update BEFORE UPDATE ON signing_credential_authorization_use
+BEGIN SELECT RAISE(ABORT, 'signing credential authority uses are immutable'); END;
+CREATE TRIGGER signing_credential_authorization_use_no_delete BEFORE DELETE ON signing_credential_authorization_use
+BEGIN SELECT RAISE(ABORT, 'signing credential authority uses are retained'); END;
+`;
+export const SIGNING_CREDENTIAL_MIGRATION_DIGEST = `sha256:${createHash("sha256")
+  .update(SIGNING_CREDENTIAL_MIGRATION_SQL, "utf8").digest("hex")}`;
+
 export async function migrateAuthorityStore(client: Client, appliedAt: number): Promise<void> {
   await client.execute(`CREATE TABLE IF NOT EXISTS authority_migration (
     name TEXT PRIMARY KEY,
     digest TEXT NOT NULL,
     applied_at INTEGER NOT NULL
   )`);
-  const transaction = await client.transaction("write");
-  try {
-    const existing = await transaction.execute({
-      sql: "SELECT digest FROM authority_migration WHERE name = ?",
-      args: [AUTHORITY_MIGRATION_NAME],
-    });
-    const found = existing.rows[0]?.["digest"];
-    if (found !== undefined) {
-      if (String(found) !== AUTHORITY_MIGRATION_DIGEST) {
-        throw new Error(`authority migration checksum mismatch for ${AUTHORITY_MIGRATION_NAME}`);
+  for (const migration of [
+    { name: AUTHORITY_MIGRATION_NAME, digest: AUTHORITY_MIGRATION_DIGEST, sql: AUTHORITY_MIGRATION_SQL },
+    { name: ENROLLMENT_MIGRATION_NAME, digest: ENROLLMENT_MIGRATION_DIGEST, sql: ENROLLMENT_MIGRATION_SQL },
+    { name: SIGNING_CREDENTIAL_MIGRATION_NAME, digest: SIGNING_CREDENTIAL_MIGRATION_DIGEST, sql: SIGNING_CREDENTIAL_MIGRATION_SQL },
+  ]) {
+    const transaction = await client.transaction("write");
+    try {
+      const existing = await transaction.execute({
+        sql: "SELECT digest FROM authority_migration WHERE name = ?",
+        args: [migration.name],
+      });
+      const found = existing.rows[0]?.["digest"];
+      if (found !== undefined) {
+        if (String(found) !== migration.digest) {
+          throw new Error(`authority migration checksum mismatch for ${migration.name}`);
+        }
+        await transaction.commit();
+        continue;
       }
+      await transaction.executeMultiple(migration.sql);
+      await transaction.execute({
+        sql: "INSERT INTO authority_migration(name, digest, applied_at) VALUES (?, ?, ?)",
+        args: [migration.name, migration.digest, appliedAt],
+      });
       await transaction.commit();
-      return;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-    await transaction.executeMultiple(AUTHORITY_MIGRATION_SQL);
-    await transaction.execute({
-      sql: "INSERT INTO authority_migration(name, digest, applied_at) VALUES (?, ?, ?)",
-      args: [AUTHORITY_MIGRATION_NAME, AUTHORITY_MIGRATION_DIGEST, appliedAt],
-    });
-    await transaction.commit();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
   }
 }

@@ -74,6 +74,8 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_resource_event_list",
       "tasq_resource_get",
       "tasq_resource_list",
+      "tasq_signed_statement_binding_list",
+      "tasq_signed_statement_get",
       "tasq_summary_current",
       "tasq_summary_get",
       "tasq_summary_list",
@@ -96,6 +98,14 @@ describe("Tasq MCP capability boundary", () => {
       contractVersion: "tasq.context-packet.v1",
       budget: { maxRecords: 3, maxTokens: 2_048, hardLimitSatisfied: true },
     });
+    expect(structured(await client.callTool({
+      name: "tasq_signed_statement_get",
+      arguments: { statementId: "missing-statement" },
+    }))).toEqual({ proof: null });
+    expect(structured(await client.callTool({
+      name: "tasq_signed_statement_binding_list",
+      arguments: { recordId: "missing-record" },
+    }))).toEqual({ items: [] });
     const hidden = await client.callTool({
       name: "tasq_commitment_create",
       arguments: { title: "Hidden mutation", idempotencyKey: "hidden-1" },

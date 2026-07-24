@@ -21,6 +21,7 @@ import type {
 
 export * from "./effects.js";
 export * from "./connector-conformance.js";
+export * from "./signed-statements.js";
 
 export interface MatchDecision {
   decision: ReconciliationDecision;

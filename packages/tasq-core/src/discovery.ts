@@ -121,6 +121,14 @@ const KERNEL_CAPABILITIES: readonly CapabilityDefinition[] = [
     list_decisions: "listValidationDecisions",
     inspect_chain: "getCompletionResolutionChain",
   } },
+  { name: "signed-statements", operations: {
+    accept_with_host_verifier: "acceptSignedStatement",
+    get: "getSignedStatement",
+    get_proof: "getSignedStatementProof",
+    get_binding: "getSignedStatementBinding",
+    list_bindings: "listSignedStatementBindings",
+    create_portable_workspace_checkpoint: "createPortableWorkspaceCheckpoint",
+  } },
   { name: "effects", operations: {
     propose: "proposeEffect", get: "getEffect", list: "listEffects",
     record_approval: "recordEffectApproval", get_approval: "getEffectApproval",

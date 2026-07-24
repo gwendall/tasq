@@ -2,7 +2,8 @@
 
 > **Status:** implemented and repository-certified — 2026-07-21
 > **Machine certificate:** `TQ-804_MUTATION_REST_CERTIFICATION.json`
-> **Deployable Server status:** not implemented
+> **Deployable Server status:** implemented later as the unpublished TQ-807
+> source candidate
 
 ## Outcome
 
@@ -12,10 +13,11 @@ input-contract digests; clients discover that state-free catalog, submit a
 bounded command with a mandatory idempotency key, authenticate, pass the live
 authority guard, and reach only the exact opaque workspace binding.
 
-Tasq intentionally bundles no domain operation adapter at this checkpoint.
+Tasq intentionally bundled no domain operation adapter at this checkpoint.
 The protocol and safety mechanism are universal; a host maps a registered
-operation to its own durable workspace implementation. A concrete Tasq Core
-composition, listener, verifier and deployable artifact remain later work.
+operation to its own durable workspace implementation. TQ-807 later added the
+concrete Core composition, listener, verifier and deployable container source
+candidate; publication and deployment evidence remain open.
 
 ## Why this is not called a cross-database ACID transaction
 

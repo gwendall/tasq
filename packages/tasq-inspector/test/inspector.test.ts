@@ -466,12 +466,47 @@ describe("Tasq read-only inspector handler", () => {
         completionProposals: [{ id: "completion-proposal-1", summary: injection }],
         completionChallenges: [{ id: "completion-challenge-1", explanation: injection }],
         validationDecisions: [{ id: "validation-decision-1", explanation: injection }],
+        signedStatementProofs: [{
+          statement: {
+            statementId: "statement-1",
+            purposeUri: injection,
+            purposeVersion: 1,
+            issuerPrincipalId: injection,
+            credentialId: "credential-1",
+            payloadDigest: "sha256:statement",
+            acceptedAt: 5,
+          },
+          verifications: [{
+            credentialStateAtVerification: "active",
+          }],
+          credentialSnapshot: {
+            credential: {
+              isolationClass: "isolated_process",
+              revision: 1,
+            },
+          },
+          bindings: [{
+            bindingKind: "artifact_authorship",
+            recordType: "artifact",
+            recordId: "artifact-1",
+            recordDigest: "sha256:artifact",
+            verificationId: "verification-1",
+            createdAt: 5,
+          }],
+          assurance: {
+            signature: "valid_at_acceptance",
+            currentCredentialState: "not_asserted_by_workspace_store",
+            semanticTruth: "not_asserted_by_signature",
+            authorization: "not_granted_by_signature",
+          },
+        }],
       } as unknown as CommitmentInspection;
       const html = renderCommitmentPage(snapshot);
       for (const id of [
         "wait-1", "observation-1", "reconciliation-1", "effect-1", "approval-1", "receipt-1",
         "resolution-contract-1", "evidence-trust-1", "completion-proposal-1",
         "completion-challenge-1", "validation-decision-1",
+        "statement-1", "verification-1",
       ]) {
         expect(html).toContain(id);
       }

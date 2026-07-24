@@ -246,15 +246,23 @@ context pointers with explicit pinned/floating semantics.
 - TQ-504 ships a read-first inspector only for workflow friction demonstrated
   by the existing CLI/MCP paths. It remains a sibling read surface, not a
   second state model or write path.
-- ADR-004/TQ-505 now defines authenticated remote principals, workspace
-  tenancy and hosted transport without claiming implementation. Local actor
-  labels remain attribution, not authentication.
+- ADR-004 defines authenticated remote principals, workspace tenancy and
+  hosted transport. TQ-801–TQ-813 now implement repository Server,
+  client/bridge and attention-loop source candidates without making them
+  published services. Local actor labels remain attribution, not
+  authentication.
+- ADR-009 and TQ-613–TQ-615 implement purpose-bound signed statements and
+  host-owned signing credentials as the portable authorship layer. Signature
+  verification, credential binding, authorization, validation and witnessed
+  presence remain separate. TQ-616 still requires protected downloaded
+  artifacts and an unbriefed-agent trial.
 
 ### Deliberately outside Tasq
 
 - model conversation/checkpoint storage;
 - generic workflow execution;
 - vector retrieval and autobiographical memory;
-- cryptographic signing implementation;
+- private-key custody, a generic arbitrary-byte signing oracle and a universal
+  public-key infrastructure;
 - connector-specific authorization enforcement;
 - a universal workflow-execution UI or provider-owned memory UI.

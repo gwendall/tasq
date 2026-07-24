@@ -83,7 +83,7 @@ TQ-607 continues as the stable-graduation gate.
 
 ### 2.3 Tasq Server
 
-The future self-hostable network composition:
+The self-hostable network composition:
 
 ```text
 authenticated REST + remote MCP + event stream + hosted console BFF
@@ -100,24 +100,41 @@ share the ADR-004 authentication, workspace routing and live authorization
 guard. A server is not created by binding the current inspector or stdio MCP
 to a public interface.
 
-**Current product state:** not implemented as a runnable product. TQ-801 and
+**Current product state:** implemented as a repository-certified source and
+local Linux container candidate, not yet a published image. TQ-801 and
 TQ-802 provide its private authority evaluator, durable control plane and
 opaque workspace router. TQ-803 provides a host-integrated Fetch handler for
-authenticated read-only REST. An integrator must still supply a conforming
-credential verifier, workspace reader, HTTPS listener and operations. This
-entrypoint therefore does not make Server a usable or self-hostable release.
-TQ-804 also supplies the registered mutation protocol and authority/domain
-serialization gate; the integrator supplies each durable idempotent operation
-implementation.
+authenticated read-only REST. TQ-804 supplies the registered mutation protocol
+and authority/domain serialization gate.
+TQ-805 supplies a stateless host-integrated Streamable HTTP MCP adapter over
+those same read and mutation handlers. It authenticates each exact MCP
+request, keeps workspace identity in the route, discards raw credentials
+before tool dispatch and performs a live guard decision for every tool call.
+TQ-809 supplies a Fetch-only remote TypeScript client source candidate,
+explicit `tasq remote` CLI profiles and one-use pre-provisioned enrollment
+backed by digest-only revocable opaque credentials. Repository tests prove
+two-client contention, exact replay, live revocation and REST/MCP cursor
+parity. The package is not in `v0.3.0`; no public endpoint, bundled operation
+adapter or published Server follows from TQ-809 alone. TQ-807 supplies the
+concrete RS256/opaque verifiers, Bun listener,
+Core operation adapter, durable receipt store, authenticated hosted Console,
+Docker/Compose deployment and operator backup/restore lifecycle. See
+`../contracts/TQ-807_DEPLOYABLE_SERVER.md` and `../../deploy/server/README.md`.
+Neither the Server image nor remote client is present in published `v0.3.0`.
 
 ### 2.4 Tasq Cloud
 
 A possible managed operation of Tasq Server. Cloud adds tenant lifecycle,
-service operations, billing/support and managed identity configuration. It
-does not create a proprietary domain model or alternate protocol truth.
+isolated provisioning, same-origin sessions, identity/recovery, quotas,
+export/delete, backup/restore, credential-reference rotation, incident and
+restricted support operations. It does not create a proprietary domain model
+or alternate protocol truth.
 
-**Current state:** not implemented and not required for the open-source local
-product to be useful.
+**Current state:** a private provider-neutral source candidate and hostile
+two-tenant test matrix are implemented. No managed deployment, public endpoint
+or availability claim exists. Real provider, secret-manager, multi-region,
+operations and independent security gates remain. The open-source local
+product does not depend on Cloud.
 
 ## 3. Current deliverables
 
@@ -136,10 +153,16 @@ product to be useful.
 | Extension SDK | `@tasq-run/extension-sdk@0.3.0` | Published and Node/Bun certified | Trusted in-process code; no provider authority |
 | Reference connectors | `@tasq-internal/reference-connectors` | Reference implementation | Not a supported first-party connector catalog |
 | Replication kernel | embedded service API | Implemented neutral projection | No packaged network transport or enrollment service |
+| Principal-signed statements | Core/service APIs plus Server credential authority | Repository-certified source candidate | TQ-616 protected downloaded-artifact and unbriefed-agent gate remains; signatures authenticate bytes/principal, not truth or authority |
 | Server authority foundation | `@tasq-internal/authority`, `@tasq-internal/server` | Implemented internally | No concrete verifier or deployable artifact |
 | REST handlers | `@tasq-internal/server` `createHostedReadHandler`, `createHostedHttpHandler` | Implemented; host integration required | Host supplies verifier, listener, readers and durable registered mutations |
-| Self-hosted server | none | Not implemented | No daemon, image, auth or operator contract |
-| Managed service | none | Not implemented | ADR-004 is design, not deployment |
+| Remote MCP handler | `@tasq-internal/server` `createHostedMcpHandler` | Implemented; host integration required | Stateless request/response adapter; no listener, concrete verifier or MCP session |
+| Remote TypeScript client | `@tasq-run/client` `createRemoteTasq` | Repository-certified source candidate; not published | Explicit endpoint/workspace/credential; no database or authority cache |
+| Remote CLI and enrollment | `tasq remote ...`; `createRemoteEnrollmentAuthority` | Repository-certified; host integration required | Private named profile and pre-provisioned one-use identity; no deployable endpoint |
+| Self-hosted server | `tasq-server`; Docker/Compose candidate | Repository-certified source candidate | No protected immutable public image or hosted endpoint |
+| Authenticated offline replication | Server `replication.enroll/push/pull` operations | Repository-certified source candidate | Published Server/client and clean-room multi-machine trial remain; live authority stays online-only |
+| Python remote client | `clients/python` | Repository-certified source candidate | Not published to PyPI; exact downloaded-wheel/Server-digest gate remains |
+| Managed service | `@tasq-internal/cloud-control-plane` | Private repository source candidate | No managed deployment; provider and independent operations/security gates remain; remote effects disabled |
 
 `PRODUCT_SURFACE_MATRIX.json` is the machine-readable version of this table.
 
@@ -272,12 +295,34 @@ implemented.
 
 **Need:** reach one shared authority over a network.
 
-**Path today:** none packaged. An integrator may embed Core and replication
-services, but that integration is not a supported Tasq Server.
+**Path today:** an integrator can host the guarded Fetch/MCP handlers, create
+pre-provisioned one-use enrollment and use the repository source candidate:
 
-**Support:** not implemented. Same workspace text on two isolated stores is
-not rendezvous. Setting an arbitrary database URL is not a remote support
-claim.
+```bash
+export TASQ_ENROLLMENT_TOKEN='<one-use secret>'
+tasq remote enroll --endpoint https://server.example/ \
+  --workspace operations/alpha --profile machine-a
+tasq remote list --profile machine-a --json
+```
+
+TypeScript runtimes use `createRemoteTasq` with the same explicit endpoint,
+workspace and opaque credential. Every operation still crosses live Server
+authorization; clients receive no database credential and keep no authority
+cache.
+
+**Support:** repository-certified as a remote client plus deployable Server
+container candidate, not yet a published remote product. `@tasq-run/client`,
+the remote CLI additions and Server image are absent from current published
+`v0.3.0`. Same workspace text on two isolated stores remains non-rendezvous,
+and setting an arbitrary database URL is not remote support.
+
+Purpose-bound signed statements are implemented in the repository source
+candidate under accepted ADR-009. They make exact authorship or approval
+portable across transports without replacing authenticated enrollment, live
+authorization, evidence validation or the Server authority. Local Core, CLI,
+MCP and Console projections accept and inspect them; authenticated replication
+requires a signed origin for every pushed operation. Public support remains
+blocked on TQ-616's exact downloaded-artifact and unbriefed-agent gate.
 
 ### 4.10 Prospective adopter or evaluator
 
@@ -325,8 +370,8 @@ actor identity, credential or effect authority.
 | Long external wait | Excellent | Ready through typed extensions | Production watcher |
 | Personal planning | Optional profile fit | Existing reference use | Friendly UI and packaging |
 | Customer support workflow | Good | Integration required | Domain extension and connector |
-| Cross-device/offline work | Good neutral projection | Kernel implemented | Authenticated transport and operator product |
-| Multi-user remote team | Good target | Not implemented | Tasq Server and ADR-004 implementation |
+| Cross-device/offline work | Good neutral projection | Authenticated source candidate | Published Server/client and operator product |
+| Multi-user remote team | Good target | Authenticated source candidate | Published and operated Tasq Server/Cloud |
 
 ## 6. Support vocabulary
 
@@ -380,15 +425,14 @@ deploy -> configure issuer -> create workspace -> bind principal -> grant
        -> connect REST/MCP/web -> revoke/rotate -> backup/restore -> upgrade
 ```
 
-No deployable step in that second journey is currently advertised as
-implemented. TQ-801/TQ-802 implement the internal identity/authority contracts,
-store and router. TQ-803/TQ-804 add read and registered mutation handlers that
-a host may integrate, but do not expose deployment, concrete issuer
-configuration or a running connection surface.
+The repository now contains a deployable Server/container candidate and remote
+client journeys through TQ-801–TQ-810. They are advertised only as source
+candidates: no protected Server image, public endpoint, npm remote client or
+Python wheel is shipped, and no operator support claim exists.
 
 ## 9. Documentation contract
 
-The future public site information architecture is organized by consumer, not
+The public site information architecture is organized by consumer, not
 implementation chronology:
 
 ```text
@@ -397,7 +441,7 @@ getting-started install, workspace, first agent, Local Console
 agents/         CLI, MCP, cursors, contention, recovery
 sdk/            Core, runtime adapters, extensions, connectors
 operators/      storage, backup, monitoring, security, replication
-self-hosting/   explicitly future until Tasq Server ships
+self-hosting/   source-candidate contract; supported only after Server ships
 reference/      contracts, CLI, schemas, ADRs and historical TQ evidence
 ```
 

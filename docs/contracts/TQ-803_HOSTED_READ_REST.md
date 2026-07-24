@@ -2,7 +2,8 @@
 
 > **Status:** implemented and repository-certified — 2026-07-21  
 > **Machine certificate:** `TQ-803_READ_REST_CERTIFICATION.json`  
-> **Deployable Server status:** not implemented
+> **Deployable Server status:** implemented later as the unpublished TQ-807
+> source candidate
 
 ## Outcome
 
@@ -12,10 +13,10 @@ metadata, verifies credentials through an explicit host adapter, calls the
 live TQ-802 authority guard, and opens only the exact authorized workspace
 binding.
 
-This is the first remote-protocol implementation, but it is not yet a runnable
-Tasq Server. There is deliberately no listener, TLS stack, concrete
-OIDC/JWKS/introspection implementation, mutation route, remote MCP transport,
-deployment image or operational lifecycle.
+This was the first remote-protocol implementation and intentionally contained
+no listener, TLS stack, concrete verifier, mutation route, remote MCP transport
+or deployment lifecycle. TQ-804–TQ-809 now compose those outer source
+candidate layers; they remain unpublished and undeployed.
 
 ## Host contract
 

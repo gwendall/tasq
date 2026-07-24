@@ -86,6 +86,13 @@
       "firstRelease": true
     },
     {
+      "source": "packages/tasq-client",
+      "publicName": "@tasq-run/client",
+      "tier": "public-candidate-not-published",
+      "firstRelease": false,
+      "decision": "docs/decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md"
+    },
+    {
       "source": "packages/tasq-filesystem-watcher",
       "publicName": null,
       "tier": "repository-example",
@@ -146,7 +153,8 @@
       "@tasq-run/cli": ["bun>=1.3"],
       "@tasq-run/mcp": ["bun>=1.3"],
       "@tasq-run/protocol-adapters": ["bun>=1.3"],
-      "@tasq-run/console": ["bun>=1.3"]
+      "@tasq-run/console": ["bun>=1.3"],
+      "@tasq-run/client": ["candidate-bun>=1.3", "candidate-node>=22", "not-yet-published-or-clean-room-certified"]
     },
     "nodeSupport": "certified-for-compiled-core-schema-extension-sdk-only"
   },

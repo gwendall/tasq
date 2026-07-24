@@ -264,14 +264,14 @@ export const docPages: DocPage[] = [
       {
         title: "Current product shapes",
         body: [
-          "Core is implemented for integrator-owned embedding. Local is the most complete composition. Server and Cloud remain future product shapes.",
+          "Core is implemented for integrator-owned embedding. Local is the complete published composition. Server and Cloud have repository-certified source candidates, but no protected Server image, public endpoint or managed deployment is shipped.",
         ],
       },
       {
         title: "The publication gate",
         body: [
           published
-            ? `Tasq Local ${releaseVersion} is publicly distributed as a protected alpha with scoped npm packages, checksummed native artifacts and repository-bound provenance. Server, remote MCP, hosted Console and Cloud remain unavailable.`
+            ? `Tasq Local ${releaseVersion} is publicly distributed as a protected alpha with scoped npm packages, checksummed native artifacts and repository-bound provenance. Server, remote clients, hosted Console and Cloud remain unavailable even though their source candidates are visible.`
             : "Generated release truth currently withholds package and download coordinates. The canonical source remains public; build from source and inspect /adopt.json instead of guessing an install path.",
         ],
       },

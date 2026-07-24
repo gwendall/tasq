@@ -61,6 +61,8 @@ import { webCmd } from "./commands/web.js";
 import { portableExportCmd, portableImportCmd } from "./commands/portable.js";
 import { agentCmd, demoCmd, setupCmd } from "./commands/adoption.js";
 import { resolutionCmd } from "./commands/resolution.js";
+import { remoteCmd } from "./commands/remote.js";
+import { signatureCmd } from "./commands/signature.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -76,6 +78,11 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     onboard: ["space", "capabilities"],
     resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
     mcp: ["capabilities"],
+    remote: [
+      "profile", "endpoint", "workspace", "token", "replace", "cursor", "limit",
+      "after-sequence", "resource-kind", "resource-id", "input", "idempotency-key",
+      "expected-revision", "request-id",
+    ],
     web: ["host", "port"],
     config: [],
     area: ["slug", "importance", "cadence", "description", "name", "cascade"],
@@ -120,6 +127,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "at", "limit", "expected-revision", "idempotency-key"],
     evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
     resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
+    signature: [],
     wait: ["kind", "parameters", "schema-version", "not-before", "deadline", "fallback-kind", "fallback-spec", "fallback-task", "supersedes", "idempotency-key", "status", "reason", "at", "matcher-version", "limit", "ascending"],
     observation: ["source", "external-event-id", "kind", "payload", "schema-version", "occurred-at", "verification-level", "verification-method", "raw-ref", "digest", "metadata", "occurred-from", "occurred-to", "after-recorded-at", "after-id", "limit", "ascending"],
     reconcile: ["matcher-version", "observation", "decision", "effect", "limit", "ascending"],
@@ -193,6 +201,8 @@ ${color.bold("AGENT COORDINATION")}
   attempt succeed|fail <id>      close an execution attempt
   evidence add <id> --kind ...   attach an observable receipt
   evidence list [<id>]           inspect completion evidence
+  signature show <id>            inspect exact accepted signed proof
+  signature bindings [record]    inspect typed proof bindings (read-only)
   resolution contract|trust|propose|challenge|attest|settle|adjudicate|show
                                  independently validate completion
   resource acquire|renew|release|verify|get|list|events|sweep
@@ -203,6 +213,16 @@ ${color.bold("AGENT COORDINATION")}
                                  explicit foreground read-only Local Console
   web status --tenant <space> --json
                                  prove a registered Console listener is live
+
+${color.bold("REMOTE SERVER")}
+  remote enroll --endpoint <https-url> --workspace <id> [--profile <name>]
+                                 redeem TASQ_ENROLLMENT_TOKEN into a private profile
+  remote status [--profile <name>]
+  remote list|show|events|operations [--profile <name>] [--json]
+  remote call <operation> --resource-kind <kind> --resource-id <id>
+              --input <json> --idempotency-key <key> [--expected-revision <n>]
+  remote logout [--profile <name>]
+                                 remove local credentials; server revocation is separate
 
 ${color.bold("WAIT / OBSERVE / RECONCILE")}
   wait create <task> --kind <kind> --parameters <json> [--deadline <iso>]
@@ -336,6 +356,8 @@ export async function main(
         return await resourceCmd(args, clock);
       case "mcp":
         return await mcpCmd(args, clock);
+      case "remote":
+        return await remoteCmd(args, clock);
       case "web":
         return await webCmd(args, clock, undefined, VERSION);
       case "config":
@@ -435,6 +457,8 @@ export async function main(
         return await evidenceCmd(args);
       case "resolution":
         return await resolutionCmd(args, clock);
+      case "signature":
+        return await signatureCmd(args);
       case "wait":
         return await waitCmd(args);
       case "observation":

@@ -1,0 +1,48 @@
+{
+  "contractVersion": "tasq.server-config.v1",
+  "publicUrl": "https://tasks.example.com/",
+  "listen": {
+    "host": "0.0.0.0",
+    "port": 8787,
+    "trustTlsProxy": true
+  },
+  "authorityDatabaseUrl": "file:/var/lib/tasq/authority.sqlite",
+  "hostTenantId": "self-host",
+  "enrollment": {
+    "issuer": "https://tasks.example.com/",
+    "accessLifetimeMs": 2592000000
+  },
+  "jwt": {
+    "issuer": "https://identity.example.com/",
+    "audience": "https://tasks.example.com/",
+    "keys": [
+      {
+        "kid": "replace-with-your-key-id",
+        "jwk": {
+          "kty": "RSA",
+          "n": "replace-with-your-base64url-modulus",
+          "e": "AQAB",
+          "alg": "RS256",
+          "use": "sig"
+        }
+      }
+    ],
+    "scopeActions": {
+      "tasq:read": "reader",
+      "tasq:coordinate": "coordinator"
+    },
+    "clockSkewMs": 30000
+  },
+  "additionalJwtIssuers": [],
+  "workspaces": [
+    {
+      "id": "team/main",
+      "storageBindingId": "workspace-main",
+      "databaseUrl": "file:/var/lib/tasq/team-main.sqlite",
+      "receiptDatabaseUrl": "file:/var/lib/tasq/team-main-receipts.sqlite"
+    }
+  ],
+  "support": {
+    "documentationUrl": "https://tasq.run/docs"
+  }
+}

@@ -214,6 +214,7 @@ export {
 export {
   PORTABLE_EXPORT_CONTRACT_VERSION,
   PORTABLE_EXPORT_OMISSIONS,
+  createPortableWorkspaceCheckpoint,
   exportPortableStore,
   validatePortableExport,
   importPortableStore,
@@ -256,6 +257,7 @@ export type {
 
 // ADR-003 explicit operation/snapshot replication.
 export * from "./service/replication.js";
+export * from "./service/signed-statements.js";
 
 export {
   ensureDeliverySink,

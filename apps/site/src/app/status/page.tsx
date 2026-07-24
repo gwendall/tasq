@@ -69,7 +69,7 @@ export default function StatusPage() {
         </div>
 
         <section className="mt-16">
-          <div className="section-intro"><div><p className="eyebrow">Surfaces</p><h2>Every way in.<br />Every boundary visible.</h2></div><p>Agents consume machine contracts. Humans use CLI, projections and Console. Remote consumers have no supported path until Server exists.</p></div>
+          <div className="section-intro"><div><p className="eyebrow">Surfaces</p><h2>Every way in.<br />Every boundary visible.</h2></div><p>Agents consume machine contracts. Humans use CLI, projections and Console. Remote paths exist as source candidates, but are unsupported until their exact Server and Cloud artifacts pass the external gates.</p></div>
           <div className="mt-10 overflow-x-auto border border-[var(--line-strong)]">
             <table className="product-table">
               <thead><tr><th>Surface</th><th>Status</th><th>Transport</th><th>Entrypoint</th><th>Writes</th></tr></thead>

@@ -1,0 +1,59 @@
+{
+  "contractVersion": "tasq.hosted-remote-mcp-certification.v1",
+  "status": "certified",
+  "updatedAt": "2026-07-24",
+  "backlogItem": "TQ-805",
+  "package": "@tasq-internal/server",
+  "implementationDigest": "sha256:d3d4188c1fafa0579e7bd67e10aa33270bb0751a7590b6d3eb36146f99ee3521",
+  "implementedSurface": "host_integrated_stateless_streamable_http_mcp_handler",
+  "transport": {
+    "protocol": "MCP Streamable HTTP",
+    "mode": "stateless_json_response",
+    "methods": [
+      "POST"
+    ],
+    "durableResume": "Tasq event sequence cursor",
+    "mcpSessions": false,
+    "serverInitiatedNotifications": false
+  },
+  "certifiedProperties": [
+    "official_mcp_client_initialization",
+    "authenticated_exact_mcp_request_before_json_rpc",
+    "raw_credential_absent_from_tool_callbacks_results_and_authority_audit",
+    "one_injected_clock_snapshot_per_http_request",
+    "same_tq803_read_handler",
+    "same_tq804_mutation_handler",
+    "exclusive_event_cursor_query_maps_to_tq803_after_parameter",
+    "same_live_adr004_router_and_guard",
+    "state_free_operation_catalog_parity",
+    "collision_free_dynamic_operation_tools",
+    "required_idempotency_and_exact_replay",
+    "semantic_request_conflict_detection",
+    "immediate_revocation_on_next_call",
+    "foreign_workspace_never_opened",
+    "bounded_structured_tool_errors"
+  ],
+  "tools": {
+    "reads": [
+      "tasq_commitment_get",
+      "tasq_commitment_list",
+      "tasq_event_list",
+      "tasq_operation_list"
+    ],
+    "mutations": "one tasq_operation_* tool per registered TQ-804 operation"
+  },
+  "deployableServer": false,
+  "concreteCredentialAdapters": [],
+  "excludedLayers": [
+    "network_listener",
+    "tls_termination",
+    "concrete_oidc_verifier",
+    "bundled_domain_operation_adapter",
+    "stateful_mcp_session",
+    "server_initiated_mcp_notification",
+    "hosted_console",
+    "replication_transport",
+    "deployable_server"
+  ],
+  "tq805Complete": true
+}

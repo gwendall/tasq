@@ -58,6 +58,11 @@ import {
   type ReplicationSnapshotPageItem as ReplicationSnapshotPageItemT,
   type Task,
 } from "@tasq-run/schema";
+import {
+  SIGNED_STATEMENT_PURPOSES,
+  persistPreparedSignedStatementAcceptance,
+  type PreparedSignedStatementAcceptance,
+} from "./signed-statements.js";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction, runOperationalTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";
@@ -167,10 +172,13 @@ export interface RegisterReplicationReplicaOptions {
   workspaceId: string;
   replicaId: string;
   generationId: string;
+  /** Authenticated principal permanently owning this generation. */
+  principalId: string;
   clock: Clock;
 }
 
-export interface InitializeLocalReplicaOptions extends RegisterReplicationReplicaOptions {
+export interface InitializeLocalReplicaOptions
+  extends Omit<RegisterReplicationReplicaOptions, "principalId"> {
   authorityReplicaId: string;
   authorityEpoch: string;
   observedSequence?: number;
@@ -192,8 +200,15 @@ export interface QueueReplicationResult {
 export interface AcceptReplicationOptions {
   authenticatedReplicaId: string;
   authenticatedPrincipalId: string;
+  /** Optional existing workspace-ledger principal used only for event attribution. */
+  domainPrincipalId?: string;
   actor: string;
   clock: Clock;
+  /**
+   * Optional host-verified origin proofs. Server requires exactly one per
+   * operation; legacy in-process Core composition may remain unsigned.
+   */
+  signedOrigins?: readonly PreparedSignedStatementAcceptance[];
 }
 
 export interface PullReplicationOptions {
@@ -202,6 +217,7 @@ export interface PullReplicationOptions {
   generationId: string;
   /** Identity already authenticated by the transport/host boundary. */
   authenticatedReplicaId: string;
+  authenticatedPrincipalId: string;
   cursor?: string | null;
   limit?: number;
   clock: Clock;
@@ -464,15 +480,32 @@ export async function registerReplicationReplica(
   assertWorkspaceId(options.workspaceId);
   UuidV7.parse(options.replicaId);
   UuidV7.parse(options.generationId);
+  assertNonBlank(options.principalId, "principalId");
   const now = clockSnapshot(options.clock);
   await runOperationalTransaction(db, async (tx) => {
     await requireAuthority(tx, options.workspaceId);
+    const identityRows = await tx.select().from(replicationReplica).where(and(
+      eq(replicationReplica.workspaceId, options.workspaceId),
+      eq(replicationReplica.replicaId, options.replicaId),
+    )).limit(1);
+    if (identityRows[0] && identityRows[0].principalId !== options.principalId) {
+      throw new ReplicationProtocolError(
+        "unauthenticated_origin",
+        "Replica identity is already bound to another principal",
+      );
+    }
     const rows = await tx.select().from(replicationReplica).where(and(
       eq(replicationReplica.workspaceId, options.workspaceId),
       eq(replicationReplica.replicaId, options.replicaId),
       eq(replicationReplica.generationId, options.generationId),
     )).limit(1);
     if (rows[0]) {
+      if (rows[0].principalId !== options.principalId) {
+        throw new ReplicationProtocolError(
+          "unauthenticated_origin",
+          "Replica generation belongs to another principal",
+        );
+      }
       if (rows[0].status === "revoked") {
         throw new ReplicationProtocolError("replica_revoked", "A revoked replica generation cannot re-register");
       }
@@ -494,6 +527,7 @@ export async function registerReplicationReplica(
       workspaceId: options.workspaceId,
       replicaId: options.replicaId,
       generationId: options.generationId,
+      principalId: options.principalId,
       status: "active",
       acceptedCounter: 0,
       acceptedDigest: null,
@@ -907,7 +941,9 @@ function conflictFromRow(row: typeof replicationConflict.$inferSelect): Replicat
 async function acceptOneOperation(
   db: TasqDb,
   operation: ReplicationOperationT,
-  options: AcceptReplicationOptions,
+  options: AcceptReplicationOptions & {
+    signedOrigin?: PreparedSignedStatementAcceptance;
+  },
 ): Promise<ReplicationOperationResultT> {
   const now = clockSnapshot(options.clock);
   const { result, events } = await runInTransaction(db, async (tx) => {
@@ -927,6 +963,12 @@ async function acceptOneOperation(
     const registration = registrations[0];
     if (!registration) {
       throw new ReplicationProtocolError("replica_not_registered", "Replica generation is not registered");
+    }
+    if (registration.principalId !== options.authenticatedPrincipalId) {
+      throw new ReplicationProtocolError(
+        "unauthenticated_origin",
+        "Authenticated principal does not own this replica generation",
+      );
     }
     if (registration.status === "revoked") {
       throw new ReplicationProtocolError("replica_revoked", "Replica generation is revoked");
@@ -951,6 +993,14 @@ async function acceptOneOperation(
         eq(replicationReplica.replicaId, operation.origin.replicaId),
         eq(replicationReplica.generationId, operation.origin.generationId),
       ));
+      if (options.signedOrigin) {
+        await persistPreparedSignedStatementAcceptance(tx, options.signedOrigin, {
+          bindingKind: "replication_operation_origin",
+          recordType: "replication_operation",
+          recordId: operation.operationDigest,
+          recordDigest: operation.operationDigest as `sha256:${string}`,
+        });
+      }
       return {
         result: ReplicationOperationResult.parse(JSON.parse(prior.resultJson)),
         events: [] as Event[],
@@ -1024,7 +1074,7 @@ async function acceptOneOperation(
     } else {
       const applied = await applyCommandInTransaction(tx, operation.workspaceId, operation.command, {
         actor: options.actor,
-        principalId: options.authenticatedPrincipalId,
+        principalId: options.domainPrincipalId ?? options.authenticatedPrincipalId,
         // Client occurredAt is descriptive only. Authority recording time,
         // tombstones and retention always come from the injected authority clock.
         now,
@@ -1060,6 +1110,14 @@ async function acceptOneOperation(
       resultJson: replicationCanonicalJson(acceptedResult),
       recordedAt: now,
     });
+    if (options.signedOrigin) {
+      await persistPreparedSignedStatementAcceptance(tx, options.signedOrigin, {
+        bindingKind: "replication_operation_origin",
+        recordType: "replication_operation",
+        recordId: operation.operationDigest,
+        recordDigest: operation.operationDigest as `sha256:${string}`,
+      });
+    }
     await tx.update(replicationAuthority).set({ currentSequence: sequence, updatedAt: now })
       .where(eq(replicationAuthority.workspaceId, operation.workspaceId));
     await tx.update(replicationReplica).set({
@@ -1094,6 +1152,24 @@ export async function acceptReplicationPush(
   if (request.replicaId !== options.authenticatedReplicaId) {
     throw new ReplicationProtocolError("unauthenticated_origin", "Authenticated replica does not match push origin");
   }
+  const signedOrigins = new Map(
+    (options.signedOrigins ?? []).map((origin) => [
+      origin.payload.subject.id,
+      origin,
+    ]),
+  );
+  if (signedOrigins.size !== (options.signedOrigins?.length ?? 0)) {
+    throw new ReplicationProtocolError(
+      "identity_corruption",
+      "Signed replication origin identities must be unique",
+    );
+  }
+  if (options.signedOrigins && options.signedOrigins.length !== request.operations.length) {
+    throw new ReplicationProtocolError(
+      "unauthenticated_origin",
+      "Signed replication mode requires exactly one origin proof per operation",
+    );
+  }
   for (const [index, operation] of request.operations.entries()) {
     if (operation.workspaceId !== request.workspaceId ||
       operation.origin.replicaId !== request.replicaId ||
@@ -1103,6 +1179,16 @@ export async function acceptReplicationPush(
     if (operation.caller.principalId !== options.authenticatedPrincipalId) {
       throw new ReplicationProtocolError("unauthenticated_origin", `Operation ${index} principal is not authenticated`);
     }
+    const origin = signedOrigins.get(operation.operationDigest);
+    if (options.signedOrigins && (!origin ||
+      origin.payload.purpose.uri !== SIGNED_STATEMENT_PURPOSES.replication_operation_origin ||
+      origin.payload.subject.digest !== operation.operationDigest ||
+      origin.payload.issuerPrincipalId !== options.authenticatedPrincipalId)) {
+      throw new ReplicationProtocolError(
+        "unauthenticated_origin",
+        `Operation ${index} lacks an exact signer/transport-bound origin proof`,
+      );
+    }
     if (Buffer.byteLength(replicationCanonicalJson(operation), "utf8") > REPLICATION_LIMITS.operationBytes) {
       throw new ReplicationProtocolError("payload_too_large", `Operation ${index} exceeds 1 MiB`);
     }
@@ -1110,7 +1196,10 @@ export async function acceptReplicationPush(
   }
   const results: ReplicationOperationResultT[] = [];
   for (const operation of request.operations) {
-    results.push(await acceptOneOperation(db, operation, options));
+    results.push(await acceptOneOperation(db, operation, {
+      ...options,
+      signedOrigin: signedOrigins.get(operation.operationDigest),
+    }));
   }
   const authority = await getReplicationAuthority(db, request.workspaceId);
   if (!authority) throw new ReplicationProtocolError("authority_not_initialized", "Authority disappeared");
@@ -1344,6 +1433,7 @@ export async function pullReplication(
   UuidV7.parse(options.replicaId);
   UuidV7.parse(options.generationId);
   UuidV7.parse(options.authenticatedReplicaId);
+  assertNonBlank(options.authenticatedPrincipalId, "authenticatedPrincipalId");
   if (options.replicaId !== options.authenticatedReplicaId) {
     throw new ReplicationProtocolError(
       "unauthenticated_origin",
@@ -1364,6 +1454,12 @@ export async function pullReplication(
     )).limit(1);
     const registration = registrations[0];
     if (!registration) throw new ReplicationProtocolError("replica_not_registered", "Replica generation is not registered");
+    if (registration.principalId !== options.authenticatedPrincipalId) {
+      throw new ReplicationProtocolError(
+        "unauthenticated_origin",
+        "Authenticated principal does not own the requested replica generation",
+      );
+    }
     if (registration.status === "revoked") throw new ReplicationProtocolError("replica_revoked", "Replica is revoked");
     if (registration.status === "stale" ||
       now - registration.lastContactAt > REPLICATION_RETENTION.activeReplicaMs) {

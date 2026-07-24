@@ -142,10 +142,10 @@ describe("CLI meta commands", () => {
       contractVersion: "tasq.executable-version.v1",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 26,
-        readable: { min: 26, max: 26 },
-        writable: { min: 26, max: 26 },
-        directlyMigratable: { min: 0, max: 26 },
+        current: 28,
+        readable: { min: 28, max: 28 },
+        writable: { min: 28, max: 28 },
+        directlyMigratable: { min: 0, max: 28 },
         irreversible: true,
       },
     });
@@ -245,6 +245,26 @@ describe("CLI meta commands", () => {
     await runOk(home, ["init"]);
     const r = await runOk(home, ["next", "--json"]);
     expect(JSON.parse(r.stdout)).toEqual([]);
+  });
+});
+
+describe("signed statement inspection", () => {
+  it("keeps signing and acceptance unavailable while exposing read-only proof queries", async () => {
+    const home = await freshHome();
+    const listed = await runOk(home, [
+      "signature", "bindings", "--tenant", "proof/test", "--actor", "reader", "--json",
+    ]);
+    expect(JSON.parse(listed.stdout)).toEqual([]);
+    const missing = await runCli(home, [
+      "signature", "show", "missing-statement", "--tenant", "proof/test", "--actor", "reader", "--json",
+    ]);
+    expect(missing.exitCode).toBe(1);
+    expect(missing.stderr).toContain("signed statement not found");
+    const unknownMutation = await runCli(home, [
+      "signature", "sign", "--tenant", "proof/test", "--actor", "reader", "--json",
+    ]);
+    expect(unknownMutation.exitCode).toBe(1);
+    expect(unknownMutation.stderr).toContain("signature show");
   });
 });
 
@@ -982,7 +1002,8 @@ describe("canonical commitment inspection", () => {
       "effectApprovals", "effectReceipts", "evidence",
       "resolutionContracts", "evidenceTrustRecords", "completionProposals",
       "completionChallenges", "validationDecisions",
-      "completionRecords", "conditions", "observations", "reconciliations",
+      "completionRecords", "signedStatementProofs",
+      "conditions", "observations", "reconciliations",
       "externalRefs", "externalContextLinks", "events", "resumeCursor",
     ]);
     expect(snapshot.contractVersion).toBe("tasq.inspect.v1");
@@ -2286,7 +2307,7 @@ describe("durability", () => {
     expect(report.ok).toBe(true);
     expect(report.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 26,
+      current: 28,
     });
     expect(report.store.sqliteIntegrity).toBe("ok");
     expect(report.journal.databaseOnly).toEqual([]);
@@ -2553,7 +2574,7 @@ describe("durability", () => {
     expect(result.contractVersion).toBe("tasq.backup-receipt.v1");
     expect(result.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.verified).toBe(true);
-    expect(result.storeFormat).toBe(26);
+    expect(result.storeFormat).toBe(28);
     expect(result.sizeBytes).toBeGreaterThan(0);
     expect(result.eventCursor).toBe(2);
     expect(existsSync(target)).toBe(true);
@@ -2570,7 +2591,7 @@ describe("durability", () => {
       ok: true,
       target: exportPath,
       workspaceId: "gwendall",
-      storeFormat: 26,
+      storeFormat: 28,
     });
     expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
 
