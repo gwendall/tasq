@@ -8,7 +8,7 @@ export default defineConfig({
   retries: 0,
   reporter: "line",
   webServer: {
-    command: "pnpm exec next dev --hostname 127.0.0.1 --port 4317",
+    command: "node scripts/serve-export.mjs --port 4317",
     url: "http://127.0.0.1:4317",
     reuseExistingServer: false,
     timeout: 120_000,

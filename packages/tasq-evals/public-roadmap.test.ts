@@ -177,7 +177,7 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-807")).toMatchObject({
-      status: "candidate_done_external_gate",
+      status: "in_progress_external_gate",
       remaining: ["publish_immutable_multi_arch_image_sbom_checksums_and_provenance"],
       evidence: [
         "docs/contracts/TQ-807_DEPLOYABLE_SERVER.md",
@@ -326,7 +326,12 @@ describe("canonical Tasq roadmap", () => {
       remaining: [
         "record-independent-unbriefed-human-session",
       ],
-      evidence: ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"],
+      evidence: [
+        "docs/contracts/TQ-606_PUBLIC_ADOPTION.md",
+        "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json",
+        "docs/contracts/TQ-606_HUMAN_SESSION_PROTOCOL.md",
+        "docs/contracts/TQ-606_HUMAN_SESSION_EVIDENCE.schema.json",
+      ],
     });
     expect(releaseWorkflow).toContain("id-token: write");
     expect(releaseWorkflow).toContain("npm install --global npm@11.18.0");

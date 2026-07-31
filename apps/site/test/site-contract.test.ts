@@ -95,6 +95,19 @@ describe("public site boundary", () => {
     expect(publicAsset).toBe(internal);
   });
 
+  test("browser certification serves the production static export without starting Next development", async () => {
+    const [packageJsonRaw, playwrightConfig, staticServer] = await Promise.all([
+      readFile(resolve(siteRoot, "package.json"), "utf8"),
+      readFile(resolve(siteRoot, "playwright.config.ts"), "utf8"),
+      readFile(resolve(siteRoot, "scripts/serve-export.mjs"), "utf8"),
+    ]);
+    const packageJson = JSON.parse(packageJsonRaw);
+    expect(packageJson.scripts["test:browser"]).toContain("next build");
+    expect(playwrightConfig).toContain("node scripts/serve-export.mjs --port 4317");
+    expect(playwrightConfig).not.toContain("next dev");
+    expect(staticServer).toContain('resolve(dirname(fileURLToPath(import.meta.url)), "../out")');
+  });
+
   test("publishes generated generic-agent entrypoints and a non-authoritative rendezvous schema", async () => {
     const copies = [
       ["../../plugins/tasq/skills/tasq/SKILL.md", "public/SKILL.md"],

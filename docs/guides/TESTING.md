@@ -454,6 +454,10 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   contention, higher-fence recovery, evidence completion and same-ledger
   installed Console inspection. The harness and clients contain no Tasq import
   or device-clock read; published bytes and a real blind human remain external.
+- eval `public-adoption-human-evidence.test.ts` — freezes the independent-human
+  observation format and proves its validator accepts only a complete redacted
+  record while rejecting coaching, repository access, incomplete checkpoints
+  and metric drift. The validator never mutates the still-pending certificate.
 - eval `public-roadmap.test.ts` — freezes the canonical public execution order,
   closed task states, dependency closure, the machine-tracked TQ-607 dogfood
   gate, npm/publication blockers, remote non-claims and the authority/clock

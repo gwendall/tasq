@@ -15,7 +15,10 @@ function response(body: string, status: number, contentType: string, headers: Re
       "content-type": contentType,
       "cache-control": "private, no-store",
       "x-content-type-options": "nosniff",
-      "referrer-policy": "no-referrer",
+      // Chromium serializes a form POST Origin as `null` under `no-referrer`,
+      // which would make the exact same-origin mutation guard reject the
+      // Console's own forms. Keep referrers confined to this origin instead.
+      "referrer-policy": "same-origin",
       "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
       ...headers,
     },

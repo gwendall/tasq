@@ -1,7 +1,7 @@
 # TQ-606 — Blind public adoption gate
 
 > **Status:** exact published-byte automation certified; independent-human
-> evidence pending — 2026-07-23
+> evidence pending; external session kit ready — 2026-07-30
 > **Machine certificate:** `TQ-606_ADOPTION_CERTIFICATION.json`
 > **Candidate pointers:** `/docs/getting-started/`, `/adopt.json` and
 > `/product-truth.json`
@@ -96,3 +96,22 @@ supported targets. Final TQ-606 closure requires only one independent
 unbriefed-human completion from the public entrypoint, including interventions
 and failure points. Until that exists, the machine certificate keeps
 `tq606Complete: false` and the backlog uses an external-gate candidate status.
+
+## 6. Ready-to-run human gate
+
+The external session can now run without repository-specific interpretation:
+
+- [`TQ-606_HUMAN_SESSION_PROTOCOL.md`](TQ-606_HUMAN_SESSION_PROTOCOL.md)
+  freezes the participant prompt, observer constraints, activation outcome and
+  privacy boundary;
+- [`TQ-606_HUMAN_SESSION_EVIDENCE.schema.json`](TQ-606_HUMAN_SESSION_EVIDENCE.schema.json)
+  freezes the redacted evidence record;
+- [`TQ-606_HUMAN_SESSION_EVIDENCE.template.json`](TQ-606_HUMAN_SESSION_EVIDENCE.template.json)
+  is intentionally incomplete and cannot pass validation;
+- `pnpm --silent adoption:validate -- --evidence <record.json>` fails closed
+  on coaching, repository access, incomplete work, unresolved failures or
+  derived-metric drift.
+
+Validation only makes a record ready for maintainer review. It never edits this
+certificate or turns an automated or coached path into independent-human
+evidence.

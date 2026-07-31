@@ -92,4 +92,8 @@ Repository tests and an independent eval must prove:
 9. one request-wide injected time reaches verification and authorization;
 10. no raw credential appears in results, decisions, audit or errors.
 
-Until those gates pass, `remote_mcp` remains `not_implemented`.
+Those repository gates now pass. In the current source candidate, `remote_mcp`
+is `implemented_candidate_not_published`; the host-integrated TQ-805 adapter
+alone still is not a listener or deployable public Server. TQ-807 supplies that
+unpublished runtime composition, while immutable image publication remains an
+external gate.

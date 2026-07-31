@@ -1,4 +1,13 @@
-FROM oven/bun:1.3.11-alpine
+FROM oven/bun:1.3.11-alpine@sha256:7ed9f74c326d1c260abe247ac423ccbf5ac92af62bb442d515d1f92f21e8ea9b
+
+ARG TASQ_VERSION=0.0.0-source
+ARG TASQ_SOURCE_COMMIT=unknown
+LABEL org.opencontainers.image.title="Tasq Server" \
+  org.opencontainers.image.description="Authenticated self-hosted Tasq coordination server" \
+  org.opencontainers.image.source="https://github.com/gwendall/tasq" \
+  org.opencontainers.image.licenses="Apache-2.0" \
+  org.opencontainers.image.version="${TASQ_VERSION}" \
+  org.opencontainers.image.revision="${TASQ_SOURCE_COMMIT}"
 
 RUN bun install --global pnpm@10.29.3
 WORKDIR /app

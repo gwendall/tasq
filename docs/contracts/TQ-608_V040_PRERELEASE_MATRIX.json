@@ -1,0 +1,77 @@
+{
+  "contractVersion": "tasq.migration-prerelease-matrix.v1",
+  "revision": 1,
+  "candidate": {
+    "version": "0.4.0",
+    "storeFormat": 28,
+    "artifactState": "local_or_protected_candidate_not_published",
+    "publishedReplayPassed": false,
+    "publicSupportClaim": false
+  },
+  "sourceReleases": [
+    {
+      "version": "0.2.0",
+      "sourceCommit": "28f4d77477e81ae2277f73f326c8703e7124f192",
+      "storeFormat": 25,
+      "release": "https://github.com/gwendall/tasq/releases/tag/v0.2.0",
+      "targets": {
+        "darwin-arm64": {
+          "tasq-v0.2.0-darwin-arm64.cdx.json": "11e27af85f29779789a21e1f529a251942c157cc669524743139aa8f8e1c02c1",
+          "tasq-v0.2.0-darwin-arm64.install.ts": "03f8c1be077db1fcc37208f8ea6aae6f33326dbed235eeecc261e271cad1d598",
+          "tasq-v0.2.0-darwin-arm64.release.json": "290752bcf16b6fcefb5cf794ee66f20472bf1ede39b03d19f2fff99551236f27",
+          "tasq-v0.2.0-darwin-arm64.SHA256SUMS": "5790eb9f77eddb35668043d7f8b89f29367ac26b8c0747ba10072f190d94dd4c",
+          "tasq-v0.2.0-darwin-arm64.tar.gz": "2e0ee0c178fb0c4f60e81d8e3e2b3c896b47b2258f2cc4746116ca40a50c2603"
+        },
+        "linux-x64-gnu": {
+          "tasq-v0.2.0-linux-x64-gnu.cdx.json": "f12ec07aeb437851652a66d56d60a554c5aed2e7789187d7d728bd7cf2da3d23",
+          "tasq-v0.2.0-linux-x64-gnu.install.ts": "03f8c1be077db1fcc37208f8ea6aae6f33326dbed235eeecc261e271cad1d598",
+          "tasq-v0.2.0-linux-x64-gnu.release.json": "6ef14793668f14718e74c5f9ae640695c3e42598722d49f89d3b51f318d8b966",
+          "tasq-v0.2.0-linux-x64-gnu.SHA256SUMS": "625f665be5c1d329368b0e9ab1381c7149b1cee37b7420f7f788add3d926288c",
+          "tasq-v0.2.0-linux-x64-gnu.tar.gz": "0928daf0d28d30fb3c9afbe5ac0735294269bc949524b4eff8eed9fc9edbebc8"
+        }
+      }
+    },
+    {
+      "version": "0.3.0",
+      "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+      "storeFormat": 26,
+      "release": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+      "targets": {
+        "darwin-arm64": {
+          "tasq-v0.3.0-darwin-arm64.cdx.json": "07d73a1faee7e894e0e09a058223dfda60efabed3304a78f167bf9cfa7e9e25e",
+          "tasq-v0.3.0-darwin-arm64.install.ts": "03f8c1be077db1fcc37208f8ea6aae6f33326dbed235eeecc261e271cad1d598",
+          "tasq-v0.3.0-darwin-arm64.release.json": "581b18371bef846303cf6244ed3b49574e3ca5d14d46cb254e05bb333666d187",
+          "tasq-v0.3.0-darwin-arm64.SHA256SUMS": "4f78f71e1a258ccf8c154124e4b8372e24102601c22cb0e3927ebfcf322ffb9a",
+          "tasq-v0.3.0-darwin-arm64.tar.gz": "aeda21b55ac74721d56e671dbe72b10831f15f8f875789c586cc141d621f5e7f"
+        },
+        "linux-x64-gnu": {
+          "tasq-v0.3.0-linux-x64-gnu.cdx.json": "2cdb988635e299bd5960ce3b3de4b199e613b21ffbb3bef489ec0d26ff5a801a",
+          "tasq-v0.3.0-linux-x64-gnu.install.ts": "03f8c1be077db1fcc37208f8ea6aae6f33326dbed235eeecc261e271cad1d598",
+          "tasq-v0.3.0-linux-x64-gnu.release.json": "5fdc8656338ff6e36eed692944e73f60f23b48756a32e5ce089ec0d26ff5a801a",
+          "tasq-v0.3.0-linux-x64-gnu.SHA256SUMS": "10fa567c06ff87dd14cb456fec7d0ff4d0b9e714e51bab74e16bb869db8d3992",
+          "tasq-v0.3.0-linux-x64-gnu.tar.gz": "164478b0496dd0657bb69e4908627d2a7cd9cbe8f2086463085fdbb984b6e3cd"
+        }
+      }
+    }
+  ],
+  "requiredAssertions": [
+    "exact_pinned_public_assets",
+    "nontrivial_source_ledger",
+    "verified_private_snapshot",
+    "complete_migration_receipt",
+    "format_28_post_migration_doctor",
+    "older_binary_typed_refusal_without_logical_or_recovery_write",
+    "historical_sqlite_physical_side_effects_captured",
+    "snapshot_restore_with_matching_source_binary"
+  ],
+  "protectedEvidenceRequired": {
+    "targets": [
+      "darwin-arm64",
+      "linux-x64-gnu"
+    ],
+    "sourceReleaseAttestations": true,
+    "candidateSourceCommitBinding": true,
+    "candidateArtifactAttestationsAfterPublication": true,
+    "publishedV040Replay": "not_run"
+  }
+}

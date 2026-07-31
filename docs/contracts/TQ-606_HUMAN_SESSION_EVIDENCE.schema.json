@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tasq:schema:independent-human-adoption-evidence:v1",
+  "title": "Tasq independent human adoption evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "session",
+    "independence",
+    "journey",
+    "interventions",
+    "failures",
+    "metrics",
+    "attestation",
+    "outcome"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "tasq.independent-human-adoption-evidence.v1"
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target", "entrypoint", "releaseVersion", "releaseUrl", "startedAt", "endedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^tq606-[a-z0-9][a-z0-9-]{5,63}$" },
+        "target": { "enum": ["darwin-arm64", "linux-x64-gnu"] },
+        "entrypoint": { "const": "https://tasq.run" },
+        "releaseVersion": { "const": "0.3.0" },
+        "releaseUrl": { "const": "https://github.com/gwendall/tasq/releases/tag/v0.3.0" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "independence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "participantExternal",
+        "participantPreviouslyUsedTasq",
+        "participantReceivedRepositoryBriefing",
+        "repositoryAccessDuringSession",
+        "facilitatorCoachingAfterStart",
+        "undocumentedHelpUsed",
+        "startingMaterials"
+      ],
+      "properties": {
+        "participantExternal": { "const": true },
+        "participantPreviouslyUsedTasq": { "const": false },
+        "participantReceivedRepositoryBriefing": { "const": false },
+        "repositoryAccessDuringSession": { "const": false },
+        "facilitatorCoachingAfterStart": { "const": false },
+        "undocumentedHelpUsed": { "const": false },
+        "startingMaterials": {
+          "const": ["https://tasq.run"]
+        }
+      }
+    },
+    "journey": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "observedAt", "evidenceRefs", "note"],
+        "properties": {
+          "id": {
+            "enum": [
+              "public-entrypoint-opened",
+              "release-installed",
+              "human-onboarded",
+              "agent-connected",
+              "contention-observed",
+              "contention-recovered",
+              "evidence-bound-completion-observed",
+              "same-ledger-console-inspected"
+            ]
+          },
+          "status": { "enum": ["completed", "failed", "not_reached"] },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "interventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["at", "actor", "kind", "description", "documentedPath"],
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "actor": { "enum": ["participant", "facilitator", "environment"] },
+          "kind": { "enum": ["public_documentation", "facilitator_coaching", "environment_repair", "other"] },
+          "description": { "type": "string", "minLength": 1 },
+          "documentedPath": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["at", "stepId", "severity", "description", "disposition", "evidenceRefs"],
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "stepId": {
+            "enum": [
+              "public-entrypoint-opened",
+              "release-installed",
+              "human-onboarded",
+              "agent-connected",
+              "contention-observed",
+              "contention-recovered",
+              "evidence-bound-completion-observed",
+              "same-ledger-console-inspected"
+            ]
+          },
+          "severity": { "enum": ["friction", "blocking"] },
+          "description": { "type": "string", "minLength": 1 },
+          "disposition": { "enum": ["recovered_self_service", "recovered_with_help", "unresolved"] },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activationStepId", "timeToActivationSeconds", "totalElapsedSeconds", "stepsCompleted"],
+      "properties": {
+        "activationStepId": { "const": "evidence-bound-completion-observed" },
+        "timeToActivationSeconds": { "type": "integer", "minimum": 0 },
+        "totalElapsedSeconds": { "type": "integer", "minimum": 1 },
+        "stepsCompleted": { "const": 8 }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observerRef",
+        "participantConsentRecorded",
+        "accountAccurate",
+        "privateTranscriptCommitted",
+        "evidenceDigest"
+      ],
+      "properties": {
+        "observerRef": { "type": "string", "pattern": "^observer-[a-z0-9][a-z0-9-]{2,63}$" },
+        "participantConsentRecorded": { "const": true },
+        "accountAccurate": { "const": true },
+        "privateTranscriptCommitted": { "const": false },
+        "evidenceDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "outcome": {
+      "enum": [
+        "completed_without_undocumented_help",
+        "completed_with_undocumented_help",
+        "not_completed"
+      ]
+    }
+  }
+}

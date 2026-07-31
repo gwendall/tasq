@@ -31,6 +31,12 @@ its hostile source certificate is
 [`TQ-905_MANAGED_CLOUD_HOSTILE_CERTIFICATION.md`](TQ-905_MANAGED_CLOUD_HOSTILE_CERTIFICATION.md),
 while remote effects remain behind
 [`TQ-906_REMOTE_EFFECTS_REVIEW_GATE.md`](TQ-906_REMOTE_EFFECTS_REVIEW_GATE.md).
+The provider-neutral external-gate manifest and schema are
+[`MANAGED_CLOUD_PRODUCTION_READINESS.template.json`](MANAGED_CLOUD_PRODUCTION_READINESS.template.json)
+and
+[`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json);
+their operating procedure is in
+[`../guides/MANAGED_CLOUD_PRODUCTION_READINESS.md`](../guides/MANAGED_CLOUD_PRODUCTION_READINESS.md).
 
 Start from the owning concept, guide, or roadmap item rather than reading this
 directory sequentially. Current release blockers are listed in

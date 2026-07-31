@@ -703,12 +703,6 @@
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core"
     },
     {
-      "id": "TQ-607",
-      "status": "in_progress_dogfood",
-      "milestone": "private-dogfood",
-      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation"
-    },
-    {
       "id": "TQ-801",
       "status": "done",
       "milestone": "self-hosted-server",
@@ -746,9 +740,9 @@
     },
     {
       "id": "TQ-807",
-      "status": "candidate_done_external_gate",
+      "status": "in_progress_external_gate",
       "milestone": "self-hosted-server",
-      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts"
+      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted Console BFF base (bounded guarded actions owned by TQ-811), health, backup, restore and upgrade contracts"
     },
     {
       "id": "TQ-808",
@@ -841,6 +835,12 @@
       "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification"
     },
     {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation"
+    },
+    {
       "id": "TQ-906",
       "status": "pending_independent_review",
       "milestone": "managed-cloud",
@@ -856,12 +856,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "ed3998992937efe3bc23b11dfc763ba790b191bb184191e0bc14bc67b236581d"
+      "sha256": "6e47384ac8c40a72a9051d98c365dbe7d5f13d9fa9931141e1b88eaf0fc0f486"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "f9d2eff02f712692c05f2efa306eb8f19d8d3878946fe3fca6f33075c6a0c4c0"
+      "sha256": "97cd05abc3b15f2c149cc4cfb476c1ddc085cb39b058c3758addf3466f3a59dd"
     }
   ]
 }

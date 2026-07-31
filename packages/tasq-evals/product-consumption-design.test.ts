@@ -346,7 +346,7 @@ describe("TQ-601 product consumption design", () => {
     expect(releasePolicy).toMatchObject({
       releaseAuthorization: {
         state: "authorized",
-        version: "0.3.0",
+        version: "0.4.0",
         channel: "public-alpha",
         decision: "go",
         authorizedBy: "@gwendall",

@@ -22,6 +22,13 @@ publication, the latest minor receives normal fixes and the previous minor
 receives critical security and data-loss fixes for 90 days after supersession.
 Release metadata is authoritative if it narrows that window.
 
+## Repository automation
+
+All external GitHub Actions are pinned to full commit SHAs. Workflow permissions
+default to none and each job requests only the repository, OIDC or attestation
+capabilities it uses. CI fetches complete history and scans it with a
+checksum-pinned Gitleaks binary; findings are fully redacted in logs.
+
 ## Trust boundaries
 
 - Tasq Local is a single-host product. Actor labels are attribution, not

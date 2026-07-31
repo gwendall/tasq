@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from typing import Mapping
 
-from tasq_remote import TasqRemote, TasqRemoteError
+from tasq_remote import TasqRemote, TasqRemoteError, redeem_remote_enrollment
 
 
 class FixtureTransport:
@@ -140,6 +140,68 @@ class TasqRemoteTests(unittest.TestCase):
                 request_id="request",
             )
         self.assertEqual(self.transport.calls, [])
+
+    def test_redeems_one_enrollment_without_actor_identity(self):
+        captured = {}
+
+        def transport(method, url, headers, body):
+            captured.update({
+                "method": method,
+                "url": url,
+                "headers": headers,
+                "body": json.loads(body),
+            })
+            return 201, {}, json.dumps({
+                "contractVersion": "tasq.remote-enrollment.v1",
+                "requestId": "enrollment-request",
+                "credentialId": "credential-one",
+                "workspaceId": "team/acme",
+                "principalId": "principal-one",
+                "clientKind": "workload_agent",
+                "accessToken": "tasq_access_secret".ljust(40, "x"),
+                "issuedAt": 10,
+                "expiresAt": 100,
+                "actionUpperBound": [],
+            }).encode()
+
+        result = redeem_remote_enrollment(
+            endpoint="https://server.example/",
+            workspace_id="team/acme",
+            enrollment_token="tasq_enroll_secret".ljust(40, "x"),
+            request_id="enrollment-request",
+            transport=transport,
+        )
+        self.assertEqual(result["principalId"], "principal-one")
+        self.assertEqual(captured["method"], "POST")
+        self.assertTrue(captured["url"].endswith(
+            "v1/workspaces/team%2Facme/enrollments/redeem"
+        ))
+        self.assertNotIn("authorization", captured["headers"])
+        self.assertEqual(captured["body"], {
+            "contractVersion": "tasq.remote-enrollment.v1",
+            "enrollmentToken": "tasq_enroll_secret".ljust(40, "x"),
+        })
+        self.assertNotIn("actor", json.dumps(captured))
+
+    def test_enrollment_failure_is_typed_and_never_invents_success(self):
+        def transport(method, url, headers, body):
+            return 409, {}, json.dumps({
+                "contractVersion": "tasq.hosted-problem.v1",
+                "code": "enrollment_consumed",
+                "requestId": headers["x-tasq-request-id"],
+            }).encode()
+
+        with self.assertRaises(TasqRemoteError) as raised:
+            redeem_remote_enrollment(
+                endpoint="https://server.example/",
+                workspace_id="team/acme",
+                enrollment_token="tasq_enroll_secret".ljust(40, "x"),
+                request_id="enrollment-retry",
+                transport=transport,
+            )
+        self.assertEqual(raised.exception.status, 409)
+        self.assertEqual(raised.exception.code, "enrollment_consumed")
+        self.assertFalse(raised.exception.retryable)
 
     def test_client_has_no_kernel_or_database_dependency(self):
         source = Path(__file__).parents[1] / "tasq_remote" / "__init__.py"

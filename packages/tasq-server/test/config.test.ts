@@ -25,6 +25,28 @@ describe("Tasq Server operator contracts", () => {
     });
   });
 
+  test("pins deployment base images and publishes bounded OCI identity", async () => {
+    const dockerfile = await readFile(join(deployment, "Dockerfile"), "utf8");
+    expect(dockerfile).toMatch(
+      /^FROM oven\/bun:1\.3\.11-alpine@sha256:[0-9a-f]{64}$/m,
+    );
+    for (const label of [
+      "org.opencontainers.image.source",
+      "org.opencontainers.image.licenses",
+      "org.opencontainers.image.version",
+      "org.opencontainers.image.revision",
+    ]) {
+      expect(dockerfile).toContain(label);
+    }
+    const compose = await readFile(join(deployment, "compose.yaml"), "utf8");
+    expect(compose).toMatch(
+      /image: caddy:2\.10\.2-alpine@sha256:[0-9a-f]{64}/,
+    );
+    const dockerignore = await readFile(join(deployment, "../../.dockerignore"), "utf8");
+    expect(dockerignore).toContain("**/playwright-report");
+    expect(dockerignore).toContain("**/test-results");
+  });
+
   test("fails closed on unsafe listeners, audience drift, path origins and database aliasing", async () => {
     const base = JSON.parse(await readFile(join(deployment, "server.example.json"), "utf8"));
     for (const changed of [

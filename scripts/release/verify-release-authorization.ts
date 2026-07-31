@@ -8,31 +8,38 @@ import {
   verifyReleaseAuthorization,
 } from "./release-authorization";
 
-function requiredFlag(name: string): string {
-  const index = process.argv.indexOf(name);
-  const value = index === -1 ? undefined : process.argv[index + 1];
-  if (!value || value.startsWith("--")) throw new Error(`${name} is required`);
-  return value;
+function flags(allowed: readonly string[]): Map<string, string> {
+  const parsed = new Map<string, string>();
+  for (let index = 2; index < process.argv.length; index += 2) {
+    const name = process.argv[index];
+    const value = process.argv[index + 1];
+    if (!name?.startsWith("--") || !allowed.includes(name)) {
+      throw new Error(`unknown flag ${name ?? ""}`);
+    }
+    if (parsed.has(name)) throw new Error(`duplicate flag ${name}`);
+    if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+    parsed.set(name, value);
+  }
+  return parsed;
 }
 
-function optionalFlag(name: string): string | undefined {
-  const index = process.argv.indexOf(name);
-  const value = index === -1 ? undefined : process.argv[index + 1];
-  if (value?.startsWith("--")) throw new Error(`${name} requires a value`);
+const input = flags(["--policy", "--version", "--source-commit", "--repository"]);
+const required = (name: string): string => {
+  const value = input.get(name);
+  if (!value) throw new Error(`${name} is required`);
   return value;
-}
-
+};
 const policy = JSON.parse(await readFile(
-  optionalFlag("--policy") ??
+  input.get("--policy") ??
     resolve(import.meta.dir, "../../docs/releases/PUBLIC_RELEASE_POLICY.json"),
   "utf8",
 )) as ReleasePolicy;
 
 const certificate = verifyReleaseAuthorization({
   policy,
-  version: requiredFlag("--version"),
-  sourceCommit: requiredFlag("--source-commit"),
-  repository: requiredFlag("--repository"),
+  version: required("--version"),
+  sourceCommit: required("--source-commit"),
+  repository: required("--repository"),
 });
 
 process.stdout.write(`${JSON.stringify(certificate)}\n`);

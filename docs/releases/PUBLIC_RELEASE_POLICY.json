@@ -124,6 +124,7 @@
     }
   ],
   "compatibility": {
+    "scope": "publishedRelease",
     "versioning": "semver",
     "normalDeprecation": {
       "minimumMinorReleases": 1,
@@ -157,6 +158,19 @@
       "@tasq-run/client": ["candidate-bun>=1.3", "candidate-node>=22", "not-yet-published-or-clean-room-certified"]
     },
     "nodeSupport": "certified-for-compiled-core-schema-extension-sdk-only"
+  },
+  "sourceCandidateCompatibility": {
+    "status": "repository_source_candidate_not_published",
+    "storeFormat": {
+      "contractVersion": "tasq.store-format.v1",
+      "current": 28,
+      "readable": { "min": 28, "max": 28 },
+      "writable": { "min": 28, "max": 28 },
+      "directlyMigratable": { "min": 0, "max": 28 },
+      "irreversible": true,
+      "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
+    },
+    "publishedSupportGranted": false
   },
   "candidateCliTargets": [
     "darwin-arm64",
@@ -231,12 +245,66 @@
   },
   "releaseAuthorization": {
     "state": "authorized",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
-    "authorizedAt": "2026-07-23",
-    "rationale": "Publish opt-in independent completion resolution, store format 26, executable agent onboarding, explicit evidence trust and dispute/adjudication trails across Core, CLI, local MCP and Console. Ordinary commitments remain backward-compatible; retained-data dogfood remains the stable-graduation gate."
+    "authorizedAt": "2026-07-31",
+    "rationale": "Ship the complete source candidate now as a labeled public alpha: store format 28, signed statements, the remote TypeScript client, Server image, Python client and protected exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
+  },
+  "candidatePublications": {
+    "serverImage": {
+      "state": "authorized",
+      "coordinate": "ghcr.io/gwendall/tasq-server",
+      "workflow": "publish-server.yml",
+      "environment": "release",
+      "version": "0.4.0",
+      "sourceBinding": "protected_immutable_version_tag_runtime_commit",
+      "decision": "go",
+      "authorizedBy": "@gwendall",
+      "authorizedAt": "2026-07-31"
+    },
+    "pythonWheel": {
+      "state": "authorized",
+      "coordinate": "tasq-remote",
+      "workflow": "publish-python.yml",
+      "environment": "release",
+      "version": "0.4.0",
+      "sourceBinding": "protected_immutable_version_tag_runtime_commit",
+      "decision": "go",
+      "authorizedBy": "@gwendall",
+      "authorizedAt": "2026-07-31"
+    },
+    "remoteTypeScriptClient": {
+      "state": "authorized",
+      "coordinate": "@tasq-run/client",
+      "workflow": "release.yml",
+      "environment": "release",
+      "version": "0.4.0",
+      "sourceBinding": "protected_immutable_version_tag_runtime_commit",
+      "decision": "go",
+      "authorizedBy": "@gwendall",
+      "authorizedAt": "2026-07-31"
+    }
+  },
+  "certificationPrograms": {
+    "tq616SignedStatements": {
+      "state": "authorized",
+      "workflow": "certify-published-release.yml",
+      "environment": "release",
+      "version": "0.4.0",
+      "sourceBinding": "protected_immutable_version_tag_runtime_commit",
+      "decision": "go",
+      "authorizedBy": "@gwendall",
+      "authorizedAt": "2026-07-31",
+      "historicalIncompatibleReleases": [
+        {
+          "version": "0.3.0",
+          "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
+          "reason": "v0.3.0 predates the TQ-613 through TQ-615 signed-statement public package surface"
+        }
+      ]
+    }
   },
   "npmBootstrap": {
     "state": "completed",
@@ -254,6 +322,23 @@
     "tokenRevoked": true,
     "trustedPublisherBinding": "gwendall/tasq:.github/workflows/release.yml:release",
     "certification": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+    "publishedSupportGranted": false
+  },
+  "npmClientBootstrap": {
+    "state": "authorized",
+    "coordinate": "@tasq-run/client",
+    "workflow": "bootstrap-npm-client.yml",
+    "environment": "release",
+    "sourceRef": "refs/heads/main",
+    "sourceBinding": "protected_main_runtime_commit",
+    "version": "0.1.0-alpha.0",
+    "distTag": "alpha-bootstrap",
+    "decision": "go",
+    "authorizedBy": "@gwendall",
+    "authorizedAt": "2026-07-31",
+    "secretName": "NPM_CLIENT_BOOTSTRAP_TOKEN",
+    "secretRetention": "delete_immediately_after_trusted_publisher_is_verified",
+    "tokenRetention": "revoke_immediately_after_trusted_publisher_is_verified",
     "publishedSupportGranted": false
   },
   "publishedRelease": {

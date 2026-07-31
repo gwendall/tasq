@@ -1,0 +1,15 @@
+project_id         = "replace-with-dedicated-project"
+domain             = "experimental.tasks.example.com"
+backup_bucket_name = "replace-with-globally-unique-tasq-backups"
+
+# Both helper and Server images must be resolved and reviewed before plan/apply.
+tasq_server_image    = "ghcr.io/gwendall/tasq-server@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+secret_fetcher_image = "gcr.io/google.com/cloudsdktool/google-cloud-cli:stable@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+# These secrets must already exist. Their payloads never enter Terraform state.
+server_config_secret_id                 = "tasq-experimental-server-config"
+server_config_secret_version            = "1"
+bootstrap_secret_id                     = "tasq-experimental-bootstrap"
+bootstrap_secret_version                = "1"
+enrollment_pepper_secret_id             = "tasq-experimental-enrollment-pepper"
+enrollment_pepper_secret_version        = "1"

@@ -1,0 +1,256 @@
+name: Publish protected Tasq Python client
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact stable SemVer authorized in release policy
+        required: true
+        type: string
+      source_commit:
+        description: Exact lowercase 40-character tagged source commit
+        required: true
+        type: string
+      confirmation:
+        description: Type publish-tasq-python
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: tasq-python-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.authorization.outputs.version }}
+      commit: ${{ steps.authorization.outputs.commit }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ inputs.source_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.11
+      - id: authorization
+        name: Verify exact protected publication authority
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_CONFIRMATION: ${{ inputs.confirmation }}
+          INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "gwendall/tasq"
+          test "$INPUT_CONFIRMATION" = "publish-tasq-python"
+          [[ "$INPUT_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+          test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"
+          test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          test "$(
+            gh release view "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json tagName \
+              --jq .tagName
+          )" = "$GITHUB_REF_NAME"
+          bun scripts/release/verify-candidate-publication-authorization.ts \
+            --surface pythonWheel \
+            --version "$INPUT_VERSION" \
+            --source-commit "$INPUT_SOURCE_COMMIT" \
+            --repository "$GITHUB_REPOSITORY"
+          echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "commit=$INPUT_SOURCE_COMMIT" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: authorize
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ needs.authorize.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.11"
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.11
+      - run: pnpm install --frozen-lockfile
+      - name: Test the dependency-free source client
+        run: |
+          python -m unittest discover -s clients/python/tests -v
+          pnpm --filter @tasq-internal/evals test -- python-remote-client.test.ts
+          pnpm --filter @tasq-internal/evals test -- python-wheel-build.test.ts
+        env:
+          PYTHONPATH: clients/python
+          PYTHONDONTWRITEBYTECODE: "1"
+      - name: Build deterministic wheel and metadata
+        run: >-
+          python scripts/release/build-python-wheel.py
+          --version "${{ needs.authorize.outputs.version }}"
+          --source-commit "${{ needs.authorize.outputs.commit }}"
+          --outdir dist/python
+      - name: Install and import the exact wheel selected for PyPI
+        shell: bash
+        env:
+          EXPECTED_VERSION: ${{ needs.authorize.outputs.version }}
+        run: |
+          set -euo pipefail
+          scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
+          mapfile -t wheels < <(find dist/python -maxdepth 1 -type f -name '*.whl')
+          test "${#wheels[@]}" = 1
+          python -m venv "$scratch/venv"
+          "$scratch/venv/bin/python" -m pip install \
+            --disable-pip-version-check \
+            --no-index \
+            --no-deps \
+            "${wheels[0]}"
+          "$scratch/venv/bin/python" - <<'PY'
+          import os
+          import tasq_remote
+
+          assert tasq_remote.__version__ == os.environ["EXPECTED_VERSION"]
+          PY
+      - name: Isolate the PyPI distribution
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/pypi
+          cp dist/python/*.whl dist/pypi/
+          test "$(find dist/pypi -type f | wc -l | tr -d ' ')" = "1"
+      - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: dist/python/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: tasq-python-publication-candidate
+          path: |
+            dist/python/*
+            dist/pypi/*
+          if-no-files-found: error
+
+  publish-pypi:
+    needs: [authorize, build]
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ needs.authorize.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: tasq-python-publication-candidate
+          path: dist
+      - id: resume
+        name: Resolve an absent or byte-identical PyPI coordinate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t candidates < <(find dist/pypi -maxdepth 1 -type f -name '*.whl')
+          test "${#candidates[@]}" = 1
+          decision="$(
+            python scripts/release/verify_pypi_resume.py \
+              --candidate "${candidates[0]}" \
+              --package tasq-remote \
+              --version "${{ needs.authorize.outputs.version }}" \
+              --download-dir dist/existing-pypi
+          )"
+          state="$(jq --raw-output .state <<< "$decision")"
+          test "$state" = "absent" || test "$state" = "identical"
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+      - name: Verify protected provenance before reusing PyPI bytes
+        if: steps.resume.outputs.state == 'identical'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mapfile -t wheels < <(find dist/existing-pypi -maxdepth 1 -type f -name '*.whl')
+          test "${#wheels[@]}" = 1
+          gh attestation verify "${wheels[0]}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "gwendall/tasq/.github/workflows/publish-python.yml" \
+            --source-digest "${{ needs.authorize.outputs.commit }}" \
+            --source-ref "$GITHUB_REF" \
+            --deny-self-hosted-runners
+      - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        if: steps.resume.outputs.state == 'absent'
+        with:
+          packages-dir: dist/pypi
+          attestations: true
+          print-hash: true
+
+  publish-release-metadata:
+    needs: [authorize, publish-pypi]
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: tasq-python-publication-candidate
+          path: dist
+      - name: Publish or verify immutable release metadata
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p existing
+          assets="$(
+            gh release view "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json assets
+          )"
+          jq --exit-status '.assets | type == "array"' <<< "$assets" >/dev/null
+          for asset in dist/python/*.cdx.json dist/python/*.release.json dist/python/*.SHA256SUMS; do
+            name="$(basename "$asset")"
+            count="$(
+              jq --arg name "$name" \
+                '[.assets[] | select(.name == $name)] | length' \
+                <<< "$assets"
+            )"
+            if test "$count" = 1; then
+              gh release download "$GITHUB_REF_NAME" \
+              --repo "$GITHUB_REPOSITORY" \
+              --dir existing \
+              --pattern "$name"
+              cmp "$asset" "existing/$name"
+            elif test "$count" = 0; then
+              gh release upload "$GITHUB_REF_NAME" "$asset" \
+                --repo "$GITHUB_REPOSITORY"
+            else
+              echo "Release contains duplicate asset name: $name" >&2
+              exit 1
+            fi
+          done

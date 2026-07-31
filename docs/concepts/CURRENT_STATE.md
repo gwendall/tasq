@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-07-24
+**Updated:** 2026-07-30
 
 Tasq currently ships source for two local product shapes:
 
@@ -25,9 +25,11 @@ permission, grant, delegation, eligibility, request and decision contracts;
 authority; and a pure deny-by-default evaluator. It consumes
 one injected clock snapshot and has no transport, credential verification,
 persistence, store routing or kernel dependency. Consequently it creates no
-new human or agent entrypoint. Later TQ-803–TQ-805 host-integrated adapters own
-the current REST/MCP integration-required support, while runnable Server and
-hosted Console claims remain `not_implemented`.
+new human or agent entrypoint by itself. At the historical TQ-801 boundary,
+runnable Server and hosted Console claims therefore remained
+`not_implemented`. The current combined TQ-807/TQ-811 surface is instead an
+`implemented_candidate_not_published`: later work adds the daemon, container,
+concrete verifier and guarded hosted Console described below.
 
 TQ-802 is now also implemented internally. `@tasq-internal/server` persists
 host/workspace routing, principals, issuer/subject bindings, immutable
@@ -184,15 +186,24 @@ explicitly and preserved the ledger byte-for-byte through native uninstall.
 The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 protects both release and source evolution. Published `v0.3.0` uses
-store format 26. Each executable reports its exact read/write/direct-migration
+store format 26, and the release policy's `compatibility` block is explicitly
+scoped to that published release. Repository source uses candidate format 28
+for signed statements and replica-principal binding; the separate
+`sourceCandidateCompatibility` block records it without granting a shipped
+support claim. Each executable reports its exact read/write/direct-migration
 ranges. Existing-store upgrades are serialized, snapshot-verified,
 receipt-backed and post-checked; newer or ambiguous histories fail before
 mutation. Real process-kill recovery and portable create-only workspace
 round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
 Exact `v0.3.0` published bytes now migrate the populated format-5 fixture and
-pass post-migration doctor on both targets. Exact N-2 protected lines become a
-mandatory boundary once three protected release lines exist; see
+pass post-migration doctor on both targets. The `v0.4.0` pre-release harness
+now replays exact public `v0.2.0` and `v0.3.0` ledgers into candidate format 28
+and passes locally on Darwin arm64, including matching-binary restore.
+Published `v0.3.0` can touch SQLite WAL/SHM sidecars during its typed refusal
+but does not change canonical ledger or recovery state. Protected Darwin/Linux
+candidate evidence and exact published `v0.4.0` replay remain `not_run`; no
+`v0.4.0` support claim follows from the local pass. See
 `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
 
 TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.
@@ -279,6 +290,14 @@ Python 3.11+ client for reads, event cursors, operation discovery, idempotent
 mutation and enrollment. It is deliberately transport-only and contains no
 Core, SQLite or migration logic. PyPI publication, provenance and exact
 downloaded-wheel replay against the published Server digest remain open.
+
+Protected Server GHCR and Python PyPI publish/certify workflows are prepared
+with exact version/source/confirmation inputs, least-privilege jobs and
+candidate-specific policy authorization. The maintainer has authorized the
+exact `v0.4.0` public-alpha release, its Server image, Python wheel,
+`@tasq-run/client` package and TQ-616 downloaded-byte replay. The protected
+workflows have not run, so authorization changes no shipped surface and
+published `v0.3.0` remains seven packages.
 
 TQ-901–TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
 tests pass colliding names, isolated storage bindings, concurrent quota,

@@ -1,7 +1,8 @@
 # TQ-608 — Migration and data-safety envelope
 
-**Status:** complete for the current public release; future N-2 certification
-becomes mandatory once three protected release lines exist
+**Status:** complete for published `v0.3.0`; the `v0.4.0` N-2 pre-release
+matrix is implemented and passes locally, while protected candidate and
+published-byte replays remain required
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
 **Blocks:** first protected package release in TQ-603
 
@@ -118,8 +119,25 @@ receipt and doctor checks. A real POSIX file-size quota additionally proves
 that snapshot exhaustion leaves the source format unchanged and any partial
 snapshot private.
 
-Before three protected release lines exist, the bootstrap matrix is every
-extant protected release plus the historical populated fixtures. Once three
-protected minor lines exist, exact N-2 binaries and published bytes become
-mandatory and the certificate must be revised. That future rule does not leave
-an unevaluable gate open against the single existing release line.
+The next-line contract is
+`TQ-608_V040_PRERELEASE_MATRIX.json`. Its local harness downloads and
+digest-pins the exact public `v0.2.0`/format-25 and `v0.3.0`/format-26
+artifacts, has each old binary create a nontrivial ledger, migrates both to a
+local `v0.4.0`/format-28 candidate, verifies the private snapshot, receipt and
+post-migration doctor, then restores the snapshot plus journal with the
+matching old binary. On Darwin arm64 this full local matrix passes.
+
+Both old binaries return the typed compatibility refusal with exit code 3 and
+leave canonical ledger rows, journal, receipt and recovery snapshot unchanged.
+The published `v0.3.0` binary does touch SQLite's physical `db.sqlite-shm` and
+empties `db.sqlite-wal` while refusing; therefore its refusal is not
+byte-exact across the whole filesystem tree. This is recorded as known
+historical alpha behavior, not described as a byte-exact no-write guarantee,
+and does not weaken the fail-closed domain/recovery-state assertion.
+
+`.github/workflows/certify-v040-migration-candidate.yml` is the protected
+Darwin/Linux source-candidate route. It attestation-verifies both public source
+lines and binds the candidate checkout to an exact commit. It has not run yet.
+After `v0.4.0` publication, its exact downloaded artifacts and attestations
+must be replayed separately. Until both external gates pass,
+`publishedV040Replay` remains `not_run` and no `v0.4.0` support claim exists.

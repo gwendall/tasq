@@ -1,0 +1,181 @@
+name: Certify published Tasq Python client
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact PyPI package version
+        required: true
+        type: string
+      source_commit:
+        description: Exact lowercase 40-character source commit
+        required: true
+        type: string
+      wheel_sha256:
+        description: Exact lowercase SHA-256 of the published wheel
+        required: true
+        type: string
+      server_digest:
+        description: Exact immutable Tasq Server sha256 image digest
+        required: true
+        type: string
+      confirmation:
+        description: Type certify-tasq-python
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  exact-wheel:
+    runs-on: ubuntu-latest
+    environment: release
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+      attestations: read
+    env:
+      INPUT_CONFIRMATION: ${{ inputs.confirmation }}
+      INPUT_SERVER_DIGEST: ${{ inputs.server_digest }}
+      INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+      INPUT_VERSION: ${{ inputs.version }}
+      INPUT_WHEEL_SHA256: ${{ inputs.wheel_sha256 }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ inputs.source_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.11"
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Validate exact certification identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "gwendall/tasq"
+          test "$INPUT_CONFIRMATION" = "certify-tasq-python"
+          [[ "$INPUT_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+          [[ "$INPUT_WHEEL_SHA256" =~ ^[a-f0-9]{64}$ ]]
+          [[ "$INPUT_SERVER_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
+          test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"
+          test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+      - name: Download exact registry wheel without dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/published-python
+          python -m pip download \
+            --disable-pip-version-check \
+            --no-deps \
+            --only-binary=:all: \
+            --dest dist/published-python \
+            "tasq-remote==$INPUT_VERSION"
+          test "$(find dist/published-python -type f | wc -l | tr -d ' ')" = "1"
+          wheel="$(find dist/published-python -type f -name '*.whl')"
+          echo "$INPUT_WHEEL_SHA256  $wheel" | sha256sum --check --status
+      - name: Verify protected provenance
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          wheel="$(find dist/published-python -type f -name '*.whl')"
+          gh attestation verify "$wheel" \
+            --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "gwendall/tasq/.github/workflows/publish-python.yml" \
+            --source-digest "$INPUT_SOURCE_COMMIT" \
+            --source-ref "$GITHUB_REF" \
+            --deny-self-hosted-runners
+      - name: Pull and bind the exact Server digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          server="ghcr.io/gwendall/tasq-server@$INPUT_SERVER_DIGEST"
+          docker pull "$server"
+          docker image inspect "$server" --format '{{json .RepoDigests}}' |
+            jq --exit-status --arg server "$server" 'index($server) != null' >/dev/null
+          test "$(
+            docker image inspect "$server" \
+              --format '{{ index .Config.Labels "org.opencontainers.image.title" }}'
+          )" = "Tasq Server"
+          test "$(
+            docker image inspect "$server" \
+              --format '{{ index .Config.Labels "org.opencontainers.image.source" }}'
+          )" = "https://github.com/gwendall/tasq"
+          test "$(
+            docker image inspect "$server" \
+              --format '{{ index .Config.Labels "org.opencontainers.image.licenses" }}'
+          )" = "Apache-2.0"
+          test "$(
+            docker image inspect "$server" \
+              --format '{{ index .Config.Labels "org.opencontainers.image.version" }}'
+          )" = "$INPUT_VERSION"
+          test "$(
+            docker image inspect "$server" \
+              --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
+          )" = "$INPUT_SOURCE_COMMIT"
+      - name: Verify protected provenance for the exact Server digest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh attestation verify
+          "oci://ghcr.io/gwendall/tasq-server@$INPUT_SERVER_DIGEST"
+          --repo "$GITHUB_REPOSITORY"
+          --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"
+          --source-digest "$INPUT_SOURCE_COMMIT"
+          --source-ref "$GITHUB_REF"
+          --deny-self-hosted-runners
+      - name: Install exact wheel and replay client tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel="$(find dist/published-python -type f -name '*.whl')"
+          python -m venv "$RUNNER_TEMP/tasq-python"
+          "$RUNNER_TEMP/tasq-python/bin/python" -m pip install \
+            --disable-pip-version-check --no-deps "$wheel"
+          test "$("$RUNNER_TEMP/tasq-python/bin/python" -c \
+            'import tasq_remote; print(tasq_remote.__version__)')" = "$INPUT_VERSION"
+          mkdir -p "$RUNNER_TEMP/tasq-python-tests/tests"
+          unzip -q "$wheel" -d "$RUNNER_TEMP/tasq-python-tests"
+          cp clients/python/tests/test_client.py "$RUNNER_TEMP/tasq-python-tests/tests/"
+          (
+            cd "$RUNNER_TEMP/tasq-python-tests/tests"
+            PYTHONDONTWRITEBYTECODE=1 \
+              "$RUNNER_TEMP/tasq-python/bin/python" -m unittest -v test_client.py
+          )
+      - name: Certify the exact wheel against the exact Server digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/python
+          "$RUNNER_TEMP/tasq-python/bin/python" \
+            scripts/release/certify_published_python_server.py \
+            --image "ghcr.io/gwendall/tasq-server@$INPUT_SERVER_DIGEST" \
+            --version "$INPUT_VERSION" \
+            --source-commit "$INPUT_SOURCE_COMMIT" \
+            > dist/python/tq810-wheel-server.json
+          jq --exit-status '
+            .status == "passed_protected_exact_artifacts"
+            and .python.installedWheelOnly == true
+            and .server.exactPublishedDigest == true
+            and .journey.oneUseEnrollment == true
+            and .journey.exactMutationReplay == true
+            and .journey.invalidCredentialTypedError == "invalid_token"
+            and .publicSupportClaim == false
+            and .externalPublicationPerformedByHarness == false
+          ' dist/python/tq810-wheel-server.json >/dev/null
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: tasq-python-tq810-exact-artifact-evidence
+          path: dist/python/tq810-wheel-server.json
+          if-no-files-found: error

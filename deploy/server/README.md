@@ -130,8 +130,12 @@ Revocation is enforced on the next request.
 Open `https://$TASQ_DOMAIN/console`. Paste a workspace ID and scoped access
 token. The token is posted over HTTPS, checked by the same REST guard and
 exchanged for a `Secure; HttpOnly; SameSite=Strict` cookie. The Console is
-read-only; it has no mutation service and does not use Local Console's loopback
-trust model.
+not a second mutation service and does not use Local Console's loopback trust
+model. Its bounded TQ-811 forms support commitment creation, claim acquisition,
+blocking with an expected revision, evidence append, explicit unverified
+evidence-trust attribution, completion proposal and independent completion
+attestation. Every form re-enters the registered REST operation and the same
+live authority guard; there is no direct Console-to-Core write path.
 
 ## Backup and restore
 
@@ -195,3 +199,12 @@ Run the repository container proof with:
 docker build -f deploy/server/Dockerfile -t tasq-server:tq807 .
 bun scripts/server-container-smoke.ts tasq-server:tq807
 ```
+
+## Protected image status
+
+Maintainer-only publish and exact-digest certification workflows are prepared,
+but their release-policy authorization is intentionally closed. No public
+Server image exists yet. A future authorized run publishes
+`ghcr.io/gwendall/tasq-server` for Linux amd64/arm64 with OCI SBOM and
+provenance, then records the immutable digest. Operators must pin that digest;
+the version tag and `latest` are never deployment authority.

@@ -33,6 +33,16 @@ certificate and grants no npm availability: a future protected release must
 first configure its trusted publisher, provenance, SBOM and clean-room runtime
 evidence.
 
+The client identity has its own one-shot
+`.github/workflows/bootstrap-npm-client.yml` entrypoint. Unlike the historical
+seven-package bootstrap, it isolates and publishes only
+`@tasq-run/client@0.1.0-alpha.0` under `alpha-bootstrap`, after an explicit
+policy authorization. Registry responses other than an explicit 404 fail
+closed; an existing coordinate is reusable only when its bytes, `gitHead`,
+repository and integrity match. The dedicated environment secret and granular
+token are deleted/revoked immediately after the `release.yml:release` trusted
+publisher is verified.
+
 The build receives `version`, `sourceCommit` and `target` explicitly. It omits
 wall-clock metadata. Release tooling is covered by the same architecture test
 that rejects ambient device time outside `systemClock`.
@@ -154,6 +164,9 @@ the release truth can advance beyond candidate evidence.
 
 The tag workflow executes
 `scripts/release/verify-release-authorization.ts` before any artifact job. That
-gate binds the tag version, canonical repository, seven-package boundary,
+gate binds the tag version, canonical repository, authorized package boundary,
 maintainer decision and channel-specific external gates. A pending npm gate,
 version drift or package-source drift stops the workflow before publication.
+Future candidate authorizations bind source through the protected immutable
+version tag at runtime; they never attempt to embed the containing commit's own
+hash in `PUBLIC_RELEASE_POLICY.json`.

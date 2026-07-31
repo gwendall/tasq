@@ -25,10 +25,54 @@ post-release workflow certifies their complete lifecycle without a repository ch
 supported targets. TQ-607 remains the retained-data gate for stable graduation,
 not for the explicitly labeled pre-1.0 alpha.
 
-ADR-010 adds `@tasq-run/client` as an eighth deterministic candidate for the
-next authorized release. It is not part of `v0.3.0`, has no npm support claim
-yet and must receive its own trusted-publisher/provenance and clean-room gate
-before publication.
+ADR-010 adds `@tasq-run/client` as an eighth deterministic candidate.
+Maintainer authorization now targets `v0.4.0`; the client is not part of
+`v0.3.0` and receives no npm support claim until the protected bootstrap,
+trusted-publisher binding, publication and clean-room replay finish.
+
+Because npm requires the package identity to exist before its trusted publisher
+can be configured, `bootstrap-npm-client.yml` is the one-shot protected
+bootstrap for **only** `@tasq-run/client`. It is separately fail-closed in
+`PUBLIC_RELEASE_POLICY.json`, publishes only byte-verified
+`0.1.0-alpha.0` under `alpha-bootstrap`, and uses a dedicated revocable
+`NPM_CLIENT_BOOTSTRAP_TOKEN`. After the protected run, configure and verify the
+`release.yml:release` trusted-publisher binding, then immediately delete the
+environment secret and revoke the token. The bootstrap coordinate grants no
+support claim.
+
+The tag workflow now consumes the exact package list returned by release
+authorization. It therefore continues to publish seven packages for `v0.3.0`
+and includes `@tasq-run/client` only when its separate candidate authorization
+matches the exact next version. The policy cannot contain the hash of the
+commit that contains the policy itself. Instead it declares
+`protected_immutable_version_tag_runtime_commit`; protected workflows bind the
+runtime commit by requiring `v<version>^{commit}`, checked-out `HEAD` and the
+explicit `source_commit` input to be identical under the `release`
+environment.
+
+Protected Server and Python publication entrypoints are prepared in
+`publish-server.yml` and `publish-python.yml`, with separate exact-artifact
+certification workflows. All four require the `release` environment, immutable
+tag/source identity and candidate-specific authorization. The maintainer has
+authorized their exact `v0.4.0` public-alpha coordinates. Authorization is not
+publication evidence: no GHCR image or PyPI wheel is claimed until the
+protected workflows publish and replay the downloaded bytes.
+
+Both candidate publication workflows are fail-closed and idempotent after a
+partial successful run. Server reuse requires matching version/source tags,
+exact digest identity, protected source provenance and packaged replay before
+creating only a missing tag. Python reuse requires the exact deterministic
+wheel bytes, PyPI SHA-256 and protected tagged-source provenance before
+continuing only missing release metadata. Registry lookup, authentication,
+duplicate-asset or identity ambiguity is an error, never an implicit
+`skip-existing`.
+
+`compatibility` in `PUBLIC_RELEASE_POLICY.json` is scoped to
+`publishedRelease`, so it truthfully remains format 26 while `v0.3.0` is the
+published release. `sourceCandidateCompatibility` separately records repository
+format 28 with `publishedSupportGranted: false`. The published block advances
+to 28 only in the post-release certification change; this separation is not a
+claim that candidate bytes have shipped.
 
 The implemented candidate builder is:
 

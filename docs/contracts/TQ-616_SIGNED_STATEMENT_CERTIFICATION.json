@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.signed-statement-hostile-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-07-30",
   "backlogItem": "TQ-616",
   "testedArtifact": "source_and_local_built_candidate",
   "criticalThreats": {
@@ -37,6 +37,23 @@
     "nodeCryptoContract": "passed",
     "pythonIndependentVerifier": "passed"
   },
+  "localPackageCandidateCleanRoom": {
+    "status": "passed_local_candidate_only",
+    "inputContract": "tasq.public-packages.v1",
+    "allDeclaredTasqTarballDigestsVerified": true,
+    "exactInstalledByteInventory": [
+      "@tasq-run/schema",
+      "@tasq-run/extension-sdk",
+      "@tasq-run/core"
+    ],
+    "installedPublicApiRuntimeMatrix": {
+      "node": "passed_valid_statement_and_altered_byte_rejection",
+      "bun": "passed_valid_statement_and_altered_byte_rejection",
+      "python": "passed_independent_pae_and_ed25519_vector"
+    },
+    "localArtifactsPublishable": false,
+    "protectedOrDownloadedArtifactClaim": false
+  },
   "recovery": {
     "processKillMigrationBoundaries": "passed",
     "lostResponseExactReplay": "passed",
@@ -55,9 +72,25 @@
     "packages/tasq-server/test/signing-credentials.test.ts",
     "packages/tasq-server/test/workspace.test.ts",
     "packages/tasq-evals/signed-statement-cross-language.test.ts",
+    "packages/tasq-evals/signed-statement-package-candidate.test.ts",
+    "packages/tasq-evals/scripts/certify-signed-statement-package-candidate.ts",
     "packages/tasq-evals/fixtures/verify-signed-statement-vector.py",
+    "scripts/release/reconstruct-downloaded-package-manifest.ts",
+    "scripts/release/verify-tq616-release-eligibility.ts",
+    ".github/workflows/certify-published-release.yml",
     "packages/tasq-inspector/test/inspector.test.ts"
   ],
+  "protectedReplayAutomation": {
+    "state": "authorized_not_run",
+    "version": "0.4.0",
+    "workflow": ".github/workflows/certify-published-release.yml",
+    "eligibilityAuthority": "docs/releases/PUBLIC_RELEASE_POLICY.json",
+    "historicalV0_3_0": "explicitly_incompatible_skipped_without_gate_closure",
+    "unknownReleaseBehavior": "fail_closed",
+    "exactCompatibleVersionAndProtectedRuntimeTagBindingRequired": true,
+    "externalWorkflowRunPerformed": false,
+    "publicSupportClaim": false
+  },
   "remainingExternalGate": [
     "protected_release_workflow",
     "exact_downloaded_bytes",

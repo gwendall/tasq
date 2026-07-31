@@ -132,7 +132,9 @@ Repository tests prove:
 ## Honest boundary
 
 TQ-807 now provides the daemon/container candidate, RS256 verifier, Core
-operation adapter, hosted read-only Console and operator lifecycle described in
-`TQ-807_DEPLOYABLE_SERVER.md`. Neither that image nor `@tasq-run/client` is in
-the current `v0.3.0` release. Protected image publication and TQ-808 hostile
-packaged certification remain.
+operation adapter, operator lifecycle and hosted Console described in
+`TQ-807_DEPLOYABLE_SERVER.md`. TQ-811 supersedes its historical read-only
+Console slice with seven bounded guarded human actions; each action still uses
+the same registered operation and authority seam. Neither that image nor
+`@tasq-run/client` is in the current `v0.3.0` release. Protected image
+publication and TQ-808 hostile packaged certification remain.
