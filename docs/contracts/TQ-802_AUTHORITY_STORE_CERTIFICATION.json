@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.authority-store-certification.v1",
   "status": "certified",
-  "updatedAt": "2026-07-21",
+  "updatedAt": "2026-07-30",
   "backlogItem": "TQ-802",
   "package": "@tasq-internal/server",
   "migrationDigest": "sha256:9c0b0ab1cd4b43a4293f2ff004938c65d90e97c3a437411d4cabf783449685c1",
@@ -14,6 +14,7 @@
   },
   "certifiedProperties": [
     "checksum_pinned_concurrent_migrations",
+    "busy_snapshot_retry_reopens_connection",
     "workspace_authority_revision_cas",
     "durable_mutation_idempotency",
     "append_only_security_audit",

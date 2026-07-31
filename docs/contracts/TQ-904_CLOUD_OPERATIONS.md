@@ -23,3 +23,8 @@ provider adapter and an external operations drill supply that evidence.
 Retention currently governs exported/backup artifact references and expired
 support grants. Ledger retention remains the underlying Server’s policy and
 cannot be silently shortened by Cloud.
+
+The required provider drills, SLO/RPO/RTO fields, multi-region recovery
+evidence and safe evidence-reference format are defined in the
+[`production-readiness runbook`](../guides/MANAGED_CLOUD_PRODUCTION_READINESS.md).
+A failed drill remains failed evidence until a new protected run passes.

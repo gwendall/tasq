@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.public-adoption-certification.v1",
   "status": "published-bytes-certified-human-gate-pending",
-  "updatedAt": "2026-07-23",
+  "updatedAt": "2026-07-30",
   "repositoryAccess": {
     "state": "public-alpha",
     "requiredPrecondition": null,
@@ -42,7 +42,21 @@
   },
   "independentHumanEvidence": {
     "status": "not-run-automated-path-only",
-    "required": "An unbriefed external human receives only the deployed or locally served public entrypoint and completes the journey without undocumented help"
+    "required": "An unbriefed external human receives only the deployed or locally served public entrypoint and completes the journey without undocumented help",
+    "protocol": "docs/contracts/TQ-606_HUMAN_SESSION_PROTOCOL.md",
+    "schema": "docs/contracts/TQ-606_HUMAN_SESSION_EVIDENCE.schema.json",
+    "template": "docs/contracts/TQ-606_HUMAN_SESSION_EVIDENCE.template.json",
+    "validator": "scripts/validate-tq606-human-evidence.ts",
+    "validationCommand": [
+      "pnpm",
+      "--silent",
+      "adoption:validate",
+      "--",
+      "--evidence",
+      "<redacted-session.json>"
+    ],
+    "sessionKitReady": true,
+    "certificateMutationAuthorizedByValidator": false
   },
   "tq606Complete": false
 }

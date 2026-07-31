@@ -23,3 +23,9 @@ This is not a production certification. It does not prove a real infrastructure
 provider, multi-region failover, off-site restore, secret-manager rotation,
 external penetration testing or an on-call operator. Those remain required
 before Tasq Cloud can be advertised as available.
+
+The complete external matrix is frozen in
+[`MANAGED_CLOUD_PRODUCTION_READINESS.template.json`](MANAGED_CLOUD_PRODUCTION_READINESS.template.json).
+Its validator may report `ready_for_maintainer_decision`; it never changes
+`managedCloudAvailable`, enables remote effects or self-approves an independent
+review.

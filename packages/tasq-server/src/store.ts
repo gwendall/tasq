@@ -157,27 +157,12 @@ function isAuthorityBusy(error: unknown): boolean {
   return /SQLITE_BUSY|database is locked/i.test(error instanceof Error ? error.message : String(error));
 }
 
-const COLD_START_BUSY_RETRIES = 256;
-const coldStartRetryDelayMs = (attempt: number): number => Math.min(2 ** Math.min(attempt, 5), 25);
-
 async function initializeAuthorityClient(client: Client, url: string, appliedAt: number): Promise<void> {
-  for (let attempt = 0; attempt < COLD_START_BUSY_RETRIES; attempt += 1) {
-    try {
-      await client.execute("PRAGMA busy_timeout = 30000");
-      if (url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
-      await client.execute("PRAGMA foreign_keys = ON");
-      await client.execute("PRAGMA synchronous = NORMAL");
-      await migrateAuthorityStore(client, appliedAt);
-      return;
-    } catch (error) {
-      if (!isAuthorityBusy(error) || attempt === COLD_START_BUSY_RETRIES - 1) throw error;
-      // Restart after SQLITE_BUSY_SNAPSHOT with a bounded scheduling backoff.
-      // Cold initialization is idempotent; the delay lets the process holding
-      // the migration write lock commit before this connection takes a fresh
-      // snapshot. No product timestamp or injected-clock decision depends on it.
-      await new Promise<void>((resolve) => setTimeout(resolve, coldStartRetryDelayMs(attempt)));
-    }
-  }
+  await client.execute("PRAGMA busy_timeout = 30000");
+  if (url !== ":memory:") await client.execute("PRAGMA journal_mode = WAL");
+  await client.execute("PRAGMA foreign_keys = ON");
+  await client.execute("PRAGMA synchronous = NORMAL");
+  await migrateAuthorityStore(client, appliedAt);
 }
 
 async function beginAuthorityWrite(client: Client): Promise<Transaction> {
@@ -1407,15 +1392,33 @@ export class AuthorityStore {
 }
 
 const initializationChains = new Map<string, Promise<void>>();
+const COLD_START_BUSY_RETRIES = 256;
+const coldStartRetryDelayMs = (attempt: number): number => Math.min(2 ** Math.min(attempt, 5), 25);
 
 export async function openAuthorityStore(input: { url: string; clock: Clock }): Promise<AuthorityStore> {
   if (!input.url.startsWith("file:") && input.url !== ":memory:") {
     throw new Error("TQ-802 reference authority store accepts only explicit local file: or :memory: URLs");
   }
-  const client = createClient({ url: input.url });
+  let client = createClient({ url: input.url });
   const prior = initializationChains.get(input.url) ?? Promise.resolve();
   const initialization = prior.catch(() => {}).then(async () => {
-    await initializeAuthorityClient(client, input.url, requiredClockNow(input.clock));
+    const appliedAt = requiredClockNow(input.clock);
+    for (let attempt = 0; attempt < COLD_START_BUSY_RETRIES; attempt += 1) {
+      try {
+        await initializeAuthorityClient(client, input.url, appliedAt);
+        return;
+      } catch (error) {
+        if (!isAuthorityBusy(error) || attempt === COLD_START_BUSY_RETRIES - 1) throw error;
+        // SQLITE_BUSY_SNAPSHOT is tied to the connection's stale read
+        // snapshot. Retrying on that same client can never make progress, even
+        // after the competing migrator commits. Dispose it before the bounded
+        // scheduling backoff so the next attempt necessarily opens a fresh
+        // snapshot. No authority timestamp is derived from this delay.
+        client.close();
+        await new Promise<void>((resolve) => setTimeout(resolve, coldStartRetryDelayMs(attempt)));
+        client = createClient({ url: input.url });
+      }
+    }
   });
   initializationChains.set(input.url, initialization);
   try {

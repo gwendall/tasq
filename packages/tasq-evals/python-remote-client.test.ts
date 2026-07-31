@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 test("TQ-810 Python client passes from a clean interpreter without kernel dependencies", async () => {
@@ -27,7 +28,7 @@ test("TQ-810 Python client passes from a clean interpreter without kernel depend
     new Response(child.stderr).text(),
   ]);
   expect(exitCode, `${stdout}\n${stderr}`).toBe(0);
-  expect(`${stdout}\n${stderr}`).toContain("Ran 4 tests");
+  expect(`${stdout}\n${stderr}`).toContain("Ran 6 tests");
 });
 
 test("TQ-810 checked-in OpenAPI exposes the same bounded remote journeys", async () => {
@@ -55,4 +56,27 @@ test("TQ-810 checked-in OpenAPI exposes the same bounded remote journeys", async
     "listOperations",
     "redeemEnrollment",
   ]);
+});
+
+test("TQ-810 protected harness uses the installed wheel against one exact Server digest", async () => {
+  const scenario = await readFile(join(
+    import.meta.dir,
+    "..",
+    "..",
+    "scripts",
+    "release",
+    "certify_published_python_server.py",
+  ), "utf8");
+  expect(scenario).toContain("from tasq_remote import");
+  expect(scenario).toContain("Path(sys.prefix).resolve()");
+  expect(scenario).toContain("redeem_remote_enrollment");
+  expect(scenario).toContain("client.list_commitments(limit=10)");
+  expect(scenario).toContain('"operation_id": "commitment.propose"');
+  expect(scenario).toContain("TasqRemoteError");
+  expect(scenario).toContain('"exactMutationReplay": True');
+  expect(scenario).toContain('"publicSupportClaim": False');
+  expect(scenario).toContain("--read-only");
+  expect(scenario).toContain("--cap-drop");
+  expect(scenario).not.toContain("clients/python");
+  expect(scenario).not.toContain("packages/tasq-server");
 });

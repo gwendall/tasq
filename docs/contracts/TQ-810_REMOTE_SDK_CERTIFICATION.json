@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.remote-sdk-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-07-30",
   "backlogItem": "TQ-810",
   "apiSchema": "docs/contracts/TASQ_REMOTE_API.openapi.json",
   "clients": {
@@ -22,8 +22,37 @@
     "packages/tasq-client/test/client.test.ts",
     "clients/python/tests/test_client.py",
     "packages/tasq-evals/python-remote-client.test.ts",
+    "packages/tasq-evals/python-wheel-build.test.ts",
+    "scripts/release/certify_published_python_server.py",
+    ".github/workflows/certify-published-python.yml",
     "docs/contracts/TASQ_REMOTE_API.openapi.json"
   ],
+  "publicationAutomation": {
+    "state": "authorized_not_run",
+    "version": "0.4.0",
+    "publishWorkflow": ".github/workflows/publish-python.yml",
+    "certificationWorkflow": ".github/workflows/certify-published-python.yml",
+    "package": "tasq-remote",
+    "trustedPublishing": "pypi_oidc_with_provenance",
+    "deterministicWheelBuilder": "scripts/release/build-python-wheel.py",
+    "externalPublicationPerformed": false
+  },
+  "exactArtifactIntegrationAutomation": {
+    "state": "prepared_not_executed",
+    "wheelSource": "exact_pypi_download_with_sha256_and_provenance",
+    "serverSource": "exact_ghcr_digest_with_oci_identity_and_provenance",
+    "harness": "scripts/release/certify_published_python_server.py",
+    "journeys": [
+      "one_use_enrollment_and_replay_rejection",
+      "authenticated_empty_read",
+      "real_commitment_mutation_and_exact_receipt_replay",
+      "authenticated_post_mutation_read",
+      "typed_invalid_credential_failure"
+    ],
+    "isolatedServer": true,
+    "externalWorkflowRunPerformed": false,
+    "publicSupportClaim": false
+  },
   "remainingExternalGate": [
     "publish_python_wheel_with_provenance",
     "download_exact_wheel_from_registry",

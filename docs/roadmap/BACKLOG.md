@@ -5,18 +5,16 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-07-24
+**Updated:** 2026-07-31
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** TQ-809's remote client/enrollment slice is complete; ship
-the deployable online Server and operator lifecycle (TQ-807), then run the
-packaged hostile multi-surface certification (TQ-808). Continue the independent
-blind-human session and retained-data dogfood in parallel; they gate human
-usability and stable graduation, not Server implementation. ADR-009's
-purpose-bound signed-statement layer follows the first hostile Server
-certification and becomes mandatory before optional offline replication,
-stable cross-language remote clients or remote effects claim portable
-principal authorship.
+**Current priority:** publish the maintainer-authorized `v0.4.0` public alpha:
+bootstrap the eighth npm identity, publish all eight packages and both native
+artifacts, publish the multi-architecture Server image and Python wheel, then
+run their exact downloaded-byte certifications. Continue the independent
+blind-human session and retained-data dogfood after publication; they gate
+human usability and stable graduation, not alpha delivery. Remote effects
+remain disabled.
 
 The detailed task inventory, acceptance criteria and verification routes for
 public adoption through Server and Cloud are in
@@ -72,8 +70,10 @@ operation through real adopters, not more repository-only architecture.
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
   snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
-  populated format-5 fixture on both targets. Exact N-2 evidence becomes
-  mandatory once three protected release lines exist.
+  populated format-5 fixture on both targets. The exact `v0.2.0`/`v0.3.0` to
+  candidate-format-28 N-2 harness passes locally; its protected two-target run
+  and the later exact published `v0.4.0` replay remain release gates and grant
+  no public support claim.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -121,8 +121,9 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 - **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
   passes from the public marketplace with no repository briefing.
-- **TQ-608 — done for current release:** exact first-release replay passes;
-  enforce exact N-2 when three protected release lines exist.
+- **TQ-608 — done for current release:** exact published `v0.3.0` replay
+  passes; the exact `v0.2.0`/`v0.3.0` N-2 candidate harness is implemented and
+  locally passing, with protected and published-`v0.4.0` gates still `not_run`.
 
 ### 2. Finish Local alpha distribution
 
@@ -207,8 +208,10 @@ Server/Cloud breadth remains behind published-byte Local certification.
   typed contention with a higher fence, complete with evidence and inspect the
   same ledger through installed Console. The first published-byte replay passes
   on both targets. Final closure requires one independent unbriefed human
-  session; see
-  `../contracts/TQ-606_PUBLIC_ADOPTION.md`.
+  session. The observer protocol, redacted evidence template and fail-closed
+  validator are ready; run
+  `pnpm --silent adoption:validate -- --evidence <record.json>` after the real
+  session. See `../contracts/TQ-606_PUBLIC_ADOPTION.md`.
 - **TQ-705 — done:** fixed-clock, process-isolated empty, mature, hostile,
   corrupt and 2,501-commitment fixtures now run through the production Console
   in real Chromium on Linux and macOS. The gate proves safe corruption failure,
@@ -271,12 +274,14 @@ Server/Cloud breadth remains behind published-byte Local certification.
   claim/resource contention and REST/MCP parity pass. The package is not in
   published `v0.3.0`, and no deployable endpoint ships; see
   `../contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md`.
-- **TQ-807 — candidate complete, publication gate:** the Bun daemon and local
+- **TQ-807 — candidate complete, authorized publication in progress:** the Bun daemon and local
   Linux container now include strict config/bootstrap, concrete RS256 and
   opaque verification, real Core operations, immutable mutation receipts,
-  same-origin authenticated read-only Console, health/metrics and checksummed
-  backup/restore. The remaining gate is a protected multi-architecture image
-  with immutable registry digest, SBOM, checksums and provenance; see
+  the same-origin authenticated Console BFF base, health/metrics and checksummed
+  backup/restore. Its original read-only slice is historical; TQ-811 owns the
+  current bounded guarded actions. `v0.4.0` publication is authorized; the
+  remaining gate is the protected multi-architecture image with immutable
+  registry digest, SBOM, checksums and provenance; see
   `../contracts/TQ-807_DEPLOYABLE_SERVER.md`.
 - **TQ-808 — candidate complete, external gate:** the production daemon passes
   two independent issuers/workspaces, hostile credentials, REST/MCP/CLI

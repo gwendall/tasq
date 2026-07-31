@@ -10,3 +10,13 @@ dist/
 .DS_Store
 .vercel
 .env*.local
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

@@ -64,5 +64,12 @@ The remaining evidence cannot be created by an in-repository unit test:
 - record one previously unbriefed operator following only
   `deploy/server/README.md`.
 
+The protected publish and exact-digest lifecycle entrypoints are prepared in
+`.github/workflows/publish-server.yml` and
+`.github/workflows/certify-published-server.yml`. Their policy authorization is
+intentionally closed. The certification entrypoint verifies GitHub provenance,
+pulls by digest and replays the packaged Server lifecycle; clean macOS/Linux
+clients and the unbriefed operator remain external even after that run.
+
 Until those exist, Server remains an
 `implemented_candidate_not_published` product, not a shipped hosted service.

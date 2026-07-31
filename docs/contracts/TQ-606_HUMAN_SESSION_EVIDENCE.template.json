@@ -1,0 +1,95 @@
+{
+  "contractVersion": "tasq.independent-human-adoption-evidence.v1",
+  "session": {
+    "id": "tq606-replace-me",
+    "target": "darwin-arm64",
+    "entrypoint": "https://tasq.run",
+    "releaseVersion": "0.3.0",
+    "releaseUrl": "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+    "startedAt": "2000-01-01T00:00:00Z",
+    "endedAt": "2000-01-01T00:00:01Z"
+  },
+  "independence": {
+    "participantExternal": true,
+    "participantPreviouslyUsedTasq": false,
+    "participantReceivedRepositoryBriefing": false,
+    "repositoryAccessDuringSession": false,
+    "facilitatorCoachingAfterStart": false,
+    "undocumentedHelpUsed": false,
+    "startingMaterials": ["https://tasq.run"]
+  },
+  "journey": [
+    {
+      "id": "public-entrypoint-opened",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "release-installed",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "human-onboarded",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "agent-connected",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "contention-observed",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "contention-recovered",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "evidence-bound-completion-observed",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    },
+    {
+      "id": "same-ledger-console-inspected",
+      "status": "not_reached",
+      "observedAt": "2000-01-01T00:00:00Z",
+      "evidenceRefs": ["urn:sha256:0000000000000000000000000000000000000000000000000000000000000000"],
+      "note": "Replace with a redacted observation."
+    }
+  ],
+  "interventions": [],
+  "failures": [],
+  "metrics": {
+    "activationStepId": "evidence-bound-completion-observed",
+    "timeToActivationSeconds": 0,
+    "totalElapsedSeconds": 1,
+    "stepsCompleted": 0
+  },
+  "attestation": {
+    "observerRef": "observer-replace-me",
+    "participantConsentRecorded": false,
+    "accountAccurate": false,
+    "privateTranscriptCommitted": false,
+    "evidenceDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "outcome": "not_completed"
+}

@@ -100,7 +100,20 @@ try {
   }
   const inspected = JSON.parse(await command([
     "docker", "image", "inspect", image, "--format", "{{json .}}",
-  ])) as { Id: string; RepoDigests: string[] | null; Architecture: string; Os: string };
+  ])) as {
+    Id: string;
+    RepoDigests: string[] | null;
+    Architecture: string;
+    Os: string;
+    Config: { Labels?: Record<string, string> };
+  };
+  const labels = inspected.Config.Labels ?? {};
+  if (labels["org.opencontainers.image.source"] !== "https://github.com/gwendall/tasq") {
+    throw new Error("container is missing the canonical OCI source label");
+  }
+  if (labels["org.opencontainers.image.licenses"] !== "Apache-2.0") {
+    throw new Error("container is missing the Apache-2.0 OCI license label");
+  }
   process.stdout.write(`${JSON.stringify({
     contractVersion: "tasq.server-container-smoke.v1",
     status: "passed",
@@ -108,6 +121,12 @@ try {
     imageId: inspected.Id,
     repoDigests: inspected.RepoDigests ?? [],
     platform: `${inspected.Os}/${inspected.Architecture}`,
+    metadata: {
+      source: labels["org.opencontainers.image.source"],
+      version: labels["org.opencontainers.image.version"],
+      revision: labels["org.opencontainers.image.revision"],
+      license: labels["org.opencontainers.image.licenses"],
+    },
     bootstrap: "passed",
     health: "passed",
   }, null, 2)}\n`);

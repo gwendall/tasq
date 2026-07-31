@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-07-31",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -159,7 +159,6 @@
     "TQ-606",
     "TQ-705",
     "TQ-320",
-    "TQ-607",
     "TQ-801",
     "TQ-802",
     "TQ-803",
@@ -182,6 +181,7 @@
     "TQ-903",
     "TQ-904",
     "TQ-905",
+    "TQ-607",
     "TQ-906"
   ],
   "items": [
@@ -201,7 +201,7 @@
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
       "remaining": [],
-      "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts"]
+      "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml"]
     },
     {
       "id": "TQ-603",
@@ -346,7 +346,12 @@
       "dependsOn": ["TQ-604", "TQ-605", "TQ-704", "TQ-609", "TQ-610"],
       "outcome": "Blind human-plus-agent install, contention, recovery and same-ledger Console adoption gate",
       "remaining": ["record-independent-unbriefed-human-session"],
-      "evidence": ["docs/contracts/TQ-606_PUBLIC_ADOPTION.md", "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json"]
+      "evidence": [
+        "docs/contracts/TQ-606_PUBLIC_ADOPTION.md",
+        "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json",
+        "docs/contracts/TQ-606_HUMAN_SESSION_PROTOCOL.md",
+        "docs/contracts/TQ-606_HUMAN_SESSION_EVIDENCE.schema.json"
+      ]
     },
     {
       "id": "TQ-705",
@@ -364,15 +369,6 @@
       "outcome": "Certify interactive conversation and run consumers without moving machine, terminal or execution ownership into Core",
       "remaining": [],
       "evidence": ["docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md", "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json"]
-    },
-    {
-      "id": "TQ-607",
-      "status": "in_progress_dogfood",
-      "milestone": "private-dogfood",
-      "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
-      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation",
-      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
-      "evidence": ["docs/contracts/TQ-607_PRIVATE_DOGFOOD_GATE.md", "docs/contracts/TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
     },
     {
       "id": "TQ-801",
@@ -434,10 +430,10 @@
     },
     {
       "id": "TQ-807",
-      "status": "candidate_done_external_gate",
+      "status": "in_progress_external_gate",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-805", "TQ-809"],
-      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted read-only Console, health, backup, restore and upgrade contracts",
+      "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted Console BFF base (bounded guarded actions owned by TQ-811), health, backup, restore and upgrade contracts",
       "remaining": [
         "publish_immutable_multi_arch_image_sbom_checksums_and_provenance"
       ],
@@ -595,7 +591,9 @@
         "docs/contracts/TQ-810_REMOTE_SDKS.md",
         "docs/contracts/TQ-810_REMOTE_SDK_CERTIFICATION.json",
         "clients/python/tests/test_client.py",
-        "packages/tasq-evals/python-remote-client.test.ts"
+        "packages/tasq-evals/python-remote-client.test.ts",
+        "scripts/release/certify_published_python_server.py",
+        ".github/workflows/certify-published-python.yml"
       ]
     },
     {
@@ -685,6 +683,15 @@
         "docs/contracts/TQ-905_CLOUD_HOSTILE_CERTIFICATION.json",
         "packages/tasq-cloud-control-plane/test/cloud.test.ts"
       ]
+    },
+    {
+      "id": "TQ-607",
+      "status": "in_progress_dogfood",
+      "milestone": "private-dogfood",
+      "dependsOn": ["TQ-304", "TQ-501", "TQ-504"],
+      "outcome": "Operate Tasq on retained ledgers for at least 30 days across personal planning, Kami Robotics and an interactive agent runtime before stable graduation",
+      "remaining": ["complete-19-more-personal-active-use-days", "complete-personal-open-blocked-resumed-evidence-journey", "complete-personal-no-direct-store-repair-journey", "complete-second-live-ledger-upgrade", "complete-minimum-duration", "record-go-extend-or-no-go-decision"],
+      "evidence": ["docs/contracts/TQ-607_PRIVATE_DOGFOOD_GATE.md", "docs/contracts/TQ-607_DOGFOOD_STATUS.json", "evidence/tq-607/README.md"]
     },
     {
       "id": "TQ-906",

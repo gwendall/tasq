@@ -5,12 +5,18 @@ does not embed Core, open SQLite, run migrations or reproduce authorization.
 
 ```python
 import os
-from tasq_remote import TasqRemote
+from tasq_remote import TasqRemote, redeem_remote_enrollment
+
+credential = redeem_remote_enrollment(
+    endpoint="https://server.example/",
+    workspace_id="operations/alpha",
+    enrollment_token=os.environ["TASQ_ENROLLMENT_TOKEN"],
+)
 
 tasq = TasqRemote(
     endpoint="https://server.example/",
     workspace_id="operations/alpha",
-    access_token=lambda: os.environ["TASQ_ACCESS_TOKEN"],
+    access_token=credential["accessToken"],
 )
 
 for item in tasq.list_commitments(limit=20)["items"]:

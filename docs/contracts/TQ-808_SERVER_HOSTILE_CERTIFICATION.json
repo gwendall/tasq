@@ -37,6 +37,14 @@
     "packages/tasq-server/test/daemon.test.ts",
     "scripts/server-container-smoke.ts"
   ],
+  "publicationAutomation": {
+    "state": "authorized_not_run",
+    "version": "0.4.0",
+    "publishWorkflow": ".github/workflows/publish-server.yml",
+    "exactDigestCertificationWorkflow": ".github/workflows/certify-published-server.yml",
+    "cleanClientMatrixStillExternal": true,
+    "unbriefedOperatorStillExternal": true
+  },
   "remainingExternalGate": [
     "protected_multi_arch_image_and_provenance",
     "macos_and_linux_clients_against_exact_published_digest",

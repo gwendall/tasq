@@ -168,6 +168,7 @@ describe("deployable Server runtime", () => {
         { headers: { cookie: cookie!.split(";", 1)[0]! } },
       ));
       expect(console.status).toBe(200);
+      expect(console.headers.get("referrer-policy")).toBe("same-origin");
       expect(await console.text()).toContain("Hosted commitment");
       const login = await runtime.fetch(new Request("http://internal/console"));
       expect(login.status).toBe(401);

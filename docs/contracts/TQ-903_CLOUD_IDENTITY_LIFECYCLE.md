@@ -19,3 +19,7 @@ depend on browser sessions.
 The caller remains responsible for proving the upstream identity or recovery
 event before invoking these methods. The source candidate does not implement
 an OAuth callback, email recovery, passkeys or secret-manager issuance.
+Real OIDC, workload issuance, recovery and revocation evidence is recorded
+only through the external gates in
+[`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json);
+opaque references never substitute for upstream identity proof.

@@ -25,3 +25,11 @@ references, never raw credentials.
 This is checked-in source, not a running managed service. Production database,
 secret manager, deployment identity, SLO and multi-region evidence remain
 external.
+
+The provider-neutral evidence fields and fail-closed validation route are
+defined in
+[`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json)
+and the
+[`production-readiness runbook`](../guides/MANAGED_CLOUD_PRODUCTION_READINESS.md).
+They prepare the external deployment gate without changing this ticket's
+status or selecting an infrastructure provider.

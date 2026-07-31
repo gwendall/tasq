@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tasq.run/schemas/managed-cloud-production-readiness-v1.json",
+  "title": "Tasq managed Cloud production readiness manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "state",
+    "candidate",
+    "deployment",
+    "reliability",
+    "gates",
+    "nonClaims"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "tasq.managed-cloud-production-readiness.v1"
+    },
+    "state": {
+      "enum": ["external_gates_open", "ready_for_maintainer_decision"]
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceCommit", "controlPlaneDigest", "serverImage", "provenanceRefs"],
+      "properties": {
+        "sourceCommit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "controlPlaneDigest": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "serverImage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["coordinate", "digest"],
+          "properties": {
+            "coordinate": {
+              "type": ["string", "null"],
+              "pattern": "^[a-z0-9.-]+(?::[0-9]+)?/[a-z0-9._/-]+@sha256:[0-9a-f]{64}$"
+            },
+            "digest": {
+              "$ref": "#/$defs/nullableDigest"
+            }
+          }
+        },
+        "provenanceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deploymentRef",
+        "providerProfileRef",
+        "deploymentIdentityRef",
+        "databaseRef",
+        "secretManagerRef",
+        "publicOrigin",
+        "tlsPolicyRef",
+        "cspPolicyRef",
+        "regions"
+      ],
+      "properties": {
+        "deploymentRef": {
+          "$ref": "#/$defs/nullableProviderRef"
+        },
+        "providerProfileRef": {
+          "$ref": "#/$defs/nullableProviderRef"
+        },
+        "deploymentIdentityRef": {
+          "$ref": "#/$defs/nullableProviderRef"
+        },
+        "databaseRef": {
+          "$ref": "#/$defs/nullableProviderRef"
+        },
+        "secretManagerRef": {
+          "$ref": "#/$defs/nullableProviderRef"
+        },
+        "publicOrigin": {
+          "type": ["string", "null"],
+          "pattern": "^https://[a-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "tlsPolicyRef": {
+          "$ref": "#/$defs/nullableEvidenceRef"
+        },
+        "cspPolicyRef": {
+          "$ref": "#/$defs/nullableEvidenceRef"
+        },
+        "regions": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/providerRef"
+          }
+        }
+      }
+    },
+    "reliability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "availabilityTargetPercent",
+        "measurementWindowDays",
+        "recoveryPointObjectiveMinutes",
+        "recoveryTimeObjectiveMinutes",
+        "sloEvidenceRefs",
+        "disasterRecoveryEvidenceRefs"
+      ],
+      "properties": {
+        "availabilityTargetPercent": {
+          "type": ["number", "null"],
+          "minimum": 99,
+          "maximum": 100
+        },
+        "measurementWindowDays": {
+          "type": ["integer", "null"],
+          "minimum": 28,
+          "maximum": 366
+        },
+        "recoveryPointObjectiveMinutes": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 10080
+        },
+        "recoveryTimeObjectiveMinutes": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 10080
+        },
+        "sloEvidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        },
+        "disasterRecoveryEvidenceRefs": {
+          "$ref": "#/$defs/evidenceRefs"
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "status",
+          "observedAt",
+          "evidenceRefs",
+          "reviewerRef",
+          "notes"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "tq901.production_database",
+              "tq901.secret_manager_and_server_digest",
+              "tq901.independent_multitenant_review",
+              "tq902.deployed_browser_matrix",
+              "tq902.identity_callback_and_logout",
+              "tq902.independent_web_security_review",
+              "tq903.real_oidc_integration",
+              "tq903.workload_secret_issuance",
+              "tq903.recovery_and_revocation_drill",
+              "tq904.provider_backup_restore",
+              "tq904.provider_key_rotation",
+              "tq904.export_and_verified_deletion",
+              "tq904.oncall_incident_and_support_drill",
+              "tq905.exact_artifact_deployment",
+              "tq905.offsite_restore_and_region_failover",
+              "tq905.independent_multitenant_security_review",
+              "tq905.unbriefed_operator_incident_drill"
+            ]
+          },
+          "status": {
+            "enum": ["pending", "passed", "failed"]
+          },
+          "observedAt": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "pattern": "Z$"
+          },
+          "evidenceRefs": {
+            "$ref": "#/$defs/evidenceRefs"
+          },
+          "reviewerRef": {
+            "$ref": "#/$defs/nullableEvidenceRef"
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "nonClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "managedCloudAvailable",
+        "remoteEffectsEnabled",
+        "manifestGrantsAuthority"
+      ],
+      "properties": {
+        "managedCloudAvailable": {
+          "const": false
+        },
+        "remoteEffectsEnabled": {
+          "const": false
+        },
+        "manifestGrantsAuthority": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nullableDigest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "providerRef": {
+      "type": "string",
+      "pattern": "^urn:tasq-provider:[a-z0-9][a-z0-9._:/-]{2,499}$"
+    },
+    "nullableProviderRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/providerRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidenceRef": {
+      "type": "string",
+      "anyOf": [
+        {
+          "pattern": "^https://[^/?#@]+(?::[0-9]+)?/[^?#@]+$"
+        },
+        {
+          "pattern": "^urn:sha256:[0-9a-f]{64}$"
+        },
+        {
+          "pattern": "^evidence/cloud/[a-zA-Z0-9][a-zA-Z0-9._/-]{2,499}$"
+        }
+      ]
+    },
+    "nullableEvidenceRef": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/evidenceRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    }
+  }
+}

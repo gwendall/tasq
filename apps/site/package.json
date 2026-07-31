@@ -8,7 +8,7 @@
     "dev": "bun scripts/generate-truth.ts && next dev",
     "generate": "bun scripts/generate-truth.ts",
     "build": "bun scripts/generate-truth.ts --check && next build",
-    "start": "npx serve out",
+    "start": "node scripts/serve-export.mjs",
     "test": "bun scripts/generate-truth.ts --check && bun test",
     "test:browser": "bun scripts/generate-truth.ts --check && next build && playwright test --config playwright.config.ts",
     "typecheck": "bun scripts/generate-truth.ts --check && tsc --noEmit"

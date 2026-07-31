@@ -1,6 +1,6 @@
 # TQ-802 — Durable authority store and isolated workspace router
 
-> **Status:** implemented and repository-certified — 2026-07-21
+> **Status:** implemented and repository-certified — 2026-07-30
 > **Machine certificate:** `TQ-802_AUTHORITY_STORE_CERTIFICATION.json`
 > **Remote surface status:** implemented later as an unpublished TQ-803–TQ-809
 > Server source candidate
@@ -68,10 +68,13 @@ Package tests prove that:
 - decisions and audit cannot be updated/deleted and contain no credential
   envelope.
 
-The independent eval starts two cold migrators in separate processes, closes
-and reopens the control plane, routes a robotics workspace through a binding
-whose value is unrelated to its name, revokes access, restarts again and
-observes the denial and audit without touching the decoy opener.
+The independent eval starts two cold migrators in separate processes. A
+`SQLITE_BUSY_SNAPSHOT` retry disposes the stale connection before its bounded
+backoff, so the next attempt necessarily observes a fresh snapshot instead of
+spinning on an unrecoverable connection-local view. The eval then closes and
+reopens the control plane, routes a robotics workspace through a binding whose
+value is unrelated to its name, revokes access, restarts again and observes
+the denial and audit without touching the decoy opener.
 
 ## Honest next boundary
 

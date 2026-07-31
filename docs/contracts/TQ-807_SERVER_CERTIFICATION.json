@@ -1,9 +1,17 @@
 {
   "contractVersion": "tasq.server-certification.v1",
   "status": "repository_and_local_container_certified",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-07-30",
   "backlogItem": "TQ-807",
   "aggregateSourceDigest": "sha256:0f04c5dbdebbb51fdfb302bb78701440354a562ca71f9f37abc988ffab7dbcbb",
+  "certificateScope": {
+    "evidenceEpoch": "historical_tq807_slice_2026-07-24",
+    "aggregateSourceDigestIsHistorical": true,
+    "historicalEvidenceFrozen": true,
+    "currentCombinedConsoleAuthority": "TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
+    "currentCombinedConsoleSourceCertified": true,
+    "currentExactPublishedImageCertified": false
+  },
   "runtime": {
     "entrypoint": "packages/tasq-server/src/daemon.ts",
     "commands": [
@@ -37,10 +45,23 @@
     "restore": "config_bound_checksum_verified_create_only"
   },
   "hostedConsole": {
-    "mode": "same_origin_read_only_bff",
+    "evidenceEpoch": "historical_tq807_slice_2026-07-24",
+    "mode": "historical_same_origin_read_only_bff",
     "cookie": "Secure_HttpOnly_SameSite_Strict",
     "guardedRestOnEveryPage": true,
-    "mutationSurface": false
+    "mutationSurface": false,
+    "supersededBy": "TQ-811"
+  },
+  "currentCombinedHostedConsole": {
+    "authority": "TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
+    "mode": "same_origin_bounded_action_bff",
+    "cookie": "Secure_HttpOnly_SameSite_Strict_Host_prefix",
+    "guardedRestOnEveryPage": true,
+    "mutationSurface": true,
+    "registeredActions": 7,
+    "localImageBrowserCertification": "passed_candidate_only",
+    "exactPublishedImageBrowserCertification": false,
+    "publicSupportClaim": false
   },
   "operationalEndpoints": [
     "/healthz",
@@ -50,6 +71,7 @@
     "/metrics"
   ],
   "localContainerEvidence": {
+    "evidenceEpoch": "historical_tq807_slice_2026-07-24",
     "script": "scripts/server-container-smoke.ts",
     "dockerfile": "deploy/server/Dockerfile",
     "platformObserved": "linux/arm64",
@@ -57,6 +79,24 @@
     "bootstrap": "passed",
     "health": "passed",
     "published": false
+  },
+  "currentContainerSourceHardening": {
+    "evidenceEpoch": "current_source_and_local_candidate_2026-07-30",
+    "dockerfile": "deploy/server/Dockerfile",
+    "compose": "deploy/server/compose.yaml",
+    "baseImagePinnedByDigest": true,
+    "reverseProxyImagePinnedByDigest": true,
+    "ociIdentityLabelsRequired": true,
+    "platformsReplayed": [
+      "linux/arm64",
+      "linux/amd64_qemu"
+    ],
+    "evidence": [
+      "packages/tasq-server/test/config.test.ts",
+      "scripts/server-container-smoke.ts"
+    ],
+    "exactPublishedDigest": false,
+    "publicSupportClaim": false
   },
   "certifiedProperties": [
     "strict_versioned_operator_configuration",
@@ -69,12 +109,14 @@
     "durable_exact_remote_mutation_replay",
     "claim_and_resource_contention",
     "same_rest_mcp_domain_and_authority",
-    "authenticated_read_only_console_bff",
+    "historical_authenticated_read_only_console_bff_superseded_by_tq811",
+    "current_authenticated_bounded_action_console_bff_source_and_local_candidate",
     "workspace_free_bounded_metrics",
     "all_bindings_migrated_before_readiness",
     "backup_restore_retains_authority_domain_and_receipts",
     "real_daemon_process_lifecycle",
-    "real_linux_container_bootstrap_and_health"
+    "real_linux_container_bootstrap_and_health",
+    "current_digest_pinned_and_oci_labeled_container_source_candidate"
   ],
   "evidence": [
     "packages/tasq-server/test/jwt.test.ts",
@@ -82,9 +124,23 @@
     "packages/tasq-server/test/workspace.test.ts",
     "packages/tasq-server/test/runtime.test.ts",
     "packages/tasq-server/test/daemon.test.ts",
+    "packages/tasq-server/test/config.test.ts",
     "packages/tasq-core/test/local-client.test.ts",
-    "scripts/server-container-smoke.ts"
+    "scripts/server-container-smoke.ts",
+    "docs/contracts/TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
+    "packages/tasq-evals/scripts/certify-hosted-console-image.ts",
+    "packages/tasq-inspector/hosted-browser/hosted-console-image.pw.ts"
   ],
+  "publicationAutomation": {
+    "state": "authorized_not_run",
+    "version": "0.4.0",
+    "publishWorkflow": ".github/workflows/publish-server.yml",
+    "certificationWorkflow": ".github/workflows/certify-published-server.yml",
+    "registry": "ghcr.io/gwendall/tasq-server",
+    "platforms": ["linux/amd64", "linux/arm64"],
+    "requiresExactPolicyAuthorization": true,
+    "externalPublicationPerformed": false
+  },
   "remainingExternalGate": [
     "protected_ci_multi_arch_image",
     "immutable_registry_digest",

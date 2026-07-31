@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.hosted-human-actions-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-07-30",
   "backlogItem": "TQ-811",
   "surface": [
     "commitment_create",
@@ -27,8 +27,41 @@
     "packages/tasq-server/src/workspace.ts",
     "packages/tasq-server/test/runtime.test.ts",
     "packages/tasq-server/test/workspace.test.ts",
-    "packages/tasq-authority/test/authority.test.ts"
+    "packages/tasq-authority/test/authority.test.ts",
+    "packages/tasq-evals/scripts/certify-hosted-console-image.ts",
+    "packages/tasq-evals/hosted-console-image-contract.ts",
+    "packages/tasq-evals/hosted-console-image-certification.test.ts",
+    "packages/tasq-inspector/hosted-browser.playwright.config.ts",
+    "packages/tasq-inspector/hosted-browser/hosted-console-image.pw.ts"
   ],
+  "localImageBrowserCertification": {
+    "status": "passed_local_image_candidate_only",
+    "testedAt": "2026-07-30",
+    "platform": "linux/arm64",
+    "browser": "chromium",
+    "explicitImageRequired": true,
+    "ociIdentityRequired": true,
+    "oneUseHumanDeviceEnrollmentRedeemed": true,
+    "sessionCookie": "Secure_HttpOnly_SameSite_Strict_Host_prefix",
+    "consoleMutation": "commitment.propose",
+    "durableReceiptReplay": true,
+    "missingCredentialRejected": 401,
+    "foreignOriginRejected": 400,
+    "unauthorizedStateCommitted": false,
+    "directConsoleCoreMutationPath": false,
+    "retainedSensitiveArtifact": false,
+    "exactPublishedDigest": false,
+    "publicSupportClaim": false
+  },
+  "publicationAutomation": {
+    "state": "authorized_not_run",
+    "version": "0.4.0",
+    "exactImageWorkflow": ".github/workflows/certify-published-server.yml",
+    "containerLifecycleReplay": true,
+    "realBrowserReplayPrepared": true,
+    "browserEvidenceArtifact": "tasq-server-tq811-browser-evidence",
+    "exactPublishedBrowserReplay": false
+  },
   "remainingExternalGate": [
     "exact_published_server_image_browser_replay",
     "tq807_tq808_server_publication"

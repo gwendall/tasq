@@ -1,0 +1,175 @@
+{
+  "contractVersion": "tasq.managed-cloud-production-readiness.v1",
+  "state": "external_gates_open",
+  "candidate": {
+    "sourceCommit": null,
+    "controlPlaneDigest": null,
+    "serverImage": {
+      "coordinate": null,
+      "digest": null
+    },
+    "provenanceRefs": []
+  },
+  "deployment": {
+    "deploymentRef": null,
+    "providerProfileRef": null,
+    "deploymentIdentityRef": null,
+    "databaseRef": null,
+    "secretManagerRef": null,
+    "publicOrigin": null,
+    "tlsPolicyRef": null,
+    "cspPolicyRef": null,
+    "regions": []
+  },
+  "reliability": {
+    "availabilityTargetPercent": null,
+    "measurementWindowDays": null,
+    "recoveryPointObjectiveMinutes": null,
+    "recoveryTimeObjectiveMinutes": null,
+    "sloEvidenceRefs": [],
+    "disasterRecoveryEvidenceRefs": []
+  },
+  "gates": [
+    {
+      "id": "tq901.production_database",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Production database deployment and isolation evidence remain external."
+    },
+    {
+      "id": "tq901.secret_manager_and_server_digest",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Secret-manager binding and exact Server image evidence remain external."
+    },
+    {
+      "id": "tq901.independent_multitenant_review",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Independent multi-tenant infrastructure review remains external."
+    },
+    {
+      "id": "tq902.deployed_browser_matrix",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Deployed browser automation against the canonical public origin remains external."
+    },
+    {
+      "id": "tq902.identity_callback_and_logout",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Real identity callback and logout drill remain external."
+    },
+    {
+      "id": "tq902.independent_web_security_review",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Independent web security review remains external."
+    },
+    {
+      "id": "tq903.real_oidc_integration",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Real OIDC integration evidence remains external."
+    },
+    {
+      "id": "tq903.workload_secret_issuance",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Real secret-manager workload issuance evidence remains external."
+    },
+    {
+      "id": "tq903.recovery_and_revocation_drill",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Operator recovery and revocation drill remains external."
+    },
+    {
+      "id": "tq904.provider_backup_restore",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Provider backup and restore drill remains external."
+    },
+    {
+      "id": "tq904.provider_key_rotation",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Provider key and credential-reference rotation drill remains external."
+    },
+    {
+      "id": "tq904.export_and_verified_deletion",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Provider export and verified byte-deletion evidence remain external."
+    },
+    {
+      "id": "tq904.oncall_incident_and_support_drill",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "On-call incident and support-access drill remains external."
+    },
+    {
+      "id": "tq905.exact_artifact_deployment",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Exact protected Server image and control-plane deployment evidence remain external."
+    },
+    {
+      "id": "tq905.offsite_restore_and_region_failover",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Off-site restore and region failover drill remain external."
+    },
+    {
+      "id": "tq905.independent_multitenant_security_review",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "Independent multi-tenant security review remains external."
+    },
+    {
+      "id": "tq905.unbriefed_operator_incident_drill",
+      "status": "pending",
+      "observedAt": null,
+      "evidenceRefs": [],
+      "reviewerRef": null,
+      "notes": "A previously unbriefed operator incident drill remains external."
+    }
+  ],
+  "nonClaims": {
+    "managedCloudAvailable": false,
+    "remoteEffectsEnabled": false,
+    "manifestGrantsAuthority": false
+  }
+}

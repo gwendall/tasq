@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 2,
+  "revision": 3,
   "status": "current-release-passed",
   "testedAt": "2026-07-23",
   "storeFormat": {
@@ -72,6 +72,39 @@
     "targetFormat": 26,
     "attestationsVerified": true,
     "postMigrationDoctorPassed": true
+  },
+  "nextReleasePrerelease": {
+    "candidateVersion": "0.4.0",
+    "candidateStoreFormat": 28,
+    "matrix": "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json",
+    "harness": "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts",
+    "protectedWorkflow": ".github/workflows/certify-v040-migration-candidate.yml",
+    "sourceReleases": [
+      { "version": "0.2.0", "storeFormat": 25 },
+      { "version": "0.3.0", "storeFormat": 26 }
+    ],
+    "localReplay": {
+      "status": "passed-local-unprotected-candidate",
+      "testedAt": "2026-07-31",
+      "target": "darwin-arm64",
+      "exactPinnedPublicSourceAssets": true,
+      "candidateSourceCommitBinding": false,
+      "migratedToFormat28": true,
+      "privateSnapshotsAndCompleteReceipts": true,
+      "postMigrationDoctorPassed": true,
+      "matchingBinarySnapshotAndJournalRestorePassed": true,
+      "typedOldBinaryRefusal": true,
+      "noLogicalJournalReceiptOrSnapshotWrite": true,
+      "byteExactFilesystemRefusal": {
+        "v0.2.0": true,
+        "v0.3.0": false
+      },
+      "knownHistoricalPhysicalEffect": "Published v0.3.0 may create or update db.sqlite-shm and empty db.sqlite-wal while returning its non-mutating typed refusal."
+    },
+    "protectedSourceCandidateReplay": "not_run",
+    "publishedCandidateArtifactAttestations": "not_run",
+    "publishedV040Replay": "not_run",
+    "publicSupportClaim": false
   },
   "futureCompatibilityRule": "Once three protected release lines exist, certify exact protected N-2 binaries and published bytes before claiming support for that line.",
   "remainingExternalReplay": [],

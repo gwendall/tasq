@@ -22,3 +22,6 @@ operations, but it is not an alternate authority layer.
 
 A real public origin, identity provider integration, CSP deployment,
 browser-automation matrix and external web security review remain external.
+Their evidence slots and independent-review requirement are frozen by the
+[`managed Cloud production-readiness schema`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json);
+the checked-in template remains intentionally incomplete.

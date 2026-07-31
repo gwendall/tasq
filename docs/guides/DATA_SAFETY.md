@@ -80,10 +80,19 @@ Run the exact `next.doctor` argv returned by import before using the new store.
 Portable import is create-only in v1; there is no merge into an existing
 ledger.
 
-## Bootstrap compatibility rule
+## N-2 compatibility rule
 
-Before three protected release lines exist, direct-upgrade evidence uses every
-extant protected release plus the populated Tasq Zero and format-5 historical
-fixtures. Once N-2 protected lines exist, those exact released binaries and
-bytes become mandatory acceptance inputs. Protected `v0.1.0` now exists; its
-exact downloaded bytes are the active replay gate.
+For the `v0.4.0` candidate, exact public `v0.2.0`/format-25 and
+`v0.3.0`/format-26 binaries and bytes are mandatory inputs. The local
+source-candidate matrix passes on Darwin arm64, including nontrivial retained
+ledgers, format-28 migration receipts, doctor and matching-binary restore.
+Protected Darwin/Linux source-candidate evidence and the later exact published
+`v0.4.0` replay have not run, so they remain release gates rather than shipped
+support.
+
+An old binary's typed refusal guarantees no logical ledger, journal, receipt
+or recovery-snapshot mutation. Do not interpret that as a byte-exact
+filesystem promise for historical alpha binaries: published `v0.3.0` may touch
+SQLite `-shm` and empty `-wal` sidecars during refusal. Preserve the complete
+store and sidecars for forensics, and restore only the verified snapshot plus
+its corresponding journal with the matching binary.

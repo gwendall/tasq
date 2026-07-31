@@ -17,7 +17,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
-__all__ = ["TasqRemote", "TasqRemoteError", "__version__"]
+__all__ = [
+    "TasqRemote",
+    "TasqRemoteError",
+    "redeem_remote_enrollment",
+    "__version__",
+]
 __version__ = "0.1.0"
 
 _WORKSPACE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,199}$")
@@ -88,6 +93,80 @@ def _json(body: bytes, status: int, request_id: str) -> dict[str, Any]:
     return value
 
 
+def _problem(
+    value: Mapping[str, Any], status: int, request_id: str
+) -> TasqRemoteError:
+    code = value.get("code")
+    server_request_id = value.get("requestId")
+    oldest = value.get("oldestSequence")
+    return TasqRemoteError(
+        status,
+        code if isinstance(code, str) else "invalid_server_response",
+        server_request_id if isinstance(server_request_id, str) else request_id,
+        status >= 500 or code in {"authority_busy", "mutation_outcome_unknown"},
+        oldest if isinstance(oldest, int) and oldest >= 0 else None,
+    )
+
+
+def redeem_remote_enrollment(
+    *,
+    endpoint: str,
+    workspace_id: str,
+    enrollment_token: str,
+    transport: Transport | None = None,
+    request_id: str | None = None,
+) -> dict[str, Any]:
+    """Redeem one pre-provisioned enrollment without inventing identity."""
+    if not _WORKSPACE.fullmatch(workspace_id):
+        raise ValueError("invalid workspace_id")
+    if (
+        not isinstance(enrollment_token, str)
+        or not 32 <= len(enrollment_token) <= 2_000
+    ):
+        raise ValueError("enrollment_token must contain 32..2000 characters")
+    rid = request_id or str(uuid.uuid4())
+    if not isinstance(rid, str) or not rid or len(rid) > 500:
+        raise ValueError("request_id must contain 1..500 characters")
+    target = (
+        _endpoint(endpoint)
+        + "v1/workspaces/"
+        + quote(workspace_id, safe="")
+        + "/enrollments/redeem"
+    )
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "x-tasq-request-id": rid,
+    }
+    body = json.dumps(
+        {
+            "contractVersion": "tasq.remote-enrollment.v1",
+            "enrollmentToken": enrollment_token,
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    sender = transport or _default_transport
+    try:
+        status, _, response_body = sender("POST", target, headers, body)
+    except TasqRemoteError:
+        raise
+    except Exception as error:
+        raise TasqRemoteError(0, "network_error", rid, True) from error
+    value = _json(response_body, status, rid)
+    if not 200 <= status < 300:
+        raise _problem(value, status, rid)
+    if (
+        value.get("contractVersion") != "tasq.remote-enrollment.v1"
+        or value.get("workspaceId") != workspace_id
+        or not isinstance(value.get("accessToken"), str)
+        or not 32 <= len(value["accessToken"]) <= 2_000
+    ):
+        raise TasqRemoteError(status, "invalid_server_response", rid, False)
+    return value
+
+
 class TasqRemote:
     contract_version = "tasq.remote-python-client.v1"
 
@@ -152,17 +231,7 @@ class TasqRemote:
             raise TasqRemoteError(0, "network_error", rid, True) from error
         value = _json(response_body, status, rid)
         if not 200 <= status < 300:
-            code = value.get("code")
-            server_request_id = value.get("requestId")
-            oldest = value.get("oldestSequence")
-            raise TasqRemoteError(
-                status,
-                code if isinstance(code, str) else "invalid_server_response",
-                server_request_id if isinstance(server_request_id, str) else rid,
-                status >= 500
-                or code in {"authority_busy", "mutation_outcome_unknown"},
-                oldest if isinstance(oldest, int) and oldest >= 0 else None,
-            )
+            raise _problem(value, status, rid)
         return value
 
     def list_commitments(

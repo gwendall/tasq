@@ -14,9 +14,7 @@ on:
         default: c093ed58ab2a9e38dbd9d877ba75021997761057
         type: string
 
-permissions:
-  contents: read
-  attestations: read
+permissions: {}
 
 jobs:
   published-bytes:
@@ -30,14 +28,24 @@ jobs:
             target: darwin-arm64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
+    permissions:
+      contents: read
+      attestations: read
+    env:
+      INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+      INPUT_TAG: ${{ inputs.tag }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4.4.0
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ inputs.source_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 22
           cache: pnpm
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.3.11
       - run: pnpm install --frozen-lockfile
@@ -45,9 +53,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          [[ "${{ inputs.tag }}" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
-          [[ "${{ inputs.source_commit }}" =~ ^[a-f0-9]{40}$ ]]
-          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/${{ inputs.tag }}" --jq .sha)" = "${{ inputs.source_commit }}"
+          [[ "$INPUT_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+          test "$GITHUB_REF" = "refs/tags/$INPUT_TAG"
+          test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "${INPUT_TAG}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$INPUT_TAG" --jq .sha)" = "$INPUT_SOURCE_COMMIT"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Download and attest exact release bytes
@@ -55,13 +66,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist/published
-          gh release download "${{ inputs.tag }}" \
+          gh release download "$INPUT_TAG" \
             --repo "$GITHUB_REPOSITORY" \
             --dir dist/published \
-            --pattern "tasq-${{ inputs.tag }}-${{ matrix.target }}.*"
+            --pattern "tasq-${INPUT_TAG}-${{ matrix.target }}.*"
           test "$(find dist/published -type f | wc -l | tr -d ' ')" = "5"
           for asset in dist/published/*; do
-            gh attestation verify "$asset" --repo "$GITHUB_REPOSITORY"
+            gh attestation verify "$asset" \
+              --repo "$GITHUB_REPOSITORY" \
+              --signer-workflow "gwendall/tasq/.github/workflows/release.yml" \
+              --source-digest "$INPUT_SOURCE_COMMIT" \
+              --source-ref "$GITHUB_REF" \
+              --deny-self-hosted-runners
           done
         env:
           GH_TOKEN: ${{ github.token }}
@@ -81,37 +97,153 @@ jobs:
           TASQ_PUBLISHED_NPM_VERSION: ${{ inputs.tag }}
 
   npm-registry:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x64-gnu
+          - os: macos-14
+            target: darwin-arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    environment: release
+    permissions:
+      contents: read
+    env:
+      INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+      INPUT_TAG: ${{ inputs.tag }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4.4.0
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ inputs.source_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 22
           cache: pnpm
-      - uses: oven-sh/setup-bun@v2
+      - name: Pin the npm attestation-verification client
+        run: |
+          npm install --global npm@11.18.0
+          test "$(npm --version)" = "11.18.0"
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.3.11
       - run: pnpm install --frozen-lockfile
+      - id: tq616-eligibility
+        name: Require explicit TQ-616 compatibility or historical exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${INPUT_TAG#v}"
+          mkdir -p dist/tq616-evidence
+          evidence="dist/tq616-evidence/tq616-eligibility-${{ matrix.target }}.json"
+          bun scripts/release/verify-tq616-release-eligibility.ts \
+            --version "$version" \
+            --source-commit "$INPUT_SOURCE_COMMIT" \
+            --repository "$GITHUB_REPOSITORY" \
+            > "$evidence"
+          replay="$(jq -r '.replayRequired' "$evidence")"
+          test "$replay" = "true" || test "$replay" = "false"
+          echo "replay=$replay" >> "$GITHUB_OUTPUT"
       - name: Download and match every registry tarball
         shell: bash
         run: |
           set -euo pipefail
-          version="${{ inputs.tag }}"
+          [[ "$INPUT_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+          test "$GITHUB_REF" = "refs/tags/$INPUT_TAG"
+          test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "${INPUT_TAG}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          version="$INPUT_TAG"
           version="${version#v}"
-          mkdir -p dist/packages
-          packages=(@tasq-run/schema @tasq-run/extension-sdk @tasq-run/core @tasq-run/protocol-adapters @tasq-run/mcp @tasq-run/console @tasq-run/cli)
-          for package_name in "${packages[@]}"; do
+          authorization="$(
+            bun scripts/release/verify-release-authorization.ts \
+              --version "$version" \
+              --source-commit "$INPUT_SOURCE_COMMIT" \
+              --repository "$GITHUB_REPOSITORY"
+          )"
+          mkdir -p dist/packages dist/npm-verifications dist/tq616-evidence
+          manifest_args=(
+            --packages-dir dist/packages
+            --verification-dir dist/npm-verifications
+            --version "$version"
+            --source-commit "$INPUT_SOURCE_COMMIT"
+            --out "dist/packages/tasq-packages-v${version}.release.json"
+          )
+          while IFS= read -r package_name; do
             filename="$(npm pack "${package_name}@${version}" --pack-destination dist/packages --json | jq -r '.[0].filename')"
             tarball="dist/packages/$filename"
+            slug="${package_name#@tasq-run/}"
             bun scripts/release/verify-npm-publication.ts \
               --package "$package_name" \
               --version "$version" \
-              --source-commit "${{ inputs.source_commit }}" \
-              --tarball "$tarball"
-          done
+              --source-commit "$INPUT_SOURCE_COMMIT" \
+              --tarball "$tarball" \
+              > "dist/npm-verifications/${slug}.npm-publication.json"
+            manifest_args+=(--expected-package "$package_name")
+            if test "$package_name" = "@tasq-run/client"; then
+              echo "TASQ_PUBLISHED_REMOTE_CLIENT_VERSION=$version" >> "$GITHUB_ENV"
+              echo "TASQ_PUBLISHED_REMOTE_CLIENT_SOURCE_COMMIT=$INPUT_SOURCE_COMMIT" \
+                >> "$GITHUB_ENV"
+            fi
+          done < <(jq -r '.publicPackages[]' <<< "$authorization")
+          bun scripts/release/reconstruct-downloaded-package-manifest.ts "${manifest_args[@]}"
+          jq -n \
+            --arg version "$version" \
+            --argjson packages "$(jq -c '.publicPackages' <<< "$authorization")" \
+            '{
+              name: "tasq-tq616-npm-attestation",
+              private: true,
+              version: "0.0.0",
+              dependencies: reduce $packages[] as $package
+                ({}; .[$package] = $version)
+            }' > dist/npm-verifications/package.json
+          npm install \
+            --prefix dist/npm-verifications \
+            --ignore-scripts \
+            --no-audit \
+            --no-fund
+          npm audit signatures \
+            --prefix dist/npm-verifications \
+            --json \
+            > dist/tq616-evidence/npm-signatures-and-provenance.json
+      - name: Replay TQ-616 against exact downloaded npm bytes
+        if: steps.tq616-eligibility.outputs.replay == 'true'
+        shell: bash
+        env:
+          TQ616_TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          evidence="dist/tq616-evidence/tq616-${TQ616_TARGET}.json"
+          bun \
+            packages/tasq-evals/scripts/certify-signed-statement-package-candidate.ts \
+            --packages-dir dist/packages \
+            > "$evidence"
+          jq --exit-status '
+            .status == "passed_protected_downloaded_artifact_replay"
+            and .artifact.exactDownloadedBytes == true
+            and .artifact.registryIdentityAndIntegrityVerified == true
+            and .runtimes.node.validStatement == "passed"
+            and .runtimes.bun.validStatement == "passed"
+            and .runtimes.python.verified == true
+            and .publicSupportClaim == false
+            and .remainingExternalGate == ["unbriefed_agent_and_operator_trial"]
+          ' "$evidence" >/dev/null
       - name: Replay embedded client from exact registry packages
-        run: bun test packages/tasq-evals/published-embedded-client.test.ts
+        run: >-
+          bun test
+          packages/tasq-evals/published-embedded-client.test.ts
+          packages/tasq-evals/published-remote-client.test.ts
         env:
           TASQ_PUBLISHED_NPM_VERSION: ${{ inputs.tag }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: "tasq-tq616-${{ matrix.target }}"
+          path: |
+            dist/tq616-evidence/*.json
+            dist/npm-verifications/*.npm-publication.json
+            dist/packages/*.release.json
+          if-no-files-found: error
