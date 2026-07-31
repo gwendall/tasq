@@ -47,7 +47,7 @@
         "linux-x64-gnu": {
           "tasq-v0.3.0-linux-x64-gnu.cdx.json": "2cdb988635e299bd5960ce3b3de4b199e613b21ffbb3bef489ec0d26ff5a801a",
           "tasq-v0.3.0-linux-x64-gnu.install.ts": "03f8c1be077db1fcc37208f8ea6aae6f33326dbed235eeecc261e271cad1d598",
-          "tasq-v0.3.0-linux-x64-gnu.release.json": "5fdc8656338ff6e36eed692944e73f60f23b48756a32e5ce089ec0d26ff5a801a",
+          "tasq-v0.3.0-linux-x64-gnu.release.json": "5fdc8656338ff6e36eed692944e73f60f23b48756a32e5ce089ec28536a81127",
           "tasq-v0.3.0-linux-x64-gnu.SHA256SUMS": "10fa567c06ff87dd14cb456fec7d0ff4d0b9e714e51bab74e16bb869db8d3992",
           "tasq-v0.3.0-linux-x64-gnu.tar.gz": "164478b0496dd0657bb69e4908627d2a7cd9cbe8f2086463085fdbb984b6e3cd"
         }
