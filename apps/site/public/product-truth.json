@@ -34,7 +34,7 @@
       "canonical_repository_control_verified": true,
       "public_source_launch_authorized": true,
       "npm_scope_control_verified": true,
-      "trusted_publishing_configured": true,
+      "trusted_publishing_configured": false,
       "tag_protection_configured": true,
       "license_and_third_party_notice_closure_verified": true,
       "candidate_targets_clean_room_certified": true,
@@ -856,12 +856,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "6e47384ac8c40a72a9051d98c365dbe7d5f13d9fa9931141e1b88eaf0fc0f486"
+      "sha256": "7aeffad443ebaa0c0d48f4fd31a18137397640f1a94497814cdcd572c3c02348"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "97cd05abc3b15f2c149cc4cfb476c1ddc085cb39b058c3758addf3466f3a59dd"
+      "sha256": "edbe86320bef7e477cce37ffbf3a7d9d9153bb7e3aae832e1ba305a5230bc092"
     }
   ]
 }

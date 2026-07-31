@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-07-30
+**Updated:** 2026-07-31
 
 Tasq currently ships source for two local product shapes:
 
@@ -199,11 +199,14 @@ before schema mutation while retaining only a private diagnostic partial.
 Exact `v0.3.0` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. The `v0.4.0` pre-release harness
 now replays exact public `v0.2.0` and `v0.3.0` ledgers into candidate format 28
-and passes locally on Darwin arm64, including matching-binary restore.
+and passes locally plus in protected CI on Darwin arm64 and Linux x64 GNU,
+including matching-binary restore. Protected run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) is bound
+to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
 Published `v0.3.0` can touch SQLite WAL/SHM sidecars during its typed refusal
-but does not change canonical ledger or recovery state. Protected Darwin/Linux
-candidate evidence and exact published `v0.4.0` replay remain `not_run`; no
-`v0.4.0` support claim follows from the local pass. See
+but does not change canonical ledger or recovery state. The exact published
+`v0.4.0` replay remains `not_run`; no `v0.4.0` support claim follows from the
+protected source-candidate pass. See
 `../guides/DATA_SAFETY.md` and the TQ-608 certificate.
 
 TQ-705 certifies the Local Console in real Chromium on both Linux and macOS.
@@ -298,6 +301,18 @@ exact `v0.4.0` public-alpha release, its Server image, Python wheel,
 `@tasq-run/client` package and TQ-616 downloaded-byte replay. The protected
 workflows have not run, so authorization changes no shipped surface and
 published `v0.3.0` remains seven packages.
+
+The 2026-07-31 release handoff is an external-activation checkpoint. Main CI
+[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) and the
+two-target protected migration run above are green. No `v0.4.0` tag exists.
+The next irreversible step is deliberately the one-shot
+`@tasq-run/client@0.1.0-alpha.0` npm bootstrap from protected `main`, because a
+new npm identity must exist before its `release.yml` trusted publisher can be
+configured. PyPI still needs the `tasq-remote` pending publisher. The
+experimental GCP profile is fixed to `europe-west9-a` and
+`experimental.tasq.run`, but needs a dedicated billed project, active identity,
+DNS control and exact published image digests. Dogfood and blind-human adoption
+continue after the alpha; remote effects stay disabled.
 
 TQ-901–TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
 tests pass colliding names, isolated storage bindings, concurrent quota,

@@ -95,6 +95,19 @@ pending independent review. Neither Server, remote clients nor Cloud are in
 published `v0.3.0`; never treat an actor label, project descriptor or database
 URL as remote authentication.
 
+The complete `v0.4.0` public-alpha source candidate is merged on `main` and its
+Linux/macOS CI is green. Protected run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) passes
+the exact `v0.2.0`/`v0.3.0` to format-28 migration matrix on both supported
+targets, bound to commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
+`v0.4.0` is authorized but not tagged or published. Resume with the one-shot
+`@tasq-run/client` npm bootstrap, configure its `release.yml` trusted
+publisher and the `tasq-remote` PyPI pending publisher, then create the tag and
+run npm/native, Server, Python and downloaded-byte workflows. The experimental
+GCP deployment follows only after a dedicated billed project, active identity,
+DNS control and exact image digests exist. Dogfood and independent adoption do
+not block this alpha; they still block stable and human-usability claims.
+
 Agents operating a Tasq ledger rather than modifying this repository use the
 short [SKILL.md](SKILL.md) launcher and the versioned recipes returned by
 `tasq onboard`; they do not reconstruct workflows from repository prose.

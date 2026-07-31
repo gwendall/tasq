@@ -13,12 +13,16 @@ completed application backup.
 
 No resources were created while adding this profile. The local `gcloud`
 installation had no active identity, and the exact project, billing account,
-domain, Server digest and helper-image digest were unavailable.
+Server digest and helper-image digest were unavailable. The selected public
+alpha hostname is `experimental.tasq.run`, but its DNS authority and record are
+not configured by this repository.
 
 ## Fixed decisions
 
 - Location: `europe-west9`, with a single VM and `pd-balanced` data disk in one
   Paris zone.
+- Hostname: `experimental.tasq.run`, created only after reviewing the planned
+  static IPv4; Terraform never mutates DNS.
 - Runtime: the protected `ghcr.io/gwendall/tasq-server` image by exact digest.
   A tag, `latest` or a locally built image is not deployment authority.
 - Edge: Caddy by exact verified multi-platform digest; only ports 80 and 443
@@ -57,11 +61,11 @@ Do not apply until all of these are exact and reviewed:
 
 1. A dedicated GCP project with active billing and a logged-in deployment
    identity. Do not reuse a stale local `gcloud` project by accident.
-2. A controlled DNS hostname. Terraform intentionally does not mutate its DNS
-   zone; create its `A` record only after reviewing the planned static address.
-3. An authorized, protected Tasq Server image digest. The repository currently
-   documents the public Server image gate as closed; a placeholder digest is
-   not deployable.
+2. Control of `experimental.tasq.run`. Terraform intentionally does not mutate
+   its DNS zone; create its `A` record only after reviewing the planned static
+   address.
+3. An authorized, protected Tasq Server image digest. The image is authorized
+   for `v0.4.0` but not yet published; a placeholder digest is not deployable.
 4. A reviewed Google Cloud CLI helper image digest. It is used only for Secret
    Manager reads and backup object transfer.
 5. Three existing Secret Manager secrets and their explicit enabled numeric

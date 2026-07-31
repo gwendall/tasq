@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 3,
+  "revision": 4,
   "status": "current-release-passed",
   "testedAt": "2026-07-23",
   "storeFormat": {
@@ -101,13 +101,28 @@
       },
       "knownHistoricalPhysicalEffect": "Published v0.3.0 may create or update db.sqlite-shm and empty db.sqlite-wal while returning its non-mutating typed refusal."
     },
-    "protectedSourceCandidateReplay": "not_run",
+    "protectedSourceCandidateReplay": {
+      "status": "passed",
+      "testedAt": "2026-07-31",
+      "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+      "targets": ["darwin-arm64", "linux-x64-gnu"],
+      "exactPinnedPublicSourceAssets": true,
+      "sourceReleaseAttestationsVerified": true,
+      "candidateSourceCommitBound": true,
+      "migratedToFormat28": true,
+      "postMigrationDoctorPassed": true,
+      "matchingBinaryRestorePassed": true
+    },
     "publishedCandidateArtifactAttestations": "not_run",
     "publishedV040Replay": "not_run",
     "publicSupportClaim": false
   },
   "futureCompatibilityRule": "Once three protected release lines exist, certify exact protected N-2 binaries and published bytes before claiming support for that line.",
-  "remainingExternalReplay": [],
+  "remainingExternalReplay": [
+    "v0.4.0_exact_published_byte_replay_after_publication"
+  ],
   "tq608SourceCandidateComplete": true,
-  "publishedByteCertificationComplete": true
+  "publishedByteCertificationComplete": true,
+  "publishedByteCertificationCompleteFor": "0.3.0"
 }

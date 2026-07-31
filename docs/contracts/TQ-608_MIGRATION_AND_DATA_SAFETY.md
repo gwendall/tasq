@@ -1,10 +1,10 @@
 # TQ-608 — Migration and data-safety envelope
 
 **Status:** complete for published `v0.3.0`; the `v0.4.0` N-2 pre-release
-matrix is implemented and passes locally, while protected candidate and
-published-byte replays remain required
+matrix passes locally and in protected CI on both supported targets, while the
+exact published-byte replay remains required
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
-**Blocks:** first protected package release in TQ-603
+**Blocks:** each protected package line that changes the store format
 
 ## Outcome
 
@@ -137,7 +137,10 @@ and does not weaken the fail-closed domain/recovery-state assertion.
 
 `.github/workflows/certify-v040-migration-candidate.yml` is the protected
 Darwin/Linux source-candidate route. It attestation-verifies both public source
-lines and binds the candidate checkout to an exact commit. It has not run yet.
-After `v0.4.0` publication, its exact downloaded artifacts and attestations
-must be replayed separately. Until both external gates pass,
-`publishedV040Replay` remains `not_run` and no `v0.4.0` support claim exists.
+lines and binds the candidate checkout to an exact commit. Protected run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802)
+passed on Darwin arm64 and Linux x64 GNU against source commit
+`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`. After `v0.4.0` publication,
+the exact downloaded artifacts and attestations must still be replayed
+separately. Until that external gate passes, `publishedV040Replay` remains
+`not_run` and no `v0.4.0` support claim exists.
