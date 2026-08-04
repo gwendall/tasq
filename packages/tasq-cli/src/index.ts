@@ -124,7 +124,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     journal: ["accept-database", "reason", "dry-run"],
     claim: ["for", "until", "metadata", "idempotency-key"],
     release: ["reason", "force"],
-    attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "at", "limit", "expected-revision", "idempotency-key"],
+    attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
     evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
     resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
     signature: [],

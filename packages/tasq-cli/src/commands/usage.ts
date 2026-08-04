@@ -105,7 +105,7 @@ export const ATTEMPT_USAGE = `attempt start <task-id> [--claim <claim-id>] [--ru
 attempt list [task-id]
 attempt show <attempt-id>
 attempt status <attempt-id> --status running|input_required|succeeded|failed|cancelled [--expected-revision <n>] [--idempotency-key <key>]
-attempt succeed|fail|cancel|wait|resume <attempt-id> [--message <text>] [--expected-revision <n>] [--idempotency-key <key>]`;
+attempt succeed|fail|cancel|wait|resume <attempt-id> [--message|--note <text>] [--expected-revision <n>] [--idempotency-key <key>]`;
 export const EVIDENCE_USAGE = `evidence add <task-id> --kind <kind> [--summary <text>] [--uri <uri>] [--digest <digest>] [--source <source>] [--attempt <id>] [--supersedes <id>] [--observed-at <iso>] [--metadata <json>] [--idempotency-key <key>]
 evidence list [task-id] [--kind <kind>] [--limit N]
 evidence show <evidence-id>`;

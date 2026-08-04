@@ -193,7 +193,9 @@ export async function attemptCmd(args: ParsedArgs): Promise<number> {
       ...rt.ctx,
       idempotencyKey: args.string("idempotency-key"),
       expectedRevision: positiveIntegerArg(args, "expected-revision"),
-      message: args.string("message") ?? null,
+      // `done` spells the same idea --note, so accept both rather than making
+      // a worker rediscover the difference by failing a command.
+      message: args.string("message") ?? args.string("note") ?? null,
       occurredAt: args.string("at") ? parseDateArg(args.string("at")!) : undefined,
     });
     if (args.bool("json", "j")) printJson(attempt);
