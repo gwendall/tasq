@@ -107,4 +107,30 @@ describe("public site truth", () => {
       expect(cli, `the docs show "tasq ${verb}", which the CLI must accept`).toContain(verb);
     }
   });
+
+  test("the generated CLI reference matches the shipped help", async () => {
+    const reference = (await import("../src/generated/cli-reference.json")).default as Array<{
+      heading: string;
+      entries: Array<{ usage: string; description: string }>;
+    }>;
+    const cliSource = await Bun.file(
+      new URL("../../../packages/tasq-cli/src/index.ts", import.meta.url),
+    ).text();
+
+    expect(reference.length).toBeGreaterThan(10);
+    for (const section of reference) {
+      expect(section.entries.length, `${section.heading} must list commands`).toBeGreaterThan(0);
+      for (const entry of section.entries) {
+        // The first token is the verb; it has to exist in the binary's own help.
+        const verb = entry.usage.split(/\s+/)[0]!;
+        expect(cliSource, `"${verb}" is documented but absent from the CLI`).toContain(verb);
+      }
+    }
+
+    // Commands whose product is not published must stay visibly marked.
+    const page = await Bun.file(new URL("../src/app/docs/cli/page.tsx", import.meta.url)).text();
+    if (reference.some((section) => section.heading === "REMOTE SERVER")) {
+      expect(page).toContain("product not shipped");
+    }
+  });
 });
