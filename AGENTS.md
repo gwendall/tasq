@@ -154,13 +154,14 @@ surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
-<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:51f64eb34ad4be9d" -->
+<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:fc3d48b27c108369" -->
 ## Coordinating work on this repository
 
 This repository tracks its **outstanding work** in Tasq, in space `tasq/dev` of
 the default `TASQ_HOME`. The machine descriptor is
-[`project-rendezvous.json`](project-rendezvous.json), and
-[`.tasq/PLAN.md`](.tasq/PLAN.md) is a generated read-only projection of it.
+[`project-rendezvous.json`](project-rendezvous.json). Generating `.tasq/PLAN.md`
+with `tasq projection` gives a read-only view of the queue; it is local and
+never committed.
 `docs/roadmap/BACKLOG.json` remains the authority for **release scope and
 support state**; it is not the live work queue. This block is generated: edit
 it through the CLI, not by hand.

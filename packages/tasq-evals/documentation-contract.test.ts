@@ -126,6 +126,30 @@ describe("standalone documentation contract", () => {
     }
   });
 
+  test("every command quoted in the AGENTS.md tasq block exists in the CLI", () => {
+    // A documented command the CLI never accepted once reached a real agent and
+    // cost it a full detour. Fail here instead.
+    const agents = read("AGENTS.md");
+    const block = /<!-- tasq:begin[^>]*-->([\s\S]*?)<!-- tasq:end -->/.exec(agents);
+    expect(block, "AGENTS.md must carry the generated tasq block").not.toBeNull();
+
+    const quoted = new Set(
+      Array.from(block![1].matchAll(/"\$TASQ"\s+([a-z-]+)/g), (match) => match[1]),
+    );
+    expect(quoted.size).toBeGreaterThan(0);
+
+    const usage = read("packages/tasq-cli/src/commands/usage.ts")
+      + read("packages/tasq-cli/src/index.ts");
+    for (const command of quoted) {
+      expect(usage, `AGENTS.md documents "${command}", which the CLI must accept`)
+        .toContain(command);
+    }
+
+    // The block informs; it must never carry ledger content, which agents read
+    // as instructions. Only the space id and static protocol text belong here.
+    expect(block![1]).not.toMatch(/\b019[0-9a-f]{5,}/);
+  });
+
   test("root onboarding identifies the canonical repository and safe work loop", () => {
     const agents = read("AGENTS.md");
     const skill = read("SKILL.md");
