@@ -34,7 +34,7 @@ export const docPages: DocPage[] = [
       {
         title: "Try it without installing",
         body: [
-          "Use either supported package runner to execute the exact scoped public package once. This does not create a persistent Tasq program installation or touch a ledger.",
+          "Run one complete task cycle in three seconds: it creates a task, lists it and completes it. Either supported package runner works. This installs nothing permanently and does not read or write any ledger you already have.",
         ],
         code: publicCodeExamples.quickTry.display,
         codeTitle: publicCodeExamples.quickTry.title,
