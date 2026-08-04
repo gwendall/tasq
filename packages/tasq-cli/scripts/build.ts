@@ -48,9 +48,31 @@ function outputDirectory(): string {
   return resolve(value);
 }
 
+/**
+ * Source builds carry no release version: package manifests hold a `0.1.0`
+ * placeholder that the release workflow replaces at tag time. Reporting that
+ * placeholder made a locally built candidate indistinguishable from the first
+ * published release, so a bug report from a source build named a version that
+ * meant nothing. Mark it instead, and pin it to the commit when there is one.
+ */
+function sourceBuildVersion(): string {
+  try {
+    const revision = Bun.spawnSync(["git", "rev-parse", "--short", "HEAD"], {
+      stdout: "pipe",
+      stderr: "ignore",
+    });
+    const sha = new TextDecoder().decode(revision.stdout).trim();
+    if (revision.exitCode === 0 && sha) return `0.0.0-dev+${sha}`;
+  } catch {
+    // Not a checkout, or git is unavailable: the marker alone still beats a
+    // plausible-looking release number.
+  }
+  return "0.0.0-dev";
+}
+
 function buildVersion(): string {
   const index = process.argv.indexOf("--version");
-  if (index === -1) return "0.1.0";
+  if (index === -1) return sourceBuildVersion();
   const value = process.argv[index + 1];
   if (!value || !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$/.test(value)) {
     throw new Error("--version requires a SemVer release version");

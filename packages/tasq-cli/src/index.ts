@@ -487,6 +487,20 @@ export async function main(
         printJson(err.toJSON());
         return 3;
       }
+      // A store the running binary cannot recognise is usually not a corrupt
+      // store: it is the wrong binary. A stale global install resolves to
+      // another checkout and reports a migration name that means nothing to the
+      // reader, who then debugs the database instead of their PATH.
+      if (err instanceof StoreCompatibilityError && /missing from this executable/.test(message)) {
+        printError(message);
+        printError(
+          `This usually means the running program is not the one this store belongs to.\n`
+          + `  running: ${process.argv[1] ?? executable}\n`
+          + `Check which program you are invoking, then retry with the one that matches this store.`,
+        );
+        return 3;
+      }
+
       const isZod = err.name === "ZodError";
       const isFK = errorMatches(err, /FOREIGN KEY|REFERENCES/);
       const isUnique = errorMatches(err, /UNIQUE constraint/);
