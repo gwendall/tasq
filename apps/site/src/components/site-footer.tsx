@@ -20,6 +20,7 @@ export function SiteFooter() {
           <Link href="/docs/getting-started">Getting started</Link>
           <Link href="/docs/agents">Agent guide</Link>
           <Link href="/status">Product status</Link>
+          <Link href="/changelog">Changelog</Link>
         </div>
         <div className="footer-links">
           <p>Project</p>
