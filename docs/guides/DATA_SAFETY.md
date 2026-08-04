@@ -84,11 +84,13 @@ ledger.
 
 For the `v0.4.0` candidate, exact public `v0.2.0`/format-25 and
 `v0.3.0`/format-26 binaries and bytes are mandatory inputs. The local
-source-candidate matrix passes on Darwin arm64, including nontrivial retained
-ledgers, format-28 migration receipts, doctor and matching-binary restore.
-Protected Darwin/Linux source-candidate evidence and the later exact published
-`v0.4.0` replay have not run, so they remain release gates rather than shipped
-support.
+source-candidate matrix passes locally and in protected CI on Darwin arm64 and
+Linux x64 GNU, including nontrivial retained ledgers, format-28 migration
+receipts, doctor and matching-binary restore. The protected result is run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802),
+bound to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
+The later exact published `v0.4.0` replay has not run, so candidate evidence is
+not shipped support.
 
 An old binary's typed refusal guarantees no logical ledger, journal, receipt
 or recovery-snapshot mutation. Do not interpret that as a byte-exact

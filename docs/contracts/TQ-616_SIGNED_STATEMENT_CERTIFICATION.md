@@ -4,6 +4,12 @@
 > **Date:** 2026-07-30
 > **Machine certificate:** `TQ-616_SIGNED_STATEMENT_CERTIFICATION.json`
 
+The maintainer has authorized this program for `v0.4.0`. Authorization is not
+execution evidence: the immutable release tag, eight `@0.4.0` npm coordinates
+and exact downloaded tarballs do not yet exist. Run the protected matrix only
+after the ordered npm bootstrap and release sequence in
+`../releases/RELEASES.md`.
+
 The source candidate passes the critical local and hosted threat matrix:
 altered and ambiguously encoded payloads, signature wrapping, routing and trust
 root drift, purpose replay, statement/nonce replay, credential lifecycle

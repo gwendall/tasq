@@ -1,10 +1,11 @@
 {
   "contractVersion": "tasq.migration-prerelease-matrix.v1",
-  "revision": 1,
+  "revision": 2,
   "candidate": {
     "version": "0.4.0",
     "storeFormat": 28,
-    "artifactState": "local_or_protected_candidate_not_published",
+    "artifactState": "protected_source_candidate_certified_not_published",
+    "protectedSourceCandidateReplayPassed": true,
     "publishedReplayPassed": false,
     "publicSupportClaim": false
   },
@@ -73,5 +74,19 @@
     "candidateSourceCommitBinding": true,
     "candidateArtifactAttestationsAfterPublication": true,
     "publishedV040Replay": "not_run"
+  },
+  "protectedSourceCandidateEvidence": {
+    "status": "passed",
+    "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+    "completedAt": "2026-07-31",
+    "targets": [
+      "darwin-arm64",
+      "linux-x64-gnu"
+    ],
+    "exactPinnedPublicSourceAssets": true,
+    "sourceReleaseAttestationsVerified": true,
+    "candidateSourceCommitBound": true,
+    "publishedCandidateArtifacts": false
   }
 }

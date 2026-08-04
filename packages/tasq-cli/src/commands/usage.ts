@@ -11,15 +11,30 @@
  */
 
 // ── Task verbs (top-level) ──────────────────────────────────────────────
+
+/**
+ * Flag dependencies the service layer enforces on `add` and `update`.
+ *
+ * Both rules are rejected by `createTask`/`updateTask` after the command is
+ * already running, so the usage text must state them up front: an
+ * evidence-backed task cannot exist without the criteria that close it, and an
+ * independently validated task is always evidence-backed.
+ */
+export const COMPLETION_MODE_REQUIREMENTS =
+  `  --completion evidence requires --success <criteria>
+  --validated requires --completion evidence`;
+
 export const ADD_USAGE =
-  "add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]";
+  `add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]
+${COMPLETION_MODE_REQUIREMENTS}`;
 export const SHOW_USAGE = "show <id>";
 export const INSPECT_USAGE = "inspect <id> [--json]   canonical profile-neutral commitment graph";
 export const DISCOVER_USAGE = `discover [show] [--json]
 discover schema <resource-id> [--json]
 discover negotiate --hello <json> [--json]`;
 export const UPDATE_USAGE =
-  "update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]";
+  `update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]
+${COMPLETION_MODE_REQUIREMENTS}`;
 export const TREE_USAGE = "tree <id> — shows a task + its sub-tasks";
 export const TASK_STATUS_USAGE =
   "task status <id>  (shows progress + ETA for a task with sub-tasks)";
@@ -84,13 +99,13 @@ web status --tenant <space> [--json]
 Start an explicit foreground, unauthenticated read-only Console on loopback, or
 prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
-export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
-export const RELEASE_USAGE = "release <task-id> [--reason <text>] [--force]";
+export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--actor <label>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
+export const RELEASE_USAGE = "release <task-id> [--actor <label>] [--reason <text>] [--force]";
 export const ATTEMPT_USAGE = `attempt start <task-id> [--claim <claim-id>] [--runtime <name>] [--external-id <id>] [--context-id <id>] [--metadata <json>] [--idempotency-key <key>]
 attempt list [task-id]
 attempt show <attempt-id>
 attempt status <attempt-id> --status running|input_required|succeeded|failed|cancelled [--expected-revision <n>] [--idempotency-key <key>]
-attempt succeed|fail|cancel|wait|resume <attempt-id> [--message <text>] [--expected-revision <n>] [--idempotency-key <key>]`;
+attempt succeed|fail|cancel|wait|resume <attempt-id> [--message|--note <text>] [--expected-revision <n>] [--idempotency-key <key>]`;
 export const EVIDENCE_USAGE = `evidence add <task-id> --kind <kind> [--summary <text>] [--uri <uri>] [--digest <digest>] [--source <source>] [--attempt <id>] [--supersedes <id>] [--observed-at <iso>] [--metadata <json>] [--idempotency-key <key>]
 evidence list [task-id] [--kind <kind>] [--limit N]
 evidence show <evidence-id>`;

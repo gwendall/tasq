@@ -22,6 +22,7 @@ type CandidateAuthorization = {
 };
 type Policy = {
   releaseAuthorization: { version: string };
+  externalPublicationGateStatus: Record<string, boolean>;
   candidatePublications: Record<CandidatePublication, CandidateAuthorization>;
   publishedRelease: {
     version: string;
@@ -45,6 +46,7 @@ afterAll(async () => {
 function nextPolicy(): Policy {
   const candidate = structuredClone(policy);
   candidate.releaseAuthorization.version = version;
+  candidate.externalPublicationGateStatus.trusted_publishing_configured = true;
   return candidate;
 }
 
@@ -88,6 +90,14 @@ async function verify(
 
 describe("protected candidate publication entrypoints", () => {
   test("authorizes every exact v0.4.0 coordinate and still fails closed otherwise", async () => {
+    expect(policy.externalPublicationGateStatus.trusted_publishing_configured).toBe(false);
+    const pendingTrust = structuredClone(policy);
+    const pendingResult = await verify(pendingTrust, "serverImage");
+    expect(pendingResult.exitCode).not.toBe(0);
+    expect(pendingResult.stderr).toContain(
+      "required gate trusted_publishing_configured is not verified",
+    );
+
     for (const surface of [
       "serverImage",
       "pythonWheel",

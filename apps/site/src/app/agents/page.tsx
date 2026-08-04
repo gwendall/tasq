@@ -41,8 +41,14 @@ export default function AgentsPage() {
             Give any agent the <span className="text-outline">same work.</span>
           </h1>
           <p className="mt-8 max-w-3xl text-lg leading-8 text-[var(--ink-muted)] sm:text-xl">
-            Codex, Claude Code and generic MCP hosts can join one explicit Local ledger. The host fixes the executable, space, actor and capability set before the model sees a tool.
+            One command connects Claude Code, Codex or any MCP host to the tasks you already track. The host fixes the executable, space, actor and capability set before the model ever sees a tool.
           </p>
+          <div className="mt-9 max-w-2xl">
+            <CodeWindow title={publicCodeExamples.agentConnect.title}>{publicCodeExamples.agentConnect.display}</CodeWindow>
+            <p className="mt-3 text-sm leading-6 text-[var(--ink-muted)]">
+              It prints the exact registration it would write, and only applies it with <code className="font-mono">--apply</code>. The manual per-host forms are below if you prefer to write them yourself.
+            </p>
+          </div>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <a href="/SKILL.md"><Download className="size-4" /> Read SKILL.md</a>

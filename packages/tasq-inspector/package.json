@@ -2,7 +2,7 @@
   "name": "@tasq-run/console",
   "version": "0.1.0",
   "type": "module",
-  "description": "Read-only local web inspector over canonical Tasq kernel projections.",
+  "description": "Read-only local web view of your Tasq tasks, who is working on them and why they closed.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

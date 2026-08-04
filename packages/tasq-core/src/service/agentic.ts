@@ -349,7 +349,10 @@ export async function releaseTaskClaim(
     }
     const attribution = await resolveCallerPrincipal(tx, tenantId, options, actor, now);
     if ((current.principalId ? current.principalId !== attribution.id : current.actor !== actor) && !options.force) {
-      throw new Error(`Claim belongs to ${current.actor}; pass force to release it as ${actor}`);
+      throw new Error(
+        `Claim belongs to ${current.actor}. Release it as its holder with --actor ${current.actor}, `
+        + `or wait for it to expire. Only use --force to break a claim you know is abandoned.`,
+      );
     }
 
     const releasedMutation = await tx

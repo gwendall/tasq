@@ -8,16 +8,34 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(productTruth.release.website),
-  title: { default: "Tasq - Durable coordination for agents", template: "%s - Tasq" },
+  title: { default: "Tasq - The project tracker you share with your agents", template: "%s - Tasq" },
   description:
-    "A local-first coordination kernel that gives humans, agents and runtimes one durable ledger for commitments, ownership, attempts, evidence and effects.",
+    "Local-first task tracking for you and your AI agents. They claim work so nothing gets done twice, prove what is finished, and resume where the last session died.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Tasq - Durable coordination for agents",
-    description: "Durable coordination truth for humans, agents and runtimes.",
+    title: "Tasq - The project tracker you share with your agents",
+    description:
+      "Local-first task tracking. Your agents claim work, prove it is done, and pick up where the last session died.",
     type: "website",
     url: "/",
+    siteName: "Tasq",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tasq - The project tracker you share with your agents",
+    description:
+      "Local-first task tracking. Your agents claim work, prove it is done, and pick up where the last session died.",
+  },
+  keywords: [
+    "task tracker",
+    "AI agents",
+    "MCP",
+    "Claude Code",
+    "Codex",
+    "local-first",
+    "agent coordination",
+    "CLI",
+  ],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

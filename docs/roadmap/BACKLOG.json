@@ -78,11 +78,46 @@
       "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
       "evidence": "docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json"
     },
+    "nextProtectedRelease": {
+      "state": "authorized_waiting_external_authority",
+      "channel": "public_alpha",
+      "version": "0.4.0",
+      "sourceCandidate": {
+        "latestBehaviorCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+        "ciRun": "https://github.com/gwendall/tasq/actions/runs/30625842313",
+        "protectedMigrationRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+        "targets": ["darwin-arm64", "linux-x64-gnu"],
+        "status": "passed"
+      },
+      "publicationOrder": [
+        "bootstrap_npm_client_identity",
+        "configure_npm_client_trusted_publisher_and_revoke_bootstrap_authority",
+        "configure_pypi_pending_trusted_publisher",
+        "create_immutable_v0_4_0_tag_and_publish_eight_npm_packages_and_native_assets",
+        "publish_server_image_and_python_wheel",
+        "run_exact_downloaded_byte_certifications",
+        "deploy_experimental_gcp_profile"
+      ],
+      "externalPrerequisites": [
+        "NPM_CLIENT_BOOTSTRAP_TOKEN_release_environment_secret",
+        "tasq_remote_pypi_pending_trusted_publisher",
+        "dedicated_billed_gcp_project_and_active_identity",
+        "experimental_tasq_run_dns_control",
+        "exact_published_server_and_helper_image_digests"
+      ],
+      "nonBlockingEvidence": [
+        "independent_blind_human_adoption",
+        "private_multi_app_dogfood"
+      ],
+      "remoteEffectsEnabled": false,
+      "tagCreated": false,
+      "published": false
+    },
     "maintainerPublicAlphaAuthorization": {
-      "state": "complete",
-      "completedAt": "2026-07-23",
+      "state": "complete_for_v0_4_0_public_alpha",
+      "completedAt": "2026-07-31",
       "evidence": "docs/releases/PUBLIC_RELEASE_POLICY.json",
-      "boundary": "authorizes the labeled pre-1.0 alpha; retained-data dogfood still blocks stable graduation"
+      "boundary": "authorizes v0.4.0 as a labeled pre-1.0 alpha; independent adoption and retained-data dogfood remain post-alpha evidence and still block human-usability and stable-graduation claims"
     },
     "publishedLifecycleCertification": {
       "state": "complete",
@@ -201,7 +236,7 @@
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
       "remaining": [],
-      "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml"]
+      "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml", "https://github.com/gwendall/tasq/actions/runs/30625856802"]
     },
     {
       "id": "TQ-603",

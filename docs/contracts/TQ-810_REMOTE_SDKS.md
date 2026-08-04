@@ -58,3 +58,8 @@ The corresponding policy entry authorizes the exact `v0.4.0` public-alpha
 coordinate. No wheel or Server image has been published and this protected
 exact-artifact workflow has not run, so the
 Python-against-exact-Server-digest external gate remains open.
+Before tagging, configure the PyPI pending trusted publisher for project
+`tasq-remote`, owner `gwendall`, repository `tasq`, workflow
+`publish-python.yml` and GitHub environment `release`. Publication follows the
+GitHub release and requires the exact protected Server digest; source or local
+wheel evidence cannot substitute for either authority.

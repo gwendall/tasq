@@ -2,7 +2,7 @@
   "name": "tasq-monorepo",
   "version": "0.0.0-private",
   "private": true,
-  "description": "Universal local-first commitment coordination for humans, agents, and runtimes.",
+  "description": "Local-first task tracking that humans and AI agents share without stepping on each other.",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.29.3",
   "engines": {

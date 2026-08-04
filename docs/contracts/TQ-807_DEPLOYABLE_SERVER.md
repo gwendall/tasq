@@ -8,6 +8,13 @@
 > TQ-811 certificate)
 > **Operator runbook:** `../../deploy/server/README.md`
 
+The `v0.4.0` coordinate is maintainer-authorized but not published. At the
+2026-07-31 handoff, repository CI and the protected N-2 source-candidate
+migration matrix are green. Publication waits only for the ordered registry
+activation documented in `../releases/RELEASES.md`: npm client bootstrap and
+OIDC binding, immutable release tag/GitHub release, then this protected GHCR
+workflow. No Server image or endpoint should be inferred from authorization.
+
 ## Outcome
 
 The former host-integrated Fetch handlers now compose into one deployable

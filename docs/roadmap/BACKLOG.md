@@ -20,6 +20,45 @@ The detailed task inventory, acceptance criteria and verification routes for
 public adoption through Server and Cloud are in
 [`PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
+### 2026-07-31 release handoff
+
+The complete `v0.4.0` public-alpha source candidate is merged on `main`. CI run
+[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) passes
+the full Linux/macOS, browser and secret-scan matrix. Protected migration run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) binds
+commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5` and passes the exact
+`v0.2.0`/`v0.3.0` to candidate-format-28 replay on both supported targets.
+
+No `v0.4.0` tag, eighth npm identity, GHCR image, PyPI wheel or hosted Cloud
+deployment exists yet. Resume in this order:
+
+1. place a revocable granular token in release-environment secret
+   `NPM_CLIENT_BOOTSTRAP_TOKEN` and run `bootstrap-npm-client.yml` from the
+   then-current protected `main` commit;
+2. configure `@tasq-run/client` to trust
+   `gwendall/tasq:release.yml:release`, then delete the secret and revoke the
+   token;
+3. configure the `tasq-remote` PyPI pending trusted publisher for
+   `gwendall/tasq`, `publish-python.yml`, environment `release`;
+4. create immutable tag `v0.4.0`; let `release.yml` publish all eight npm
+   packages and native assets, then run the protected Server, Python and exact
+   downloaded-byte certification workflows;
+5. deploy the experimental single-zone GCP profile only after a dedicated
+   billed project, active deployment identity, `experimental.tasq.run` DNS
+   control and exact Server/helper image digests exist.
+
+Independent blind-human adoption and retained dogfood continue after the alpha
+and block only human-usability closure and stable graduation. Remote effects
+remain disabled.
+
+Handoff verification on 2026-07-31 passed documentation contracts, generated
+site-truth consistency, typechecking and every functional suite reached before
+the public-package reproducibility check. That final check hit its 240-second
+local test limit twice while building candidates (`exit 143`), once inside the
+full handoff gate and once in isolation; it reported no content mismatch. Treat
+the next protected PR CI result as the independent closure verdict, and do not
+describe the local handoff gate as fully green unless that check passes there.
+
 ## What is already proven
 
 The universal kernel, local CLI, local stdio MCP, extension and connector
@@ -71,9 +110,9 @@ operation through real adopters, not more repository-only architecture.
   support bounded create-only portable import. A real file-size quota proves
   snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
   populated format-5 fixture on both targets. The exact `v0.2.0`/`v0.3.0` to
-  candidate-format-28 N-2 harness passes locally; its protected two-target run
-  and the later exact published `v0.4.0` replay remain release gates and grant
-  no public support claim.
+  candidate-format-28 N-2 harness passes locally and in protected two-target
+  CI. The later exact published `v0.4.0` replay remains open and the candidate
+  pass grants no public support claim.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -122,8 +161,9 @@ Server/Cloud breadth remains behind published-byte Local certification.
 - **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
   passes from the public marketplace with no repository briefing.
 - **TQ-608 — done for current release:** exact published `v0.3.0` replay
-  passes; the exact `v0.2.0`/`v0.3.0` N-2 candidate harness is implemented and
-  locally passing, with protected and published-`v0.4.0` gates still `not_run`.
+  passes; the exact `v0.2.0`/`v0.3.0` N-2 candidate harness passes locally and
+  in protected CI on both targets. Only the published-`v0.4.0` replay remains
+  `not_run`.
 
 ### 2. Finish Local alpha distribution
 

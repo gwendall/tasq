@@ -252,6 +252,30 @@
     "authorizedAt": "2026-07-31",
     "rationale": "Ship the complete source candidate now as a labeled public alpha: store format 28, signed statements, the remote TypeScript client, Server image, Python client and protected exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
   },
+  "sourceCandidateCheckpoint": {
+    "status": "passed_not_published",
+    "recordedAt": "2026-07-31",
+    "latestBehaviorCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+    "mainCi": {
+      "status": "passed",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625842313",
+      "linux": true,
+      "macos": true,
+      "browser": true,
+      "secretScan": true
+    },
+    "protectedMigrationCandidate": {
+      "status": "passed",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+      "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+      "sourceVersions": ["0.2.0", "0.3.0"],
+      "targetStoreFormat": 28,
+      "targets": ["darwin-arm64", "linux-x64-gnu"]
+    },
+    "tagCreated": false,
+    "publishedV040ReplayPassed": false,
+    "publicSupportGranted": false
+  },
   "candidatePublications": {
     "serverImage": {
       "state": "authorized",
@@ -341,6 +365,50 @@
     "tokenRetention": "revoke_immediately_after_trusted_publisher_is_verified",
     "publishedSupportGranted": false
   },
+  "externalActivation": {
+    "status": "waiting_external_authority",
+    "publicationOrder": [
+      "bootstrap_npm_client_identity",
+      "configure_npm_client_release_trusted_publisher",
+      "configure_tasq_remote_pypi_pending_trusted_publisher",
+      "create_immutable_v0_4_0_tag",
+      "publish_npm_native_server_and_python_coordinates",
+      "run_exact_downloaded_byte_certifications",
+      "deploy_experimental_gcp_profile"
+    ],
+    "npmClient": {
+      "coordinate": "@tasq-run/client",
+      "packageExists": false,
+      "bootstrapSecretPresent": false,
+      "requiredSecret": "NPM_CLIENT_BOOTSTRAP_TOKEN",
+      "requiredTrustedPublisher": "gwendall/tasq:release.yml:release"
+    },
+    "python": {
+      "coordinate": "tasq-remote",
+      "published": false,
+      "requiredPendingTrustedPublisher": "gwendall/tasq:publish-python.yml:release"
+    },
+    "server": {
+      "coordinate": "ghcr.io/gwendall/tasq-server:0.4.0",
+      "published": false
+    },
+    "experimentalCloud": {
+      "authorizedProfile": "deploy/gcp-compute-experimental",
+      "location": "europe-west9-a",
+      "hostname": "experimental.tasq.run",
+      "deployed": false,
+      "required": [
+        "dedicated_billed_gcp_project",
+        "active_deployment_identity",
+        "dns_control",
+        "exact_server_digest",
+        "exact_helper_image_digest",
+        "versioned_secret_manager_inputs"
+      ],
+      "supportSla": null,
+      "remoteEffectsEnabled": false
+    }
+  },
   "publishedRelease": {
     "version": "0.3.0",
     "tag": "v0.3.0",
@@ -402,7 +470,7 @@
     "canonical_repository_control_verified": true,
     "public_source_launch_authorized": true,
     "npm_scope_control_verified": true,
-    "trusted_publishing_configured": true,
+    "trusted_publishing_configured": false,
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true,

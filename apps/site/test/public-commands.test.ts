@@ -43,6 +43,9 @@ afterAll(async () => {
 describe("displayed public commands", () => {
   test("keeps every code example classified and free of rendered diff markers", () => {
     expect(Object.keys(publicCodeExamples)).toEqual([
+      "demo",
+      "humanFlow",
+      "agentConnect",
       "quickTry",
       "nativeInstall",
       "install",
@@ -62,8 +65,18 @@ describe("displayed public commands", () => {
   test("executes both exact one-shot package runners", async () => {
     const result = await runShell(publicCodeExamples.quickTry.display);
     expect(result.exitCode, result.stderr).toBe(0);
-    expect(result.stdout.trim().split("\n")).toEqual([releaseVersion, releaseVersion]);
-  }, 30_000);
+    const lines = result.stdout.trim().split("\n");
+    expect(lines.filter((line) => line === "Tasq isolated demo completed.")).toHaveLength(2);
+    expect(lines.filter((line) => line.startsWith("Created and completed: "))).toHaveLength(2);
+  }, 60_000);
+
+  test("the hero one-liner runs a real cycle and leaves the ledger untouched", async () => {
+    const result = await runShell(publicCodeExamples.demo.display);
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("Tasq isolated demo completed.");
+    expect(result.stdout).toContain("were not read or changed");
+    expect(publicCodeExamples.demo.display).toContain(`@tasq-run/cli@${releaseVersion}`);
+  }, 60_000);
 
   test("runs the generated verified installer lifecycle without touching data", async () => {
     const prefix = resolve(home, "native-prefix");

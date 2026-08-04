@@ -50,7 +50,17 @@ describe("public site truth", () => {
   test("covers the current consumer journeys in public learning paths", () => {
     const slugs = new Set(docPages.map((page) => page.slug));
     expect(slugs).toEqual(
-      new Set(["getting-started", "agents", "mcp", "humans", "sdk", "operators", "architecture", "support"]),
+      new Set([
+        "getting-started",
+        "agents",
+        "mcp",
+        "humans",
+        "sdk",
+        "operators",
+        "architecture",
+        "support",
+        "concepts",
+      ]),
     );
     expect(productTruth.consumers.map((entry) => entry.id)).toContain("local_shell_agent");
     expect(productTruth.consumers.map((entry) => entry.id)).toContain("human_operator");

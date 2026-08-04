@@ -1,7 +1,7 @@
 {
   "name": "@tasq-run/mcp",
   "version": "0.1.0",
-  "description": "Capability-scoped MCP transport over the universal Tasq kernel.",
+  "description": "MCP server that lets Claude Code, Codex and other agents work your Tasq tasks.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "bin": {

@@ -20,6 +20,7 @@ import {
   unresolvedBlockerMap,
   updateTask,
   TASK_STATUSES,
+  activeTaskClaimMap,
   RECURRENCE_UNITS,
   RECURRENCE_ANCHORS,
   COMPLETION_MODES,
@@ -107,6 +108,8 @@ async function resolveAreaId(rt: Awaited<ReturnType<typeof openRuntime>>, slug: 
 interface DepAnnotations {
   blockers?: number;
   unblocked?: boolean;
+  /** Actor alias holding a live claim, so a reader can see who is working. */
+  claimedBy?: string;
 }
 
 function printTaskLine(
@@ -118,7 +121,8 @@ function printTaskLine(
   const priority = t.priority != null ? color.dim(` · p${t.priority}`) : "";
   const blocked = ann.blockers && ann.blockers > 0 ? color.yellow(` · 🔒${ann.blockers}`) : "";
   const unblocked = ann.unblocked ? color.green(" · just unblocked") : "";
-  printInfo(`${color.dim(shortId(t.id))}  ${status}  ${t.title}${priority}${due}${blocked}${unblocked}`);
+  const claimed = ann.claimedBy ? color.yellow(` · claimed by ${ann.claimedBy}`) : "";
+  printInfo(`${color.dim(shortId(t.id))}  ${status}  ${t.title}${priority}${due}${blocked}${unblocked}${claimed}`);
   if (t.nextAction) printInfo(`           ${color.dim("→ " + t.nextAction)}`);
 }
 
@@ -287,11 +291,15 @@ async function listImpl(args: ParsedArgs, opts: { orphanOnly: boolean }): Promis
       );
       const blockerMap = await unresolvedBlockerMap(rt.db, rt.config.tenantId, statusById);
       const unblockedSet = await justUnblocked(rt.db, { tenantId: rt.config.tenantId });
+      // One batched read: a reader must be able to see who currently holds a
+      // task before deciding to wait, take it or work around it.
+      const claimByTask = await activeTaskClaimMap(rt.db, rt.config.tenantId);
       for (const t of tasks) {
         const blockers = blockerMap.get(t.id) ?? 0;
         printTaskLine(t, {
           blockers,
           unblocked: blockers === 0 && unblockedSet.has(t.id),
+          claimedBy: claimByTask.get(t.id)?.actor,
         });
       }
     }

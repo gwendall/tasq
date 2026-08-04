@@ -2,7 +2,7 @@
 
 **Status:** active execution specification
 
-**Updated:** 2026-07-24
+**Updated:** 2026-07-31
 
 **Machine authority:** [`BACKLOG.json`](BACKLOG.json)
 
@@ -16,6 +16,33 @@ what must remain false, and know which proof closes the work.
 Nothing in this plan changes a support claim by itself. A surface remains at
 its current state in `PRODUCT_SURFACE_MATRIX.json` until implementation,
 documentation and the stated evidence gate all pass.
+
+## 0. Current execution checkpoint
+
+The repository implementation phase is complete for the maintainer-authorized
+`v0.4.0` public alpha. The full source candidate is merged on `main`; CI run
+[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) and
+protected N-2 migration run
+[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) pass.
+The latter is bound to commit
+`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5` and covers Darwin arm64 plus
+Linux x64 GNU.
+
+The active queue is external activation, not more repository implementation:
+
+```text
+npm client bootstrap -> npm OIDC binding -> PyPI pending publisher
+-> immutable v0.4.0 tag -> npm/native/GHCR/PyPI publication
+-> exact downloaded-byte certifications -> experimental GCP deployment
+```
+
+The tag must not precede the client bootstrap: npm requires the package
+identity to exist before its trusted publisher can be configured, while the
+one-shot bootstrap deliberately requires untagged protected `main`. The
+missing npm secret, PyPI publisher configuration and GCP project/billing/DNS
+authority are causal external prerequisites. Independent blind-human adoption
+and TQ-607 dogfood are explicitly post-alpha evidence and block only their own
+human-usability/stable claims. Remote effects remain disabled.
 
 ## 1. Outcome
 
@@ -90,10 +117,11 @@ release is valid. TQ-609 closes them before another broad product claim.
 
 ## 3. Binding sequencing decisions
 
-1. **Repair adoption before broadening claims.** TQ-609 and TQ-610 are the
-   immediate implementation priority.
-2. **Keep the public alpha available.** These repairs do not require hiding the
-   repository or unpublishing `0.1.0`.
+1. **Adoption repair is complete.** TQ-609 and TQ-610 no longer block the next
+   alpha; published-byte and zero-context evidence are retained.
+2. **Ship the complete `v0.4.0` public alpha next.** External activation follows
+   the checkpoint order above; dogfood and the blind-human session follow the
+   alpha rather than delaying it.
 3. **Continue TQ-607 in parallel.** Retained dogfood still gates stable
    graduation, but does not block alpha fixes or Server implementation.
 4. **Ship an online central Server before offline sync.** Remote CLI and MCP
