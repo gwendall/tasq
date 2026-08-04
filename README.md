@@ -3,37 +3,63 @@
 [![CI](https://github.com/gwendall/tasq/actions/workflows/ci.yml/badge.svg)](https://github.com/gwendall/tasq/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-**Durable coordination for humans and agents.**
+**The project tracker you share with your agents.**
 
 Website and documentation: [tasq.run](https://tasq.run)
 
-Tasq gives independent agents, runtimes, and people one local ledger for the
-work that must survive a chat, process, or retry. It records the commitment,
-who is working on it, each execution attempt, the evidence produced, and the
-decision that made it complete.
+```bash
+npx @tasq-run/cli@0.3.0 demo    # three seconds, no install, touches no data
+```
 
-Tasq is not another agent runtime. It does not launch agents or call providers.
-It gives the tools you already use a shared, inspectable coordination layer.
+## For you
+
+A real tracker, not a scratchpad. Areas, goals, projects and tasks, with due
+dates, recurrences and dependencies.
+
+```bash
+tasq add "Renew the domain" --due 2026-09-01 --priority 2
+tasq next
+tasq done <id>
+```
+
+One SQLite file you own. No account, no cloud, no telemetry.
+
+## For your agents
+
+Point Claude Code, Codex or any MCP client at the same ledger:
+
+```bash
+tasq agent install claude --space my/project --actor claude:main
+```
+
+Now they see your real work, take it with an expiring claim, and cannot mark
+anything done without a receipt you can inspect.
+
+## Why this exists
+
+Anyone running coding agents on a serious project ends up hand-maintaining a
+`PLAN.md` or a `TODO.md` so the agent keeps the thread between sessions. It
+works badly: the file drifts, two agents overwrite each other, nobody knows
+what is genuinely finished, and every context compaction costs another
+re-explanation.
+
+Tasq is the serious version of that file:
+
+- two agents never start the same task, because claims are exclusive and expire;
+- a successful run is never mistaken for a finished outcome;
+- ownership does not survive a crashed worker;
+- a replacement agent resumes from a monotone event cursor instead of replaying
+  your chat history.
+
+Tasq is not an agent runtime. It does not launch agents or call providers. It
+gives the tools you already use one shared, inspectable place to agree on what
+is done.
 
 > **Public alpha:** `v0.3.0` is available from npm and as an attested GitHub
-> release for macOS arm64 and Linux x64. This is an intentionally early pre-1.0
-> line: use backups for retained ledgers and expect documented migrations as
-> the contracts evolve.
-
-## Why Tasq
-
-Agent-native work breaks down when durable commitments are mixed with temporary
-todo lists or runtime state:
-
-- two agents start the same work;
-- a successful run is mistaken for a completed outcome;
-- ownership survives after a worker has crashed;
-- external actions are retried without knowing whether they happened;
-- context disappears when a session is replaced.
-
-Tasq separates those concerns. Claims coordinate active ownership, attempts
-record executions, evidence justifies completion, and monotone event cursors
-let replacement agents resume without replay gaps.
+> release for macOS arm64 and Linux x64. The complete `v0.4.0` candidate is
+> merged and certified on `main` but not yet tagged or published. This is an
+> intentionally early pre-1.0 line: keep backups of retained ledgers and expect
+> documented migrations as the contracts evolve.
 
 ## What is available today
 

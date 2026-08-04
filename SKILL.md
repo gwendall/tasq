@@ -9,6 +9,18 @@ Use this skill when an agent must inspect or coordinate work in a Tasq Local
 ledger. This file is a stable launcher, not a duplicate command manual. The
 installed executable returns the exact versioned recipes it supports.
 
+## The shortest useful path
+
+```bash
+tasq onboard --space <explicit-context-id> --actor <stable-label> --json
+tasq next --limit 5
+tasq claim <id> --for 30m          # refused means another actor holds it
+tasq done <id> --evidence <id,...>
+```
+
+Read the returned `guide` before acting. Everything below explains why those
+four commands are shaped the way they are.
+
 ## Cold start
 
 Begin every new runtime or replacement-agent session with an explicit space

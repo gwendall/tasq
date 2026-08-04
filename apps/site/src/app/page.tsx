@@ -56,14 +56,20 @@ export default function HomePage() {
       <section className="hero-grid overflow-hidden border-b border-[var(--line-strong)]">
         <div className="site-container grid min-h-[660px] items-stretch lg:grid-cols-[1.08fr_0.92fr]">
           <div className="flex flex-col justify-center border-[var(--line)] py-16 sm:py-20 lg:border-r lg:pr-16">
-            <div className="eyebrow">Coordination for agents and humans</div>
+            <div className="eyebrow">Local-first task tracking</div>
             <h1 className="mt-7 max-w-3xl text-[clamp(3.1rem,6.2vw,5.7rem)] font-semibold leading-[0.92] tracking-[-0.064em]">
               No duplicate work. <span className="text-outline">Agents stay aligned.</span>
             </h1>
             <p className="mt-8 max-w-2xl text-lg leading-8 text-[var(--ink-muted)] sm:text-xl">
-              Codex, Claude Code, custom agents and humans claim work, survive crashes, hand off cleanly and prove completion in one ledger.
+              The project tracker you share with your agents. They claim work, prove it is done, and pick up where the last session died. You stay in the loop.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            {published ? (
+              <div className="mt-8 flex items-center gap-3 border border-[var(--line-strong)] bg-[var(--ink)] px-4 py-3 font-mono text-sm text-[var(--paper)] shadow-[4px_4px_0_var(--signal)] sm:max-w-md">
+                <span aria-hidden="true" className="text-[var(--signal)]">$</span>
+                <code className="overflow-x-auto whitespace-nowrap">{publicCodeExamples.demo.display}</code>
+              </div>
+            ) : null}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/docs/getting-started">
                   {published ? "Install Tasq" : "Build Tasq"} <ArrowRight aria-hidden="true" className="size-4" />
@@ -101,7 +107,7 @@ export default function HomePage() {
                   <span className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-white/45">shared ledger</span>
                   <strong>tasq</strong>
                   <div className="mt-4 grid grid-cols-2 gap-px bg-white/15 text-[0.6875rem]">
-                    {['commitment', 'claim', 'attempt', 'evidence'].map((item) => (
+                    {['task', 'claim', 'attempt', 'evidence'].map((item) => (
                       <span className="bg-[var(--ink)] px-2 py-1.5 font-mono text-white/65" key={item}>{item}</span>
                     ))}
                   </div>
@@ -120,18 +126,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-[var(--line-strong)] bg-[var(--signal-soft)]">
-        <div className="site-container flex flex-col gap-2 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            <strong>{published ? `Tasq Local ${releaseVersion} is available now.` : "Tasq Local builds from source today."}</strong>{" "}
-            Local actors share one machine and store. Server and cross-machine coordination are not shipped yet.
-          </p>
-          <Link className="font-mono text-xs font-semibold uppercase tracking-[0.06em] underline underline-offset-4" href="/status">
-            Verify product status
-          </Link>
-        </div>
-      </section>
-
       <section className="border-b border-[var(--line-strong)] bg-[var(--ink)] text-[var(--paper)]">
         <div className="site-container grid gap-px bg-white/15 md:grid-cols-3">
           {benefits.map(({ icon: Icon, title, body }) => (
@@ -146,33 +140,78 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-b border-[var(--line-strong)] bg-[var(--signal-soft)]">
+        <div className="site-container flex flex-col gap-2 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            <strong>{published ? `Tasq Local ${releaseVersion} is available now.` : "Tasq Local builds from source today."}</strong>{" "}
+            You and your agents share one machine and one store. Server and cross-machine coordination are not shipped yet.
+          </p>
+          <Link className="font-mono text-xs font-semibold uppercase tracking-[0.06em] underline underline-offset-4" href="/status">
+            Verify product status
+          </Link>
+        </div>
+      </section>
+
       <section className="section-space border-b border-[var(--line-strong)]">
         <div className="site-container">
           <div className="section-intro">
             <div>
-              <h2>Execution happened.<br />Did the outcome?</h2>
+              <h2>An agent said done.<br />Was it?</h2>
             </div>
             <p>
-              Most task protocols collapse intent, execution and completion. Tasq keeps them separate, so every handoff has an inspectable basis.
+              Most task tools treat &ldquo;I ran the command&rdquo; and &ldquo;the work is finished&rdquo; as the same event. Tasq keeps them apart, so every handoff has something you can inspect.
             </p>
           </div>
           <div className="mt-12 grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="ledger-flow">
               {[
-                ["01", "Commitment", "The outcome still owed"],
+                ["01", "Task", "The outcome still owed"],
                 ["02", "Claim", "Temporary right to work"],
                 ["03", "Attempt", "One execution, not the goal"],
-                ["04", "Evidence", "The basis for a decision"],
+                ["04", "Evidence", "The receipt it actually happened"],
                 ["05", "Decision", "Independent when policy requires"],
-                ["06", "Completion", "Explicit and auditable"],
+                ["06", "Done", "Explicit and auditable"],
               ].map(([number, title, body]) => (
                 <div className="ledger-step" key={number}>
                   <span>{number}</span><strong>{title}</strong><p>{body}</p>
                 </div>
               ))}
             </div>
-            <CodeWindow title={publicCodeExamples.onboard.title}>{publicCodeExamples.onboard.display}</CodeWindow>
+            <CodeWindow title={publicCodeExamples.humanFlow.title}>{publicCodeExamples.humanFlow.display}</CodeWindow>
           </div>
+        </div>
+      </section>
+
+      <section className="section-space border-b border-[var(--line-strong)]">
+        <div className="site-container grid gap-px border border-[var(--line-strong)] bg-[var(--line-strong)] lg:grid-cols-2">
+          <article className="bg-[var(--paper)] p-8 sm:p-10">
+            <p className="eyebrow"><Users aria-hidden="true" className="size-3.5" /> For you</p>
+            <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
+              A real tracker, not a scratchpad.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-[var(--ink-muted)]">
+              Areas, goals, projects and tasks. Due dates, recurrences and dependencies.
+              {" "}<code className="font-mono text-sm">tasq next</code> tells you what to do now.
+              One SQLite file you own, no account and no cloud.
+            </p>
+            <div className="mt-7">
+              <CodeWindow title={publicCodeExamples.humanFlow.title}>{publicCodeExamples.humanFlow.display}</CodeWindow>
+            </div>
+          </article>
+          <article className="bg-[var(--paper)] p-8 sm:p-10">
+            <p className="eyebrow"><Bot aria-hidden="true" className="size-3.5" /> For your agents</p>
+            <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
+              One command to plug them in.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-[var(--ink-muted)]">
+              Claude Code, Codex or any MCP client reads the same ledger you do. They take
+              work with an expiring claim, so two agents never start the same task, and they
+              cannot mark anything done without a receipt you can inspect.
+            </p>
+            <div className="mt-7">
+              <CodeWindow title={publicCodeExamples.agentConnect.title}>{publicCodeExamples.agentConnect.display}</CodeWindow>
+            </div>
+          </article>
         </div>
       </section>
 

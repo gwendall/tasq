@@ -1,7 +1,7 @@
 {
   "name": "@tasq-run/client",
   "version": "0.1.0",
-  "description": "Runtime-neutral authenticated remote client for Tasq Server.",
+  "description": "Connect to a self-hosted Tasq Server from any JavaScript runtime.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./src/index.ts",

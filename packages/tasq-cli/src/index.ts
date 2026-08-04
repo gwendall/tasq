@@ -173,6 +173,8 @@ ${color.bold("TASKS — the core verbs")}
               [--recurrence daily|weekly|monthly|yearly] [--interval N]
               [--anchor due|scheduled|completion] [--success <criteria>]
               [--completion assertion|evidence] [--idempotency-key <key>]
+                                 --completion evidence requires --success;
+                                 --validated requires --completion evidence
   list [--status ...] [--area <slug>] [--goal <id>] [--project <id>]
   show <id>
   inspect <id> [--json]          canonical commitment graph + resume cursor

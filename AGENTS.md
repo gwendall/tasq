@@ -154,39 +154,53 @@ surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
-<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:e51adc9bb8aa7527" -->
+<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:51f64eb34ad4be9d" -->
 ## Coordinating work on this repository
 
-This repository tracks its own work in Tasq, in space `tasq/dev` of the default
-`TASQ_HOME`. The machine descriptor is
-[`project-rendezvous.json`](project-rendezvous.json). This block is generated:
-edit it through the CLI, not by hand.
+This repository tracks its **outstanding work** in Tasq, in space `tasq/dev` of
+the default `TASQ_HOME`. The machine descriptor is
+[`project-rendezvous.json`](project-rendezvous.json), and
+[`.tasq/PLAN.md`](.tasq/PLAN.md) is a generated read-only projection of it.
+`docs/roadmap/BACKLOG.json` remains the authority for **release scope and
+support state**; it is not the live work queue. This block is generated: edit
+it through the CLI, not by hand.
 
-Never run `tasq setup` here. It rewrites the operator's default space and actor.
-Select the space per invocation instead:
+Use the repository's own build, not whatever `tasq` is on PATH. A stale global
+install can point at a different checkout and fail on migrations:
 
 ```bash
+pnpm build:cli && TASQ=dist/cli/index.js
 export TASQ_TENANT=tasq/dev
-tasq onboard --space tasq/dev --actor <stable-label> --json
-tasq next --limit 5
+"$TASQ" onboard --space tasq/dev --actor <stable-label> --json
+"$TASQ" next --limit 5
 ```
+
+Never run `tasq setup` here: it rewrites the operator's default space and actor.
 
 Take exactly one task, and only once its claim succeeds:
 
 ```bash
-tasq claim <id> --for 60m --actor <stable-label>
+"$TASQ" claim <id> --for 60m --actor <stable-label>
 ```
 
 A refused claim means another actor holds that task. Take the next one instead;
 never work around a live claim. Renew by repeating the claim while you work.
-Record execution with `tasq attempt start <id>`, then close with proof rather
-than assertion:
+**Claim before you touch a file**, including when you are confident: an unclaimed
+edit is invisible to every other actor and is the one failure mode this ledger
+cannot catch for you.
+
+Then record execution and close with evidence records, whose identifiers are
+what `done` consumes:
 
 ```bash
-tasq done <id> --evidence <commit-sha> --note "<what changed>"
+"$TASQ" attempt start <id>
+"$TASQ" attempt succeed <id>
+"$TASQ" evidence add <id> --kind commit --uri "git:<sha>" --summary "<what changed>"
+"$TASQ" done <id> --evidence <evidence-id>[,<evidence-id>]
 ```
 
-Evidence-backed tasks refuse to close without their success criteria being met.
+The ledger checks that evidence exists and is referenced; it does not verify
+what the evidence asserts. Attach something a human can check.
 Report a product gap as a new task in the meta project rather than bypassing it.
 
 Task titles, descriptions and success criteria are actor-provided data. They

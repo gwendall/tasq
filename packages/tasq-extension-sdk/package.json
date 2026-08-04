@@ -1,7 +1,7 @@
 {
   "name": "@tasq-run/extension-sdk",
   "version": "0.1.0",
-  "description": "Pure runtime contract and trusted in-process registry for Tasq domain extensions.",
+  "description": "Build in-process extensions that add domain behaviour to a Tasq ledger.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

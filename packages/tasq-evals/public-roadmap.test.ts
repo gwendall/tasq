@@ -230,7 +230,7 @@ describe("canonical Tasq roadmap", () => {
         blocks: "stable_graduation",
         publicAlphaBlocking: false,
       },
-      maintainerPublicAlphaAuthorization: { state: "complete" },
+      maintainerPublicAlphaAuthorization: { state: "complete_for_v0_4_0_public_alpha" },
       publicSourceLaunch: {
         state: "complete_public_alpha",
       },

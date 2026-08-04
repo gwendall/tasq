@@ -7,11 +7,28 @@ const bindTasq = `TASQ=${persistentTasqPath}`;
 const tasq = '"$TASQ"';
 
 export const publicCodeExamples = {
+  demo: {
+    kind: "shell",
+    title: "try it in three seconds",
+    display: `npx @tasq-run/cli@${releaseVersion} demo`,
+  },
+  humanFlow: {
+    kind: "shell",
+    title: "your own work",
+    display: `tasq add "Renew the domain" --due 2026-09-01 --priority 2
+tasq next
+tasq done <id>`,
+  },
+  agentConnect: {
+    kind: "shell",
+    title: "connect an agent",
+    display: `tasq agent install claude --space my/project --actor claude:main`,
+  },
   quickTry: {
     kind: "shell",
     title: "try without installing",
-    display: `bunx @tasq-run/cli@${releaseVersion} version
-npm exec --yes --package=@tasq-run/cli@${releaseVersion} -- tasq version`,
+    display: `npx @tasq-run/cli@${releaseVersion} demo
+bunx @tasq-run/cli@${releaseVersion} demo`,
   },
   nativeInstall: {
     kind: "shell",

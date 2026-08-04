@@ -1,7 +1,7 @@
 {
   "name": "@tasq-run/cli",
   "version": "0.1.0",
-  "description": "Tasq Local CLI, autonomous onboarding entrypoint and Bun executable.",
+  "description": "Local-first task tracker your AI agents can share. Command line interface.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "bin": {

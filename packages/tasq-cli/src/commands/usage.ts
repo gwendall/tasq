@@ -11,15 +11,30 @@
  */
 
 // ── Task verbs (top-level) ──────────────────────────────────────────────
+
+/**
+ * Flag dependencies the service layer enforces on `add` and `update`.
+ *
+ * Both rules are rejected by `createTask`/`updateTask` after the command is
+ * already running, so the usage text must state them up front: an
+ * evidence-backed task cannot exist without the criteria that close it, and an
+ * independently validated task is always evidence-backed.
+ */
+export const COMPLETION_MODE_REQUIREMENTS =
+  `  --completion evidence requires --success <criteria>
+  --validated requires --completion evidence`;
+
 export const ADD_USAGE =
-  "add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]";
+  `add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]
+${COMPLETION_MODE_REQUIREMENTS}`;
 export const SHOW_USAGE = "show <id>";
 export const INSPECT_USAGE = "inspect <id> [--json]   canonical profile-neutral commitment graph";
 export const DISCOVER_USAGE = `discover [show] [--json]
 discover schema <resource-id> [--json]
 discover negotiate --hello <json> [--json]`;
 export const UPDATE_USAGE =
-  "update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]";
+  `update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]
+${COMPLETION_MODE_REQUIREMENTS}`;
 export const TREE_USAGE = "tree <id> — shows a task + its sub-tasks";
 export const TASK_STATUS_USAGE =
   "task status <id>  (shows progress + ETA for a task with sub-tasks)";

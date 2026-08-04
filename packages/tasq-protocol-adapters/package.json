@@ -1,7 +1,7 @@
 {
   "name": "@tasq-run/protocol-adapters",
   "version": "0.1.0",
-  "description": "Commitment-safe MCP Tasks and A2A execution adapters for Tasq.",
+  "description": "Bridge Tasq tasks to MCP Tasks and A2A without losing proof of completion.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
