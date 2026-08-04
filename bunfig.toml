@@ -1,0 +1,5 @@
+[test]
+# Neutralise ambient TASQ_* variables before any suite runs. See
+# scripts/test-isolation.ts for why this is repository-wide rather than
+# per-suite.
+preload = ["./scripts/test-isolation.ts"]
