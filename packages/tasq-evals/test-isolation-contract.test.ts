@@ -59,12 +59,20 @@ describe("test isolation contract", () => {
 
   test("the guard is actually in force while this suite runs", () => {
     // Proves the preload reached this process rather than merely existing on
-    // disk: TASQ_HOME points at a throwaway directory, never a developer home.
-    const home = process.env.TASQ_HOME ?? "";
-    expect(home).toContain("tasq-test-home-");
-    expect(home).not.toContain(`${process.env.HOME ?? "/nonexistent"}/.tasq`);
-    for (const name of ["TASQ_TENANT", "TASQ_DB_URL", "TASQ_ACTOR"]) {
+    // disk: HOME points at a throwaway directory, so the configDir() fallback
+    // cannot resolve to a real ledger.
+    expect(process.env.HOME ?? "").toContain("tasq-test-home-");
+    for (const name of ["TASQ_HOME", "TASQ_TENANT", "TASQ_DB_URL", "TASQ_ACTOR"]) {
       expect(process.env[name], `${name} must not leak into a suite`).toBeUndefined();
     }
+  });
+
+  test("the guard never sets TASQ_HOME, which would defeat per-test isolation", () => {
+    // Suites spawn the CLI with a per-test HOME and rely on the homedir()
+    // fallback. An inherited TASQ_HOME would travel through `...process.env`,
+    // override that choice, and collapse a whole file onto one shared ledger.
+    const guard = readFileSync(join(repositoryRoot, "scripts/test-isolation.ts"), "utf8");
+    expect(guard).not.toMatch(/process\.env\.TASQ_HOME\s*=/);
+    expect(guard).toMatch(/process\.env\.HOME\s*=/);
   });
 });
