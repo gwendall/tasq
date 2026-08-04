@@ -50,7 +50,10 @@ shell string or insert a runtime wrapper.
 - An attempt records execution. Attempt success never completes its durable
   commitment automatically.
 - Attach observable evidence when required, then complete with the exact
-  evidence identifiers.
+  evidence identifiers. Tasq checks that the evidence exists, that it belongs
+  to the task and that completion references it. It does **not** verify what
+  the evidence asserts, so attach something a human or a later process can
+  check on its own: a commit sha, a file digest, a command and its output.
 - If `validationRequired` is true, evidence alone cannot complete the
   commitment. Use the returned resolution recipes: submit a proposal against
   the frozen contract, hand it to a separately onboarded eligible validator,

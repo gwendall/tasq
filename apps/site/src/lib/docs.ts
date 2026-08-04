@@ -311,7 +311,7 @@ export const docPages: DocPage[] = [
         title: "Evidence",
         body: [
           "The receipt used to justify completion: a commit, a file, a command output, a link. Evidence-backed tasks refuse to close without their success criteria being stated up front.",
-          "Tasq checks that evidence exists and is referenced. It does not verify what the evidence asserts, so attach something a human can check.",
+          "Be precise about the guarantee. Tasq checks that the evidence exists, belongs to the task, and is referenced by the completion. It does not verify what the evidence asserts. That still beats an assertion, because it leaves something a human or a later process can check, but it is not proof by itself.",
         ],
         code: `tasq evidence add <id> --kind commit --uri "git:9f2c1ab"
 tasq done <id> --evidence <evidence-id>`,

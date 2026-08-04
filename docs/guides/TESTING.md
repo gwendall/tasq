@@ -172,6 +172,21 @@ cd packages/tasq-service && bun test
 ```
 
 **Test isolation** : each test creates its own temp file SQLite via `mkdtempSync` and cleans up in `afterEach`. No shared state, no flakiness from in-memory cache leakage.
+
+Two rules make that isolation hold, and both are load-bearing:
+
+- **A repository-wide guard** (`scripts/test-isolation.ts`, preloaded by each
+  package's `bunfig.toml`) clears every ambient `TASQ_*` variable and points
+  `HOME` at a throwaway directory before any test module is evaluated. Without
+  it, running the suites in a shell that had selected a real ledger wrote
+  fixtures into it.
+- **Suites isolate by setting `HOME`, never `TASQ_HOME`.** `configDir()` returns
+  `process.env.TASQ_HOME || join(homedir(), ".tasq")`, so a per-test `HOME`
+  passed to a spawned CLI is what keeps each test on its own store. Setting
+  `TASQ_HOME` anywhere in the parent process travels through `...process.env`,
+  overrides that choice, and silently collapses an entire file onto one shared
+  ledger. `packages/tasq-evals/test-isolation-contract.test.ts` asserts the
+  guard never does this.
 The package runner gives every file a fresh Bun process; the 52-case historical
 state-machine file is additionally split by Task/Goal/Project suite so Bun
 1.3.11 native-driver teardown cannot accumulate across all cases on the
