@@ -392,6 +392,67 @@ const publicEntries = await Promise.all(publicEntryCopies.map(async ({ source, o
   serialized: await readFile(resolve(repoRoot, source), "utf8"),
 })));
 
+
+// ── Changelog ──────────────────────────────────────────────────────────────
+// Parsed from CHANGELOG.md so the site cannot publish a different history from
+// the repository. Structure only: headings, subheadings and bullet text.
+const changelogSource = await readFile(resolve(repoRoot, "CHANGELOG.md"), "utf8");
+
+function parseChangelog(source: string): Array<{
+  version: string;
+  date: string | null;
+  note: string | null;
+  groups: Array<{ kind: string; items: string[] }>;
+}> {
+  const releases: Array<{
+    version: string;
+    date: string | null;
+    note: string | null;
+    groups: Array<{ kind: string; items: string[] }>;
+  }> = [];
+  let release: (typeof releases)[number] | null = null;
+  let group: { kind: string; items: string[] } | null = null;
+
+  for (const raw of source.split("\n")) {
+    const heading = /^##\s+(.+?)\s*$/.exec(raw);
+    if (heading) {
+      const [version, date] = heading[1]!.split("—").map((part) => part.trim());
+      release = { version: version!, date: date ?? null, note: null, groups: [] };
+      releases.push(release);
+      group = null;
+      continue;
+    }
+    if (!release) continue;
+
+    const sub = /^###\s+(.+?)\s*$/.exec(raw);
+    if (sub) {
+      group = { kind: sub[1]!, items: [] };
+      release.groups.push(group);
+      continue;
+    }
+
+    const bullet = /^-\s+(.+)$/.exec(raw);
+    if (bullet && group) {
+      group.items.push(bullet[1]!.trim());
+      continue;
+    }
+    if (bullet || raw.trim() === "") continue;
+    if (!group && release.note === null && raw.trim().startsWith("[Release]")) {
+      release.note = raw.trim();
+    } else if (group && release.groups.at(-1)?.items.length) {
+      // Wrapped continuation of the previous bullet.
+      const items = release.groups.at(-1)!.items;
+      items[items.length - 1] = `${items.at(-1)} ${raw.trim()}`;
+    }
+  }
+
+  return releases.filter((entry) => entry.groups.some((g) => g.items.length > 0));
+}
+
+const changelog = parseChangelog(changelogSource);
+const changelogSerialized = `${JSON.stringify(changelog, null, 2)}\n`;
+const changelogOutputPaths = [resolve(scriptDirectory, "../src/generated/changelog.json")];
+
 async function checkOutputs(paths: string[], expected: string): Promise<void> {
   for (const outputPath of paths) {
     const current = await readFile(outputPath, "utf8").catch(() => "");
@@ -407,6 +468,7 @@ if (process.argv.includes("--stdout")) {
   await checkOutputs(truthOutputPaths, serialized);
   await checkOutputs(adoptionOutputPaths, adoptionSerialized);
   await checkOutputs(installerOutputPaths, installerSerialized);
+  await checkOutputs(changelogOutputPaths, changelogSerialized);
   for (const entry of publicEntries) {
     await checkOutputs([entry.outputPath], entry.serialized);
   }
@@ -416,5 +478,6 @@ if (process.argv.includes("--stdout")) {
     ...adoptionOutputPaths.map((outputPath) => writeFile(outputPath, adoptionSerialized, "utf8")),
     ...installerOutputPaths.map((outputPath) => writeFile(outputPath, installerSerialized, { encoding: "utf8", mode: 0o755 })),
     ...publicEntries.map(({ outputPath, serialized }) => writeFile(outputPath, serialized, "utf8")),
+    ...changelogOutputPaths.map((outputPath) => writeFile(outputPath, changelogSerialized, "utf8")),
   ]);
 }

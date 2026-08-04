@@ -1,8 +1,10 @@
 # Changelog
 
-Tasq has not made a public release. Historical implementation checkpoints are
-recorded in [`docs/roadmap/BACKLOG.md`](docs/roadmap/BACKLOG.md); this file begins the public release history selected
-by ADR-008.
+Public releases are listed below, newest first. Each entry links to its GitHub
+release, which carries the exact artifacts, checksums and attestations.
+Pre-release implementation checkpoints are recorded in
+[`docs/roadmap/BACKLOG.md`](docs/roadmap/BACKLOG.md); this file is the public
+release history selected by ADR-008.
 
 ## Unreleased
 
@@ -91,3 +93,46 @@ by ADR-008.
 - Upgrade `drizzle-orm` to 0.45.2 for corrected SQL identifier escaping. Public
   package manifests now derive external dependency versions from their source
   manifests, and wrapped driver errors retain safe contention classification.
+
+## v0.3.0 — 2026-07-23
+
+[Release](https://github.com/gwendall/tasq/releases/tag/v0.3.0) · store format 26
+
+### Added
+
+- Opt-in independent completion resolution across Core, embedded client, CLI,
+  local MCP and Console: frozen policies, proposals, challenges and explicit
+  decisions. Validated tasks can no longer be completed by evidence alone.
+- Append-only evidence trust, proposal, challenge and validation records.
+
+## v0.2.0 — 2026-07-23
+
+[Release](https://github.com/gwendall/tasq/releases/tag/v0.2.0)
+
+### Added
+
+- `createLocalTasq`, the embedded TypeScript client, published as compiled ESM
+  with declarations and certified on Node 22 and Bun.
+
+## v0.1.1 — 2026-07-23
+
+[Release](https://github.com/gwendall/tasq/releases/tag/v0.1.1)
+
+### Added
+
+- Public acquisition and universal-agent entrypoints: the versioned installer,
+  `setup`, `demo` and the deterministic `agent install` helper.
+
+### Changed
+
+- Made the public adoption examples executable rather than illustrative.
+
+## v0.1.0 — 2026-07-23
+
+[Release](https://github.com/gwendall/tasq/releases/tag/v0.1.0) · first public alpha
+
+### Added
+
+- First published `@tasq-run/*` packages and checksummed native assets for
+  macOS arm64 and Linux x64, built from protected GitHub Actions OIDC with npm
+  provenance.
