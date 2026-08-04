@@ -99,8 +99,8 @@ web status --tenant <space> [--json]
 Start an explicit foreground, unauthenticated read-only Console on loopback, or
 prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
-export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
-export const RELEASE_USAGE = "release <task-id> [--reason <text>] [--force]";
+export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--actor <label>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
+export const RELEASE_USAGE = "release <task-id> [--actor <label>] [--reason <text>] [--force]";
 export const ATTEMPT_USAGE = `attempt start <task-id> [--claim <claim-id>] [--runtime <name>] [--external-id <id>] [--context-id <id>] [--metadata <json>] [--idempotency-key <key>]
 attempt list [task-id]
 attempt show <attempt-id>
