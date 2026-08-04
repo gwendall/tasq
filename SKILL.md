@@ -67,6 +67,25 @@ shell string or insert a runtime wrapper.
 - Never auto-execute high-stakes money, signature or important communication
   actions. Present the exact proposed action and wait for human confirmation.
 
+## Where work belongs
+
+Three levels isolate work, and choosing the wrong one is the most common
+setup mistake:
+
+- **`TASQ_HOME`** is a property of the machine. Keep **one** per operator. It is
+  the unit of backup, migration and `doctor`. Extra homes multiply the snapshots
+  someone has to maintain and split the history.
+- **Space** is a property of the group that coordinates. Two actors coordinate
+  only when they share a store *and* the exact same space ID. Use one space per
+  real working set, and keep its name durable: a project descriptor committed to
+  version control should never name a short-lived push of work.
+- **Area, goal and project** organise work inside a space. A new initiative is a
+  new project, not a new space and never a new home.
+
+Use an isolated `TASQ_HOME` **only for tests and experiments**. For real work,
+select the space with `--tenant` or `TASQ_TENANT` instead, which leaves the
+operator's configured default untouched. Running `setup` rewrites that default.
+
 ## Storage and recovery
 
 Never read or write the live SQLite database directly, delete the ledger, or
