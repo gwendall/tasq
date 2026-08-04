@@ -1,7 +1,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
-import { dirname, extname, resolve, sep } from "node:path";
+import { basename, dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const exportRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../out");
@@ -12,6 +12,15 @@ const port = Number(rawPort);
 if (!Number.isInteger(port) || port < 1 || port > 65_535) {
   throw new Error(`Invalid static export port: ${rawPort ?? "<missing>"}`);
 }
+
+// Next writes metadata images without a file extension, so extension lookup
+// alone serves a valid PNG as application/octet-stream and several link
+// unfurlers then refuse to render the card.
+const extensionlessContentTypes = new Map([
+  ["opengraph-image", "image/png"],
+  ["twitter-image", "image/png"],
+  ["apple-icon", "image/png"],
+]);
 
 const contentTypes = new Map([
   [".css", "text/css; charset=utf-8"],
@@ -29,6 +38,14 @@ const contentTypes = new Map([
   [".woff", "font/woff"],
   [".woff2", "font/woff2"],
 ]);
+
+function contentTypeFor(filePath) {
+  const extension = extname(filePath).toLowerCase();
+  if (extension === "") {
+    return extensionlessContentTypes.get(basename(filePath)) ?? "application/octet-stream";
+  }
+  return contentTypes.get(extension) ?? "application/octet-stream";
+}
 
 function resolveRequestPath(requestUrl) {
   let pathname;
@@ -76,7 +93,7 @@ const server = createServer(async (request, response) => {
   const fileStats = await stat(filePath);
   response.writeHead(200, {
     "Content-Length": fileStats.size,
-    "Content-Type": contentTypes.get(extname(filePath).toLowerCase()) ?? "application/octet-stream",
+    "Content-Type": contentTypeFor(filePath),
   });
 
   if (request.method === "HEAD") {
