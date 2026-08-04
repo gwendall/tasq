@@ -277,6 +277,50 @@ export const docPages: DocPage[] = [
       },
     ],
   },
+  {
+    slug: "concepts",
+    eyebrow: "The model",
+    title: "Four things most tools collapse into one.",
+    summary:
+      "Task, claim, attempt and evidence are separate records. Keeping them apart is what lets a replacement worker tell intent from execution, and execution from outcome.",
+    sections: [
+      {
+        title: "Task",
+        body: [
+          "The outcome that is still owed. It survives the session, the process and the model that created it. A task is not a message, not a plan step and not a runtime state.",
+        ],
+      },
+      {
+        title: "Claim",
+        body: [
+          "An exclusive, expiring right to work on one task. Claims are how two workers avoid starting the same thing. A refused claim tells you someone already holds it and when their hold ends.",
+          "Claims expire on purpose. A worker that crashes stops owning its task without anyone intervening.",
+        ],
+        code: `tasq claim <id> --for 30m
+# refused: Task <id> is claimed by agent-a until 14:20Z`,
+        codeTitle: "exclusive ownership",
+      },
+      {
+        title: "Attempt",
+        body: [
+          "One execution, successful or not. An attempt succeeding is not the task being done: the command ran, which is a different claim about the world than the outcome being true.",
+          "This distinction is the entire point. Most tools treat a successful run as a completed outcome, which is how an agent ends up reporting work it did not finish.",
+        ],
+      },
+      {
+        title: "Evidence",
+        body: [
+          "The receipt used to justify completion: a commit, a file, a command output, a link. Evidence-backed tasks refuse to close without their success criteria being stated up front.",
+          "Tasq checks that evidence exists and is referenced. It does not verify what the evidence asserts, so attach something a human can check.",
+        ],
+        code: `tasq evidence add <id> --kind commit --uri "git:9f2c1ab"
+tasq done <id> --evidence <evidence-id>`,
+        codeTitle: "closing with proof",
+        callout:
+          "An attempt succeeding never completes its task automatically, and validated tasks cannot be completed by evidence alone.",
+      },
+    ],
+  },
 ];
 
 export function getDocPage(slug: string): DocPage | undefined {
