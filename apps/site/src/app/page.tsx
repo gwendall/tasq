@@ -29,7 +29,7 @@ const benefits = [
   {
     icon: Network,
     title: "Stop losing the thread",
-    body: "Commitments, owners, attempts and evidence survive model changes, process crashes and handoffs.",
+    body: "Tasks, owners, attempts and evidence survive model changes, process crashes and handoffs.",
   },
   {
     icon: Fingerprint,
@@ -64,9 +64,9 @@ export default function HomePage() {
               The project tracker you share with your agents. They claim work, prove it is done, and pick up where the last session died. You stay in the loop.
             </p>
             {published ? (
-              <div className="mt-8 flex items-center gap-3 border border-[var(--line-strong)] bg-[var(--ink)] px-4 py-3 font-mono text-sm text-[var(--paper)] shadow-[4px_4px_0_var(--signal)] sm:max-w-md">
-                <span aria-hidden="true" className="text-[var(--signal)]">$</span>
-                <code className="overflow-x-auto whitespace-nowrap">{publicCodeExamples.demo.display}</code>
+              <div className="mt-8 flex w-full max-w-full items-center gap-3 border border-[var(--line-strong)] bg-[var(--ink)] px-4 py-3 font-mono text-sm text-[var(--paper)] shadow-[4px_4px_0_var(--signal)] sm:max-w-md">
+                <span aria-hidden="true" className="shrink-0 text-[var(--signal)]">$</span>
+                <code className="min-w-0 overflow-x-auto whitespace-nowrap">{publicCodeExamples.demo.display}</code>
               </div>
             ) : null}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -184,7 +184,7 @@ export default function HomePage() {
 
       <section className="section-space border-b border-[var(--line-strong)]">
         <div className="site-container grid gap-px border border-[var(--line-strong)] bg-[var(--line-strong)] lg:grid-cols-2">
-          <article className="bg-[var(--paper)] p-8 sm:p-10">
+          <article className="min-w-0 bg-[var(--paper)] p-8 sm:p-10">
             <p className="eyebrow"><Users aria-hidden="true" className="size-3.5" /> For you</p>
             <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
               A real tracker, not a scratchpad.
@@ -198,7 +198,7 @@ export default function HomePage() {
               <CodeWindow title={publicCodeExamples.humanFlow.title}>{publicCodeExamples.humanFlow.display}</CodeWindow>
             </div>
           </article>
-          <article className="bg-[var(--paper)] p-8 sm:p-10">
+          <article className="min-w-0 bg-[var(--paper)] p-8 sm:p-10">
             <p className="eyebrow"><Bot aria-hidden="true" className="size-3.5" /> For your agents</p>
             <h2 className="mt-5 text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">
               One command to plug them in.
@@ -222,7 +222,7 @@ export default function HomePage() {
               See the shared state locally.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--ink-muted)]">
-              The read-only Console shows commitments, claims, resources, evidence, resolution decisions and audit history from the same local ledger. It binds only to loopback.
+              The read-only Console shows tasks, claims, resources, evidence, resolution decisions and audit history from the same local ledger. It binds only to loopback.
             </p>
           </div>
           <div className="mt-10 overflow-hidden border border-[var(--line-strong)] bg-[var(--paper)] shadow-[5px_5px_0_var(--ink)]">
