@@ -301,6 +301,15 @@ export const docPages: DocPage[] = [
         codeTitle: "exclusive ownership",
       },
       {
+        title: "Order without a scheduler",
+        body: [
+          "Record that one task waits on another with a dependency, and `tasq next` stops offering the blocked one until its blocker closes. Nothing schedules the work: the queue simply stops proposing what is not actionable yet.",
+        ],
+        code: `tasq depend <id> --on <other-id>
+tasq next        # the blocked task is absent until its blocker is done`,
+        codeTitle: "dependencies",
+      },
+      {
         title: "Attempt",
         body: [
           "One execution, successful or not. An attempt succeeding is not the task being done: the command ran, which is a different claim about the world than the outcome being true.",
