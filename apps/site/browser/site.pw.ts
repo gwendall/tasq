@@ -92,3 +92,21 @@ test("mobile layout stays within the viewport and exposes navigation", async ({ 
   await page.getByRole("link", { name: "Docs" }).click();
   await expect(page.getByRole("navigation", { name: "Documentation", exact: true })).toBeVisible();
 });
+
+test("the OpenGraph card is served as an image, not as opaque bytes", async ({ page }) => {
+  // A valid PNG served as application/octet-stream still returns 200 and still
+  // passes every local check, while link unfurlers quietly refuse to render it.
+  await page.goto("/");
+  const declared = await page.locator('meta[property="og:image"]').getAttribute("content");
+  expect(declared).toBeTruthy();
+
+  // The tag carries the absolute production URL via metadataBase; request the
+  // same path from the export under test rather than from the live site.
+  const { pathname, search } = new URL(declared!);
+  const image = await page.request.get(`${pathname}${search}`);
+  expect(image.ok()).toBe(true);
+  expect(image.headers()["content-type"]).toContain("image/png");
+
+  const body = await image.body();
+  expect(body.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+});
