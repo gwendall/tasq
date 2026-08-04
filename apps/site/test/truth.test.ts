@@ -75,4 +75,36 @@ describe("public site truth", () => {
     ]);
     for (const source of productTruth.sourceContracts) expect(source.sha256).toMatch(/^[a-f0-9]{64}$/);
   });
+  test("every command shown in the docs exists in the CLI", async () => {
+    // Seven of the nine doc code blocks come from publicCodeExamples, which
+    // public-commands.test.ts actually executes. Literal blocks are not run by
+    // anything, so a command invented while writing prose reaches a reader
+    // untouched. Check the verb of every literal line against the CLI.
+    const docsSource = await Bun.file(new URL("../src/lib/docs.ts", import.meta.url)).text();
+    const cliSource = await Bun.file(
+      new URL("../../../packages/tasq-cli/src/index.ts", import.meta.url),
+    ).text();
+    const usageSource = await Bun.file(
+      new URL("../../../packages/tasq-cli/src/commands/usage.ts", import.meta.url),
+    ).text();
+    const cli = cliSource + usageSource;
+
+    const literals = [...docsSource.matchAll(/code:\s*`([^`]+)`/g)].map((match) => match[1]!);
+    const verbs = new Set<string>();
+    for (const block of literals) {
+      for (const line of block.split("\n")) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("tasq ")) continue;
+        const parts = trimmed.slice(5).split(/\s+/).filter((part) => !part.startsWith("-"));
+        if (parts[0]) verbs.add(parts[0]);
+        // Sub-verbs such as `evidence add` must exist too.
+        if (parts[1] && /^[a-z-]+$/.test(parts[1])) verbs.add(`${parts[0]} ${parts[1]}`);
+      }
+    }
+
+    expect(verbs.size).toBeGreaterThan(0);
+    for (const verb of verbs) {
+      expect(cli, `the docs show "tasq ${verb}", which the CLI must accept`).toContain(verb);
+    }
+  });
 });
