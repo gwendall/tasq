@@ -452,6 +452,53 @@ function parseChangelog(source: string): Array<{
 const changelog = parseChangelog(changelogSource);
 const changelogSerialized = `${JSON.stringify(changelog, null, 2)}\n`;
 const changelogOutputPaths = [resolve(scriptDirectory, "../src/generated/changelog.json")];
+// ── CLI reference ──────────────────────────────────────────────────────────
+// Generated from the CLI's own help block so the page cannot drift from the
+// shipped binary. Hand-writing it would fail its own acceptance criterion the
+// first time a flag changes.
+const cliIndexPath = resolve(repoRoot, "packages/tasq-cli/src/index.ts");
+const cliIndexSource = await readFile(cliIndexPath, "utf8");
+
+function parseCliReference(source: string): Array<{
+  heading: string;
+  entries: Array<{ usage: string; description: string }>;
+}> {
+  const start = source.indexOf("function printHelp()");
+  if (start === -1) throw new Error("CLI help block not found");
+  const block = source.slice(start, source.indexOf("\n}", start));
+  const lines = block.split("\n");
+
+  const sections: Array<{ heading: string; entries: Array<{ usage: string; description: string }> }> = [];
+  let current: { heading: string; entries: Array<{ usage: string; description: string }> } | null = null;
+
+  for (const raw of lines) {
+    const headingMatch = /^\$\{color\.bold\("([A-Z][A-Z /]*(?:—[^"]*)?)"\)\}$/.exec(raw.trim());
+    if (headingMatch) {
+      current = { heading: headingMatch[1]!.trim(), entries: [] };
+      sections.push(current);
+      continue;
+    }
+    if (!current) continue;
+    if (!raw.startsWith("  ") || raw.trim() === "") continue;
+
+    const body = raw.slice(2).replace(/\$\{color\.[a-z]+\(([^)]*)\)\}/g, "$1").trimEnd();
+    if (body.startsWith(" ")) {
+      // Continuation of the previous entry's description.
+      const last = current.entries.at(-1);
+      if (last) last.description = `${last.description} ${body.trim()}`.trim();
+      continue;
+    }
+    const split = /^(\S.*?)\s{2,}(\S.*)$/.exec(body);
+    if (split) current.entries.push({ usage: split[1]!.trim(), description: split[2]!.trim() });
+    else current.entries.push({ usage: body.trim(), description: "" });
+  }
+
+  return sections.filter((section) => section.entries.length > 0 && section.heading !== "USAGE");
+}
+
+const cliReference = parseCliReference(cliIndexSource);
+const cliReferenceSerialized = `${JSON.stringify(cliReference, null, 2)}\n`;
+const cliReferenceOutputPaths = [resolve(scriptDirectory, "../src/generated/cli-reference.json")];
 
 async function checkOutputs(paths: string[], expected: string): Promise<void> {
   for (const outputPath of paths) {
@@ -469,6 +516,7 @@ if (process.argv.includes("--stdout")) {
   await checkOutputs(adoptionOutputPaths, adoptionSerialized);
   await checkOutputs(installerOutputPaths, installerSerialized);
   await checkOutputs(changelogOutputPaths, changelogSerialized);
+  await checkOutputs(cliReferenceOutputPaths, cliReferenceSerialized);
   for (const entry of publicEntries) {
     await checkOutputs([entry.outputPath], entry.serialized);
   }
@@ -479,5 +527,6 @@ if (process.argv.includes("--stdout")) {
     ...installerOutputPaths.map((outputPath) => writeFile(outputPath, installerSerialized, { encoding: "utf8", mode: 0o755 })),
     ...publicEntries.map(({ outputPath, serialized }) => writeFile(outputPath, serialized, "utf8")),
     ...changelogOutputPaths.map((outputPath) => writeFile(outputPath, changelogSerialized, "utf8")),
+    ...cliReferenceOutputPaths.map((outputPath) => writeFile(outputPath, cliReferenceSerialized, "utf8")),
   ]);
 }
