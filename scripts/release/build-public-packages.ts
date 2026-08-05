@@ -10,6 +10,7 @@ import {
   stat,
   writeFile,
 } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 interface Inputs {
@@ -30,6 +31,14 @@ interface PublicPackage {
   copyMode: "all-source" | "compiled-esm" | "cli-bundle";
   runtime: "bun" | "bun-node";
 }
+
+type PublicPackageDefinition = Omit<PublicPackage, "description"> & {
+  /**
+   * Omitted on purpose for repository packages: normalization reads the
+   * published description from the package's own manifest exactly once.
+   */
+  description?: string;
+};
 
 const productRoot = resolve(import.meta.dir, "../..");
 const packagesRoot = join(productRoot, "packages");
@@ -77,12 +86,30 @@ async function selectedDependencies(
   }));
 }
 
+
+/**
+ * Reads a package's published description from its own manifest, so the text a
+ * contributor edits is the text npm receives. npm descriptions are immutable
+ * once a version is published, which makes a duplicated copy here a permanent
+ * mistake rather than a temporary one.
+ */
+function sourceDescription(definition: Pick<PublicPackage, "name" | "sourceDirectory">): string {
+  const manifestPath = join(packagesRoot, definition.sourceDirectory, "package.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as { description?: string };
+  const description = (manifest.description ?? "").trim();
+  if (description.length < 20) {
+    throw new Error(
+      `${definition.name}: ${manifestPath} has no usable description; npm would publish it immutably`,
+    );
+  }
+  return description;
+}
+
 async function definitions(version: string): Promise<PublicPackage[]> {
-  return [
+  const packages: PublicPackageDefinition[] = [
     {
       name: "@tasq-run/schema",
       sourceDirectory: "tasq-schema",
-      description: "Portable schemas, identifiers and clock contracts for Tasq.",
       entrypoint: "./dist/index.js",
       exports: {
         ".": "./dist/index.js",
@@ -108,7 +135,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/extension-sdk",
       sourceDirectory: "tasq-extension-sdk",
-      description: "DB-free extension and connector contracts for Tasq.",
       entrypoint: "./dist/index.js",
       exports: { ".": "./dist/index.js" },
       dependencies: { "@tasq-run/schema": version },
@@ -118,7 +144,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/core",
       sourceDirectory: "tasq-core",
-      description: "Universal runtime-neutral commitment coordination kernel for Tasq.",
       entrypoint: "./dist/kernel.js",
       exports: { ".": "./dist/kernel.js" },
       dependencies: {
@@ -132,7 +157,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/mcp",
       sourceDirectory: "tasq-mcp",
-      description: "Capability-scoped local stdio MCP transport for Tasq Core.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
       bin: { "tasq-mcp": "./src/stdio.ts" },
@@ -147,7 +171,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/protocol-adapters",
       sourceDirectory: "tasq-protocol-adapters",
-      description: "Commitment-safe MCP Tasks and A2A execution adapters for Tasq.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
       dependencies: {
@@ -161,7 +184,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/console",
       sourceDirectory: "tasq-inspector",
-      description: "Read-only loopback Console primitives for Tasq Local.",
       entrypoint: "./src/index.ts",
       exports: { ".": "./src/index.ts" },
       dependencies: { "@tasq-run/core": version, "@tasq-run/schema": version },
@@ -171,7 +193,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/client",
       sourceDirectory: "tasq-client",
-      description: "Runtime-neutral authenticated remote client for Tasq Server.",
       entrypoint: "./dist/index.js",
       exports: { ".": "./dist/index.js" },
       dependencies: await selectedDependencies("tasq-client", ["zod"]),
@@ -181,7 +202,6 @@ async function definitions(version: string): Promise<PublicPackage[]> {
     {
       name: "@tasq-run/cli",
       sourceDirectory: "tasq-cli",
-      description: "Standalone local-first Tasq command-line agent and human interface.",
       entrypoint: "./index.js",
       bin: { tasq: "./index.js" },
       optionalDependencies: {
@@ -192,6 +212,10 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       runtime: "bun",
     },
   ];
+  return packages.map((definition) => ({
+    ...definition,
+    description: definition.description ?? sourceDescription(definition),
+  }));
 }
 
 function manifest(definition: PublicPackage, inputs: Inputs) {
