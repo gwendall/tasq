@@ -154,6 +154,33 @@ operation through real adopters, not more repository-only architecture.
 During alpha and TQ-607, fixes discovered by real adopters are in scope. New
 Server/Cloud breadth remains behind published-byte Local certification.
 
+### The ledger is becoming the source of these items
+
+`TQ-617`–`TQ-621` are the first items whose truth lives in a Tasq space rather
+than in this file. `scripts/backlog-from-ledger.ts` projects that space onto the
+`items` array: a task carrying `metadata.publicId` publishes its `outcome`,
+`milestone`, `dependsOn`, `remaining` and a status mapped onto the frozen
+vocabulary above. Ordinary working tasks carry no `publicId` and are never
+published.
+
+Three properties make this safe to rely on:
+
+- **Publication text is explicit, never inferred.** A task's success criteria
+  answer "how will we know this is done"; a roadmap outcome answers "what does
+  this deliver". The projector reads `metadata.outcome` and refuses to guess.
+- **The pull request is the governance step.** The ledger changes on write, with
+  no review; this file changes through review and CI. Keeping publication as a
+  separate deliberate act is the point, not a limitation to remove.
+- **`--check` runs on a maintainer machine, not in CI.** A clean checkout has no
+  ledger to compare against. CI enforces this file's own contract, which
+  `packages/tasq-evals/public-roadmap.test.ts` already does, while
+  `backlog-projection-contract.test.ts` guards the projector's rules without a
+  ledger.
+
+Everything else here stays hand-written. External gates, invariants, ADR
+decisions and support truth do not model tasks and must not be generated from
+one.
+
 ## Ordered checkpoints
 
 ### 1. Harden the public alpha
