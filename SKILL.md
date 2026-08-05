@@ -47,6 +47,10 @@ shell string or insert a runtime wrapper.
 - Persist numeric event sequences and resume with `--after-sequence`; a
   timestamp is only a filter.
 - Claim before autonomous work and renew the lease while working.
+- `next` hides a task while any task it depends on is still open, so what it
+  returns is actionable now. Record ordering with
+  `depend <id> --on <other-id>` rather than encoding it in titles; `list` still
+  shows blocked tasks, annotated with their unresolved blocker count.
 - An attempt records execution. Attempt success never completes its durable
   commitment automatically.
 - Attach observable evidence when required, then complete with the exact
