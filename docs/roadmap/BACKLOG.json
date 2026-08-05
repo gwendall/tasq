@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-07-31",
+  "updatedAt": "2026-08-05",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -217,7 +217,12 @@
     "TQ-904",
     "TQ-905",
     "TQ-607",
-    "TQ-906"
+    "TQ-906",
+    "TQ-617",
+    "TQ-618",
+    "TQ-619",
+    "TQ-620",
+    "TQ-621"
   ],
   "items": [
     {
@@ -746,6 +751,66 @@
         "docs/contracts/TQ-906_REMOTE_EFFECTS_REVIEW_GATE.json",
         "packages/tasq-server/test/runtime.test.ts",
         "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-617",
+      "status": "pending",
+      "milestone": "autonomous-direction",
+      "dependsOn": ["TQ-608"],
+      "outcome": "Mid-task discoveries become first-class linked work: a discovered_from dependency type plus a zero-cost capture command that never releases the discovering claim",
+      "remaining": [
+        "discovered_from_added_to_task_dependency_check",
+        "capture_command_attaching_machine_context_without_leaving_the_task",
+        "cli_prints_the_ready_capture_command_on_refusal_or_error",
+        "capture_stays_local_and_explicit_by_default"
+      ]
+    },
+    {
+      "id": "TQ-618",
+      "status": "pending",
+      "milestone": "autonomous-direction",
+      "dependsOn": ["TQ-608"],
+      "outcome": "Observed cost attributed per attempt at the claim, cumulative per task, with a hard bound that can refuse lease renewal",
+      "remaining": [
+        "resolve_cost_observability_across_target_runtimes_before_specifying",
+        "cost_recorded_per_attempt_and_aggregated_per_task",
+        "bound_refuses_lease_renewal_without_instrumenting_the_agent"
+      ]
+    },
+    {
+      "id": "TQ-619",
+      "status": "pending",
+      "milestone": "autonomous-direction",
+      "dependsOn": ["TQ-608", "TQ-612"],
+      "outcome": "A task records the observation that motivates it, and that premise is refutable with the same mechanics completion resolution already uses",
+      "remaining": [
+        "motivating_observation_attachable_at_task_creation",
+        "premise_refutable_via_proposal_challenge_resolution",
+        "invalidation_leaves_a_trace_instead_of_a_deletion"
+      ]
+    },
+    {
+      "id": "TQ-620",
+      "status": "pending",
+      "milestone": "autonomous-direction",
+      "dependsOn": ["TQ-813"],
+      "outcome": "Human attention treated as a bounded resource: batched input_required requests and do-not-disturb windows at constant decision quality",
+      "remaining": [
+        "input_required_requests_batchable",
+        "do_not_disturb_window_honoured_by_notification_surfaces",
+        "solicitations_per_unit_of_work_measured"
+      ]
+    },
+    {
+      "id": "TQ-621",
+      "status": "pending",
+      "milestone": "autonomous-direction",
+      "dependsOn": ["TQ-605"],
+      "outcome": "A sourced public comparison of what happens when several agents work the same backlog in parallel, every claim carrying its source",
+      "remaining": [
+        "comparison_page_written_from_verifiable_public_sources",
+        "claims_limited_to_what_the_shipped_product_does"
       ]
     }
   ]
