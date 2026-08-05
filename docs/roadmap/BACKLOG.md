@@ -5,7 +5,7 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-07-31
+**Updated:** 2026-08-05
 
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** publish the maintainer-authorized `v0.4.0` public alpha:
@@ -415,6 +415,40 @@ claim until TQ-616's external gate is attached to exact release bytes.
 
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
+
+### 7C. Guard the intake the way completion is guarded
+
+Tasq guards how work leaves the queue: completion needs evidence, and validated
+tasks need an independent decision. Nothing yet guards how work enters it, or
+what it may cost while claimed. That asymmetry is tenable while humans feed the
+queue and breaks in the autonomous regime, where agents feed it. Two public
+results frame the risk: duplicated work is the top measured rejection cause for
+agent-generated pull requests (23% of 562 hand-coded rejections,
+<https://arxiv.org/html/2601.15195>), and mutual exclusion alone does not
+prevent it - locks plus shared state do
+(<https://arxiv.org/html/2606.19616v1>). Public postmortems of uncapped agents
+reaching $4,200 and $47,000 motivate the cost bound.
+
+- **TQ-617 — pending:** `discovered_from` as a first-class dependency type plus
+  a zero-cost capture command: an agent that finds work mid-task files it as a
+  linked task without releasing its claim or widening its diff, and the CLI
+  prints the ready capture command at the moment of a refusal or error.
+  Capture stays local and explicit by default.
+- **TQ-618 — pending:** observed cost attributed per attempt at the claim,
+  cumulative per task, with a hard bound that can refuse lease renewal. Open
+  question to resolve before specifying: whether cost is observable from the
+  target runtimes without per-provider integration.
+- **TQ-619 — pending:** a task records the observation that motivates it, and
+  that premise is refutable with the same proposal, challenge and resolution
+  mechanics completion already uses. A task whose premise died is invalidated
+  with a trace, not deleted.
+- **TQ-620 — pending:** human attention as a bounded resource: batch
+  `input_required` requests and honour do-not-disturb windows, measured as
+  fewer solicitations per unit of work at constant decision quality.
+- **TQ-621 — pending:** a sourced public comparison page answering the one
+  question that separates coordination tools - what happens when several
+  agents work the same backlog in parallel - with every claim carrying its
+  source and no claim exceeding what the shipped product does.
 
 ### 8. Build managed Tasq Cloud
 
