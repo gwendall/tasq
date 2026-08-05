@@ -49,6 +49,10 @@ checks.push({
       type.startsWith("image/"),
       `og:image served as "${type}"; unfurlers reject non-image types`,
     );
+    expect(
+      declared.endsWith(".png"),
+      `og:image is ${declared}; serve it with a file extension rather than relying on host header config`,
+    );
     const bytes = new Uint8Array(await image.arrayBuffer()).subarray(0, 8);
     const png = [137, 80, 78, 71, 13, 10, 26, 10];
     expect(png.every((byte, index) => bytes[index] === byte), "og:image is not a PNG");

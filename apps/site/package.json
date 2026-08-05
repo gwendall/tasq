@@ -6,10 +6,10 @@
   "description": "Static ledger-free Tasq product and documentation site generated from canonical repository truth.",
   "scripts": {
     "dev": "bun scripts/generate-truth.ts && next dev",
-    "generate": "bun scripts/generate-truth.ts",
-    "build": "bun scripts/generate-truth.ts --check && next build",
+    "generate": "bun scripts/generate-truth.ts && bun scripts/generate-og.ts",
+    "build": "bun scripts/generate-truth.ts --check && bun scripts/generate-og.ts --check && next build",
     "start": "node scripts/serve-export.mjs",
-    "test": "bun scripts/generate-truth.ts --check && bun test",
+    "test": "bun scripts/generate-truth.ts --check && bun scripts/generate-og.ts --check && bun test",
     "test:browser": "bun scripts/generate-truth.ts --check && next build && playwright test --config playwright.config.ts",
     "typecheck": "bun scripts/generate-truth.ts --check && tsc --noEmit"
   },

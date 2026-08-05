@@ -19,12 +19,15 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Tasq",
+    // Served with its extension so the type is right without host config.
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Tasq - the project tracker you share with your agents" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tasq - The project tracker you share with your agents",
     description:
       "Local-first task tracking. Your agents claim work, prove it is done, and pick up where the last session died.",
+    images: ["/og.png"],
   },
   keywords: [
     "task tracker",

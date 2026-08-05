@@ -1,13 +1,8 @@
-import { ImageResponse } from "next/og";
-
 export const alt = "Tasq - the project tracker you share with your agents";
 export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
-export const dynamic = "force-static";
 
-export default function OpengraphImage() {
-  return new ImageResponse(
-    (
+export function OgCard() {
+  return (
       <div
         style={{
           width: "100%",
@@ -52,7 +47,5 @@ export default function OpengraphImage() {
           <span>npx @tasq-run/cli demo</span>
         </div>
       </div>
-    ),
-    size,
   );
 }
