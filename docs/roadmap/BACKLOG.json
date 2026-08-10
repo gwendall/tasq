@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-08-05",
+  "updatedAt": "2026-08-10",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -23,6 +23,9 @@
     "local_console_remains_loopback_and_read_only",
     "remote_surfaces_require_adr_004_guard",
     "signature_verification_never_implies_authorization_validation_or_truth",
+    "assignment_acceptance_never_implies_agreement_or_effect_authority",
+    "settlement_never_rewrites_completion",
+    "new_kernel_primitives_require_cross_domain_admission",
     "stable_package_release_requires_operational_hardening_and_external_evidence",
     "published_claims_require_external_evidence"
   ],
@@ -222,7 +225,18 @@
     "TQ-618",
     "TQ-619",
     "TQ-620",
-    "TQ-621"
+    "TQ-621",
+    "TQ-622",
+    "TQ-623",
+    "TQ-624",
+    "TQ-625",
+    "TQ-626",
+    "TQ-627",
+    "TQ-628",
+    "TQ-629",
+    "TQ-630",
+    "TQ-631",
+    "TQ-632"
   ],
   "items": [
     {
@@ -811,6 +825,160 @@
       "remaining": [
         "comparison_page_written_from_verifiable_public_sources",
         "claims_limited_to_what_the_shipped_product_does"
+      ]
+    },
+    {
+      "id": "TQ-622",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-611", "TQ-612", "TQ-615"],
+      "outcome": "Freeze the delegated-action conformance model and one provider-neutral target-reference and binding contract, or record an explicit no-new-record decision after comparing alternatives",
+      "remaining": [
+        "design_target_identity_and_binding_at_least_twice",
+        "map_external_ref_subject_refs_authority_resource_ref_and_resource_key_without_dual_truth",
+        "prove_secret_minimization_version_and_digest_semantics",
+        "run_physical_software_procurement_and_hostile_identity_scenarios",
+        "record_explicit_kernel_module_or_value_contract_decision_before_schema_work"
+      ]
+    },
+    {
+      "id": "TQ-623",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-611", "TQ-622"],
+      "outcome": "Deepen the embedded Interface so callers can use existing assignments, artifacts, external references and effects plus atomic claim/start and submit-outcome journeys without coordinating internal rows",
+      "remaining": [
+        "expose_existing_assignment_artifact_external_reference_and_effect_capabilities",
+        "freeze_atomic_claim_and_start_and_submit_outcome_interfaces",
+        "preserve_revision_fence_idempotency_audit_and_one_write_path",
+        "pass_lost_response_restart_and_cross_runtime_black_box_journeys",
+        "keep_simple_add_list_done_unchanged"
+      ]
+    },
+    {
+      "id": "TQ-624",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-615", "TQ-622"],
+      "outcome": "Replace the closed signed-statement binding list with a trusted versioned binder registry that can add exact agreement, attestation, mandate and custody purposes without weakening typed target checks",
+      "remaining": [
+        "freeze_binder_descriptor_registration_and_implementation_digest_contract",
+        "preserve_exact_subject_digest_record_existence_and_authority_checks",
+        "reject_unknown_stale_conflicting_or_cross_workspace_binders",
+        "migrate_the_six_existing_binding_kinds_without_semantic_drift",
+        "pass_portable_restore_and_cross_language_vectors"
+      ]
+    },
+    {
+      "id": "TQ-625",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-624", "TQ-802"],
+      "outcome": "Add a provider-neutral Attestations Module with issuer, subject, purpose, scope, validity, evidence and append-only revocation while keeping eligibility decisions and authority separate",
+      "remaining": [
+        "freeze_attestation_and_revocation_contracts",
+        "implement_current_at_authority_time_queries_and_supersession",
+        "separate_signed_issuer_authentication_from_claim_truth_and_sufficiency",
+        "prove_licence_access_software_provenance_and_revocation_scenarios",
+        "reject_cross_workspace_expired_revoked_and_wrong_purpose_claims"
+      ]
+    },
+    {
+      "id": "TQ-626",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-624", "TQ-802"],
+      "outcome": "Expose a Mandates Module that compiles bounded readable intent into existing grants, delegations, scopes and approval policy and explains the effective live decision without creating a second authority truth",
+      "remaining": [
+        "freeze_issue_inspect_authorize_and_revoke_interface",
+        "compile_action_target_time_limit_and_budget_intent_to_existing_authority",
+        "return_typed_denial_basis_without_leaking_protected_target_data",
+        "prove_next_request_revocation_and_concurrent_mutation_serialization",
+        "keep_remote_effect_dispatch_disabled_until_tq_906"
+      ]
+    },
+    {
+      "id": "TQ-627",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-612", "TQ-623", "TQ-624"],
+      "outcome": "Add an Agreements Module for exact-term offer, party acceptance, withdrawal, expiry and superseding amendment that transactionally compiles accepted terms into reciprocal commitments and resolution policies",
+      "remaining": [
+        "freeze_canonical_terms_digest_offer_and_acceptance_contracts",
+        "bind_each_party_acceptance_to_the_same_exact_offer",
+        "compile_reciprocal_commitments_without_price_or_contract_fields_in_commitment",
+        "preserve_withdrawal_expiry_amendment_and_rejection_history",
+        "prove_assignment_acceptance_never_substitutes_for_agreement_or_effect_authority"
+      ]
+    },
+    {
+      "id": "TQ-628",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-205", "TQ-612", "TQ-627"],
+      "outcome": "Add versioned Settlement and Recourse Modules that derive reciprocal obligations from exact agreement, attempt and resolution facts and compile them into commitments or effects without rewriting completion",
+      "remaining": [
+        "freeze_settlement_input_digest_policy_identity_decision_and_supersession",
+        "model_full_partial_show_up_cancellation_rework_credit_and_indeterminate_outcomes",
+        "compile_entitlements_to_idempotent_commitments_or_effects",
+        "materialize_recourse_as_new_obligations_or_compensation_effects",
+        "avoid_escrow_merchant_or_vendor_of_record_claims_without_external_legal_evidence"
+      ]
+    },
+    {
+      "id": "TQ-629",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-623", "TQ-628", "TQ-813"],
+      "outcome": "Build one reference delegated-action Runner and Review Inbox that own timers, outbox consumption, connector dispatch, indeterminate reconciliation, recourse materialization and attention projection without moving runtime state into Core",
+      "remaining": [
+        "implement_restart_safe_event_cursor_and_outbox_loop",
+        "verify_live_permit_and_fence_immediately_before_connector_io",
+        "lookup_before_retrying_indeterminate_effects",
+        "materialize_each_recourse_or_redispatch_exactly_once_at_the_ledger_boundary",
+        "project_assignment_eligibility_evidence_effect_settlement_and_custody_attention_without_shadow_state"
+      ]
+    },
+    {
+      "id": "TQ-630",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-612", "TQ-623", "TQ-624"],
+      "outcome": "Add Evidence Capture and Outcome Bundle Modules that bind immutable uploads, provenance, redaction and retention metadata and export a content-addressed resolution packet without creating a second truth",
+      "remaining": [
+        "freeze_capture_session_finalize_and_failure_interface",
+        "bind_artifact_bytes_source_time_attempt_target_and_criterion_by_digest",
+        "define_redaction_retention_deletion_and_omission_disclosure",
+        "export_commitment_agreement_attempt_evidence_resolution_effect_and_authority_references",
+        "prove_signed_bundles_authenticate_bytes_only_and_detect_stale_or_missing_records"
+      ]
+    },
+    {
+      "id": "TQ-631",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-622", "TQ-624", "TQ-625"],
+      "outcome": "Prototype Custody as an experimental first-class Module with single-current-custodian strategy, atomic accepted handoff, condition evidence and append-only incident lineage before any Kernel admission claim",
+      "remaining": [
+        "compare_lease_signed_observation_and_first_class_handoff_designs",
+        "freeze_offer_accept_refuse_current_and_incident_interface",
+        "prevent_two_accepted_successors_from_one_custody_state",
+        "pass_parcel_equipment_and_cryptographic_control_scenarios",
+        "record_explicit_graduate_revise_or_reject_decision_after_cross_domain_evidence"
+      ]
+    },
+    {
+      "id": "TQ-632",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "dependsOn": ["TQ-625", "TQ-626", "TQ-627", "TQ-628", "TQ-629", "TQ-630", "TQ-631"],
+      "outcome": "Certify the same delegated-action Interfaces across physical verification, remote hands, software deployment, procurement, custody and compromised-agent scenarios, then publish only the honestly supported Profile claims",
+      "remaining": [
+        "run_all_scenarios_without_provider_specific_kernel_changes",
+        "prove_no_access_partial_outcome_timeout_target_drift_revocation_and_concurrent_handoff_failures",
+        "certify_restart_replay_portable_data_and_independent_review_paths",
+        "publish_a_physical_verification_reference_profile_without_marketplace_supply_or_provider_claims",
+        "update_current_state_surface_matrix_security_and_public_docs_only_after_executable_evidence"
       ]
     }
   ]

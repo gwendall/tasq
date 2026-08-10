@@ -63,6 +63,11 @@ _Avoid_: Recurrence rule
 A typed external-world fact that a commitment is waiting to observe.
 _Avoid_: Dependency, blocked state
 
+**Target reference**:
+A stable portable reference to the external thing whose state an observation or
+delegated action concerns.
+_Avoid_: Resource lease, signed-statement subject, copied provider object
+
 ## Collaboration and execution
 
 **Principal**:
@@ -88,6 +93,31 @@ _Avoid_: Free-form signature label, permission
 **Assignment**:
 A durable record of responsibility or delegation for a commitment.
 _Avoid_: Claim, permission
+
+**Delegated action**:
+A composition in which one principal entrusts another principal or actor to
+pursue an outcome under explicit authority, evidence and resolution rules.
+_Avoid_: Human task, provider job, effect
+
+**Mandate**:
+A bounded, revocable authorization envelope under which an actor may request
+or approve named actions for a principal.
+_Avoid_: Assignment, agreement, effect approval
+
+**Agreement**:
+A record that named parties accepted the same immutable terms, potentially
+creating reciprocal commitments.
+_Avoid_: Assignment acceptance, commitment, unsigned instructions
+
+**Attestation**:
+A purpose-scoped assertion by an issuer about a principal or target, with
+explicit scope, validity and revocation.
+_Avoid_: Qualification decision, authority, proof of truth
+
+**Custody**:
+Durable possession or control of a target by a principal, transferred through
+an inspectable handoff lineage.
+_Avoid_: Resource lease, ownership right, assignment
 
 **Claim**:
 An exclusive, expiring and fenced right to actively work on a commitment.
@@ -156,12 +186,27 @@ _Avoid_: Evidence, effect approval
 The immutable basis of one successful transition of a commitment to done.
 _Avoid_: Attempt success, validation proposal
 
+**Settlement decision**:
+An immutable determination of which reciprocal obligations become due from an
+agreement and named resolution or execution facts.
+_Avoid_: Validation decision, payment effect, provider receipt
+
+**Recourse**:
+The follow-up commitments or effects owed after delay, breach, cancellation,
+rejected evidence or another agreed failure condition.
+_Avoid_: Retry, rollback, mutable penalty flag
+
 ## External action and composition
 
 **Effect**:
 An exact proposed external side effect with distinct authorization, execution
 and receipt records.
 _Avoid_: Mutation, tool call
+
+**Outcome bundle**:
+A content-addressed portable projection of the exact records supporting a
+delegated outcome, with omissions disclosed.
+_Avoid_: Second state model, proof of truth, mutable report
 
 **Extension**:
 Versioned domain schemas and deterministic evaluators composed with the
