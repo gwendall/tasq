@@ -345,13 +345,13 @@ describe("TQ-316 release artifact across cold configurations", () => {
     expect(native.sha256).toBe(sha256(join(
       release, "node_modules", "@libsql", native.target, "index.node",
     )));
-    expect(manifest.migrations.at(-1)?.name).toBe("0029_statement_binder_registry.sql");
+    expect(manifest.migrations.at(-1)?.name).toBe("0030_attestations.sql");
     expect(manifest.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 29,
-      readable: { min: 29, max: 29 },
-      writable: { min: 29, max: 29 },
-      directlyMigratable: { min: 0, max: 29 },
+      current: 30,
+      readable: { min: 30, max: 30 },
+      writable: { min: 30, max: 30 },
+      directlyMigratable: { min: 0, max: 30 },
       oldestDirectlyTestedSource: "tasq-zero-populated-fixture",
     });
     for (const migration of manifest.migrations) {

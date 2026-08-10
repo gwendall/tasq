@@ -126,7 +126,7 @@ describe("protected public release authorization", () => {
       .toContain("private_multi_app_dogfood_accepted");
   });
 
-  test("separates published format 26 from unshipped source-candidate format 29", () => {
+  test("separates published format 26 from unshipped source-candidate format 30", () => {
     expect(policy.compatibility).toMatchObject({
       scope: "publishedRelease",
       storeFormat: { current: 26 },
@@ -135,10 +135,10 @@ describe("protected public release authorization", () => {
       status: "repository_source_candidate_not_published",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 29,
-        readable: { min: 29, max: 29 },
-        writable: { min: 29, max: 29 },
-        directlyMigratable: { min: 0, max: 29 },
+        current: 30,
+        readable: { min: 30, max: 30 },
+        writable: { min: 30, max: 30 },
+        directlyMigratable: { min: 0, max: 30 },
         irreversible: true,
         rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
       },

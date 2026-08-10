@@ -314,6 +314,7 @@ export type {
 } from "./portable.js";
 
 export * from "./service/resources.js";
+export * from "./service/attestations.js";
 
 export {
   INSPECTION_CONTRACT_VERSION,

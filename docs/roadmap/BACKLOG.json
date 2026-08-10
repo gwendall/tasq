@@ -255,7 +255,7 @@
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
       "remaining": [
-        "rerun-protected-n-2-migration-matrix-for-source-format-29",
+        "rerun-protected-n-2-migration-matrix-for-source-format-30",
         "replay-exact-published-v0.4.0-bytes-after-publication"
       ],
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml", "https://github.com/gwendall/tasq/actions/runs/30625856802"]
@@ -878,16 +878,18 @@
     },
     {
       "id": "TQ-625",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-624", "TQ-802"],
       "outcome": "Add a provider-neutral Attestations Module with issuer, subject, purpose, scope, validity, evidence and append-only revocation while keeping eligibility decisions and authority separate",
-      "remaining": [
-        "freeze_attestation_and_revocation_contracts",
-        "implement_current_at_authority_time_queries_and_supersession",
-        "separate_signed_issuer_authentication_from_claim_truth_and_sufficiency",
-        "prove_licence_access_software_provenance_and_revocation_scenarios",
-        "reject_cross_workspace_expired_revoked_and_wrong_purpose_claims"
+      "remaining": [],
+      "evidence": [
+        "docs/decisions/ADR-013_ATTESTATION_TRUST_AND_ELIGIBILITY.md",
+        "docs/contracts/TQ-625_ATTESTATIONS.md",
+        "packages/tasq-schema/src/attestations.ts",
+        "packages/tasq-core/src/service/attestations.ts",
+        "packages/tasq-core/src/migrations/0030_attestations.sql",
+        "packages/tasq-core/test/attestations.test.ts"
       ]
     },
     {

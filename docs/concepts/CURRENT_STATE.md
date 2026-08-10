@@ -196,9 +196,9 @@ The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 protects both release and source evolution. Published `v0.3.0` uses
 store format 26, and the release policy's `compatibility` block is explicitly
-scoped to that published release. Repository source uses candidate format 29
-for signed statements, replica-principal binding and portable trusted-binder
-descriptors; the separate
+scoped to that published release. Repository source uses candidate format 30
+for signed statements, replica-principal binding, portable trusted-binder
+descriptors and provider-neutral attestations; the separate
 `sourceCandidateCompatibility` block records it without granting a shipped
 support claim. Each executable reports its exact read/write/direct-migration
 ranges. Existing-store upgrades are serialized, snapshot-verified,
