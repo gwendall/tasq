@@ -573,6 +573,7 @@ effects. A source candidate is not a deployed managed service.
 │   ├── tasq-protocol-adapters/ ── version-pinned MCP Tasks/A2A import boundary
 │   ├── tasq-inspector/ ── loopback GET/HEAD HTML/JSON projection + browser tests
 │   ├── tasq-cloud-control-plane/ ── private provider-neutral managed-service candidate
+│   ├── tasq-delegated-runner/ ── private restart-safe delegated-action runtime + derived inbox
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-server/ ── durable authority control plane + opaque ledger router
 │   ├── tasq-service/   ── @tasq-internal/local-service   (Core forwarders + Local compatibility + tests)

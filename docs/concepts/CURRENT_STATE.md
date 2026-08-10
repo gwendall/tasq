@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-08-10
+**Updated:** 2026-08-11
 
 Tasq currently ships source for two local product shapes:
 
@@ -41,6 +41,16 @@ commitment, attempt, validation and effect snapshots. Versioned policy rules
 materialize new evidence commitments and optionally ordinary proposed effects
 in one transaction. They never rewrite completion or grant effect authority;
 post-dispatch correction is new recourse, not supersession.
+
+TQ-629 adds a private reference delegated-action Runner and derived Review
+Inbox outside Core. Durable outbox leases survive process restart; an exact
+effect permit must cross a live claim/fence callback at the connector boundary;
+persisted executing or indeterminate effects use provider lookup before any
+new action. Settlement/recourse materialization reuses the Core exactly-once
+boundary. The inbox re-reads assignments, agreements, injected eligibility,
+attempts, evidence resolution, effects, settlements, overdue recourse and
+experimental custody attention without a shadow store. This is source
+architecture, not a managed runtime, provider-supply or remote-effect claim.
 
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,

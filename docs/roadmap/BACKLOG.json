@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-08-10",
+  "updatedAt": "2026-08-11",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -941,16 +941,16 @@
     },
     {
       "id": "TQ-629",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-623", "TQ-628", "TQ-813"],
       "outcome": "Build one reference delegated-action Runner and Review Inbox that own timers, outbox consumption, connector dispatch, indeterminate reconciliation, recourse materialization and attention projection without moving runtime state into Core",
-      "remaining": [
-        "implement_restart_safe_event_cursor_and_outbox_loop",
-        "verify_live_permit_and_fence_immediately_before_connector_io",
-        "lookup_before_retrying_indeterminate_effects",
-        "materialize_each_recourse_or_redispatch_exactly_once_at_the_ledger_boundary",
-        "project_assignment_eligibility_evidence_effect_settlement_and_custody_attention_without_shadow_state"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-629_REFERENCE_DELEGATED_RUNNER.md",
+        "packages/tasq-delegated-runner/src/runner.ts",
+        "packages/tasq-delegated-runner/src/review-inbox.ts",
+        "packages/tasq-delegated-runner/test/runner.test.ts"
       ]
     },
     {

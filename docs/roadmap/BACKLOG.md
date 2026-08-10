@@ -505,10 +505,13 @@ publication sequence and create no current support claim.
   credit or indeterminate entitlements and atomically create new commitments
   plus optional proposed effects. Completion is never rewritten, effect
   authority stays separate, and no escrow or record-role claim is made.
-- **TQ-629 — pending:** build one reference delegated-action Runner and Review
-  Inbox. They own timers, outbox/cursor recovery, connector dispatch,
-  lookup-before-retry, recourse materialization and attention projection while
-  Core continues not to own runtime state or provider credentials.
+- **TQ-629 — done:** the private reference delegated-action Runner consumes
+  durable outbox leases, requires a live claim/fence callback at the connector
+  mutation boundary, reconciles persisted executing or indeterminate effects
+  by provider lookup, and reuses Core's exactly-once settlement/recourse
+  boundary. Its bounded Review Inbox re-reads assignment, agreement, injected
+  eligibility, attempt, evidence-resolution, effect, settlement, overdue
+  recourse and experimental custody facts without persisted shadow state.
 - **TQ-630 — pending:** add Evidence Capture and Outcome Bundle Modules for
   immutable upload binding, provenance, redaction, retention and omission
   disclosure. The bundle is a content-addressed projection of exact records,
