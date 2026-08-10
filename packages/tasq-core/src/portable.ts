@@ -76,6 +76,10 @@ const PORTABLE_TABLES = [
   { name: "signed_statement_binding", scope: "tenant_id" },
   { name: "attestation", scope: "tenant_id" },
   { name: "attestation_revocation", scope: "tenant_id" },
+  { name: "agreement_offer", scope: "tenant_id" },
+  { name: "agreement_acceptance", scope: "tenant_id" },
+  { name: "agreement_termination", scope: "tenant_id" },
+  { name: "agreement_activation", scope: "tenant_id" },
 ] as const;
 
 type PortableScalar = string | number | null;

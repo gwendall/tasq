@@ -207,81 +207,70 @@ export async function createResolutionContract(
       if (!found) throw new Error(`Idempotency record points at missing resolution contract ${prior.resultId}`);
       return { result: found, event: null as EventT | null };
     }
-    const task = await getTask(tx, parsed.taskId, tenantId);
-    if (!task || task.deletedAt != null) throw new Error(`Commitment not found: ${parsed.taskId}`);
-    if (!task.validationRequired || task.completionMode !== "evidence") {
-      throw new Error("Resolution contracts require an evidence task with validationRequired");
-    }
-    if (!task.successCriteria?.trim()) throw new Error("Resolution contract requires success criteria");
-    for (const id of new Set([
-      ...parsed.eligibleValidatorPrincipalIds,
-      ...parsed.adjudicatorPrincipalIds,
-    ])) await requireEnabledPrincipal(tx, tenantId, id);
-    const creator = await callerPrincipal(tx, tenantId, ctx, now);
-    const criteria = [...parsed.criteria].sort((a, b) => a.id.localeCompare(b.id));
-    const criteriaDigest = sha256Digest(canonicalJson({
-      successCriteria: task.successCriteria,
-      criteria,
-    }));
-    const digestInput = {
-      taskId: task.id,
-      taskRevision: task.revision,
-      successCriteriaSnapshot: task.successCriteria,
-      criteria,
-      criteriaDigest,
-      policyKind: parsed.policyKind,
-      policyUri: parsed.policyUri,
-      policyVersion: parsed.policyVersion,
-      implementationDigest: parsed.implementationDigest,
-      notBefore: parsed.notBefore,
-      challengeWindowMs: parsed.challengeWindowMs,
-      allowSelfValidation: parsed.allowSelfValidation,
-      eligibleValidatorPrincipalIds: [...parsed.eligibleValidatorPrincipalIds].sort(),
-      adjudicatorPrincipalIds: [...parsed.adjudicatorPrincipalIds].sort(),
-      metadata: parsed.metadata,
-    };
-    const contractDigest = sha256Digest(canonicalJson(digestInput));
-    const id = parsed.id ?? uuidv7(now);
-    await tx.insert(resolutionContract).values({
-      id,
-      tenantId,
-      taskId: task.id,
-      taskRevision: task.revision,
-      successCriteriaSnapshot: task.successCriteria,
-      criteriaJson: canonicalJson(criteria),
-      criteriaDigest,
-      policyKind: parsed.policyKind,
-      policyUri: parsed.policyUri,
-      policyVersion: parsed.policyVersion,
-      implementationDigest: parsed.implementationDigest,
-      notBefore: parsed.notBefore,
-      challengeWindowMs: parsed.challengeWindowMs,
-      allowSelfValidation: parsed.allowSelfValidation,
-      eligibleValidatorPrincipalIds: canonicalJson([...parsed.eligibleValidatorPrincipalIds].sort()),
-      adjudicatorPrincipalIds: canonicalJson([...parsed.adjudicatorPrincipalIds].sort()),
-      contractDigest,
-      createdByPrincipalId: creator.id,
-      metadata: canonicalJson(parsed.metadata),
-      createdAt: now,
-    });
-    const result = await getResolutionContract(tx, id, tenantId);
-    if (!result) throw new Error(`Failed to read resolution contract ${id}`);
-    const event = await recordResolutionEvent(tx, {
-      tenantId, taskId: task.id, actor, principalId: creator.id,
-      eventType: "resolution_contract_created",
-      payload: { after: { resolutionContractId: id, contractDigest, policyKind: parsed.policyKind } },
-      now,
+    const created = await createResolutionContractInTransaction(tx, parsed, {
+      tenantId, actor, principalId: ctx.principalId, now,
     });
     await saveIdempotencyResult(tx, identity, {
       resultType: "resolution_contract",
-      resultId: id,
+      resultId: created.result.id,
       resultStatus: "created",
-      eventSequence: event.sequence,
+      eventSequence: created.event.sequence,
     });
-    return { result, event };
+    return created;
   });
   if (event) emitAfterCommit(event);
   return result;
+}
+
+export async function createResolutionContractInTransaction(
+  tx: TasqDbOrTx,
+  parsedInput: ResolutionContractInsert,
+  options: { tenantId: string; actor: string; principalId?: string; now: number },
+): Promise<{ result: ResolutionContract; event: EventT }> {
+  const parsed = ResolutionContractInsert.parse(parsedInput);
+  const { tenantId, actor, now } = options;
+  const task = await getTask(tx, parsed.taskId, tenantId);
+  if (!task || task.deletedAt != null) throw new Error(`Commitment not found: ${parsed.taskId}`);
+  if (!task.validationRequired || task.completionMode !== "evidence") {
+    throw new Error("Resolution contracts require an evidence task with validationRequired");
+  }
+  if (!task.successCriteria?.trim()) throw new Error("Resolution contract requires success criteria");
+  for (const id of new Set([
+    ...parsed.eligibleValidatorPrincipalIds,
+    ...parsed.adjudicatorPrincipalIds,
+  ])) await requireEnabledPrincipal(tx, tenantId, id);
+  const creator = await callerPrincipal(tx, tenantId, { principalId: options.principalId, actor }, now);
+  const criteria = [...parsed.criteria].sort((a, b) => a.id.localeCompare(b.id));
+  const criteriaDigest = sha256Digest(canonicalJson({ successCriteria: task.successCriteria, criteria }));
+  const digestInput = {
+    taskId: task.id, taskRevision: task.revision, successCriteriaSnapshot: task.successCriteria,
+    criteria, criteriaDigest, policyKind: parsed.policyKind, policyUri: parsed.policyUri,
+    policyVersion: parsed.policyVersion, implementationDigest: parsed.implementationDigest,
+    notBefore: parsed.notBefore, challengeWindowMs: parsed.challengeWindowMs,
+    allowSelfValidation: parsed.allowSelfValidation,
+    eligibleValidatorPrincipalIds: [...parsed.eligibleValidatorPrincipalIds].sort(),
+    adjudicatorPrincipalIds: [...parsed.adjudicatorPrincipalIds].sort(), metadata: parsed.metadata,
+  };
+  const contractDigest = sha256Digest(canonicalJson(digestInput));
+  const id = parsed.id ?? uuidv7(now);
+  await tx.insert(resolutionContract).values({
+    id, tenantId, taskId: task.id, taskRevision: task.revision,
+    successCriteriaSnapshot: task.successCriteria, criteriaJson: canonicalJson(criteria), criteriaDigest,
+    policyKind: parsed.policyKind, policyUri: parsed.policyUri, policyVersion: parsed.policyVersion,
+    implementationDigest: parsed.implementationDigest, notBefore: parsed.notBefore,
+    challengeWindowMs: parsed.challengeWindowMs, allowSelfValidation: parsed.allowSelfValidation,
+    eligibleValidatorPrincipalIds: canonicalJson([...parsed.eligibleValidatorPrincipalIds].sort()),
+    adjudicatorPrincipalIds: canonicalJson([...parsed.adjudicatorPrincipalIds].sort()),
+    contractDigest, createdByPrincipalId: creator.id, metadata: canonicalJson(parsed.metadata), createdAt: now,
+  });
+  const result = await getResolutionContract(tx, id, tenantId);
+  if (!result) throw new Error(`Failed to read resolution contract ${id}`);
+  const event = await recordResolutionEvent(tx, {
+    tenantId, taskId: task.id, actor, principalId: creator.id,
+    eventType: "resolution_contract_created",
+    payload: { after: { resolutionContractId: id, contractDigest, policyKind: parsed.policyKind } }, now,
+  });
+  return { result, event };
 }
 
 export async function getResolutionContract(

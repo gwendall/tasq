@@ -908,7 +908,7 @@
     },
     {
       "id": "TQ-627",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Add an Agreements Module for exact-term offer, party acceptance, withdrawal, expiry and superseding amendment that transactionally compiles accepted terms into reciprocal commitments and resolution policies"
     },
@@ -952,12 +952,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "7f396b40ff1a80cdc47924ffae0cf49964c33a54c438ea61fbb2217bab23282b"
+      "sha256": "80c6477cd7cf498bb81c152cbbd9b9778f850dc4cebe1c2e8cb10218c15f5deb"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "0190baf8818b9d1fdbafc00404ca6b7a12cc1593cc5042694c1b5df386c66e21"
+      "sha256": "8f58d5a2fa6326edb2291a019fad2193327b1852946996ec135abe993fdf1404"
     }
   ]
 }
