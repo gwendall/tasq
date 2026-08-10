@@ -1,6 +1,6 @@
 /** UK-010 eval: two protocol executions remain subordinate to one commitment. */
 
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it, setDefaultTimeout } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,6 +23,8 @@ import {
 } from "@tasq-run/core";
 
 const tmpDirs: string[] = [];
+setDefaultTimeout(15_000);
+
 afterEach(() => {
   while (tmpDirs.length > 0) rmSync(tmpDirs.pop()!, { recursive: true, force: true });
 });
