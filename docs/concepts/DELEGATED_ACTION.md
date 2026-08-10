@@ -173,7 +173,7 @@ condition evidence and fencing against concurrent transfers.
 | Did all parties accept exact terms? | assignment acceptance plus signed-statement building blocks | agreement Module and typed binder |
 | What becomes payable or refundable? | effects can dispatch a decision already made | settlement Module |
 | What remedy follows failure? | commitments, conditions and compensation effects can represent it | recourse policy and runtime materialization |
-| Who possesses an asset? | no canonical record | experimental custody Module |
+| Who possesses an asset? | private experimental custody lineage | no Kernel, remote or physical-truth claim |
 | Can another party verify the whole outcome? | commitment inspection and workspace checkpoints | portable content-addressed outcome bundle |
 
 The signed-purpose extension seam is now completed by TQ-624 and
@@ -267,15 +267,18 @@ Decision:
 ### 4.6 Custody — experimental first-class Module
 
 Custody cannot be reconstructed safely from an expiring lease or uncoordinated
-photos. It is the strongest candidate for a future universal primitive, but it
-has not yet passed the multi-domain admission test.
+photos. TQ-631 passes the repository cross-domain Module test, but not the
+stronger distributed admission test for a future universal primitive.
 
 Decision:
 
-- build it behind an experimental Module Interface and separate store contract;
-- test parcel, equipment and cryptographic-control scenarios;
-- require a single-current-custodian strategy and atomic handoff semantics;
-- graduate it only through a later explicit Kernel decision.
+- keep it behind an experimental Module Interface and separate store contract;
+- elect one accepted successor transactionally while permitting refusal and
+  append-only incidents;
+- use signed observations as evidence, never as successor election;
+- record the TQ-631 graduation to shared experimental Module in ADR-017;
+- require authenticated replication and wider evidence for any later Kernel
+  admission decision.
 
 ### 4.7 Concepts that remain policy, Profile or Adapter concerns
 
@@ -381,12 +384,13 @@ Minimum Interface intent:
 offer_handoff(target, from, to, condition) -> pending handoff
 accept_handoff(handoff, recipient proof) -> new current custodian
 refuse_handoff(handoff, reason) -> terminal refusal
-report_incident(target, evidence) -> linked incident commitment
+report_incident(target, state, evidence) -> immutable incident record
 current(target, at) -> custodian and complete lineage
 ```
 
-The transfer operation must prevent two accepted successors from the same
-current custody state.
+The TQ-631 implementation prevents two accepted successors from the same
+current custody state with a transactional successor uniqueness constraint.
+It exports exact portable lineage but does not implement multi-writer merge.
 
 ### 5.6 Runner and operations Modules
 

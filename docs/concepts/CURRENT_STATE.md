@@ -24,7 +24,7 @@ and effect services and composes atomic claim/start and outcome-submission
 journeys. Nested services reuse one root writer transaction and defer external
 audit mirroring until commit, so late failure leaves no partial rows or phantom
 journal events. This is source-certified for Node and Bun candidate packages;
-it does not yet claim custody or remote provider execution. TQ-625
+it does not claim Kernel/remote custody or remote provider execution. TQ-625
 adds embedded provider-neutral attestations. TQ-626 adds a private Server
 Mandates Module. TQ-627 adds embedded exact multi-party agreements as described
 below.
@@ -60,6 +60,16 @@ atomically after a live binding re-read. Outcome bundles are deterministic
 content-addressed projections of exact Core records with required external
 authority, custody and raw-byte references or omission disclosures. Their
 signatures authenticate bytes only; they do not prove truth or grant authority.
+
+TQ-631 adds a private experimental Custody Module outside Core. It stores one
+immutable root per exact TQ-622 target, bilateral offer/accept/refuse handoffs,
+one database-elected successor per source state and append-only incidents.
+Parcel, equipment and cryptographic-control tests prove exact condition and
+evidence binding, concurrent-successor exclusion, retry, expiry, immutable
+history and create-only portable import. The recorded lineage explicitly does
+not prove physical possession or grant ownership, access or effect authority.
+ADR-017 graduates the design to a shared experimental Module only; Kernel,
+remote product and public distribution support remain unchanged.
 
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
