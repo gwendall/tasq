@@ -902,7 +902,7 @@
     },
     {
       "id": "TQ-626",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Expose a Mandates Module that compiles bounded readable intent into existing grants, delegations, scopes and approval policy and explains the effective live decision without creating a second authority truth"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "63e47e6b8b7e0f63bf00e24fe364e45771183880a0f953c24bb73a5a1a8fd762"
+      "sha256": "7f396b40ff1a80cdc47924ffae0cf49964c33a54c438ea61fbb2217bab23282b"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

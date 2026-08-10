@@ -1,5 +1,6 @@
 export * from "./migration.js";
 export * from "./store.js";
+export * from "./mandates.js";
 export * from "./router.js";
 export * from "./http.js";
 export * from "./remote-mcp.js";
