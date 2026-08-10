@@ -829,16 +829,17 @@
     },
     {
       "id": "TQ-622",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-611", "TQ-612", "TQ-615"],
       "outcome": "Freeze the delegated-action conformance model and one provider-neutral target-reference and binding contract, or record an explicit no-new-record decision after comparing alternatives",
-      "remaining": [
-        "design_target_identity_and_binding_at_least_twice",
-        "map_external_ref_subject_refs_authority_resource_ref_and_resource_key_without_dual_truth",
-        "prove_secret_minimization_version_and_digest_semantics",
-        "run_physical_software_procurement_and_hostile_identity_scenarios",
-        "record_explicit_kernel_module_or_value_contract_decision_before_schema_work"
+      "remaining": [],
+      "evidence": [
+        "docs/decisions/ADR-011_TARGET_REFERENCE_AND_BINDINGS.md",
+        "docs/contracts/TQ-622_TARGET_REFERENCE.md",
+        "packages/tasq-schema/src/targets.ts",
+        "packages/tasq-schema/test/targets.test.ts",
+        "packages/tasq-evals/delegated-action-target-reference.test.ts"
       ]
     },
     {

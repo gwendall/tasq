@@ -68,6 +68,11 @@ A stable portable reference to the external thing whose state an observation or
 delegated action concerns.
 _Avoid_: Resource lease, signed-statement subject, copied provider object
 
+**Target binding**:
+A deterministic projection of one target reference into the identity shape an
+existing authority, coordination, observation or trust record requires.
+_Avoid_: Alias, independently chosen target ID, second target record
+
 ## Collaboration and execution
 
 **Principal**:
