@@ -463,11 +463,12 @@ publication sequence and create no current support claim.
   new Kernel record. One pure Interface derives `external_ref`, authority,
   resource, observation and signed-statement bindings from an exact canonical
   digest; cross-domain drift, privacy and hostile cases are executable tests.
-- **TQ-623 — pending:** deepen the embedded Interface over records that already
-  exist: assignments, artifacts, external references and effects, plus atomic
-  claim-and-start and submit-outcome journeys. Lost-response, restart,
-  idempotency, revision, fence and audit tests must pass while simple
-  `add -> list -> done` remains unchanged.
+- **TQ-623 — done:** `createLocalTasq` exposes existing assignments, artifacts,
+  external references and the complete effect ledger. Reentrant root
+  transactions compose atomic `claimAndStart` and `submitOutcome` journeys,
+  including child idempotency and post-commit journal delivery. Rollback,
+  lost-response restart and exact generated-tarball Node/Bun tests pass while
+  the original `add -> list -> done` example remains byte-unchanged.
 - **TQ-624 — pending:** replace the closed signed-statement binding list with a
   trusted versioned binder registry. Agreement, attestation, mandate and
   custody purposes must be addable without central-enum edits or weaker exact

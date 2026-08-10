@@ -98,6 +98,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
         "./summaries": "./dist/summaries.js",
         "./clock": "./dist/clock.js",
         "./ids": "./dist/ids.js",
+        "./targets": "./dist/targets.js",
         "./console": "./dist/console.js",
       },
       dependencies: await selectedDependencies("tasq-schema", ["drizzle-orm", "zod"]),

@@ -403,9 +403,10 @@ The Review Inbox projects, without creating another source of truth:
 
 ## 6. Deep journeys
 
-The high-level embedded Interface currently exposes only part of the already
-implemented algebra. TQ-623 must first expose existing assignments, artifacts,
-external references and effects, then add atomic journeys.
+The high-level embedded Interface now exposes the existing assignments,
+artifacts, external references and effects. TQ-623 also adds atomic
+`claimAndStart` and `submitOutcome` journeys over those same records; the
+remaining journeys below depend on later Modules.
 
 Target journeys include:
 
@@ -583,7 +584,8 @@ TQ-622 through TQ-632 in [`BACKLOG.md`](../roadmap/BACKLOG.md) implement this
 direction in increasing order of commitment:
 
 1. freeze target identity and conformance cases;
-2. expose deep journeys over existing records;
+2. **done (TQ-623):** expose existing records plus atomic claim/start and
+   submit-outcome journeys;
 3. make signed-statement binders safely extensible;
 4. add Attestations and Mandates;
 5. add Agreements and Settlement/Recourse;

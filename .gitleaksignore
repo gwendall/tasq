@@ -12,3 +12,6 @@ packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:304
 packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:316
 packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:330
 packages/tasq-schema/test/effects.test.ts:generic-api-key:158
+2e87781061634d9fd1a3d33ea1d32e02f63e7458:docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55
+f51f3215967970b6f5e6dbc1a2b90a751aabab39:docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55
+docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55

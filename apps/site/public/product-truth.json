@@ -884,7 +884,7 @@
     },
     {
       "id": "TQ-623",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Deepen the embedded Interface so callers can use existing assignments, artifacts, external references and effects plus atomic claim/start and submit-outcome journeys without coordinating internal rows"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "d29bcddfd18a3520847982af6b6ce10adfdbad2c4eec6feeb42cba250d4abe92"
+      "sha256": "8aed7a2621911c68418e949953246c6deefb24fa2cda4f4f4a89c5bcdec17178"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

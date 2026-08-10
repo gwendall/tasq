@@ -19,7 +19,7 @@ const packageNames = [
   "@tasq-run/schema",
 ];
 
-setDefaultTimeout(240_000);
+setDefaultTimeout(360_000);
 
 afterEach(async () => {
   await Promise.all(roots.splice(0).map((path) => rm(path, { recursive: true, force: true })));
@@ -195,6 +195,11 @@ describe("Tasq public npm package candidates", () => {
       "readonly claims:",
       "readonly attempts:",
       "readonly evidence:",
+      "readonly assignments:",
+      "readonly artifacts:",
+      "readonly externalReferences:",
+      "readonly effects:",
+      "readonly journeys:",
       "readonly resources:",
       "readonly cursors:",
     ]) {
@@ -288,6 +293,25 @@ describe("Tasq public npm package candidates", () => {
     const secondBun = await run([process.execPath, "run", nodeExample], consumer, { TASQ_DB_URL: bunStore });
     expect(secondBun.exitCode, secondBun.stderr).toBe(0);
     expect(JSON.parse(secondBun.stdout)).toEqual(firstBunResult);
+
+    const delegatedExample = join(consumer, "delegated-action.mjs");
+    await writeFile(
+      delegatedExample,
+      await readFile(join(productRoot, "packages", "tasq-core", "examples", "delegated-action.mjs"), "utf8"),
+      "utf8",
+    );
+    for (const runtime of [
+      { name: "node", command: ["node", delegatedExample] },
+      { name: "bun", command: [process.execPath, "run", delegatedExample] },
+    ]) {
+      const delegatedStore = `file:${join(root, `${runtime.name}-delegated.sqlite`)}`;
+      const firstRun = await run(runtime.command, consumer, { TASQ_DB_URL: delegatedStore });
+      expect(firstRun.exitCode, `${runtime.name}: ${firstRun.stderr}`).toBe(0);
+      expect(JSON.parse(firstRun.stdout)).toMatchObject({ attemptStatus: "succeeded" });
+      const replay = await run(runtime.command, consumer, { TASQ_DB_URL: delegatedStore });
+      expect(replay.exitCode, `${runtime.name}: ${replay.stderr}`).toBe(0);
+      expect(JSON.parse(replay.stdout)).toEqual(JSON.parse(firstRun.stdout));
+    }
 
     const remoteExample = join(consumer, "remote-client.mjs");
     await writeFile(remoteExample, `

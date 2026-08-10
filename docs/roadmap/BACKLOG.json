@@ -844,16 +844,17 @@
     },
     {
       "id": "TQ-623",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-611", "TQ-622"],
       "outcome": "Deepen the embedded Interface so callers can use existing assignments, artifacts, external references and effects plus atomic claim/start and submit-outcome journeys without coordinating internal rows",
-      "remaining": [
-        "expose_existing_assignment_artifact_external_reference_and_effect_capabilities",
-        "freeze_atomic_claim_and_start_and_submit_outcome_interfaces",
-        "preserve_revision_fence_idempotency_audit_and_one_write_path",
-        "pass_lost_response_restart_and_cross_runtime_black_box_journeys",
-        "keep_simple_add_list_done_unchanged"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-623_DEEP_EMBEDDED_JOURNEYS.md",
+        "packages/tasq-core/src/local-client.ts",
+        "packages/tasq-core/test/delegated-journeys.test.ts",
+        "packages/tasq-core/examples/delegated-action.mjs",
+        "packages/tasq-cli/test/public-packages.test.ts"
       ]
     },
     {
