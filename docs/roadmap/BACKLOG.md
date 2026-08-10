@@ -512,10 +512,14 @@ publication sequence and create no current support claim.
   boundary. Its bounded Review Inbox re-reads assignment, agreement, injected
   eligibility, attempt, evidence-resolution, effect, settlement, overdue
   recourse and experimental custody facts without persisted shadow state.
-- **TQ-630 — pending:** add Evidence Capture and Outcome Bundle Modules for
-  immutable upload binding, provenance, redaction, retention and omission
-  disclosure. The bundle is a content-addressed projection of exact records,
-  not a second state model or proof of truth.
+- **TQ-630 — done:** private Evidence Capture and Outcome Bundle Modules freeze
+  exact session/byte/source/attempt/target/criterion bindings, verify immutable
+  store acknowledgements and atomically append Artifact plus Evidence. Complete
+  redaction, original-byte, retention, deletion and omission disclosures travel
+  with the manifest. Deterministic bundles embed exact commitment, agreement,
+  attempt, evidence, resolution and effect records plus external authority,
+  custody and raw-byte references or omissions; signatures authenticate only
+  canonical bytes, and live re-read distinguishes stale from missing records.
 - **TQ-631 — pending:** prototype Custody behind an experimental first-class
   Module Interface. Compare lease, signed-observation and handoff designs;
   prevent two accepted successors from one custody state; pass parcel,

@@ -1,0 +1,3 @@
+[test]
+preload = ["../../scripts/test-isolation.ts"]
+root = "./test"

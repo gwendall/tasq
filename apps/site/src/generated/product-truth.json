@@ -926,7 +926,7 @@
     },
     {
       "id": "TQ-630",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Add Evidence Capture and Outcome Bundle Modules that bind immutable uploads, provenance, redaction and retention metadata and export a content-addressed resolution packet without creating a second truth"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "50ed1a3996da403e6014af06621e45c086d185298296060a74cd8f0e0202bc2b"
+      "sha256": "9d55b0da0820fb603983c703b5804b1cdacbf09478070eb94dfccda3115fbd14"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

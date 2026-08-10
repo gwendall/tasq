@@ -955,16 +955,17 @@
     },
     {
       "id": "TQ-630",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-612", "TQ-623", "TQ-624"],
       "outcome": "Add Evidence Capture and Outcome Bundle Modules that bind immutable uploads, provenance, redaction and retention metadata and export a content-addressed resolution packet without creating a second truth",
-      "remaining": [
-        "freeze_capture_session_finalize_and_failure_interface",
-        "bind_artifact_bytes_source_time_attempt_target_and_criterion_by_digest",
-        "define_redaction_retention_deletion_and_omission_disclosure",
-        "export_commitment_agreement_attempt_evidence_resolution_effect_and_authority_references",
-        "prove_signed_bundles_authenticate_bytes_only_and_detect_stale_or_missing_records"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-630_EVIDENCE_OUTCOME_BUNDLES.md",
+        "packages/tasq-core/src/service/captured-evidence.ts",
+        "packages/tasq-evidence-bundles/src/capture.ts",
+        "packages/tasq-evidence-bundles/src/outcome-bundle.ts",
+        "packages/tasq-evidence-bundles/test/evidence-bundles.test.ts"
       ]
     },
     {

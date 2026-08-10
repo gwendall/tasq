@@ -144,6 +144,12 @@ export {
 } from "./service/collaboration.js";
 export type { PrincipalContext } from "./service/collaboration.js";
 
+export { recordCapturedEvidence } from "./service/captured-evidence.js";
+export type {
+  RecordCapturedEvidenceInput,
+  RecordCapturedEvidenceResult,
+} from "./service/captured-evidence.js";
+
 export {
   createResolutionContract,
   getResolutionContract,
