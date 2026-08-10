@@ -878,7 +878,7 @@
     },
     {
       "id": "TQ-622",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Freeze the delegated-action conformance model and one provider-neutral target-reference and binding contract, or record an explicit no-new-record decision after comparing alternatives"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "f78f5bfb7620af2a2720d34a655844147b4f59b115c7d531be3589f43a373255"
+      "sha256": "d29bcddfd18a3520847982af6b6ce10adfdbad2c4eec6feeb42cba250d4abe92"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

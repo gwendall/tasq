@@ -203,14 +203,17 @@ Target identity recurs across conditions, observations, authority, resource
 coordination, effects and external references. Identity fragmentation can
 authorize or validate one object while acting on another.
 
-Decision:
+Decision, completed by TQ-622 and
+[`ADR-011`](../decisions/ADR-011_TARGET_REFERENCE_AND_BINDINGS.md):
 
-- TQ-622 must design the target-reference value and binding alternatives twice;
-- the contract must preserve provider-neutral stable identity, optional
-  version/digest and secret minimization;
-- it must explain compatibility with current identities and signed-statement
-  subjects;
-- no storage migration is authorized until cross-domain and hostile cases pass.
+- use a provider-neutral structured value with optional version/content digest
+  and explicit plain or workspace-HMAC identifier form;
+- derive opaque authority, lease, observation and signed-statement bindings
+  from one domain-separated canonical digest;
+- retain the secret-minimized external identifier only in the `external_ref`
+  identity binding;
+- keep the target reference as a schema value contract, with no new Kernel
+  record or storage migration.
 
 ### 4.3 Agreement — shared Module, not commitment fields
 

@@ -96,7 +96,7 @@ because their invariants, lifetimes and authority differ.
 | Visibility and permission | authenticated workspace authority | Server composition | Local attribution plus repository-certified Server source candidate; no published endpoint |
 | Reminder and notification | delivery/runtime behavior | Runtime/connector | Deliberately outside kernel |
 | Conversation and memory | external context references | Runtime/external system | Tasq stores pointers, not bodies |
-| External target identity | target reference + explicit binding | Kernel/Module seam under evaluation | TQ-622 pending; current identities remain authoritative |
+| External target identity | target reference + deterministic bindings | Shared schema value contract | TQ-622 done; current records remain authoritative |
 | Delegated authority envelope | grants + delegation + approval compiled as a mandate | Authority Module | TQ-626 pending; no second authority record |
 | Exact multi-party terms | agreement compiling reciprocal commitments | Shared Module | TQ-627 pending; assignment remains responsibility only |
 | Purpose-scoped qualification claims | attestation + eligibility policy | Trust Module | TQ-625 pending |

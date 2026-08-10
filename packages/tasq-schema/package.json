@@ -11,6 +11,7 @@
     "./extensions": "./src/extensions.ts",
     "./discovery": "./src/discovery.ts",
     "./effects": "./src/effects.ts",
+    "./targets": "./src/targets.ts",
     "./replication": "./src/replication.ts",
     "./bootstrap": "./src/bootstrap.ts",
     "./resources": "./src/resources.ts",

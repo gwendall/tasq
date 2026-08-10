@@ -458,11 +458,11 @@ human, agent, service or runtime. Physical work is the initial stress test, not
 a new task kind. These items do not interrupt the authorized `v0.4.0`
 publication sequence and create no current support claim.
 
-- **TQ-622 — pending:** freeze the delegated-action conformance model and
-  compare at least two designs for a provider-neutral target reference and its
-  bindings. Map `external_ref`, condition/observation subject refs, authority
-  `ResourceRef` and opaque resource keys without dual truth. No schema work
-  begins before an explicit Kernel, shared-Module or value-contract decision.
+- **TQ-622 — done:** ADR-011 compares store-owned, URI-only and structured
+  target designs and selects a provider-neutral schema value contract with no
+  new Kernel record. One pure Interface derives `external_ref`, authority,
+  resource, observation and signed-statement bindings from an exact canonical
+  digest; cross-domain drift, privacy and hostile cases are executable tests.
 - **TQ-623 — pending:** deepen the embedded Interface over records that already
   exist: assignments, artifacts, external references and effects, plus atomic
   claim-and-start and submit-outcome journeys. Lost-response, restart,
