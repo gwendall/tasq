@@ -1,11 +1,11 @@
 {
   "contractVersion": "tasq.migration-prerelease-matrix.v1",
-  "revision": 2,
+  "revision": 3,
   "candidate": {
     "version": "0.4.0",
-    "storeFormat": 28,
-    "artifactState": "protected_source_candidate_certified_not_published",
-    "protectedSourceCandidateReplayPassed": true,
+    "storeFormat": 29,
+    "artifactState": "protected_source_candidate_recertification_required",
+    "protectedSourceCandidateReplayPassed": false,
     "publishedReplayPassed": false,
     "publicSupportClaim": false
   },
@@ -60,7 +60,7 @@
     "nontrivial_source_ledger",
     "verified_private_snapshot",
     "complete_migration_receipt",
-    "format_28_post_migration_doctor",
+    "format_29_post_migration_doctor",
     "older_binary_typed_refusal_without_logical_or_recovery_write",
     "historical_sqlite_physical_side_effects_captured",
     "snapshot_restore_with_matching_source_binary"
@@ -76,7 +76,7 @@
     "publishedV040Replay": "not_run"
   },
   "protectedSourceCandidateEvidence": {
-    "status": "passed",
+    "status": "historical_format_28_superseded",
     "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
     "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
     "completedAt": "2026-07-31",
@@ -87,6 +87,8 @@
     "exactPinnedPublicSourceAssets": true,
     "sourceReleaseAttestationsVerified": true,
     "candidateSourceCommitBound": true,
-    "publishedCandidateArtifacts": false
+    "publishedCandidateArtifacts": false,
+    "targetStoreFormat": 28,
+    "supersededByStoreFormat": 29
   }
 }

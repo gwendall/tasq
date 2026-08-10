@@ -271,9 +271,12 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
-      status: "done",
+      status: "candidate_done_external_gate",
       milestone: "public-distribution",
-      remaining: [],
+      remaining: [
+        "rerun-protected-n-2-migration-matrix-for-source-format-29",
+        "replay-exact-published-v0.4.0-bytes-after-publication",
+      ],
       evidence: expect.arrayContaining([
         "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json",
         "packages/tasq-service/test/data-safety.test.ts",

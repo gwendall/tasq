@@ -163,10 +163,10 @@
     "status": "repository_source_candidate_not_published",
     "storeFormat": {
       "contractVersion": "tasq.store-format.v1",
-      "current": 28,
-      "readable": { "min": 28, "max": 28 },
-      "writable": { "min": 28, "max": 28 },
-      "directlyMigratable": { "min": 0, "max": 28 },
+      "current": 29,
+      "readable": { "min": 29, "max": 29 },
+      "writable": { "min": 29, "max": 29 },
+      "directlyMigratable": { "min": 0, "max": 29 },
       "irreversible": true,
       "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
     },
@@ -249,15 +249,15 @@
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
-    "authorizedAt": "2026-07-31",
-    "rationale": "Ship the complete source candidate now as a labeled public alpha: store format 28, signed statements, the remote TypeScript client, Server image, Python client and protected exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
+    "authorizedAt": "2026-08-10",
+    "rationale": "Ship the complete source candidate as a labeled public alpha after format-29 protected recertification: signed statements with trusted binders, the remote TypeScript client, Server image, Python client and exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
   },
   "sourceCandidateCheckpoint": {
-    "status": "passed_not_published",
-    "recordedAt": "2026-07-31",
-    "latestBehaviorCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+    "status": "requires_format_29_recertification",
+    "recordedAt": "2026-08-10",
+    "latestBehaviorCommit": null,
     "mainCi": {
-      "status": "passed",
+      "status": "historical_format_28_superseded",
       "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625842313",
       "linux": true,
       "macos": true,
@@ -270,6 +270,7 @@
       "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
       "sourceVersions": ["0.2.0", "0.3.0"],
       "targetStoreFormat": 28,
+      "supersededByStoreFormat": 29,
       "targets": ["darwin-arm64", "linux-x64-gnu"]
     },
     "tagCreated": false,
@@ -464,7 +465,7 @@
   },
   "externalPublicationGateStatus": {
     "maintainer_public_alpha_authorization": true,
-    "data_safety_source_candidate": true,
+    "data_safety_source_candidate": false,
     "data_safety_published_byte_replay": true,
     "private_multi_app_dogfood_accepted": false,
     "canonical_repository_control_verified": true,

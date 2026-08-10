@@ -196,8 +196,9 @@ The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 protects both release and source evolution. Published `v0.3.0` uses
 store format 26, and the release policy's `compatibility` block is explicitly
-scoped to that published release. Repository source uses candidate format 28
-for signed statements and replica-principal binding; the separate
+scoped to that published release. Repository source uses candidate format 29
+for signed statements, replica-principal binding and portable trusted-binder
+descriptors; the separate
 `sourceCandidateCompatibility` block records it without granting a shipped
 support claim. Each executable reports its exact read/write/direct-migration
 ranges. Existing-store upgrades are serialized, snapshot-verified,
@@ -207,11 +208,13 @@ round-trip pass on filesystem databases, and a real file-size quota fails
 before schema mutation while retaining only a private diagnostic partial.
 Exact `v0.3.0` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. The `v0.4.0` pre-release harness
-now replays exact public `v0.2.0` and `v0.3.0` ledgers into candidate format 28
-and passes locally plus in protected CI on Darwin arm64 and Linux x64 GNU,
+must now replay exact public `v0.2.0` and `v0.3.0` ledgers into candidate format
+29. The prior format-28 run passed on Darwin arm64 and Linux x64 GNU but was
+superseded by migration 29,
 including matching-binary restore. Protected run
 [30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) is bound
-to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
+to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`; it is historical evidence, not
+the current release gate.
 Published `v0.3.0` can touch SQLite WAL/SHM sidecars during its typed refusal
 but does not change canonical ledger or recovery state. The exact published
 `v0.4.0` replay remains `not_run`; no `v0.4.0` support claim follows from the

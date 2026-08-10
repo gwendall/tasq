@@ -133,7 +133,9 @@ export const StatementPurposeDescriptorV1 = z.object({
   purposeUri: AbsoluteUri,
   purposeVersion: z.number().int().positive(),
   subjectTypeUri: AbsoluteUri,
-  allowedProfileUris: z.array(AbsoluteUri).min(1).max(16),
+  // Empty means that the host verifier owns profile policy. A binder may make
+  // the set narrower, but can never make an unverified profile acceptable.
+  allowedProfileUris: z.array(AbsoluteUri).max(16),
   nonceMode: z.enum(["unique", "single_use_challenge"]),
   maximumAgeMs: z.number().int().positive().nullable(),
   expectedRevisionRequired: z.boolean(),
@@ -144,7 +146,20 @@ export const StatementPurposeDescriptorV1 = z.object({
 }).strict();
 export type StatementPurposeDescriptorV1 = z.infer<typeof StatementPurposeDescriptorV1>;
 
-export const SIGNED_STATEMENT_BINDING_KINDS = [
+/**
+ * Portable identity of trusted host code that binds one signed purpose to one
+ * exact record shape. The descriptor is data; executable binder code is never
+ * loaded from a workspace store.
+ */
+export const StatementBinderDescriptorV1 = StatementPurposeDescriptorV1.extend({
+  contractVersion: z.literal("tasq.statement-binder.v1"),
+  bindingKind: Portable,
+  recordType: z.string().min(1).max(120),
+}).strict();
+export type StatementBinderDescriptorV1 = z.infer<typeof StatementBinderDescriptorV1>;
+
+/** Built-in compatibility names. The registry itself accepts open portable names. */
+export const BUILTIN_SIGNED_STATEMENT_BINDING_KINDS = [
   "artifact_authorship",
   "artifact_acceptance",
   "completion_attestation",
@@ -152,7 +167,7 @@ export const SIGNED_STATEMENT_BINDING_KINDS = [
   "replication_operation_origin",
   "workspace_checkpoint",
 ] as const;
-export const SignedStatementBindingKind = z.enum(SIGNED_STATEMENT_BINDING_KINDS);
+export const SignedStatementBindingKind = Portable;
 
 export const StoredSignedStatement = z.object({
   statementId: Portable,
@@ -178,13 +193,29 @@ export const SignedStatementBinding = z.object({
   statementId: Portable,
   verificationId: Portable,
   bindingKind: SignedStatementBindingKind,
+  binderDescriptor: StatementBinderDescriptorV1,
   recordType: z.string().min(1).max(120),
   recordId: Portable,
   recordDigest: Sha256Digest,
   createdByPrincipalId: Portable,
   createdAt: z.number().int().nonnegative(),
   metadata: Metadata,
-}).strict();
+}).strict().superRefine((value, ctx) => {
+  if (value.bindingKind !== value.binderDescriptor.bindingKind) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["binderDescriptor", "bindingKind"],
+      message: "binder descriptor kind does not match binding",
+    });
+  }
+  if (value.recordType !== value.binderDescriptor.recordType) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["binderDescriptor", "recordType"],
+      message: "binder descriptor record type does not match binding",
+    });
+  }
+});
 export type SignedStatementBinding = z.infer<typeof SignedStatementBinding>;
 
 export const WorkspaceCheckpointV1 = z.object({

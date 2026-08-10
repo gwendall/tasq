@@ -1,0 +1,31 @@
+{
+  "contractVersion": "tasq.statement-binder-registry-vector.v1",
+  "descriptor": {
+    "contractVersion": "tasq.statement-binder.v1",
+    "bindingKind": "custody_handoff",
+    "purposeUri": "https://schemas.example.test/purposes/custody-handoff/v1",
+    "purposeVersion": 1,
+    "subjectTypeUri": "https://schemas.tasq.dev/subjects/artifact/v1",
+    "allowedProfileUris": [
+      "https://schemas.tasq.dev/signatures/ed25519/v1"
+    ],
+    "nonceMode": "unique",
+    "maximumAgeMs": 60000,
+    "expectedRevisionRequired": false,
+    "onlineAuthorizationRequired": false,
+    "binderUri": "https://schemas.example.test/binders/custody-handoff/v1",
+    "binderVersion": 1,
+    "binderImplementationDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "recordType": "artifact"
+  },
+  "canonicalDescriptor": "{\"allowedProfileUris\":[\"https://schemas.tasq.dev/signatures/ed25519/v1\"],\"binderImplementationDigest\":\"sha256:7777777777777777777777777777777777777777777777777777777777777777\",\"binderUri\":\"https://schemas.example.test/binders/custody-handoff/v1\",\"binderVersion\":1,\"bindingKind\":\"custody_handoff\",\"contractVersion\":\"tasq.statement-binder.v1\",\"expectedRevisionRequired\":false,\"maximumAgeMs\":60000,\"nonceMode\":\"unique\",\"onlineAuthorizationRequired\":false,\"purposeUri\":\"https://schemas.example.test/purposes/custody-handoff/v1\",\"purposeVersion\":1,\"recordType\":\"artifact\",\"subjectTypeUri\":\"https://schemas.tasq.dev/subjects/artifact/v1\"}",
+  "descriptorDigest": "sha256:d310dbe95d483b992c9f51bed09ce7fcbcecad2d60e1d9c606624c76b62b0bdb",
+  "rejections": [
+    "unknown_binding_kind",
+    "duplicate_binding_kind",
+    "duplicate_purpose_version",
+    "duplicate_binder_implementation",
+    "stale_binder_pin",
+    "cross_workspace_target"
+  ]
+}

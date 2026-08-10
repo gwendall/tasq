@@ -144,7 +144,7 @@ PostgreSQL explicite. Il doit préserver :
 - une suite hostile équivalente à la certification SQLite.
 
 Ce port est borné au package Cloud et à son BFF. Il ne doit pas modifier le
-format 28 des ledgers, Core ou les procédures de migration et récupération
+format 29 des ledgers, Core ou les procédures de migration et récupération
 TQ-608.
 
 Configuration initiale recommandée :

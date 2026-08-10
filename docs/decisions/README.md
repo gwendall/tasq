@@ -15,5 +15,6 @@ boundary; they are not required for a first product evaluation.
 | [`ADR-009`](ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md) | Accepted purpose-bound signatures, credential lifecycle, and trust separation |
 | [`ADR-010`](ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md) | Remote client package, one-use enrollment, credential storage, and logout boundary |
 | [`ADR-011`](ADR-011_TARGET_REFERENCE_AND_BINDINGS.md) | Portable external-target identity and deterministic bindings into existing records |
+| [`ADR-012`](ADR-012_TRUSTED_STATEMENT_BINDER_REGISTRY.md) | Open signed-purpose descriptors paired with trusted host binder implementations |
 | [`ADR-UK-006`](ADR-UK-006_COLLABORATION_RECORDS.md) | Universal collaboration records |
 | [`ADR-UK-EXT`](ADR-UK-EXT_EXTENSION_REGISTRY.md) | Extension identity, registry, and trust |

@@ -4,6 +4,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import {
   AcceptedSigningCredentialSnapshotV1,
   SignatureVerificationRecordV1,
+  StatementBinderDescriptorV1,
   SignedStatementBinding as SignedStatementBindingZ,
   SignedStatementBundleV1,
   SignedStatementPayloadV1,
@@ -24,6 +25,7 @@ import {
   type AcceptedSigningCredentialSnapshotV1 as CredentialSnapshot,
   type SignatureVerificationRecordV1 as VerificationRecord,
   type SignedStatementBinding,
+  type StatementBinderDescriptorV1 as BinderDescriptor,
   type SignedStatementBundleV1 as Bundle,
   type SignedStatementPayloadV1 as Payload,
   type StoredSignedStatement,
@@ -43,6 +45,124 @@ export const SIGNED_STATEMENT_PURPOSES = Object.freeze({
   workspace_checkpoint: "https://schemas.tasq.dev/purposes/workspace-checkpoint/v1",
 } as const);
 
+export interface StatementBinderAssertion {
+  tx: TasqDbOrTx;
+  workspaceId: string;
+  payload: Payload;
+  binding: SignedStatementBinderInput;
+}
+
+export interface TrustedStatementBinder {
+  descriptor: BinderDescriptor;
+  assertTarget(input: StatementBinderAssertion): Promise<void>;
+  assertAuthority?(input: StatementBinderAssertion): Promise<void>;
+}
+
+const descriptorIdentity = (value: BinderDescriptor) =>
+  `${value.binderUri}@${value.binderVersion}#${value.binderImplementationDigest}`;
+const purposeIdentity = (value: BinderDescriptor) =>
+  `${value.purposeUri}@${value.purposeVersion}`;
+
+/**
+ * Closed-over trusted executable binders paired with open, portable data
+ * descriptors. Stores never supply code and duplicate identities fail closed.
+ */
+export class StatementBinderRegistry {
+  readonly #byKind = new Map<string, TrustedStatementBinder>();
+  readonly #byPurpose = new Map<string, TrustedStatementBinder>();
+  readonly #byImplementation = new Map<string, TrustedStatementBinder>();
+
+  constructor(binders: readonly TrustedStatementBinder[]) {
+    for (const candidate of binders) {
+      const parsed = StatementBinderDescriptorV1.parse(candidate.descriptor);
+      const binder = { ...candidate, descriptor: parsed };
+      if (parsed.onlineAuthorizationRequired && !binder.assertAuthority) {
+        throw new Error(`binder ${parsed.bindingKind} requires an authority assertion`);
+      }
+      const kindConflict = this.#byKind.get(parsed.bindingKind);
+      const purposeConflict = this.#byPurpose.get(purposeIdentity(parsed));
+      const implementationConflict = this.#byImplementation.get(descriptorIdentity(parsed));
+      if (kindConflict || purposeConflict || implementationConflict) {
+        throw new Error(`conflicting statement binder registration: ${parsed.bindingKind}`);
+      }
+      this.#byKind.set(parsed.bindingKind, binder);
+      this.#byPurpose.set(purposeIdentity(parsed), binder);
+      this.#byImplementation.set(descriptorIdentity(parsed), binder);
+    }
+  }
+
+  resolve(binding: SignedStatementBinderInput): TrustedStatementBinder {
+    const binder = this.#byKind.get(binding.bindingKind);
+    if (!binder) throw new Error(`unknown statement binder: ${binding.bindingKind}`);
+    const expected = binding.expectedBinder;
+    const isBuiltin = Object.hasOwn(BUILTIN_STATEMENT_BINDER_DESCRIPTORS, binding.bindingKind);
+    if (!expected && !isBuiltin) {
+      throw new Error(`custom statement binder must be pinned: ${binding.bindingKind}`);
+    }
+    if (expected && (
+      expected.uri !== binder.descriptor.binderUri ||
+      expected.version !== binder.descriptor.binderVersion ||
+      expected.implementationDigest !== binder.descriptor.binderImplementationDigest
+    )) {
+      throw new Error(`stale statement binder pin: ${binding.bindingKind}`);
+    }
+    return binder;
+  }
+
+  descriptors(): BinderDescriptor[] {
+    return [...this.#byKind.values()].map(({ descriptor: value }) => value);
+  }
+}
+
+const descriptor = (
+  bindingKind: keyof typeof SIGNED_STATEMENT_PURPOSES,
+  recordType: string,
+  subjectTypeUri: string,
+  binderImplementationDigest: `sha256:${string}`,
+): BinderDescriptor => StatementBinderDescriptorV1.parse({
+  contractVersion: "tasq.statement-binder.v1",
+  bindingKind,
+  purposeUri: SIGNED_STATEMENT_PURPOSES[bindingKind],
+  purposeVersion: 1,
+  subjectTypeUri,
+  allowedProfileUris: [],
+  nonceMode: "unique",
+  maximumAgeMs: null,
+  expectedRevisionRequired: false,
+  onlineAuthorizationRequired: false,
+  binderUri: `https://schemas.tasq.dev/binders/${bindingKind.replaceAll("_", "-")}/v1`,
+  binderVersion: 1,
+  binderImplementationDigest,
+  recordType,
+});
+
+export const BUILTIN_STATEMENT_BINDER_DESCRIPTORS = Object.freeze({
+  artifact_authorship: descriptor(
+    "artifact_authorship", "artifact", "https://schemas.tasq.dev/subjects/artifact/v1",
+    "sha256:dd8c9cf781298b34919608b33ceb08cc9103ab3ad1a48c1be44e65eb70f425a5",
+  ),
+  artifact_acceptance: descriptor(
+    "artifact_acceptance", "artifact", "https://schemas.tasq.dev/subjects/artifact/v1",
+    "sha256:32b0e0599764f1eae7e85284a0fcf68ffd0eddf012d78ab2efb048a853ec5b73",
+  ),
+  completion_attestation: descriptor(
+    "completion_attestation", "completion_proposal", "https://schemas.tasq.dev/subjects/completion-proposal/v1",
+    "sha256:2c307cf49cafad16216b92cdae44dbc63cf147fea840ef1308999f050f4d90ae",
+  ),
+  effect_approval: descriptor(
+    "effect_approval", "effect_approval", "https://schemas.tasq.dev/subjects/effect/v1",
+    "sha256:839cd7d86cf0b156ac7b66647c37136a84a1c2fa2d5b37ff199f686a78443b9a",
+  ),
+  replication_operation_origin: descriptor(
+    "replication_operation_origin", "replication_operation", "https://schemas.tasq.dev/subjects/replication-operation/v1",
+    "sha256:aafde9467f270374a3b7ec9b95a18f0151711e0760e817c0e004113c6271ad44",
+  ),
+  workspace_checkpoint: descriptor(
+    "workspace_checkpoint", "workspace_checkpoint", "https://schemas.tasq.dev/subjects/workspace-checkpoint/v1",
+    "sha256:e80b9d76bc9e2d6d0dd1ee5a253cebb2fbb33bd2a1b0918a8bccc6c1735db92f",
+  ),
+} as const);
+
 export interface VerifiedStatementProof {
   outcome: "valid" | "invalid" | "indeterminate";
   reasonCode: string;
@@ -53,10 +173,16 @@ export interface VerifiedStatementProof {
   verifierImplementationDigest: `sha256:${string}`;
 }
 export interface SignedStatementBinderInput {
-  bindingKind: keyof typeof SIGNED_STATEMENT_PURPOSES;
+  bindingKind: string;
   recordType: string;
   recordId: string;
   recordDigest: `sha256:${string}`;
+  /** Pins non-built-in callers to the exact trusted host implementation. */
+  expectedBinder?: {
+    uri: string;
+    version: number;
+    implementationDigest: `sha256:${string}`;
+  };
   metadata?: Metadata;
 }
 export interface AcceptSignedStatementInput {
@@ -64,6 +190,7 @@ export interface AcceptSignedStatementInput {
   expectedAudience: string;
   acceptedTrustRootDigests?: readonly string[];
   binding: SignedStatementBinderInput;
+  binderRegistry?: StatementBinderRegistry;
   verify(input: {
     bundle: Bundle;
     expectedWorkspaceId: string;
@@ -92,6 +219,7 @@ function parseBinding(row: typeof signedStatementBinding.$inferSelect): SignedSt
   return SignedStatementBindingZ.parse({
     id: row.id, tenantId: row.tenantId, statementId: row.statementId,
     verificationId: row.verificationId, bindingKind: row.bindingKind,
+    binderDescriptor: JSON.parse(row.binderDescriptorJson),
     recordType: row.recordType, recordId: row.recordId,
     recordDigest: row.recordDigest, createdByPrincipalId: row.createdByPrincipalId,
     createdAt: row.createdAt, metadata: JSON.parse(row.metadataJson),
@@ -151,51 +279,107 @@ function parseCredentialSnapshot(
     capturedAt: row.capturedAt,
   });
 }
-async function assertTypedTarget(
-  tx: TasqDbOrTx, tenantId: string, payload: Payload, binding: SignedStatementBinderInput,
-): Promise<void> {
-  if (payload.purpose.uri !== SIGNED_STATEMENT_PURPOSES[binding.bindingKind]) {
-    throw new Error("signed statement purpose does not match typed binder");
-  }
-  if (payload.subject.digest !== binding.recordDigest) throw new Error("signed statement subject digest does not match bound record");
-  if (binding.bindingKind === "artifact_authorship" || binding.bindingKind === "artifact_acceptance") {
-    if (binding.recordType !== "artifact" || payload.subject.id !== binding.recordId) throw new Error("artifact statement binding identity mismatch");
-    const rows = await tx.select().from(artifact).where(and(eq(artifact.tenantId, tenantId), eq(artifact.id, binding.recordId))).limit(1);
+const artifactBinder = (kind: "artifact_authorship" | "artifact_acceptance"): TrustedStatementBinder => ({
+  descriptor: BUILTIN_STATEMENT_BINDER_DESCRIPTORS[kind],
+  async assertTarget({ tx, workspaceId, payload, binding }) {
+    if (payload.subject.id !== binding.recordId) throw new Error("artifact statement binding identity mismatch");
+    const rows = await tx.select().from(artifact).where(and(
+      eq(artifact.tenantId, workspaceId), eq(artifact.id, binding.recordId),
+    )).limit(1);
     if (!rows[0] || rows[0].digest !== binding.recordDigest) throw new Error("bound artifact digest not found");
-    return;
+  },
+});
+
+export const BUILTIN_STATEMENT_BINDERS: readonly TrustedStatementBinder[] = Object.freeze([
+  artifactBinder("artifact_authorship"),
+  artifactBinder("artifact_acceptance"),
+  {
+    descriptor: BUILTIN_STATEMENT_BINDER_DESCRIPTORS.completion_attestation,
+    async assertTarget({ tx, workspaceId, payload, binding }) {
+      if (payload.subject.id !== binding.recordId) throw new Error("completion statement binding identity mismatch");
+      const rows = await tx.select().from(completionProposal).where(and(
+        eq(completionProposal.tenantId, workspaceId), eq(completionProposal.id, binding.recordId),
+      )).limit(1);
+      if (!rows[0] || rows[0].proposalDigest !== binding.recordDigest) throw new Error("bound proposal digest not found");
+    },
+  },
+  {
+    descriptor: BUILTIN_STATEMENT_BINDER_DESCRIPTORS.effect_approval,
+    async assertTarget({ tx, workspaceId, payload, binding }) {
+      const rows = await tx.select().from(effectApproval).where(and(
+        eq(effectApproval.tenantId, workspaceId), eq(effectApproval.id, binding.recordId),
+      )).limit(1);
+      if (!rows[0] || payload.subject.id !== rows[0].effectId || rows[0].requestDigest !== binding.recordDigest) {
+        throw new Error("bound effect approval digest not found");
+      }
+    },
+  },
+  {
+    descriptor: BUILTIN_STATEMENT_BINDER_DESCRIPTORS.replication_operation_origin,
+    async assertTarget({ tx, workspaceId, payload, binding }) {
+      const rows = await tx.select().from(replicationAccepted).where(and(
+        eq(replicationAccepted.workspaceId, workspaceId),
+        eq(replicationAccepted.operationDigest, binding.recordId),
+      )).limit(1);
+      if (!rows[0] || payload.subject.id !== binding.recordId || binding.recordDigest !== rows[0].operationDigest) {
+        throw new Error("bound replication operation not found");
+      }
+    },
+  },
+  {
+    descriptor: BUILTIN_STATEMENT_BINDER_DESCRIPTORS.workspace_checkpoint,
+    async assertTarget({ tx, workspaceId, payload, binding }) {
+      if (payload.subject.id !== binding.recordId) throw new Error("workspace checkpoint binding identity mismatch");
+      const rows = await tx.select().from(workspaceCheckpoint).where(and(
+        eq(workspaceCheckpoint.tenantId, workspaceId), eq(workspaceCheckpoint.id, binding.recordId),
+      )).limit(1);
+      if (!rows[0] || rows[0].rootDigest !== binding.recordDigest) {
+        throw new Error("bound workspace checkpoint root not found");
+      }
+    },
+  },
+]);
+
+export const createStatementBinderRegistry = (
+  additional: readonly TrustedStatementBinder[] = [],
+) => new StatementBinderRegistry([...BUILTIN_STATEMENT_BINDERS, ...additional]);
+
+const DEFAULT_STATEMENT_BINDER_REGISTRY = createStatementBinderRegistry();
+
+async function assertRegisteredTarget(
+  tx: TasqDbOrTx,
+  workspaceId: string,
+  payload: Payload,
+  binding: SignedStatementBinderInput,
+  registry: StatementBinderRegistry,
+  acceptedAt: number,
+  profileUri: string,
+): Promise<BinderDescriptor> {
+  const binder = registry.resolve(binding);
+  const { descriptor: value } = binder;
+  if (payload.purpose.uri !== value.purposeUri || payload.purpose.version !== value.purposeVersion) {
+    throw new Error("signed statement purpose does not match registered binder");
   }
-  if (binding.bindingKind === "completion_attestation") {
-    if (binding.recordType !== "completion_proposal" || payload.subject.id !== binding.recordId) throw new Error("completion statement binding identity mismatch");
-    const rows = await tx.select().from(completionProposal).where(and(eq(completionProposal.tenantId, tenantId), eq(completionProposal.id, binding.recordId))).limit(1);
-    if (!rows[0] || rows[0].proposalDigest !== binding.recordDigest) throw new Error("bound proposal digest not found");
-    return;
+  if (payload.subject.typeUri !== value.subjectTypeUri || binding.recordType !== value.recordType) {
+    throw new Error("signed statement subject or record type does not match registered binder");
   }
-  if (binding.bindingKind === "effect_approval") {
-    if (binding.recordType !== "effect_approval") throw new Error("effect statement record type mismatch");
-    const rows = await tx.select().from(effectApproval).where(and(eq(effectApproval.tenantId, tenantId), eq(effectApproval.id, binding.recordId))).limit(1);
-    if (!rows[0] || payload.subject.id !== rows[0].effectId || rows[0].requestDigest !== binding.recordDigest) throw new Error("bound effect approval digest not found");
-    return;
+  if (payload.subject.digest !== binding.recordDigest) {
+    throw new Error("signed statement subject digest does not match bound record");
   }
-  if (binding.bindingKind === "replication_operation_origin") {
-    if (binding.recordType !== "replication_operation") throw new Error("replication statement record type mismatch");
-    const rows = await tx.select().from(replicationAccepted).where(and(
-      eq(replicationAccepted.workspaceId, tenantId), eq(replicationAccepted.operationDigest, binding.recordId),
-    )).limit(1);
-    if (!rows[0] || payload.subject.id !== binding.recordId || binding.recordDigest !== rows[0].operationDigest) throw new Error("bound replication operation not found");
-    return;
+  if (value.allowedProfileUris.length > 0 && !value.allowedProfileUris.includes(profileUri)) {
+    throw new Error("signature profile is not allowed by registered binder");
   }
-  if (binding.bindingKind === "workspace_checkpoint") {
-    if (binding.recordType !== "workspace_checkpoint" || payload.subject.id !== binding.recordId) {
-      throw new Error("workspace checkpoint binding identity mismatch");
-    }
-    const rows = await tx.select().from(workspaceCheckpoint).where(and(
-      eq(workspaceCheckpoint.tenantId, tenantId),
-      eq(workspaceCheckpoint.id, binding.recordId),
-    )).limit(1);
-    if (!rows[0] || rows[0].rootDigest !== binding.recordDigest) {
-      throw new Error("bound workspace checkpoint root not found");
-    }
+  if (value.expectedRevisionRequired && payload.expectedRevision == null) {
+    throw new Error("registered statement binder requires expectedRevision");
   }
+  if (value.maximumAgeMs != null) {
+    const age = acceptedAt - Date.parse(payload.issuedAt);
+    if (age < 0 || age > value.maximumAgeMs) throw new Error("signed statement is stale for registered binder");
+  }
+  const assertion = { tx, workspaceId, payload, binding };
+  if (value.onlineAuthorizationRequired) await binder.assertAuthority!(assertion);
+  await binder.assertTarget(assertion);
+  return value;
 }
 export interface PreparedSignedStatementAcceptance {
   tenantId: string;
@@ -252,6 +436,7 @@ export async function persistPreparedSignedStatementAcceptance(
   tx: TasqDbOrTx,
   prepared: PreparedSignedStatementAcceptance,
   bindingInput: SignedStatementBinderInput,
+  binderRegistry: StatementBinderRegistry = DEFAULT_STATEMENT_BINDER_REGISTRY,
 ): Promise<{
   statement: StoredSignedStatement;
   verification: VerificationRecord;
@@ -266,7 +451,15 @@ export async function persistPreparedSignedStatementAcceptance(
     credential,
     statementDigest,
   } = prepared;
-  await assertTypedTarget(tx, tenantId, payload, bindingInput);
+  const binderDescriptor = await assertRegisteredTarget(
+    tx,
+    tenantId,
+    payload,
+    bindingInput,
+    binderRegistry,
+    now,
+    bundle.signature.profileUri,
+  );
   const priorRows = await tx.select().from(signedStatement)
     .where(eq(signedStatement.statementId, payload.statementId)).limit(1);
   if (priorRows[0]) {
@@ -285,10 +478,21 @@ export async function persistPreparedSignedStatementAcceptance(
     if (!verificationRows[0] || !bindingRows[0]) {
       throw new Error("signed statement acceptance is incomplete");
     }
+    const priorBinding = parseBinding(bindingRows[0]);
+    if (
+      priorBinding.bindingKind !== bindingInput.bindingKind ||
+      priorBinding.recordType !== bindingInput.recordType ||
+      priorBinding.recordId !== bindingInput.recordId ||
+      priorBinding.recordDigest !== bindingInput.recordDigest ||
+      canonicalizeEffectJson(priorBinding.binderDescriptor as never) !==
+        canonicalizeEffectJson(binderDescriptor as never)
+    ) {
+      throw new Error("statement already accepted with a different registered binding");
+    }
     return {
       statement: prior,
       verification: parseVerification(verificationRows[0]),
-      binding: parseBinding(bindingRows[0]),
+      binding: priorBinding,
     };
   }
   await tx.insert(signedStatement).values({
@@ -374,6 +578,7 @@ export async function persistPreparedSignedStatementAcceptance(
     statementId: payload.statementId,
     verificationId,
     bindingKind: bindingInput.bindingKind,
+    binderDescriptorJson: canonicalizeEffectJson(binderDescriptor as never),
     recordType: bindingInput.recordType,
     recordId: bindingInput.recordId,
     recordDigest: bindingInput.recordDigest,
@@ -421,7 +626,12 @@ export async function acceptSignedStatement(
 }> {
   const prepared = await prepareSignedStatementAcceptance(input, ctx);
   return runInTransaction(db, (tx) =>
-    persistPreparedSignedStatementAcceptance(tx, prepared, input.binding));
+    persistPreparedSignedStatementAcceptance(
+      tx,
+      prepared,
+      input.binding,
+      input.binderRegistry ?? DEFAULT_STATEMENT_BINDER_REGISTRY,
+    ));
 }
 export async function getSignedStatement(db: TasqDbOrTx, statementId: string, tenantId = "gwendall") {
   const rows = await db.select().from(signedStatement).where(and(

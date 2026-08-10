@@ -176,6 +176,13 @@ condition evidence and fencing against concurrent transfers.
 | Who possesses an asset? | no canonical record | experimental custody Module |
 | Can another party verify the whole outcome? | commitment inspection and workspace checkpoints | portable content-addressed outcome bundle |
 
+The signed-purpose extension seam is now completed by TQ-624 and
+[`ADR-012`](../decisions/ADR-012_TRUSTED_STATEMENT_BINDER_REGISTRY.md): Modules
+register trusted code against portable, versioned binder descriptors. The
+ledger freezes which implementation interpreted a statement but never loads
+code from workspace data. Agreement, attestation, mandate and custody remain
+separate domain work; they no longer require a central signed-binding enum.
+
 ## 4. Primitive admission decisions
 
 Every candidate below is evaluated against the six rules in

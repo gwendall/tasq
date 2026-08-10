@@ -211,7 +211,7 @@
       "exportName": "signedStatementBinding",
       "recordOwner": "kernel",
       "fieldGroups": {
-        "kernel": ["id", "statementId", "verificationId", "bindingKind", "recordType", "recordId", "recordDigest", "createdByPrincipalId", "createdAt", "metadataJson"],
+        "kernel": ["id", "statementId", "verificationId", "bindingKind", "binderDescriptorJson", "recordType", "recordId", "recordDigest", "createdByPrincipalId", "createdAt", "metadataJson"],
         "kernel_rename": ["tenantId"]
       }
     },

@@ -37,10 +37,10 @@ async function fixture() {
     compatibility: {
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 28,
-        readable: { min: 28, max: 28 },
-        writable: { min: 28, max: 28 },
-        directlyMigratable: { min: 0, max: 28 },
+        current: 29,
+        readable: { min: 29, max: 29 },
+        writable: { min: 29, max: 29 },
+        directlyMigratable: { min: 0, max: 29 },
         rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
       },
     },
@@ -71,7 +71,7 @@ async function verify(root: string, expectedFiles?: Record<string, string>) {
     version,
     target,
     expectedSourceCommit: commit,
-    expectedStoreFormat: 28,
+    expectedStoreFormat: 29,
     expectedFiles,
     requireLocalNonPublishable: true,
   });
@@ -81,7 +81,7 @@ describe("TQ-608 v0.4 prerelease envelope", () => {
   test("accepts only the exact five-asset, checksum-bound, non-publishable candidate", async () => {
     const { root, expectedFiles } = await fixture();
     const release = await verify(root, expectedFiles);
-    expect(release).toMatchObject({ version, target, sourceCommit: commit, storeFormat: 28 });
+    expect(release).toMatchObject({ version, target, sourceCommit: commit, storeFormat: 29 });
   });
 
   test("rejects substituted bytes even when the attacker rewrites the checksum manifest", async () => {

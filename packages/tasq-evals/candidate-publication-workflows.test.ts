@@ -47,6 +47,7 @@ function nextPolicy(): Policy {
   const candidate = structuredClone(policy);
   candidate.releaseAuthorization.version = version;
   candidate.externalPublicationGateStatus.trusted_publishing_configured = true;
+  candidate.externalPublicationGateStatus.data_safety_source_candidate = true;
   return candidate;
 }
 

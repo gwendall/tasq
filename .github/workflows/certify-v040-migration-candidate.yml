@@ -105,7 +105,7 @@ jobs:
             and .candidate.publishedReplayPassed == false
             and (.releases | length) == 2
             and all(.releases[];
-              .migration.targetFormat == 28
+              .migration.targetFormat == 29
               and .downgrade.exitCode == 3
               and .downgrade.mutationPerformed == false
               and .downgrade.noLogicalOrRecoveryWrite == true

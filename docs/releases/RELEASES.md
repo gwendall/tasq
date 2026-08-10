@@ -97,8 +97,8 @@ duplicate-asset or identity ambiguity is an error, never an implicit
 `compatibility` in `PUBLIC_RELEASE_POLICY.json` is scoped to
 `publishedRelease`, so it truthfully remains format 26 while `v0.3.0` is the
 published release. `sourceCandidateCompatibility` separately records repository
-format 28 with `publishedSupportGranted: false`. The published block advances
-to 28 only in the post-release certification change; this separation is not a
+format 29 with `publishedSupportGranted: false`. The published block advances
+to 29 only in the post-release certification change; this separation is not a
 claim that candidate bytes have shipped.
 
 The implemented candidate builder is:

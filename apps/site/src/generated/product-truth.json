@@ -28,7 +28,7 @@
     ],
     "gates": {
       "maintainer_public_alpha_authorization": true,
-      "data_safety_source_candidate": true,
+      "data_safety_source_candidate": false,
       "data_safety_published_byte_replay": true,
       "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": true,
@@ -614,7 +614,7 @@
     },
     {
       "id": "TQ-608",
-      "status": "done",
+      "status": "candidate_done_external_gate",
       "milestone": "public-distribution",
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export"
     },
@@ -890,7 +890,7 @@
     },
     {
       "id": "TQ-624",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Replace the closed signed-statement binding list with a trusted versioned binder registry that can add exact agreement, attestation, mandate and custody purposes without weakening typed target checks"
     },
@@ -952,12 +952,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "8aed7a2621911c68418e949953246c6deefb24fa2cda4f4f4a89c5bcdec17178"
+      "sha256": "faf8801a9b0eebab0344e15d46fdbb0dbf9390e35cc5e71b6e01f4a05bbcfbc9"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "edbe86320bef7e477cce37ffbf3a7d9d9153bb7e3aae832e1ba305a5230bc092"
+      "sha256": "d50d339679db7236f5388405e89c4c2b762287041dc2f87938a4896dbe66140f"
     }
   ]
 }
