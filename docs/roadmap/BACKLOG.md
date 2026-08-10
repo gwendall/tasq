@@ -103,7 +103,7 @@ operation through real adopters, not more repository-only architecture.
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — source candidate complete; format-31 protected replay open.** The
+- **TQ-608 — source candidate complete; format-32 protected replay open.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
@@ -111,7 +111,7 @@ operation through real adopters, not more repository-only architecture.
   snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
   populated format-5 fixture on both targets. The exact `v0.2.0`/`v0.3.0` to
   candidate-format-28 N-2 harness passed locally and in protected two-target
-  CI, but migrations 29 through 31 superseded that exact candidate. The format-31 harness
+  CI, but migrations 29 through 32 superseded that exact candidate. The format-32 harness
   passes locally; its protected two-target rerun and the later exact published
   `v0.4.0` replay remain open. No prior pass grants a current public support
   claim.
@@ -383,9 +383,10 @@ support claims remain TQ-901–TQ-905.
   `../contracts/TQ-614_SIGNING_CREDENTIAL_AUTHORITY.md`.
 - **TQ-615 — done in source:** migration 27 persists exact statements,
   verification records, immutable public credential snapshots, nonces,
-  checkpoints and six typed bindings. Current store format 31 additionally
+  checkpoints and six typed bindings. Current store format 32 additionally
   binds replica generations to principals, freezes trusted binder descriptors
-  and stores provider-neutral attestations plus exact agreement history. Core, embedded client, guarded
+  and stores provider-neutral attestations, exact agreement history, and
+  settlement/recourse decisions. Core, embedded client, guarded
   Server, CLI, MCP, Console, doctor and portable-data projections pass; the
   unsigned journey is unchanged. See
   `../contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md`.
@@ -498,10 +499,12 @@ publication sequence and create no current support claim.
   amendments cancel prior non-terminal obligations without rewriting history.
   Assignment acceptance remains responsibility only and grants neither consent
   nor effect authority.
-- **TQ-628 — pending:** add Settlement and Recourse Modules. Versioned policy
-  derives full, partial, show-up, cancellation, rework, credit or indeterminate
-  entitlements from exact agreement, attempt and resolution facts, then creates
-  commitments or effects without rewriting completion or claiming escrow.
+- **TQ-628 — done:** ADR-016 and the embedded Settlement/Recourse Modules
+  snapshot exact agreement, commitment, attempt, validation and prior-effect
+  facts. Versioned rules derive full, partial, show-up, cancellation, rework,
+  credit or indeterminate entitlements and atomically create new commitments
+  plus optional proposed effects. Completion is never rewritten, effect
+  authority stays separate, and no escrow or record-role claim is made.
 - **TQ-629 — pending:** build one reference delegated-action Runner and Review
   Inbox. They own timers, outbox/cursor recovery, connector dispatch,
   lookup-before-retry, recourse materialization and attention projection while

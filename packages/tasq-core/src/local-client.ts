@@ -46,6 +46,8 @@ import type {
   ResolutionContract,
   ResolutionContractInsert,
   SignedStatementBinding,
+  SettlementEvaluationInputV1,
+  SettlementViewV1,
   TaskAttempt,
   TaskClaim,
   TaskEvidence,
@@ -61,6 +63,11 @@ import {
   rejectAgreement,
   withdrawAgreement,
 } from "./service/agreements.js";
+import {
+  evaluateSettlementOrRecourse,
+  getSettlementView,
+  listSettlementDecisions,
+} from "./service/settlement.js";
 import {
   evaluateAttestationEligibility,
   getAttestation,
@@ -328,6 +335,20 @@ export interface LocalTasqClient {
       input: { termsDigest: string; reason: string; metadata?: Metadata },
       options?: LocalMutationOptions,
     ): Promise<AgreementViewV1>;
+  };
+  readonly settlement: {
+    evaluate(
+      input: Omit<SettlementEvaluationInputV1, "priorSettlementDecisionId" | "effectIds">,
+      options?: LocalMutationOptions,
+    ): Promise<SettlementViewV1>;
+    get(id: string): Promise<SettlementViewV1 | null>;
+    list(): Promise<SettlementViewV1["decision"][]>;
+  };
+  readonly recourse: {
+    evaluate(
+      input: SettlementEvaluationInputV1 & { priorSettlementDecisionId: string },
+      options?: LocalMutationOptions,
+    ): Promise<SettlementViewV1>;
   };
   readonly claims: {
     acquire(
@@ -644,6 +665,17 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
           withdrawAgreement(handle.db, id, input, serviceContext(mutation)),
         reject: (id, input, mutation = {}) =>
           rejectAgreement(handle.db, id, input, serviceContext(mutation)),
+      },
+      settlement: {
+        evaluate: (input, mutation = {}) => evaluateSettlementOrRecourse(handle.db, {
+          ...input, priorSettlementDecisionId: null, effectIds: [],
+        }, serviceContext(mutation)),
+        get: (id) => getSettlementView(handle.db, id, options.workspaceId),
+        list: () => listSettlementDecisions(handle.db, options.workspaceId),
+      },
+      recourse: {
+        evaluate: (input, mutation = {}) =>
+          evaluateSettlementOrRecourse(handle.db, input, serviceContext(mutation)),
       },
       claims: {
         acquire: (id, claimOptions = {}) =>

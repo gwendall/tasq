@@ -258,9 +258,9 @@ durable identity, replay safety and audit.
 
 Decision:
 
-- keep settlement policy outside Core;
+- keep settlement policy replaceable above the universal completion model;
 - persist its versioned decision and exact input digest in the Module;
-- compile entitlements to reciprocal commitments or approved effects;
+- compile entitlements to reciprocal commitments or proposed effects;
 - never describe a payment connector as escrow without the corresponding
   legal and funds-flow role.
 
@@ -366,9 +366,9 @@ No caller coordinates the reciprocal commitment graph manually.
 Minimum Interface intent:
 
 ```text
-evaluate(agreement, resolution and attempt facts) -> settlement decision
-authorize(decision) -> exact proposed/approved effects
-reconcile(decision) -> receipts, indeterminate state or remaining recourse
+settlement.evaluate(agreement, resolution and complete attempt facts) -> decision + new obligations
+recourse.evaluate(prior decision and complete effect facts) -> decision + new obligations/compensation proposals
+settlement.get(id) -> immutable basis, policy, classification and materializations
 ```
 
 Settlement never changes the historical completion decision it consumed.
@@ -593,9 +593,9 @@ direction in increasing order of commitment:
 1. freeze target identity and conformance cases;
 2. **done (TQ-623):** expose existing records plus atomic claim/start and
    submit-outcome journeys;
-3. make signed-statement binders safely extensible;
-4. add Attestations and Mandates;
-5. add Agreements and Settlement/Recourse;
+3. **done (TQ-624):** make signed-statement binders safely extensible;
+4. **done (TQ-625–TQ-626):** add Attestations and Mandates;
+5. **done (TQ-627–TQ-628):** add Agreements and Settlement/Recourse;
 6. build the reference Runner, Evidence Capture, Review Inbox and Outcome
    Bundle;
 7. prototype Custody behind an experimental Interface;

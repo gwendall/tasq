@@ -100,7 +100,7 @@ because their invariants, lifetimes and authority differ.
 | Delegated authority envelope | grants + delegation + approval compiled as a mandate | Authority Module | TQ-626 source implemented; no second authority record and generic budgets remain unsupported |
 | Exact multi-party terms | agreement compiling reciprocal commitments | Shared Module | TQ-627 source implemented; assignment remains responsibility only |
 | Purpose-scoped qualification claims | attestation + eligibility policy | Trust Module | TQ-625 pending |
-| Entitlement after resolution | settlement decision + effects | Shared Module/policy seam | TQ-628 pending; completion remains separate |
+| Entitlement after resolution | settlement decision + effects | Shared Module/policy seam | TQ-628 implemented; completion remains separate |
 | Possession and handoff | custody lineage | Experimental Module | TQ-631 pending; not admitted to Kernel |
 
 ## 4. Time is several different concepts

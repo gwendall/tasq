@@ -19,5 +19,6 @@ boundary; they are not required for a first product evaluation.
 | [`ADR-013`](ADR-013_ATTESTATION_TRUST_AND_ELIGIBILITY.md) | Provider-neutral assertions, append-only revocation, temporal eligibility and trust separation |
 | [`ADR-014`](ADR-014_MANDATES_COMPILE_TO_AUTHORITY.md) | Readable mandates compile to existing grants and delegations without a second authority truth |
 | [`ADR-015`](ADR-015_EXACT_AGREEMENTS_COMPILE_TO_COMMITMENTS.md) | Exact multi-party consent compiles atomically to reciprocal commitments and resolution policy |
+| [`ADR-016`](ADR-016_SETTLEMENT_IS_A_NEW_DECISION.md) | Settlement and recourse create new obligations without rewriting completion or bypassing effect authority |
 | [`ADR-UK-006`](ADR-UK-006_COLLABORATION_RECORDS.md) | Universal collaboration records |
 | [`ADR-UK-EXT`](ADR-UK-EXT_EXTENSION_REGISTRY.md) | Extension identity, registry, and trust |

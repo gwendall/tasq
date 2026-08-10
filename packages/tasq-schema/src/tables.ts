@@ -2109,6 +2109,55 @@ export const agreementActivation = sqliteTable("agreement_activation", {
   jsonCheck: check("agreement_activation_json_check", sql`json_valid(${t.acceptanceIdsJson}) AND json_valid(${t.compilationsJson})`),
 }));
 
+export const settlementDecision = sqliteTable("settlement_decision", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  decisionKind: text("decision_kind").notNull(),
+  agreementOfferId: text("agreement_offer_id").notNull().references(() => agreementOffer.id),
+  activationId: text("activation_id").notNull().references(() => agreementActivation.id),
+  obligationId: text("obligation_id").notNull(),
+  commitmentId: text("commitment_id").notNull().references(() => task.id),
+  basisJson: text("basis_json").notNull(),
+  basisDigest: text("basis_digest").notNull(),
+  policyJson: text("policy_json").notNull(),
+  policyDigest: text("policy_digest").notNull(),
+  matchedRuleId: text("matched_rule_id").notNull(),
+  classification: text("classification").notNull(),
+  entitlementsJson: text("entitlements_json").notNull(),
+  priorDecisionId: text("prior_decision_id").references((): AnySQLiteColumn => settlementDecision.id),
+  supersedesDecisionId: text("supersedes_decision_id").references((): AnySQLiteColumn => settlementDecision.id),
+  decidedByPrincipalId: text("decided_by_principal_id").notNull().references(() => principal.id),
+  decidedAt: integer("decided_at").notNull(),
+  decisionDigest: text("decision_digest").notNull(),
+}, (t) => ({
+  subjectIdx: index("idx_settlement_decision_subject").on(t.tenantId, t.agreementOfferId, t.obligationId, t.decidedAt),
+  digestUniq: uniqueIndex("uniq_settlement_decision_digest").on(t.tenantId, t.decisionDigest),
+  successorUniq: uniqueIndex("uniq_settlement_decision_successor").on(t.tenantId, t.supersedesDecisionId),
+  settlementRootUniq: uniqueIndex("uniq_settlement_decision_settlement_root")
+    .on(t.tenantId, t.activationId, t.obligationId)
+    .where(sql`${t.decisionKind} = 'settlement' AND ${t.supersedesDecisionId} IS NULL`),
+  recourseRootUniq: uniqueIndex("uniq_settlement_decision_recourse_root")
+    .on(t.tenantId, t.priorDecisionId)
+    .where(sql`${t.decisionKind} = 'recourse' AND ${t.supersedesDecisionId} IS NULL`),
+  kindCheck: check("settlement_decision_kind_check", sql`${t.decisionKind} IN ('settlement','recourse')`),
+  classificationCheck: check("settlement_decision_classification_check", sql`${t.classification} IN ('full','partial','show_up','cancellation','rework','credit','indeterminate')`),
+  jsonCheck: check("settlement_decision_json_check", sql`json_valid(${t.basisJson}) AND json_valid(${t.policyJson}) AND json_valid(${t.entitlementsJson})`),
+}));
+
+export const settlementMaterialization = sqliteTable("settlement_materialization", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  decisionId: text("decision_id").notNull().references(() => settlementDecision.id),
+  entitlementId: text("entitlement_id").notNull(),
+  commitmentId: text("commitment_id").notNull().references(() => task.id),
+  effectId: text("effect_id").references(() => effect.id),
+  createdAt: integer("created_at").notNull(),
+}, (t) => ({
+  entitlementUniq: uniqueIndex("uniq_settlement_materialization_entitlement").on(t.tenantId, t.decisionId, t.entitlementId),
+  commitmentUniq: uniqueIndex("uniq_settlement_materialization_commitment").on(t.tenantId, t.commitmentId),
+  effectUniq: uniqueIndex("uniq_settlement_materialization_effect").on(t.tenantId, t.effectId),
+}));
+
 // ──────────────────────────────────────────────────────────────────────
 // Schema bag (for drizzle migrations + service usage)
 // ──────────────────────────────────────────────────────────────────────
@@ -2173,4 +2222,6 @@ export const schema = {
   agreementAcceptance,
   agreementTermination,
   agreementActivation,
+  settlementDecision,
+  settlementMaterialization,
 };

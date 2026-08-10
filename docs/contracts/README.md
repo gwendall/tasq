@@ -28,6 +28,8 @@ Readable mandates compiled to existing live authority:
 [`TQ-626_MANDATES.md`](TQ-626_MANDATES.md).
 Exact multi-party agreements and reciprocal commitment compilation:
 [`TQ-627_AGREEMENTS.md`](TQ-627_AGREEMENTS.md).
+Settlement and recourse over exact agreement, attempt and resolution facts:
+[`TQ-628_SETTLEMENT_RECOURSE.md`](TQ-628_SETTLEMENT_RECOURSE.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).
