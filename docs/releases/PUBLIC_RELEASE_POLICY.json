@@ -163,10 +163,10 @@
     "status": "repository_source_candidate_not_published",
     "storeFormat": {
       "contractVersion": "tasq.store-format.v1",
-      "current": 31,
-      "readable": { "min": 31, "max": 31 },
-      "writable": { "min": 31, "max": 31 },
-      "directlyMigratable": { "min": 0, "max": 31 },
+      "current": 32,
+      "readable": { "min": 32, "max": 32 },
+      "writable": { "min": 32, "max": 32 },
+      "directlyMigratable": { "min": 0, "max": 32 },
       "irreversible": true,
       "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
     },
@@ -250,10 +250,10 @@
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-10",
-    "rationale": "Ship the complete source candidate as a labeled public alpha after format-31 protected recertification: signed statements with trusted binders, provider-neutral attestations, exact multi-party agreements, the remote TypeScript client, Server image, Python client and exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
+    "rationale": "Ship the complete source candidate as a labeled public alpha after format-32 protected recertification: signed statements with trusted binders, provider-neutral attestations, exact multi-party agreements, settlement and recourse, the remote TypeScript client, Server image, Python client and exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
   },
   "sourceCandidateCheckpoint": {
-    "status": "requires_format_31_recertification",
+    "status": "requires_format_32_recertification",
     "recordedAt": "2026-08-10",
     "latestBehaviorCommit": null,
     "mainCi": {
@@ -270,7 +270,7 @@
       "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
       "sourceVersions": ["0.2.0", "0.3.0"],
       "targetStoreFormat": 28,
-      "supersededByStoreFormat": 31,
+      "supersededByStoreFormat": 32,
       "targets": ["darwin-arm64", "linux-x64-gnu"]
     },
     "tagCreated": false,

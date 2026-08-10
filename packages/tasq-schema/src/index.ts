@@ -32,3 +32,4 @@ export * from "./resolution.js";
 export * from "./signatures.js";
 export * from "./attestations.js";
 export * from "./agreements.js";
+export * from "./settlement.js";

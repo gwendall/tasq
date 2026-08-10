@@ -24,7 +24,7 @@ and effect services and composes atomic claim/start and outcome-submission
 journeys. Nested services reuse one root writer transaction and defer external
 audit mirroring until commit, so late failure leaves no partial rows or phantom
 journal events. This is source-certified for Node and Bun candidate packages;
-it does not yet claim settlement, custody or remote provider execution. TQ-625
+it does not yet claim custody or remote provider execution. TQ-625
 adds embedded provider-neutral attestations. TQ-626 adds a private Server
 Mandates Module. TQ-627 adds embedded exact multi-party agreements as described
 below.
@@ -35,6 +35,12 @@ obligations into existing evidence commitments and TQ-612 resolution
 contracts. Accepted amendments cancel prior non-terminal obligations while
 preserving every historical record. Assignment acceptance is explicitly not
 agreement consent, and agreement acceptance grants no effect authority.
+
+TQ-628 adds immutable settlement and recourse decisions over exact agreement,
+commitment, attempt, validation and effect snapshots. Versioned policy rules
+materialize new evidence commitments and optionally ordinary proposed effects
+in one transaction. They never rewrite completion or grant effect authority;
+post-dispatch correction is new recourse, not supersession.
 
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
@@ -211,9 +217,10 @@ The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 protects both release and source evolution. Published `v0.3.0` uses
 store format 26, and the release policy's `compatibility` block is explicitly
-scoped to that published release. Repository source uses candidate format 31
+scoped to that published release. Repository source uses candidate format 32
 for signed statements, replica-principal binding, portable trusted-binder
-descriptors, provider-neutral attestations and exact agreement history; the separate
+descriptors, provider-neutral attestations, exact agreement history, and
+settlement/recourse decisions; the separate
 `sourceCandidateCompatibility` block records it without granting a shipped
 support claim. Each executable reports its exact read/write/direct-migration
 ranges. Existing-store upgrades are serialized, snapshot-verified,
@@ -224,8 +231,8 @@ before schema mutation while retaining only a private diagnostic partial.
 Exact `v0.3.0` published bytes now migrate the populated format-5 fixture and
 pass post-migration doctor on both targets. The `v0.4.0` pre-release harness
 must now replay exact public `v0.2.0` and `v0.3.0` ledgers into candidate format
-31. The prior format-28 run passed on Darwin arm64 and Linux x64 GNU but was
-superseded by migrations 29 through 31,
+32. The prior format-28 run passed on Darwin arm64 and Linux x64 GNU but was
+superseded by migrations 29 through 32,
 including matching-binary restore. Protected run
 [30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) is bound
 to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`; it is historical evidence, not

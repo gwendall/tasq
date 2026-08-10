@@ -86,8 +86,9 @@ const outcome = await tasq.journeys.submitOutcome({
 ```
 
 `submitOutcome` succeeds the attempt and proposes completion; it never marks
-the commitment done. Exact-term agreement, mandate, qualification, settlement
-and provider dispatch remain separate Modules and policy boundaries.
+the commitment done. Exact-term agreement and settlement/recourse are separate
+embedded Modules; mandate, qualification and provider dispatch remain separate
+authority, policy and runtime boundaries.
 
 ```bash
 pnpm --filter @tasq-run/core test

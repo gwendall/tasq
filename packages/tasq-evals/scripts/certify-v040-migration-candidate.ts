@@ -596,7 +596,7 @@ async function main(): Promise<void> {
   if (
     matrix.contractVersion !== "tasq.migration-prerelease-matrix.v1" ||
     matrix.candidate.version !== "0.4.0" ||
-    matrix.candidate.storeFormat !== 31 ||
+    matrix.candidate.storeFormat !== 32 ||
     matrix.candidate.publishedReplayPassed !== false ||
     matrix.candidate.publicSupportClaim !== false ||
     matrix.sourceReleases.map(({ version }) => version).join(",") !== "0.2.0,0.3.0"

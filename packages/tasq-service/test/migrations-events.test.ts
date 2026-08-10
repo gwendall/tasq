@@ -106,12 +106,15 @@ describe("Migration runner", () => {
         BEGIN SELECT RAISE(ABORT, 'signed statement bindings are immutable'); END;
         CREATE TRIGGER signed_statement_binding_no_delete BEFORE DELETE ON signed_statement_binding
         BEGIN SELECT RAISE(ABORT, 'signed statement bindings are append-only'); END;
+        DROP TABLE settlement_materialization;
+        DROP TABLE settlement_decision;
         DROP TABLE agreement_activation;
         DROP TABLE agreement_termination;
         DROP TABLE agreement_acceptance;
         DROP TABLE agreement_offer;
         DROP TABLE attestation_revocation;
         DROP TABLE attestation;
+        DELETE FROM _migration WHERE name = '0032_settlement_recourse.sql';
         DELETE FROM _migration WHERE name = '0031_agreements.sql';
         DELETE FROM _migration WHERE name = '0030_attestations.sql';
         DELETE FROM _migration WHERE name = '0029_statement_binder_registry.sql';
@@ -168,8 +171,13 @@ describe("Migration runner", () => {
       const result = await runMigrations(client, { now: 2 });
       expect(result).toMatchObject({
         beforeFormat: 28,
-        afterFormat: 31,
-        applied: ["0029_statement_binder_registry.sql", "0030_attestations.sql", "0031_agreements.sql"],
+        afterFormat: 32,
+        applied: [
+          "0029_statement_binder_registry.sql",
+          "0030_attestations.sql",
+          "0031_agreements.sql",
+          "0032_settlement_recourse.sql",
+        ],
       });
       const rows = await client.execute(`
         SELECT binding_kind, binder_descriptor_json
@@ -564,6 +572,7 @@ describe("Migration runner", () => {
         "0029_statement_binder_registry.sql",
         "0030_attestations.sql",
         "0031_agreements.sql",
+        "0032_settlement_recourse.sql",
       ]);
 
       const open = await getTask(db, "01910000-0000-7000-8000-000000000010");
@@ -669,6 +678,7 @@ describe("Migration runner", () => {
         "0029_statement_binder_registry.sql",
         "0030_attestations.sql",
         "0031_agreements.sql",
+        "0032_settlement_recourse.sql",
       ]);
       expect(result.skipped).toEqual([
         "0000_init.sql",
@@ -723,7 +733,7 @@ describe("Migration runner", () => {
       const migrationRows = await client.execute(
         "SELECT name, checksum FROM _migration ORDER BY name",
       );
-      expect(migrationRows.rows).toHaveLength(32);
+      expect(migrationRows.rows).toHaveLength(33);
       expect(migrationRows.rows.every((row) => typeof row["checksum"] === "string")).toBe(true);
 
       const legacyIdentity = await client.execute(
@@ -754,7 +764,7 @@ describe("Migration runner", () => {
 
       const second = await runMigrations(client);
       expect(second.applied).toEqual([]);
-      expect(second.skipped).toHaveLength(32);
+      expect(second.skipped).toHaveLength(33);
     } finally {
       await close();
     }

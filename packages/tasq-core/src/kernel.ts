@@ -106,6 +106,13 @@ export {
 } from "./service/agreements.js";
 
 export {
+  evaluateSettlementOrRecourse,
+  getSettlementDecision,
+  getSettlementView,
+  listSettlementDecisions,
+} from "./service/settlement.js";
+
+export {
   bootstrapCoordinationSpace,
   getCoordinationSpace,
 } from "./service/spaces.js";

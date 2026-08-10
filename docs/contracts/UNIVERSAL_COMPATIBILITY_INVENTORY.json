@@ -263,6 +263,22 @@
         "kernel_rename": ["tenantId"]
       }
     },
+    "settlement_decision": {
+      "exportName": "settlementDecision",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "decisionKind", "agreementOfferId", "activationId", "obligationId", "commitmentId", "basisJson", "basisDigest", "policyJson", "policyDigest", "matchedRuleId", "classification", "entitlementsJson", "priorDecisionId", "supersedesDecisionId", "decidedByPrincipalId", "decidedAt", "decisionDigest"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "settlement_materialization": {
+      "exportName": "settlementMaterialization",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "decisionId", "entitlementId", "commitmentId", "effectId", "createdAt"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
     "task_dependency": {
       "exportName": "taskDependency",
       "recordOwner": "kernel",

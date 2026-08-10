@@ -914,7 +914,7 @@
     },
     {
       "id": "TQ-628",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Add versioned Settlement and Recourse Modules that derive reciprocal obligations from exact agreement, attempt and resolution facts and compile them into commitments or effects without rewriting completion"
     },
@@ -952,12 +952,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "80c6477cd7cf498bb81c152cbbd9b9778f850dc4cebe1c2e8cb10218c15f5deb"
+      "sha256": "9107e4db8d3dff0d977adcbd29d31fe8745b2be12453fca1b6ee458f933c7380"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "8f58d5a2fa6326edb2291a019fad2193327b1852946996ec135abe993fdf1404"
+      "sha256": "cf4608c570525fde08e0e315cdcc05c5fa8eae3f4a888217fb7078a330b222f1"
     }
   ]
 }
