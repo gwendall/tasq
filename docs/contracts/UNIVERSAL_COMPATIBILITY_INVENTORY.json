@@ -231,6 +231,38 @@
         "kernel_rename": ["tenantId"]
       }
     },
+    "agreement_offer": {
+      "exportName": "agreementOffer",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "offerorPrincipalId", "termsJson", "termsDigest", "expiresAt", "supersedesOfferId", "offeredAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "agreement_acceptance": {
+      "exportName": "agreementAcceptance",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "offerId", "partyPrincipalId", "termsDigest", "acceptanceDigest", "acceptedAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "agreement_termination": {
+      "exportName": "agreementTermination",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "offerId", "actorPrincipalId", "action", "termsDigest", "reason", "terminatedAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "agreement_activation": {
+      "exportName": "agreementActivation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "offerId", "termsDigest", "acceptanceIdsJson", "compilationsJson", "supersedesActivationId", "activatedAt", "activationDigest"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
     "task_dependency": {
       "exportName": "taskDependency",
       "recordOwner": "kernel",

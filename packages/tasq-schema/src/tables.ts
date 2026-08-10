@@ -2043,6 +2043,72 @@ export const attestationRevocation = sqliteTable("attestation_revocation", {
   metadataCheck: check("attestation_revocation_metadata_check", sql`json_valid(${t.metadataJson})`),
 }));
 
+export const agreementOffer = sqliteTable("agreement_offer", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  offerorPrincipalId: text("offeror_principal_id").notNull().references(() => principal.id),
+  termsJson: text("terms_json").notNull(),
+  termsDigest: text("terms_digest").notNull(),
+  expiresAt: integer("expires_at").notNull(),
+  supersedesOfferId: text("supersedes_offer_id").references((): AnySQLiteColumn => agreementOffer.id),
+  offeredAt: integer("offered_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  currentIdx: index("idx_agreement_offer_current").on(t.tenantId, t.expiresAt, t.offeredAt),
+  digestUniq: uniqueIndex("uniq_agreement_offer_digest").on(t.tenantId, t.termsDigest, t.id),
+  successorUniq: uniqueIndex("uniq_agreement_offer_successor").on(t.tenantId, t.supersedesOfferId),
+  chronologyCheck: check("agreement_offer_chronology_check", sql`${t.expiresAt} > ${t.offeredAt}`),
+  jsonCheck: check("agreement_offer_json_check", sql`json_valid(${t.termsJson}) AND json_valid(${t.metadataJson})`),
+}));
+
+export const agreementAcceptance = sqliteTable("agreement_acceptance", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  offerId: text("offer_id").notNull().references(() => agreementOffer.id),
+  partyPrincipalId: text("party_principal_id").notNull().references(() => principal.id),
+  termsDigest: text("terms_digest").notNull(),
+  acceptanceDigest: text("acceptance_digest").notNull(),
+  acceptedAt: integer("accepted_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  partyUniq: uniqueIndex("uniq_agreement_acceptance_party").on(t.tenantId, t.offerId, t.partyPrincipalId),
+  digestUniq: uniqueIndex("uniq_agreement_acceptance_digest").on(t.tenantId, t.acceptanceDigest),
+  jsonCheck: check("agreement_acceptance_json_check", sql`json_valid(${t.metadataJson})`),
+}));
+
+export const agreementTermination = sqliteTable("agreement_termination", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  offerId: text("offer_id").notNull().references(() => agreementOffer.id),
+  actorPrincipalId: text("actor_principal_id").notNull().references(() => principal.id),
+  action: text("action").notNull(),
+  termsDigest: text("terms_digest").notNull(),
+  reason: text("reason").notNull(),
+  terminatedAt: integer("terminated_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  offerUniq: uniqueIndex("uniq_agreement_termination_offer").on(t.tenantId, t.offerId),
+  actionCheck: check("agreement_termination_action_check", sql`${t.action} IN ('withdrawn','rejected')`),
+  jsonCheck: check("agreement_termination_json_check", sql`json_valid(${t.metadataJson})`),
+}));
+
+export const agreementActivation = sqliteTable("agreement_activation", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  offerId: text("offer_id").notNull().references(() => agreementOffer.id),
+  termsDigest: text("terms_digest").notNull(),
+  acceptanceIdsJson: text("acceptance_ids_json").notNull(),
+  compilationsJson: text("compilations_json").notNull(),
+  supersedesActivationId: text("supersedes_activation_id").references((): AnySQLiteColumn => agreementActivation.id),
+  activatedAt: integer("activated_at").notNull(),
+  activationDigest: text("activation_digest").notNull(),
+}, (t) => ({
+  offerUniq: uniqueIndex("uniq_agreement_activation_offer").on(t.tenantId, t.offerId),
+  successorUniq: uniqueIndex("uniq_agreement_activation_successor").on(t.tenantId, t.supersedesActivationId),
+  digestUniq: uniqueIndex("uniq_agreement_activation_digest").on(t.tenantId, t.activationDigest),
+  jsonCheck: check("agreement_activation_json_check", sql`json_valid(${t.acceptanceIdsJson}) AND json_valid(${t.compilationsJson})`),
+}));
+
 // ──────────────────────────────────────────────────────────────────────
 // Schema bag (for drizzle migrations + service usage)
 // ──────────────────────────────────────────────────────────────────────
@@ -2103,4 +2169,8 @@ export const schema = {
   signedStatementBinding,
   attestation,
   attestationRevocation,
+  agreementOffer,
+  agreementAcceptance,
+  agreementTermination,
+  agreementActivation,
 };

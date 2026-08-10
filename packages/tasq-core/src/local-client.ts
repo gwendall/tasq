@@ -7,6 +7,9 @@
  */
 
 import type {
+  AgreementOfferInputV1,
+  AgreementOfferV1,
+  AgreementViewV1,
   Artifact,
   ArtifactInsert,
   AttestationEligibilityDecisionV1,
@@ -49,6 +52,15 @@ import type {
   ValidationDecision,
 } from "@tasq-run/schema";
 import type { CompletionEvaluatorRuntime } from "@tasq-run/extension-sdk";
+import {
+  acceptAgreement,
+  getAgreementOffer,
+  getAgreementView,
+  listAgreementOffers,
+  offerAgreement,
+  rejectAgreement,
+  withdrawAgreement,
+} from "./service/agreements.js";
 import {
   evaluateAttestationEligibility,
   getAttestation,
@@ -296,6 +308,26 @@ export interface LocalTasqClient {
     unblock(id: string, options: LocalCommitmentTransitionOptions): Promise<Commitment>;
     cancel(id: string, options: LocalCommitmentTransitionOptions): Promise<Commitment>;
     reopen(id: string, options: LocalCommitmentTransitionOptions): Promise<Commitment>;
+  };
+  readonly agreements: {
+    offer(input: AgreementOfferInputV1, options?: LocalMutationOptions): Promise<AgreementOfferV1>;
+    get(id: string, at?: number): Promise<AgreementViewV1 | null>;
+    list(): Promise<AgreementOfferV1[]>;
+    accept(
+      id: string,
+      termsDigest: string,
+      options?: LocalMutationOptions & { metadata?: Metadata },
+    ): Promise<AgreementViewV1>;
+    withdraw(
+      id: string,
+      input: { termsDigest: string; reason: string; metadata?: Metadata },
+      options?: LocalMutationOptions,
+    ): Promise<AgreementViewV1>;
+    reject(
+      id: string,
+      input: { termsDigest: string; reason: string; metadata?: Metadata },
+      options?: LocalMutationOptions,
+    ): Promise<AgreementViewV1>;
   };
   readonly claims: {
     acquire(
@@ -600,6 +632,18 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
         unblock: (id, mutation) => transition(unblockCommitment, id, mutation),
         cancel: (id, mutation) => transition(cancelCommitment, id, mutation),
         reopen: (id, mutation) => transition(reopenCommitment, id, mutation),
+      },
+      agreements: {
+        offer: (input, mutation = {}) => offerAgreement(handle.db, input, serviceContext(mutation)),
+        get: (id, at = options.clock.now()) => getAgreementView(handle.db, id, options.workspaceId, at),
+        list: () => listAgreementOffers(handle.db, options.workspaceId),
+        accept: (id, termsDigest, mutation = {}) => acceptAgreement(handle.db, id, {
+          termsDigest, metadata: mutation.metadata,
+        }, serviceContext(mutation)),
+        withdraw: (id, input, mutation = {}) =>
+          withdrawAgreement(handle.db, id, input, serviceContext(mutation)),
+        reject: (id, input, mutation = {}) =>
+          rejectAgreement(handle.db, id, input, serviceContext(mutation)),
       },
       claims: {
         acquire: (id, claimOptions = {}) =>

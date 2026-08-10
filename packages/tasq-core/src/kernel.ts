@@ -93,6 +93,19 @@ export {
 } from "./service/principals.js";
 
 export {
+  offerAgreement,
+  getAgreementOffer,
+  getAgreementView,
+  listAgreementOffers,
+  acceptAgreement,
+  withdrawAgreement,
+  rejectAgreement,
+  agreementAcceptanceStatementBinding,
+  AGREEMENT_ACCEPTANCE_BINDER,
+  AGREEMENT_ACCEPTANCE_BINDER_DESCRIPTOR,
+} from "./service/agreements.js";
+
+export {
   bootstrapCoordinationSpace,
   getCoordinationSpace,
 } from "./service/spaces.js";

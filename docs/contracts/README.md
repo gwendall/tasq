@@ -26,6 +26,8 @@ Provider-neutral attestation lifecycle and eligibility semantics:
 [`TQ-625_ATTESTATIONS.md`](TQ-625_ATTESTATIONS.md).
 Readable mandates compiled to existing live authority:
 [`TQ-626_MANDATES.md`](TQ-626_MANDATES.md).
+Exact multi-party agreements and reciprocal commitment compilation:
+[`TQ-627_AGREEMENTS.md`](TQ-627_AGREEMENTS.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).
