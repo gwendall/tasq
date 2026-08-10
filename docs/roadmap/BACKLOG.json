@@ -250,11 +250,14 @@
     },
     {
       "id": "TQ-608",
-      "status": "done",
+      "status": "candidate_done_external_gate",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
-      "remaining": [],
+      "remaining": [
+        "rerun-protected-n-2-migration-matrix-for-source-format-29",
+        "replay-exact-published-v0.4.0-bytes-after-publication"
+      ],
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml", "https://github.com/gwendall/tasq/actions/runs/30625856802"]
     },
     {
@@ -859,16 +862,18 @@
     },
     {
       "id": "TQ-624",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-615", "TQ-622"],
       "outcome": "Replace the closed signed-statement binding list with a trusted versioned binder registry that can add exact agreement, attestation, mandate and custody purposes without weakening typed target checks",
-      "remaining": [
-        "freeze_binder_descriptor_registration_and_implementation_digest_contract",
-        "preserve_exact_subject_digest_record_existence_and_authority_checks",
-        "reject_unknown_stale_conflicting_or_cross_workspace_binders",
-        "migrate_the_six_existing_binding_kinds_without_semantic_drift",
-        "pass_portable_restore_and_cross_language_vectors"
+      "remaining": [],
+      "evidence": [
+        "docs/decisions/ADR-012_TRUSTED_STATEMENT_BINDER_REGISTRY.md",
+        "docs/contracts/TQ-624_TRUSTED_BINDER_REGISTRY.md",
+        "packages/tasq-core/src/service/signed-statements.ts",
+        "packages/tasq-core/src/migrations/0029_statement_binder_registry.sql",
+        "packages/tasq-core/test/statement-binder-registry.test.ts",
+        "packages/tasq-evals/statement-binder-registry-cross-language.test.ts"
       ]
     },
     {

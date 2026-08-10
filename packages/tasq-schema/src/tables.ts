@@ -1969,6 +1969,7 @@ export const signedStatementBinding = sqliteTable("signed_statement_binding", {
   statementId: text("statement_id").notNull().references(() => signedStatement.statementId),
   verificationId: text("verification_id").notNull().references(() => signatureVerificationRecord.id),
   bindingKind: text("binding_kind").notNull(),
+  binderDescriptorJson: text("binder_descriptor_json").notNull(),
   recordType: text("record_type").notNull(),
   recordId: text("record_id").notNull(),
   recordDigest: text("record_digest").notNull(),
@@ -1980,10 +1981,10 @@ export const signedStatementBinding = sqliteTable("signed_statement_binding", {
   bindingUniq: uniqueIndex("uniq_signed_statement_binding").on(
     t.tenantId, t.bindingKind, t.recordType, t.recordId, t.statementId,
   ),
-  kindCheck: check("signed_statement_binding_kind_check", sql`${t.bindingKind} IN (
-    'artifact_authorship','artifact_acceptance','completion_attestation',
-    'effect_approval','replication_operation_origin','workspace_checkpoint'
-  )`),
+  binderDescriptorCheck: check(
+    "signed_statement_binding_descriptor_check",
+    sql`json_valid(${t.binderDescriptorJson})`,
+  ),
   metadataCheck: check("signed_statement_binding_metadata_check", sql`json_valid(${t.metadataJson})`),
 }));
 

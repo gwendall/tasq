@@ -3,7 +3,7 @@
   "status": "candidate_done_external_gate",
   "updatedAt": "2026-07-24",
   "backlogItem": "TQ-806",
-  "storeFormat": 28,
+  "storeFormat": 29,
   "serverOperations": [
     "replication.enroll",
     "replication.push",

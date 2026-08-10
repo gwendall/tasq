@@ -69,6 +69,7 @@ function authorizedPolicy() {
       npm_scope_control_verified: true,
       trusted_publishing_configured: true,
       agent_integration_candidate_certified: true,
+      data_safety_source_candidate: true,
     },
   };
 }
@@ -125,7 +126,7 @@ describe("protected public release authorization", () => {
       .toContain("private_multi_app_dogfood_accepted");
   });
 
-  test("separates published format 26 from unshipped source-candidate format 28", () => {
+  test("separates published format 26 from unshipped source-candidate format 29", () => {
     expect(policy.compatibility).toMatchObject({
       scope: "publishedRelease",
       storeFormat: { current: 26 },
@@ -134,10 +135,10 @@ describe("protected public release authorization", () => {
       status: "repository_source_candidate_not_published",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 28,
-        readable: { min: 28, max: 28 },
-        writable: { min: 28, max: 28 },
-        directlyMigratable: { min: 0, max: 28 },
+        current: 29,
+        readable: { min: 29, max: 29 },
+        writable: { min: 29, max: 29 },
+        directlyMigratable: { min: 0, max: 29 },
         irreversible: true,
         rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
       },

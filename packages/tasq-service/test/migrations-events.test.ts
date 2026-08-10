@@ -74,6 +74,115 @@ describe("Migration runner", () => {
     }
   });
 
+  it("migrates all six populated format-28 bindings to exact portable descriptors", async () => {
+    const { client, close } = await freshDb();
+    try {
+      await runMigrations(client);
+      await client.executeMultiple(`
+        DROP TRIGGER signed_statement_binding_no_update;
+        DROP TRIGGER signed_statement_binding_no_delete;
+        DROP INDEX signed_statement_binding_record;
+        DROP TABLE signed_statement_binding;
+        CREATE TABLE signed_statement_binding (
+          id TEXT PRIMARY KEY,
+          tenant_id TEXT NOT NULL,
+          statement_id TEXT NOT NULL REFERENCES signed_statement(statement_id),
+          verification_id TEXT NOT NULL REFERENCES signature_verification_record(id),
+          binding_kind TEXT NOT NULL CHECK (binding_kind IN (
+            'artifact_authorship','artifact_acceptance','completion_attestation',
+            'effect_approval','replication_operation_origin','workspace_checkpoint'
+          )),
+          record_type TEXT NOT NULL,
+          record_id TEXT NOT NULL,
+          record_digest TEXT NOT NULL,
+          created_by_principal_id TEXT NOT NULL,
+          created_at INTEGER NOT NULL CHECK (created_at >= 0),
+          metadata_json TEXT NOT NULL CHECK (json_valid(metadata_json)),
+          UNIQUE (tenant_id, binding_kind, record_type, record_id, statement_id)
+        );
+        CREATE INDEX signed_statement_binding_record
+          ON signed_statement_binding(tenant_id, record_type, record_id, created_at);
+        CREATE TRIGGER signed_statement_binding_no_update BEFORE UPDATE ON signed_statement_binding
+        BEGIN SELECT RAISE(ABORT, 'signed statement bindings are immutable'); END;
+        CREATE TRIGGER signed_statement_binding_no_delete BEFORE DELETE ON signed_statement_binding
+        BEGIN SELECT RAISE(ABORT, 'signed statement bindings are append-only'); END;
+        DELETE FROM _migration WHERE name = '0029_statement_binder_registry.sql';
+      `);
+      const legacy = [
+        ["artifact_authorship", "artifact"],
+        ["artifact_acceptance", "artifact"],
+        ["completion_attestation", "completion_proposal"],
+        ["effect_approval", "effect_approval"],
+        ["replication_operation_origin", "replication_operation"],
+        ["workspace_checkpoint", "workspace_checkpoint"],
+      ] as const;
+      for (const [index, [kind, recordType]] of legacy.entries()) {
+        const statementId = `legacy-statement-${index}`;
+        const verificationId = `legacy-verification-${index}`;
+        await client.execute({
+          sql: `INSERT INTO signed_statement (
+            statement_id, tenant_id, issuer_principal_id, credential_id,
+            purpose_uri, purpose_version, subject_type_uri, subject_id,
+            subject_digest, payload_json, payload_digest, bundle_json,
+            bundle_digest, accepted_at
+          ) VALUES (?, 'team/legacy', 'principal:legacy', 'credential:legacy',
+            'https://schemas.tasq.dev/purposes/legacy/v1', 1,
+            'https://schemas.tasq.dev/subjects/legacy/v1', ?, ?, '{}', ?, '{}', ?, 1)`,
+          args: [statementId, `record-${index}`, `sha256:${"1".repeat(64)}`,
+            `sha256:${"2".repeat(64)}`, `sha256:${"3".repeat(64)}`],
+        });
+        await client.execute({
+          sql: `INSERT INTO signature_verification_record (
+            id, tenant_id, statement_id, statement_digest, bundle_digest,
+            credential_id, credential_revision, credential_digest, principal_id,
+            trust_root_digest, profile_uri, profile_version,
+            verifier_implementation_digest, verified_at,
+            credential_state_at_verification, outcome, reason_code,
+            supporting_proof_digests_json
+          ) VALUES (?, 'team/legacy', ?, ?, ?, 'credential:legacy', 1, ?,
+            'principal:legacy', ?, 'https://schemas.tasq.dev/signatures/legacy/v1',
+            1, ?, 1, 'active', 'valid', 'legacy', '[]')`,
+          args: [verificationId, statementId, `sha256:${"2".repeat(64)}`,
+            `sha256:${"3".repeat(64)}`, `sha256:${"4".repeat(64)}`,
+            `sha256:${"5".repeat(64)}`, `sha256:${"6".repeat(64)}`],
+        });
+        await client.execute({
+          sql: `INSERT INTO signed_statement_binding (
+            id, tenant_id, statement_id, verification_id, binding_kind,
+            record_type, record_id, record_digest, created_by_principal_id,
+            created_at, metadata_json
+          ) VALUES (?, 'team/legacy', ?, ?, ?, ?, ?, ?, 'principal:legacy', 1, '{}')`,
+          args: [`legacy-binding-${index}`, statementId, verificationId, kind,
+            recordType, `record-${index}`, `sha256:${"1".repeat(64)}`],
+        });
+      }
+
+      const result = await runMigrations(client, { now: 2 });
+      expect(result).toMatchObject({
+        beforeFormat: 28,
+        afterFormat: 29,
+        applied: ["0029_statement_binder_registry.sql"],
+      });
+      const rows = await client.execute(`
+        SELECT binding_kind, binder_descriptor_json
+        FROM signed_statement_binding ORDER BY binding_kind
+      `);
+      expect(rows.rows).toHaveLength(6);
+      for (const row of rows.rows) {
+        const descriptor = JSON.parse(String(row["binder_descriptor_json"]));
+        expect(descriptor).toMatchObject({
+          contractVersion: "tasq.statement-binder.v1",
+          bindingKind: row["binding_kind"],
+          binderVersion: 1,
+          purposeVersion: 1,
+        });
+        expect(descriptor.binderImplementationDigest).toMatch(/^sha256:[0-9a-f]{64}$/);
+      }
+    } finally {
+      await close();
+    }
+  });
+
   it("creates the core and agentic entity tables + _migration", async () => {
     const { client, close } = await freshDb();
     try {
@@ -444,6 +553,7 @@ describe("Migration runner", () => {
         "0026_completion_resolution.sql",
         "0027_signed_statements.sql",
         "0028_replica_principal_binding.sql",
+        "0029_statement_binder_registry.sql",
       ]);
 
       const open = await getTask(db, "01910000-0000-7000-8000-000000000010");
@@ -546,6 +656,7 @@ describe("Migration runner", () => {
         "0026_completion_resolution.sql",
         "0027_signed_statements.sql",
         "0028_replica_principal_binding.sql",
+        "0029_statement_binder_registry.sql",
       ]);
       expect(result.skipped).toEqual([
         "0000_init.sql",
@@ -600,7 +711,7 @@ describe("Migration runner", () => {
       const migrationRows = await client.execute(
         "SELECT name, checksum FROM _migration ORDER BY name",
       );
-      expect(migrationRows.rows).toHaveLength(29);
+      expect(migrationRows.rows).toHaveLength(30);
       expect(migrationRows.rows.every((row) => typeof row["checksum"] === "string")).toBe(true);
 
       const legacyIdentity = await client.execute(
@@ -631,7 +742,7 @@ describe("Migration runner", () => {
 
       const second = await runMigrations(client);
       expect(second.applied).toEqual([]);
-      expect(second.skipped).toHaveLength(29);
+      expect(second.skipped).toHaveLength(30);
     } finally {
       await close();
     }

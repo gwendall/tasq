@@ -27,10 +27,16 @@ export {
   getSignedStatementProof,
   listSignedStatementBindings,
   prepareSignedStatementAcceptance,
+  createStatementBinderRegistry,
+  BUILTIN_STATEMENT_BINDER_DESCRIPTORS,
+  BUILTIN_STATEMENT_BINDERS,
   SIGNED_STATEMENT_PURPOSES,
 } from "./service/signed-statements.js";
 export type {
   PreparedSignedStatementAcceptance,
+  SignedStatementBinderInput,
+  StatementBinderAssertion,
+  TrustedStatementBinder,
 } from "./service/signed-statements.js";
 
 export {
