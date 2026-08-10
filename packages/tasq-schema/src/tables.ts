@@ -1989,6 +1989,61 @@ export const signedStatementBinding = sqliteTable("signed_statement_binding", {
 }));
 
 // ──────────────────────────────────────────────────────────────────────
+// Attestations — assertions and append-only revocation, never authority
+// ──────────────────────────────────────────────────────────────────────
+
+export const attestation = sqliteTable("attestation", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  issuerPrincipalId: text("issuer_principal_id").notNull().references(() => principal.id),
+  subjectTypeUri: text("subject_type_uri").notNull(),
+  subjectId: text("subject_id").notNull(),
+  subjectDigest: text("subject_digest"),
+  purposeUri: text("purpose_uri").notNull(),
+  purposeVersion: integer("purpose_version").notNull(),
+  scopeJson: text("scope_json").notNull(),
+  claimTypeUri: text("claim_type_uri").notNull(),
+  claimVersion: integer("claim_version").notNull(),
+  claimJson: text("claim_json").notNull(),
+  claimDigest: text("claim_digest").notNull(),
+  evidenceJson: text("evidence_json").notNull(),
+  notBefore: integer("not_before").notNull(),
+  expiresAt: integer("expires_at"),
+  supersedesAttestationId: text("supersedes_attestation_id").references((): AnySQLiteColumn => attestation.id),
+  attestationDigest: text("attestation_digest").notNull(),
+  issuedAt: integer("issued_at").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  currentLookupIdx: index("idx_attestation_current_lookup").on(
+    t.tenantId, t.subjectTypeUri, t.subjectId, t.purposeUri, t.purposeVersion, t.notBefore,
+  ),
+  digestUniq: uniqueIndex("uniq_attestation_workspace_digest").on(t.tenantId, t.attestationDigest),
+  supersedesUniq: uniqueIndex("uniq_attestation_supersedes").on(t.tenantId, t.supersedesAttestationId)
+    .where(sql`${t.supersedesAttestationId} IS NOT NULL`),
+  versionCheck: check("attestation_version_check", sql`${t.purposeVersion} > 0 AND ${t.claimVersion} > 0`),
+  chronologyCheck: check("attestation_chronology_check", sql`${t.expiresAt} IS NULL OR ${t.expiresAt} > ${t.notBefore}`),
+  jsonCheck: check("attestation_json_check", sql`json_valid(${t.scopeJson}) AND json_valid(${t.claimJson}) AND json_valid(${t.evidenceJson}) AND json_valid(${t.metadataJson})`),
+}));
+
+export const attestationRevocation = sqliteTable("attestation_revocation", {
+  id: text("id").primaryKey(),
+  tenantId: text("tenant_id").notNull().references(() => coordinationSpace.workspaceId),
+  attestationId: text("attestation_id").notNull().references(() => attestation.id),
+  revokerPrincipalId: text("revoker_principal_id").notNull().references(() => principal.id),
+  reasonCode: text("reason_code").notNull(),
+  explanation: text("explanation"),
+  effectiveAt: integer("effective_at").notNull(),
+  recordedAt: integer("recorded_at").notNull(),
+  revocationDigest: text("revocation_digest").notNull(),
+  metadataJson: text("metadata_json").notNull(),
+}, (t) => ({
+  attestationUniq: uniqueIndex("uniq_attestation_revocation").on(t.tenantId, t.attestationId),
+  effectiveIdx: index("idx_attestation_revocation_effective").on(t.tenantId, t.effectiveAt, t.attestationId),
+  chronologyCheck: check("attestation_revocation_chronology_check", sql`${t.effectiveAt} <= ${t.recordedAt}`),
+  metadataCheck: check("attestation_revocation_metadata_check", sql`json_valid(${t.metadataJson})`),
+}));
+
+// ──────────────────────────────────────────────────────────────────────
 // Schema bag (for drizzle migrations + service usage)
 // ──────────────────────────────────────────────────────────────────────
 
@@ -2046,4 +2101,6 @@ export const schema = {
   signatureVerificationRecord,
   signedStatementNonce,
   signedStatementBinding,
+  attestation,
+  attestationRevocation,
 };

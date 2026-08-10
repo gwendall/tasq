@@ -142,10 +142,10 @@ describe("CLI meta commands", () => {
       contractVersion: "tasq.executable-version.v1",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 29,
-        readable: { min: 29, max: 29 },
-        writable: { min: 29, max: 29 },
-        directlyMigratable: { min: 0, max: 29 },
+        current: 30,
+        readable: { min: 30, max: 30 },
+        writable: { min: 30, max: 30 },
+        directlyMigratable: { min: 0, max: 30 },
         irreversible: true,
       },
     });
@@ -2307,7 +2307,7 @@ describe("durability", () => {
     expect(report.ok).toBe(true);
     expect(report.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 29,
+      current: 30,
     });
     expect(report.store.sqliteIntegrity).toBe("ok");
     expect(report.journal.databaseOnly).toEqual([]);
@@ -2574,7 +2574,7 @@ describe("durability", () => {
     expect(result.contractVersion).toBe("tasq.backup-receipt.v1");
     expect(result.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.verified).toBe(true);
-    expect(result.storeFormat).toBe(29);
+    expect(result.storeFormat).toBe(30);
     expect(result.sizeBytes).toBeGreaterThan(0);
     expect(result.eventCursor).toBe(2);
     expect(existsSync(target)).toBe(true);
@@ -2591,7 +2591,7 @@ describe("durability", () => {
       ok: true,
       target: exportPath,
       workspaceId: "gwendall",
-      storeFormat: 29,
+      storeFormat: 30,
     });
     expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
 

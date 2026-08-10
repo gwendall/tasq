@@ -22,6 +22,8 @@ Hostile packaged evidence: [`TQ-808_SELF_HOSTED_HOSTILE_CERTIFICATION.md`](TQ-80
 Signed-statement integration and hostile source evidence:
 [`TQ-615_SIGNED_STATEMENT_INTEGRATION.md`](TQ-615_SIGNED_STATEMENT_INTEGRATION.md)
 and [`TQ-616_SIGNED_STATEMENT_CERTIFICATION.md`](TQ-616_SIGNED_STATEMENT_CERTIFICATION.md).
+Provider-neutral attestation lifecycle and eligibility semantics:
+[`TQ-625_ATTESTATIONS.md`](TQ-625_ATTESTATIONS.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).

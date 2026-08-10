@@ -896,7 +896,7 @@
     },
     {
       "id": "TQ-625",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Add a provider-neutral Attestations Module with issuer, subject, purpose, scope, validity, evidence and append-only revocation while keeping eligibility decisions and authority separate"
     },
@@ -952,12 +952,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "faf8801a9b0eebab0344e15d46fdbb0dbf9390e35cc5e71b6e01f4a05bbcfbc9"
+      "sha256": "63e47e6b8b7e0f63bf00e24fe364e45771183880a0f953c24bb73a5a1a8fd762"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "d50d339679db7236f5388405e89c4c2b762287041dc2f87938a4896dbe66140f"
+      "sha256": "0190baf8818b9d1fdbafc00404ca6b7a12cc1593cc5042694c1b5df386c66e21"
     }
   ]
 }

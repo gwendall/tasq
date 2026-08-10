@@ -103,7 +103,7 @@ operation through real adopters, not more repository-only architecture.
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — source candidate complete; format-29 protected replay open.** The
+- **TQ-608 — source candidate complete; format-30 protected replay open.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
@@ -111,7 +111,7 @@ operation through real adopters, not more repository-only architecture.
   snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
   populated format-5 fixture on both targets. The exact `v0.2.0`/`v0.3.0` to
   candidate-format-28 N-2 harness passed locally and in protected two-target
-  CI, but migration 29 superseded that exact candidate. The format-29 harness
+  CI, but migrations 29 and 30 superseded that exact candidate. The format-30 harness
   passes locally; its protected two-target rerun and the later exact published
   `v0.4.0` replay remain open. No prior pass grants a current public support
   claim.
@@ -383,9 +383,9 @@ support claims remain TQ-901–TQ-905.
   `../contracts/TQ-614_SIGNING_CREDENTIAL_AUTHORITY.md`.
 - **TQ-615 — done in source:** migration 27 persists exact statements,
   verification records, immutable public credential snapshots, nonces,
-  checkpoints and six typed bindings. Current store format 29 additionally
-  binds replica generations to principals and freezes trusted binder
-  descriptors. Core, embedded client, guarded
+  checkpoints and six typed bindings. Current store format 30 additionally
+  binds replica generations to principals, freezes trusted binder descriptors
+  and stores provider-neutral attestations. Core, embedded client, guarded
   Server, CLI, MCP, Console, doctor and portable-data projections pass; the
   unsigned journey is unchanged. See
   `../contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md`.
@@ -477,10 +477,13 @@ publication sequence and create no current support claim.
   Unknown, stale, conflicting, unpinned and cross-workspace binders fail closed;
   migration 29 preserves the six historical meanings and exact descriptors
   survive portable restore. TypeScript and Python share the canonical vector.
-- **TQ-625 — pending:** add a provider-neutral Attestations Module with issuer,
-  subject, purpose, scope, validity, evidence, supersession and append-only
-  revocation. Eligibility remains a policy decision; a valid signature proves
-  neither truth, availability nor authority.
+- **TQ-625 — done:** ADR-013 and the embedded Attestations Module freeze
+  purpose-scoped assertions, canonical scope, evidence, validity,
+  supersession and issuer-only append-only revocation. Explicit-time current
+  queries and exact eligibility policies keep claim truth, availability and
+  authority separate; a pinned custom binder authenticates the issuer and
+  exact bytes without upgrading those assurances. Licence, access, provenance,
+  hostile workspace, temporal and portable-restore tests pass.
 - **TQ-626 — pending:** add a Mandates Module whose small Interface issues,
   inspects and revokes bounded intent by compiling to existing grants,
   delegations, scopes and approvals. It must explain typed denial and immediate

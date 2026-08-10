@@ -9,6 +9,12 @@
 import type {
   Artifact,
   ArtifactInsert,
+  AttestationEligibilityDecisionV1,
+  AttestationIssueInputV1,
+  AttestationRequirementV1,
+  AttestationRevocationV1,
+  AttestationSubjectV1,
+  AttestationV1,
   Assignment,
   AssignmentInsert,
   AssignmentStatus,
@@ -43,6 +49,14 @@ import type {
   ValidationDecision,
 } from "@tasq-run/schema";
 import type { CompletionEvaluatorRuntime } from "@tasq-run/extension-sdk";
+import {
+  evaluateAttestationEligibility,
+  getAttestation,
+  getAttestationRevocation,
+  issueAttestation,
+  listCurrentAttestations,
+  revokeAttestation,
+} from "./service/attestations.js";
 import {
   type Commitment,
   type CommitmentTransitionOptions,
@@ -451,6 +465,31 @@ export interface LocalTasqClient {
     list(options?: Omit<ListResourceWorldOptions, BoundResourceContext>): ReturnType<typeof listResourceWorld>;
   };
   readonly inspect: (commitmentId: string) => Promise<CommitmentInspection | null>;
+  readonly attestations: {
+    issue(input: AttestationIssueInputV1, options?: LocalMutationOptions): Promise<AttestationV1>;
+    revoke(
+      id: string,
+      input: {
+        reasonCode: string;
+        explanation?: string | null;
+        effectiveAt?: number;
+        metadata?: Metadata;
+      },
+      options?: LocalMutationOptions,
+    ): Promise<AttestationRevocationV1>;
+    get(id: string): Promise<AttestationV1 | null>;
+    getRevocation(id: string): Promise<AttestationRevocationV1 | null>;
+    current(input: {
+      subject: AttestationSubjectV1;
+      at: number;
+      purpose?: { uri: string; version: number };
+    }): Promise<AttestationV1[]>;
+    evaluate(input: {
+      subject: AttestationSubjectV1;
+      requirements: AttestationRequirementV1[];
+      at: number;
+    }): Promise<AttestationEligibilityDecisionV1>;
+  };
   readonly signedStatements: {
     get(statementId: string): ReturnType<typeof getSignedStatementProof>;
     listBindings(input?: {
@@ -811,6 +850,22 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
       },
       inspect: (id) =>
         inspectCommitment(handle.db, id, { workspaceId: options.workspaceId, clock: options.clock }),
+      attestations: {
+        issue: (input, mutation = {}) =>
+          issueAttestation(handle.db, input, serviceContext(mutation)),
+        revoke: (id, input, mutation = {}) =>
+          revokeAttestation(handle.db, id, input, serviceContext(mutation)),
+        get: (id) => getAttestation(handle.db, id, options.workspaceId),
+        getRevocation: (id) => getAttestationRevocation(handle.db, id, options.workspaceId),
+        current: (input) => listCurrentAttestations(handle.db, {
+          ...input,
+          workspaceId: options.workspaceId,
+        }),
+        evaluate: (input) => evaluateAttestationEligibility(handle.db, {
+          ...input,
+          workspaceId: options.workspaceId,
+        }),
+      },
       signedStatements: {
         get: (statementId) =>
           getSignedStatementProof(handle.db, statementId, options.workspaceId),

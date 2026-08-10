@@ -16,8 +16,8 @@ tasq version --json
 
 The `storeFormat` object declares the executable's current, readable, writable
 and directly migratable ranges. Published `v0.3.0` reports format 26; current
-repository source reports format 29 after signed-statement,
-replica-principal-binding and trusted-binder-registry migrations. Trust the exact executable output rather
+repository source reports format 30 after signed-statement,
+replica-principal-binding, trusted-binder-registry and attestation migrations. Trust the exact executable output rather
 than this prose when upgrading a retained ledger. An executable
 refuses unknown, newer, checksum-drifted or non-contiguous migration history
 before applying a corrective write. JSON callers receive a typed

@@ -215,6 +215,22 @@
         "kernel_rename": ["tenantId"]
       }
     },
+    "attestation": {
+      "exportName": "attestation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "issuerPrincipalId", "subjectTypeUri", "subjectId", "subjectDigest", "purposeUri", "purposeVersion", "scopeJson", "claimTypeUri", "claimVersion", "claimJson", "claimDigest", "evidenceJson", "notBefore", "expiresAt", "supersedesAttestationId", "attestationDigest", "issuedAt", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
+    "attestation_revocation": {
+      "exportName": "attestationRevocation",
+      "recordOwner": "kernel",
+      "fieldGroups": {
+        "kernel": ["id", "attestationId", "revokerPrincipalId", "reasonCode", "explanation", "effectiveAt", "recordedAt", "revocationDigest", "metadataJson"],
+        "kernel_rename": ["tenantId"]
+      }
+    },
     "task_dependency": {
       "exportName": "taskDependency",
       "recordOwner": "kernel",
