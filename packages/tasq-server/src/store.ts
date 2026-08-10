@@ -25,6 +25,16 @@ import {
 } from "@tasq-internal/authority";
 import { z } from "zod";
 import { migrateAuthorityStore } from "./migration.js";
+import {
+  MandateIntent,
+  MandateView,
+  compileMandate,
+  mandateRecordIds,
+  protectedMandateDecision,
+  type MandateDecision,
+  type MandateIntent as MandateIntentValue,
+  type MandateView as MandateViewValue,
+} from "./mandates.js";
 
 const Id = z.string().min(1).max(500).refine((value) => value === value.trim() && !/[\u0000-\u001f\u007f]/.test(value));
 const AuditTargetId = z.string().min(1).max(1_000).refine((value) => value === value.trim() && !/[\u0000-\u001f\u007f]/.test(value));
@@ -1223,6 +1233,282 @@ export class AuthorityStore {
 
   async authorize(input: WorkspaceAuthorizationInput): Promise<WorkspaceAuthorizationResult> {
     return this.authorizeAt(input, requiredClockNow(this.clock));
+  }
+
+  /**
+   * Compile one readable mandate to the existing immutable permission set,
+   * grant and optional delegation records in one authority revision. No
+   * mandate table exists: inspectMandate projects those authoritative rows.
+   */
+  async issueMandate(input: {
+    intent: MandateIntentValue;
+    context: AuthorityMutationContext;
+  }): Promise<{ mutation: AuthorityMutationResult; mandate: MandateViewValue }> {
+    const compiled = compileMandate(input.intent);
+    const { intent, permissionSet, subjectGrant, actorGrant, delegation } = compiled;
+    if (input.context.actorPrincipalId !== intent.grantorPrincipalId) {
+      throw new AuthorityStoreError("revision_conflict", "authenticated mutation actor must be the mandate grantor");
+    }
+    const mutation = await this.workspaceMutation({
+      workspaceId: intent.workspaceId,
+      operation: "mandate.issue",
+      targetType: "mandate_projection",
+      targetId: intent.id,
+      context: input.context,
+      request: intent,
+      apply: async (transaction) => {
+        await transaction.execute({
+          sql: `INSERT INTO permission_set(
+                  workspace_id, uri, version, implementation_digest, actions_json, status, revision
+                ) VALUES (?, ?, ?, ?, ?, 'active', 1)`,
+          args: [intent.workspaceId, permissionSet.uri, permissionSet.version,
+            permissionSet.implementationDigest, portableJson(permissionSet.actions)],
+        });
+        const insertGrant = async (grant: AuthorizationGrantValue) => transaction.execute({
+          sql: `INSERT INTO authorization_grant(
+                  workspace_id, id, grantor_principal_id, grantee_principal_id,
+                  permission_uri, permission_version, permission_digest, scope_json,
+                  not_before, expires_at, status, revision
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          args: [grant.workspaceId, grant.id, grant.grantorPrincipalId, grant.granteePrincipalId,
+            grant.permissionSet.uri, grant.permissionSet.version, grant.permissionSet.implementationDigest,
+            portableJson(grant.scope), grant.notBefore, grant.expiresAt, grant.status, grant.revision],
+        });
+        await insertGrant(subjectGrant);
+        if (actorGrant) await insertGrant(actorGrant);
+        if (delegation) {
+          await transaction.execute({
+            sql: `INSERT INTO authority_delegation(
+                    workspace_id, id, subject_principal_id, actor_principal_id, actions_json,
+                    scope_json, not_before, expires_at, status, revision
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [delegation.workspaceId, delegation.id, delegation.subjectPrincipalId,
+              delegation.actorPrincipalId, portableJson(delegation.actions), portableJson(delegation.scope),
+              delegation.notBefore, delegation.expiresAt, delegation.status, delegation.revision],
+          });
+        }
+      },
+    });
+    return { mutation, mandate: await this.inspectMandate({ workspaceId: intent.workspaceId, mandateId: intent.id }) };
+  }
+
+  async inspectMandate(input: { workspaceId: string; mandateId: string }): Promise<MandateViewValue> {
+    const workspaceId = WorkspaceId.parse(input.workspaceId);
+    const mandateId = Id.parse(input.mandateId);
+    const ids = mandateRecordIds(workspaceId, mandateId);
+    const subjectResult = await this.client.execute({
+      sql: `SELECT g.*, p.actions_json, p.status AS permission_status, p.revision AS permission_revision
+            FROM authorization_grant g
+            JOIN permission_set p ON p.workspace_id = g.workspace_id
+              AND p.uri = g.permission_uri AND p.version = g.permission_version
+            WHERE g.workspace_id = ? AND g.id = ?`,
+      args: [workspaceId, ids.subjectGrantId],
+    });
+    const subjectRow = subjectResult.rows[0] as Record<string, unknown> | undefined;
+    if (!subjectRow) throw new AuthorityStoreError("not_found", `mandate ${mandateId} does not exist`);
+    if (text(subjectRow, "permission_uri") !== ids.permissionUri || text(subjectRow, "permission_status") !== "active") {
+      throw new AuthorityStoreError("authority_corrupt", "mandate permission projection is inconsistent");
+    }
+    const actorResult = await this.client.execute({
+      sql: "SELECT * FROM authorization_grant WHERE workspace_id = ? AND id = ?",
+      args: [workspaceId, ids.actorGrantId],
+    });
+    const delegationResult = await this.client.execute({
+      sql: "SELECT * FROM authority_delegation WHERE workspace_id = ? AND id = ?",
+      args: [workspaceId, ids.delegationId],
+    });
+    const actorRow = actorResult.rows[0] as Record<string, unknown> | undefined;
+    const delegationRow = delegationResult.rows[0] as Record<string, unknown> | undefined;
+    if ((actorRow === undefined) !== (delegationRow === undefined)) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate actor grant and delegation must coexist");
+    }
+    if (actorRow && delegationRow) {
+      if (text(actorRow, "grantee_principal_id") !== text(delegationRow, "actor_principal_id") ||
+          text(subjectRow, "grantee_principal_id") !== text(delegationRow, "subject_principal_id") ||
+          portableJson(json(actorRow, "scope_json")) !== portableJson(json(delegationRow, "scope_json")) ||
+          portableJson(json(subjectRow, "actions_json")) !== portableJson(json(delegationRow, "actions_json"))) {
+        throw new AuthorityStoreError("authority_corrupt", "mandate delegation differs from its grants");
+      }
+    }
+    const statuses = [text(subjectRow, "status")];
+    if (actorRow) statuses.push(text(actorRow, "status"));
+    if (delegationRow) statuses.push(text(delegationRow, "status"));
+    if (!statuses.every((status) => status === statuses[0])) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate component lifecycle diverged");
+    }
+    const revisions = [integer(subjectRow, "revision")];
+    if (actorRow) revisions.push(integer(actorRow, "revision"));
+    if (delegationRow) revisions.push(integer(delegationRow, "revision"));
+    if (!revisions.every((revision) => revision === revisions[0])) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate component revisions diverged");
+    }
+    const intent = MandateIntent.parse({
+      contractVersion: "tasq.mandate-intent.v1",
+      id: mandateId,
+      workspaceId,
+      grantorPrincipalId: text(subjectRow, "grantor_principal_id"),
+      subjectPrincipalId: text(subjectRow, "grantee_principal_id"),
+      actorPrincipalId: actorRow ? text(actorRow, "grantee_principal_id") : null,
+      actions: json(subjectRow, "actions_json"),
+      target: json(subjectRow, "scope_json"),
+      notBefore: nullableInteger(subjectRow, "not_before"),
+      expiresAt: nullableInteger(subjectRow, "expires_at"),
+      constraints: { maxOperations: null, budget: null },
+    });
+    const compiled = compileMandate(intent);
+    if (compiled.permissionSet.implementationDigest !== text(subjectRow, "permission_digest")) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate permission digest is inconsistent");
+    }
+    const grantFromRow = (row: Record<string, unknown>) => AuthorizationGrant.parse({
+      contractVersion: "tasq.authorization-grant.v1",
+      id: text(row, "id"),
+      workspaceId: text(row, "workspace_id"),
+      grantorPrincipalId: text(row, "grantor_principal_id"),
+      granteePrincipalId: text(row, "grantee_principal_id"),
+      permissionSet: {
+        uri: text(row, "permission_uri"), version: integer(row, "permission_version"),
+        implementationDigest: text(row, "permission_digest"),
+      },
+      scope: json(row, "scope_json"),
+      notBefore: nullableInteger(row, "not_before"), expiresAt: nullableInteger(row, "expires_at"),
+      status: text(row, "status"), revision: integer(row, "revision"),
+    });
+    const expectedStatus = statuses[0] as "active" | "revoked";
+    const expectedRevision = revisions[0]!;
+    const lifecycle = <T extends { status: "active" | "revoked"; revision: number }>(value: T): T =>
+      ({ ...value, status: expectedStatus, revision: expectedRevision });
+    if (digestAuthorityValue(grantFromRow(subjectRow)) !==
+        digestAuthorityValue(lifecycle(compiled.subjectGrant))) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate subject grant differs from compiled intent");
+    }
+    if (actorRow && compiled.actorGrant &&
+        digestAuthorityValue(grantFromRow(actorRow)) !== digestAuthorityValue(lifecycle(compiled.actorGrant))) {
+      throw new AuthorityStoreError("authority_corrupt", "mandate actor grant differs from compiled intent");
+    }
+    if (delegationRow && compiled.delegation) {
+      const storedDelegation = Delegation.parse({
+        contractVersion: "tasq.delegation.v1",
+        id: text(delegationRow, "id"), workspaceId: text(delegationRow, "workspace_id"),
+        subjectPrincipalId: text(delegationRow, "subject_principal_id"),
+        actorPrincipalId: text(delegationRow, "actor_principal_id"), actions: json(delegationRow, "actions_json"),
+        scope: json(delegationRow, "scope_json"), notBefore: nullableInteger(delegationRow, "not_before"),
+        expiresAt: nullableInteger(delegationRow, "expires_at"), status: text(delegationRow, "status"),
+        revision: integer(delegationRow, "revision"),
+      });
+      if (digestAuthorityValue(storedDelegation) !== digestAuthorityValue(lifecycle(compiled.delegation))) {
+        throw new AuthorityStoreError("authority_corrupt", "mandate delegation differs from compiled intent");
+      }
+    }
+    const workspace = await this.getWorkspaceAuthorityState(workspaceId);
+    if (!workspace) throw new AuthorityStoreError("authority_corrupt", "mandate workspace disappeared");
+    return MandateView.parse({
+      contractVersion: "tasq.mandate-view.v1",
+      intent,
+      status: statuses[0],
+      revision: revisions[0],
+      authorityRevision: workspace.authorityRevision,
+      compiledRecordIds: {
+        permissionUri: ids.permissionUri,
+        subjectGrantId: ids.subjectGrantId,
+        actorGrantId: actorRow ? ids.actorGrantId : null,
+        delegationId: delegationRow ? ids.delegationId : null,
+      },
+      assurance: {
+        secondAuthorityRecordCreated: false,
+        genericUsageLimitEnforced: false,
+        genericBudgetEnforced: false,
+        remoteEffectDispatchEnabled: false,
+      },
+    });
+  }
+
+  async revokeMandate(input: {
+    workspaceId: string;
+    mandateId: string;
+    expectedMandateRevision: number;
+    context: AuthorityMutationContext;
+  }): Promise<{ mutation: AuthorityMutationResult; mandate: MandateViewValue }> {
+    const before = await this.inspectMandate(input);
+    if (input.context.actorPrincipalId !== before.intent.grantorPrincipalId) {
+      throw new AuthorityStoreError("revision_conflict", "authenticated mutation actor must be the mandate grantor");
+    }
+    if (before.revision !== input.expectedMandateRevision || before.status !== "active") {
+      throw new AuthorityStoreError("revision_conflict", "mandate revision changed");
+    }
+    const ids = mandateRecordIds(input.workspaceId, input.mandateId);
+    const mutation = await this.workspaceMutation({
+      workspaceId: input.workspaceId,
+      operation: "mandate.revoke",
+      targetType: "mandate_projection",
+      targetId: input.mandateId,
+      context: input.context,
+      request: { expectedMandateRevision: input.expectedMandateRevision },
+      apply: async (transaction) => {
+        const revoke = async (table: "authorization_grant" | "authority_delegation", id: string) => {
+          const result = await transaction.execute({
+            sql: `UPDATE ${table} SET status = 'revoked', revision = revision + 1
+                  WHERE workspace_id = ? AND id = ? AND status = 'active' AND revision = ?`,
+            args: [input.workspaceId, id, input.expectedMandateRevision],
+          });
+          if (result.rowsAffected !== 1) throw new AuthorityStoreError("revision_conflict", "mandate revision changed");
+        };
+        await revoke("authorization_grant", ids.subjectGrantId);
+        if (before.compiledRecordIds.actorGrantId) await revoke("authorization_grant", ids.actorGrantId);
+        if (before.compiledRecordIds.delegationId) await revoke("authority_delegation", ids.delegationId);
+      },
+    });
+    return { mutation, mandate: await this.inspectMandate({ workspaceId: input.workspaceId, mandateId: input.mandateId }) };
+  }
+
+  /** Return a privacy-bounded explanation; protected target IDs never leave this interface. */
+  async authorizeMandate(input: WorkspaceAuthorizationInput & { mandateId: string }): Promise<MandateDecision> {
+    const now = requiredClockNow(this.clock);
+    const base = {
+      mandateId: input.mandateId,
+      requestId: input.requestId,
+      actionUri: input.action.uri,
+      resource: input.resource,
+      evaluatedAt: now,
+    };
+    if (input.action.uri === "urn:tasq:action:effect.dispatch") {
+      return protectedMandateDecision({ ...base, decision: "deny", reasonCode: "remote_effect_dispatch_disabled" });
+    }
+    let mandate: MandateViewValue;
+    try {
+      mandate = await this.inspectMandate({ workspaceId: input.workspaceId, mandateId: input.mandateId });
+    } catch (error) {
+      if (error instanceof AuthorityStoreError && error.code === "not_found") {
+        return protectedMandateDecision({ ...base, decision: "deny", reasonCode: "mandate_not_found" });
+      }
+      throw error;
+    }
+    if (mandate.status !== "active") {
+      return protectedMandateDecision({ ...base, decision: "deny", reasonCode: "mandate_revoked",
+        authorityRevision: mandate.authorityRevision });
+    }
+    if (!mandate.intent.actions.some((action) => action.uri === input.action.uri &&
+        action.version === input.action.version && action.implementationDigest === input.action.implementationDigest)) {
+      return protectedMandateDecision({ ...base, decision: "deny", reasonCode: "mandate_action_denied",
+        authorityRevision: mandate.authorityRevision });
+    }
+    if (mandate.intent.target.kind === "exact" &&
+        (mandate.intent.target.resource.kind !== input.resource.kind || mandate.intent.target.resource.id !== input.resource.id)) {
+      return protectedMandateDecision({ ...base, decision: "deny", reasonCode: "mandate_target_denied",
+        authorityRevision: mandate.authorityRevision });
+    }
+    const authorization = await this.authorizeAt(input, now);
+    // The reference authorizer deterministically reports one supporting grant
+    // per principal. Another equivalent live grant can sort first; the exact
+    // active mandate projected above still independently covers this request.
+    const supportsMandate = authorization.decision.decision === "allow";
+    return protectedMandateDecision({
+      ...base,
+      decision: supportsMandate ? "allow" : "deny",
+      reasonCode: supportsMandate ? "allowed" : authorization.decision.decision === "deny"
+        ? authorization.decision.reasonCode : "mandate_not_supporting_decision",
+      authorityDecision: authorization.decision,
+      authorityRevision: authorization.authorityRevision,
+    });
   }
 
   /** Trusted composition seam for one request-wide injected clock snapshot. */

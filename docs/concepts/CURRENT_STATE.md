@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-07-31
+**Updated:** 2026-08-10
 
 Tasq currently ships source for two local product shapes:
 
@@ -24,8 +24,9 @@ and effect services and composes atomic claim/start and outcome-submission
 journeys. Nested services reuse one root writer transaction and defer external
 audit mirroring until commit, so late failure leaves no partial rows or phantom
 journal events. This is source-certified for Node and Bun candidate packages;
-it does not yet claim agreement, qualification, mandate, settlement, custody
-or remote provider execution.
+it does not yet claim agreement, settlement, custody or remote provider
+execution. TQ-625 adds embedded provider-neutral attestations. TQ-626 adds a
+private Server Mandates Module as described below.
 
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
@@ -46,6 +47,12 @@ permission definitions, live grants/delegations/eligibility, idempotency,
 decisions and append-only security audit in a separate authority database.
 Its router resolves only a host-configured opaque storage binding after an
 allow, so a denied foreign-workspace probe invokes no domain-ledger opener.
+TQ-626 composes a readable mandate interface over this same authority store.
+Issue and revoke atomically create or transition existing permission, grant and
+delegation rows; inspection is a checked projection and authorization re-enters
+the live TQ-802 evaluator. There is no mandate table. Generic use limits and
+budgets fail with typed unsupported results until an enforcing ledger exists,
+and remote effect dispatch remains disabled through TQ-906.
 TQ-803 wraps that boundary in a Fetch-compatible authenticated read handler.
 It publishes RFC 9728 discovery, accepts identity only from a host-supplied
 credential verifier, authorizes every request live, supports bounded

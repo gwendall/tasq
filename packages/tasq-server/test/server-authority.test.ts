@@ -23,6 +23,8 @@ import {
   SIGNING_CREDENTIAL_MIGRATION_NAME,
   AuthorityStoreError,
   IsolatedWorkspaceRouter,
+  MandateCompileError,
+  compileMandate,
   openAuthorityStore,
   type AuthorityMutationContext,
   type AuthorityStore,
@@ -557,5 +559,167 @@ describe("TQ-802 durable delegation, audit and corruption boundaries", () => {
       .map((name) => readFileSync(resolve(src, name), "utf8")).join("\n");
     expect(source).not.toMatch(/\bDate\.now\s*\(|\bnew\s+Date\s*\(|performance\.now|process\.hrtime/);
     expect(source).not.toMatch(/Bun\.serve|createServer|node:http|node:https|fetch\s*\(/);
+  });
+});
+
+describe("TQ-626 mandate compiler and live authority projection", () => {
+  function intent(input: {
+    id?: string;
+    action: ActionDefinition;
+    actorPrincipalId?: string | null;
+    targetId?: string;
+  }) {
+    return {
+      contractVersion: "tasq.mandate-intent.v1" as const,
+      id: input.id ?? "read-one",
+      workspaceId: "alpha",
+      grantorPrincipalId: "admin",
+      subjectPrincipalId: "human",
+      actorPrincipalId: input.actorPrincipalId ?? null,
+      actions: [actionIdentity(input.action)],
+      target: { kind: "exact" as const, resource: { kind: "commitment" as const, id: input.targetId ?? "protected-target" } },
+      notBefore: NOW - 100,
+      expiresAt: NOW + 5_000,
+      constraints: { maxOperations: null, budget: null },
+    };
+  }
+
+  test("issues and inspects a readable projection without a mandate table, then revokes the next request", async () => {
+    const f = await fixture();
+    const alpha = await bootstrapWorkspace({ fixture: f, action: action("commitment.propose") });
+    const read = action("commitment.read");
+    const issued = await f.store.issueMandate({
+      intent: intent({ action: read }),
+      context: context(alpha.revision),
+    });
+    expect(issued.mandate).toMatchObject({
+      status: "active",
+      revision: 1,
+      assurance: {
+        secondAuthorityRecordCreated: false,
+        genericUsageLimitEnforced: false,
+        genericBudgetEnforced: false,
+        remoteEffectDispatchEnabled: false,
+      },
+    });
+    expect(issued.mutation.authorityRevision).toBe(alpha.revision + 1);
+    const client = createClient({ url: `file:${f.path}` });
+    const tables = await client.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE '%mandate%'");
+    expect(tables.rows).toHaveLength(0);
+    client.close();
+
+    const request = {
+      mandateId: "read-one",
+      requestId: "mandate-before-revoke",
+      workspaceId: "alpha",
+      serviceAudience: AUDIENCE,
+      action: actionIdentity(read),
+      resource: { kind: "commitment" as const, id: "protected-target" },
+      identity: identity({ subject: alpha.subject, actions: [read] }),
+    };
+    const allowed = await f.store.authorizeMandate(request);
+    expect(allowed).toMatchObject({ decision: "allow", reasonCode: "allowed" });
+    expect(JSON.stringify(allowed)).not.toContain("protected-target");
+    const wrongTarget = await f.store.authorizeMandate({
+      ...request,
+      requestId: "mandate-wrong-target",
+      resource: { kind: "commitment", id: "other-protected-target" },
+    });
+    expect(wrongTarget).toMatchObject({ decision: "deny", reasonCode: "mandate_target_denied" });
+    expect(JSON.stringify(wrongTarget)).not.toContain("other-protected-target");
+
+    const revoked = await f.store.revokeMandate({
+      workspaceId: "alpha",
+      mandateId: "read-one",
+      expectedMandateRevision: 1,
+      context: context(alpha.revision + 1),
+    });
+    expect(revoked.mandate).toMatchObject({ status: "revoked", revision: 2 });
+    const denied = await f.store.authorizeMandate({ ...request, requestId: "mandate-after-revoke" });
+    expect(denied).toMatchObject({ decision: "deny", reasonCode: "mandate_revoked" });
+    expect(JSON.stringify(denied)).not.toContain("protected-target");
+    await f.store.close();
+  });
+
+  test("compiles delegated action to both grants plus one exact delegation", async () => {
+    const f = await fixture();
+    const alpha = await bootstrapWorkspace({ fixture: f, action: action("commitment.propose") });
+    const execute = action("attempt.execute");
+    let revision = alpha.revision;
+    await f.store.registerPrincipal({ principal: principal("alpha", "agent", "agent"), context: context(revision++) });
+    await f.store.bindSubject({
+      binding: binding({ workspaceId: "alpha", id: "binding-agent", principalId: "agent", issuer: ISSUER_B, subject: "subject-agent" }),
+      context: context(revision++),
+    });
+    const issued = await f.store.issueMandate({
+      intent: intent({ id: "execute-one", action: execute, actorPrincipalId: "agent" }),
+      context: context(revision++),
+    });
+    expect(issued.mandate.compiledRecordIds).toMatchObject({
+      subjectGrantId: "mandate:execute-one:subject",
+      actorGrantId: "mandate:execute-one:actor",
+      delegationId: "mandate:execute-one:delegation",
+    });
+    const decision = await f.store.authorizeMandate({
+      mandateId: "execute-one",
+      requestId: "delegated-mandate",
+      workspaceId: "alpha",
+      serviceAudience: AUDIENCE,
+      action: actionIdentity(execute),
+      resource: { kind: "commitment", id: "protected-target" },
+      identity: identity({
+        subject: alpha.subject,
+        actions: [execute],
+        actor: { issuer: ISSUER_B, subject: "subject-agent" },
+        binding: { kind: "dpop", keyThumbprintDigest: sha("4") },
+      }),
+    });
+    expect(decision).toMatchObject({ decision: "allow", reasonCode: "allowed" });
+    await f.store.close();
+  });
+
+  test("returns typed compile denials instead of claiming unenforced limits or remote dispatch", () => {
+    const readIntent = intent({ action: action("commitment.read") });
+    expect(() => compileMandate({
+      ...readIntent,
+      constraints: { maxOperations: 1, budget: null },
+    })).toThrow(new MandateCompileError("generic_usage_limit_unsupported", "generic use counters are not enforced by authority v1"));
+    expect(() => compileMandate({
+      ...readIntent,
+      constraints: { maxOperations: null, budget: { currency: "EUR", maxAmountMinor: 1_000 } },
+    })).toThrow(expect.objectContaining({ code: "generic_budget_unsupported" }));
+    expect(() => compileMandate({
+      ...readIntent,
+      actions: [actionIdentity(action("effect.dispatch"))],
+      target: { kind: "exact", resource: { kind: "effect", id: "effect-one" } },
+    })).toThrow(expect.objectContaining({ code: "remote_effect_dispatch_disabled" }));
+  });
+
+  test("does not let a mutation caller name another principal as grantor", async () => {
+    const f = await fixture();
+    const alpha = await bootstrapWorkspace({ fixture: f, action: action("commitment.propose") });
+    const spoofed = context(alpha.revision);
+    spoofed.actorPrincipalId = "human";
+    await expect(f.store.issueMandate({
+      intent: intent({ action: action("commitment.read") }),
+      context: spoofed,
+    })).rejects.toMatchObject({ code: "revision_conflict" });
+    expect(await f.store.getWorkspaceAuthorityRevision("alpha")).toBe(alpha.revision);
+    await f.store.close();
+  });
+
+  test("serializes concurrent revocation so exactly one authority revision wins", async () => {
+    const f = await fixture();
+    const alpha = await bootstrapWorkspace({ fixture: f, action: action("commitment.propose") });
+    await f.store.issueMandate({ intent: intent({ action: action("commitment.read") }), context: context(alpha.revision) });
+    const revision = alpha.revision + 1;
+    const outcomes = await Promise.allSettled([
+      f.store.revokeMandate({ workspaceId: "alpha", mandateId: "read-one", expectedMandateRevision: 1, context: context(revision) }),
+      f.store.revokeMandate({ workspaceId: "alpha", mandateId: "read-one", expectedMandateRevision: 1, context: context(revision) }),
+    ]);
+    expect(outcomes.filter(({ status }) => status === "fulfilled")).toHaveLength(1);
+    expect(outcomes.filter(({ status }) => status === "rejected")).toHaveLength(1);
+    expect(await f.store.getWorkspaceAuthorityRevision("alpha")).toBe(revision + 1);
+    await f.store.close();
   });
 });

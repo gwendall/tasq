@@ -484,11 +484,13 @@ publication sequence and create no current support claim.
   authority separate; a pinned custom binder authenticates the issuer and
   exact bytes without upgrading those assurances. Licence, access, provenance,
   hostile workspace, temporal and portable-restore tests pass.
-- **TQ-626 — pending:** add a Mandates Module whose small Interface issues,
-  inspects and revokes bounded intent by compiling to existing grants,
-  delegations, scopes and approvals. It must explain typed denial and immediate
-  revocation without creating a second authority record; remote effects stay
-  disabled through TQ-906.
+- **TQ-626 — done:** ADR-014 and the private Server Mandates Module freeze
+  issue, inspect, authorize and revoke over a checked projection of existing
+  permission, grant and delegation rows. Issue/revoke are one CAS-serialized
+  authority mutation; the next request sees revocation. Denials expose only a
+  protected target digest. Generic limits and budgets fail typed rather than
+  pretending enforcement, effect limits stay in approval policy, and remote
+  dispatch remains disabled through TQ-906.
 - **TQ-627 — pending:** add an Agreements Module for exact-term offer,
   acceptance, withdrawal, expiry and superseding amendment. Party acceptances
   bind the same canonical digest and compile transactionally to reciprocal

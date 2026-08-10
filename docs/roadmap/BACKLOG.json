@@ -894,16 +894,17 @@
     },
     {
       "id": "TQ-626",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-624", "TQ-802"],
       "outcome": "Expose a Mandates Module that compiles bounded readable intent into existing grants, delegations, scopes and approval policy and explains the effective live decision without creating a second authority truth",
-      "remaining": [
-        "freeze_issue_inspect_authorize_and_revoke_interface",
-        "compile_action_target_time_limit_and_budget_intent_to_existing_authority",
-        "return_typed_denial_basis_without_leaking_protected_target_data",
-        "prove_next_request_revocation_and_concurrent_mutation_serialization",
-        "keep_remote_effect_dispatch_disabled_until_tq_906"
+      "remaining": [],
+      "evidence": [
+        "docs/decisions/ADR-014_MANDATES_COMPILE_TO_AUTHORITY.md",
+        "docs/contracts/TQ-626_MANDATES.md",
+        "packages/tasq-server/src/mandates.ts",
+        "packages/tasq-server/src/store.ts",
+        "packages/tasq-server/test/server-authority.test.ts"
       ]
     },
     {

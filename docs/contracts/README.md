@@ -24,6 +24,8 @@ Signed-statement integration and hostile source evidence:
 and [`TQ-616_SIGNED_STATEMENT_CERTIFICATION.md`](TQ-616_SIGNED_STATEMENT_CERTIFICATION.md).
 Provider-neutral attestation lifecycle and eligibility semantics:
 [`TQ-625_ATTESTATIONS.md`](TQ-625_ATTESTATIONS.md).
+Readable mandates compiled to existing live authority:
+[`TQ-626_MANDATES.md`](TQ-626_MANDATES.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).

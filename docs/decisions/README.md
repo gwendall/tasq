@@ -17,5 +17,6 @@ boundary; they are not required for a first product evaluation.
 | [`ADR-011`](ADR-011_TARGET_REFERENCE_AND_BINDINGS.md) | Portable external-target identity and deterministic bindings into existing records |
 | [`ADR-012`](ADR-012_TRUSTED_STATEMENT_BINDER_REGISTRY.md) | Open signed-purpose descriptors paired with trusted host binder implementations |
 | [`ADR-013`](ADR-013_ATTESTATION_TRUST_AND_ELIGIBILITY.md) | Provider-neutral assertions, append-only revocation, temporal eligibility and trust separation |
+| [`ADR-014`](ADR-014_MANDATES_COMPILE_TO_AUTHORITY.md) | Readable mandates compile to existing grants and delegations without a second authority truth |
 | [`ADR-UK-006`](ADR-UK-006_COLLABORATION_RECORDS.md) | Universal collaboration records |
 | [`ADR-UK-EXT`](ADR-UK-EXT_EXTENSION_REGISTRY.md) | Extension identity, registry, and trust |
