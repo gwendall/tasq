@@ -875,6 +875,72 @@
       "status": "pending",
       "milestone": "autonomous-direction",
       "outcome": "A sourced public comparison of what happens when several agents work the same backlog in parallel, every claim carrying its source"
+    },
+    {
+      "id": "TQ-622",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Freeze the delegated-action conformance model and one provider-neutral target-reference and binding contract, or record an explicit no-new-record decision after comparing alternatives"
+    },
+    {
+      "id": "TQ-623",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Deepen the embedded Interface so callers can use existing assignments, artifacts, external references and effects plus atomic claim/start and submit-outcome journeys without coordinating internal rows"
+    },
+    {
+      "id": "TQ-624",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Replace the closed signed-statement binding list with a trusted versioned binder registry that can add exact agreement, attestation, mandate and custody purposes without weakening typed target checks"
+    },
+    {
+      "id": "TQ-625",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Add a provider-neutral Attestations Module with issuer, subject, purpose, scope, validity, evidence and append-only revocation while keeping eligibility decisions and authority separate"
+    },
+    {
+      "id": "TQ-626",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Expose a Mandates Module that compiles bounded readable intent into existing grants, delegations, scopes and approval policy and explains the effective live decision without creating a second authority truth"
+    },
+    {
+      "id": "TQ-627",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Add an Agreements Module for exact-term offer, party acceptance, withdrawal, expiry and superseding amendment that transactionally compiles accepted terms into reciprocal commitments and resolution policies"
+    },
+    {
+      "id": "TQ-628",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Add versioned Settlement and Recourse Modules that derive reciprocal obligations from exact agreement, attempt and resolution facts and compile them into commitments or effects without rewriting completion"
+    },
+    {
+      "id": "TQ-629",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Build one reference delegated-action Runner and Review Inbox that own timers, outbox consumption, connector dispatch, indeterminate reconciliation, recourse materialization and attention projection without moving runtime state into Core"
+    },
+    {
+      "id": "TQ-630",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Add Evidence Capture and Outcome Bundle Modules that bind immutable uploads, provenance, redaction and retention metadata and export a content-addressed resolution packet without creating a second truth"
+    },
+    {
+      "id": "TQ-631",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Prototype Custody as an experimental first-class Module with single-current-custodian strategy, atomic accepted handoff, condition evidence and append-only incident lineage before any Kernel admission claim"
+    },
+    {
+      "id": "TQ-632",
+      "status": "pending",
+      "milestone": "delegated-action",
+      "outcome": "Certify the same delegated-action Interfaces across physical verification, remote hands, software deployment, procurement, custody and compromised-agent scenarios, then publish only the honestly supported Profile claims"
     }
   ],
   "sourceContracts": [
@@ -886,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "6f66f112be360e92222f765d75d3571f64f2e576bda92297054ed1798b35c5f5"
+      "sha256": "f78f5bfb7620af2a2720d34a655844147b4f59b115c7d531be3589f43a373255"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

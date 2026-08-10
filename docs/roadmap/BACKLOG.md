@@ -5,7 +5,7 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-08-05
+**Updated:** 2026-08-10
 
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** publish the maintainer-authorized `v0.4.0` public alpha:
@@ -449,6 +449,65 @@ reaching $4,200 and $47,000 motivate the cost bound.
   question that separates coordination tools - what happens when several
   agents work the same backlog in parallel - with every claim carrying its
   source and no claim exceeding what the shipped product does.
+
+### 7D. Coordinate delegated action without verticalizing Core
+
+[`DELEGATED_ACTION.md`](../concepts/DELEGATED_ACTION.md) defines the
+first-principles composition for consequential work entrusted to another
+human, agent, service or runtime. Physical work is the initial stress test, not
+a new task kind. These items do not interrupt the authorized `v0.4.0`
+publication sequence and create no current support claim.
+
+- **TQ-622 — pending:** freeze the delegated-action conformance model and
+  compare at least two designs for a provider-neutral target reference and its
+  bindings. Map `external_ref`, condition/observation subject refs, authority
+  `ResourceRef` and opaque resource keys without dual truth. No schema work
+  begins before an explicit Kernel, shared-Module or value-contract decision.
+- **TQ-623 — pending:** deepen the embedded Interface over records that already
+  exist: assignments, artifacts, external references and effects, plus atomic
+  claim-and-start and submit-outcome journeys. Lost-response, restart,
+  idempotency, revision, fence and audit tests must pass while simple
+  `add -> list -> done` remains unchanged.
+- **TQ-624 — pending:** replace the closed signed-statement binding list with a
+  trusted versioned binder registry. Agreement, attestation, mandate and
+  custody purposes must be addable without central-enum edits or weaker exact
+  subject, digest, authority and workspace checks; the six existing binders
+  migrate without semantic drift.
+- **TQ-625 — pending:** add a provider-neutral Attestations Module with issuer,
+  subject, purpose, scope, validity, evidence, supersession and append-only
+  revocation. Eligibility remains a policy decision; a valid signature proves
+  neither truth, availability nor authority.
+- **TQ-626 — pending:** add a Mandates Module whose small Interface issues,
+  inspects and revokes bounded intent by compiling to existing grants,
+  delegations, scopes and approvals. It must explain typed denial and immediate
+  revocation without creating a second authority record; remote effects stay
+  disabled through TQ-906.
+- **TQ-627 — pending:** add an Agreements Module for exact-term offer,
+  acceptance, withdrawal, expiry and superseding amendment. Party acceptances
+  bind the same canonical digest and compile transactionally to reciprocal
+  commitments and resolution policies; assignment acceptance remains separate.
+- **TQ-628 — pending:** add Settlement and Recourse Modules. Versioned policy
+  derives full, partial, show-up, cancellation, rework, credit or indeterminate
+  entitlements from exact agreement, attempt and resolution facts, then creates
+  commitments or effects without rewriting completion or claiming escrow.
+- **TQ-629 — pending:** build one reference delegated-action Runner and Review
+  Inbox. They own timers, outbox/cursor recovery, connector dispatch,
+  lookup-before-retry, recourse materialization and attention projection while
+  Core continues not to own runtime state or provider credentials.
+- **TQ-630 — pending:** add Evidence Capture and Outcome Bundle Modules for
+  immutable upload binding, provenance, redaction, retention and omission
+  disclosure. The bundle is a content-addressed projection of exact records,
+  not a second state model or proof of truth.
+- **TQ-631 — pending:** prototype Custody behind an experimental first-class
+  Module Interface. Compare lease, signed-observation and handoff designs;
+  prevent two accepted successors from one custody state; pass parcel,
+  equipment and cryptographic-control scenarios before deciding whether the
+  concept graduates, changes or is rejected.
+- **TQ-632 — pending:** certify the same Interfaces across physical
+  verification, remote hands, software deployment, procurement, custody and a
+  compromised agent. Only after those black-box, restart, portable-data and
+  hostile tests pass may Tasq publish a physical-verification reference Profile
+  or change current support truth.
 
 ### 8. Build managed Tasq Cloud
 

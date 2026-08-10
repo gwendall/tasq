@@ -2,11 +2,13 @@
 
 **Status:** accepted clarification of the existing universal-kernel boundary
 
-**Updated:** 2026-07-23
+**Updated:** 2026-08-10
 
 **Language:** [`CONTEXT.md`](CONTEXT.md)
 
 **Normative kernel contract:** [`UNIVERSAL_KERNEL_SPEC.md`](UNIVERSAL_KERNEL_SPEC.md)
+
+**Delegated-action composition:** [`DELEGATED_ACTION.md`](DELEGATED_ACTION.md)
 
 ## 1. Decision
 
@@ -94,6 +96,12 @@ because their invariants, lifetimes and authority differ.
 | Visibility and permission | authenticated workspace authority | Server composition | Local attribution plus repository-certified Server source candidate; no published endpoint |
 | Reminder and notification | delivery/runtime behavior | Runtime/connector | Deliberately outside kernel |
 | Conversation and memory | external context references | Runtime/external system | Tasq stores pointers, not bodies |
+| External target identity | target reference + explicit binding | Kernel/Module seam under evaluation | TQ-622 pending; current identities remain authoritative |
+| Delegated authority envelope | grants + delegation + approval compiled as a mandate | Authority Module | TQ-626 pending; no second authority record |
+| Exact multi-party terms | agreement compiling reciprocal commitments | Shared Module | TQ-627 pending; assignment remains responsibility only |
+| Purpose-scoped qualification claims | attestation + eligibility policy | Trust Module | TQ-625 pending |
+| Entitlement after resolution | settlement decision + effects | Shared Module/policy seam | TQ-628 pending; completion remains separate |
+| Possession and handoff | custody lineage | Experimental Module | TQ-631 pending; not admitted to Kernel |
 
 ## 4. Time is several different concepts
 
@@ -358,6 +366,13 @@ The product therefore needs both:
 - **small composable primitives** for correctness and portability;
 - **deep journey modules** for humans and agents to use them without learning
   the implementation graph.
+
+Consequential delegated work adds authority, target identity, exact accepted
+terms, eligibility, settlement, recourse and sometimes custody to this
+composition. Their first-principles model, rejected shortcuts and admission
+gates are defined in [`DELEGATED_ACTION.md`](DELEGATED_ACTION.md). That
+direction adds shared Modules and Profiles without making physical work,
+marketplace policy or provider routing part of the Kernel.
 
 ## 12. Progressive disclosure and simple todo use
 
