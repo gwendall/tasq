@@ -18,6 +18,15 @@ contract. No immutable public Server image, managed Cloud deployment or public
 remote endpoint ships yet.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
+TQ-623 deepens the local embedded Interface without adding Kernel state.
+`createLocalTasq` now exposes existing assignment, artifact, external-reference
+and effect services and composes atomic claim/start and outcome-submission
+journeys. Nested services reuse one root writer transaction and defer external
+audit mirroring until commit, so late failure leaves no partial rows or phantom
+journal events. This is source-certified for Node and Bun candidate packages;
+it does not yet claim agreement, qualification, mandate, settlement, custody
+or remote provider execution.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

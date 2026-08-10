@@ -9,6 +9,7 @@
 import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import { createClient, type Client, type ResultSet } from "@libsql/client";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { schema } from "@tasq-run/schema";
 
 export type TasqDb = LibSQLDatabase<typeof schema>;
@@ -47,6 +48,32 @@ export type TasqDbOrTx = BaseSQLiteDatabase<"async", ResultSet, typeof schema>;
  */
 const txChains = new WeakMap<object, Promise<unknown>>();
 
+type TasqTransaction = Parameters<Parameters<TasqDb["transaction"]>[0]>[0];
+
+interface TransactionScope {
+  root: TasqDb;
+  tx: TasqTransaction;
+  afterCommit: Array<() => void>;
+}
+
+const transactionScopes = new AsyncLocalStorage<TransactionScope>();
+
+/**
+ * Run an observable side effect only after the outermost mutation commits.
+ *
+ * Service modules use this for the forensic event mirror. A composed journey
+ * may call another transactional service with the current transaction handle;
+ * its mirror callback is queued here instead of observing uncommitted rows.
+ */
+export function runAfterCommit(callback: () => void): void {
+  const scope = transactionScopes.getStore();
+  if (scope) {
+    scope.afterCommit.push(callback);
+    return;
+  }
+  callback();
+}
+
 /**
  * Process-global count of mutation transactions that have COMMITTED (one per
  * successful `runInTransaction`). It only ever increases. The CLI's retry
@@ -74,13 +101,15 @@ export function committedMutationCount(): number {
  */
 async function runSerializedTransaction<T>(
   db: TasqDb,
-  fn: (tx: Parameters<Parameters<TasqDb["transaction"]>[0]>[0]) => Promise<T>,
+  fn: (tx: TasqTransaction) => Promise<T>,
   countAsDomainMutation: boolean,
 ): Promise<T> {
   const prior = txChains.get(db) ?? Promise.resolve();
   // Chain onto the prior transaction, swallowing its result/error so our
   // turn always starts cleanly once it has settled.
-  const run = prior.catch(() => {}).then(() => db.transaction(fn));
+  const afterCommit: Array<() => void> = [];
+  const run = prior.catch(() => {}).then(() => db.transaction((tx) =>
+    transactionScopes.run({ root: db, tx, afterCommit }, () => fn(tx))));
   // Keep the chain alive even if `run` rejects — the next caller must still
   // proceed after this one settles.
   txChains.set(db, run.catch(() => {}));
@@ -90,14 +119,17 @@ async function runSerializedTransaction<T>(
   // duplicate user-visible state.
   const result = await run;
   if (countAsDomainMutation) committedMutations++;
+  for (const callback of afterCommit) callback();
   return result;
 }
 
 export async function runInTransaction<T>(
-  db: TasqDb,
-  fn: (tx: Parameters<Parameters<TasqDb["transaction"]>[0]>[0]) => Promise<T>,
+  db: TasqDbOrTx,
+  fn: (tx: TasqTransaction) => Promise<T>,
 ): Promise<T> {
-  return runSerializedTransaction(db, fn, true);
+  const scope = transactionScopes.getStore();
+  if (scope && db === scope.tx) return fn(scope.tx);
+  return runSerializedTransaction(db as TasqDb, fn, true);
 }
 
 /**

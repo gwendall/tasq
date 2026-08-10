@@ -63,6 +63,32 @@ fresh candidate tarballs under both Bun and Node, twice against the same
 ledger. Lower-level exports remain available for trusted integrations that
 need to own transaction composition directly.
 
+Applications that need durable execution can progressively adopt
+`assignments`, `artifacts`, `externalReferences` and `effects`. Two deep
+journeys keep their most failure-prone ordering inside one transaction:
+
+```js
+const execution = await tasq.journeys.claimAndStart({
+  commitmentId,
+  runtime: "worker",
+  idempotencyKey: "execution:42",
+});
+
+const outcome = await tasq.journeys.submitOutcome({
+  commitmentId,
+  attemptId: execution.attempt.id,
+  expectedAttemptRevision: execution.attempt.revision,
+  resolutionContractId,
+  artifacts: [artifact],
+  evidence: [{ evidence, criterionIds: ["criterion-1"] }],
+  idempotencyKey: "outcome:42",
+});
+```
+
+`submitOutcome` succeeds the attempt and proposes completion; it never marks
+the commitment done. Exact-term agreement, mandate, qualification, settlement
+and provider dispatch remain separate Modules and policy boundaries.
+
 ```bash
 pnpm --filter @tasq-run/core test
 pnpm --filter @tasq-run/core typecheck

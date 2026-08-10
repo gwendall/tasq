@@ -273,12 +273,21 @@ export type {
 export { createLocalTasq } from "./local-client.js";
 export type {
   AddLocalEvidenceInput,
+  ClaimAndStartInput,
+  ClaimAndStartResult,
   CreateLocalTasqOptions,
   EventCursorPage,
+  LocalArtifactAppend,
+  LocalAssignmentProposal,
   LocalCommitmentTransitionOptions,
+  LocalEffectProposal,
   LocalEvidenceOptions,
+  LocalExternalRefAppend,
   LocalMutationOptions,
   LocalTasqClient,
+  SubmitOutcomeEvidence,
+  SubmitOutcomeInput,
+  SubmitOutcomeResult,
 } from "./local-client.js";
 
 export {

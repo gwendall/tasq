@@ -19,7 +19,7 @@ import {
   type EntityType,
   type Clock,
 } from "@tasq-run/schema";
-import type { TasqDb, TasqDbOrTx } from "../db.js";
+import { runAfterCommit, type TasqDb, type TasqDbOrTx } from "../db.js";
 import { serviceNow } from "../util/clock.js";
 import { ensureLocalPrincipal, getPrincipal } from "./principals.js";
 
@@ -53,16 +53,18 @@ export function setEventListener(listener: EventListener | null): void {
  * roll back together inside the tx ; the journal mirrors only what landed.
  */
 export function emitAfterCommit(e: EventT): void {
-  if (!eventListener) return;
-  try {
-    eventListener(e);
-  } catch (err) {
-    // Journal failure must never prevent the mutation from being durable
-    // in the DB. Log + continue.
-    process.stderr.write(
-      `tasq: event-journal listener threw — ${err instanceof Error ? err.message : String(err)}\n`,
-    );
-  }
+  runAfterCommit(() => {
+    if (!eventListener) return;
+    try {
+      eventListener(e);
+    } catch (err) {
+      // Journal failure must never prevent the mutation from being durable
+      // in the DB. Log + continue.
+      process.stderr.write(
+        `tasq: event-journal listener threw — ${err instanceof Error ? err.message : String(err)}\n`,
+      );
+    }
+  });
 }
 
 export interface RecordEventOptions {

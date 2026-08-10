@@ -7,6 +7,11 @@
  */
 
 import type {
+  Artifact,
+  ArtifactInsert,
+  Assignment,
+  AssignmentInsert,
+  AssignmentStatus,
   AttemptStatus,
   Clock,
   CompletionChallenge,
@@ -14,10 +19,19 @@ import type {
   CompletionProposal,
   CompletionProposalInsert,
   CompletionResolutionChain,
+  Effect,
+  EffectApproval,
+  EffectApprovalDecision,
+  EffectProposal,
+  EffectReceipt,
+  EffectReceiptInput,
+  EffectStatus,
   EntityType,
   EvidenceTrustAttestationInsert,
   EvidenceTrustRecord,
   Event,
+  ExternalRef,
+  ExternalRefInsert,
   ManualValidationDecisionInsert,
   Metadata,
   ResolutionContract,
@@ -46,7 +60,7 @@ import {
   unblockCommitment,
   updateCommitment,
 } from "./commitments.js";
-import { openDb } from "./db.js";
+import { openDb, runInTransaction, type TasqDb } from "./db.js";
 import { inspectCommitment, type CommitmentInspection } from "./inspection.js";
 import { runMigrations, type MigrationResult } from "./migrations/index.js";
 import {
@@ -71,6 +85,40 @@ import {
   type TransitionAttemptOptions,
 } from "./service/agentic.js";
 import { getEvent, listEvents, type ListEventsOptions } from "./service/events.js";
+import {
+  acceptAssignment,
+  appendArtifact,
+  appendExternalRef,
+  getArtifact,
+  getAssignment,
+  getExternalRef,
+  listArtifacts,
+  listAssignments,
+  listExternalRefs,
+  proposeAssignment,
+  rejectAssignment,
+  releaseAssignment,
+  revokeAssignment,
+} from "./service/collaboration.js";
+import {
+  authorizeEffect,
+  beginEffectExecution,
+  cancelEffect,
+  getEffect,
+  getEffectApproval,
+  getEffectReceipt,
+  getEffectiveEffectApproval,
+  listEffectApprovals,
+  listEffectReceipts,
+  listEffects,
+  proposeEffect,
+  recordEffectApproval,
+  recordEffectReceipt,
+  type BeginEffectExecutionOptions,
+  type BegunEffectExecution,
+  type EffectAuthorityContext,
+  type RecordEffectReceiptOptions,
+} from "./service/effects.js";
 import {
   adjudicateCompletion,
   attestCompletion,
@@ -161,6 +209,53 @@ export interface LocalEvidenceOptions extends LocalMutationOptions {
   occurredAt?: number;
 }
 
+export type LocalAssignmentProposal = Omit<AssignmentInsert, "tenantId" | "assignerPrincipalId">;
+export type LocalArtifactAppend = Omit<ArtifactInsert, "tenantId">;
+export type LocalExternalRefAppend = Omit<ExternalRefInsert, "tenantId">;
+export type LocalEffectProposal = Omit<EffectProposal, "tenantId" | "request"> & {
+  request: Omit<EffectProposal["request"], "workspaceId">;
+};
+
+export interface ClaimAndStartInput {
+  commitmentId: string;
+  leaseMs?: number;
+  claimMetadata?: Metadata;
+  runtime?: string;
+  externalId?: string | null;
+  contextId?: string | null;
+  attemptMetadata?: Metadata;
+  idempotencyKey: string;
+}
+
+export interface ClaimAndStartResult {
+  claim: TaskClaim;
+  attempt: TaskAttempt;
+}
+
+export interface SubmitOutcomeEvidence {
+  evidence: Omit<AddLocalEvidenceInput, "taskId" | "attemptId">;
+  criterionIds: string[];
+}
+
+export interface SubmitOutcomeInput {
+  commitmentId: string;
+  attemptId: string;
+  expectedAttemptRevision: number;
+  resolutionContractId: string;
+  artifacts?: Array<Omit<LocalArtifactAppend, "taskId" | "attemptId">>;
+  evidence: SubmitOutcomeEvidence[];
+  summary?: string | null;
+  attemptMessage?: string | null;
+  idempotencyKey: string;
+}
+
+export interface SubmitOutcomeResult {
+  artifacts: Artifact[];
+  evidence: TaskEvidence[];
+  attempt: TaskAttempt;
+  proposal: CompletionProposal;
+}
+
 export interface EventCursorPage {
   events: Event[];
   nextCursor: { afterSequence: number };
@@ -227,6 +322,71 @@ export interface LocalTasqClient {
       commitmentId?: string | null,
       options?: Omit<ListEvidenceOptions, BoundServiceContext>,
     ): Promise<TaskEvidence[]>;
+  };
+  readonly assignments: {
+    propose(input: LocalAssignmentProposal, options?: LocalMutationOptions): Promise<Assignment>;
+    get(id: string): Promise<Assignment | null>;
+    list(options?: {
+      commitmentId?: string;
+      assigneePrincipalId?: string;
+      status?: AssignmentStatus;
+    }): Promise<Assignment[]>;
+    accept(id: string, options: LocalMutationOptions & { expectedRevision: number }): Promise<Assignment>;
+    reject(id: string, options: LocalMutationOptions & { expectedRevision: number }): Promise<Assignment>;
+    revoke(id: string, options: LocalMutationOptions & { expectedRevision: number }): Promise<Assignment>;
+    release(id: string, options: LocalMutationOptions & { expectedRevision: number }): Promise<Assignment>;
+  };
+  readonly artifacts: {
+    append(input: LocalArtifactAppend, options?: LocalMutationOptions): Promise<Artifact>;
+    get(id: string): Promise<Artifact | null>;
+    list(options?: { commitmentId?: string; attemptId?: string }): Promise<Artifact[]>;
+  };
+  readonly externalReferences: {
+    append(input: LocalExternalRefAppend, options?: LocalMutationOptions): Promise<ExternalRef>;
+    get(id: string): Promise<ExternalRef | null>;
+    list(options?: { recordType?: string; recordId?: string }): Promise<ExternalRef[]>;
+  };
+  readonly effects: {
+    propose(input: LocalEffectProposal, options?: LocalMutationOptions): Promise<Effect>;
+    get(id: string): Promise<Effect | null>;
+    list(options?: { commitmentId?: string; status?: EffectStatus }): Promise<Effect[]>;
+    approvals: {
+      record(
+        input: Omit<EffectApprovalDecision, "tenantId">,
+        options?: Omit<EffectAuthorityContext, BoundServiceContext>,
+      ): Promise<EffectApproval>;
+      get(id: string): Promise<EffectApproval | null>;
+      current(effectId: string): Promise<EffectApproval | null>;
+      list(options?: { effectId?: string; decision?: EffectApproval["decision"] }): Promise<EffectApproval[]>;
+    };
+    authorize(
+      effectId: string,
+      approvalId: string,
+      options: LocalMutationOptions & { expectedRevision: number },
+    ): Promise<Effect>;
+    begin(
+      effectId: string,
+      options: Omit<BeginEffectExecutionOptions, BoundServiceContext>,
+    ): Promise<BegunEffectExecution>;
+    receipts: {
+      record(
+        input: Omit<EffectReceiptInput, "report"> & {
+          report: Omit<EffectReceiptInput["report"], "workspaceId">;
+        },
+        options: Omit<RecordEffectReceiptOptions, BoundServiceContext>,
+      ): Promise<EffectReceipt>;
+      get(id: string): Promise<EffectReceipt | null>;
+      list(effectId?: string): Promise<EffectReceipt[]>;
+    };
+    cancel(
+      effectId: string,
+      reason: string,
+      options: LocalMutationOptions & { expectedRevision: number },
+    ): Promise<Effect>;
+  };
+  readonly journeys: {
+    claimAndStart(input: ClaimAndStartInput): Promise<ClaimAndStartResult>;
+    submitOutcome(input: SubmitOutcomeInput): Promise<SubmitOutcomeResult>;
   };
   readonly resolution: {
     contracts: {
@@ -343,21 +503,36 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
       principalId,
       clock: options.clock,
       ...(extra ?? {}),
-    });
+    }) as {
+      workspaceId: string;
+      actor: string;
+      principalId: string;
+      clock: Clock;
+    } & T;
     const serviceContext = <T extends object>(extra?: T) => ({
       tenantId: options.workspaceId,
       actor: options.actor,
       principalId,
       clock: options.clock,
       ...(extra ?? {}),
-    });
+    }) as {
+      tenantId: string;
+      actor: string;
+      principalId: string;
+      clock: Clock;
+    } & T;
     const resourceContext = <T extends object>(extra?: T) => ({
       workspaceId: options.workspaceId,
       actor: options.actor,
       principalId,
       clock: options.clock,
       ...(extra ?? {}),
-    });
+    }) as {
+      workspaceId: string;
+      actor: string;
+      principalId: string;
+      clock: Clock;
+    } & T;
     const transition = (
       operation: typeof startCommitment,
       id: string,
@@ -412,6 +587,170 @@ export async function createLocalTasq(options: CreateLocalTasqOptions): Promise<
         get: (id) => getTaskEvidence(handle.db, id, options.workspaceId),
         list: (id = null, listOptions = {}) =>
           listTaskEvidence(handle.db, id, serviceContext(listOptions)),
+      },
+      assignments: {
+        propose: (input, mutation = {}) => proposeAssignment(handle.db, {
+          ...input,
+          tenantId: options.workspaceId,
+          assignerPrincipalId: principalId,
+        }, serviceContext(mutation)),
+        get: (id) => getAssignment(handle.db, id, options.workspaceId),
+        list: (listOptions = {}) => listAssignments(handle.db, {
+          tenantId: options.workspaceId,
+          taskId: listOptions.commitmentId,
+          assigneePrincipalId: listOptions.assigneePrincipalId,
+          status: listOptions.status,
+        }),
+        accept: (id, mutation) => acceptAssignment(handle.db, id, serviceContext(mutation)),
+        reject: (id, mutation) => rejectAssignment(handle.db, id, serviceContext(mutation)),
+        revoke: (id, mutation) => revokeAssignment(handle.db, id, serviceContext(mutation)),
+        release: (id, mutation) => releaseAssignment(handle.db, id, serviceContext(mutation)),
+      },
+      artifacts: {
+        append: (input, mutation = {}) => appendArtifact(handle.db, {
+          ...input,
+          tenantId: options.workspaceId,
+        }, serviceContext(mutation)),
+        get: (id) => getArtifact(handle.db, id, options.workspaceId),
+        list: (listOptions = {}) => listArtifacts(handle.db, {
+          tenantId: options.workspaceId,
+          taskId: listOptions.commitmentId,
+          attemptId: listOptions.attemptId,
+        }),
+      },
+      externalReferences: {
+        append: (input, mutation = {}) => appendExternalRef(handle.db, {
+          ...input,
+          tenantId: options.workspaceId,
+        }, serviceContext(mutation)),
+        get: (id) => getExternalRef(handle.db, id, options.workspaceId),
+        list: (listOptions = {}) => listExternalRefs(handle.db, {
+          tenantId: options.workspaceId,
+          ...listOptions,
+        }),
+      },
+      effects: {
+        propose: (input, mutation = {}) => proposeEffect(handle.db, {
+          ...input,
+          tenantId: options.workspaceId,
+          request: { ...input.request, workspaceId: options.workspaceId },
+        }, serviceContext(mutation)),
+        get: (id) => getEffect(handle.db, id, options.workspaceId),
+        list: (listOptions = {}) => listEffects(handle.db, {
+          tenantId: options.workspaceId,
+          taskId: listOptions.commitmentId,
+          status: listOptions.status,
+        }),
+        approvals: {
+          record: (input, mutation = {}) => recordEffectApproval(handle.db, {
+            ...input,
+            tenantId: options.workspaceId,
+          }, serviceContext(mutation)),
+          get: (id) => getEffectApproval(handle.db, id, options.workspaceId),
+          current: (id) => getEffectiveEffectApproval(handle.db, id, options.workspaceId),
+          list: (listOptions = {}) => listEffectApprovals(handle.db, {
+            tenantId: options.workspaceId,
+            ...listOptions,
+          }),
+        },
+        authorize: (effectId, approvalId, mutation) =>
+          authorizeEffect(handle.db, effectId, approvalId, serviceContext(mutation)),
+        begin: (effectId, mutation) =>
+          beginEffectExecution(handle.db, effectId, serviceContext(mutation)),
+        receipts: {
+          record: (input, mutation) => recordEffectReceipt(handle.db, {
+            ...input,
+            report: { ...input.report, workspaceId: options.workspaceId },
+          }, serviceContext(mutation)),
+          get: (id) => getEffectReceipt(handle.db, id, options.workspaceId),
+          list: (effectId) => listEffectReceipts(handle.db, {
+            tenantId: options.workspaceId,
+            effectId,
+          }),
+        },
+        cancel: (effectId, reason, mutation) =>
+          cancelEffect(handle.db, effectId, reason, serviceContext(mutation)),
+      },
+      journeys: {
+        claimAndStart: async (input) => {
+          const idempotencyKey = input.idempotencyKey.trim();
+          if (!idempotencyKey) throw new Error("claimAndStart requires an idempotencyKey");
+          return runInTransaction(handle.db, async (tx) => {
+            const db = tx as unknown as TasqDb;
+            const claim = await acquireTaskClaim(db, input.commitmentId, serviceContext({
+              leaseMs: input.leaseMs,
+              metadata: input.claimMetadata,
+              idempotencyKey: `${idempotencyKey}:claim`,
+            }));
+            const attempt = await startTaskAttempt(db, input.commitmentId, serviceContext({
+              claimId: claim.id,
+              runtime: input.runtime,
+              externalId: input.externalId,
+              contextId: input.contextId,
+              metadata: input.attemptMetadata,
+              idempotencyKey: `${idempotencyKey}:attempt`,
+            }));
+            return { claim, attempt };
+          });
+        },
+        submitOutcome: async (input) => {
+          const idempotencyKey = input.idempotencyKey.trim();
+          if (!idempotencyKey) throw new Error("submitOutcome requires an idempotencyKey");
+          if (input.evidence.length === 0) throw new Error("submitOutcome requires evidence");
+          return runInTransaction(handle.db, async (tx) => {
+            const db = tx as unknown as TasqDb;
+            const artifacts: Artifact[] = [];
+            for (const [index, artifact] of (input.artifacts ?? []).entries()) {
+              artifacts.push(await appendArtifact(db, {
+                ...artifact,
+                tenantId: options.workspaceId,
+                taskId: input.commitmentId,
+                attemptId: input.attemptId,
+              }, serviceContext({ idempotencyKey: `${idempotencyKey}:artifact:${index}` })));
+            }
+
+            const evidence: TaskEvidence[] = [];
+            const criterionEvidence = new Map<string, string[]>();
+            for (const [index, entry] of input.evidence.entries()) {
+              const criterionIds = [...new Set(entry.criterionIds.map((value) => value.trim()))]
+                .filter(Boolean)
+                .sort();
+              if (criterionIds.length === 0) {
+                throw new Error(`submitOutcome evidence ${index} requires at least one criterionId`);
+              }
+              const recorded = await addTaskEvidence(db, {
+                ...entry.evidence,
+                tenantId: options.workspaceId,
+                taskId: input.commitmentId,
+                attemptId: input.attemptId,
+              }, serviceContext({ idempotencyKey: `${idempotencyKey}:evidence:${index}` }));
+              evidence.push(recorded);
+              for (const criterionId of criterionIds) {
+                const ids = criterionEvidence.get(criterionId) ?? [];
+                ids.push(recorded.id);
+                criterionEvidence.set(criterionId, ids);
+              }
+            }
+
+            const attempt = await transitionTaskAttempt(db, input.attemptId, "succeeded", serviceContext({
+              expectedRevision: input.expectedAttemptRevision,
+              message: input.attemptMessage,
+              idempotencyKey: `${idempotencyKey}:attempt-succeeded`,
+            }));
+            if (attempt.taskId !== input.commitmentId) {
+              throw new Error("submitOutcome attempt does not belong to commitment");
+            }
+            const proposal = await proposeCompletion(db, {
+              taskId: input.commitmentId,
+              resolutionContractId: input.resolutionContractId,
+              criterionEvidence: [...criterionEvidence.entries()]
+                .sort(([left], [right]) => left.localeCompare(right))
+                .map(([criterionId, evidenceIds]) => ({ criterionId, evidenceIds })),
+              summary: input.summary ?? null,
+            }, serviceContext({ idempotencyKey: `${idempotencyKey}:proposal` }));
+            return { artifacts, evidence, attempt, proposal };
+          });
+        },
       },
       resolution: {
         contracts: {
