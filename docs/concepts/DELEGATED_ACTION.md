@@ -163,11 +163,11 @@ condition evidence and fencing against concurrent transfers.
 | What proves satisfaction? | resolution contract, evidence, completion proposal and decision | capture and outcome-bundle journeys |
 | Who is responsible? | assignment | exact accepted terms are not bound |
 | Who may work now? | claim + fence | deep claim-and-start journey |
-| What ran? | attempt | runtime and provider adapters remain external |
+| What ran? | attempt | TQ-629 reference runtime exists; production runtimes and provider adapters remain external |
 | What was produced? | artifact | not exposed by the current high-level embedded Interface |
 | What external action is proposed? | effect | not exposed by the current high-level embedded Interface |
 | Who authorized dispatch? | grant, delegation, eligibility, approval and permit | mandate Interface and remote-effect gate |
-| What happened at the provider? | effect receipt or observation | reconciliation runtime |
+| What happened at the provider? | effect receipt or observation | TQ-629 reference lookup/reconciliation; production provider composition remains external |
 | What outside thing is involved? | external reference, resource key, subject refs | one target-reference contract and binding semantics |
 | Is an executor qualified? | narrow authority eligibility and task-scoped trust | general attestation Module |
 | Did all parties accept exact terms? | assignment acceptance plus signed-statement building blocks | agreement Module and typed binder |
@@ -397,6 +397,13 @@ The reference Runner owns:
 - connector dispatch through exact permits and fences;
 - provider lookup before retrying indeterminate effects;
 - deterministic materialization of recourse commitments.
+
+TQ-629 implements this as a private replaceable composition. It consumes the
+durable Core outbox, requires a live fence callback at the connector mutation
+boundary, reconstructs the exact permit after restart, uses provider lookup for
+every persisted executing/indeterminate effect, and delegates exactly-once
+materialization to Core's idempotency and decision-root constraints. It adds no
+runtime row, credential store or provider status to Core.
 
 The Review Inbox projects, without creating another source of truth:
 

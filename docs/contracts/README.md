@@ -30,6 +30,8 @@ Exact multi-party agreements and reciprocal commitment compilation:
 [`TQ-627_AGREEMENTS.md`](TQ-627_AGREEMENTS.md).
 Settlement and recourse over exact agreement, attempt and resolution facts:
 [`TQ-628_SETTLEMENT_RECOURSE.md`](TQ-628_SETTLEMENT_RECOURSE.md).
+Reference delegated-action recovery and derived attention projection:
+[`TQ-629_REFERENCE_DELEGATED_RUNNER.md`](TQ-629_REFERENCE_DELEGATED_RUNNER.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).

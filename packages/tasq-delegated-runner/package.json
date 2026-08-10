@@ -1,0 +1,33 @@
+{
+  "name": "@tasq-internal/delegated-runner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference restart-safe delegated-action runner and derived review inbox.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tasq-run/core": "workspace:*",
+    "@tasq-run/extension-sdk": "workspace:*",
+    "@tasq-run/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwendall/tasq.git",
+    "directory": "packages/tasq-delegated-runner"
+  },
+  "bugs": {
+    "url": "https://github.com/gwendall/tasq/issues"
+  },
+  "homepage": "https://tasq.run"
+}

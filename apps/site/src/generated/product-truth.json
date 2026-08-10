@@ -920,7 +920,7 @@
     },
     {
       "id": "TQ-629",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Build one reference delegated-action Runner and Review Inbox that own timers, outbox consumption, connector dispatch, indeterminate reconciliation, recourse materialization and attention projection without moving runtime state into Core"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "9107e4db8d3dff0d977adcbd29d31fe8745b2be12453fca1b6ee458f933c7380"
+      "sha256": "50ed1a3996da403e6014af06621e45c086d185298296060a74cd8f0e0202bc2b"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
