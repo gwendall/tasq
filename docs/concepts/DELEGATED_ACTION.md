@@ -603,8 +603,8 @@ direction in increasing order of commitment:
 3. **done (TQ-624):** make signed-statement binders safely extensible;
 4. **done (TQ-625–TQ-626):** add Attestations and Mandates;
 5. **done (TQ-627–TQ-628):** add Agreements and Settlement/Recourse;
-6. build the reference Runner, Evidence Capture, Review Inbox and Outcome
-   Bundle;
+6. **done (TQ-629–TQ-630):** build the reference Runner, Evidence Capture,
+   Review Inbox and Outcome Bundle;
 7. prototype Custody behind an experimental Interface;
 8. pass the cross-domain delegated-action certification.
 

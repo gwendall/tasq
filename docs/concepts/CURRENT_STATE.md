@@ -52,6 +52,15 @@ attempts, evidence resolution, effects, settlements, overdue recourse and
 experimental custody attention without a shadow store. This is source
 architecture, not a managed runtime, provider-supply or remote-effect claim.
 
+TQ-630 adds private Evidence Capture and Outcome Bundle Modules. A frozen
+capture session binds the exact commitment revision, attempt, target,
+resolution criterion, source and byte/media limits. Finalization hashes bytes,
+checks the immutable store acknowledgement and appends Artifact plus Evidence
+atomically after a live binding re-read. Outcome bundles are deterministic
+content-addressed projections of exact Core records with required external
+authority, custody and raw-byte references or omission disclosures. Their
+signatures authenticate bytes only; they do not prove truth or grant authority.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;
