@@ -91,8 +91,9 @@ async function verify(
 
 describe("protected candidate publication entrypoints", () => {
   test("authorizes every exact v0.4.0 coordinate and still fails closed otherwise", async () => {
-    expect(policy.externalPublicationGateStatus.trusted_publishing_configured).toBe(false);
+    expect(policy.externalPublicationGateStatus.trusted_publishing_configured).toBe(true);
     const pendingTrust = structuredClone(policy);
+    pendingTrust.externalPublicationGateStatus.trusted_publishing_configured = false;
     const pendingResult = await verify(pendingTrust, "serverImage");
     expect(pendingResult.exitCode).not.toBe(0);
     expect(pendingResult.stderr).toContain(

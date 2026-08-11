@@ -258,12 +258,14 @@ describe("canonical Tasq roadmap", () => {
         state: "verified",
         organization: "tasq-run",
         operator: "gwendall",
-        boundary: expect.stringContaining("seven package identities"),
+        boundary: expect.stringContaining("eight package identities"),
       },
       npmTrustedPublishing: {
         state: "verified",
-        packageCount: 7,
-        evidence: "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+        packageCount: 8,
+        evidence: expect.arrayContaining([
+          "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+        ]),
       },
       npmClientDefaultTag: {
         state: "external_remediation_required",
