@@ -15,7 +15,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: tasq-npm-client-bootstrap
+  group: tasq-package-publication
   cancel-in-progress: false
 
 jobs:
@@ -128,3 +128,11 @@ jobs:
             --version "$BOOTSTRAP_VERSION" \
             --source-commit "$INPUT_SOURCE_COMMIT" \
             --tarball "$candidate"
+          tags="$(npm view @tasq-run/client dist-tags --json)"
+          test "$(jq --raw-output '."alpha-bootstrap" // empty' <<< "$tags")" = "$BOOTSTRAP_VERSION"
+          if test "$(jq --raw-output '.latest // empty' <<< "$tags")" = "$BOOTSTRAP_VERSION"; then
+            npm dist-tag rm @tasq-run/client latest
+          fi
+          tags="$(npm view @tasq-run/client dist-tags --json)"
+          test "$(jq --raw-output '."alpha-bootstrap" // empty' <<< "$tags")" = "$BOOTSTRAP_VERSION"
+          test "$(jq --raw-output '.latest // empty' <<< "$tags")" != "$BOOTSTRAP_VERSION"

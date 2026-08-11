@@ -1,0 +1,38 @@
+{
+  "contractVersion": "tasq.npm-default-tag-safety.v1",
+  "ticket": "TQ-633",
+  "status": "candidate_done_external_gate",
+  "coordinate": "@tasq-run/client",
+  "observedAt": "2026-08-11T02:57:46Z",
+  "query": "npm view @tasq-run/client versions dist-tags time --json",
+  "registryObservation": {
+    "versions": ["0.1.0-alpha.0"],
+    "distTags": {
+      "alpha-bootstrap": "0.1.0-alpha.0",
+      "latest": "0.1.0-alpha.0"
+    },
+    "time": {
+      "created": "2026-08-05T14:06:57.392Z",
+      "0.1.0-alpha.0": "2026-08-05T14:06:57.857Z",
+      "modified": "2026-08-05T14:06:58.381Z"
+    }
+  },
+  "bootstrap": {
+    "version": "0.1.0-alpha.0",
+    "sourceCommit": "3941e1a2d7db8c6e4bb15ab7ecaca65ea8ab1313",
+    "publishedSupportGranted": false,
+    "intendedDistTag": "alpha-bootstrap"
+  },
+  "finding": "unsupported_bootstrap_is_current_default_install",
+  "sourceControls": {
+    "sharedPublicationConcurrency": ".github/workflows/bootstrap-npm-client.yml and .github/workflows/release.yml",
+    "bootstrapPostcondition": "alpha-bootstrap remains exact and latest does not resolve to bootstrap",
+    "releasePostcondition": "latest resolves to the exact protected release version for every authorized public package",
+    "tests": "packages/tasq-evals/npm-bootstrap.test.ts"
+  },
+  "remaining": [
+    "remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"
+  ],
+  "requiredAuthority": "authenticated_npm_package_owner",
+  "completionEvidence": "anonymous npm registry read showing latest absent or resolving to the exact supported release"
+}

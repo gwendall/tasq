@@ -265,6 +265,11 @@ describe("canonical Tasq roadmap", () => {
         packageCount: 7,
         evidence: "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
       },
+      npmClientDefaultTag: {
+        state: "external_remediation_required",
+        coordinate: "@tasq-run/client",
+        blocks: "any_default_install_claim_until_an_exact_supported_release_replaces_or_removes_the_tag",
+      },
       firstProtectedRelease: {
         state: "complete",
         channel: "public_alpha",
@@ -300,6 +305,19 @@ describe("canonical Tasq roadmap", () => {
         "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json",
         "packages/tasq-service/test/data-safety.test.ts",
       ]),
+    });
+    expect(roadmap.items.find(({ id }) => id === "TQ-633")).toMatchObject({
+      status: "candidate_done_external_gate",
+      milestone: "public-distribution",
+      dependsOn: ["TQ-603"],
+      remaining: ["remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"],
+      evidence: [
+        "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md",
+        "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",
+        ".github/workflows/bootstrap-npm-client.yml",
+        ".github/workflows/release.yml",
+        "packages/tasq-evals/npm-bootstrap.test.ts",
+      ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-607")).toMatchObject({
       id: "TQ-607",

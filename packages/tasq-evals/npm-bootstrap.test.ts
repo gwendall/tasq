@@ -29,6 +29,29 @@ function registryMetadata(overrides: Record<string, unknown> = {}) {
 }
 
 describe("one-shot npm identity bootstrap", () => {
+  test("records the unsafe public default tag without claiming external repair", async () => {
+    const certificate = JSON.parse(await readFile(
+      resolve(root, "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json"),
+      "utf8",
+    )) as Record<string, any>;
+    expect(certificate).toMatchObject({
+      contractVersion: "tasq.npm-default-tag-safety.v1",
+      ticket: "TQ-633",
+      status: "candidate_done_external_gate",
+      coordinate: "@tasq-run/client",
+      finding: "unsupported_bootstrap_is_current_default_install",
+      registryObservation: {
+        versions: ["0.1.0-alpha.0"],
+        distTags: {
+          "alpha-bootstrap": "0.1.0-alpha.0",
+          latest: "0.1.0-alpha.0",
+        },
+      },
+      remaining: ["remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"],
+      requiredAuthority: "authenticated_npm_package_owner",
+    });
+  });
+
   test("accepts only the exact registry bytes, source commit and canonical repository", async () => {
     const scratch = await mkdtemp(`${tmpdir()}/tasq-npm-verification-`);
     const tarball = resolve(scratch, "candidate.tgz");
@@ -155,7 +178,7 @@ describe("one-shot npm identity bootstrap", () => {
   test("repairs the immutable GitHub release asset by asset and fails closed on lookup errors", () => {
     const workflow = readFileSyncNative(resolve(root, ".github/workflows/release.yml"), "utf8");
     expect(workflow).toContain("--allow-missing");
-    expect(workflow).not.toContain("npm view");
+    expect(workflow).toContain("verify-npm-publication.ts");
     expect(workflow).toContain("test \"$state\" = \"missing\" || test \"$state\" = \"published\"");
     expect(workflow).toContain("--write-out '%{http_code}'");
     expect(workflow).toContain('if test "$http_code" = "200"');
@@ -173,6 +196,10 @@ describe("one-shot npm identity bootstrap", () => {
       resolve(root, ".github/workflows/bootstrap-npm-client.yml"),
       "utf8",
     );
+    const releaseWorkflow = readFileSyncNative(
+      resolve(root, ".github/workflows/release.yml"),
+      "utf8",
+    );
     expect(workflow).toContain("test \"$GITHUB_REF\" = \"refs/heads/main\"");
     expect(workflow).toContain('test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"');
     expect(workflow).toContain('test "$(git rev-parse origin/main)" = "$INPUT_SOURCE_COMMIT"');
@@ -182,8 +209,15 @@ describe("one-shot npm identity bootstrap", () => {
     expect(workflow).toContain("--package @tasq-run/client");
     expect(workflow).toContain("--allow-missing");
     expect(workflow).toContain("--tag alpha-bootstrap");
+    expect(workflow).toContain("group: tasq-package-publication");
+    expect(workflow).toContain("npm dist-tag rm @tasq-run/client latest");
+    expect(workflow).toContain("'.latest // empty'");
+    expect(workflow).toContain('!= "$BOOTSTRAP_VERSION"');
     expect(workflow).not.toContain("--package @tasq-run/core");
     expect(workflow).not.toContain("NPM_BOOTSTRAP_TOKEN");
+    expect(releaseWorkflow).toContain("group: tasq-package-publication");
+    expect(releaseWorkflow).toContain('npm view "$package_name" dist-tags --json');
+    expect(releaseWorkflow).toContain('= "${{ needs.identity.outputs.version }}"');
 
     const policy = JSON.parse(await readFile(
       resolve(root, "docs/releases/PUBLIC_RELEASE_POLICY.json"),

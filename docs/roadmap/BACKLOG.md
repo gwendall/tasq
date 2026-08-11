@@ -5,13 +5,14 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-08-10
+**Updated:** 2026-08-11
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** publish the maintainer-authorized `v0.4.0` public alpha:
-bootstrap the eighth npm identity, publish all eight packages and both native
-artifacts, publish the multi-architecture Server image and Python wheel, then
-run their exact downloaded-byte certifications. Continue the independent
+**Current priority:** make the eighth npm identity safe for default installs,
+verify its trusted publisher, then publish the maintainer-authorized `v0.4.0`
+public alpha: all eight packages and both native artifacts, the
+multi-architecture Server image and Python wheel, followed by exact
+downloaded-byte certifications. Continue the independent
 blind-human session and retained-data dogfood after publication; they gate
 human usability and stable graduation, not alpha delivery. Remote effects
 remain disabled.
@@ -20,7 +21,7 @@ The detailed task inventory, acceptance criteria and verification routes for
 public adoption through Server and Cloud are in
 [`PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
-### 2026-07-31 release handoff
+### 2026-08-11 external-activation handoff
 
 The complete `v0.4.0` public-alpha source candidate is merged on `main`. CI run
 [30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) passes
@@ -29,21 +30,21 @@ the full Linux/macOS, browser and secret-scan matrix. Protected migration run
 commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5` and passes the exact
 `v0.2.0`/`v0.3.0` to candidate-format-28 replay on both supported targets.
 
-No `v0.4.0` tag, eighth npm identity, GHCR image, PyPI wheel or hosted Cloud
-deployment exists yet. Resume in this order:
+The eighth identity now exists as unsupported
+`@tasq-run/client@0.1.0-alpha.0`. A public read at 2026-08-11T02:57:46Z found
+both `alpha-bootstrap` and `latest` pointing at it, so a default install is not
+safe. No `v0.4.0` tag, GHCR image, PyPI wheel or hosted Cloud deployment exists
+yet. Resume in this order:
 
-1. place a revocable granular token in release-environment secret
-   `NPM_CLIENT_BOOTSTRAP_TOKEN` and run `bootstrap-npm-client.yml` from the
-   then-current protected `main` commit;
-2. configure `@tasq-run/client` to trust
-   `gwendall/tasq:release.yml:release`, then delete the secret and revoke the
-   token;
-3. configure the `tasq-remote` PyPI pending trusted publisher for
+1. verify `@tasq-run/client` trusts `gwendall/tasq:release.yml:release`, the
+   GitHub bootstrap secret is absent and its granular token is revoked;
+2. configure the `tasq-remote` PyPI pending trusted publisher for
    `gwendall/tasq`, `publish-python.yml`, environment `release`;
-4. create immutable tag `v0.4.0`; let `release.yml` publish all eight npm
-   packages and native assets, then run the protected Server, Python and exact
-   downloaded-byte certification workflows;
-5. deploy the experimental single-zone GCP profile only after a dedicated
+3. either remove `latest` from the unsupported bootstrap immediately, or
+   create immutable tag `v0.4.0` and let `release.yml` replace it with all eight
+   exact npm packages and native assets; verify the public dist-tags, then run
+   the protected Server, Python and downloaded-byte certification workflows;
+4. deploy the experimental single-zone GCP profile only after a dedicated
    billed project, active deployment identity, `experimental.tasq.run` DNS
    control and exact Server/helper image digests exist.
 
@@ -51,7 +52,7 @@ Independent blind-human adoption and retained dogfood continue after the alpha
 and block only human-usability closure and stable graduation. Remote effects
 remain disabled.
 
-Handoff verification on 2026-07-31 passed documentation contracts, generated
+Repository handoff verification passed documentation contracts, generated
 site-truth consistency, typechecking and every functional suite reached before
 the public-package reproducibility check. That final check hit its 240-second
 local test limit twice while building candidates (`exit 143`), once inside the
@@ -86,7 +87,7 @@ The repository follows open-source engineering discipline as a public alpha:
 standalone source authority, public/private package boundaries, DCO,
 reproducible setup, Linux/macOS CI, complete onboarding and versioned machine
 truth. TQ-607 separates alpha distribution from stable product readiness. The
-next two proofs are the first protected public bytes and repeated useful
+next proofs are the exact protected `v0.4.0` bytes and repeated useful
 operation through real adopters, not more repository-only architecture.
 
 ## Current gates
@@ -95,7 +96,15 @@ operation through real adopters, not more repository-only architecture.
   seven `@tasq-run/*@0.3.0` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
   [`v0.3.0`](https://github.com/gwendall/tasq/releases/tag/v0.3.0) release.
-  The historical `alpha-bootstrap` tag is not a supported channel.
+  The historical `alpha-bootstrap` tag is not a supported channel. The separate
+  `@tasq-run/client` bootstrap currently also occupies `latest`; do not use its
+  default install until TQ-633's external registry gate is cleared.
+- **TQ-633 — source controls complete; npm cleanup required.** The one-shot
+  client workflow serializes with protected releases, preserves
+  `alpha-bootstrap`, removes a bootstrap-only `latest`, and verifies the result.
+  Every protected release verifies each public package's `latest` against the
+  exact release version. The current public registry still needs an npm
+  package-owner mutation, so the ticket is not marked done.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
   uninstall trials. Both hosts read before mutation, resume the same attempt
@@ -547,6 +556,14 @@ publication sequence and create no current support claim.
   Core/custody portable imports pass. The private property-exterior Profile is
   published in source as `reference_only`, with no supply, marketplace,
   provider, access, identity, price, physical-truth or remote-effect claim.
+
+### 7E. Keep unsupported bootstrap off default install
+
+- **TQ-633 — candidate done; external registry gate remains:** protected
+  bootstrap and release workflows now serialize package publication and prove
+  their intended dist-tags. Public observation still shows unsupported
+  `@tasq-run/client@0.1.0-alpha.0` as `latest`; only npm package-owner authority
+  can remove it or replace it with the exact supported `v0.4.0` publication.
 
 ### 8. Build managed Tasq Cloud
 

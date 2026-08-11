@@ -424,13 +424,17 @@ exact `v0.4.0` public-alpha release, its Server image, Python wheel,
 workflows have not run, so authorization changes no shipped surface and
 published `v0.3.0` remains seven packages.
 
-The 2026-07-31 release handoff is an external-activation checkpoint. Main CI
+The release handoff is an external-activation checkpoint. Main CI
 [30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) and the
 two-target protected migration run above are green. No `v0.4.0` tag exists.
-The next irreversible step is deliberately the one-shot
-`@tasq-run/client@0.1.0-alpha.0` npm bootstrap from protected `main`, because a
-new npm identity must exist before its `release.yml` trusted publisher can be
-configured. PyPI still needs the `tasq-remote` pending publisher. The
+The one-shot `@tasq-run/client@0.1.0-alpha.0` identity was created from
+protected `main`, but a public registry check at 2026-08-11T02:57:46Z found
+both `alpha-bootstrap` and `latest` resolving to that unsupported bootstrap.
+TQ-633 adds protected source controls, while an npm package-owner session must
+remove `latest` or a supported `v0.4.0` publication must replace it before any
+default-install claim. The client trusted publisher and bootstrap-authority
+revocation remain to be verified with npm authority. PyPI still needs the
+`tasq-remote` pending publisher. The
 experimental GCP profile is fixed to `europe-west9-a` and
 `experimental.tasq.run`, but needs a dedicated billed project, active identity,
 DNS control and exact published image digests. Dogfood and blind-human adoption
