@@ -206,7 +206,9 @@ tasq-server (private) ──→ tasq-authority ──→ tasq-schema
 - `tasq-service` is the Local composition and the only Local-facing write
   entrypoint. Its neutral module paths are exact forwarders to `tasq-core`; it
   owns only compatibility planning, bundled reference behavior, diagnostics
-  and projection adapters.
+  and projection adapters. Explicit discovery capture is a Local composition:
+  it atomically creates a commitment plus a universal `discovered_from`
+  provenance edge without adding a Kernel record or remote tool.
 - `tasq-inspector` is a read-only sibling surface over the strict kernel. It
   owns no storage or policy, and kernel/service never import it.
 - `tasq-cli` is one of several possible interfaces. MCP, the local inspector,

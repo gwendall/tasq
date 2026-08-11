@@ -48,6 +48,21 @@ function parseDependency(row: typeof taskDependency.$inferSelect): TaskDependenc
   return TaskDependencyZ.parse(row);
 }
 
+function parseDiscoveryRelation(
+  row: typeof commitmentRelation.$inferSelect,
+): TaskDependencyT {
+  return TaskDependencyZ.parse({
+    id: row.id,
+    tenantId: row.tenantId,
+    fromTaskId: row.fromTaskId,
+    toTaskId: row.toTaskId,
+    type: "discovered_from",
+    createdAt: row.createdAt,
+    updatedAt: row.endedAt ?? row.createdAt,
+    deletedAt: row.endedAt,
+  });
+}
+
 // ──────────────────────────────────────────────────────────────────────
 // Cycle guard (ported from tasks.ts updateTask reparent walk)
 // ──────────────────────────────────────────────────────────────────────
@@ -132,6 +147,57 @@ export async function dependTask(
   }
 
   const id = parsed.id ?? uuidv7(now);
+
+  // `discovered_from` is provenance, not a scheduling blocker. The universal
+  // commitment graph is its sole authority; the closed-vocabulary legacy
+  // task_dependency table remains a compatibility projection and is not
+  // widened before the v0.4 store-format release.
+  if (type === "discovered_from") {
+    const { result, committedEvent } = await runInTransaction(db, async (tx) => {
+      const from = await getTask(tx, fromTaskId, tenantId);
+      if (!from) throw new Error(`Task not found: ${fromTaskId}`);
+      if (from.deletedAt) throw new Error(`Task is deleted: ${fromTaskId}`);
+      const to = await getTask(tx, toTaskId, tenantId);
+      if (!to) throw new Error(`Task not found: ${toTaskId}`);
+      if (to.deletedAt) throw new Error(`Task is deleted: ${toTaskId}`);
+
+      const active = await tx.select().from(commitmentRelation).where(and(
+        eq(commitmentRelation.tenantId, tenantId),
+        eq(commitmentRelation.fromTaskId, fromTaskId),
+        eq(commitmentRelation.toTaskId, toTaskId),
+        eq(commitmentRelation.relationType, "discovered_from"),
+        isNull(commitmentRelation.endedAt),
+      )).limit(1);
+      if (active[0]) return { result: parseDiscoveryRelation(active[0]), committedEvent: null };
+
+      const principal = await ensureLocalPrincipal(tx, tenantId, actor, now);
+      await tx.insert(commitmentRelation).values({
+        id,
+        tenantId,
+        fromTaskId,
+        relationType: "discovered_from",
+        toTaskId,
+        revision: 1,
+        createdByPrincipalId: principal.id,
+        createdAt: now,
+        endedByPrincipalId: null,
+        endedAt: null,
+      });
+      const committedEvent = await recordEvent(tx, {
+        tenantId,
+        actor,
+        entityType: "task",
+        entityId: fromTaskId,
+        eventType: "dependency_added",
+        payload: { after: { toTaskId, type } },
+      }, { defer: true, now });
+      const rows = await tx.select().from(commitmentRelation)
+        .where(eq(commitmentRelation.id, id)).limit(1);
+      return { result: parseDiscoveryRelation(rows[0]!), committedEvent };
+    });
+    if (committedEvent) emitAfterCommit(committedEvent);
+    return result;
+  }
 
   const { result, committedEvent } = await runInTransaction(db, async (tx) => {
     // Endpoint and cycle checks must observe the same serialized snapshot as
@@ -262,6 +328,46 @@ export async function undependTask(
   const now = serviceNow(ctx);
 
   const committedEvent = await runInTransaction(db, async (tx) => {
+    if (ctx.type === "discovered_from") {
+      const filters = [
+        eq(commitmentRelation.tenantId, tenantId),
+        eq(commitmentRelation.relationType, "discovered_from"),
+        isNull(commitmentRelation.endedAt),
+      ];
+      if (id) {
+        filters.push(eq(commitmentRelation.id, id));
+      } else {
+        if (!ctx.fromTaskId || !ctx.toTaskId) {
+          throw new Error("undependTask requires an edge id or {fromTaskId,toTaskId}");
+        }
+        filters.push(eq(commitmentRelation.fromTaskId, ctx.fromTaskId));
+        filters.push(eq(commitmentRelation.toTaskId, ctx.toTaskId));
+      }
+      const rows = await tx.select().from(commitmentRelation).where(and(...filters)).limit(1);
+      const edge = rows[0];
+      if (!edge) {
+        throw new Error(
+          id
+            ? `Dependency not found: ${id}`
+            : `Dependency not found: ${ctx.fromTaskId} -[discovered_from]-> ${ctx.toTaskId}`,
+        );
+      }
+      const principal = await ensureLocalPrincipal(tx, tenantId, actor, now);
+      await tx.update(commitmentRelation).set({
+        endedByPrincipalId: principal.id,
+        endedAt: now,
+        revision: sql`${commitmentRelation.revision} + 1`,
+      }).where(eq(commitmentRelation.id, edge.id));
+      return recordEvent(tx, {
+        tenantId,
+        actor,
+        entityType: "task",
+        entityId: edge.fromTaskId,
+        eventType: "dependency_removed",
+        payload: { before: { toTaskId: edge.toTaskId, type: "discovered_from" } },
+      }, { defer: true, now });
+    }
+
     const filters = [eq(taskDependency.tenantId, tenantId), isNull(taskDependency.deletedAt)];
     if (id) {
       filters.push(eq(taskDependency.id, id));
@@ -353,7 +459,7 @@ export async function listDependencies(
     filters.push(eq(taskDependency.toTaskId, options.taskId));
   }
 
-  const rows = await db
+  const rows = options.type === "discovered_from" ? [] : await db
     .select()
     .from(taskDependency)
     .where(and(...filters))
@@ -364,6 +470,23 @@ export async function listDependencies(
     parsed = parsed.filter(
       (d) => d.fromTaskId === options.taskId || d.toTaskId === options.taskId,
     );
+  }
+  if (!options.type || options.type === "discovered_from") {
+    const relationFilters = [
+      eq(commitmentRelation.tenantId, tenantId),
+      eq(commitmentRelation.relationType, "discovered_from"),
+    ];
+    if (!options.includeDeleted) relationFilters.push(isNull(commitmentRelation.endedAt));
+    if (direction === "from") relationFilters.push(eq(commitmentRelation.fromTaskId, options.taskId));
+    if (direction === "to") relationFilters.push(eq(commitmentRelation.toTaskId, options.taskId));
+    let discoveries = (await db.select().from(commitmentRelation)
+      .where(and(...relationFilters)).orderBy(desc(commitmentRelation.createdAt)))
+      .map(parseDiscoveryRelation);
+    if (direction === "both") {
+      discoveries = discoveries.filter((edge) =>
+        edge.fromTaskId === options.taskId || edge.toTaskId === options.taskId);
+    }
+    parsed = [...parsed, ...discoveries].sort((a, b) => b.createdAt - a.createdAt);
   }
   return parsed;
 }

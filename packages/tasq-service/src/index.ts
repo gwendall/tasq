@@ -469,6 +469,12 @@ export type {
   JustUnblockedOptions,
 } from "./service/dependencies.js";
 
+export {
+  captureDiscovery,
+  DISCOVERY_CAPTURE_CONTEXT_MAX_BYTES,
+} from "./service/discoveries.js";
+export type { CaptureDiscoveryResult } from "./service/discoveries.js";
+
 // Service: progress + ETA
 export {
   getProjectProgress,

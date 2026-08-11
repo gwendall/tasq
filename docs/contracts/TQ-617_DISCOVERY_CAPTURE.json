@@ -1,0 +1,36 @@
+{
+  "contractVersion": "tasq.discovery-capture-certification.v1",
+  "ticket": "TQ-617",
+  "status": "source_candidate_complete_release_dependency_open",
+  "dependency": "TQ-608",
+  "storeFormat": 32,
+  "migrationAdded": false,
+  "relation": {
+    "type": "discovered_from",
+    "direction": "new_commitment_to_discovering_commitment",
+    "authority": "commitment_relation",
+    "legacyTaskDependencyRow": false,
+    "affectsActionability": false
+  },
+  "capture": {
+    "surface": "local_cli_explicit_only",
+    "atomic": ["commitment", "relation", "audit", "idempotency"],
+    "contextMaxUtf8Bytes": 16384,
+    "sourceClaimMutation": "none",
+    "automaticBackgroundCapture": false,
+    "remoteOrMcpExposure": false
+  },
+  "refusalRecipe": {
+    "channel": "stderr",
+    "shellQuoted": true,
+    "containsOriginalArguments": false,
+    "containsErrorText": false,
+    "selfRecursion": false
+  },
+  "evidence": [
+    "packages/tasq-service/test/discovery-capture.test.ts",
+    "packages/tasq-service/test/dependencies.test.ts",
+    "packages/tasq-cli/test/capture.test.ts"
+  ],
+  "supportClaim": "source_candidate_not_published"
+}

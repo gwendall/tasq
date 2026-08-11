@@ -63,6 +63,7 @@ import { agentCmd, demoCmd, setupCmd } from "./commands/adoption.js";
 import { resolutionCmd } from "./commands/resolution.js";
 import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
+import { captureCmd } from "./commands/capture.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -115,6 +116,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     task: [],
     depend: ["on", "type"],
     undepend: ["on", "type"],
+    capture: ["next", "context", "source", "idempotency-key"],
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
@@ -189,10 +191,12 @@ ${color.bold("TASKS — the core verbs")}
   restore <id>
 
 ${color.bold("DEPENDENCIES")}
-  depend <id> --on <other-id> [--type blocks|relates_to|duplicates]
+  depend <id> --on <other-id> [--type blocks|discovered_from|relates_to|duplicates]
                                  record that <id> depends on <other-id>
   undepend <id> --on <other-id> [--type ...]
                                  remove a dependency edge
+  capture <id> <title> [--context <json>] [--idempotency-key <key>]
+                                 atomically file linked work; keep current claim
 
 ${color.bold("AGENT COORDINATION")}
   agent install codex|claude|generic --space <id> --actor <label>
@@ -429,6 +433,8 @@ export async function main(
         return await dependCmd(args);
       case "undepend":
         return await undependCmd(args);
+      case "capture":
+        return await captureCmd(args, clock);
 
       // Audit
       case "event":
@@ -608,14 +614,48 @@ export async function runTasqCli(
   executable = "tasq",
 ): Promise<number> {
   try {
-    return await runWithRetry(argv, clock, executable);
+    const code = await runWithRetry(argv, clock, executable);
+    if (code !== 0) printCaptureSuggestion(argv, executable, code);
+    return code;
   } catch (err) {
     if (argv[0] === "onboard" && argv.some((value) => value === "--json" || value === "-j" || value.startsWith("--json="))) {
       return printOnboardProblem(err, executable);
     }
     printError(errorMessage(err));
+    printCaptureSuggestion(argv, executable, 1);
     return 1;
   }
+}
+
+const TASK_TARGET_COMMANDS = new Set([
+  "show", "inspect", "update", "start", "done", "complete", "block", "unblock",
+  "cancel", "reopen", "delete", "rm", "restore", "depend", "undepend", "claim", "release",
+]);
+
+function shellQuote(value: string): string {
+  return `'${value.replaceAll("'", `'\"'\"'`)}'`;
+}
+
+/** Print an executable, secret-free follow-up capture when task work refuses. */
+export function printCaptureSuggestion(argv: string[], executable: string, exitCode: number): void {
+  const command = argv[0];
+  if (!command || command === "capture" || !TASK_TARGET_COMMANDS.has(command)) return;
+  const parsed = parseArgs(argv.slice(1));
+  const taskId = parsed.positional[0];
+  if (!taskId) return;
+  const title = `Follow up after tasq ${command} was refused`;
+  const context = JSON.stringify({ triggerCommand: command, exitCode });
+  const suggestion = [
+    executable,
+    "capture",
+    taskId,
+    title,
+    "--source",
+    command,
+    "--context",
+    context,
+  ].map(shellQuote).join(" ");
+  printError(`capture discovered work without leaving this task:\n  ${suggestion}`);
 }
 
 if (import.meta.main) {
