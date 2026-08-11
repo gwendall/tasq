@@ -1028,6 +1028,12 @@
       "status": "done",
       "milestone": "delegated-action",
       "outcome": "Certify the same delegated-action Interfaces across physical verification, remote hands, software deployment, procurement, custody and compromised-agent scenarios, then publish only the honestly supported Profile claims"
+    },
+    {
+      "id": "TQ-633",
+      "status": "candidate_done_external_gate",
+      "milestone": "public-distribution",
+      "outcome": "An unsupported one-shot npm bootstrap can never remain the default install channel, and every protected release proves latest resolves to its exact published version"
     }
   ],
   "sourceContracts": [
@@ -1039,12 +1045,12 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "ff1f50871d8aba6b16269d35414eff5e2636ccd2dabcaf293c125158fc2c9aaa"
+      "sha256": "1bc39ce2c67afcb0d8dd0f6a34c07f8e7d112b718d1953617eae5c9cd21c7c08"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "a564c7dc25a2feec18f69551b87d44570b743c5c4b0ce2a18c9d6cf384a6ec27"
+      "sha256": "35e82f548b25a9de6077e8d2d736826d703164f9b95bf03fe06649ef917c0556"
     }
   ]
 }

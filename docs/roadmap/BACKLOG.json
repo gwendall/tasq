@@ -64,6 +64,14 @@
       "packageCount": 7,
       "evidence": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"
     },
+    "npmClientDefaultTag": {
+      "state": "external_remediation_required",
+      "verifiedAt": "2026-08-11T02:57:46Z",
+      "coordinate": "@tasq-run/client",
+      "observation": "npm dist-tags resolve both alpha-bootstrap and latest to unsupported 0.1.0-alpha.0",
+      "requiredEvidence": "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",
+      "blocks": "any_default_install_claim_until_an_exact_supported_release_replaces_or_removes_the_tag"
+    },
     "firstProtectedRelease": {
       "state": "complete",
       "channel": "public_alpha",
@@ -93,16 +101,15 @@
         "status": "passed"
       },
       "publicationOrder": [
-        "bootstrap_npm_client_identity",
-        "configure_npm_client_trusted_publisher_and_revoke_bootstrap_authority",
+        "verify_npm_client_trusted_publisher_and_bootstrap_authority_revocation",
         "configure_pypi_pending_trusted_publisher",
-        "create_immutable_v0_4_0_tag_and_publish_eight_npm_packages_and_native_assets",
+        "remove_bootstrap_latest_or_create_immutable_v0_4_0_tag_and_publish_its_exact_supported_replacement_plus_all_native_assets",
         "publish_server_image_and_python_wheel",
         "run_exact_downloaded_byte_certifications",
         "deploy_experimental_gcp_profile"
       ],
       "externalPrerequisites": [
-        "NPM_CLIENT_BOOTSTRAP_TOKEN_release_environment_secret",
+        "npm_client_package_owner_session_for_default_tag_cleanup_and_trusted_publisher_verification",
         "tasq_remote_pypi_pending_trusted_publisher",
         "dedicated_billed_gcp_project_and_active_identity",
         "experimental_tasq_run_dns_control",
@@ -236,7 +243,8 @@
     "TQ-629",
     "TQ-630",
     "TQ-631",
-    "TQ-632"
+    "TQ-632",
+    "TQ-633"
   ],
   "items": [
     {
@@ -1013,6 +1021,23 @@
         "packages/tasq-physical-verification-profile/test/profile-certification.test.ts",
         "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
         "SECURITY.md"
+      ]
+    },
+    {
+      "id": "TQ-633",
+      "status": "candidate_done_external_gate",
+      "milestone": "public-distribution",
+      "dependsOn": ["TQ-603"],
+      "outcome": "An unsupported one-shot npm bootstrap can never remain the default install channel, and every protected release proves latest resolves to its exact published version",
+      "remaining": [
+        "remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md",
+        "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",
+        ".github/workflows/bootstrap-npm-client.yml",
+        ".github/workflows/release.yml",
+        "packages/tasq-evals/npm-bootstrap.test.ts"
       ]
     }
   ]

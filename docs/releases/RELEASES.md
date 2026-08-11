@@ -43,16 +43,16 @@ post-publication gate.
 `v0.4.0` is authorized but not published. No tag or release coordinate should
 be created before this ordered activation sequence:
 
-1. verify the completed protected `@tasq-run/client@0.1.0-alpha.0` bootstrap
-   from run `31012709417` and configure its release trusted publisher;
-2. `release.yml`/`release` npm trusted-publisher binding, followed immediately
-   by secret deletion and token revocation;
-3. PyPI pending trusted publisher for `tasq-remote` using
+1. verify the `release.yml`/`release` npm trusted-publisher binding, absence of
+   the bootstrap secret and revocation of the bootstrap token;
+2. configure the PyPI pending trusted publisher for `tasq-remote` using
    `publish-python.yml` and environment `release`;
-4. immutable `v0.4.0` tag and protected eight-package/native release;
-5. protected Server GHCR and Python PyPI publication, followed by every exact
+3. either remove `latest` from the unsupported bootstrap immediately or create
+   immutable tag `v0.4.0` and let the protected eight-package/native release
+   replace it; then verify the public dist-tags;
+4. protected Server GHCR and Python PyPI publication, followed by every exact
    downloaded-byte certification;
-6. experimental GCP deployment only from the resulting exact image digests.
+5. experimental GCP deployment only from the resulting exact image digests.
 
 Independent adoption and retained dogfood are nonblocking for this alpha and
 remain required for later usability and stable-graduation claims. Remote
@@ -66,7 +66,10 @@ bootstrap for **only** `@tasq-run/client`. It is separately fail-closed in
 `NPM_CLIENT_BOOTSTRAP_TOKEN`. After the protected run, configure and verify the
 `release.yml:release` trusted-publisher binding, then immediately delete the
 environment secret and revoke the token. The bootstrap coordinate grants no
-support claim.
+support claim. The completed run unexpectedly left that bootstrap on `latest`;
+TQ-633 records the public observation and source prevention, while an npm
+package-owner mutation remains required before default installs are safe. See
+[`../contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md`](../contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md).
 
 The tag workflow now consumes the exact package list returned by release
 authorization. It therefore continues to publish seven packages for `v0.3.0`
