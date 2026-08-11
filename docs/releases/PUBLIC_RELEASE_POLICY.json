@@ -253,12 +253,12 @@
     "rationale": "Ship the complete source candidate as a labeled public alpha after format-32 protected recertification: signed statements with trusted binders, provider-neutral attestations, exact multi-party agreements, settlement and recourse, the remote TypeScript client, Server image, Python client and exact-byte certification. Independent adoption and retained-data dogfood continue after publication and block only stable graduation; remote effects remain disabled."
   },
   "sourceCandidateCheckpoint": {
-    "status": "requires_format_32_recertification",
-    "recordedAt": "2026-08-10",
-    "latestBehaviorCommit": null,
+    "status": "format_32_protected_source_candidate_passed",
+    "recordedAt": "2026-08-11",
+    "latestBehaviorCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
     "mainCi": {
-      "status": "historical_format_28_superseded",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625842313",
+      "status": "passed",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447187603",
       "linux": true,
       "macos": true,
       "browser": true,
@@ -266,12 +266,15 @@
     },
     "protectedMigrationCandidate": {
       "status": "passed",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
-      "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447846496",
+      "sourceCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
       "sourceVersions": ["0.2.0", "0.3.0"],
-      "targetStoreFormat": 28,
-      "supersededByStoreFormat": 32,
-      "targets": ["darwin-arm64", "linux-x64-gnu"]
+      "targetStoreFormat": 32,
+      "targets": ["darwin-arm64", "linux-x64-gnu"],
+      "downloadedEvidenceSha256": {
+        "darwin-arm64": "e3a8b96dc9fc3c87f7fdf6006aa56d81128069342e0088f88cdfc101aff43ffe",
+        "linux-x64-gnu": "dcca41637d036f2097228bb8df16fc0b34e82dc6acb070ffe48e537730b325a2"
+      }
     },
     "tagCreated": false,
     "publishedV040ReplayPassed": false,
@@ -350,7 +353,7 @@
     "publishedSupportGranted": false
   },
   "npmClientBootstrap": {
-    "state": "authorized",
+    "state": "completed",
     "coordinate": "@tasq-run/client",
     "workflow": "bootstrap-npm-client.yml",
     "environment": "release",
@@ -361,6 +364,9 @@
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-07-31",
+    "sourceCommit": "3941e1a2d7db8c6e4bb15ab7ecaca65ea8ab1313",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31012709417",
+    "publishedIntegrity": "sha512-h0jPNQfa8LblNJnH1yHSUZT2HCTfTT2jG5xGhWhi29fZk8tDJrJbPWKmIBe360zd8PzihEzLJ44MYK9+xiwu0Q==",
     "secretName": "NPM_CLIENT_BOOTSTRAP_TOKEN",
     "secretRetention": "delete_immediately_after_trusted_publisher_is_verified",
     "tokenRetention": "revoke_immediately_after_trusted_publisher_is_verified",
@@ -379,7 +385,9 @@
     ],
     "npmClient": {
       "coordinate": "@tasq-run/client",
-      "packageExists": false,
+      "packageExists": true,
+      "publishedVersion": "0.1.0-alpha.0",
+      "publishedGitHead": "3941e1a2d7db8c6e4bb15ab7ecaca65ea8ab1313",
       "bootstrapSecretPresent": false,
       "requiredSecret": "NPM_CLIENT_BOOTSTRAP_TOKEN",
       "requiredTrustedPublisher": "gwendall/tasq:release.yml:release"
@@ -465,7 +473,7 @@
   },
   "externalPublicationGateStatus": {
     "maintainer_public_alpha_authorization": true,
-    "data_safety_source_candidate": false,
+    "data_safety_source_candidate": true,
     "data_safety_published_byte_replay": true,
     "private_multi_app_dogfood_accepted": false,
     "canonical_repository_control_verified": true,

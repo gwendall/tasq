@@ -28,7 +28,7 @@
     ],
     "gates": {
       "maintainer_public_alpha_authorization": true,
-      "data_safety_source_candidate": false,
+      "data_safety_source_candidate": true,
       "data_safety_published_byte_replay": true,
       "private_multi_app_dogfood_accepted": false,
       "canonical_repository_control_verified": true,
@@ -998,7 +998,7 @@
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "cf4608c570525fde08e0e315cdcc05c5fa8eae3f4a888217fb7078a330b222f1"
+      "sha256": "a564c7dc25a2feec18f69551b87d44570b743c5c4b0ce2a18c9d6cf384a6ec27"
     }
   ]
 }
