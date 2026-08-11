@@ -500,7 +500,7 @@
     }
   },
   "commands": {
-    "kernel": ["claim", "release", "attempt", "evidence", "resolution", "signature", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link"],
+    "kernel": ["claim", "release", "attempt", "evidence", "resolution", "signature", "wait", "observation", "reconcile", "event", "inspect", "discover", "resource", "context", "summary", "context-link", "cost"],
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
@@ -513,7 +513,7 @@
       "attempt_cancelled", "attempt_failed", "attempt_input_required", "attempt_running", "attempt_started", "attempt_succeeded", "artifact_appended",
       "assignment_accepted", "assignment_proposed", "assignment_rejected", "assignment_released", "assignment_revoked",
       "blocked", "cancelled", "claim_acquired", "claim_released", "claim_renewed", "completed", "created", "deleted",
-      "commitment_summary_appended", "completion_challenged", "completion_proposed", "dependency_added", "dependency_removed", "effect_approval_recorded", "effect_authority_withdrawn", "effect_authorized", "effect_cancelled", "effect_execution_started", "effect_proposed", "effect_receipt_recorded", "evidence_added", "evidence_trust_attested", "evidence_trust_revoked", "external_context_link_appended", "external_ref_appended", "instance_generated", "reconciliation_recorded", "relation_added", "relation_ended", "resolution_contract_created", "restored",
+      "commitment_summary_appended", "completion_challenged", "completion_proposed", "dependency_added", "dependency_removed", "effect_approval_recorded", "effect_authority_withdrawn", "effect_authorized", "effect_cancelled", "effect_execution_started", "effect_proposed", "effect_receipt_recorded", "evidence_added", "evidence_trust_attested", "evidence_trust_revoked", "external_context_link_appended", "external_ref_appended", "attempt_cost_observed", "claim_released_cost_bound", "instance_generated", "reconciliation_recorded", "relation_added", "relation_ended", "resolution_contract_created", "restored",
       "scope_rederived", "started", "status_changed", "unblocked", "uncancelled", "updated", "validation_decided", "wait_cancelled", "wait_created",
       "wait_expired", "wait_fallback_activated", "wait_satisfied"
     ],

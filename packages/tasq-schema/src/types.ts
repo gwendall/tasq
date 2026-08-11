@@ -176,6 +176,7 @@ export type DependencyType = z.infer<typeof DependencyType>;
  */
 export const CANONICAL_EVENT_TYPES = [
   "attempt_cancelled",
+  "attempt_cost_observed",
   "attempt_failed",
   "attempt_input_required",
   "attempt_running",
@@ -191,6 +192,7 @@ export const CANONICAL_EVENT_TYPES = [
   "cancelled",
   "claim_acquired",
   "claim_released",
+  "claim_released_cost_bound",
   "claim_renewed",
   "completed",
   "commitment_summary_appended",

@@ -42,6 +42,7 @@ import {
   saveIdempotencyResult,
   type PreparedIdempotency,
 } from "./idempotency.js";
+import { assertTaskCostAllowsClaim } from "./costs.js";
 
 const MIN_LEASE_MS = 1_000;
 const MAX_LEASE_MS = 7 * 24 * 60 * 60 * 1_000;
@@ -205,6 +206,14 @@ export async function acquireTaskClaim(
         `Task ${taskId} is claimed by ${current.actor} until ${new Date(current.expiresAt).toISOString()}`,
       );
     }
+
+    await assertTaskCostAllowsClaim(
+      tx,
+      taskId,
+      tenantId,
+      current?.id ?? null,
+      Boolean(current && current.expiresAt > now),
+    );
 
     if (current && current.expiresAt > now) {
       const renewedMutation = await tx

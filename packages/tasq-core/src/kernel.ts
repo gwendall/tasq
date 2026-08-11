@@ -230,6 +230,21 @@ export {
   listIdempotencyRecords,
   pruneExpiredIdempotency,
 } from "./service/idempotency.js";
+
+export {
+  ATTEMPT_COST_OBSERVATION_URI,
+  TASK_COST_BUDGET_METADATA_KEY,
+  TaskCostBudget,
+  AttemptCostObservation,
+  CostBoundError,
+  configureTaskCostBudget,
+  recordAttemptCost,
+  getTaskCostSummary,
+} from "./service/costs.js";
+export type {
+  TaskCostSummary,
+  RecordAttemptCostResult,
+} from "./service/costs.js";
 export type {
   IdempotencyContext,
   IdempotencyOutcome,

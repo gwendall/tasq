@@ -203,6 +203,16 @@ describe("canonical Tasq roadmap", () => {
         "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
       ],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-618")).toMatchObject({
+      status: "candidate_done_publication_gate",
+      remaining: ["publish_exact_implementation_in_authorized_v0.4.0_artifacts"],
+      evidence: [
+        "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.md",
+        "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.json",
+        "packages/tasq-core/test/costs.test.ts",
+        "packages/tasq-cli/test/cost.test.ts",
+      ],
+    });
     for (const id of ["TQ-806", "TQ-810", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
       const item = roadmap.items.find((candidate) => candidate.id === id);
       expect(item?.status, `${id}: source candidate status`).toBe(

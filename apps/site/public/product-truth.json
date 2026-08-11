@@ -616,6 +616,18 @@
         "link_discovered_from",
         "resume_source_work"
       ]
+    },
+    {
+      "id": "bounded_attempt_cost",
+      "support": "implemented_candidate_not_published",
+      "steps": [
+        "configure_task_budget",
+        "claim",
+        "start_attempt",
+        "record_external_meter_receipt",
+        "aggregate_gross_cost",
+        "refuse_or_release_at_bound"
+      ]
     }
   ],
   "criticalTruths": [
@@ -654,6 +666,7 @@
     "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
     "physical_verification_profile_is_private_reference_only_and_supplies_no_worker_provider_access_identity_or_remote_effect",
     "mid_task_discovery_capture_is_local_explicit_non_blocking_and_not_yet_in_the_published_release",
+    "attempt_cost_is_observed_from_explicit_meter_receipts_not_inferred_or_claimed_as_billing_truth",
     "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
     "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"
@@ -907,7 +920,7 @@
     },
     {
       "id": "TQ-618",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "autonomous-direction",
       "outcome": "Observed cost attributed per attempt at the claim, cumulative per task, with a hard bound that can refuse lease renewal"
     },
@@ -1000,12 +1013,12 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "30dea3d159c3d09b2df38829bf28bd045db09175705ddaa24989c698197ce35a"
+      "sha256": "59d883addc8f39b753714db449d8b1057f9bc20b6bb523857d104f87185c02dc"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "8f68db49966a9e1decbf3025884c21133a8af78d24e57ed6037352be9f3ffd0e"
+      "sha256": "973489564bd637abd16b84da1fb6a790ef9a7e4e5775f07a3b7615d6d00602e7"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

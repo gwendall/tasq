@@ -45,6 +45,7 @@ import {
   saveIdempotencyResult,
   type PreparedIdempotency,
 } from "./idempotency.js";
+import { ATTEMPT_COST_OBSERVATION_URI } from "./costs.js";
 
 export interface PrincipalContext extends ServiceContext {
   /** Authenticated surfaces map their subject to this stable principal. */
@@ -533,6 +534,9 @@ export async function appendExternalRef(
   ctx: PrincipalContext = {},
 ): Promise<ExternalRef> {
   const parsed = ExternalRefInsert.parse(input);
+  if (parsed.resourceType === ATTEMPT_COST_OBSERVATION_URI) {
+    throw new Error("Attempt-cost observations must use recordAttemptCost so claim bounds remain atomic");
+  }
   const tenantId = parsed.tenantId;
   const now = serviceNow(ctx, ctx.now);
   const { result, event } = await runInTransaction(db, async (tx) => {

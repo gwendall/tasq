@@ -18,6 +18,7 @@ import {
   MigrationSafetyError,
   STORE_FORMAT_COMPATIBILITY,
   StoreCompatibilityError,
+  CostBoundError,
   systemClock,
   type Clock,
 } from "@tasq-internal/local-service";
@@ -64,6 +65,7 @@ import { resolutionCmd } from "./commands/resolution.js";
 import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
+import { costCmd } from "./commands/cost.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -125,6 +127,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     doctor: ["fix-permissions", "repair-outbox"],
     journal: ["accept-database", "reason", "dry-run"],
     claim: ["for", "until", "metadata", "idempotency-key"],
+    cost: ["currency", "max-micros", "reserve-micros", "metering", "meter", "observation", "gross-micros", "basis", "observed-at", "idempotency-key"],
     release: ["reason", "force"],
     attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
     evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
@@ -207,6 +210,7 @@ ${color.bold("AGENT COORDINATION")}
   attempt succeed|fail <id>      close an execution attempt
   evidence add <id> --kind ...   attach an observable receipt
   evidence list [<id>]           inspect completion evidence
+  cost budget|record|show ...    bound and inspect observed attempt cost
   signature show <id>            inspect exact accepted signed proof
   signature bindings [record]    inspect typed proof bindings (read-only)
   resolution contract|trust|propose|challenge|attest|settle|adjudicate|show
@@ -457,6 +461,8 @@ export async function main(
         return await journalCmd(args);
       case "claim":
         return await claimCmd(args);
+      case "cost":
+        return await costCmd(args);
       case "release":
         return await releaseCmd(args);
       case "attempt":
@@ -492,6 +498,15 @@ export async function main(
       if ((err instanceof StoreCompatibilityError || err instanceof MigrationSafetyError) && args.bool("json", "j")) {
         printJson(err.toJSON());
         return 3;
+      }
+      if (err instanceof CostBoundError && args.bool("json", "j")) {
+        printJson({
+          contractVersion: "tasq.cost-bound-problem.v1",
+          ok: false,
+          code: err.code,
+          summary: err.summary,
+        });
+        return 2;
       }
       // A store the running binary cannot recognise is usually not a corrupt
       // store: it is the wrong binary. A stale global install resolves to
