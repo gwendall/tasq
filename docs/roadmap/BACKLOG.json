@@ -815,14 +815,16 @@
     },
     {
       "id": "TQ-620",
-      "status": "pending",
+      "status": "done",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-813"],
       "outcome": "Human attention treated as a bounded resource: batched input_required requests and do-not-disturb windows at constant decision quality",
-      "remaining": [
-        "input_required_requests_batchable",
-        "do_not_disturb_window_honoured_by_notification_surfaces",
-        "solicitations_per_unit_of_work_measured"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-620_BOUNDED_ATTENTION.md",
+        "docs/contracts/TQ-620_BOUNDED_ATTENTION.json",
+        "packages/tasq-webhook-notifier/test/bounded-attention.test.ts",
+        "packages/tasq-service/test/delivery.test.ts"
       ]
     },
     {

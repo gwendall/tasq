@@ -24,3 +24,7 @@ so the host cannot mark them delivered. Other rejection is terminal.
 
 Email, Slack, SMS and paging systems are not kernel concepts. A downstream
 receiver may fan the neutral attention out to those providers.
+
+TQ-620 adds a separate, backward-compatible `tasq.attention-batch.v1`
+envelope for digest-bound `input_required` requests. The six-class v1 envelope
+above remains unchanged. See [`TQ-620_BOUNDED_ATTENTION.md`](TQ-620_BOUNDED_ATTENTION.md).

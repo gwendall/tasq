@@ -262,7 +262,9 @@ export {
   getDeliverySink,
   listDeliveryOutbox,
   leaseNextDelivery,
+  leaseDeliveryBatch,
   completeDelivery,
+  completeDeliveryBatch,
   failDelivery,
   repairDelivery,
 } from "./service/delivery.js";
@@ -272,6 +274,8 @@ export type {
   ListDeliveryOutboxOptions,
   LeaseNextDeliveryOptions,
   LeasedDelivery,
+  LeaseDeliveryBatchOptions,
+  LeasedDeliveryBatch,
   OwnedDeliveryOptions,
   FailDeliveryOptions,
   DeliveryRepairAction,

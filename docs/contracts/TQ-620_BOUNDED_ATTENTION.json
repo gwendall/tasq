@@ -1,0 +1,49 @@
+{
+  "contractVersion": "tasq.bounded-attention-certification.v1",
+  "status": "done",
+  "updatedAt": "2026-08-11",
+  "backlogItem": "TQ-620",
+  "request": {
+    "kind": "input_required",
+    "decisionContextDigestRequired": true,
+    "stableRequestIdentity": true,
+    "boundedSummaryBytes": true
+  },
+  "policy": {
+    "digestDerivedFromNormalizedPolicy": true,
+    "doNotDisturbIntervals": "absolute_half_open",
+    "hostTimezoneDependency": false,
+    "hiddenUrgentBypass": false,
+    "overlapUnionHonoured": true
+  },
+  "batch": {
+    "contractVersion": "tasq.attention-batch.v1",
+    "maximumItems": 50,
+    "maximumCanonicalBytes": 65536,
+    "retryStableIdentityAndPayload": true,
+    "exactRequestOrdering": true,
+    "transport": "existing_signed_pinned_https_sink"
+  },
+  "durability": {
+    "authority": "existing_transactional_delivery_outbox",
+    "contiguousStrictOrderLease": true,
+    "headOfLineStopsPreserved": true,
+    "atomicBatchAcknowledgement": true,
+    "migrationAdded": false,
+    "shadowAttentionStore": false
+  },
+  "measurement": {
+    "solicitationsPerWorkUnit": true,
+    "deliveryCoverageRequiredForReductionClaim": true,
+    "decisionQualitySource": "external_evaluator",
+    "fullRatingsRequiredForQualityComparison": true,
+    "deliverySuccessTreatedAsQuality": false
+  },
+  "evidence": [
+    "packages/tasq-webhook-notifier/src/bounded-attention.ts",
+    "packages/tasq-webhook-notifier/test/bounded-attention.test.ts",
+    "packages/tasq-core/src/service/delivery.ts",
+    "packages/tasq-service/test/delivery.test.ts",
+    "docs/contracts/TQ-813_ATTENTION_WEBHOOK.md"
+  ]
+}

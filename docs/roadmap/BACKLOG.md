@@ -451,9 +451,11 @@ reaching $4,200 and $47,000 motivate the cost bound.
   that premise is refutable with the same proposal, challenge and resolution
   mechanics completion already uses. A task whose premise died is invalidated
   with a trace, not deleted.
-- **TQ-620 — pending:** human attention as a bounded resource: batch
-  `input_required` requests and honour do-not-disturb windows, measured as
-  fewer solicitations per unit of work at constant decision quality.
+- **TQ-620 — done:** human attention is a bounded resource. Digest-bound
+  `input_required` requests batch through the existing durable outbox; absolute
+  do-not-disturb intervals suppress transport, and cohort metrics compare
+  solicitations only with full delivery coverage and externally assessed
+  decision quality.
 - **TQ-621 — done:** a sourced public comparison page answers the one
   question that separates coordination tools - what happens when several
   agents work the same backlog in parallel - with every claim carrying its

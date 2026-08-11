@@ -40,6 +40,14 @@ export interface AttentionEnvelope {
   payloadDigest: string;
 }
 
+export interface AttentionBatchLikeEnvelope {
+  contractVersion: "tasq.attention-batch.v1";
+  deliveryId: string;
+  payloadDigest: string;
+}
+
+export type DeliverableAttentionEnvelope = AttentionEnvelope | AttentionBatchLikeEnvelope;
+
 function digest(value: unknown): string {
   return `sha256:${createHash("sha256").update(canonicalizeEffectJson(value as never)).digest("hex")}`;
 }
@@ -92,13 +100,17 @@ export interface AttentionWebhookSinkOptions {
   maximumResponseBytes?: number;
 }
 
+export interface AttentionWebhookSink {
+  deliver(envelope: DeliverableAttentionEnvelope): Promise<AttentionDeliveryResult>;
+}
+
 function retryAfter(response: Response): number {
   const value = response.headers.get("retry-after");
   if (value && /^(0|[1-9][0-9]*)$/.test(value)) return Math.min(Number(value) * 1_000, 300_000);
   return 1_000;
 }
 
-export function createAttentionWebhookSink(options: AttentionWebhookSinkOptions) {
+export function createAttentionWebhookSink(options: AttentionWebhookSinkOptions): AttentionWebhookSink {
   const endpoint = new URL(options.endpoint);
   if (endpoint.protocol !== "https:" || endpoint.username || endpoint.password) {
     throw new Error("attention webhook endpoint must be credential-free HTTPS");
@@ -114,7 +126,7 @@ export function createAttentionWebhookSink(options: AttentionWebhookSinkOptions)
     throw new Error("maximumResponseBytes is invalid");
   }
   return Object.freeze({
-    async deliver(envelope: AttentionEnvelope): Promise<AttentionDeliveryResult> {
+    async deliver(envelope: DeliverableAttentionEnvelope): Promise<AttentionDeliveryResult> {
       const canonical = canonicalizeEffectJson(envelope as never);
       const signature = createHmac("sha256", key).update(canonical).digest("base64url");
       let response: Response;
@@ -124,7 +136,7 @@ export function createAttentionWebhookSink(options: AttentionWebhookSinkOptions)
           redirect: "manual",
           headers: {
             "content-type": "application/json",
-            "tasq-contract": ATTENTION_WEBHOOK_CONTRACT_VERSION,
+            "tasq-contract": envelope.contractVersion,
             "tasq-delivery-id": envelope.deliveryId,
             "tasq-payload-digest": envelope.payloadDigest,
             "tasq-signature": `hmac-sha256 key=${options.keyId},signature=${signature}`,
@@ -164,3 +176,5 @@ export function createAttentionWebhookSink(options: AttentionWebhookSinkOptions)
     },
   });
 }
+
+export * from "./bounded-attention.js";

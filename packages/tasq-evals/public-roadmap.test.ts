@@ -345,6 +345,18 @@ describe("canonical Tasq roadmap", () => {
         "docs/contracts/TQ-606_HUMAN_SESSION_EVIDENCE.schema.json",
       ],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-620")).toMatchObject({
+      status: "done",
+      milestone: "autonomous-direction",
+      dependsOn: ["TQ-813"],
+      remaining: [],
+      evidence: [
+        "docs/contracts/TQ-620_BOUNDED_ATTENTION.md",
+        "docs/contracts/TQ-620_BOUNDED_ATTENTION.json",
+        "packages/tasq-webhook-notifier/test/bounded-attention.test.ts",
+        "packages/tasq-service/test/delivery.test.ts",
+      ],
+    });
     expect(releaseWorkflow).toContain("id-token: write");
     expect(releaseWorkflow).toContain("npm install --global npm@11.18.0");
     expect(releaseWorkflow).toContain('test "$(npm --version)" = "11.18.0"');

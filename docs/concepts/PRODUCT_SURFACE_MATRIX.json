@@ -110,6 +110,14 @@
       "authorityBoundary": "permit_and_receipt_required"
     },
     {
+      "id": "bounded_attention_webhook",
+      "support": "implemented_integration_required",
+      "transport": "signed_pinned_https_batch",
+      "entrypoint": "@tasq-internal/webhook-notifier planAttention and deliverAttentionPlan",
+      "mutations": false,
+      "authorityBoundary": "explicit_digest_bound_policy_dnd_always_wins_external_quality_evaluator"
+    },
+    {
       "id": "replication_kernel",
       "support": "implemented_integration_required",
       "transport": "integrator_supplied",
