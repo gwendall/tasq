@@ -76,14 +76,32 @@
       "operator": "gwendall",
       "organization": "tasq-run",
       "evidence": "authenticated npm team ls tasq-run returned tasq-run:developers",
-      "boundary": "organization control, seven package identities and their release-workflow trusted publishers are verified"
+      "boundary": "organization control, eight package identities and their release-workflow trusted publishers are verified"
     },
     "npmTrustedPublishing": {
       "state": "verified",
-      "verifiedAt": "2026-07-23",
+      "verifiedAt": "2026-08-11",
       "requiredBinding": "gwendall/tasq:.github/workflows/release.yml:release",
-      "packageCount": 7,
-      "evidence": "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json"
+      "packageCount": 8,
+      "evidence": [
+        "docs/contracts/TQ-603_NPM_BOOTSTRAP_CERTIFICATION.json",
+        "authenticated npm trust ls @tasq-run/client returned publisher 14337356-3c5e-4be6-940b-7398198d4ead bound to gwendall/tasq:release.yml:release with createPackage permission"
+      ],
+      "clientPublisher": {
+        "coordinate": "@tasq-run/client",
+        "publisherId": "14337356-3c5e-4be6-940b-7398198d4ead",
+        "repository": "gwendall/tasq",
+        "workflow": "release.yml",
+        "environment": "release",
+        "permissions": ["createPackage"]
+      }
+    },
+    "pypiTrustedPublishing": {
+      "state": "maintainer_confirmed_pending_publisher",
+      "verifiedAt": "2026-08-11",
+      "coordinate": "tasq-remote",
+      "requiredBinding": "gwendall/tasq:.github/workflows/publish-python.yml:release",
+      "boundary": "the pending publisher is configured; the project remains absent from the public PyPI JSON API until the first successful OIDC publication"
     },
     "npmClientDefaultTag": {
       "state": "external_remediation_required",
@@ -111,12 +129,12 @@
       "evidence": "docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json"
     },
     "nextProtectedRelease": {
-      "state": "authorized_waiting_external_authority",
+      "state": "authorized_ready_to_tag",
       "channel": "public_alpha",
       "version": "0.4.0",
       "sourceCandidate": {
-        "latestBehaviorCommit": "bbf9bde9a23764feb2e3c81aac039fe566e2f5dc",
-        "ciRun": "https://github.com/gwendall/tasq/actions/runs/31455469251",
+        "latestBehaviorCommit": "9430e9abacd3353a334478a5bb9a0fca72cddd47",
+        "ciRun": "https://github.com/gwendall/tasq/actions/runs/31478167639",
         "migrationBehaviorCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
         "protectedMigrationRun": "https://github.com/gwendall/tasq/actions/runs/31447846496",
         "schemaFormat": 32,
@@ -124,18 +142,12 @@
         "status": "passed"
       },
       "publicationOrder": [
-        "verify_npm_client_trusted_publisher_and_bootstrap_authority_revocation",
-        "configure_pypi_pending_trusted_publisher",
         "remove_bootstrap_latest_or_create_immutable_v0_4_0_tag_and_publish_its_exact_supported_replacement_plus_all_native_assets",
         "publish_server_image_and_python_wheel",
         "run_exact_downloaded_byte_certifications",
         "deploy_fly_private_beta_from_exact_server_digest"
       ],
-      "externalPrerequisites": [
-        "npm_client_package_owner_session_for_default_tag_cleanup_and_trusted_publisher_verification",
-        "tasq_remote_pypi_pending_trusted_publisher",
-        "exact_published_server_and_helper_image_digests"
-      ],
+      "externalPrerequisites": ["exact_published_server_image_digest"],
       "nonBlockingEvidence": [
         "independent_blind_human_adoption",
         "private_multi_app_dogfood"

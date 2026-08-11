@@ -255,10 +255,10 @@
   "sourceCandidateCheckpoint": {
     "status": "format_32_protected_source_candidate_passed",
     "recordedAt": "2026-08-11",
-    "latestBehaviorCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
+    "latestBehaviorCommit": "9430e9abacd3353a334478a5bb9a0fca72cddd47",
     "mainCi": {
       "status": "passed",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447187603",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31478167639",
       "linux": true,
       "macos": true,
       "browser": true,
@@ -379,14 +379,12 @@
     }
   },
   "externalActivation": {
-    "status": "waiting_external_authority",
+    "status": "ready_to_tag",
     "publicationOrder": [
-      "verify_npm_client_release_trusted_publisher_and_bootstrap_authority_revocation",
-      "configure_tasq_remote_pypi_pending_trusted_publisher",
       "remove_bootstrap_latest_or_create_immutable_v0_4_0_tag_and_publish_its_exact_supported_npm_and_native_replacement",
       "publish_server_and_python_coordinates",
       "run_exact_downloaded_byte_certifications",
-      "deploy_experimental_gcp_profile"
+      "deploy_fly_private_beta_from_exact_server_digest"
     ],
     "npmClient": {
       "coordinate": "@tasq-run/client",
@@ -402,30 +400,40 @@
       "requiredDefaultTagRemediation": "remove latest or replace it with the exact supported v0.4.0 publication",
       "bootstrapSecretPresent": false,
       "requiredSecret": null,
-      "requiredPackageOwnerAction": "clean_up_default_dist_tag_and_verify_trusted_publisher_and_bootstrap_token_revocation",
-      "requiredTrustedPublisher": "gwendall/tasq:release.yml:release"
+      "requiredPackageOwnerAction": "publish the exact supported v0.4.0 replacement through the verified trusted publisher",
+      "requiredTrustedPublisher": "gwendall/tasq:release.yml:release",
+      "trustedPublisher": {
+        "state": "verified",
+        "verifiedAt": "2026-08-11",
+        "publisherId": "14337356-3c5e-4be6-940b-7398198d4ead",
+        "repository": "gwendall/tasq",
+        "workflow": "release.yml",
+        "environment": "release",
+        "permissions": ["createPackage"]
+      }
     },
     "python": {
       "coordinate": "tasq-remote",
       "published": false,
-      "requiredPendingTrustedPublisher": "gwendall/tasq:publish-python.yml:release"
+      "requiredPendingTrustedPublisher": "gwendall/tasq:publish-python.yml:release",
+      "pendingTrustedPublisherState": "maintainer_confirmed_configured",
+      "verifiedAt": "2026-08-11"
     },
     "server": {
       "coordinate": "ghcr.io/gwendall/tasq-server:0.4.0",
       "published": false
     },
     "experimentalCloud": {
-      "authorizedProfile": "deploy/gcp-compute-experimental",
-      "location": "europe-west9-a",
-      "hostname": "experimental.tasq.run",
+      "authorizedProfile": "deploy/fly-private-beta",
+      "provider": "fly.io",
+      "location": "cdg",
+      "hostname": "api.tasq.run",
+      "consoleEntrypoint": "cloud.tasq.run",
       "deployed": false,
       "required": [
-        "dedicated_billed_gcp_project",
-        "active_deployment_identity",
-        "dns_control",
         "exact_server_digest",
-        "exact_helper_image_digest",
-        "versioned_secret_manager_inputs"
+        "initialized_encrypted_volume",
+        "digest_bound_public_route_proof"
       ],
       "supportSla": null,
       "remoteEffectsEnabled": false
@@ -492,7 +500,7 @@
     "canonical_repository_control_verified": true,
     "public_source_launch_authorized": true,
     "npm_scope_control_verified": true,
-    "trusted_publishing_configured": false,
+    "trusted_publishing_configured": true,
     "tag_protection_configured": true,
     "license_and_third_party_notice_closure_verified": true,
     "candidate_targets_clean_room_certified": true,

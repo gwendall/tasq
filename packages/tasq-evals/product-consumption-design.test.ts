@@ -340,7 +340,7 @@ describe("TQ-601 product consumption design", () => {
       canonical_repository_control_verified: true,
       public_source_launch_authorized: true,
       npm_scope_control_verified: true,
-      trusted_publishing_configured: false,
+      trusted_publishing_configured: true,
       tag_protection_configured: true,
     });
     expect(releasePolicy).toMatchObject({
