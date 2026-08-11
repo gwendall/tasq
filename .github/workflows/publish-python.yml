@@ -36,6 +36,7 @@ jobs:
         with:
           ref: ${{ inputs.source_commit }}
           fetch-depth: 0
+          fetch-tags: true
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
@@ -54,15 +55,16 @@ jobs:
           test "$INPUT_CONFIRMATION" = "publish-tasq-python"
           [[ "$INPUT_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
           [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
-          test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"
           test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
-          test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          release_tag="v${INPUT_VERSION}"
+          test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"
+          test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"
           test "$(
-            gh release view "$GITHUB_REF_NAME" \
+            gh release view "$release_tag" \
               --repo "$GITHUB_REPOSITORY" \
               --json tagName \
               --jq .tagName
-          )" = "$GITHUB_REF_NAME"
+          )" = "$release_tag"
           bun scripts/release/verify-candidate-publication-authorization.ts \
             --surface pythonWheel \
             --version "$INPUT_VERSION" \
@@ -99,12 +101,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Test the dependency-free source client
         run: |
-          python -m unittest discover -s clients/python/tests -v
+          PYTHONPATH=clients/python PYTHONDONTWRITEBYTECODE=1 \
+            python -m unittest discover -s clients/python/tests -v
           pnpm --filter @tasq-internal/evals test -- python-remote-client.test.ts
           pnpm --filter @tasq-internal/evals test -- python-wheel-build.test.ts
-        env:
-          PYTHONPATH: clients/python
-          PYTHONDONTWRITEBYTECODE: "1"
       - name: Build deterministic wheel and metadata
         run: >-
           python scripts/release/build-python-wheel.py
@@ -227,8 +227,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p existing
+          release_tag="v${{ needs.authorize.outputs.version }}"
           assets="$(
-            gh release view "$GITHUB_REF_NAME" \
+            gh release view "$release_tag" \
               --repo "$GITHUB_REPOSITORY" \
               --json assets
           )"
@@ -241,13 +242,13 @@ jobs:
                 <<< "$assets"
             )"
             if test "$count" = 1; then
-              gh release download "$GITHUB_REF_NAME" \
+              gh release download "$release_tag" \
               --repo "$GITHUB_REPOSITORY" \
               --dir existing \
               --pattern "$name"
               cmp "$asset" "existing/$name"
             elif test "$count" = 0; then
-              gh release upload "$GITHUB_REF_NAME" "$asset" \
+              gh release upload "$release_tag" "$asset" \
                 --repo "$GITHUB_REPOSITORY"
             else
               echo "Release contains duplicate asset name: $name" >&2

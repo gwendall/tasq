@@ -15,8 +15,16 @@ source_commit="$3"
 [[ "$source_commit" =~ ^[a-f0-9]{40}$ ]]
 
 is_missing_manifest() {
+  local reference="$1"
+  local output
+  output="$(cat)"
+  if grep --fixed-strings --line-regexp --quiet \
+    "ERROR: ${reference}: not found" <<< "$output"; then
+    return 0
+  fi
   grep --extended-regexp --ignore-case --quiet \
-    '(^|[^[:alnum:]_])(MANIFEST_UNKNOWN|manifest unknown)([^[:alnum:]_]|$)|HTTP[^[:digit:]]*404([^[:digit:]].*)?manifest|manifest([^[:digit:]].*)?HTTP[^[:digit:]]*404'
+    '(^|[^[:alnum:]_])(MANIFEST_UNKNOWN|manifest unknown)([^[:alnum:]_]|$)|HTTP[^[:digit:]]*404([^[:digit:]].*)?manifest|manifest([^[:digit:]].*)?HTTP[^[:digit:]]*404' \
+    <<< "$output"
 }
 
 inspect_tag() {
@@ -43,7 +51,7 @@ inspect_tag() {
     return
   fi
 
-  if is_missing_manifest <<< "$output"; then
+  if is_missing_manifest "$reference" <<< "$output"; then
     printf 'absent\n'
     return
   fi

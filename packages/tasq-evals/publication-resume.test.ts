@@ -44,6 +44,10 @@ if test "\${1:-}" = "buildx" && test "\${2:-}" = "imagetools" && test "\${3:-}" 
       echo "MANIFEST_UNKNOWN: manifest unknown" >&2
       exit 1
       ;;
+    buildx-not-found)
+      echo "ERROR: $last: not found" >&2
+      exit 1
+      ;;
     matching)
       echo "Digest: ${digestA}"
       ;;
@@ -76,7 +80,7 @@ if test "\${1:-}" = "buildx" && test "\${2:-}" = "imagetools" && test "\${3:-}" 
       if test -f "\${FAKE_OCI_STATE:?}"; then
         echo "Digest: ${digestA}"
       else
-        echo "MANIFEST_UNKNOWN: manifest unknown" >&2
+        echo "ERROR: $last: not found" >&2
         exit 1
       fi
       ;;
@@ -112,6 +116,20 @@ describe("OCI publication resume", () => {
     const result = await run(
       ["bash", resolver, "ghcr.io/gwendall/tasq-server", version, commit],
       env("absent"),
+    );
+    expect(result.code, result.stderr).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual({
+      action: "build",
+      digest: null,
+      versionTagExists: false,
+      sourceTagExists: false,
+    });
+  });
+
+  test("accepts buildx not-found only when it names the exact requested tag", async () => {
+    const result = await run(
+      ["bash", resolver, "ghcr.io/gwendall/tasq-server", version, commit],
+      env("buildx-not-found"),
     );
     expect(result.code, result.stderr).toBe(0);
     expect(JSON.parse(result.stdout)).toEqual({

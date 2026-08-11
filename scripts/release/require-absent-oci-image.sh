@@ -18,9 +18,11 @@ for reference in "$@"; do
   fi
 
   # A registry miss is safe only when the registry explicitly identifies the
-  # missing object as a manifest. Generic "not found" output can come from the
-  # Docker CLI, a credential helper, the network, or another local dependency.
-  if printf '%s\n' "$output" |
+  # missing object as a manifest, or buildx binds "not found" to the exact
+  # requested reference. Generic "not found" output remains ambiguous.
+  if grep --fixed-strings --line-regexp --quiet \
+    "ERROR: ${reference}: not found" <<< "$output" ||
+    printf '%s\n' "$output" |
     grep --extended-regexp --ignore-case --quiet \
       '(^|[^[:alnum:]_])(MANIFEST_UNKNOWN|manifest unknown)([^[:alnum:]_]|$)|HTTP[^[:digit:]]*404([^[:digit:]].*)?manifest|manifest([^[:digit:]].*)?HTTP[^[:digit:]]*404'; then
     continue
