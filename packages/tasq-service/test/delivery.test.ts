@@ -11,7 +11,9 @@ import {
   getDeliverySink,
   listDeliveryOutbox,
   leaseNextDelivery,
+  leaseDeliveryBatch,
   completeDelivery,
+  completeDeliveryBatch,
   committedMutationCount,
   failDelivery,
   repairDelivery,
@@ -210,6 +212,46 @@ describe("transactional delivery outbox", () => {
         clock,
       });
       expect(committedMutationCount()).toBe(afterDomainCommit);
+    } finally {
+      await close();
+    }
+  });
+
+  it("leases and acknowledges a contiguous batch without weakening head-of-line order", async () => {
+    const { db, close, clock } = await freshDb();
+    try {
+      await ensureDeliverySink(db, sink, { clock });
+      const tasks = [];
+      for (const title of ["first", "second", "third"]) {
+        tasks.push(await createTask(db, { title }, { clock }));
+        clock.advance(1);
+      }
+      const batch = await leaseDeliveryBatch(db, sink.id, {
+        leaseOwner: "attention-worker", leaseMs: 100, maxItems: 2, clock,
+      });
+      expect(batch).toMatchObject({
+        contractVersion: "tasq.delivery-lease-batch.v1",
+        leaseOwner: "attention-worker",
+        items: [
+          { event: { entityId: tasks[0]!.id }, delivery: { attemptCount: 1 } },
+          { event: { entityId: tasks[1]!.id }, delivery: { attemptCount: 1 } },
+        ],
+      });
+      expect(await leaseNextDelivery(db, sink.id, {
+        leaseOwner: "other", leaseMs: 100, clock,
+      })).toBeNull();
+      await expect(completeDeliveryBatch(db, [
+        batch!.items[0]!.delivery.id,
+        batch!.items[1]!.delivery.id,
+      ], { leaseOwner: "other", clock })).rejects.toThrow(/wholly owned/);
+      expect((await listDeliveryOutbox(db, { sinkId: sink.id, status: "delivering" }))).toHaveLength(2);
+      const completed = await completeDeliveryBatch(db, batch!.items.map((item) => item.delivery.id), {
+        leaseOwner: "attention-worker", clock,
+      });
+      expect(completed.map((item) => item.status)).toEqual(["delivered", "delivered"]);
+      expect((await leaseNextDelivery(db, sink.id, {
+        leaseOwner: "other", leaseMs: 100, clock,
+      }))?.event.entityId).toBe(tasks[2]!.id);
     } finally {
       await close();
     }

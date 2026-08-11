@@ -32,6 +32,8 @@ Settlement and recourse over exact agreement, attempt and resolution facts:
 [`TQ-628_SETTLEMENT_RECOURSE.md`](TQ-628_SETTLEMENT_RECOURSE.md).
 Reference delegated-action recovery and derived attention projection:
 [`TQ-629_REFERENCE_DELEGATED_RUNNER.md`](TQ-629_REFERENCE_DELEGATED_RUNNER.md).
+Bounded input-required attention, do-not-disturb enforcement and cohort metrics:
+[`TQ-620_BOUNDED_ATTENTION.md`](TQ-620_BOUNDED_ATTENTION.md).
 Byte-bound evidence capture and exact portable outcome projections:
 [`TQ-630_EVIDENCE_OUTCOME_BUNDLES.md`](TQ-630_EVIDENCE_OUTCOME_BUNDLES.md).
 Exclusive experimental custody lineage and atomic handoff:

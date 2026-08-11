@@ -111,6 +111,16 @@ claim to infer provider cost, verify billing truth or convert currencies. The
 CLI exposes budget, record and summary commands plus typed machine refusals.
 No migration is added; TQ-608 remains an open publication dependency.
 
+TQ-620 now treats human attention as a bounded integration resource. Exact
+`input_required` requests batch into retry-stable, byte- and item-bounded
+envelopes; explicit absolute do-not-disturb intervals prevent all transport
+calls, including for full or deadline-due batches. Core leases contiguous
+outbox prefixes without weakening head-of-line ordering and atomically records
+a whole batch acknowledgement. Cohort comparison requires complete delivery
+coverage and external decision-quality ratings, so the notifier cannot relabel
+successful delivery as constant human judgment quality. Provider channels,
+calendars and quality evaluators remain integrations.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

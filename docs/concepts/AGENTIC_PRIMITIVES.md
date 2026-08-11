@@ -184,6 +184,11 @@ not become a cryptographic tracing implementation.
   belonging to that task. A validated task instead requires the exact current
   accepted decision, whose record binds those evidence IDs.
 - A task cannot become terminal while an attempt is active.
+- Human attention is an explicit bounded integration resource: immutable
+  `input_required` requests carry the exact decision-context digest, quiet
+  intervals defer transport, and batches preserve every request identity.
+  Delivery efficiency and externally assessed decision quality are measured
+  separately.
 - Terminal completion releases its claim; deletion cancels active attempts and
   releases claims atomically.
 - Agentic creates support durable idempotency keys.

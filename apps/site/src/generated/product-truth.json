@@ -177,6 +177,14 @@
       "authorityBoundary": "permit_and_receipt_required"
     },
     {
+      "id": "bounded_attention_webhook",
+      "support": "implemented_integration_required",
+      "transport": "signed_pinned_https_batch",
+      "entrypoint": "@tasq-internal/webhook-notifier planAttention and deliverAttentionPlan",
+      "mutations": false,
+      "authorityBoundary": "explicit_digest_bound_policy_dnd_always_wins_external_quality_evaluator"
+    },
+    {
       "id": "replication_kernel",
       "support": "implemented_integration_required",
       "transport": "integrator_supplied",
@@ -932,7 +940,7 @@
     },
     {
       "id": "TQ-620",
-      "status": "pending",
+      "status": "done",
       "milestone": "autonomous-direction",
       "outcome": "Human attention treated as a bounded resource: batched input_required requests and do-not-disturb windows at constant decision quality"
     },
@@ -1013,12 +1021,12 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "59d883addc8f39b753714db449d8b1057f9bc20b6bb523857d104f87185c02dc"
+      "sha256": "75d7bef8d456675e67a2d383bbe2c3dfa68d19dba906bd8a9cd4f5a4d495a88f"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "973489564bd637abd16b84da1fb6a790ef9a7e4e5775f07a3b7615d6d00602e7"
+      "sha256": "2852b458d418a10122f6fbc79c775fb6b33c309539c1556a4e0e30698161afa2"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

@@ -7,7 +7,7 @@
  * one write, even when an event is recorded through a low-level service call.
  */
 
-import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import {
   deliveryOutbox,
   deliverySink,
@@ -198,6 +198,17 @@ export interface LeasedDelivery {
   event: EventT;
 }
 
+export interface LeaseDeliveryBatchOptions extends LeaseNextDeliveryOptions {
+  maxItems: number;
+}
+
+export interface LeasedDeliveryBatch {
+  contractVersion: "tasq.delivery-lease-batch.v1";
+  items: LeasedDelivery[];
+  leaseOwner: string;
+  leaseExpiresAt: number;
+}
+
 function validateLeaseOwner(owner: string): void {
   if (!owner.trim() || owner.length > 500) {
     throw new Error("delivery leaseOwner must contain 1..500 characters");
@@ -295,6 +306,85 @@ export async function leaseNextDelivery(
   });
 }
 
+/**
+ * Lease a contiguous, bounded prefix of one sink's strict event-order queue.
+ * The first backoff, active lease or quarantine remains a head-of-line stop;
+ * batching never skips an unhealthy record to make the queue look healthy.
+ */
+export async function leaseDeliveryBatch(
+  db: TasqDb,
+  sinkId: string,
+  options: LeaseDeliveryBatchOptions,
+): Promise<LeasedDeliveryBatch | null> {
+  validateLease(options.leaseOwner, options.leaseMs);
+  if (!Number.isSafeInteger(options.maxItems) || options.maxItems < 1 || options.maxItems > 50) {
+    throw new Error("delivery maxItems must be an integer in 1..50");
+  }
+  const tenantId = options.tenantId ?? "gwendall";
+  const now = serviceNow(options, options.now);
+  const leaseExpiresAt = now + options.leaseMs;
+  if (!Number.isSafeInteger(leaseExpiresAt)) {
+    throw new Error("delivery lease expiry exceeds safe unix-ms range");
+  }
+  if (!isLeaseableHead(await findDeliveryHead(db, tenantId, sinkId), now)) return null;
+
+  return runOperationalTransaction(db, async (tx) => {
+    const queue = await tx.select().from(deliveryOutbox).where(and(
+      eq(deliveryOutbox.tenantId, tenantId),
+      eq(deliveryOutbox.sinkId, sinkId),
+      ne(deliveryOutbox.status, "delivered"),
+    )).orderBy(asc(deliveryOutbox.eventSequence)).limit(options.maxItems);
+    const prefix: typeof queue = [];
+    for (const candidate of queue) {
+      if (!isLeaseableHead(candidate, now)) break;
+      prefix.push(candidate);
+    }
+    if (prefix.length === 0) return null;
+    const ids = prefix.map((candidate) => candidate.id);
+    const leasedRows = await tx.update(deliveryOutbox).set({
+      status: "delivering",
+      attemptCount: sql`${deliveryOutbox.attemptCount} + 1`,
+      leaseOwner: options.leaseOwner,
+      leaseExpiresAt,
+      lastError: null,
+      deliveredAt: null,
+      quarantinedAt: null,
+      updatedAt: now,
+    }).where(and(
+      eq(deliveryOutbox.tenantId, tenantId),
+      eq(deliveryOutbox.sinkId, sinkId),
+      inArray(deliveryOutbox.id, ids),
+    )).returning();
+    if (leasedRows.length !== prefix.length) throw new Error("Delivery batch lease lost queue ownership");
+    const leasedById = new Map(leasedRows.map((row) => [row.id, DeliveryOutboxZ.parse(row)]));
+    const eventRows = await tx.select().from(event).where(and(
+      eq(event.tenantId, tenantId),
+      inArray(event.sequence, prefix.map((candidate) => candidate.eventSequence)),
+    ));
+    const eventsBySequence = new Map(eventRows.map((row) => [row.sequence, row]));
+    const items = prefix.map((candidate) => {
+      const delivery = leasedById.get(candidate.id);
+      const source = eventsBySequence.get(candidate.eventSequence);
+      if (!delivery || !source || source.id !== candidate.eventId) {
+        throw new Error(`Delivery ${candidate.id} points at a missing or mismatched event`);
+      }
+      return {
+        delivery,
+        event: EventZ.parse({
+          ...source,
+          payload: typeof source.payload === "string" ? JSON.parse(source.payload) : source.payload,
+        }),
+      };
+    });
+    return {
+      contractVersion: "tasq.delivery-lease-batch.v1" as const,
+      items,
+      leaseOwner: options.leaseOwner,
+      leaseExpiresAt,
+    };
+  });
+}
+
 export interface OwnedDeliveryOptions extends DeliveryClockOptions {
   leaseOwner: string;
 }
@@ -325,6 +415,40 @@ export async function completeDelivery(
     )).returning();
     if (!rows[0]) throw new Error(`Delivery lease is no longer owned: ${id}`);
     return DeliveryOutboxZ.parse(rows[0]);
+  });
+}
+
+/** Atomically acknowledge every item from one externally committed batch. */
+export async function completeDeliveryBatch(
+  db: TasqDb,
+  ids: string[],
+  options: OwnedDeliveryOptions,
+): Promise<DeliveryOutboxT[]> {
+  validateLeaseOwner(options.leaseOwner);
+  if (ids.length < 1 || ids.length > 50 || new Set(ids).size !== ids.length
+    || ids.some((id) => !id.trim() || id.length > 1_500)) {
+    throw new Error("delivery batch ids must contain 1..50 unique bounded identities");
+  }
+  const tenantId = options.tenantId ?? "gwendall";
+  const now = serviceNow(options, options.now);
+  return runOperationalTransaction(db, async (tx) => {
+    const rows = await tx.update(deliveryOutbox).set({
+      status: "delivered",
+      leaseOwner: null,
+      leaseExpiresAt: null,
+      lastError: null,
+      deliveredAt: now,
+      quarantinedAt: null,
+      updatedAt: now,
+    }).where(and(
+      eq(deliveryOutbox.tenantId, tenantId),
+      inArray(deliveryOutbox.id, ids),
+      eq(deliveryOutbox.status, "delivering"),
+      eq(deliveryOutbox.leaseOwner, options.leaseOwner),
+    )).returning();
+    if (rows.length !== ids.length) throw new Error("Delivery batch lease is no longer wholly owned");
+    const byId = new Map(rows.map((row) => [row.id, DeliveryOutboxZ.parse(row)]));
+    return ids.map((id) => byId.get(id)!);
   });
 }
 
