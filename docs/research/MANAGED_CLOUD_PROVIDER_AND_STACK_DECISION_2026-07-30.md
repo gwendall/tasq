@@ -1,5 +1,10 @@
-# Décision provider et stack pour le premier Tasq Managed Cloud
+# Décision provider et stack pour Tasq Managed Cloud à exigences HA
 
+> **Superseded for the first hosted beta by
+> [ADR-018](../decisions/ADR-018_FLY_PRIVATE_BETA.md).** This document remains
+> the reference architecture if measured availability, isolation or recovery
+> requirements justify GKE. It is no longer the first deployment step.
+>
 > Note de recherche, 2026-07-30. Les sources externes sont limitées aux
 > documentations officielles des fournisseurs, de Kubernetes et de SQLite.
 > Cette note est une recommandation de décision : elle ne modifie aucun contrat
@@ -7,8 +12,8 @@
 
 ## Décision exécutive
 
-Choisir **Google Cloud** pour la première beta privée Tasq Managed Cloud, avec
-une architecture Europe-first :
+Si les exigences HA déclenchent cette architecture, choisir **Google Cloud**
+pour Tasq Managed Cloud avec une architecture Europe-first :
 
 - région active : `europe-west9` (Paris) ;
 - région de reprise : `europe-west1` (Belgique) ;

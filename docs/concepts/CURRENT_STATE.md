@@ -18,6 +18,14 @@ contract. No immutable public Server image, managed Cloud deployment or public
 remote endpoint ships yet.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
+ADR-018 selects Fly for the first hosted private-beta Server instead of the
+earlier GKE-first proposal. The `tasq-api` Fly app, one encrypted Paris volume,
+ingress, certificate request, `api.tasq.run`/`cloud.tasq.run` DNS and the GitHub
+`beta` environment are provisioned. No Machine is deployed: the exact protected
+Server image is still absent, so neither hostname is a shipped Server or Cloud
+claim. The profile and fail-closed workflow live under
+`deploy/fly-private-beta/`.
+
 TQ-621 adds a public, source-linked comparison of same-backlog behavior across
 Tasq, Claude Code, GitHub Copilot, Codex, Cursor, MCP and A2A. It does not turn
 source candidates into shipped features: the comparison is pinned to Tasq

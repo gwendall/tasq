@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "cloud.tasq.run"
+        }
+      ],
+      "destination": "https://api.tasq.run/console",
+      "permanent": false
+    }
+  ]
+}
