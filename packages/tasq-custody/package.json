@@ -1,0 +1,17 @@
+{
+  "name": "@tasq-internal/custody",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Experimental provider-neutral custody lineage Module.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "test": "bun test", "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "@tasq-run/schema": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": { "@types/bun": "latest" }
+}

@@ -20,5 +20,6 @@ boundary; they are not required for a first product evaluation.
 | [`ADR-014`](ADR-014_MANDATES_COMPILE_TO_AUTHORITY.md) | Readable mandates compile to existing grants and delegations without a second authority truth |
 | [`ADR-015`](ADR-015_EXACT_AGREEMENTS_COMPILE_TO_COMMITMENTS.md) | Exact multi-party consent compiles atomically to reciprocal commitments and resolution policy |
 | [`ADR-016`](ADR-016_SETTLEMENT_IS_A_NEW_DECISION.md) | Settlement and recourse create new obligations without rewriting completion or bypassing effect authority |
+| [`ADR-017`](ADR-017_CUSTODY_IS_AN_EXPERIMENTAL_LINEAGE.md) | Exclusive custody handoff lineage remains a private experimental Module, distinct from leases, observations and authority |
 | [`ADR-UK-006`](ADR-UK-006_COLLABORATION_RECORDS.md) | Universal collaboration records |
 | [`ADR-UK-EXT`](ADR-UK-EXT_EXTENSION_REGISTRY.md) | Extension identity, registry, and trust |

@@ -34,6 +34,8 @@ Reference delegated-action recovery and derived attention projection:
 [`TQ-629_REFERENCE_DELEGATED_RUNNER.md`](TQ-629_REFERENCE_DELEGATED_RUNNER.md).
 Byte-bound evidence capture and exact portable outcome projections:
 [`TQ-630_EVIDENCE_OUTCOME_BUNDLES.md`](TQ-630_EVIDENCE_OUTCOME_BUNDLES.md).
+Exclusive experimental custody lineage and atomic handoff:
+[`TQ-631_EXPERIMENTAL_CUSTODY.md`](TQ-631_EXPERIMENTAL_CUSTODY.md).
 Authenticated offline replication and Python remote SDK:
 [`TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`](TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md)
 and [`TQ-810_REMOTE_SDKS.md`](TQ-810_REMOTE_SDKS.md).

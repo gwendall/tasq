@@ -970,16 +970,17 @@
     },
     {
       "id": "TQ-631",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-622", "TQ-624", "TQ-625"],
       "outcome": "Prototype Custody as an experimental first-class Module with single-current-custodian strategy, atomic accepted handoff, condition evidence and append-only incident lineage before any Kernel admission claim",
-      "remaining": [
-        "compare_lease_signed_observation_and_first_class_handoff_designs",
-        "freeze_offer_accept_refuse_current_and_incident_interface",
-        "prevent_two_accepted_successors_from_one_custody_state",
-        "pass_parcel_equipment_and_cryptographic_control_scenarios",
-        "record_explicit_graduate_revise_or_reject_decision_after_cross_domain_evidence"
+      "remaining": [],
+      "evidence": [
+        "docs/decisions/ADR-017_CUSTODY_IS_AN_EXPERIMENTAL_LINEAGE.md",
+        "docs/contracts/TQ-631_EXPERIMENTAL_CUSTODY.md",
+        "packages/tasq-custody/src/store.ts",
+        "packages/tasq-custody/src/decision.ts",
+        "packages/tasq-custody/test/custody.test.ts"
       ]
     },
     {

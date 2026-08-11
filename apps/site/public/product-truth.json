@@ -932,7 +932,7 @@
     },
     {
       "id": "TQ-631",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "outcome": "Prototype Custody as an experimental first-class Module with single-current-custodian strategy, atomic accepted handoff, condition evidence and append-only incident lineage before any Kernel admission claim"
     },
@@ -952,7 +952,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "9d55b0da0820fb603983c703b5804b1cdacbf09478070eb94dfccda3115fbd14"
+      "sha256": "51f063895570e6ab9319c21c9a7445dd8fe41ccbc276f7f6fb96d2c4fd1cd7d6"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

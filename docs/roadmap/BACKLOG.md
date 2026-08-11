@@ -520,11 +520,13 @@ publication sequence and create no current support claim.
   attempt, evidence, resolution and effect records plus external authority,
   custody and raw-byte references or omissions; signatures authenticate only
   canonical bytes, and live re-read distinguishes stale from missing records.
-- **TQ-631 — pending:** prototype Custody behind an experimental first-class
-  Module Interface. Compare lease, signed-observation and handoff designs;
-  prevent two accepted successors from one custody state; pass parcel,
-  equipment and cryptographic-control scenarios before deciding whether the
-  concept graduates, changes or is rejected.
+- **TQ-631 — done:** ADR-017 rejects leases as custody and signed observations
+  as successor election, then graduates atomic first-class handoff to a private
+  experimental Module. Exact target/condition/evidence binding, offer,
+  accept/refuse, one-successor election, incident lineage, retry, expiry and
+  create-only portability pass parcel, equipment and cryptographic-control
+  scenarios. Kernel/remote admission, physical truth, ownership and effect
+  authority remain explicitly unclaimed.
 - **TQ-632 — pending:** certify the same Interfaces across physical
   verification, remote hands, software deployment, procurement, custody and a
   compromised agent. Only after those black-box, restart, portable-data and

@@ -575,6 +575,7 @@ effects. A source candidate is not a deployed managed service.
 │   ├── tasq-cloud-control-plane/ ── private provider-neutral managed-service candidate
 │   ├── tasq-delegated-runner/ ── private restart-safe delegated-action runtime + derived inbox
 │   ├── tasq-evidence-bundles/ ── private byte-bound capture + exact outcome projection
+│   ├── tasq-custody/ ── private experimental custody lineage + portable handoff store
 │   ├── tasq-authority/ ── pure hosted identity/authorization contracts + evaluator
 │   ├── tasq-server/ ── durable authority control plane + opaque ledger router
 │   ├── tasq-service/   ── @tasq-internal/local-service   (Core forwarders + Local compatibility + tests)
