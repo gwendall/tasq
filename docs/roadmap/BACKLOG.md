@@ -447,10 +447,13 @@ reaching $4,200 and $47,000 motivate the cost bound.
   attempt. This source candidate adds no migration and makes no billing-truth
   claim. It becomes supported only when the exact implementation ships in the
   authorized `v0.4.0` artifacts.
-- **TQ-619 — pending:** a task records the observation that motivates it, and
-  that premise is refutable with the same proposal, challenge and resolution
-  mechanics completion already uses. A task whose premise died is invalidated
-  with a trace, not deleted.
+- **TQ-619 — candidate done, publication gate:** a task can atomically record
+  the exact observation and proposition that motivate it. That premise is
+  refutable through proposal, challenge and independent decision mechanics;
+  accepted refutation invalidates actionability, releases active authority and
+  preserves the commitment plus its full history. The Local/Core source is
+  complete and becomes supported only in the exact authorized `v0.4.0`
+  artifacts.
 - **TQ-620 — done:** human attention is a bounded resource. Digest-bound
   `input_required` requests batch through the existing durable outbox; absolute
   do-not-disturb intervals suppress transport, and cohort metrics compare

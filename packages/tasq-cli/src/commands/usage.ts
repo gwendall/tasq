@@ -25,8 +25,12 @@ export const COMPLETION_MODE_REQUIREMENTS =
   --validated requires --completion evidence`;
 
 export const ADD_USAGE =
-  `add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--idempotency-key <key>]
+  `add <title> [--area <slug>] [--goal <id>] [--project <id>] [--parent <task-id>] [--description <text>] [--next <text>] [--success <criteria>] [--completion assertion|evidence] [--validated] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>] [--premise-observation <id> --premise <text> --premise-validators <actors>] [--premise-adjudicators <actors>] [--premise-allow-self] [--idempotency-key <key>]
 ${COMPLETION_MODE_REQUIREMENTS}`;
+export const PREMISE_USAGE = `premise show <task-id>
+premise propose <task-id> --verdict uphold|refute --evidence <ids> --reason <text> --idempotency-key <key>
+premise challenge <task-id> --proposal <id> --counter-evidence <ids> --reason <text> --idempotency-key <key>
+premise decide <task-id> --proposal <id> --outcome accepted|rejected|challenged|indeterminate --reason <text> --idempotency-key <key>`;
 export const SHOW_USAGE = "show <id>";
 export const INSPECT_USAGE = "inspect <id> [--json]   canonical profile-neutral commitment graph";
 export const DISCOVER_USAGE = `discover [show] [--json]
@@ -247,6 +251,8 @@ export function commandUsage(command: string): string | undefined {
       return CLAIM_USAGE;
     case "cost":
       return COST_USAGE;
+    case "premise":
+      return PREMISE_USAGE;
     case "release":
       return RELEASE_USAGE;
     case "attempt":

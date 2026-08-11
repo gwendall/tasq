@@ -213,6 +213,11 @@ export const CANONICAL_EVENT_TYPES = [
   "evidence_trust_revoked",
   "external_ref_appended",
   "instance_generated", // recurrence materialized the next instance (SPEC §6.4-H)
+  "premise_attached",
+  "premise_invalidated",
+  "premise_resolution_challenged",
+  "premise_resolution_decided",
+  "premise_resolution_proposed",
   "linked", // task ↔ source_ref / project / goal (reserved, not currently emitted)
   "note_added", // reserved, not currently emitted
   "reconciliation_recorded",

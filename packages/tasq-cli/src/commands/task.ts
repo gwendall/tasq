@@ -3,6 +3,7 @@ import {
   cancelTask,
   completeTask,
   createTask,
+  createTaskWithPremise,
   getAreaBySlug,
   getTask,
   listDependencies,
@@ -11,6 +12,7 @@ import {
   listTaskEvidence,
   listTasks,
   justUnblocked,
+  localPrincipalId,
   reopenTask,
   restoreTask,
   softDeleteTask,
@@ -141,9 +143,7 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
     const hierarchy = await resolveHierarchyFlags(rt, args);
     if (hierarchy === null) return 1;
 
-    const t = await createTask(
-      rt.db,
-      {
+    const taskInput = {
         title,
         ...hierarchy,
         nextAction: args.string("next") ?? null,
@@ -159,9 +159,29 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
         scheduledAt: args.string("schedule") ? parseDateArg(args.string("schedule")!) : null,
         ...parseRecurrenceArgs(args),
         ...(args.string("metadata") ? { metadata: parseMetadataArg(args.string("metadata")!) } : {}),
-      },
-      { ...rt.ctx, idempotencyKey: args.string("idempotency-key") },
-    );
+      };
+    const premiseObservationId = args.string("premise-observation");
+    const premiseText = args.string("premise");
+    const premiseValidators = args.string("premise-validators");
+    const hasPremiseFlag = Boolean(premiseObservationId || premiseText || premiseValidators
+      || args.string("premise-adjudicators") || args.bool("premise-allow-self"));
+    if (hasPremiseFlag && (!premiseObservationId || !premiseText || !premiseValidators)) {
+      throw new Error("premise-backed add requires --premise-observation, --premise and --premise-validators");
+    }
+    const context = { ...rt.ctx, idempotencyKey: args.string("idempotency-key") };
+    const t = hasPremiseFlag
+      ? (await createTaskWithPremise(rt.db, taskInput, {
+          observationId: premiseObservationId,
+          proposition: premiseText,
+          eligibleValidatorPrincipalIds: premiseValidators!.split(",")
+            .map((alias) => alias.trim()).filter(Boolean)
+            .map((alias) => localPrincipalId(rt.config.tenantId, alias)),
+          adjudicatorPrincipalIds: (args.string("premise-adjudicators") ?? "").split(",")
+            .map((alias) => alias.trim()).filter(Boolean)
+            .map((alias) => localPrincipalId(rt.config.tenantId, alias)),
+          allowSelfValidation: args.bool("premise-allow-self"),
+        }, context)).task
+      : await createTask(rt.db, taskInput, context);
     await regenerateProjection(rt);
 
     if (args.bool("json", "j")) printJson(t);

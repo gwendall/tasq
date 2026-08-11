@@ -121,6 +121,15 @@ coverage and external decision-quality ratings, so the notifier cannot relabel
 successful delivery as constant human judgment quality. Provider channels,
 calendars and quality evaluators remain integrations.
 
+TQ-619 now has a source candidate for observation-backed task premises.
+Premise-backed creation atomically binds one source observation and explicit
+proposition to a new task. Task-scoped evidence supports uphold/refute
+proposals, challenges and independent decisions; challenged acceptance
+requires a named adjudicator. Accepted refutation appends a durable
+invalidation, releases claims, cancels active attempts, denies later claims and
+removes the task from `next` without deleting or rewriting it. The surface is
+Local/Core only and remains unpublished.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

@@ -36,6 +36,8 @@ Bounded input-required attention, do-not-disturb enforcement and cohort metrics:
 [`TQ-620_BOUNDED_ATTENTION.md`](TQ-620_BOUNDED_ATTENTION.md).
 Byte-bound evidence capture and exact portable outcome projections:
 [`TQ-630_EVIDENCE_OUTCOME_BUNDLES.md`](TQ-630_EVIDENCE_OUTCOME_BUNDLES.md).
+Observation-backed, independently refutable task intake:
+[`TQ-619_REFUTABLE_TASK_PREMISES.md`](TQ-619_REFUTABLE_TASK_PREMISES.md).
 Exclusive experimental custody lineage and atomic handoff:
 [`TQ-631_EXPERIMENTAL_CUSTODY.md`](TQ-631_EXPERIMENTAL_CUSTODY.md).
 Cross-domain delegated-action certification and the bounded physical-verification reference Profile:

@@ -1,0 +1,39 @@
+{
+  "contractVersion": "tasq.task-premise-certification.v1",
+  "ticket": "TQ-619",
+  "status": "source_candidate_complete_not_published",
+  "storeFormat": 32,
+  "migrationAdded": false,
+  "intake": {
+    "observationAndTaskAtomic": true,
+    "observationDigestBound": true,
+    "premiseOptionalByDefault": true,
+    "remoteImplicitCreation": false
+  },
+  "resolution": {
+    "proposal": true,
+    "challenge": true,
+    "independentDecision": true,
+    "challengedAcceptanceRequiresAdjudicator": true,
+    "selfValidationDefault": "denied",
+    "evidenceTaskBound": true
+  },
+  "invalidation": {
+    "taskDeleted": false,
+    "taskStatusRewritten": false,
+    "claimReleased": true,
+    "activeAttemptsCancelled": true,
+    "futureClaimsDenied": true,
+    "nextExcluded": true,
+    "historyRetained": true
+  },
+  "storage": {
+    "primitive": "reserved_digest_bound_external_refs",
+    "genericBypass": "denied",
+    "portableByExistingExternalRefContract": true
+  },
+  "evidence": [
+    "packages/tasq-service/test/premises.test.ts",
+    "packages/tasq-cli/test/premise.test.ts"
+  ]
+}

@@ -636,6 +636,18 @@
         "aggregate_gross_cost",
         "refuse_or_release_at_bound"
       ]
+    },
+    {
+      "id": "refutable_task_premise",
+      "support": "implemented_candidate_not_published",
+      "steps": [
+        "ingest_observation",
+        "atomic_task_and_premise_create",
+        "propose_uphold_or_refute",
+        "challenge",
+        "independent_decision",
+        "invalidate_without_delete"
+      ]
     }
   ],
   "criticalTruths": [
@@ -675,6 +687,7 @@
     "physical_verification_profile_is_private_reference_only_and_supplies_no_worker_provider_access_identity_or_remote_effect",
     "mid_task_discovery_capture_is_local_explicit_non_blocking_and_not_yet_in_the_published_release",
     "attempt_cost_is_observed_from_explicit_meter_receipts_not_inferred_or_claimed_as_billing_truth",
+    "premise_invalidation_withdraws_actionability_without_deleting_or_rewriting_the_commitment",
     "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
     "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"
@@ -934,7 +947,7 @@
     },
     {
       "id": "TQ-619",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "autonomous-direction",
       "outcome": "A task records the observation that motivates it, and that premise is refutable with the same mechanics completion resolution already uses"
     },
@@ -1021,12 +1034,12 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "75d7bef8d456675e67a2d383bbe2c3dfa68d19dba906bd8a9cd4f5a4d495a88f"
+      "sha256": "a07ff1d9b4d73ee7638a74774dd6e4745763c73ac2d1e650a23c7a7ec0b22d0a"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "2852b458d418a10122f6fbc79c775fb6b33c309539c1556a4e0e30698161afa2"
+      "sha256": "ff1f50871d8aba6b16269d35414eff5e2636ccd2dabcaf293c125158fc2c9aaa"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
