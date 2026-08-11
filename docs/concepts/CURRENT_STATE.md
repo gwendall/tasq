@@ -71,6 +71,18 @@ not prove physical possession or grant ownership, access or effect authority.
 ADR-017 graduates the design to a shared experimental Module only; Kernel,
 remote product and public distribution support remain unchanged.
 
+TQ-632 composes the delegated-action Interfaces into a private
+`physical-verification/property-exterior@1` reference Profile and one
+cross-domain certifier. Six scenarios—physical verification, remote hands,
+software deployment, procurement, custody and a compromised agent—share exact
+target, authority, execution, validation, recovery and portability invariants.
+The hostile matrix denies target drift, revoked/denied routing, no-access,
+partial/timeout completion, self-review and concurrent custody successors. One
+end-to-end profile run proves restart replay, independent review and Core plus
+custody import. Support is `reference_only`: there is still no worker supply,
+provider availability, site access, identity proof, payment execution, hosted
+Profile or remote-effect enablement.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

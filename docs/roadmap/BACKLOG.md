@@ -527,11 +527,14 @@ publication sequence and create no current support claim.
   create-only portability pass parcel, equipment and cryptographic-control
   scenarios. Kernel/remote admission, physical truth, ownership and effect
   authority remain explicitly unclaimed.
-- **TQ-632 — pending:** certify the same Interfaces across physical
-  verification, remote hands, software deployment, procurement, custody and a
-  compromised agent. Only after those black-box, restart, portable-data and
-  hostile tests pass may Tasq publish a physical-verification reference Profile
-  or change current support truth.
+- **TQ-632 — done:** one closed certifier passes physical verification, remote
+  hands, software deployment, procurement, custody and compromised-agent
+  denial without provider-specific Core changes. Hostile target drift,
+  no-access, partial/timeout, revocation, self-review, unsafe redispatch and
+  concurrent handoff paths fail closed; restart replay, independent review and
+  Core/custody portable imports pass. The private property-exterior Profile is
+  published in source as `reference_only`, with no supply, marketplace,
+  provider, access, identity, price, physical-truth or remote-effect claim.
 
 ### 8. Build managed Tasq Cloud
 
