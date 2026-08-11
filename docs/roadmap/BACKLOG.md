@@ -23,12 +23,14 @@ public adoption through Server and Cloud are in
 
 ### 2026-08-11 external-activation handoff
 
-The complete `v0.4.0` public-alpha source candidate is merged on `main`. CI run
-[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) passes
-the full Linux/macOS, browser and secret-scan matrix. Protected migration run
-[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) binds
-commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5` and passes the exact
-`v0.2.0`/`v0.3.0` to candidate-format-28 replay on both supported targets.
+The complete `v0.4.0` public-alpha source candidate is merged on `main`. The
+latest behavior-changing merge, TQ-633 at
+`bbf9bde9a23764feb2e3c81aac039fe566e2f5dc`, passes protected CI run
+[31455469251](https://github.com/gwendall/tasq/actions/runs/31455469251): the
+full Linux/macOS, browser and secret-scan matrix. Protected migration run
+[31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496) binds
+commit `e27451d3510c71a9f875a48991eb2fd80496bfdb` and passes the exact
+`v0.2.0`/`v0.3.0` to candidate-format-32 replay on both supported targets.
 
 The eighth identity now exists as unsupported
 `@tasq-run/client@0.1.0-alpha.0`. A public read at 2026-08-11T02:57:46Z found
@@ -52,13 +54,11 @@ Independent blind-human adoption and retained dogfood continue after the alpha
 and block only human-usability closure and stable graduation. Remote effects
 remain disabled.
 
-Repository handoff verification passed documentation contracts, generated
-site-truth consistency, typechecking and every functional suite reached before
-the public-package reproducibility check. That final check hit its 240-second
-local test limit twice while building candidates (`exit 143`), once inside the
-full handoff gate and once in isolation; it reported no content mismatch. Treat
-the next protected PR CI result as the independent closure verdict, and do not
-describe the local handoff gate as fully green unless that check passes there.
+The latest behavior-changing protected CI run above passed documentation and
+generated-truth checks, all typechecks, every functional suite, public-package
+reproducibility, Linux/macOS verification, browser suites and the secret scan.
+That protected result supersedes the earlier local timeout as the handoff
+closure verdict; the registry and deployment gates below remain external.
 
 ## What is already proven
 

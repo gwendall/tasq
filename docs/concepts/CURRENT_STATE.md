@@ -424,9 +424,11 @@ exact `v0.4.0` public-alpha release, its Server image, Python wheel,
 workflows have not run, so authorization changes no shipped surface and
 published `v0.3.0` remains seven packages.
 
-The release handoff is an external-activation checkpoint. Main CI
-[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) and the
-two-target protected migration run above are green. No `v0.4.0` tag exists.
+The release handoff is an external-activation checkpoint. Latest
+behavior-changing protected CI
+[31455469251](https://github.com/gwendall/tasq/actions/runs/31455469251) and the
+current two-target format-32 protected migration run above are green. No
+`v0.4.0` tag exists.
 The one-shot `@tasq-run/client@0.1.0-alpha.0` identity was created from
 protected `main`, but a public registry check at 2026-08-11T02:57:46Z found
 both `alpha-bootstrap` and `latest` resolving to that unsupported bootstrap.
