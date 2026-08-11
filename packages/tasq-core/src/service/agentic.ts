@@ -43,6 +43,7 @@ import {
   type PreparedIdempotency,
 } from "./idempotency.js";
 import { assertTaskCostAllowsClaim } from "./costs.js";
+import { assertTaskPremiseActionable } from "./premises.js";
 
 const MIN_LEASE_MS = 1_000;
 const MAX_LEASE_MS = 7 * 24 * 60 * 60 * 1_000;
@@ -181,6 +182,7 @@ export async function acquireTaskClaim(
     if (linkedTask.status === "done" || linkedTask.status === "cancelled") {
       throw new Error(`Cannot claim terminal task ${taskId} (${linkedTask.status})`);
     }
+    await assertTaskPremiseActionable(tx, taskId, tenantId);
 
     const rows = await tx
       .select()

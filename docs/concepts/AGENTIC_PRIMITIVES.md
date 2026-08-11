@@ -152,6 +152,10 @@ not become a cryptographic tracing implementation.
   expose observed gross cost without provider vocabulary. Strict metering
   refuses renewal when the current claim has no receipt; a reached hard bound
   refuses renewal or atomically releases a claim racing the receipt.
+- An optional task premise separates an immutable motivating observation from
+  the refutable proposition that justified intake. Proposal, challenge and
+  independent decision remain separate append-only records. Accepted
+  refutation withdraws claims and actionability without deleting the task.
 - `task_evidence` is append-only, linked to an optional attempt, and can
   supersede earlier evidence without rewriting it.
 - `task.validationRequired` opts an evidence commitment into the ADR-005

@@ -58,6 +58,7 @@ import {
   goal,
   area,
   project,
+  externalRef,
   Task as TaskZ,
   Goal as GoalZ,
   Area as AreaZ,
@@ -75,6 +76,7 @@ import { unresolvedBlockerMap } from "./service/dependencies.js";
 import { activeTaskClaimMap } from "./service/agentic.js";
 import { scoreTask } from "@tasq-internal/life-planning-profile";
 import { serviceNow } from "./util/clock.js";
+import { TASK_PREMISE_INVALIDATION_URI } from "@tasq-run/core/internal/service/premises";
 
 export {
   LIFE_PRIORITIZER_CONFIG as PRIORITIZER_CONFIG,
@@ -164,6 +166,17 @@ export async function pickNext(
   if (taskRows.length === 0) return [];
 
   let tasks: TaskT[] = taskRows.map((r) => TaskZ.parse(parseRow(r)));
+
+  // A refuted motivating premise withdraws execution authority without
+  // deleting or rewriting the commitment. Keep it inspectable, but never
+  // return it as autonomous next work.
+  const invalidatedRows = await db.select({ taskId: externalRef.recordId }).from(externalRef).where(and(
+    eq(externalRef.tenantId, tenantId),
+    eq(externalRef.recordType, "commitment"),
+    eq(externalRef.resourceType, TASK_PREMISE_INVALIDATION_URI),
+  ));
+  const invalidatedTaskIds = new Set(invalidatedRows.map((row) => row.taskId));
+  tasks = tasks.filter((candidate) => !invalidatedTaskIds.has(candidate.id));
 
   // Default defer filter (SPEC §5.2.1): a task scheduled for the future is
   // hidden from the daily push until its `scheduledAt` arrives. Survivors with

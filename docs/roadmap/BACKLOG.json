@@ -803,14 +803,18 @@
     },
     {
       "id": "TQ-619",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-608", "TQ-612"],
       "outcome": "A task records the observation that motivates it, and that premise is refutable with the same mechanics completion resolution already uses",
       "remaining": [
-        "motivating_observation_attachable_at_task_creation",
-        "premise_refutable_via_proposal_challenge_resolution",
-        "invalidation_leaves_a_trace_instead_of_a_deletion"
+        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.md",
+        "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.json",
+        "packages/tasq-service/test/premises.test.ts",
+        "packages/tasq-cli/test/premise.test.ts"
       ]
     },
     {

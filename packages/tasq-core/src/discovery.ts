@@ -121,6 +121,10 @@ const KERNEL_CAPABILITIES: readonly CapabilityDefinition[] = [
     list_decisions: "listValidationDecisions",
     inspect_chain: "getCompletionResolutionChain",
   } },
+  { name: "task-premises", operations: {
+    create_with_task: "createTaskWithPremise", get_state: "getTaskPremiseState",
+    propose: "proposeTaskPremise", challenge: "challengeTaskPremise", decide: "decideTaskPremise",
+  } },
   { name: "signed-statements", operations: {
     accept_with_host_verifier: "acceptSignedStatement",
     get: "getSignedStatement",

@@ -340,6 +340,15 @@ A refused `tasq claim ... --json` writes this typed problem to stdout and exits
 }
 ```
 
+## Task premise
+
+`tasq premise show <task> --json` returns
+`tasq.task-premise-state.v1`: the unchanged task, one observation-bound
+premise, ordered proposals, challenges and decisions, an optional invalidation,
+and explicit `actionable`. Proposal, challenge and decision mutations return
+`{ id, value, replayed }`. An accepted refutation never masquerades as task
+deletion or completion.
+
 ## Composite task view
 
 `tasq show <task> --json` returns all `TaskV1` keys plus exactly these v1

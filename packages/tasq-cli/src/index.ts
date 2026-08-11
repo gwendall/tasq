@@ -66,6 +66,7 @@ import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
 import { costCmd } from "./commands/cost.js";
+import { premiseCmd } from "./commands/premise.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -91,7 +92,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     area: ["slug", "importance", "cadence", "description", "name", "cascade"],
     goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
     project: ["area", "goal", "status", "description", "title", "cascade"],
-    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "idempotency-key"],
+    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
     list: ["area", "goal", "project", "status", "limit", "include-scheduled", "include-deferred"],
     show: [],
     inspect: [],
@@ -132,6 +133,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
     evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
     resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
+    premise: ["verdict", "evidence", "reason", "proposal", "counter-evidence", "outcome", "idempotency-key"],
     signature: [],
     wait: ["kind", "parameters", "schema-version", "not-before", "deadline", "fallback-kind", "fallback-spec", "fallback-task", "supersedes", "idempotency-key", "status", "reason", "at", "matcher-version", "limit", "ascending"],
     observation: ["source", "external-event-id", "kind", "payload", "schema-version", "occurred-at", "verification-level", "verification-method", "raw-ref", "digest", "metadata", "occurred-from", "occurred-to", "after-recorded-at", "after-id", "limit", "ascending"],
@@ -215,6 +217,8 @@ ${color.bold("AGENT COORDINATION")}
   signature bindings [record]    inspect typed proof bindings (read-only)
   resolution contract|trust|propose|challenge|attest|settle|adjudicate|show
                                  independently validate completion
+  premise show|propose|challenge|decide
+                                 inspect or refute why a commitment exists
   resource acquire|renew|release|verify|get|list|events|sweep
                                  coordinate any opaque external resource key
   mcp --tenant <space> --actor <label> [--capabilities read,coordinate]
@@ -471,6 +475,8 @@ export async function main(
         return await evidenceCmd(args);
       case "resolution":
         return await resolutionCmd(args, clock);
+      case "premise":
+        return await premiseCmd(args);
       case "signature":
         return await signatureCmd(args);
       case "wait":

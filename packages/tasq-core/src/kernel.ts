@@ -252,6 +252,29 @@ export type {
   PruneIdempotencyOptions,
 } from "./service/idempotency.js";
 
+export {
+  TASK_PREMISE_SYSTEM_URI,
+  TASK_PREMISE_URI,
+  TASK_PREMISE_PROPOSAL_URI,
+  TASK_PREMISE_CHALLENGE_URI,
+  TASK_PREMISE_DECISION_URI,
+  TASK_PREMISE_INVALIDATION_URI,
+  TaskPremise,
+  TaskPremiseProposal,
+  TaskPremiseChallenge,
+  TaskPremiseDecision,
+  TaskPremiseInvalidation,
+  createTaskWithPremise,
+  getTaskPremiseState,
+  proposeTaskPremise,
+  challengeTaskPremise,
+  decideTaskPremise,
+} from "./service/premises.js";
+export type {
+  TaskPremiseState,
+  PremiseContext,
+} from "./service/premises.js";
+
 // ADR-003 is profile-neutral; compatibility-profile records are deliberately
 // outside its current projection and therefore never advertised as synced.
 export * from "./service/replication.js";

@@ -213,6 +213,16 @@ describe("canonical Tasq roadmap", () => {
         "packages/tasq-cli/test/cost.test.ts",
       ],
     });
+    expect(roadmap.items.find(({ id }) => id === "TQ-619")).toMatchObject({
+      status: "candidate_done_publication_gate",
+      remaining: ["publish_exact_implementation_in_authorized_v0.4.0_artifacts"],
+      evidence: [
+        "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.md",
+        "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.json",
+        "packages/tasq-service/test/premises.test.ts",
+        "packages/tasq-cli/test/premise.test.ts",
+      ],
+    });
     for (const id of ["TQ-806", "TQ-810", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
       const item = roadmap.items.find((candidate) => candidate.id === id);
       expect(item?.status, `${id}: source candidate status`).toBe(
