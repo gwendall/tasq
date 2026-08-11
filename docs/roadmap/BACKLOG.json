@@ -27,7 +27,8 @@
     "settlement_never_rewrites_completion",
     "new_kernel_primitives_require_cross_domain_admission",
     "stable_package_release_requires_operational_hardening_and_external_evidence",
-    "published_claims_require_external_evidence"
+    "published_claims_require_external_evidence",
+    "backlog_release_scope_never_implies_live_work_ownership"
   ],
   "externalGates": {
     "privateMultiAppDogfood": {
@@ -246,7 +247,10 @@
     "TQ-630",
     "TQ-631",
     "TQ-632",
-    "TQ-633"
+    "TQ-633",
+    "TQ-634",
+    "TQ-635",
+    "TQ-636"
   ],
   "items": [
     {
@@ -1040,6 +1044,58 @@
         ".github/workflows/bootstrap-npm-client.yml",
         ".github/workflows/release.yml",
         "packages/tasq-evals/npm-bootstrap.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-634",
+      "status": "candidate_done_publication_gate",
+      "milestone": "local-adoption",
+      "dependsOn": ["TQ-321"],
+      "outcome": "Select a schema-valid coordination space for one canonical directory tree without changing the operator's global default or writing repository state",
+      "remaining": [
+        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-634_DIRECTORY_SPACE_SELECTION.md",
+        "docs/contracts/TQ-634_DIRECTORY_SPACE_SELECTION.json",
+        "packages/tasq-cli/src/commands/use.ts",
+        "packages/tasq-cli/test/local-workflow.test.ts"
+      ]
+    },
+    {
+      "id": "TQ-635",
+      "status": "candidate_done_publication_gate",
+      "milestone": "agent-adoption",
+      "dependsOn": ["TQ-321"],
+      "outcome": "Generate one versioned digest-bound AGENTS.md block from static protocol text only, with idempotent writes, hand-edit protection, CI states and an explicit ledger-versus-backlog authority split",
+      "remaining": [
+        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-635_MANAGED_AGENT_INSTRUCTIONS.md",
+        "docs/contracts/TQ-635_MANAGED_AGENT_INSTRUCTIONS.json",
+        "packages/tasq-cli/src/commands/agent-instructions.ts",
+        "packages/tasq-cli/test/local-workflow.test.ts",
+        "packages/tasq-evals/documentation-contract.test.ts",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "TQ-636",
+      "status": "candidate_done_publication_gate",
+      "milestone": "feedback-loop",
+      "dependsOn": ["TQ-812"],
+      "outcome": "Capture actionable secret-free CLI feedback locally in one line while offline, then explicitly reconcile and publish a bounded batch to GitHub without granting issue activity completion authority",
+      "remaining": [
+        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-636_OFFLINE_FEEDBACK.md",
+        "docs/contracts/TQ-636_OFFLINE_FEEDBACK.json",
+        "packages/tasq-cli/src/commands/feedback.ts",
+        "packages/tasq-cli/test/local-workflow.test.ts",
+        "packages/tasq-github-bridge/src/index.ts",
+        "packages/tasq-github-bridge/test/github-bridge.test.ts"
       ]
     }
   ]

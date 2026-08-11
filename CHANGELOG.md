@@ -25,6 +25,13 @@ release history selected by ADR-008.
 
 ### Added
 
+- Add private directory-scoped space selection with `tasq use`, preserving
+  explicit flag/environment precedence and the operator's global defaults.
+- Add digest-bound `tasq agent instructions` generation with idempotent atomic
+  writes, hand-edit protection and distinct CI exits for missing, stale and
+  modified blocks.
+- Add offline-first `tasq feedback` capture with secret-free failure context,
+  bounded private storage and explicit idempotence-marked GitHub batch push.
 - Add a revision-guarded, atomic TQ-607 dogfood tracker for baselines, active
   use, consumer journeys, resilience drills, friction, critical failures and
   the final `go`, `extend` or `no_go` decision.

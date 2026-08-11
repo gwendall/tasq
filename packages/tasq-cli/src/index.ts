@@ -67,6 +67,8 @@ import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
 import { costCmd } from "./commands/cost.js";
 import { premiseCmd } from "./commands/premise.js";
+import { useCmd } from "./commands/use.js";
+import { feedbackCmd, recordLastFailure } from "./commands/feedback.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -77,8 +79,10 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
     setup: ["space"],
+    use: ["clear"],
+    feedback: ["details", "repo", "limit", "dry-run"],
     demo: [],
-    agent: ["space", "capabilities", "executable", "target", "apply"],
+    agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
     onboard: ["space", "capabilities"],
     resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
     mcp: ["capabilities"],
@@ -151,11 +155,13 @@ ${color.bold("USAGE")}
 ${color.bold("SETUP")}
   setup --space <id> --actor <label>
                                 persist one explicit human space + attribution
+  use [<space>|--clear]          bind/show this directory's space; keep global default
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes
   demo [--json]                 isolated add → list → done journey; no live data
   init                          create ~/.tasq/db.sqlite + config
   config [show|get|set <k> <v>] manage ~/.tasq/config.json
+  feedback "summary"             capture actionable context locally, even offline
 
 ${color.bold("AREAS")}
   area list                     list all areas
@@ -206,6 +212,8 @@ ${color.bold("DEPENDENCIES")}
 ${color.bold("AGENT COORDINATION")}
   agent install codex|claude|generic --space <id> --actor <label>
                                  preview an exact host-bound MCP registration
+  agent instructions --space <id> [--write|--check]
+                                 manage the versioned Tasq block in AGENTS.md
   claim <id> [--for 30m]         atomically claim work (repeat to heartbeat)
   release <id>                   release the current claim
   attempt start <id> [...]       record one concrete execution
@@ -360,6 +368,10 @@ export async function main(
         return await init(args);
       case "setup":
         return await setupCmd(args, clock);
+      case "use":
+        return await useCmd(args);
+      case "feedback":
+        return await feedbackCmd(args, clock, VERSION);
       case "demo":
         return await demoCmd(args, executable);
       case "agent":
@@ -636,15 +648,29 @@ export async function runTasqCli(
 ): Promise<number> {
   try {
     const code = await runWithRetry(argv, clock, executable);
-    if (code !== 0) printCaptureSuggestion(argv, executable, code);
+    if (code !== 0) {
+      if (argv[0] !== "feedback") tryRecordLastFailure(argv, code, clock);
+      printCaptureSuggestion(argv, executable, code);
+    }
     return code;
   } catch (err) {
     if (argv[0] === "onboard" && argv.some((value) => value === "--json" || value === "-j" || value.startsWith("--json="))) {
       return printOnboardProblem(err, executable);
     }
     printError(errorMessage(err));
+    if (argv[0] !== "feedback") tryRecordLastFailure(argv, 1, clock);
     printCaptureSuggestion(argv, executable, 1);
     return 1;
+  }
+}
+
+/** Failure context is useful but can never replace the command's real error. */
+function tryRecordLastFailure(argv: string[], exitCode: number, clock: Clock): void {
+  try {
+    recordLastFailure(argv, exitCode, clock);
+  } catch {
+    // An unwritable/unsafe TASQ_HOME is often the failure being reported.
+    // Preserve that primary exit and message instead of recursively failing.
   }
 }
 

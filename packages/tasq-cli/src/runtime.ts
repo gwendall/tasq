@@ -20,7 +20,7 @@ import {
 import { chmodSync, existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash, randomUUID } from "node:crypto";
-import { configUrl, ensureDbDir, loadConfig, type TasqConfig } from "./config.js";
+import { configUrl, ensureDbDir, loadConfig, resolveEffectiveSpace, type TasqConfig } from "./config.js";
 import {
   appendJournalEvent,
   readLeadingCheckpoint,
@@ -77,9 +77,14 @@ export async function openRuntime(
   options: OpenRuntimeOptions = {},
 ): Promise<Runtime> {
   const loaded = loadConfig();
+  const effectiveSpace = resolveEffectiveSpace({
+    config: loaded,
+    explicit: tenantOverride,
+    environment: process.env.TASQ_TENANT,
+  });
   const config = {
     ...loaded,
-    tenantId: tenantOverride ?? process.env.TASQ_TENANT ?? loaded.tenantId,
+    tenantId: effectiveSpace.space,
   };
   const dbUrl = resolveDbUrl(config);
   if (process.env.TASQ_DB_URL) {

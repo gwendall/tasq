@@ -7,6 +7,10 @@
         "description": "persist one explicit human space + attribution"
       },
       {
+        "usage": "use [<space>|--clear]",
+        "description": "bind/show this directory's space; keep global default"
+      },
+      {
         "usage": "onboard --space <id> --actor <label> --json",
         "description": "create/join a space + return executable recipes"
       },
@@ -21,6 +25,10 @@
       {
         "usage": "config [show|get|set <k> <v>] manage ~/.tasq/config.json",
         "description": ""
+      },
+      {
+        "usage": "feedback \"summary\"",
+        "description": "capture actionable context locally, even offline"
       }
     ]
   },
@@ -163,6 +171,10 @@
       {
         "usage": "agent install codex|claude|generic --space <id> --actor <label>",
         "description": "preview an exact host-bound MCP registration"
+      },
+      {
+        "usage": "agent instructions --space <id> [--write|--check]",
+        "description": "manage the versioned Tasq block in AGENTS.md"
       },
       {
         "usage": "claim <id> [--for 30m]",

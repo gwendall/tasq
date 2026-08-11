@@ -20,6 +20,9 @@
       {
         "kind": "Added",
         "items": [
+          "Add private directory-scoped space selection with `tasq use`, preserving explicit flag/environment precedence and the operator's global defaults.",
+          "Add digest-bound `tasq agent instructions` generation with idempotent atomic writes, hand-edit protection and distinct CI exits for missing, stale and modified blocks.",
+          "Add offline-first `tasq feedback` capture with secret-free failure context, bounded private storage and explicit idempotence-marked GitHub batch push.",
           "Add a revision-guarded, atomic TQ-607 dogfood tracker for baselines, active use, consumer journeys, resilience drills, friction, critical failures and the final `go`, `extend` or `no_go` decision.",
           "Add machine-readable coding-agent preflight, one-command handoff verification, a documentation map, an executable onboarding eval and a safety-focused pull request template.",
           "Add a concise standalone `SKILL.md` that delegates exact agent workflows to the versioned `tasq onboard` guide and remove installed-help references to repository files that may not exist beside the executable.",

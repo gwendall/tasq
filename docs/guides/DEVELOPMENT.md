@@ -20,7 +20,9 @@ git status --short --branch
 
 The root should contain `package.json`, `pnpm-workspace.yaml`, `AGENTS.md`,
 `SKILL.md`, `docs/`, `packages/` and `apps/`. Product truth lives under
-`docs/concepts/`; work order lives under `docs/roadmap/`.
+`docs/concepts/`; versioned release scope and dependencies live under
+`docs/roadmap/`. Live ownership is separate: when the managed `AGENTS.md` block
+names a Tasq space, that ledger owns current claims and attempts.
 Preserve unrelated local changes if the worktree is not clean. Run the
 machine-readable preflight after verifying the remote:
 
@@ -65,8 +67,8 @@ Read in this order:
    [PRODUCT_SURFACE_MATRIX.json](../concepts/PRODUCT_SURFACE_MATRIX.json) — product shapes,
    consumers and machine-readable support truth.
 4. [ARCHITECTURE.md](../concepts/ARCHITECTURE.md) — layers, dependencies and invariants.
-5. [BACKLOG.md](../roadmap/BACKLOG.md) and [BACKLOG.json](../roadmap/BACKLOG.json) — ordered work and
-   external gates.
+5. [BACKLOG.md](../roadmap/BACKLOG.md) and [BACKLOG.json](../roadmap/BACKLOG.json) — versioned
+   release scope, dependencies and external gates, not live ownership.
 6. [SECURITY.md](../../SECURITY.md) — trust boundaries and vulnerability handling.
 
 Read the owning ADR or TQ contract before changing a specific subsystem. The
@@ -78,8 +80,11 @@ it does not override the current repository or current product truth.
 
 ## 4. Choose work without inventing authority
 
-- Use [`docs/roadmap/BACKLOG.json`](../roadmap/BACKLOG.json) for order,
-  dependencies and status.
+- Use [`docs/roadmap/BACKLOG.json`](../roadmap/BACKLOG.json) for versioned
+  release order, dependencies and external-gate status.
+- If the managed root `AGENTS.md` block names a Tasq space, use that ledger for
+  the live queue: inspect, claim and record attempts there. A backlog status is
+  not a claim and a ledger claim does not change public support truth.
 - Use
   [`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json)
   for current support claims.
