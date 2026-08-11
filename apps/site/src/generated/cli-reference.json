@@ -1,0 +1,422 @@
+[
+  {
+    "heading": "SETUP",
+    "entries": [
+      {
+        "usage": "setup --space <id> --actor <label>",
+        "description": "persist one explicit human space + attribution"
+      },
+      {
+        "usage": "onboard --space <id> --actor <label> --json",
+        "description": "create/join a space + return executable recipes"
+      },
+      {
+        "usage": "demo [--json]",
+        "description": "isolated add → list → done journey; no live data"
+      },
+      {
+        "usage": "init",
+        "description": "create ~/.tasq/db.sqlite + config"
+      },
+      {
+        "usage": "config [show|get|set <k> <v>] manage ~/.tasq/config.json",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "heading": "AREAS",
+    "entries": [
+      {
+        "usage": "area list",
+        "description": "list all areas"
+      },
+      {
+        "usage": "area show <slug>",
+        "description": "show area details"
+      },
+      {
+        "usage": "area add <name> --slug <s> [--importance 1-5] [--cadence <text>]",
+        "description": ""
+      },
+      {
+        "usage": "area update <slug> [...]",
+        "description": ""
+      },
+      {
+        "usage": "area delete <slug>",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "heading": "GOALS",
+    "entries": [
+      {
+        "usage": "goal list [--area <slug>] [--status active|paused|done|abandoned]",
+        "description": ""
+      },
+      {
+        "usage": "goal add <title> --area <slug> [--horizon <text>] [--importance 1-5]",
+        "description": ""
+      },
+      {
+        "usage": "goal update <id> [--status ...] [--horizon ...] [--importance ...]",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "heading": "PROJECTS",
+    "entries": [
+      {
+        "usage": "project list [--status ...] [--goal <id>]",
+        "description": ""
+      },
+      {
+        "usage": "project add <title> [--goal <id>] [--area <slug>]",
+        "description": ""
+      },
+      {
+        "usage": "project update <id> [--status ...]",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "heading": "TASKS — the core verbs",
+    "entries": [
+      {
+        "usage": "add <title> [--area <slug>] [--goal <id>] [--project <id>]",
+        "description": "[--next <text>] [--due <iso>] [--est <min>] [--priority 1-5] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--success <criteria>] [--completion assertion|evidence] [--idempotency-key <key>] --completion evidence requires --success; --validated requires --completion evidence"
+      },
+      {
+        "usage": "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>]",
+        "description": ""
+      },
+      {
+        "usage": "show <id>",
+        "description": ""
+      },
+      {
+        "usage": "inspect <id> [--json]",
+        "description": "canonical commitment graph + resume cursor"
+      },
+      {
+        "usage": "update <id> [--title ...] [--next ...] [--due ...] [--recurrence ...] [...]",
+        "description": ""
+      },
+      {
+        "usage": "start <id> [--note <text>]",
+        "description": ""
+      },
+      {
+        "usage": "done <id> [--evidence <id,...>] [--note <text>] [--source <text>] [--at <iso>]",
+        "description": ""
+      },
+      {
+        "usage": "block <id> --reason <text>",
+        "description": ""
+      },
+      {
+        "usage": "unblock <id>",
+        "description": ""
+      },
+      {
+        "usage": "cancel <id> [--reason <text>]",
+        "description": ""
+      },
+      {
+        "usage": "reopen <id>",
+        "description": ""
+      },
+      {
+        "usage": "delete <id>",
+        "description": ""
+      },
+      {
+        "usage": "restore <id>",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "heading": "DEPENDENCIES",
+    "entries": [
+      {
+        "usage": "depend <id> --on <other-id> [--type blocks|discovered_from|relates_to|duplicates]",
+        "description": "record that <id> depends on <other-id>"
+      },
+      {
+        "usage": "undepend <id> --on <other-id> [--type ...]",
+        "description": "remove a dependency edge"
+      },
+      {
+        "usage": "capture <id> <title> [--context <json>] [--idempotency-key <key>]",
+        "description": "atomically file linked work; keep current claim"
+      }
+    ]
+  },
+  {
+    "heading": "AGENT COORDINATION",
+    "entries": [
+      {
+        "usage": "agent install codex|claude|generic --space <id> --actor <label>",
+        "description": "preview an exact host-bound MCP registration"
+      },
+      {
+        "usage": "claim <id> [--for 30m]",
+        "description": "atomically claim work (repeat to heartbeat)"
+      },
+      {
+        "usage": "release <id>",
+        "description": "release the current claim"
+      },
+      {
+        "usage": "attempt start <id> [...]",
+        "description": "record one concrete execution"
+      },
+      {
+        "usage": "attempt succeed|fail <id>",
+        "description": "close an execution attempt"
+      },
+      {
+        "usage": "evidence add <id> --kind ...",
+        "description": "attach an observable receipt"
+      },
+      {
+        "usage": "evidence list [<id>]",
+        "description": "inspect completion evidence"
+      },
+      {
+        "usage": "cost budget|record|show ...",
+        "description": "bound and inspect observed attempt cost"
+      },
+      {
+        "usage": "signature show <id>",
+        "description": "inspect exact accepted signed proof"
+      },
+      {
+        "usage": "signature bindings [record]",
+        "description": "inspect typed proof bindings (read-only)"
+      },
+      {
+        "usage": "resolution contract|trust|propose|challenge|attest|settle|adjudicate|show",
+        "description": "independently validate completion"
+      },
+      {
+        "usage": "premise show|propose|challenge|decide",
+        "description": "inspect or refute why a commitment exists"
+      },
+      {
+        "usage": "resource acquire|renew|release|verify|get|list|events|sweep",
+        "description": "coordinate any opaque external resource key"
+      },
+      {
+        "usage": "mcp --tenant <space> --actor <label> [--capabilities read,coordinate]",
+        "description": "run a capability-scoped local MCP stdio server"
+      },
+      {
+        "usage": "web --tenant <space> [--host 127.0.0.1] [--port 4137]",
+        "description": "explicit foreground read-only Local Console"
+      },
+      {
+        "usage": "web status --tenant <space> --json",
+        "description": "prove a registered Console listener is live"
+      }
+    ]
+  },
+  {
+    "heading": "REMOTE SERVER",
+    "entries": [
+      {
+        "usage": "remote enroll --endpoint <https-url> --workspace <id> [--profile <name>]",
+        "description": "redeem TASQ_ENROLLMENT_TOKEN into a private profile"
+      },
+      {
+        "usage": "remote status [--profile <name>]",
+        "description": ""
+      },
+      {
+        "usage": "remote list|show|events|operations [--profile <name>] [--json]",
+        "description": ""
+      },
+      {
+        "usage": "remote call <operation> --resource-kind <kind> --resource-id <id>",
+        "description": "--input <json> --idempotency-key <key> [--expected-revision <n>]"
+      },
+      {
+        "usage": "remote logout [--profile <name>]",
+        "description": "remove local credentials; server revocation is separate"
+      }
+    ]
+  },
+  {
+    "heading": "WAIT / OBSERVE / RECONCILE",
+    "entries": [
+      {
+        "usage": "wait create <task> --kind <kind> --parameters <json> [--deadline <iso>]",
+        "description": ""
+      },
+      {
+        "usage": "wait list [task]",
+        "description": "inspect typed external expectations"
+      },
+      {
+        "usage": "wait cancel <wait> --reason <text>",
+        "description": ""
+      },
+      {
+        "usage": "wait sweep [--at <iso>]",
+        "description": "reconcile queued facts, then expire due waits"
+      },
+      {
+        "usage": "observation ingest --source <s> --external-event-id <id>",
+        "description": "--kind <kind> --payload <json> --occurred-at <iso>"
+      },
+      {
+        "usage": "observation list|show [...]",
+        "description": "inspect immutable normalized facts"
+      },
+      {
+        "usage": "reconcile <wait> <observation>",
+        "description": "run the frozen deterministic matcher"
+      },
+      {
+        "usage": "reconcile list [wait]",
+        "description": "inspect immutable decisions and effects"
+      }
+    ]
+  },
+  {
+    "heading": "MACHINE DISCOVERY",
+    "entries": [
+      {
+        "usage": "discover [--json]",
+        "description": "capabilities, extensions, schemas + cursors"
+      },
+      {
+        "usage": "discover schema <resource-id>",
+        "description": "fetch one digest-bound JSON Schema"
+      },
+      {
+        "usage": "discover negotiate --hello <json>",
+        "description": "strict cold-start compatibility handshake"
+      }
+    ]
+  },
+  {
+    "heading": "VIEWS",
+    "entries": [
+      {
+        "usage": "context [--max-records N] [--max-tokens N] [--json]",
+        "description": "bounded reason-traced universal state packet"
+      },
+      {
+        "usage": "summary add|list|show [...]",
+        "description": "source-bound compact context for closed work"
+      },
+      {
+        "usage": "context-link attach|detach|list|show [...]",
+        "description": "reusable external context pointers; no content"
+      },
+      {
+        "usage": "next [--limit N] [--area <slug>]",
+        "description": "prioritized next-action list"
+      },
+      {
+        "usage": "search \"<query>\"",
+        "description": "substring search across task text"
+      },
+      {
+        "usage": "inbox",
+        "description": "tasks without project"
+      },
+      {
+        "usage": "tree <id>",
+        "description": "show a task + its sub-tasks"
+      },
+      {
+        "usage": "task status <id>",
+        "description": "progress + ETA for a task w/ sub-tasks"
+      },
+      {
+        "usage": "project status <id>",
+        "description": "progress + ETA for a project"
+      }
+    ]
+  },
+  {
+    "heading": "AUDIT",
+    "entries": [
+      {
+        "usage": "event list [--since <iso>] [--entity-id <id>] [--actor <name>]",
+        "description": "[--entity-type area|goal|project|task] [--after-sequence N] [--ascending]"
+      }
+    ]
+  },
+  {
+    "heading": "PROJECTION",
+    "entries": [
+      {
+        "usage": "projection [--target <path>]",
+        "description": "regenerate markdown projection (writes to config.projectionTarget if no --target)"
+      }
+    ]
+  },
+  {
+    "heading": "DURABILITY",
+    "entries": [
+      {
+        "usage": "backup [<path>] [--rotate N]",
+        "description": "snapshot DB to ~/.tasq/snapshots/db-<ts>.sqlite (keeps last N snapshots if --rotate is set)"
+      },
+      {
+        "usage": "export [<path>]",
+        "description": "bounded portable workspace export (not a backup)"
+      },
+      {
+        "usage": "import <export.json> --db <new-db-path>",
+        "description": "validate fully, then create one new store"
+      },
+      {
+        "usage": "doctor [--fix-permissions] [--repair-outbox]",
+        "description": "verify/repair delivery, journal and private modes"
+      },
+      {
+        "usage": "journal checkpoint --accept-database --reason <text>",
+        "description": "archive history and accept the DB cursor baseline"
+      }
+    ]
+  },
+  {
+    "heading": "META",
+    "entries": [
+      {
+        "usage": "version",
+        "description": "print version"
+      },
+      {
+        "usage": "help [command]",
+        "description": "this message"
+      }
+    ]
+  },
+  {
+    "heading": "FLAGS",
+    "entries": [
+      {
+        "usage": "--json / -j",
+        "description": "machine-readable JSON output"
+      },
+      {
+        "usage": "--actor <name>",
+        "description": "override default actor"
+      },
+      {
+        "usage": "--tenant <id>",
+        "description": "override default tenant (rare)"
+      }
+    ]
+  }
+]

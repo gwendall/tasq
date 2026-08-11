@@ -452,6 +452,63 @@ function parseChangelog(source: string): Array<{
 const changelog = parseChangelog(changelogSource);
 const changelogSerialized = `${JSON.stringify(changelog, null, 2)}\n`;
 const changelogOutputPaths = [resolve(scriptDirectory, "../src/generated/changelog.json")];
+// ── CLI reference ──────────────────────────────────────────────────────────
+// Generated from the CLI's actual plain-text help output so the page cannot
+// drift from the executable interface. Parsing TypeScript source here would
+// silently couple public truth to one presentation implementation.
+const cliIndexPath = resolve(repoRoot, "packages/tasq-cli/src/index.ts");
+const cliHelpProcess = Bun.spawn([process.execPath, cliIndexPath, "--help"], {
+  cwd: repoRoot,
+  env: { ...process.env, NO_COLOR: "1" },
+  stdout: "pipe",
+  stderr: "pipe",
+});
+const [cliHelpExitCode, cliHelpOutput, cliHelpError] = await Promise.all([
+  cliHelpProcess.exited,
+  new Response(cliHelpProcess.stdout).text(),
+  new Response(cliHelpProcess.stderr).text(),
+]);
+if (cliHelpExitCode !== 0) {
+  throw new Error(`CLI help failed (${cliHelpExitCode}): ${cliHelpError.trim()}`);
+}
+
+function parseCliReference(output: string): Array<{
+  heading: string;
+  entries: Array<{ usage: string; description: string }>;
+}> {
+  const lines = output.split("\n");
+
+  const sections: Array<{ heading: string; entries: Array<{ usage: string; description: string }> }> = [];
+  let current: { heading: string; entries: Array<{ usage: string; description: string }> } | null = null;
+
+  for (const raw of lines) {
+    const headingMatch = /^([A-Z][A-Z /]*(?:—.*)?)$/.exec(raw.trim());
+    if (headingMatch) {
+      current = { heading: headingMatch[1]!.trim(), entries: [] };
+      sections.push(current);
+      continue;
+    }
+    if (!current) continue;
+    if (!raw.startsWith("  ") || raw.trim() === "") continue;
+
+    const body = raw.slice(2).trimEnd();
+    if (body.startsWith(" ")) {
+      // Continuation of the previous entry's description.
+      const last = current.entries.at(-1);
+      if (last) last.description = `${last.description} ${body.trim()}`.trim();
+      continue;
+    }
+    const split = /^(\S.*?)\s{2,}(\S.*)$/.exec(body);
+    if (split) current.entries.push({ usage: split[1]!.trim(), description: split[2]!.trim() });
+    else current.entries.push({ usage: body.trim(), description: "" });
+  }
+
+  return sections.filter((section) => section.entries.length > 0 && section.heading !== "USAGE");
+}
+
+const cliReference = parseCliReference(cliHelpOutput);
+const cliReferenceSerialized = `${JSON.stringify(cliReference, null, 2)}\n`;
+const cliReferenceOutputPaths = [resolve(scriptDirectory, "../src/generated/cli-reference.json")];
 
 async function checkOutputs(paths: string[], expected: string): Promise<void> {
   for (const outputPath of paths) {
@@ -469,6 +526,7 @@ if (process.argv.includes("--stdout")) {
   await checkOutputs(adoptionOutputPaths, adoptionSerialized);
   await checkOutputs(installerOutputPaths, installerSerialized);
   await checkOutputs(changelogOutputPaths, changelogSerialized);
+  await checkOutputs(cliReferenceOutputPaths, cliReferenceSerialized);
   for (const entry of publicEntries) {
     await checkOutputs([entry.outputPath], entry.serialized);
   }
@@ -479,5 +537,6 @@ if (process.argv.includes("--stdout")) {
     ...installerOutputPaths.map((outputPath) => writeFile(outputPath, installerSerialized, { encoding: "utf8", mode: 0o755 })),
     ...publicEntries.map(({ outputPath, serialized }) => writeFile(outputPath, serialized, "utf8")),
     ...changelogOutputPaths.map((outputPath) => writeFile(outputPath, changelogSerialized, "utf8")),
+    ...cliReferenceOutputPaths.map((outputPath) => writeFile(outputPath, cliReferenceSerialized, "utf8")),
   ]);
 }

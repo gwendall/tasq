@@ -8,7 +8,16 @@ const site = productTruth.release.website;
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/agents", "/compare", "/status", "/changelog", "/docs", ...docPages.map((page) => `/docs/${page.slug}`)];
+  const routes = [
+    "",
+    "/agents",
+    "/compare",
+    "/status",
+    "/changelog",
+    "/docs",
+    "/docs/cli",
+    ...docPages.map((page) => `/docs/${page.slug}`),
+  ];
   return routes.map((route) => ({
     url: `${site}${route}`,
     changeFrequency: "weekly",
