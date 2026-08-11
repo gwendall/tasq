@@ -103,18 +103,19 @@ operation through real adopters, not more repository-only architecture.
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — source candidate complete; format-32 protected replay open.** The
+- **TQ-608 — source candidate complete; published-v0.4 replay open.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
   support bounded create-only portable import. A real file-size quota proves
   snapshot failure before schema mutation. Exact `v0.3.0` bytes migrate the
   populated format-5 fixture on both targets. The exact `v0.2.0`/`v0.3.0` to
-  candidate-format-28 N-2 harness passed locally and in protected two-target
-  CI, but migrations 29 through 32 superseded that exact candidate. The format-32 harness
-  passes locally; its protected two-target rerun and the later exact published
-  `v0.4.0` replay remain open. No prior pass grants a current public support
-  claim.
+  candidate-format-28 N-2 harness was superseded by migrations 29 through 32.
+  The format-32 harness passed against source commit
+  `e27451d3510c71a9f875a48991eb2fd80496bfdb` in protected Linux and macOS run
+  [31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496).
+  Only candidate artifact attestations and the exact published `v0.4.0` replay
+  remain open. No source-candidate pass grants a public support claim.
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -433,7 +434,8 @@ prevent it - locks plus shared state do
 (<https://arxiv.org/html/2606.19616v1>). Public postmortems of uncapped agents
 reaching $4,200 and $47,000 motivate the cost bound.
 
-- **TQ-617 — pending:** `discovered_from` as a first-class dependency type plus
+- **TQ-617 — source candidate complete; v0.4 publication gate remains:**
+  `discovered_from` is a first-class relation plus
   a zero-cost capture command: an agent that finds work mid-task files it as a
   linked task without releasing its claim or widening its diff, and the CLI
   prints the ready capture command at the moment of a refusal or error.

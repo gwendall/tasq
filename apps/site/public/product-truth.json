@@ -901,7 +901,7 @@
     },
     {
       "id": "TQ-617",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "autonomous-direction",
       "outcome": "Mid-task discoveries become first-class linked work: a discovered_from dependency type plus a zero-cost capture command that never releases the discovering claim"
     },
@@ -1005,7 +1005,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "33c5a018f0bc0b920f4668fba62aecdf322fd7dcf0d8f177718a42352619aeb9"
+      "sha256": "f9fb932b8406243ad592649ecc96a2c53107e9dc9f4fea1d59b43c41bbe0e8c6"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

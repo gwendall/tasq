@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.discovery-capture-certification.v1",
   "ticket": "TQ-617",
-  "status": "source_candidate_complete_release_dependency_open",
+  "status": "source_candidate_complete_publication_gate_open",
   "dependency": "TQ-608",
   "storeFormat": 32,
   "migrationAdded": false,
@@ -31,6 +31,14 @@
     "packages/tasq-service/test/discovery-capture.test.ts",
     "packages/tasq-service/test/dependencies.test.ts",
     "packages/tasq-cli/test/capture.test.ts"
+  ],
+  "dependencyEvidence": {
+    "format32ProtectedReplay": "passed",
+    "sourceCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447846496"
+  },
+  "remaining": [
+    "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
   ],
   "supportClaim": "source_candidate_not_published"
 }

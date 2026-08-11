@@ -1,6 +1,6 @@
 # TQ-617 — Atomic discovery capture
 
-> **Status:** source candidate complete; TQ-608 release dependency open
+> **Status:** source candidate complete; authorized v0.4 publication open
 > **Date:** 2026-08-11
 > **Machine certificate:** [`TQ-617_DISCOVERY_CAPTURE.json`](TQ-617_DISCOVERY_CAPTURE.json)
 
@@ -69,5 +69,6 @@ claim intact. `capture` itself never prints another capture recipe.
 - package isolation and surface checks keep the command out of remote/MCP
   product claims.
 
-The implementation is not shipped until TQ-608 certifies and publishes the
-authorized v0.4 artifact. Source completion does not satisfy that dependency.
+TQ-608's format-32 protected source-candidate replay has passed on Linux and
+macOS. The implementation is not shipped until the authorized v0.4 artifacts
+are published and replayed; source completion does not satisfy that gate.
