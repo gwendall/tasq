@@ -16,7 +16,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
 COPY packages ./packages
 RUN pnpm install --frozen-lockfile --prod
 
-RUN addgroup -S tasq && adduser -S -G tasq -h /var/lib/tasq tasq \
+RUN addgroup -g 10001 -S tasq && adduser -u 10001 -S -G tasq -h /var/lib/tasq tasq \
   && mkdir -p /etc/tasq /var/lib/tasq \
   && chown -R tasq:tasq /etc/tasq /var/lib/tasq /app
 

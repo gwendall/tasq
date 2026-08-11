@@ -46,9 +46,10 @@ yet. Resume in this order:
    create immutable tag `v0.4.0` and let `release.yml` replace it with all eight
    exact npm packages and native assets; verify the public dist-tags, then run
    the protected Server, Python and downloaded-byte certification workflows;
-4. deploy the experimental single-zone GCP profile only after a dedicated
-   billed project, active deployment identity, `experimental.tasq.run` DNS
-   control and exact Server/helper image digests exist.
+4. deploy the provisioned Fly private-beta profile from the exact protected
+   Server digest. The Fly app, Paris volume, CI environment and
+   `api.tasq.run`/`cloud.tasq.run` DNS now exist; no Machine is started until
+   the digest-bound workflow can verify and deploy the published image.
 
 Independent blind-human adoption and retained dogfood continue after the alpha
 and block only human-usability closure and stable graduation. Remote effects
@@ -91,6 +92,17 @@ next proofs are the exact protected `v0.4.0` bytes and repeated useful
 operation through real adopters, not more repository-only architecture.
 
 ## Current gates
+
+- **Fly private beta — substrate provisioned, runtime image pending.** ADR-018
+  replaces GKE as the first hosted-beta step. Fly app `tasq-api`, one encrypted
+  `cdg` volume with 30-day snapshots, ingress, certificate request, registrar
+  DNS and GitHub environment `beta` exist. `api.tasq.run` is the sole future
+  Server origin; `cloud.tasq.run` is the human redirect. The protected workflow
+  accepts only the attested GHCR digest and enforces one writer. No public
+  endpoint or Managed Cloud claim exists until v0.4.0 Server publication,
+  bootstrap and the live HTTP proof pass. See
+  [`ADR-018`](../decisions/ADR-018_FLY_PRIVATE_BETA.md) and the
+  [runbook](../../deploy/fly-private-beta/README.md).
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
   seven `@tasq-run/*@0.3.0` packages from npm, or download the attested

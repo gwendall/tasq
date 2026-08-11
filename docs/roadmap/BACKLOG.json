@@ -50,6 +50,26 @@
       "evidence": "https://tasq.run",
       "boundary": "static ledger-free product and documentation site; not Tasq Server, remote MCP, hosted Console or a package-release claim"
     },
+    "flyPrivateBeta": {
+      "state": "provisioned_waiting_exact_image",
+      "verifiedAt": "2026-08-11",
+      "app": "tasq-api",
+      "region": "cdg",
+      "publicOrigin": "https://api.tasq.run/",
+      "consoleEntrypoint": "https://cloud.tasq.run/",
+      "evidence": [
+        "docs/decisions/ADR-018_FLY_PRIVATE_BETA.md",
+        "deploy/fly-private-beta/README.md",
+        ".github/workflows/deploy-fly-private-beta.yml"
+      ],
+      "remaining": [
+        "publish_exact_protected_server_image",
+        "initialize_volume_and_bootstrap",
+        "pass_digest_bound_public_route_proof",
+        "copy_native_backup_off_site_and_restore_it"
+      ],
+      "boundary": "provider substrate and DNS only; no running Machine or hosted product claim"
+    },
     "npmScopeControl": {
       "state": "verified",
       "verifiedAt": "2026-07-23",
@@ -109,13 +129,11 @@
         "remove_bootstrap_latest_or_create_immutable_v0_4_0_tag_and_publish_its_exact_supported_replacement_plus_all_native_assets",
         "publish_server_image_and_python_wheel",
         "run_exact_downloaded_byte_certifications",
-        "deploy_experimental_gcp_profile"
+        "deploy_fly_private_beta_from_exact_server_digest"
       ],
       "externalPrerequisites": [
         "npm_client_package_owner_session_for_default_tag_cleanup_and_trusted_publisher_verification",
         "tasq_remote_pypi_pending_trusted_publisher",
-        "dedicated_billed_gcp_project_and_active_identity",
-        "experimental_tasq_run_dns_control",
         "exact_published_server_and_helper_image_digests"
       ],
       "nonBlockingEvidence": [
