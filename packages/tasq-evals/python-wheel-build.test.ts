@@ -10,7 +10,7 @@ const version = "0.4.0";
 async function run(args: string[], cwd = root): Promise<{ code: number; output: string }> {
   const child = Bun.spawn(args, {
     cwd,
-    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+    env: { ...process.env, PYTHONPATH: "", PYTHONDONTWRITEBYTECODE: "1" },
     stdout: "pipe",
     stderr: "pipe",
   });

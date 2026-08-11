@@ -274,10 +274,12 @@ describe("protected candidate publication entrypoints", () => {
     const resumeVerifier = read("scripts/release/verify_pypi_resume.py");
     expect(publish).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(publish).toContain("test \"$INPUT_CONFIRMATION\" = \"publish-tasq-python\"");
-    expect(publish).toContain('test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"');
     expect(publish).toContain('test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"');
     expect(publish).toContain(
-      'test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(publish).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
     );
     expect(publish).toContain("--surface pythonWheel");
     expect(publish).toContain("pypa/gh-action-pypi-publish@");
@@ -327,7 +329,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("python-remote-client.test.ts");
     expect(publish).toContain("python-wheel-build.test.ts");
     expect(publish).toContain("Install and import the exact wheel selected for PyPI");
-    expect(publish).toContain("gh release view \"$GITHUB_REF_NAME\"");
+    expect(publish).toContain("gh release view \"$release_tag\"");
   });
 
   test("keeps the eighth npm candidate in the builder but outside v0.3.0 by default", () => {
