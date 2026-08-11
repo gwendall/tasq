@@ -985,16 +985,19 @@
     },
     {
       "id": "TQ-632",
-      "status": "pending",
+      "status": "done",
       "milestone": "delegated-action",
       "dependsOn": ["TQ-625", "TQ-626", "TQ-627", "TQ-628", "TQ-629", "TQ-630", "TQ-631"],
       "outcome": "Certify the same delegated-action Interfaces across physical verification, remote hands, software deployment, procurement, custody and compromised-agent scenarios, then publish only the honestly supported Profile claims",
-      "remaining": [
-        "run_all_scenarios_without_provider_specific_kernel_changes",
-        "prove_no_access_partial_outcome_timeout_target_drift_revocation_and_concurrent_handoff_failures",
-        "certify_restart_replay_portable_data_and_independent_review_paths",
-        "publish_a_physical_verification_reference_profile_without_marketplace_supply_or_provider_claims",
-        "update_current_state_surface_matrix_security_and_public_docs_only_after_executable_evidence"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-632_DELEGATED_ACTION_CERTIFICATION.md",
+        "docs/contracts/TQ-632_DELEGATED_ACTION_CERTIFICATION.json",
+        "packages/tasq-physical-verification-profile/src/profile.ts",
+        "packages/tasq-physical-verification-profile/src/certification.ts",
+        "packages/tasq-physical-verification-profile/test/profile-certification.test.ts",
+        "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
+        "SECURITY.md"
       ]
     }
   ]

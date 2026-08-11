@@ -1,0 +1,58 @@
+{
+  "contractVersion": "tasq.delegated-action-certification.v1",
+  "status": "source_certified_private_reference",
+  "ticket": "TQ-632",
+  "certifiedAt": "2026-08-11",
+  "domains": [
+    { "id": "physical_verification", "result": "passed" },
+    { "id": "remote_hands", "result": "passed" },
+    { "id": "software_deployment", "result": "passed" },
+    { "id": "procurement", "result": "passed" },
+    { "id": "custody", "result": "passed" },
+    { "id": "compromised_agent", "result": "passed_denial" }
+  ],
+  "hostileFailures": [
+    "no_access",
+    "partial_outcome",
+    "timeout",
+    "target_drift",
+    "revocation",
+    "runtime_success_without_validation",
+    "self_review",
+    "denied_connector_route",
+    "concurrent_custody_successor"
+  ],
+  "recovery": {
+    "exactRestartReplay": "passed",
+    "providerLookupBeforeRedispatch": "covered_by_TQ_629",
+    "corePortableImport": "passed",
+    "custodyPortableImport": "passed",
+    "independentReview": "passed"
+  },
+  "profile": {
+    "id": "physical-verification/property-exterior",
+    "version": 1,
+    "support": "reference_only",
+    "package": "@tasq-internal/physical-verification-profile"
+  },
+  "nonClaims": [
+    "no_provider_supply",
+    "no_marketplace",
+    "no_routing_or_availability",
+    "no_pricing_or_payment_execution",
+    "no_site_access",
+    "no_identity_proof",
+    "no_insurance_or_liability_decision",
+    "no_physical_truth_or_outcome_guarantee",
+    "no_public_package_or_hosted_service",
+    "no_remote_effect_enablement"
+  ],
+  "executableEvidence": [
+    "packages/tasq-physical-verification-profile/src/profile.ts",
+    "packages/tasq-physical-verification-profile/src/certification.ts",
+    "packages/tasq-physical-verification-profile/test/profile-certification.test.ts",
+    "packages/tasq-delegated-runner/test/runner.test.ts",
+    "packages/tasq-evidence-bundles/test/evidence-bundles.test.ts",
+    "packages/tasq-custody/test/custody.test.ts"
+  ]
+}

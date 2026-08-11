@@ -424,7 +424,8 @@ The Review Inbox projects, without creating another source of truth:
 The high-level embedded Interface now exposes the existing assignments,
 artifacts, external references and effects. TQ-623 also adds atomic
 `claimAndStart` and `submitOutcome` journeys over those same records; the
-remaining journeys below depend on later Modules.
+remaining journeys below are compositions of the completed TQ-625–TQ-631
+Modules and still require an integrator-owned runtime, authority and providers.
 
 Target journeys include:
 
@@ -544,6 +545,12 @@ Required failures and observations:
 - denial opens no foreign workspace or provider route;
 - audit records the typed reason without leaking secret target data.
 
+TQ-632 now executes this matrix through one closed invariant vocabulary and a
+separate end-to-end physical-verification journey. Its certificate is
+[`TQ-632_DELEGATED_ACTION_CERTIFICATION.json`](../contracts/TQ-632_DELEGATED_ACTION_CERTIFICATION.json).
+This is source conformance for a private reference Profile, not evidence of
+provider availability or a released remote product.
+
 ## 8. Outcome bundle
 
 A delegated action needs a portable result that another principal can inspect
@@ -609,8 +616,11 @@ direction in increasing order of commitment:
 5. **done (TQ-627–TQ-628):** add Agreements and Settlement/Recourse;
 6. **done (TQ-629–TQ-630):** build the reference Runner, Evidence Capture,
    Review Inbox and Outcome Bundle;
-7. prototype Custody behind an experimental Interface;
-8. pass the cross-domain delegated-action certification.
+7. **done (TQ-631):** graduate Custody to a private experimental Module while
+   declining Kernel admission;
+8. **done (TQ-632):** pass the cross-domain delegated-action certification and
+   publish the bounded physical-verification reference Profile as
+   `reference_only` source.
 
 No item may claim a new Kernel primitive merely because this document names
 it. Graduation still requires the six admission rules, a second unrelated

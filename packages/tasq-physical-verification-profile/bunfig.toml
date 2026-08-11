@@ -1,0 +1,5 @@
+[test]
+preload = ["../../scripts/test-isolation.ts"]
+
+[test.env]
+TASQ_TEST_ISOLATED = "1"

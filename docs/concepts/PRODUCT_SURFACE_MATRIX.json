@@ -220,6 +220,14 @@
       "entrypoint": "@tasq-internal/cloud-control-plane createCloudBff",
       "mutations": true,
       "authorityBoundary": "httponly_tenant_device_session_exact_origin_csrf_live_server_guard_remote_effects_denied"
+    },
+    {
+      "id": "physical_verification_profile",
+      "support": "reference_only",
+      "transport": "private_in_process_source",
+      "entrypoint": "@tasq-internal/physical-verification-profile compileDelegatedActionOrder",
+      "mutations": false,
+      "authorityBoundary": "compiler_only_integrator_supplies_identity_site_permission_provider_connector_and_live_effect_authority"
     }
   ],
   "consumers": [
@@ -292,6 +300,11 @@
       "id": "managed_service_operator",
       "supportedSurfaces": ["cloud_control_plane"],
       "irreducibleInputs": ["tasq_cloud_control_plane"]
+    },
+    {
+      "id": "delegated_action_integrator",
+      "supportedSurfaces": ["embedded_typescript", "extension_sdk", "physical_verification_profile"],
+      "irreducibleInputs": ["verified_identity", "external_authority", "site_access", "provider_supply", "connector_credentials", "independent_reviewer", "object_store", "jurisdiction_policy"]
     }
   ],
   "journeys": [
@@ -339,6 +352,11 @@
       "id": "managed_cloud_lifecycle",
       "support": "implemented_candidate_not_published",
       "steps": ["create_tenant", "provision_isolated_workspace", "enroll_identity", "authenticate_same_origin", "export_or_backup", "rotate_credentials", "revoke_or_suspend", "restore_or_delete"]
+    },
+    {
+      "id": "physical_verification_reference",
+      "support": "reference_only",
+      "steps": ["compile_exact_order", "supply_external_permissions_and_identity", "agree_and_assign", "fenced_attempt", "capture_evidence", "independent_review", "settlement_or_recourse", "portable_export"]
     }
   ],
   "criticalTruths": [
@@ -375,6 +393,7 @@
     "authenticated_offline_replication_never_extends_live_claim_lease_approval_or_effect_authority",
     "python_remote_client_source_exists_but_is_not_published_to_pypi",
     "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
+    "physical_verification_profile_is_private_reference_only_and_supplies_no_worker_provider_access_identity_or_remote_effect",
     "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
     "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"

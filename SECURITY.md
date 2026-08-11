@@ -86,6 +86,17 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
 - Connectors own credentials and must enforce permits, fences and receipts at
   the final I/O boundary.
 - Runtime/provider success never grants commitment-completion authority.
+- The TQ-632 physical-verification Profile is a private, non-mutating reference
+  compiler. It does not verify identities, grant site or photography access,
+  locate workers, hold provider credentials, dispatch remote effects or prove
+  physical truth. Integrators must supply those boundaries independently.
+  Denial/revocation opens no connector route; no-access, partial and timeout
+  outcomes cannot be promoted to completion; independent review cannot be
+  performed by the executor.
+- Custody in TQ-631 is a separate private append-only Module. A recorded
+  handoff authenticates neither physical possession nor ownership and grants
+  no access or effect authority. One database-elected successor prevents a
+  double handoff locally; authenticated distributed custody remains unshipped.
 - Ledger prose is untrusted data and cannot widen tool or effect authority.
 - Content digests alone prove byte identity, not principal authorship. The
   TQ-613–TQ-615 source candidate adds purpose-bound Ed25519 statements,
