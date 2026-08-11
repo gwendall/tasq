@@ -91,6 +91,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          expected_store_format="$(jq --raw-output '.candidate.storeFormat' docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json)"
+          test "$expected_store_format" = "32"
           mkdir -p dist/tq608/evidence
           evidence="dist/tq608/evidence/v040-${MATRIX_TARGET}.json"
           bun packages/tasq-evals/scripts/certify-v040-migration-candidate.ts \
@@ -99,13 +101,13 @@ jobs:
             --candidate-source-commit "$INPUT_SOURCE_COMMIT" \
             --trust protected_github_attestations \
             > "$evidence"
-          jq --exit-status '
+          jq --exit-status --argjson expected_store_format "$expected_store_format" '
             .status == "passed_protected_source_candidate_matrix"
             and .candidate.publishedArtifact == false
             and .candidate.publishedReplayPassed == false
             and (.releases | length) == 2
             and all(.releases[];
-              .migration.targetFormat == 29
+              .migration.targetFormat == $expected_store_format
               and .downgrade.exitCode == 3
               and .downgrade.mutationPerformed == false
               and .downgrade.noLogicalOrRecoveryWrite == true

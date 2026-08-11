@@ -1,8 +1,8 @@
 # TQ-608 — Migration and data-safety envelope
 
-**Status:** complete for published `v0.3.0`; the `v0.4.0` N-2 pre-release
-matrix passes locally and in protected CI on both supported targets, while the
-exact published-byte replay remains required
+**Status:** complete for published `v0.3.0`; the `v0.4.0` format-32 source
+candidate requires a fresh protected N-2 replay on both supported targets,
+followed by exact published-byte replay
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
 **Blocks:** each protected package line that changes the store format
 
@@ -123,7 +123,7 @@ The next-line contract is
 `TQ-608_V040_PRERELEASE_MATRIX.json`. Its local harness downloads and
 digest-pins the exact public `v0.2.0`/format-25 and `v0.3.0`/format-26
 artifacts, has each old binary create a nontrivial ledger, migrates both to a
-local `v0.4.0`/format-28 candidate, verifies the private snapshot, receipt and
+historical local `v0.4.0`/format-28 candidate, verifies the private snapshot, receipt and
 post-migration doctor, then restores the snapshot plus journal with the
 matching old binary. On Darwin arm64 this full local matrix passes.
 
@@ -137,10 +137,13 @@ and does not weaken the fail-closed domain/recovery-state assertion.
 
 `.github/workflows/certify-v040-migration-candidate.yml` is the protected
 Darwin/Linux source-candidate route. It attestation-verifies both public source
-lines and binds the candidate checkout to an exact commit. Protected run
+lines, binds the candidate checkout to an exact commit and derives the expected
+target format from the machine matrix. Protected run
 [30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802)
 passed on Darwin arm64 and Linux x64 GNU against source commit
-`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`. After `v0.4.0` publication,
+`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`; that format-28 result is now
+superseded by source format 32. A new protected run is required and must not be
+reported as passed before both matrix jobs succeed. After `v0.4.0` publication,
 the exact downloaded artifacts and attestations must still be replayed
 separately. Until that external gate passes, `publishedV040Replay` remains
 `not_run` and no `v0.4.0` support claim exists.
