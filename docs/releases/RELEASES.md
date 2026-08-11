@@ -32,12 +32,13 @@ trusted-publisher binding, publication and clean-room replay finish.
 
 ## `v0.4.0` public-alpha checkpoint
 
-As of 2026-07-31, the source candidate is merged and the complete `main` CI is
-green. Protected run
+The historical format-28 source candidate was merged with green `main` CI.
+Protected run
 [30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802)
 attestation-verifies the exact public `v0.2.0` and `v0.3.0` inputs and passes
 their format-28 migration/restore matrix on both supported targets, bound to
-commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
+commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`. Source format is now 32, so that
+evidence is superseded and a fresh protected matrix is required before tagging.
 
 `v0.4.0` is authorized but not published. No tag or release coordinate should
 be created before this ordered activation sequence:

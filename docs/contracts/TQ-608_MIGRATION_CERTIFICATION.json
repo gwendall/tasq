@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 4,
+  "revision": 5,
   "status": "current-release-passed",
   "testedAt": "2026-07-23",
   "storeFormat": {
@@ -75,7 +75,7 @@
   },
   "nextReleasePrerelease": {
     "candidateVersion": "0.4.0",
-    "candidateStoreFormat": 28,
+    "candidateStoreFormat": 32,
     "matrix": "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json",
     "harness": "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts",
     "protectedWorkflow": ".github/workflows/certify-v040-migration-candidate.yml",
@@ -84,12 +84,13 @@
       { "version": "0.3.0", "storeFormat": 26 }
     ],
     "localReplay": {
-      "status": "passed-local-unprotected-candidate",
+      "status": "historical_format_28_superseded",
       "testedAt": "2026-07-31",
       "target": "darwin-arm64",
       "exactPinnedPublicSourceAssets": true,
       "candidateSourceCommitBinding": false,
-      "migratedToFormat28": true,
+      "targetStoreFormat": 28,
+      "supersededByStoreFormat": 32,
       "privateSnapshotsAndCompleteReceipts": true,
       "postMigrationDoctorPassed": true,
       "matchingBinarySnapshotAndJournalRestorePassed": true,
@@ -102,7 +103,7 @@
       "knownHistoricalPhysicalEffect": "Published v0.3.0 may create or update db.sqlite-shm and empty db.sqlite-wal while returning its non-mutating typed refusal."
     },
     "protectedSourceCandidateReplay": {
-      "status": "passed",
+      "status": "historical_format_28_superseded",
       "testedAt": "2026-07-31",
       "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
       "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
@@ -110,7 +111,8 @@
       "exactPinnedPublicSourceAssets": true,
       "sourceReleaseAttestationsVerified": true,
       "candidateSourceCommitBound": true,
-      "migratedToFormat28": true,
+      "targetStoreFormat": 28,
+      "supersededByStoreFormat": 32,
       "postMigrationDoctorPassed": true,
       "matchingBinaryRestorePassed": true
     },
@@ -122,7 +124,8 @@
   "remainingExternalReplay": [
     "v0.4.0_exact_published_byte_replay_after_publication"
   ],
-  "tq608SourceCandidateComplete": true,
+  "tq608SourceImplementationComplete": true,
+  "tq608Format32ProtectedSourceCandidateComplete": false,
   "publishedByteCertificationComplete": true,
   "publishedByteCertificationCompleteFor": "0.3.0"
 }

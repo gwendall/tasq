@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.migration-prerelease-matrix.v1",
-  "revision": 5,
+  "revision": 6,
   "candidate": {
     "version": "0.4.0",
     "storeFormat": 32,
@@ -60,7 +60,7 @@
     "nontrivial_source_ledger",
     "verified_private_snapshot",
     "complete_migration_receipt",
-    "format_29_post_migration_doctor",
+    "format_32_post_migration_doctor",
     "older_binary_typed_refusal_without_logical_or_recovery_write",
     "historical_sqlite_physical_side_effects_captured",
     "snapshot_restore_with_matching_source_binary"
@@ -89,6 +89,6 @@
     "candidateSourceCommitBound": true,
     "publishedCandidateArtifacts": false,
     "targetStoreFormat": 28,
-    "supersededByStoreFormat": 29
+    "supersededByStoreFormat": 32
   }
 }
