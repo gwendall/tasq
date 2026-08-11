@@ -2,7 +2,7 @@
 
 **Status:** active execution specification
 
-**Updated:** 2026-07-31
+**Updated:** 2026-08-11
 
 **Machine authority:** [`BACKLOG.json`](BACKLOG.json)
 
@@ -20,29 +20,31 @@ documentation and the stated evidence gate all pass.
 ## 0. Current execution checkpoint
 
 The repository implementation phase is complete for the maintainer-authorized
-`v0.4.0` public alpha. The full source candidate is merged on `main`; CI run
-[30625842313](https://github.com/gwendall/tasq/actions/runs/30625842313) and
-protected N-2 migration run
-[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802) pass.
-The latter is bound to commit
-`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5` and covers Darwin arm64 plus
-Linux x64 GNU.
+`v0.4.0` public alpha. The full source candidate is merged on `main`; the latest
+behavior-changing merge passes protected CI run
+[31455469251](https://github.com/gwendall/tasq/actions/runs/31455469251). The
+current protected N-2 migration run
+[31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496) is
+bound to commit `e27451d3510c71a9f875a48991eb2fd80496bfdb`, covers Darwin
+arm64 plus Linux x64 GNU and replays both supported releases into format 32.
 
 The active queue is external activation, not more repository implementation:
 
 ```text
-npm client bootstrap -> npm OIDC binding -> PyPI pending publisher
+npm owner verification + bootstrap latest cleanup -> PyPI pending publisher
 -> immutable v0.4.0 tag -> npm/native/GHCR/PyPI publication
 -> exact downloaded-byte certifications -> experimental GCP deployment
 ```
 
-The tag must not precede the client bootstrap: npm requires the package
-identity to exist before its trusted publisher can be configured, while the
-one-shot bootstrap deliberately requires untagged protected `main`. The
-missing npm secret, PyPI publisher configuration and GCP project/billing/DNS
-authority are causal external prerequisites. Independent blind-human adoption
-and TQ-607 dogfood are explicitly post-alpha evidence and block only their own
-human-usability/stable claims. Remote effects remain disabled.
+The client bootstrap is complete and must not be rerun. Its unsupported
+`0.1.0-alpha.0` coordinate currently owns both `alpha-bootstrap` and `latest`,
+so npm owner authority must verify the `release.yml` trusted publisher and
+bootstrap-token revocation, then remove `latest` or let the exact supported
+release replace it. PyPI publisher configuration and GCP
+project/billing/DNS authority are the other causal external prerequisites.
+Independent blind-human adoption and TQ-607 dogfood are explicitly post-alpha
+evidence and block only their own human-usability/stable claims. Remote effects
+remain disabled.
 
 ## 1. Outcome
 

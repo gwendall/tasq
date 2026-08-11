@@ -94,9 +94,11 @@
       "channel": "public_alpha",
       "version": "0.4.0",
       "sourceCandidate": {
-        "latestBehaviorCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
-        "ciRun": "https://github.com/gwendall/tasq/actions/runs/30625842313",
-        "protectedMigrationRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+        "latestBehaviorCommit": "bbf9bde9a23764feb2e3c81aac039fe566e2f5dc",
+        "ciRun": "https://github.com/gwendall/tasq/actions/runs/31455469251",
+        "migrationBehaviorCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
+        "protectedMigrationRun": "https://github.com/gwendall/tasq/actions/runs/31447846496",
+        "schemaFormat": 32,
         "targets": ["darwin-arm64", "linux-x64-gnu"],
         "status": "passed"
       },
