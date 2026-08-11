@@ -19,6 +19,7 @@
     "@tasq-run/console": "workspace:*",
     "@tasq-run/mcp": "workspace:*",
     "@tasq-run/schema": "workspace:*",
+    "@tasq-internal/github-bridge": "workspace:*",
     "@tasq-internal/local-service": "workspace:*",
     "zod": "^3.23.8"
   },

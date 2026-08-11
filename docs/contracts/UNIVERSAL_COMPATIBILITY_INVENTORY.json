@@ -504,7 +504,7 @@
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
-    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "remote", "capture", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
+    "surface": ["onboard", "setup", "use", "demo", "agent", "feedback", "mcp", "web", "remote", "capture", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
     "compatibility": ["complete", "rm", "brief"]
   },
   "events": {
@@ -627,7 +627,13 @@
     "HumanSetupV1": { "owner": "surface", "fields": ["contractVersion", "disposition", "space", "actor", "configPath", "nextArgv", "boundary"] },
     "IsolatedDemoV1": { "owner": "surface", "fields": ["contractVersion", "isolation", "liveHomeConsulted", "setup", "created", "before", "completed", "after"] },
     "AgentInstallPlanV1": { "owner": "surface", "fields": ["contractVersion", "host", "executable", "space", "actor", "capabilities", "mutatesHost", "applyArgv", "genericTarget", "configuration", "authority", "applied"], "authorityFields": ["actorAuthentication", "effectAuthority", "repositoryDescriptorActivation"] },
-    "ConfigV1": { "owner": "surface", "fields": ["dbPath", "projectionTarget", "tenantId", "defaultActor", "eventJournalPath"], "dynamicForms": ["config get returns exactly the requested config key", "config set returns ok plus exactly the requested config key"] },
+    "DirectorySpaceSelectionV1": { "owner": "surface", "fields": ["contractVersion", "action", "changed", "directory", "binding", "effective", "globalDefault", "configPath"], "effectiveFields": ["space", "source", "directory"] },
+    "AgentInstructionsV1": { "owner": "surface", "fields": ["contractVersion", "target", "space", "version", "digest", "state", "block", "ok", "exitCode", "reason", "changed", "forced"] },
+    "FeedbackCapturedV1": { "owner": "surface", "fields": ["contractVersion", "type", "id", "summary", "details", "capturedAt", "context", "storedAt", "pending"], "contextFields": ["version", "platform", "architecture", "previousFailure"], "failureFields": ["command", "subcommand", "flags", "exitCode", "recordedAt"] },
+    "FeedbackListV1": { "owner": "surface", "fields": ["contractVersion", "pending", "count"] },
+    "FeedbackPushPlanV1": { "owner": "surface", "fields": ["contractVersion", "repository", "count", "reportIds"] },
+    "FeedbackPushResultV1": { "owner": "surface", "fields": ["contractVersion", "repository", "pushed", "count"], "receiptFields": ["contractVersion", "type", "id", "repository", "issueNumber", "issueUrl", "disposition", "publishedAt"] },
+    "ConfigV1": { "owner": "surface", "fields": ["dbPath", "projectionTarget", "tenantId", "defaultActor", "eventJournalPath", "directorySpaces"], "dynamicForms": ["config get returns exactly the requested config key", "config set returns ok plus exactly the requested config key"] },
     "ExecutableVersionV1": { "owner": "surface", "fields": ["contractVersion", "version", "storeFormat"] },
     "BackupResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "sizeBytes", "sha256", "verified", "eventCursor", "storeFormat", "rollbackRule", "rotated"] },
     "PortableExportResultV1": { "owner": "surface", "fields": ["contractVersion", "ok", "target", "workspaceId", "storeFormat", "recordCount", "sizeBytes", "sha256", "omissions", "import"] },

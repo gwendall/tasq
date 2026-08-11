@@ -20,6 +20,7 @@ import {
 } from "../config.js";
 import { printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
+import { agentInstructionsCmd } from "./agent-instructions.js";
 
 const CAPABILITIES = ["read", "propose", "coordinate"] as const;
 type Capability = (typeof CAPABILITIES)[number];
@@ -238,6 +239,7 @@ export async function agentCmd(
   args: ParsedArgs,
   executableFromHost: string,
 ): Promise<number> {
+  if (args.positional[0] === "instructions") return agentInstructionsCmd(args);
   const [subcommand, rawHost] = args.positional;
   if (subcommand !== "install" || !rawHost || args.positional.length !== 2) {
     throw new Error("agent install <codex|claude|generic> --space <id> --actor <label> [--apply]");

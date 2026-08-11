@@ -2,7 +2,10 @@ import { describe, expect, test } from "bun:test";
 import { createHmac } from "node:crypto";
 import {
   defineGitHubFieldAuthority,
+  githubFeedbackIssueBody,
   githubIssueExternalRef,
+  publishGitHubFeedbackIssue,
+  type GitHubFeedbackReport,
   verifyAndNormalizeGitHubWebhook,
 } from "../src/index.js";
 
@@ -19,6 +22,84 @@ const common = {
 };
 
 describe("TQ-812 GitHub bridge", () => {
+  const feedback: GitHubFeedbackReport = {
+    id: "123e4567-e89b-42d3-a456-426614174000",
+    summary: "claim output hid the holder",
+    details: "Reproduced twice",
+    capturedAt: Date.parse("2026-08-11T00:00:00Z"),
+    context: {
+      version: "0.4.0",
+      platform: "darwin",
+      architecture: "arm64",
+      previousFailure: {
+        command: "claim",
+        subcommand: null,
+        flags: ["actor"],
+        exitCode: 1,
+        recordedAt: Date.parse("2026-08-10T23:59:59Z"),
+      },
+    },
+  };
+
+  test("renders bounded feedback without granting issue activity completion authority", () => {
+    const issue = githubFeedbackIssueBody(feedback);
+    expect(issue.title).toBe("[tasq feedback] claim output hid the holder");
+    expect(issue.body).toContain("<!-- tasq-feedback:123e4567-e89b-42d3-a456-426614174000 -->");
+    expect(issue.body).toContain("GitHub activity is observational only");
+    expect(issue.body).not.toContain("secret");
+  });
+
+  test("reconciles by marker before creating and validates the creation receipt", async () => {
+    const calls: Array<{ url: string; init?: RequestInit }> = [];
+    const fetcher = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+      calls.push({ url: String(url), init });
+      if (calls.length === 1) return Response.json({ total_count: 0, items: [] });
+      const body = JSON.parse(String(init?.body));
+      return Response.json({
+        number: 42,
+        html_url: "https://github.com/acme/project/issues/42",
+        body: body.body,
+      }, { status: 201 });
+    };
+    const result = await publishGitHubFeedbackIssue({
+      repository: "acme/project",
+      token: "token-kept-in-memory",
+      report: feedback,
+      fetch: fetcher,
+    });
+    expect(result).toMatchObject({
+      disposition: "created",
+      repository: "acme/project",
+      issueNumber: 42,
+      completionMapping: "none",
+    });
+    expect(calls).toHaveLength(2);
+    expect(calls[0]!.url).toContain("/search/issues");
+    expect(calls[1]!.url).toBe("https://api.github.com/repos/acme/project/issues");
+    expect(JSON.stringify(result)).not.toContain("token-kept-in-memory");
+  });
+
+  test("returns an existing exact marker without creating a duplicate", async () => {
+    let calls = 0;
+    const request = githubFeedbackIssueBody(feedback);
+    const fetcher = async (): Promise<Response> => {
+      calls += 1;
+      return Response.json({ items: [{
+        number: 43,
+        html_url: "https://github.com/acme/project/issues/43",
+        body: request.body,
+      }] });
+    };
+    const result = await publishGitHubFeedbackIssue({
+      repository: "acme/project",
+      token: "token",
+      report: feedback,
+      fetch: fetcher,
+    });
+    expect(result).toMatchObject({ disposition: "existing", issueNumber: 43 });
+    expect(calls).toBe(1);
+  });
+
   test("freezes explicit one-owner field authority in an immutable issue link", () => {
     const fieldAuthority = defineGitHubFieldAuthority({
       title: "tasq",

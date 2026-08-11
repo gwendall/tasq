@@ -125,6 +125,22 @@ remain part of the current protected release line:
   default. `--apply` delegates Codex/Claude mutation to the host CLI; generic
   application creates one explicit absolute target and refuses overwrite.
   Requested capabilities never grant effect authority.
+- `tasq use [<space>|--clear] --json` returns
+  `tasq.directory-space-selection.v1` with `contractVersion`, `action`, the
+  canonical `directory`, effective `{space,source,directory}`, unchanged
+  `globalDefault` and `configPath`; mutations additionally return `changed`
+  and `binding`. Sources are `explicit_flag|environment|directory|global_default`.
+- `tasq agent instructions --space <id> --json` returns
+  `tasq.agent-instructions.v1` with target, space, block version, full digest
+  and state. Preview adds `block`; write adds `changed` and `forced`; check adds
+  `ok` and `exitCode`. Check exits 10 for missing, 11 for stale and 12 for a
+  hand-edited block while still writing this typed value to stdout.
+- `tasq feedback "summary" --json` returns the append-only
+  `tasq.feedback-captured.v1` report plus `storedAt` and `pending`. `feedback
+  list` returns `tasq.feedback-list.v1`; dry-run publication returns
+  `tasq.feedback-push-plan.v1`; publication returns
+  `tasq.feedback-push-result.v1` and per-report issue receipts. Capture is
+  local-only; publication requires a separate explicit command.
 
 ## Executable, backup and portability envelopes
 

@@ -84,6 +84,9 @@ importers:
 
   packages/tasq-cli:
     dependencies:
+      '@tasq-internal/github-bridge':
+        specifier: workspace:*
+        version: link:../tasq-github-bridge
       '@tasq-internal/local-service':
         specifier: workspace:*
         version: link:../tasq-service

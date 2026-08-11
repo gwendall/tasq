@@ -196,11 +196,18 @@ neither is a published or deployed product.
 
 The current support boundary is maintained in
 [`docs/concepts/PRODUCT_SURFACE_MATRIX.json`](docs/concepts/PRODUCT_SURFACE_MATRIX.json). The
-ordered work is in [`docs/roadmap/BACKLOG.md`](docs/roadmap/BACKLOG.md), with
+versioned release scope, dependencies and external gates are in
+[`docs/roadmap/BACKLOG.md`](docs/roadmap/BACKLOG.md), with
 [`docs/roadmap/BACKLOG.json`](docs/roadmap/BACKLOG.json) as machine authority.
+That backlog is not a live ownership queue. A repository using Tasq names its
+live ledger space in the managed `AGENTS.md` block; claims and attempts there
+determine who is executing work now.
 
-Open a GitHub issue for a reproducible bug, onboarding friction, or a bounded
-feature proposal. Report vulnerabilities through the private process in
+Capture a reproducible bug or onboarding friction without leaving the terminal
+with `tasq feedback "summary"`; it remains private and offline until an explicit
+`tasq feedback push --repo owner/name`. GitHub issue activity remains an
+observation and never completes a Tasq commitment. Report vulnerabilities
+through the private process in
 [`SECURITY.md`](SECURITY.md).
 
 ## License

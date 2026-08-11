@@ -85,8 +85,17 @@ export const JOURNAL_USAGE =
   "journal checkpoint --accept-database --reason <text> [--dry-run]   archive the current segment and accept the DB cursor baseline";
 export const INIT_USAGE = "init   create ~/.tasq/db.sqlite + config";
 export const SETUP_USAGE = "setup --space <id> --actor <stable-label> [--json]   persist one explicit human default";
+export const USE_USAGE = `use <space> [--json]   bind the current real directory and descendants without changing the global default
+use                       show the effective space and its source
+use --clear               remove the exact current-directory binding`;
+export const FEEDBACK_USAGE = `feedback "one-line summary" [--details <text>]   append a private local report; no network
+feedback list [--json]                              list reports not yet published
+feedback push --repo <owner/name> [--limit 100] [--dry-run] [--json]
+                                                      explicitly publish a batch using GH_TOKEN or GITHUB_TOKEN`;
 export const DEMO_USAGE = "demo [--json]   run add -> list -> done inside a temporary isolated TASQ_HOME";
-export const AGENT_USAGE = "agent install <codex|claude|generic> --space <id> --actor <label> [--capabilities read,propose,coordinate] [--executable <absolute-path>] [--target <absolute-path>] [--apply] [--json]";
+export const AGENT_USAGE = `agent install <codex|claude|generic> --space <id> --actor <label> [--capabilities read,propose,coordinate] [--executable <absolute-path>] [--target <absolute-path>] [--apply] [--json]
+agent instructions --space <id> [--target AGENTS.md] [--write|--check] [--force] [--json]
+  --check exits 10 when missing, 11 when stale, and 12 when hand-edited`;
 export const ONBOARD_USAGE = "onboard --space <id> --actor <stable-label> [--capabilities read,propose,coordinate] --json";
 export const RESOURCE_USAGE = `resource acquire <key> --idempotency-key <key> [--for 30m] [--metadata <json>]
 resource renew <key> --lease <id> --fence <n> --revision <n> --idempotency-key <key> [--for 30m]
@@ -277,6 +286,10 @@ export function commandUsage(command: string): string | undefined {
       return INIT_USAGE;
     case "setup":
       return SETUP_USAGE;
+    case "use":
+      return USE_USAGE;
+    case "feedback":
+      return FEEDBACK_USAGE;
     case "demo":
       return DEMO_USAGE;
     case "agent":

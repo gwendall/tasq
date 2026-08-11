@@ -23,7 +23,7 @@ import {
   TaskEvidence,
   WaitCondition,
 } from "@tasq-run/schema";
-import { CONFIG_KEYS } from "../src/config.js";
+import { CONFIG_OUTPUT_KEYS } from "../src/config.js";
 
 const productRoot = resolve(import.meta.dir, "../../..");
 const inventory = JSON.parse(
@@ -201,7 +201,7 @@ describe("UK-002 universal compatibility inventory", () => {
   });
 
   test("derived and maintenance JSON envelopes have classified, unique key sets", () => {
-    expect(inventory.jsonEnvelopes.ConfigV1?.fields).toEqual(CONFIG_KEYS);
+    expect(inventory.jsonEnvelopes.ConfigV1?.fields).toEqual(CONFIG_OUTPUT_KEYS);
     for (const [name, entry] of Object.entries(inventory.jsonEnvelopes)) {
       expect(inventory.classifications[entry.owner], `${name} has unknown owner`).toBeDefined();
       for (const [key, value] of Object.entries(entry)) {

@@ -1,0 +1,42 @@
+{
+  "contractVersion": "tasq.tq-636-certification.v1",
+  "status": "source_candidate_complete_publication_pending",
+  "commands": [
+    "tasq feedback",
+    "tasq feedback list",
+    "tasq feedback push"
+  ],
+  "captureBoundary": {
+    "network": false,
+    "ledgerRead": false,
+    "storedFailureFields": [
+      "command",
+      "allowlisted_subcommand",
+      "flag_names",
+      "exit_code",
+      "recorded_at"
+    ],
+    "forbidden": [
+      "positional_values",
+      "flag_values",
+      "error_text",
+      "credentials"
+    ]
+  },
+  "publicationBoundary": {
+    "explicit": true,
+    "dryRun": true,
+    "tokenSources": ["GH_TOKEN", "GITHUB_TOKEN"],
+    "retryMarker": "tasq-feedback:<report-uuid>",
+    "githubCompletionMapping": "none"
+  },
+  "evidence": [
+    "packages/tasq-cli/src/commands/feedback.ts",
+    "packages/tasq-cli/test/local-workflow.test.ts",
+    "packages/tasq-github-bridge/src/index.ts",
+    "packages/tasq-github-bridge/test/github-bridge.test.ts"
+  ],
+  "remaining": [
+    "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+  ]
+}

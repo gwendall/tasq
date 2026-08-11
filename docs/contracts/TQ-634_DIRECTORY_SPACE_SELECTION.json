@@ -1,0 +1,26 @@
+{
+  "contractVersion": "tasq.tq-634-certification.v1",
+  "status": "source_candidate_complete_publication_pending",
+  "command": "tasq use",
+  "precedence": [
+    "explicit_tenant_flag",
+    "non_empty_TASQ_TENANT",
+    "closest_canonical_directory_binding",
+    "global_default"
+  ],
+  "invariants": [
+    "global_default_and_actor_are_unchanged",
+    "binding_is_private_machine_local_config",
+    "no_ledger_is_opened",
+    "space_is_schema_validated",
+    "symlink_aliases_share_one_canonical_scope"
+  ],
+  "evidence": [
+    "packages/tasq-cli/src/config.ts",
+    "packages/tasq-cli/src/commands/use.ts",
+    "packages/tasq-cli/test/local-workflow.test.ts"
+  ],
+  "remaining": [
+    "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+  ]
+}

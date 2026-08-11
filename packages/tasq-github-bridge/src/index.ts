@@ -23,6 +23,148 @@ const Common = z.object({
   sender: User,
 }).passthrough();
 
+const GitHubRepositoryName = z.string().regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/).max(201);
+export const GitHubFeedbackReport = z.object({
+  id: z.string().uuid(),
+  summary: z.string().trim().min(1).max(500).refine((value) => !/[\r\n]/.test(value), "summary must be one line"),
+  details: z.string().trim().min(1).max(10_000).nullable(),
+  capturedAt: z.number().int().nonnegative().max(8_640_000_000_000_000),
+  context: z.object({
+    version: z.string().min(1).max(100),
+    platform: z.string().min(1).max(100),
+    architecture: z.string().min(1).max(100),
+    previousFailure: z.object({
+      command: z.string().min(1).max(100),
+      subcommand: z.string().min(1).max(100).nullable(),
+      flags: z.array(z.string().regex(/^[A-Za-z0-9-]{1,100}$/)).max(100),
+      exitCode: z.number().int().min(1).max(255),
+      recordedAt: z.number().int().nonnegative(),
+    }).strict().nullable(),
+  }).strict(),
+}).strict();
+export type GitHubFeedbackReport = z.infer<typeof GitHubFeedbackReport>;
+
+export interface GitHubFeedbackPublication {
+  disposition: "created" | "existing";
+  repository: string;
+  issueNumber: number;
+  issueUrl: string;
+  marker: string;
+  completionMapping: "none";
+}
+
+export type GitHubFetch = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+
+function feedbackHeaders(token: string): HeadersInit {
+  if (!token.trim()) throw new Error("GitHub token is required");
+  return {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    "User-Agent": "tasq-feedback",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+}
+
+function feedbackMarker(id: string): string {
+  return `<!-- tasq-feedback:${id} -->`;
+}
+
+export function parseGitHubRepositoryName(value: string): string {
+  return GitHubRepositoryName.parse(value);
+}
+
+export function githubFeedbackIssueBody(reportInput: GitHubFeedbackReport): {
+  title: string;
+  body: string;
+  marker: string;
+} {
+  const report = GitHubFeedbackReport.parse(reportInput);
+  const marker = feedbackMarker(report.id);
+  const previous = report.context.previousFailure;
+  const command = previous
+    ? `\`${previous.command}${previous.subcommand ? ` ${previous.subcommand}` : ""}\` (exit ${previous.exitCode}; flags: ${previous.flags.length > 0 ? previous.flags.map((flag) => `\`--${flag}\``).join(", ") : "none"})`
+    : "No prior failed command was recorded.";
+  const body = [
+    report.details ? `## Details\n\n${report.details}` : null,
+    "## Captured context",
+    "",
+    `- Tasq: \`${report.context.version}\``,
+    `- Platform: \`${report.context.platform}/${report.context.architecture}\``,
+    `- Previous failure: ${command}`,
+    `- Captured: \`${new Date(report.capturedAt).toISOString()}\``,
+    "",
+    "This report was captured locally and pushed explicitly with `tasq feedback push`.",
+    "GitHub activity is observational only and never completes a Tasq commitment.",
+    "",
+    marker,
+  ].filter((line): line is string => line !== null).join("\n");
+  return { title: Array.from(`[tasq feedback] ${report.summary}`).slice(0, 256).join(""), body, marker };
+}
+
+/**
+ * Publish one explicit local report. The hidden report marker lets retries
+ * reconcile an already-created issue before attempting another create.
+ */
+export async function publishGitHubFeedbackIssue(input: {
+  repository: string;
+  token: string;
+  report: GitHubFeedbackReport;
+  fetch?: GitHubFetch;
+  signal?: AbortSignal;
+}): Promise<GitHubFeedbackPublication> {
+  const repository = parseGitHubRepositoryName(input.repository);
+  const report = GitHubFeedbackReport.parse(input.report);
+  const request = githubFeedbackIssueBody(report);
+  const fetcher: GitHubFetch = input.fetch ?? globalThis.fetch;
+  const headers = feedbackHeaders(input.token);
+  const signal = input.signal ?? AbortSignal.timeout(30_000);
+  const query = encodeURIComponent(`repo:${repository} is:issue in:body \"tasq-feedback:${report.id}\"`);
+  const searched = await fetcher(`https://api.github.com/search/issues?q=${query}&per_page=10`, { headers, signal });
+  if (!searched.ok) throw new Error(`GitHub feedback reconciliation failed (${searched.status})`);
+  const searchPayload = z.object({
+    items: z.array(z.object({
+      number: z.number().int().positive(),
+      html_url: z.string().url(),
+      body: z.string().nullable(),
+    }).passthrough()).max(10),
+  }).passthrough().parse(await searched.json());
+  const existing = searchPayload.items.find((item) => item.body?.includes(request.marker));
+  if (existing) {
+    return {
+      disposition: "existing",
+      repository,
+      issueNumber: existing.number,
+      issueUrl: githubUrl(existing.html_url, "issue.html_url"),
+      marker: request.marker,
+      completionMapping: "none",
+    };
+  }
+
+  const [owner, name] = repository.split("/");
+  const created = await fetcher(`https://api.github.com/repos/${encodeURIComponent(owner!)}/${encodeURIComponent(name!)}/issues`, {
+    method: "POST",
+    headers,
+    signal,
+    body: JSON.stringify({ title: request.title, body: request.body }),
+  });
+  if (created.status !== 201) throw new Error(`GitHub feedback publication failed (${created.status})`);
+  const payload = z.object({
+    number: z.number().int().positive(),
+    html_url: z.string().url(),
+    body: z.string().nullable(),
+  }).passthrough().parse(await created.json());
+  if (!payload.body?.includes(request.marker)) throw new Error("GitHub feedback response omitted the idempotency marker");
+  return {
+    disposition: "created",
+    repository,
+    issueNumber: payload.number,
+    issueUrl: githubUrl(payload.html_url, "issue.html_url"),
+    marker: request.marker,
+    completionMapping: "none",
+  };
+}
+
 export const GitHubFieldAuthority = z.object({
   title: z.enum(["github", "tasq", "none"]),
   body: z.enum(["github", "tasq", "none"]),

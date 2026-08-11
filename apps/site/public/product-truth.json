@@ -1034,6 +1034,24 @@
       "status": "candidate_done_external_gate",
       "milestone": "public-distribution",
       "outcome": "An unsupported one-shot npm bootstrap can never remain the default install channel, and every protected release proves latest resolves to its exact published version"
+    },
+    {
+      "id": "TQ-634",
+      "status": "candidate_done_publication_gate",
+      "milestone": "local-adoption",
+      "outcome": "Select a schema-valid coordination space for one canonical directory tree without changing the operator's global default or writing repository state"
+    },
+    {
+      "id": "TQ-635",
+      "status": "candidate_done_publication_gate",
+      "milestone": "agent-adoption",
+      "outcome": "Generate one versioned digest-bound AGENTS.md block from static protocol text only, with idempotent writes, hand-edit protection, CI states and an explicit ledger-versus-backlog authority split"
+    },
+    {
+      "id": "TQ-636",
+      "status": "candidate_done_publication_gate",
+      "milestone": "feedback-loop",
+      "outcome": "Capture actionable secret-free CLI feedback locally in one line while offline, then explicitly reconcile and publish a bounded batch to GitHub without granting issue activity completion authority"
     }
   ],
   "sourceContracts": [
@@ -1045,7 +1063,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "1f970945ee89e40b5a92c8dc0c39beb4cdd933d3949c7cb19aaa583fa1a094c0"
+      "sha256": "5d0350c064fb462fa4604e8cd300d549436c8f6733f6ac09672bad2086b9a564"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

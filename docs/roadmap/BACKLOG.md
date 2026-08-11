@@ -565,6 +565,24 @@ publication sequence and create no current support claim.
   `@tasq-run/client@0.1.0-alpha.0` as `latest`; only npm package-owner authority
   can remove it or replace it with the exact supported `v0.4.0` publication.
 
+### 7F. Make local multi-space work and feedback self-describing
+
+- **TQ-634 — source candidate complete; v0.4 publication gate remains:**
+  `tasq use` privately binds a canonical directory tree to a validated space,
+  inherits the closest binding and preserves explicit flag/environment
+  precedence without changing the global default or writing repository state.
+- **TQ-635 — source candidate complete; v0.4 publication gate remains:**
+  `tasq agent instructions` renders static protocol text with only a validated
+  space as input. Full digest markers, atomic idempotent writes, hand-edit
+  refusal/force and distinct missing/stale/edited CI exits keep one root block
+  current. Documentation now consistently distinguishes live ledger ownership,
+  versioned backlog scope and product support truth.
+- **TQ-636 — source candidate complete; v0.4 publication gate remains:**
+  `tasq feedback` fsyncs a bounded private report while offline and records
+  only secret-free failed-command shape. Listing, dry-run and explicit
+  token-from-environment GitHub batch publication retain local receipts and
+  reconcile by report marker; issue activity remains observation-only.
+
 ### 8. Build managed Tasq Cloud
 
 - **TQ-901 — candidate done; deployed-service gate remains:** the private,
