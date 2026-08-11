@@ -361,6 +361,7 @@ export async function showCmd(args: ParsedArgs): Promise<number> {
  *   - "Blocked by:"  live `blocks` edges where this task is `from` (its blockers)
  *   - "Blocks:"      live `blocks` edges where this task is `to`
  *   - "Related:" / "Duplicates:"  informational edges (either endpoint)
+ *   - "Discovered from:" / "Discovered work:" provenance edges
  *   - a "(just unblocked)" hint when the task had blockers but now has none.
  */
 async function printDependencySections(
@@ -392,6 +393,7 @@ async function printDependencySections(
   const blocks = deps.filter((d) => d.type === "blocks" && d.toTaskId === taskId);
   const related = deps.filter((d) => d.type === "relates_to");
   const duplicates = deps.filter((d) => d.type === "duplicates");
+  const discoveries = deps.filter((d) => d.type === "discovered_from");
 
   if (blockedBy.length > 0) {
     printInfo(color.bold("\nBlocked by:"));
@@ -413,6 +415,16 @@ async function printDependencySections(
     for (const d of duplicates) {
       printInfo(line(d.fromTaskId === taskId ? d.toTaskId : d.fromTaskId));
     }
+  }
+  const discoveredFrom = discoveries.filter((d) => d.fromTaskId === taskId);
+  const discoveredWork = discoveries.filter((d) => d.toTaskId === taskId);
+  if (discoveredFrom.length > 0) {
+    printInfo(color.bold("\nDiscovered from:"));
+    for (const d of discoveredFrom) printInfo(line(d.toTaskId));
+  }
+  if (discoveredWork.length > 0) {
+    printInfo(color.bold("\nDiscovered work:"));
+    for (const d of discoveredWork) printInfo(line(d.fromTaskId));
   }
 }
 

@@ -274,7 +274,6 @@ describe("canonical Tasq roadmap", () => {
       status: "candidate_done_external_gate",
       milestone: "public-distribution",
       remaining: [
-        "rerun-protected-n-2-migration-matrix-for-source-format-32",
         "replay-exact-published-v0.4.0-bytes-after-publication",
       ],
       evidence: expect.arrayContaining([

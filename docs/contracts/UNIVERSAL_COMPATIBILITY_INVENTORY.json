@@ -504,7 +504,7 @@
     "kernel_rename": ["add", "list", "show", "update", "start", "done", "block", "unblock", "cancel", "reopen", "delete", "restore"],
     "kernel_generalize": ["depend", "undepend"],
     "profile": ["area", "goal", "project", "next", "search", "inbox", "tree", "task", "projection"],
-    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "remote", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
+    "surface": ["onboard", "setup", "demo", "agent", "mcp", "web", "remote", "capture", "init", "config", "backup", "export", "import", "doctor", "journal", "help", "version"],
     "compatibility": ["complete", "rm", "brief"]
   },
   "events": {

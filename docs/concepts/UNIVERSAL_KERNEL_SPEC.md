@@ -257,6 +257,8 @@ First-party relation types:
 
 - `parent_of` — structural decomposition;
 - `depends_on` — the `from` commitment is not actionable until `to` resolves;
+- `discovered_from` — informational provenance from newly captured work to the
+  commitment whose execution exposed it; never affects actionability;
 - `relates_to` — non-causal association;
 - `duplicates` — identity/intent overlap;
 - `supersedes` — append-only correction lineage.

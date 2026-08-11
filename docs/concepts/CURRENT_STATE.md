@@ -83,6 +83,16 @@ custody import. Support is `reference_only`: there is still no worker supply,
 provider availability, site access, identity proof, payment execution, hosted
 Profile or remote-effect enablement.
 
+TQ-617 now has a source candidate for explicit mid-task discovery capture.
+`tasq capture` atomically creates one follow-up, records bounded machine
+context and links it `discovered_from` the exact source commitment without
+changing that commitment's claim. Failed task-targeted CLI commands print an
+executable, shell-quoted capture recipe without copying original arguments or
+error text. The provenance edge lives only in the universal relation graph,
+is non-blocking and adds no store migration. Capture remains local and explicit;
+it is not exposed through MCP, REST or a background runtime. TQ-608's protected
+v0.4 release gate remains a dependency, so this is not yet a shipped claim.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

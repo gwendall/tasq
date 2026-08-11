@@ -58,6 +58,7 @@ export type AssignmentStatus = z.infer<typeof AssignmentStatus>;
 export const RELATION_TYPES = [
   "parent_of",
   "depends_on",
+  "discovered_from",
   "relates_to",
   "duplicates",
   "supersedes",
@@ -164,7 +165,7 @@ export type RecurrenceAnchor = z.infer<typeof RecurrenceAnchor>;
  *   - `relates_to`  — informational link, non-transitive.
  *   - `duplicates`  — informational link, non-transitive.
  */
-export const DEPENDENCY_TYPES = ["blocks", "relates_to", "duplicates"] as const;
+export const DEPENDENCY_TYPES = ["blocks", "discovered_from", "relates_to", "duplicates"] as const;
 export const DependencyType = z.enum(DEPENDENCY_TYPES);
 export type DependencyType = z.infer<typeof DependencyType>;
 

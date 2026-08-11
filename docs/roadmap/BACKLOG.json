@@ -255,7 +255,6 @@
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
       "remaining": [
-        "rerun-protected-n-2-migration-matrix-for-source-format-32",
         "replay-exact-published-v0.4.0-bytes-after-publication"
       ],
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml", "https://github.com/gwendall/tasq/actions/runs/30625856802"]
@@ -772,15 +771,18 @@
     },
     {
       "id": "TQ-617",
-      "status": "pending",
+      "status": "candidate_done_publication_gate",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-608"],
       "outcome": "Mid-task discoveries become first-class linked work: a discovered_from dependency type plus a zero-cost capture command that never releases the discovering claim",
       "remaining": [
-        "discovered_from_added_to_task_dependency_check",
-        "capture_command_attaching_machine_context_without_leaving_the_task",
-        "cli_prints_the_ready_capture_command_on_refusal_or_error",
-        "capture_stays_local_and_explicit_by_default"
+        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
+      ],
+      "evidence": [
+        "docs/contracts/TQ-617_DISCOVERY_CAPTURE.md",
+        "docs/contracts/TQ-617_DISCOVERY_CAPTURE.json",
+        "packages/tasq-service/test/discovery-capture.test.ts",
+        "packages/tasq-cli/test/capture.test.ts"
       ]
     },
     {

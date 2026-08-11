@@ -338,6 +338,28 @@ coordination fields:
 objects. Only the currently active claim is surfaced here. Historical claims
 remain available through the service layer and audit events.
 
+## Discovery capture
+
+`tasq capture <source-task> <title> --json` returns:
+
+```json
+{
+  "contractVersion": "tasq.discovery-capture.v1",
+  "task": { "id": "...", "metadata": { "discovery": {} } },
+  "relation": {
+    "fromTaskId": "<new-task>",
+    "toTaskId": "<source-task>",
+    "type": "discovered_from"
+  },
+  "replayed": false
+}
+```
+
+The task and relation commit atomically. `replayed` is true only when the same
+caller reuses the same durable idempotency key with the exact request. Machine
+context is a bounded JSON object. Capture does not mutate the source claim and
+is intentionally absent from MCP and remote operation discovery.
+
 ## `WaitConditionV1`
 
 Returned by `wait create|show|cancel`, by `wait list` as an array, and nested

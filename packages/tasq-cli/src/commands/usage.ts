@@ -46,9 +46,11 @@ export function transitionUsage(verb: string): string {
 }
 
 export const DEPEND_USAGE =
-  "depend <id> --on <other-id> [--type blocks|relates_to|duplicates]";
+  "depend <id> --on <other-id> [--type blocks|discovered_from|relates_to|duplicates]";
 export const UNDEPEND_USAGE =
-  "undepend <id> --on <other-id> [--type blocks|relates_to|duplicates]";
+  "undepend <id> --on <other-id> [--type blocks|discovered_from|relates_to|duplicates]";
+export const CAPTURE_USAGE =
+  "capture <discovering-task-id> <title> [--next <text>] [--context <json-object>] [--source <command>] [--idempotency-key <key>]";
 
 export const LIST_USAGE =
   "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>] [--limit N] [--include-scheduled] [--include-deferred]";
@@ -221,6 +223,8 @@ export function commandUsage(command: string): string | undefined {
       return DEPEND_USAGE;
     case "undepend":
       return UNDEPEND_USAGE;
+    case "capture":
+      return CAPTURE_USAGE;
     case "event":
       return EVENT_USAGE;
     case "projection":

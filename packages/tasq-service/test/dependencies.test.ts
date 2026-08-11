@@ -79,6 +79,34 @@ describe("dependency edge CRUD", () => {
     }
   });
 
+  it("stores discovered_from only in the universal relation authority", async () => {
+    const { db, client, close } = await freshDb();
+    try {
+      const { a, b } = await twoTasks(db);
+      const edge = await dependTask(db, {
+        fromTaskId: a.id, toTaskId: b.id, type: "discovered_from",
+      });
+      expect(edge.type).toBe("discovered_from");
+      expect(await unresolvedBlockerCount(db, a.id)).toBe(0);
+      expect(await listDependencies(db, {
+        taskId: a.id, direction: "from", type: "discovered_from",
+      })).toEqual([edge]);
+      const legacy = await client.execute("SELECT COUNT(*) AS count FROM task_dependency");
+      expect(Number(legacy.rows[0]?.count)).toBe(0);
+      await undependTask(db, null, {
+        fromTaskId: a.id, toTaskId: b.id, type: "discovered_from",
+      });
+      expect(await listDependencies(db, {
+        taskId: a.id, type: "discovered_from",
+      })).toEqual([]);
+      expect(await listDependencies(db, {
+        taskId: a.id, type: "discovered_from", includeDeleted: true,
+      })).toHaveLength(1);
+    } finally {
+      await close();
+    }
+  });
+
   it("is idempotent on the natural key (re-add does not duplicate)", async () => {
     const { db, close } = await freshDb();
     try {
