@@ -101,6 +101,16 @@ is non-blocking and adds no store migration. Capture remains local and explicit;
 it is not exposed through MCP, REST or a background runtime. TQ-608's protected
 v0.4 release gate remains a dependency, so this is not yet a shipped claim.
 
+TQ-618 now has a source candidate for provider-neutral observed-cost bounds.
+A task carries one typed monetary budget; immutable external meter receipts
+bind gross decimal micros to exact attempts and deduplicate provider delivery.
+Strict mode refuses renewal when the current claim is unmetered. Bound checks
+serialize with heartbeat, and a racing receipt releases a renewed claim if
+necessary, so recorded exhaustion leaves no active authority. Tasq does not
+claim to infer provider cost, verify billing truth or convert currencies. The
+CLI exposes budget, record and summary commands plus typed machine refusals.
+No migration is added; TQ-608 remains an open publication dependency.
+
 TQ-801 implements Server's first internal building block:
 `@tasq-internal/authority` owns strict verified-identity, binding, principal,
 permission, grant, delegation, eligibility, request and decision contracts;

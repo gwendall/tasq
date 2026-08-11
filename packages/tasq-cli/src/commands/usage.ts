@@ -102,6 +102,10 @@ Start an explicit foreground, unauthenticated read-only Console on loopback, or
 prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
 export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--actor <label>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
+export const COST_USAGE = `cost budget <task-id> --currency USD --max-micros <integer> [--reserve-micros <integer>] [--metering required|best_effort]
+cost record <attempt-id> --meter <absolute-uri> --observation <external-id> --currency USD --gross-micros <integer>
+                         --basis provider_receipt|runtime_meter|operator_attestation --idempotency-key <key> [--observed-at <iso>]
+cost show <task-id>`;
 export const RELEASE_USAGE = "release <task-id> [--actor <label>] [--reason <text>] [--force]";
 export const ATTEMPT_USAGE = `attempt start <task-id> [--claim <claim-id>] [--runtime <name>] [--external-id <id>] [--context-id <id>] [--metadata <json>] [--idempotency-key <key>]
 attempt list [task-id]
@@ -241,6 +245,8 @@ export function commandUsage(command: string): string | undefined {
       return JOURNAL_USAGE;
     case "claim":
       return CLAIM_USAGE;
+    case "cost":
+      return COST_USAGE;
     case "release":
       return RELEASE_USAGE;
     case "attempt":

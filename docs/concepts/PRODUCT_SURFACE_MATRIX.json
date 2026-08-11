@@ -362,6 +362,11 @@
       "id": "local_mid_task_discovery_capture",
       "support": "implemented_candidate_not_published",
       "steps": ["retain_source_claim", "capture_bounded_context", "create_follow_up_atomically", "link_discovered_from", "resume_source_work"]
+    },
+    {
+      "id": "bounded_attempt_cost",
+      "support": "implemented_candidate_not_published",
+      "steps": ["configure_task_budget", "claim", "start_attempt", "record_external_meter_receipt", "aggregate_gross_cost", "refuse_or_release_at_bound"]
     }
   ],
   "criticalTruths": [
@@ -400,6 +405,7 @@
     "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
     "physical_verification_profile_is_private_reference_only_and_supplies_no_worker_provider_access_identity_or_remote_effect",
     "mid_task_discovery_capture_is_local_explicit_non_blocking_and_not_yet_in_the_published_release",
+    "attempt_cost_is_observed_from_explicit_meter_receipts_not_inferred_or_claimed_as_billing_truth",
     "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
     "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",
     "device_time_is_only_read_by_the_system_clock_adapter"

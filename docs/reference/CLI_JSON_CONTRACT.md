@@ -316,6 +316,30 @@ The complete chain contains exactly `contract`, `proposals`, `challenges`,
 decision can complete the task. CLI trust records are always `unverified`;
 higher authenticity requires a host authority through Core.
 
+## Attempt cost
+
+`tasq cost show <task> --json` returns `tasq.task-cost-summary.v1`: the typed
+budget or `null`, gross decimal-micros totals by currency, receipt count,
+current-claim metering state and the exact renewal decision. Decimal micros are
+JSON strings to avoid precision loss.
+
+`tasq cost record <attempt> ... --json` returns the frozen observation, its
+immutable external reference, the resulting task summary, `replayed`, and
+`claimReleased`. `tasq cost budget <task> ... --json` returns `{ task,
+summary }`.
+
+A refused `tasq claim ... --json` writes this typed problem to stdout and exits
+2:
+
+```json
+{
+  "contractVersion": "tasq.cost-bound-problem.v1",
+  "ok": false,
+  "code": "cost_metering_required | cost_bound_reached",
+  "summary": {}
+}
+```
+
 ## Composite task view
 
 `tasq show <task> --json` returns all `TaskV1` keys plus exactly these v1

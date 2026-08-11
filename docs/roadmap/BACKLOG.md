@@ -440,10 +440,13 @@ reaching $4,200 and $47,000 motivate the cost bound.
   linked task without releasing its claim or widening its diff, and the CLI
   prints the ready capture command at the moment of a refusal or error.
   Capture stays local and explicit by default.
-- **TQ-618 — pending:** observed cost attributed per attempt at the claim,
-  cumulative per task, with a hard bound that can refuse lease renewal. Open
-  question to resolve before specifying: whether cost is observable from the
-  target runtimes without per-provider integration.
+- **TQ-618 — candidate done, publication gate:** provider-neutral observed cost
+  is attributed per attempt through explicit immutable meter receipts and
+  aggregated per task. A typed hard bound can refuse lease renewal without
+  instrumenting agent reasoning; strict mode also refuses an unmetered active
+  attempt. This source candidate adds no migration and makes no billing-truth
+  claim. It becomes supported only when the exact implementation ships in the
+  authorized `v0.4.0` artifacts.
 - **TQ-619 — pending:** a task records the observation that motivates it, and
   that premise is refutable with the same proposal, challenge and resolution
   mechanics completion already uses. A task whose premise died is invalidated

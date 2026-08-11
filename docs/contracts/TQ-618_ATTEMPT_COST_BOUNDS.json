@@ -1,0 +1,35 @@
+{
+  "contractVersion": "tasq.attempt-cost-certification.v1",
+  "ticket": "TQ-618",
+  "status": "source_candidate_complete_release_dependency_open",
+  "dependency": "TQ-608",
+  "storeFormat": 32,
+  "migrationAdded": false,
+  "observabilityDecision": {
+    "automaticCrossRuntimeObservation": false,
+    "primitive": "immutable_external_meter_receipt",
+    "requiresAgentReasoningInstrumentation": false,
+    "strictUnmeteredRenewal": "refused",
+    "bestEffortUnmeteredRenewal": "explicitly_allowed"
+  },
+  "storage": {
+    "budget": "task.metadata.tasqCostBudget",
+    "observation": "external_ref",
+    "resourceType": "https://tasq.run/contracts/attempt-cost-observation/v1",
+    "amountEncoding": "unsigned_decimal_micros_string",
+    "genericExternalRefBypass": "denied"
+  },
+  "hardBound": {
+    "aggregation": "gross_per_task_per_currency",
+    "singleBudgetCurrency": true,
+    "renewalReserve": true,
+    "newClaimResetsTotal": false,
+    "receiptRenewalRace": "serialized_to_refusal_or_immediate_release"
+  },
+  "evidence": [
+    "packages/tasq-core/test/costs.test.ts",
+    "packages/tasq-cli/test/cost.test.ts",
+    "packages/tasq-service/test/agentic.test.ts"
+  ],
+  "supportClaim": "source_candidate_not_published"
+}
