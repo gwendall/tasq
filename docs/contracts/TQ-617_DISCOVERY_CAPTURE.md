@@ -1,7 +1,7 @@
 # TQ-617 — Atomic discovery capture
 
-> **Status:** source candidate complete; TQ-608 release dependency open  
-> **Date:** 2026-08-11  
+> **Status:** source candidate complete; TQ-608 release dependency open
+> **Date:** 2026-08-11
 > **Machine certificate:** [`TQ-617_DISCOVERY_CAPTURE.json`](TQ-617_DISCOVERY_CAPTURE.json)
 
 ## Decision
