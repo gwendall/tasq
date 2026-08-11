@@ -18,6 +18,16 @@ const packageNames = [
   "@tasq-run/protocol-adapters",
   "@tasq-run/schema",
 ];
+const sourceDirectories = new Map([
+  ["@tasq-run/cli", "tasq-cli"],
+  ["@tasq-run/client", "tasq-client"],
+  ["@tasq-run/console", "tasq-inspector"],
+  ["@tasq-run/core", "tasq-core"],
+  ["@tasq-run/extension-sdk", "tasq-extension-sdk"],
+  ["@tasq-run/mcp", "tasq-mcp"],
+  ["@tasq-run/protocol-adapters", "tasq-protocol-adapters"],
+  ["@tasq-run/schema", "tasq-schema"],
+]);
 
 setDefaultTimeout(360_000);
 
@@ -129,12 +139,23 @@ describe("Tasq public npm package candidates", () => {
       const packageRoot = join(destination, "package");
       const manifest = JSON.parse(await readFile(join(packageRoot, "package.json"), "utf8"));
       expect(packageNames).toContain(manifest.name);
+      const sourceDirectory = sourceDirectories.get(manifest.name);
+      expect(sourceDirectory, `${manifest.name}: source manifest mapping`).toBeDefined();
+      const sourceManifest = JSON.parse(await readFile(
+        join(productRoot, "packages", sourceDirectory!, "package.json"),
+        "utf8",
+      ));
+      expect(manifest.description, `${manifest.name}: immutable npm description`).toBe(
+        sourceManifest.description.trim(),
+      );
       expect(manifest).not.toHaveProperty("private");
       expect(manifest.gitHead).toBe(sourceCommit);
       expect(JSON.stringify(manifest)).not.toContain("workspace:");
       expect(JSON.stringify(manifest)).not.toContain("@kami/");
       const packagedReadme = await readFile(join(packageRoot, "README.md"), "utf8");
       expect(packagedReadme).toContain(`# ${manifest.name}`);
+      expect(packagedReadme).toContain(`\n\n${manifest.description}\n\n`);
+      expect(packagedReadme).not.toContain("undefined");
       expect(packagedReadme).toContain(`npm install ${manifest.name}`);
       if (["@tasq-run/schema", "@tasq-run/extension-sdk", "@tasq-run/core", "@tasq-run/client"].includes(manifest.name)) {
         expect(packagedReadme).toContain("Bun 1.3+ and Node.js 22+");
