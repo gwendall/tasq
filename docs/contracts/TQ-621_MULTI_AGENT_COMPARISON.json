@@ -1,0 +1,185 @@
+{
+  "contractVersion": "tasq.multi-agent-backlog-comparison.v1",
+  "status": "current",
+  "checkedAt": "2026-08-11",
+  "question": "What happens when several agents work the same backlog in parallel?",
+  "tasqClaimBoundary": {
+    "version": "0.3.0",
+    "shape": "Tasq Local",
+    "sameMachineOnly": true,
+    "remoteServerShipped": false,
+    "sourceCandidatesExcluded": ["TQ-617", "TQ-618", "TQ-619", "TQ-620"]
+  },
+  "sources": [
+    {
+      "id": "tasq-primitives",
+      "owner": "Tasq",
+      "title": "Agentic primitives",
+      "url": "https://github.com/gwendall/tasq/blob/main/docs/concepts/AGENTIC_PRIMITIVES.md"
+    },
+    {
+      "id": "tasq-runtime",
+      "owner": "Tasq",
+      "title": "Interactive runtime consumer contract",
+      "url": "https://github.com/gwendall/tasq/blob/main/docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md"
+    },
+    {
+      "id": "tasq-release",
+      "owner": "Tasq",
+      "title": "Published v0.3.0 release",
+      "url": "https://github.com/gwendall/tasq/releases/tag/v0.3.0"
+    },
+    {
+      "id": "claude-teams",
+      "owner": "Anthropic",
+      "title": "Orchestrate teams of Claude Code sessions",
+      "url": "https://code.claude.com/docs/en/agent-teams"
+    },
+    {
+      "id": "claude-parallel",
+      "owner": "Anthropic",
+      "title": "Run agents in parallel",
+      "url": "https://code.claude.com/docs/en/agents"
+    },
+    {
+      "id": "codex-app",
+      "owner": "OpenAI",
+      "title": "Introducing the Codex app",
+      "url": "https://openai.com/index/introducing-the-codex-app/"
+    },
+    {
+      "id": "github-agents",
+      "owner": "GitHub",
+      "title": "Get started with Copilot agents on GitHub",
+      "url": "https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/overview"
+    },
+    {
+      "id": "github-agent-apps",
+      "owner": "GitHub",
+      "title": "About agent apps",
+      "url": "https://docs.github.com/en/copilot/concepts/agents/agent-apps"
+    },
+    {
+      "id": "github-fleet",
+      "owner": "GitHub",
+      "title": "Running tasks in parallel with /fleet",
+      "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet"
+    },
+    {
+      "id": "cursor-background",
+      "owner": "Cursor",
+      "title": "Background Agents",
+      "url": "https://docs.cursor.com/background-agent"
+    },
+    {
+      "id": "mcp-tasks",
+      "owner": "Model Context Protocol",
+      "title": "Tasks specification 2025-11-25",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/tasks"
+    },
+    {
+      "id": "a2a-tasks",
+      "owner": "A2A Project",
+      "title": "A2A protocol specification",
+      "url": "https://github.com/a2aproject/A2A/blob/main/docs/specification.md"
+    }
+  ],
+  "systems": [
+    {
+      "id": "tasq-local",
+      "name": "Tasq Local v0.3.0",
+      "category": "durable_coordination_ledger",
+      "availability": "published_alpha",
+      "coordinationUnit": "A commitment in one user-owned local ledger, separate from its temporary claim and each execution attempt.",
+      "parallelBehavior": "A live expiring claim hides the commitment from another actor's default next-work selection; expiry permits a higher-fence reclaim without rewriting attempt history.",
+      "collisionBoundary": "Coordinates who may work the commitment. It does not create a Git worktree or merge code.",
+      "completionBoundary": "A successful runtime attempt does not complete the commitment; evidence and, when configured, an independent decision remain separate.",
+      "scopeBoundary": "The published shape coordinates local CLI/MCP consumers on one machine. No public remote Server endpoint is claimed.",
+      "sourceIds": ["tasq-primitives", "tasq-runtime", "tasq-release"],
+      "inference": false
+    },
+    {
+      "id": "claude-agent-teams",
+      "name": "Claude Code agent teams",
+      "category": "vendor_team_orchestrator",
+      "availability": "experimental_disabled_by_default",
+      "coordinationUnit": "A team-local shared task list with pending, in-progress and completed states, dependencies, lead assignment and teammate self-claim.",
+      "parallelBehavior": "Task claiming uses file locking to prevent two teammates claiming the same task; completed dependencies unblock downstream tasks.",
+      "collisionBoundary": "Agent-team teammates are not worktree-isolated. Anthropic advises partitioning files because same-file edits can overwrite one another.",
+      "completionBoundary": "Hooks can block TaskCompleted, while the docs also list lagging task status as a current limitation.",
+      "scopeBoundary": "One experimental Claude Code team per lead session; the task/team files are stored locally and in-process teammates do not resume with /resume.",
+      "sourceIds": ["claude-teams", "claude-parallel"],
+      "inference": false
+    },
+    {
+      "id": "github-copilot",
+      "name": "GitHub Copilot agents",
+      "category": "issue_to_session_to_pr",
+      "availability": "paid_copilot_product",
+      "coordinationUnit": "An issue assignment or Agents-tab prompt starts an agent session; a coding session works toward a branch and pull request.",
+      "parallelBehavior": "GitHub documents multiple sessions running in parallel and the Copilot app can isolate sessions in separate worktrees or cloud sandboxes.",
+      "collisionBoundary": "Isolation protects working copies; GitHub review and merge gates reconcile proposed repository changes.",
+      "completionBoundary": "The documented handoff is a pull request reviewed by a human, with iteration through comments or further commits.",
+      "scopeBoundary": "Agent apps let third-party agents use the same issue, pull-request-comment and Agents UI entry points. The cited pages do not specify an expiring cross-agent claim/fence contract.",
+      "sourceIds": ["github-agents", "github-agent-apps"],
+      "inference": true
+    },
+    {
+      "id": "github-fleet",
+      "name": "GitHub Copilot CLI /fleet",
+      "category": "single_session_subagent_orchestrator",
+      "availability": "copilot_cli_feature",
+      "coordinationUnit": "One parent request is decomposed into smaller tasks and delegated to subagents managed by the main Copilot agent.",
+      "parallelBehavior": "The orchestrator evaluates dependencies and runs suitable subtasks in parallel.",
+      "collisionBoundary": "The source describes parent-managed subagents rather than a neutral shared backlog used by independent runtimes.",
+      "completionBoundary": "The main agent manages the workflow and dependencies and integrates subagent results into the parent request.",
+      "scopeBoundary": "This is orchestration inside Copilot CLI, not a cross-vendor coordination protocol.",
+      "sourceIds": ["github-fleet"],
+      "inference": true
+    },
+    {
+      "id": "codex-app",
+      "name": "OpenAI Codex app",
+      "category": "parallel_isolated_sessions",
+      "availability": "released_desktop_app",
+      "coordinationUnit": "Agents run in separate threads organized by project, each with an inspectable diff.",
+      "parallelBehavior": "Built-in worktrees give parallel agents isolated copies of the same repository.",
+      "collisionBoundary": "Worktree isolation prevents agents touching the same checkout; a human reviews, checks out or continues each change set.",
+      "completionBoundary": "The cited product page documents diff review and local checkout, not a shared commitment/evidence decision state machine.",
+      "scopeBoundary": "The cited page documents multiple Codex agents, not a vendor-neutral backlog lease shared with other runtimes.",
+      "sourceIds": ["codex-app"],
+      "inference": true
+    },
+    {
+      "id": "cursor-background",
+      "name": "Cursor Background Agents",
+      "category": "parallel_isolated_sessions",
+      "availability": "released_background_agent",
+      "coordinationUnit": "A prompt creates an asynchronous agent whose status can be viewed, followed up or taken over.",
+      "parallelBehavior": "Each agent clones the GitHub repository into an isolated Ubuntu machine and works on a separate branch.",
+      "collisionBoundary": "Separate machines and branches isolate execution; repository handoff happens through pushed changes.",
+      "completionBoundary": "The cited page documents status, follow-up and takeover, not an independent evidence-bound completion decision.",
+      "scopeBoundary": "The cited page does not document a shared claim/reclaim backlog contract across agents.",
+      "sourceIds": ["cursor-background"],
+      "inference": true
+    },
+    {
+      "id": "mcp-a2a",
+      "name": "MCP Tasks and A2A Tasks",
+      "category": "execution_protocols",
+      "availability": "published_protocols_mcp_tasks_experimental",
+      "coordinationUnit": "A receiver- or server-generated task ID tracks one asynchronous request execution and its status/result or artifacts.",
+      "parallelBehavior": "Clients can list, poll, stream or cancel multiple executions; the specifications define execution lifecycles and interrupted input states.",
+      "collisionBoundary": "The cited specifications do not define an exclusive claim over an external shared backlog item.",
+      "completionBoundary": "Their completed state means the protocol task execution completed; neither specification defines a separate organizational commitment decision.",
+      "scopeBoundary": "These are interoperability protocols for executions, not backlog products. This classification is an inference from their normative data models.",
+      "sourceIds": ["mcp-tasks", "a2a-tasks"],
+      "inference": true
+    }
+  ],
+  "conclusion": {
+    "differentiated": true,
+    "claim": "Tasq's narrow differentiation is a runtime-neutral durable commitment/claim/attempt/evidence boundary. It is not the existence of parallel agents, subagents, worktrees, issue assignment or asynchronous task IDs.",
+    "limits": "Claude Code already demonstrates atomic claiming inside one vendor team; GitHub already owns issue-to-agent-to-PR workflow; Codex and Cursor already isolate parallel code execution. Tasq Local is still same-machine only and does not replace those execution or code-merge surfaces."
+  }
+}

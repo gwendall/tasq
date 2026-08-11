@@ -18,6 +18,7 @@ contributor guides, and executable engineering contracts.
 | Evaluate managed Cloud source | [Cloud control plane](contracts/TQ-901_MANAGED_CLOUD_CONTROL_PLANE.md) → [hostile source proof](contracts/TQ-905_MANAGED_CLOUD_HOSTILE_CERTIFICATION.md) → [remote-effects gate](contracts/TQ-906_REMOTE_EFFECTS_REVIEW_GATE.md) |
 | Understand JSON compatibility | [CLI JSON contract](reference/CLI_JSON_CONTRACT.md) |
 | See current work and release blockers | [Roadmap](roadmap/BACKLOG.md) |
+| Compare same-backlog multi-agent behavior | [Multi-agent comparison](concepts/MULTI_AGENT_BACKLOG_COMPARISON.md) → [machine matrix](contracts/TQ-621_MULTI_AGENT_COMPARISON.json) |
 | Evaluate public support claims | [Product surface matrix](concepts/PRODUCT_SURFACE_MATRIX.json) |
 | Understand release policy | [Release overview](releases/RELEASES.md) |
 

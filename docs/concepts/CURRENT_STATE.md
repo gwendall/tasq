@@ -18,6 +18,14 @@ contract. No immutable public Server image, managed Cloud deployment or public
 remote endpoint ships yet.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
+TQ-621 adds a public, source-linked comparison of same-backlog behavior across
+Tasq, Claude Code, GitHub Copilot, Codex, Cursor, MCP and A2A. It does not turn
+source candidates into shipped features: the comparison is pinned to Tasq
+Local `v0.3.0`, explicitly same-machine, and labels classifications inferred
+from first-party or normative sources. The defensible boundary is durable,
+runtime-neutral commitment, claim, attempt, evidence and decision state — not
+parallel execution, worktree isolation or vendor-native subagent orchestration.
+
 TQ-623 deepens the local embedded Interface without adding Kernel state.
 `createLocalTasq` now exposes existing assignment, artifact, external-reference
 and effect services and composes atomic claim/start and outcome-submission

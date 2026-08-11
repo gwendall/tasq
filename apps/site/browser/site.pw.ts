@@ -83,6 +83,21 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   );
 });
 
+test("comparison page separates execution, orchestration and durable coordination", async ({ page }) => {
+  await page.goto("/compare/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Parallel is not the same as coordinated");
+  await expect(page.getByText("Tasq Local 0.3.0", { exact: false })).toBeVisible();
+  await expect(page.getByText("Server is not shipped", { exact: false })).toBeVisible();
+  const matrix = page.getByRole("table");
+  await expect(matrix).toContainText("Claude Code agent teams");
+  await expect(matrix).toContainText("OpenAI Codex app");
+  await expect(matrix).toContainText("MCP Tasks and A2A Tasks");
+  await expect(page.getByText("Tasq is the coordination record, not the agent runner.")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Anthropic: Orchestrate teams/ })).toHaveAttribute("href", "https://code.claude.com/docs/en/agent-teams");
+  await expect(page.getByRole("link", { name: /Machine-readable matrix/ })).toHaveAttribute("href", /TQ-621_MULTI_AGENT_COMPARISON\.json$/);
+  await expect(page.locator("body")).not.toContainText("Tasq Server is available");
+});
+
 test("mobile layout stays within the viewport and exposes navigation", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
@@ -91,6 +106,11 @@ test("mobile layout stays within the viewport and exposes navigation", async ({ 
   expect(overflow).toBeLessThanOrEqual(1);
   await page.getByRole("link", { name: "Docs" }).click();
   await expect(page.getByRole("navigation", { name: "Documentation", exact: true })).toBeVisible();
+
+  await page.goto("/compare/");
+  await expect(page.getByRole("link", { name: "Compare", exact: true })).toBeVisible();
+  const compareOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(compareOverflow).toBeLessThanOrEqual(1);
 });
 
 test("the OpenGraph card is served as an image, not as opaque bytes", async ({ page }) => {
