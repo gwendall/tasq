@@ -19,6 +19,7 @@ export function SiteFooter() {
           <p>Explore</p>
           <Link href="/docs/getting-started">Getting started</Link>
           <Link href="/docs/agents">Agent guide</Link>
+          <Link href="/compare">Compare agents</Link>
           <Link href="/status">Product status</Link>
           <Link href="/changelog">Changelog</Link>
         </div>

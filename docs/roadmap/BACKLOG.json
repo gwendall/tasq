@@ -823,13 +823,16 @@
     },
     {
       "id": "TQ-621",
-      "status": "pending",
+      "status": "done",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-605"],
       "outcome": "A sourced public comparison of what happens when several agents work the same backlog in parallel, every claim carrying its source",
-      "remaining": [
-        "comparison_page_written_from_verifiable_public_sources",
-        "claims_limited_to_what_the_shipped_product_does"
+      "remaining": [],
+      "evidence": [
+        "docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json",
+        "docs/concepts/MULTI_AGENT_BACKLOG_COMPARISON.md",
+        "apps/site/src/app/compare/page.tsx",
+        "packages/tasq-evals/multi-agent-comparison.test.ts"
       ]
     },
     {

@@ -451,10 +451,12 @@ reaching $4,200 and $47,000 motivate the cost bound.
 - **TQ-620 — pending:** human attention as a bounded resource: batch
   `input_required` requests and honour do-not-disturb windows, measured as
   fewer solicitations per unit of work at constant decision quality.
-- **TQ-621 — pending:** a sourced public comparison page answering the one
+- **TQ-621 — done:** a sourced public comparison page answers the one
   question that separates coordination tools - what happens when several
   agents work the same backlog in parallel - with every claim carrying its
-  source and no claim exceeding what the shipped product does.
+  source and no claim exceeding what the shipped product does. The canonical
+  matrix freezes the published Tasq Local `v0.3.0` boundary, labels inferences
+  and backs the rendered `/compare/` page with executable traceability tests.
 
 ### 7D. Coordinate delegated action without verticalizing Core
 

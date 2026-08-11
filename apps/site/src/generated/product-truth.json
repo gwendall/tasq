@@ -925,7 +925,7 @@
     },
     {
       "id": "TQ-621",
-      "status": "pending",
+      "status": "done",
       "milestone": "autonomous-direction",
       "outcome": "A sourced public comparison of what happens when several agents work the same backlog in parallel, every claim carrying its source"
     },
@@ -1005,7 +1005,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "f9fb932b8406243ad592649ecc96a2c53107e9dc9f4fea1d59b43c41bbe0e8c6"
+      "sha256": "8f68db49966a9e1decbf3025884c21133a8af78d24e57ed6037352be9f3ffd0e"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

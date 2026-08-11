@@ -8,6 +8,7 @@ import { productTruth } from "@/lib/product-truth";
 const nav = [
   { href: "/docs/getting-started", label: "Docs" },
   { href: "/agents", label: "Agents" },
+  { href: "/compare", label: "Compare" },
   { href: "/status", label: "Status" },
 ];
 
