@@ -32,19 +32,19 @@ trusted-publisher binding, publication and clean-room replay finish.
 
 ## `v0.4.0` public-alpha checkpoint
 
-The historical format-28 source candidate was merged with green `main` CI.
 Protected run
-[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802)
+[31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496)
 attestation-verifies the exact public `v0.2.0` and `v0.3.0` inputs and passes
-their format-28 migration/restore matrix on both supported targets, bound to
-commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`. Source format is now 32, so that
-evidence is superseded and a fresh protected matrix is required before tagging.
+their format-32 migration/restore matrix on both supported targets, bound to
+commit `e27451d3510c71a9f875a48991eb2fd80496bfdb`. The source-candidate data-safety
+gate is therefore passed; exact published `v0.4.0` bytes remain a separate
+post-publication gate.
 
 `v0.4.0` is authorized but not published. No tag or release coordinate should
 be created before this ordered activation sequence:
 
-1. protected one-shot `@tasq-run/client@0.1.0-alpha.0` bootstrap using only
-   `NPM_CLIENT_BOOTSTRAP_TOKEN`;
+1. verify the completed protected `@tasq-run/client@0.1.0-alpha.0` bootstrap
+   from run `31012709417` and configure its release trusted publisher;
 2. `release.yml`/`release` npm trusted-publisher binding, followed immediately
    by secret deletion and token revocation;
 3. PyPI pending trusted publisher for `tasq-remote` using

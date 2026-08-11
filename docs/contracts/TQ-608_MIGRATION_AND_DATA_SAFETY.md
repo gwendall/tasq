@@ -122,8 +122,8 @@ snapshot private.
 The next-line contract is
 `TQ-608_V040_PRERELEASE_MATRIX.json`. Its local harness downloads and
 digest-pins the exact public `v0.2.0`/format-25 and `v0.3.0`/format-26
-artifacts, has each old binary create a nontrivial ledger, migrates both to a
-historical local `v0.4.0`/format-28 candidate, verifies the private snapshot, receipt and
+artifacts, has each old binary create a nontrivial ledger, migrates both to the
+current `v0.4.0`/format-32 source candidate, verifies the private snapshot, receipt and
 post-migration doctor, then restores the snapshot plus journal with the
 matching old binary. On Darwin arm64 this full local matrix passes.
 
@@ -139,11 +139,11 @@ and does not weaken the fail-closed domain/recovery-state assertion.
 Darwin/Linux source-candidate route. It attestation-verifies both public source
 lines, binds the candidate checkout to an exact commit and derives the expected
 target format from the machine matrix. Protected run
-[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802)
+[31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496)
 passed on Darwin arm64 and Linux x64 GNU against source commit
-`71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`; that format-28 result is now
-superseded by source format 32. A new protected run is required and must not be
-reported as passed before both matrix jobs succeed. After `v0.4.0` publication,
+`e27451d3510c71a9f875a48991eb2fd80496bfdb` and target format 32. The
+downloaded evidence files are SHA-256 bound in the machine certificates. After
+`v0.4.0` publication,
 the exact downloaded artifacts and attestations must still be replayed
 separately. Until that external gate passes, `publishedV040Replay` remains
 `not_run` and no `v0.4.0` support claim exists.

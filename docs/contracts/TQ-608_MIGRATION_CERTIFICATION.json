@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 5,
+  "revision": 6,
   "status": "current-release-passed",
   "testedAt": "2026-07-23",
   "storeFormat": {
@@ -103,18 +103,21 @@
       "knownHistoricalPhysicalEffect": "Published v0.3.0 may create or update db.sqlite-shm and empty db.sqlite-wal while returning its non-mutating typed refusal."
     },
     "protectedSourceCandidateReplay": {
-      "status": "historical_format_28_superseded",
-      "testedAt": "2026-07-31",
-      "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
+      "status": "passed_format_32",
+      "testedAt": "2026-08-11",
+      "sourceCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447846496",
       "targets": ["darwin-arm64", "linux-x64-gnu"],
       "exactPinnedPublicSourceAssets": true,
       "sourceReleaseAttestationsVerified": true,
       "candidateSourceCommitBound": true,
-      "targetStoreFormat": 28,
-      "supersededByStoreFormat": 32,
+      "targetStoreFormat": 32,
       "postMigrationDoctorPassed": true,
-      "matchingBinaryRestorePassed": true
+      "matchingBinaryRestorePassed": true,
+      "downloadedEvidenceSha256": {
+        "darwin-arm64": "e3a8b96dc9fc3c87f7fdf6006aa56d81128069342e0088f88cdfc101aff43ffe",
+        "linux-x64-gnu": "dcca41637d036f2097228bb8df16fc0b34e82dc6acb070ffe48e537730b325a2"
+      }
     },
     "publishedCandidateArtifactAttestations": "not_run",
     "publishedV040Replay": "not_run",
@@ -125,7 +128,7 @@
     "v0.4.0_exact_published_byte_replay_after_publication"
   ],
   "tq608SourceImplementationComplete": true,
-  "tq608Format32ProtectedSourceCandidateComplete": false,
+  "tq608Format32ProtectedSourceCandidateComplete": true,
   "publishedByteCertificationComplete": true,
   "publishedByteCertificationCompleteFor": "0.3.0"
 }

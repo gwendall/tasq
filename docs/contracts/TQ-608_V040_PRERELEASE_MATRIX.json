@@ -1,11 +1,11 @@
 {
   "contractVersion": "tasq.migration-prerelease-matrix.v1",
-  "revision": 6,
+  "revision": 7,
   "candidate": {
     "version": "0.4.0",
     "storeFormat": 32,
-    "artifactState": "protected_source_candidate_recertification_required",
-    "protectedSourceCandidateReplayPassed": false,
+    "artifactState": "protected_source_candidate_certified",
+    "protectedSourceCandidateReplayPassed": true,
     "publishedReplayPassed": false,
     "publicSupportClaim": false
   },
@@ -76,10 +76,10 @@
     "publishedV040Replay": "not_run"
   },
   "protectedSourceCandidateEvidence": {
-    "status": "historical_format_28_superseded",
-    "sourceCommit": "71f7f8c3f70f712ff06d51bec0f30b82cbe372b5",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30625856802",
-    "completedAt": "2026-07-31",
+    "status": "passed_format_32",
+    "sourceCommit": "e27451d3510c71a9f875a48991eb2fd80496bfdb",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31447846496",
+    "completedAt": "2026-08-11T01:00:16Z",
     "targets": [
       "darwin-arm64",
       "linux-x64-gnu"
@@ -88,7 +88,10 @@
     "sourceReleaseAttestationsVerified": true,
     "candidateSourceCommitBound": true,
     "publishedCandidateArtifacts": false,
-    "targetStoreFormat": 28,
-    "supersededByStoreFormat": 32
+    "targetStoreFormat": 32,
+    "downloadedEvidenceSha256": {
+      "darwin-arm64": "e3a8b96dc9fc3c87f7fdf6006aa56d81128069342e0088f88cdfc101aff43ffe",
+      "linux-x64-gnu": "dcca41637d036f2097228bb8df16fc0b34e82dc6acb070ffe48e537730b325a2"
+    }
   }
 }

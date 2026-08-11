@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 type BootstrapAuthorization = {
-  state: "prepared_not_authorized" | "authorized";
+  state: "prepared_not_authorized" | "authorized" | "completed";
   coordinate: string;
   workflow: string;
   environment: string;

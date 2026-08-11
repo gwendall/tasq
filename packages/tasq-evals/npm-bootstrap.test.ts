@@ -210,7 +210,12 @@ describe("one-shot npm identity bootstrap", () => {
       return { exitCode, stdout, stderr };
     }
 
+    const completed = await verify(policy);
+    expect(completed.exitCode).not.toBe(0);
+    expect(completed.stderr).toContain("authorization state is completed");
+
     const authorized = structuredClone(policy);
+    authorized.npmClientBootstrap.state = "authorized";
     const accepted = await verify(authorized);
     expect(accepted.exitCode, accepted.stderr).toBe(0);
     expect(JSON.parse(accepted.stdout)).toMatchObject({
