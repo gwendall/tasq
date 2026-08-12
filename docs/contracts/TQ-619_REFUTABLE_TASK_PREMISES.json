@@ -1,7 +1,9 @@
 {
   "contractVersion": "tasq.task-premise-certification.v1",
   "ticket": "TQ-619",
-  "status": "source_candidate_complete_not_published",
+  "status": "published_and_certified",
+  "release": "v0.4.0",
+  "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
   "storeFormat": 32,
   "migrationAdded": false,
   "intake": {
@@ -35,5 +37,7 @@
   "evidence": [
     "packages/tasq-service/test/premises.test.ts",
     "packages/tasq-cli/test/premise.test.ts"
-  ]
+  ],
+  "remaining": [],
+  "supportClaim": "public_alpha"
 }

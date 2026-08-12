@@ -1,6 +1,8 @@
 {
   "contractVersion": "tasq.tq-635-certification.v1",
-  "status": "source_candidate_complete_publication_pending",
+  "status": "published_and_certified",
+  "release": "v0.4.0",
+  "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
   "command": "tasq agent instructions",
   "marker": {
     "version": 1,
@@ -28,7 +30,5 @@
     "packages/tasq-evals/documentation-contract.test.ts",
     "AGENTS.md"
   ],
-  "remaining": [
-    "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-  ]
+  "remaining": []
 }

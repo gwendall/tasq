@@ -177,18 +177,19 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-807")).toMatchObject({
-      status: "in_progress_external_gate",
-      remaining: ["publish_immutable_multi_arch_image_sbom_checksums_and_provenance"],
+      status: "done",
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-807_DEPLOYABLE_SERVER.md",
         "docs/contracts/TQ-807_SERVER_CERTIFICATION.json",
         "deploy/server/README.md",
+        "https://github.com/gwendall/tasq/actions/runs/31613501777",
+        "https://github.com/gwendall/tasq/actions/runs/31619011510",
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-808")).toMatchObject({
       status: "candidate_done_external_gate",
       remaining: [
-        "protected_multi_arch_image_and_provenance",
         "macos_and_linux_clients_against_exact_published_digest",
         "previously_unbriefed_operator_deployment",
       ],
@@ -204,8 +205,8 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-618")).toMatchObject({
-      status: "candidate_done_publication_gate",
-      remaining: ["publish_exact_implementation_in_authorized_v0.4.0_artifacts"],
+      status: "done",
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.md",
         "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.json",
@@ -214,8 +215,8 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-619")).toMatchObject({
-      status: "candidate_done_publication_gate",
-      remaining: ["publish_exact_implementation_in_authorized_v0.4.0_artifacts"],
+      status: "done",
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.md",
         "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.json",
@@ -223,7 +224,7 @@ describe("canonical Tasq roadmap", () => {
         "packages/tasq-cli/test/premise.test.ts",
       ],
     });
-    for (const id of ["TQ-806", "TQ-810", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
+    for (const id of ["TQ-806", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
       const item = roadmap.items.find((candidate) => candidate.id === id);
       expect(item?.status, `${id}: source candidate status`).toBe(
         "candidate_done_external_gate",
@@ -231,10 +232,13 @@ describe("canonical Tasq roadmap", () => {
       expect(item?.remaining?.length, `${id}: external gate must remain explicit`)
         .toBeGreaterThan(0);
     }
+    expect(roadmap.items.find(({ id }) => id === "TQ-810")).toMatchObject({
+      status: "done",
+      remaining: [],
+    });
     expect(roadmap.items.find(({ id }) => id === "TQ-906")).toMatchObject({
       status: "pending_independent_review",
       remaining: [
-        "published_artifact_signed_statement_certification",
         "exact_deployed_connector_permit_receipt_chain",
         "live_revocation_and_compromise_races",
         "independent_evidence_and_authority_review",
@@ -268,9 +272,9 @@ describe("canonical Tasq roadmap", () => {
         ]),
       },
       npmClientDefaultTag: {
-        state: "external_remediation_required",
+        state: "complete",
         coordinate: "@tasq-run/client",
-        blocks: "any_default_install_claim_until_an_exact_supported_release_replaces_or_removes_the_tag",
+        blocks: null,
       },
       firstProtectedRelease: {
         state: "complete",
@@ -298,21 +302,19 @@ describe("canonical Tasq roadmap", () => {
       ],
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-608")).toMatchObject({
-      status: "candidate_done_external_gate",
+      status: "done",
       milestone: "public-distribution",
-      remaining: [
-        "replay-exact-published-v0.4.0-bytes-after-publication",
-      ],
+      remaining: [],
       evidence: expect.arrayContaining([
         "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json",
         "packages/tasq-service/test/data-safety.test.ts",
       ]),
     });
     expect(roadmap.items.find(({ id }) => id === "TQ-633")).toMatchObject({
-      status: "candidate_done_external_gate",
+      status: "done",
       milestone: "public-distribution",
       dependsOn: ["TQ-603"],
-      remaining: ["remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"],
+      remaining: [],
       evidence: [
         "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md",
         "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",

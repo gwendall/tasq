@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.hosted-human-actions-certification.v1",
-  "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-30",
+  "status": "published_exact_image_certified",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-811",
   "surface": [
     "commitment_create",
@@ -54,16 +54,17 @@
     "publicSupportClaim": false
   },
   "publicationAutomation": {
-    "state": "authorized_not_run",
+    "state": "published_and_replayed",
     "version": "0.4.0",
     "exactImageWorkflow": ".github/workflows/certify-published-server.yml",
     "containerLifecycleReplay": true,
     "realBrowserReplayPrepared": true,
     "browserEvidenceArtifact": "tasq-server-tq811-browser-evidence",
-    "exactPublishedBrowserReplay": false
+    "exactPublishedBrowserReplay": true,
+    "exactPublishedDigest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31613501777",
+    "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31619011510"
   },
-  "remainingExternalGate": [
-    "exact_published_server_image_browser_replay",
-    "tq807_tq808_server_publication"
-  ]
+  "remainingExternalGate": [],
+  "publicSupportClaim": true
 }

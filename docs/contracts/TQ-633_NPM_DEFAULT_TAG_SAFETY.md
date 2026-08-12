@@ -1,6 +1,6 @@
 # TQ-633 — npm default-tag safety
 
-Status: source candidate complete; external registry remediation required.
+Status: complete; the supported protected `v0.4.0` release is the npm default.
 
 ## Problem
 
@@ -9,12 +9,11 @@ it must never become the default install. The safety property is about the
 registry's current dist-tag state, not the `--tag` argument that a publisher
 intended to send.
 
-At `2026-08-11T02:57:46Z`, the anonymous public command
-`npm view @tasq-run/client versions dist-tags time --json` returned one version,
-`0.1.0-alpha.0`, with both `alpha-bootstrap` and `latest` resolving to it. The
-bootstrap has no published-support grant. Therefore a default
-`npm install @tasq-run/client` is currently unsafe and no source-only change can
-claim that the public registry was repaired.
+At `2026-08-11T14:16:24Z`, after protected release run
+[31497848901](https://github.com/gwendall/tasq/actions/runs/31497848901), the
+anonymous command `npm view @tasq-run/client versions dist-tags time --json`
+showed `alpha-bootstrap=0.1.0-alpha.0` and `latest=0.4.0`. The unsupported
+bootstrap remains explicitly addressable but is no longer the default install.
 
 ## Source controls
 
@@ -30,30 +29,21 @@ The protected release re-reads every authorized public package after publish
 and fails unless `latest` resolves to its exact release version. These checks
 do not infer support from package existence or provenance.
 
-## Remaining external gate
+## Completion evidence
 
-An authenticated npm package owner must now either remove `latest` from
-`@tasq-run/client@0.1.0-alpha.0` or replace it by publishing the exact supported
-`v0.4.0` artifact through the protected workflow. Afterwards, an anonymous
-registry read must show:
+The allowed replacement path was used: protected OIDC publication installed
+the exact supported `v0.4.0` artifact as `latest`. An anonymous registry read
+now shows:
 
 ```bash
-npm dist-tag rm @tasq-run/client latest
 npm view @tasq-run/client versions dist-tags time --json
 ```
 
-The first command is the minimal immediate remediation. It requires npm owner
-authority and is intentionally not treated as complete until the second,
-anonymous read proves the public state.
-
 - `alpha-bootstrap = 0.1.0-alpha.0`; and
-- `latest` absent or equal to the exact supported release, never the bootstrap.
+- `latest = 0.4.0`.
 
-Until that evidence exists, TQ-633 stays
-`candidate_done_external_gate` and default-install support claims remain
-blocked. Publishing the exact supported `v0.4.0` through the protected
-workflow is itself an allowed remediation because its postcondition requires
-`latest` to resolve to those exact bytes.
+TQ-633 is therefore complete. The protected workflow still fails unless every
+authorized public package's `latest` tag resolves to its exact release version.
 
 Machine-readable observation and acceptance state:
 [`TQ-633_NPM_DEFAULT_TAG_SAFETY.json`](TQ-633_NPM_DEFAULT_TAG_SAFETY.json).

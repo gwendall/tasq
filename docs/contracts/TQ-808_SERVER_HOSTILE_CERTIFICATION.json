@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.server-hostile-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-808",
   "testedArtifact": "production_bun_daemon_and_local_linux_container_candidate",
   "hostileDimensions": {
@@ -38,15 +38,18 @@
     "scripts/server-container-smoke.ts"
   ],
   "publicationAutomation": {
-    "state": "authorized_not_run",
+    "state": "published_and_exact_digest_certified",
     "version": "0.4.0",
+    "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
+    "image": "ghcr.io/gwendall/tasq-server@sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "publishRun": "https://github.com/gwendall/tasq/actions/runs/31613501777",
+    "exactDigestCertificationRun": "https://github.com/gwendall/tasq/actions/runs/31619011510",
     "publishWorkflow": ".github/workflows/publish-server.yml",
     "exactDigestCertificationWorkflow": ".github/workflows/certify-published-server.yml",
     "cleanClientMatrixStillExternal": true,
     "unbriefedOperatorStillExternal": true
   },
   "remainingExternalGate": [
-    "protected_multi_arch_image_and_provenance",
     "macos_and_linux_clients_against_exact_published_digest",
     "previously_unbriefed_operator_deployment"
   ],

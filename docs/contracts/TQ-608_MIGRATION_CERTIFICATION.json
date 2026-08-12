@@ -1,14 +1,14 @@
 {
   "contractVersion": "tasq.migration-certification.v1",
-  "revision": 6,
+  "revision": 7,
   "status": "current-release-passed",
-  "testedAt": "2026-07-23",
+  "testedAt": "2026-08-12",
   "storeFormat": {
     "contractVersion": "tasq.store-format.v1",
-    "current": 26,
-    "readable": { "min": 26, "max": 26 },
-    "writable": { "min": 26, "max": 26 },
-    "directlyMigratable": { "min": 0, "max": 26 },
+    "current": 32,
+    "readable": { "min": 32, "max": 32 },
+    "writable": { "min": 32, "max": 32 },
+    "directlyMigratable": { "min": 0, "max": 32 },
     "oldestDirectlyTestedSource": "tasq-zero-populated-fixture",
     "irreversible": true,
     "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
@@ -119,16 +119,15 @@
         "linux-x64-gnu": "dcca41637d036f2097228bb8df16fc0b34e82dc6acb070ffe48e537730b325a2"
       }
     },
-    "publishedCandidateArtifactAttestations": "not_run",
-    "publishedV040Replay": "not_run",
-    "publicSupportClaim": false
+    "publishedCandidateArtifactAttestations": "verified",
+    "publishedV040Replay": "passed",
+    "publishedV040ReplayWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
+    "publicSupportClaim": true
   },
   "futureCompatibilityRule": "Once three protected release lines exist, certify exact protected N-2 binaries and published bytes before claiming support for that line.",
-  "remainingExternalReplay": [
-    "v0.4.0_exact_published_byte_replay_after_publication"
-  ],
+  "remainingExternalReplay": [],
   "tq608SourceImplementationComplete": true,
   "tq608Format32ProtectedSourceCandidateComplete": true,
   "publishedByteCertificationComplete": true,
-  "publishedByteCertificationCompleteFor": "0.3.0"
+  "publishedByteCertificationCompleteFor": "0.4.0"
 }

@@ -1,6 +1,6 @@
 # TQ-634 — Directory-scoped space selection
 
-Status: source candidate complete; exact `v0.4.0` publication remains.
+Status: published and protected-byte certified in `v0.4.0`.
 
 ## Problem and primitive
 

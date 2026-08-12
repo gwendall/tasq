@@ -56,6 +56,7 @@ async function policyFile(change: (policy: Record<string, any>) => void): Promis
 describe("TQ-616 protected release eligibility", () => {
   test("keeps historical v0.3.0 certification green without replaying absent APIs", async () => {
     const path = await policyFile((policy) => {
+      policy.releaseAuthorization.state = "authorized";
       policy.releaseAuthorization.version = historicalVersion;
     });
     const result = await run(historicalVersion, historicalCommit, path);
@@ -74,6 +75,7 @@ describe("TQ-616 protected release eligibility", () => {
 
   test("fails closed for a future release without exact compatibility authorization", async () => {
     const path = await policyFile((policy) => {
+      policy.releaseAuthorization.state = "authorized";
       policy.releaseAuthorization.version = nextVersion;
       policy.certificationPrograms.tq616SignedStatements.state =
         "prepared_not_authorized";
@@ -88,6 +90,7 @@ describe("TQ-616 protected release eligibility", () => {
 
   test("binds an authorized compatible version to the protected runtime tag commit", async () => {
     const path = await policyFile((policy) => {
+      policy.releaseAuthorization.state = "authorized";
       policy.releaseAuthorization.version = nextVersion;
       policy.certificationPrograms.tq616SignedStatements = {
         ...policy.certificationPrograms.tq616SignedStatements,
@@ -121,6 +124,7 @@ describe("TQ-616 protected release eligibility", () => {
     });
 
     const invalidPath = await policyFile((policy) => {
+      policy.releaseAuthorization.state = "authorized";
       policy.releaseAuthorization.version = nextVersion;
       policy.certificationPrograms.tq616SignedStatements = {
         ...policy.certificationPrograms.tq616SignedStatements,

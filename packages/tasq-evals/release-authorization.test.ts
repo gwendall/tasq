@@ -58,7 +58,7 @@ afterAll(async () => {
 });
 
 function authorizedPolicy() {
-  return {
+  const candidate = {
     ...structuredClone(policy),
     releaseAuthorization: {
       ...policy.releaseAuthorization,
@@ -72,6 +72,12 @@ function authorizedPolicy() {
       data_safety_source_candidate: true,
     },
   };
+  candidate.publishedRelease.version = "0.3.0";
+  candidate.publishedRelease.publishedPackages = candidate.publishedRelease.publishedPackages
+    .filter(({ name }) => name !== "@tasq-run/client")
+    .map((entry) => ({ ...entry, version: "0.3.0" }));
+  candidate.candidatePublications.remoteTypeScriptClient.state = "authorized";
+  return candidate;
 }
 
 async function verify(candidate: unknown, version = authorizedVersion) {
@@ -126,13 +132,13 @@ describe("protected public release authorization", () => {
       .toContain("private_multi_app_dogfood_accepted");
   });
 
-  test("separates published format 26 from unshipped source-candidate format 32", () => {
+  test("binds published v0.4.0 and repository source to store format 32", () => {
     expect(policy.compatibility).toMatchObject({
       scope: "publishedRelease",
-      storeFormat: { current: 26 },
+      storeFormat: { current: 32 },
     });
     expect(policy.sourceCandidateCompatibility).toEqual({
-      status: "repository_source_candidate_not_published",
+      status: "matches_published_v0_4_0",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
         current: 32,
@@ -142,7 +148,7 @@ describe("protected public release authorization", () => {
         irreversible: true,
         rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
       },
-      publishedSupportGranted: false,
+      publishedSupportGranted: true,
     });
     for (const authorization of Object.values(policy.candidatePublications)) {
       expect(authorization.sourceBinding)

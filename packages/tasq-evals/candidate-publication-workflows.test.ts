@@ -21,7 +21,7 @@ type CandidateAuthorization = {
   authorizedAt: string | null;
 };
 type Policy = {
-  releaseAuthorization: { version: string };
+  releaseAuthorization: { state: string; version: string };
   externalPublicationGateStatus: Record<string, boolean>;
   candidatePublications: Record<CandidatePublication, CandidateAuthorization>;
   publishedRelease: {
@@ -45,9 +45,17 @@ afterAll(async () => {
 
 function nextPolicy(): Policy {
   const candidate = structuredClone(policy);
+  candidate.releaseAuthorization.state = "authorized";
   candidate.releaseAuthorization.version = version;
+  candidate.publishedRelease.version = "0.3.0";
+  candidate.publishedRelease.publishedPackages = candidate.publishedRelease.publishedPackages
+    .filter(({ name }) => name !== "@tasq-run/client")
+    .map((entry) => ({ ...entry, version: "0.3.0" }));
   candidate.externalPublicationGateStatus.trusted_publishing_configured = true;
   candidate.externalPublicationGateStatus.data_safety_source_candidate = true;
+  for (const surface of ["serverImage", "pythonWheel", "remoteTypeScriptClient"] as const) {
+    candidate.candidatePublications[surface].state = "authorized";
+  }
   return candidate;
 }
 
@@ -92,7 +100,7 @@ async function verify(
 describe("protected candidate publication entrypoints", () => {
   test("authorizes every exact v0.4.0 coordinate and still fails closed otherwise", async () => {
     expect(policy.externalPublicationGateStatus.trusted_publishing_configured).toBe(true);
-    const pendingTrust = structuredClone(policy);
+    const pendingTrust = nextPolicy();
     pendingTrust.externalPublicationGateStatus.trusted_publishing_configured = false;
     const pendingResult = await verify(pendingTrust, "serverImage");
     expect(pendingResult.exitCode).not.toBe(0);
@@ -106,7 +114,7 @@ describe("protected candidate publication entrypoints", () => {
       "remoteTypeScriptClient",
     ] as const) {
       expect(policy.candidatePublications[surface]).toMatchObject({
-        state: "authorized",
+        state: "published_certified",
         version,
         decision: "go",
         authorizedBy: "@gwendall",
@@ -156,6 +164,7 @@ describe("protected candidate publication entrypoints", () => {
 
       const historical = authorized(surface);
       historical.releaseAuthorization.version = publishedVersion;
+      historical.publishedRelease.version = publishedVersion;
       historical.candidatePublications[surface].version = publishedVersion;
       historical.candidatePublications.remoteTypeScriptClient.state =
         "prepared_not_authorized";
@@ -376,7 +385,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("gh release view \"$release_tag\"");
   });
 
-  test("keeps the eighth npm candidate in the builder but outside v0.3.0 by default", () => {
+  test("publishes the eighth npm package in v0.4.0 and keeps exact certification", () => {
     const workflow = read(".github/workflows/release.yml");
     const certification = read(".github/workflows/certify-published-release.yml");
     const builder = read("scripts/release/build-public-packages.ts");
@@ -409,8 +418,8 @@ describe("protected candidate publication entrypoints", () => {
     expect(certification).toContain("tasq-tq616-${{ matrix.target }}");
     expect(certification).toContain("dist/npm-verifications/*.npm-publication.json");
     expect(certification).toContain("dist/packages/*.release.json");
-    expect(policy.publishedRelease.publishedPackages).toHaveLength(7);
+    expect(policy.publishedRelease.publishedPackages).toHaveLength(8);
     expect(policy.publishedRelease.publishedPackages.map(({ name }) => name))
-      .not.toContain("@tasq-run/client");
+      .toContain("@tasq-run/client");
   });
 });

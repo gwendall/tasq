@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.authenticated-offline-replication-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-806",
   "storeFormat": 29,
   "serverOperations": [
@@ -42,8 +42,6 @@
     "packages/tasq-server/test/workspace.test.ts"
   ],
   "remainingExternalGate": [
-    "protected_published_server_digest",
-    "supported_client_artifacts",
     "clean_room_multi_machine_trial"
   ],
   "publicSupportClaim": false

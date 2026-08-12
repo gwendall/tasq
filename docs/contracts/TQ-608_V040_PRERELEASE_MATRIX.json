@@ -4,10 +4,10 @@
   "candidate": {
     "version": "0.4.0",
     "storeFormat": 32,
-    "artifactState": "protected_source_candidate_certified",
+    "artifactState": "published_exact_bytes_certified",
     "protectedSourceCandidateReplayPassed": true,
-    "publishedReplayPassed": false,
-    "publicSupportClaim": false
+    "publishedReplayPassed": true,
+    "publicSupportClaim": true
   },
   "sourceReleases": [
     {
@@ -73,7 +73,8 @@
     "sourceReleaseAttestations": true,
     "candidateSourceCommitBinding": true,
     "candidateArtifactAttestationsAfterPublication": true,
-    "publishedV040Replay": "not_run"
+    "publishedV040Replay": "passed",
+    "publishedV040ReplayWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
   },
   "protectedSourceCandidateEvidence": {
     "status": "passed_format_32",
@@ -87,7 +88,7 @@
     "exactPinnedPublicSourceAssets": true,
     "sourceReleaseAttestationsVerified": true,
     "candidateSourceCommitBound": true,
-    "publishedCandidateArtifacts": false,
+    "publishedCandidateArtifacts": true,
     "targetStoreFormat": 32,
     "downloadedEvidenceSha256": {
       "darwin-arm64": "e3a8b96dc9fc3c87f7fdf6006aa56d81128069342e0088f88cdfc101aff43ffe",

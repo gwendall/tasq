@@ -29,7 +29,7 @@ function registryMetadata(overrides: Record<string, unknown> = {}) {
 }
 
 describe("one-shot npm identity bootstrap", () => {
-  test("records the unsafe public default tag without claiming external repair", async () => {
+  test("records the repaired public default tag against the exact supported release", async () => {
     const certificate = JSON.parse(await readFile(
       resolve(root, "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json"),
       "utf8",
@@ -37,18 +37,18 @@ describe("one-shot npm identity bootstrap", () => {
     expect(certificate).toMatchObject({
       contractVersion: "tasq.npm-default-tag-safety.v1",
       ticket: "TQ-633",
-      status: "candidate_done_external_gate",
+      status: "passed",
       coordinate: "@tasq-run/client",
-      finding: "unsupported_bootstrap_is_current_default_install",
+      finding: "supported_release_is_current_default_install",
       registryObservation: {
-        versions: ["0.1.0-alpha.0"],
+        versions: ["0.1.0-alpha.0", "0.4.0"],
         distTags: {
           "alpha-bootstrap": "0.1.0-alpha.0",
-          latest: "0.1.0-alpha.0",
+          latest: "0.4.0",
         },
       },
-      remaining: ["remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"],
-      requiredAuthority: "authenticated_npm_package_owner",
+      remaining: [],
+      requiredAuthority: null,
     });
   });
 
