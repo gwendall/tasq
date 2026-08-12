@@ -129,7 +129,11 @@ jobs:
           curl --fail --retry 12 --retry-all-errors --retry-delay 5 https://api.tasq.run/healthz
           curl --fail --retry 12 --retry-all-errors --retry-delay 5 https://api.tasq.run/readyz
           curl --fail https://api.tasq.run/version > version.json
-          curl --fail --output /dev/null https://api.tasq.run/console
+          console_status="$(
+            curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+              https://api.tasq.run/console
+          )"
+          test "$console_status" = 401
           machine_count="$(flyctl machines list --app "$TASQ_APP" --json | jq '[.[] | select(.state == "started")] | length')"
           test "$machine_count" = 1
           jq --null-input \
