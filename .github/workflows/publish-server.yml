@@ -200,8 +200,7 @@ jobs:
           "oci://${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"
           --repo "$GITHUB_REPOSITORY"
           --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"
-          --source-digest "${{ needs.authorize.outputs.commit }}"
-          --source-ref "$GITHUB_REF"
+          --source-ref "refs/heads/main"
           --deny-self-hosted-runners
       - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         if: steps.resume.outputs.action == 'build'

@@ -31,6 +31,7 @@ describe("Fly private-beta deployment", () => {
     expect(workflow).toContain('[[ "$INPUT_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]');
     expect(workflow).toContain("gh attestation verify");
     expect(workflow).toContain('--signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"');
+    expect(workflow).toContain('--source-ref "refs/heads/main"');
     expect(workflow).toContain('--image "$TASQ_IMAGE@$INPUT_DIGEST"');
     expect(workflow).toContain("--ha=false");
     expect(workflow).toContain("--strategy immediate");

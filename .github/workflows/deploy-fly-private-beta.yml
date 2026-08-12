@@ -74,7 +74,7 @@ jobs:
           "oci://$TASQ_IMAGE@$INPUT_DIGEST"
           --repo "$GITHUB_REPOSITORY"
           --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"
-          --source-digest "$INPUT_SOURCE_COMMIT"
+          --source-ref "refs/heads/main"
           --deny-self-hosted-runners
       - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
       - name: Verify fail-closed Fly topology
