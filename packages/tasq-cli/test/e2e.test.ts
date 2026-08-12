@@ -182,6 +182,16 @@ describe("CLI meta commands", () => {
     expect(fractionalRevision.stderr).toContain("expected a positive integer");
   });
 
+  it("accepts the documented reason flag on lifecycle transitions", async () => {
+    const home = await freshHome();
+    await runOk(home, ["init"]);
+    const created = JSON.parse((await runOk(home, ["add", "Reasoned closure", "--json"])).stdout);
+    const done = JSON.parse((await runOk(home, [
+      "done", created.id, "--reason", "Acceptance evidence is complete", "--json",
+    ])).stdout);
+    expect(done).toMatchObject({ id: created.id, status: "done" });
+  });
+
   // Subcommand help: `tasq <cmd> --help` used to fall through to dispatch
   // (event dumped the log, task printed the status line, next ran a ranked
   // list). It must now intercept --help/-h/`help` and print that command's
