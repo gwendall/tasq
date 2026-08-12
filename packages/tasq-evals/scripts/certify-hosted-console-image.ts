@@ -181,6 +181,7 @@ try {
   });
 
   const publicUrl = `https://localhost:${proxy.port}/`;
+  await chmod(root, 0o755);
   const configPath = join(root, "server.json");
   const bootstrapPath = join(root, "bootstrap.json");
   const environmentPath = join(root, "server.env");
