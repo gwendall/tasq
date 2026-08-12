@@ -7,6 +7,7 @@ if test "$#" -lt 1; then
 fi
 
 for reference in "$@"; do
+  exact_reference_miss=false
   set +e
   output="$(docker buildx imagetools inspect "$reference" 2>&1)"
   status=$?
@@ -20,8 +21,14 @@ for reference in "$@"; do
   # A registry miss is safe only when the registry explicitly identifies the
   # missing object as a manifest, or buildx binds "not found" to the exact
   # requested reference. Generic "not found" output remains ambiguous.
-  if grep --fixed-strings --line-regexp --quiet \
-    "ERROR: ${reference}: not found" <<< "$output" ||
+  while IFS= read -r line; do
+    line="${line%$'\r'}"
+    if test "$line" = "ERROR: ${reference}: not found"; then
+      exact_reference_miss=true
+      break
+    fi
+  done <<< "$output"
+  if test "$exact_reference_miss" = true ||
     printf '%s\n' "$output" |
     grep --extended-regexp --ignore-case --quiet \
       '(^|[^[:alnum:]_])(MANIFEST_UNKNOWN|manifest unknown)([^[:alnum:]_]|$)|HTTP[^[:digit:]]*404([^[:digit:]].*)?manifest|manifest([^[:digit:]].*)?HTTP[^[:digit:]]*404'; then
