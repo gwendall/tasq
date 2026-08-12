@@ -88,6 +88,23 @@ jobs:
     outputs:
       digest: ${{ steps.selected-image.outputs.digest }}
     steps:
+      - name: Check out the protected release automation
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Snapshot release-only registry guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          automation="$RUNNER_TEMP/tasq-release-automation"
+          mkdir -p "$automation"
+          install -m 0755 \
+            scripts/release/resolve-oci-publication-resume.sh \
+            "$automation/resolve-oci-publication-resume.sh"
+          install -m 0755 \
+            scripts/release/ensure-oci-tag.sh \
+            "$automation/ensure-oci-tag.sh"
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ needs.authorize.outputs.commit }}
@@ -116,7 +133,7 @@ jobs:
         run: |
           set -euo pipefail
           decision="$(
-            scripts/release/resolve-oci-publication-resume.sh \
+            "$RUNNER_TEMP/tasq-release-automation/resolve-oci-publication-resume.sh" \
               "${{ needs.authorize.outputs.image }}" \
               "${{ needs.authorize.outputs.version }}" \
               "${{ needs.authorize.outputs.commit }}"
@@ -226,9 +243,9 @@ jobs:
 
           # Verify an existing anchor byte-for-byte or create only the missing tag.
           # The human-facing version remains the final registry mutation.
-          scripts/release/ensure-oci-tag.sh \
+          "$RUNNER_TEMP/tasq-release-automation/ensure-oci-tag.sh" \
             "$sha_tag" "$reference" "${{ steps.selected-image.outputs.digest }}"
-          scripts/release/ensure-oci-tag.sh \
+          "$RUNNER_TEMP/tasq-release-automation/ensure-oci-tag.sh" \
             "$version_tag" "$reference" "${{ steps.selected-image.outputs.digest }}"
       - name: Build digest-bound publication metadata
         shell: bash
