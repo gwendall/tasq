@@ -16,12 +16,18 @@ source_commit="$3"
 
 is_missing_manifest() {
   local reference="$1"
+  local line
   local output
   output="$(cat)"
-  if grep --fixed-strings --line-regexp --quiet \
-    "ERROR: ${reference}: not found" <<< "$output"; then
-    return 0
-  fi
+  while IFS= read -r line; do
+    # GitHub's Linux runner can preserve buildx's terminal CR even though the
+    # Actions log renderer hides it. Normalize only that line terminator so the
+    # exact reference-bound miss remains fail-closed.
+    line="${line%$'\r'}"
+    if test "$line" = "ERROR: ${reference}: not found"; then
+      return 0
+    fi
+  done <<< "$output"
   grep --extended-regexp --ignore-case --quiet \
     '(^|[^[:alnum:]_])(MANIFEST_UNKNOWN|manifest unknown)([^[:alnum:]_]|$)|HTTP[^[:digit:]]*404([^[:digit:]].*)?manifest|manifest([^[:digit:]].*)?HTTP[^[:digit:]]*404' \
     <<< "$output"

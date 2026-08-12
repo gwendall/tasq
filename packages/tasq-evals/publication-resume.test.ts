@@ -48,6 +48,10 @@ if test "\${1:-}" = "buildx" && test "\${2:-}" = "imagetools" && test "\${3:-}" 
       echo "ERROR: $last: not found" >&2
       exit 1
       ;;
+    buildx-not-found-crlf)
+      printf 'ERROR: %s: not found\r\n' "$last" >&2
+      exit 1
+      ;;
     matching)
       echo "Digest: ${digestA}"
       ;;
@@ -127,17 +131,19 @@ describe("OCI publication resume", () => {
   });
 
   test("accepts buildx not-found only when it names the exact requested tag", async () => {
-    const result = await run(
-      ["bash", resolver, "ghcr.io/gwendall/tasq-server", version, commit],
-      env("buildx-not-found"),
-    );
-    expect(result.code, result.stderr).toBe(0);
-    expect(JSON.parse(result.stdout)).toEqual({
-      action: "build",
-      digest: null,
-      versionTagExists: false,
-      sourceTagExists: false,
-    });
+    for (const mode of ["buildx-not-found", "buildx-not-found-crlf"]) {
+      const result = await run(
+        ["bash", resolver, "ghcr.io/gwendall/tasq-server", version, commit],
+        env(mode),
+      );
+      expect(result.code, `${mode}: ${result.stderr}`).toBe(0);
+      expect(JSON.parse(result.stdout)).toEqual({
+        action: "build",
+        digest: null,
+        versionTagExists: false,
+        sourceTagExists: false,
+      });
+    }
   });
 
   test("reuses one exact anchor and detects conflicting anchors", async () => {
