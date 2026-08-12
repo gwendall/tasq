@@ -214,6 +214,9 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("subject-digest: ${{ steps.selected-image.outputs.digest }}");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-amd64");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-arm64");
+    expect(publish.indexOf('docker image rm tasq-server:protected-amd64 "$reference"')).toBeLessThan(
+      publish.indexOf('docker pull --platform linux/arm64 "$reference"'),
+    );
     expect(publish).toContain('.metadata.version == $version');
     expect(publish).toContain('.metadata.revision == $revision');
     expect(publish).toContain("scripts/release/resolve-oci-publication-resume.sh");

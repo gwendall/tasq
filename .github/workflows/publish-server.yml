@@ -225,6 +225,9 @@ jobs:
               and .metadata.version == $version
               and .metadata.revision == $revision
             ' <<< "$amd64" >/dev/null
+          # A local daemon stores one platform for a digest reference. Remove
+          # only the verified local copy before resolving the other platform.
+          docker image rm tasq-server:protected-amd64 "$reference"
           docker pull --platform linux/arm64 "$reference"
           docker tag "$reference" tasq-server:protected-arm64
           arm64="$(bun "$RUNNER_TEMP/tasq-release-automation/server-container-smoke.ts" tasq-server:protected-arm64)"
