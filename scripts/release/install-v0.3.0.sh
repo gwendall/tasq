@@ -121,7 +121,12 @@ trap 'rm -rf "$TEMP_ROOT"' EXIT HUP INT TERM
 
 download() {
   name="$1"
-  curl --proto '=https' --tlsv1.2 -fLso "${TEMP_ROOT}/${name}" "${BASE}/${name}"
+  curl --proto '=https' --tlsv1.2 \
+    --retry 5 \
+    --retry-delay 1 \
+    --retry-all-errors \
+    --connect-timeout 15 \
+    -fLso "${TEMP_ROOT}/${name}" "${BASE}/${name}"
 }
 
 expected_digest() {
