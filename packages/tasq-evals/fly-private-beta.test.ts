@@ -37,6 +37,7 @@ describe("Fly private-beta deployment", () => {
     expect(workflow).toContain("--strategy immediate");
     expect(workflow).toContain("for attempt in $(seq 1 30); do");
     expect(workflow).toContain('--machine "$machine_id"');
+    expect(workflow).toContain('test "$console_status" = 401');
     expect(workflow).toContain('test "$machine_count" = 1');
     expect(workflow).not.toContain("flyctl deploy --remote-only");
   });
