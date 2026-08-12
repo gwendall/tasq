@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.server-certification.v1",
-  "status": "repository_and_local_container_certified",
-  "updatedAt": "2026-07-30",
+  "status": "published_multi_arch_and_exact_image_certified",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-807",
   "aggregateSourceDigest": "sha256:0f04c5dbdebbb51fdfb302bb78701440354a562ca71f9f37abc988ffab7dbcbb",
   "certificateScope": {
@@ -10,7 +10,7 @@
     "historicalEvidenceFrozen": true,
     "currentCombinedConsoleAuthority": "TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
     "currentCombinedConsoleSourceCertified": true,
-    "currentExactPublishedImageCertified": false
+    "currentExactPublishedImageCertified": true
   },
   "runtime": {
     "entrypoint": "packages/tasq-server/src/daemon.ts",
@@ -60,8 +60,8 @@
     "mutationSurface": true,
     "registeredActions": 7,
     "localImageBrowserCertification": "passed_candidate_only",
-    "exactPublishedImageBrowserCertification": false,
-    "publicSupportClaim": false
+    "exactPublishedImageBrowserCertification": true,
+    "publicSupportClaim": true
   },
   "operationalEndpoints": [
     "/healthz",
@@ -95,8 +95,8 @@
       "packages/tasq-server/test/config.test.ts",
       "scripts/server-container-smoke.ts"
     ],
-    "exactPublishedDigest": false,
-    "publicSupportClaim": false
+    "exactPublishedDigest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "publicSupportClaim": true
   },
   "certifiedProperties": [
     "strict_versioned_operator_configuration",
@@ -132,20 +132,19 @@
     "packages/tasq-inspector/hosted-browser/hosted-console-image.pw.ts"
   ],
   "publicationAutomation": {
-    "state": "authorized_not_run",
+    "state": "published_and_certified",
     "version": "0.4.0",
     "publishWorkflow": ".github/workflows/publish-server.yml",
     "certificationWorkflow": ".github/workflows/certify-published-server.yml",
     "registry": "ghcr.io/gwendall/tasq-server",
     "platforms": ["linux/amd64", "linux/arm64"],
     "requiresExactPolicyAuthorization": true,
-    "externalPublicationPerformed": false
+    "externalPublicationPerformed": true,
+    "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31613501777",
+    "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31619011510",
+    "digest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452"
   },
-  "remainingExternalGate": [
-    "protected_ci_multi_arch_image",
-    "immutable_registry_digest",
-    "published_sbom_checksums_and_provenance"
-  ],
+  "remainingExternalGate": [],
   "tq807ImplementationComplete": true,
-  "tq807Shipped": false
+  "tq807Shipped": true
 }

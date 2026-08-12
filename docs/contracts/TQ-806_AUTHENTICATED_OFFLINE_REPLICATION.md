@@ -1,7 +1,7 @@
 # TQ-806 — Authenticated optional offline replication
 
-> **Status:** source candidate complete; protected Server artifact gate open
-> **Date:** 2026-07-24
+> **Status:** published artifact matrix complete; clean-room multi-machine trial open
+> **Date:** 2026-08-12
 > **Machine certificate:** `TQ-806_OFFLINE_REPLICATION_CERTIFICATION.json`
 
 Tasq Server now composes the existing ADR-003/TQ-405 replication protocol with
@@ -57,6 +57,6 @@ closed. Cursor recovery returns the explicit snapshot and visible unresolved
 conflicts. Restoring an older authority rotates the epoch and marks every old
 generation stale.
 
-This source candidate is not yet a shipped Server support claim. TQ-806 closes
-only when the same matrix passes against the protected published Server digest
-and supported clients.
+The protected Server digest and supported client artifacts are published and
+certified. TQ-806 closes only after a clean-room multi-machine trial exercises
+the same boundary outside the authoring environment.

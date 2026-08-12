@@ -345,17 +345,17 @@ describe("TQ-601 product consumption design", () => {
     });
     expect(releasePolicy).toMatchObject({
       releaseAuthorization: {
-        state: "authorized",
+        state: "published_certified",
         version: "0.4.0",
         channel: "public-alpha",
         decision: "go",
         authorizedBy: "@gwendall",
       },
       publishedRelease: {
-        version: "0.3.0",
-        tag: "v0.3.0",
-        sourceCommit: "c093ed58ab2a9e38dbd9d877ba75021997761057",
-        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.3.0",
+        version: "0.4.0",
+        tag: "v0.4.0",
+        sourceCommit: "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
+        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.4.0",
       },
     });
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)

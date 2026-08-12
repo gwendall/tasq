@@ -1,7 +1,9 @@
 {
   "contractVersion": "tasq.attempt-cost-certification.v1",
   "ticket": "TQ-618",
-  "status": "source_candidate_complete_release_dependency_open",
+  "status": "published_and_certified",
+  "release": "v0.4.0",
+  "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
   "dependency": "TQ-608",
   "storeFormat": 32,
   "migrationAdded": false,
@@ -31,5 +33,6 @@
     "packages/tasq-cli/test/cost.test.ts",
     "packages/tasq-service/test/agentic.test.ts"
   ],
-  "supportClaim": "source_candidate_not_published"
+  "remaining": [],
+  "supportClaim": "public_alpha"
 }

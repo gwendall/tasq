@@ -1,19 +1,20 @@
 # TQ-807 — Deployable Tasq Server
 
-> **Status:** implementation and local packaged certification complete — 2026-07-24
-> **Distribution status:** container candidate; no immutable public image yet
+> **Status:** protected multi-architecture image published and exact-digest certified — 2026-08-12
+> **Distribution status:** `ghcr.io/gwendall/tasq-server:0.4.0` at immutable
+> `sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452`
 > **Machine certificate:** `TQ-807_SERVER_CERTIFICATION.json` (the original
 > TQ-807 digest/image block is frozen historical evidence; its
 > `currentCombinedHostedConsole` block delegates current Console truth to the
 > TQ-811 certificate)
 > **Operator runbook:** `../../deploy/server/README.md`
 
-The `v0.4.0` coordinate is maintainer-authorized but not published. At the
-2026-07-31 handoff, repository CI and the protected N-2 source-candidate
-migration matrix are green. Publication waits only for the ordered registry
-activation documented in `../releases/RELEASES.md`: npm client bootstrap and
-OIDC binding, immutable release tag/GitHub release, then this protected GHCR
-workflow. No Server image or endpoint should be inferred from authorization.
+The `v0.4.0` image was published by protected run
+[31613501777](https://github.com/gwendall/tasq/actions/runs/31613501777).
+Exact-digest container and Chromium replay passed in run
+[31619011510](https://github.com/gwendall/tasq/actions/runs/31619011510).
+The same digest runs the private-beta endpoint at `api.tasq.run`; this is not a
+managed multi-tenant Cloud, public SLA or remote-effects claim.
 
 ## Outcome
 
@@ -164,8 +165,8 @@ release assets, or an ambiguous registry/GitHub error stops the run; no
 `.github/workflows/certify-published-server.yml` is the exact-digest
 post-publication entrypoint. It also invokes the real Chromium hosted-Console
 certifier and preserves its exact-image evidence without turning the run into
-an automatic public support claim. Preparing these workflows does not satisfy
-the publication gate.
+an automatic public support claim. The successful protected runs above satisfy
+the TQ-807 publication gate.
 
 ## Honest release boundary
 
@@ -173,13 +174,13 @@ The source and the historical TQ-807 local Linux image are certified. The
 machine certificate deliberately does not relabel that old image ID or source
 digest as evidence for the later TQ-811 surface. Current combined Console truth
 and its local candidate browser replay live in
-`TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json`. TQ-807 remains
-`candidate_done_external_gate` until an immutable multi-architecture image,
-SBOM, checksums and build provenance are published from protected CI. No public
-Server endpoint, managed tenancy, provider connector, remote effect executor,
+`TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json`. TQ-807 is shipped for
+public-alpha self-hosting: the immutable multi-architecture image, SBOM,
+checksums and provenance are published and its exact digest is certified. No
+managed multi-tenant Cloud, provider connector, remote effect executor,
 offline authority or support-access mechanism is claimed.
 
 TQ-808 owns hostile multi-issuer/cross-workspace packaged certification and the
 previously unbriefed operator deployment. TQ-811 supersedes the historical
 read-only TQ-807 Console slice with the guarded bounded-action surface; its
-exact published-image browser gate remains open.
+exact published-image browser gate passed in run 31619011510.

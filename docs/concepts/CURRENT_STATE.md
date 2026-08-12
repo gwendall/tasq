@@ -1,35 +1,36 @@
 # Current state
 
-**Updated:** 2026-08-11
+**Updated:** 2026-08-12
 
 Tasq currently ships source for two local product shapes:
 
 - **Core:** an embeddable, profile-neutral coordination kernel;
 - **Local:** the CLI, local stdio MCP transport and read-only loopback Console.
 
-Server now has a repository-certified daemon and Linux container candidate.
+Server now has a published and exact-digest-certified multi-architecture image.
 Cloud now has a private, provider-neutral control-plane and same-origin BFF
 source candidate. Server composes guarded REST, stateless remote MCP, one-use
 enrollment, real Core operations and an authenticated Console with a small
 TQ-811 guarded human action surface. Cloud adds isolated provisioning,
 sessions, identity lifecycle, quota, export/delete, backup/restore, opaque
 credential-reference rotation and operations records around that Server
-contract. No immutable public Server image, managed Cloud deployment or public
-remote endpoint ships yet.
+contract. One Fly private-beta Server runs at `api.tasq.run`; no managed
+multi-tenant Cloud or public SLA ships yet.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
 ADR-018 selects Fly for the first hosted private-beta Server instead of the
 earlier GKE-first proposal. The `tasq-api` Fly app, one encrypted Paris volume,
 ingress, certificate request, `api.tasq.run`/`cloud.tasq.run` DNS and the GitHub
-`beta` environment are provisioned. No Machine is deployed: the exact protected
-Server image is still absent, so neither hostname is a shipped Server or Cloud
-claim. The profile and fail-closed workflow live under
-`deploy/fly-private-beta/`.
+`beta` environment are provisioned. One writer Machine now runs in `cdg` from
+the exact certified Server digest; `api.tasq.run` is healthy and
+`cloud.tasq.run` redirects to its authenticated Console. The off-site
+backup/restore drill remains open. The profile and fail-closed workflow live
+under `deploy/fly-private-beta/`.
 
 TQ-621 adds a public, source-linked comparison of same-backlog behavior across
 Tasq, Claude Code, GitHub Copilot, Codex, Cursor, MCP and A2A. It does not turn
 source candidates into shipped features: the comparison is pinned to Tasq
-Local `v0.3.0`, explicitly same-machine, and labels classifications inferred
+Local `v0.4.0`, explicitly same-machine, and labels classifications inferred
 from first-party or normative sources. The defensible boundary is durable,
 runtime-neutral commitment, claim, attempt, evidence and decision state — not
 parallel execution, worktree isolation or vendor-native subagent orchestration.
@@ -204,8 +205,8 @@ client exposes bounded reads, registered idempotent mutations, exclusive
 event resume and typed cursor-retention recovery. Two-client claim/resource
 contention, lost-response replay, next-request revocation, private CLI
 credential modes and REST/official-MCP record/cursor parity pass. This closes
-the host-integrated TQ-809 slice; `@tasq-run/client` remains absent from
-published `v0.3.0`.
+the host-integrated TQ-809 slice; `@tasq-run/client@0.4.0` is published and
+exact-registry certified under Node and Bun.
 
 TQ-807 now composes those layers into a runnable Bun daemon and reference
 Docker/Compose deployment. Strict versioned config binds a canonical HTTPS
@@ -216,29 +217,29 @@ immutable receipt store preserves exact remote replay. The same-origin hosted
 Console exchanges a checked bearer credential for a Secure HttpOnly cookie
 and re-enters guarded REST for every read. Deterministic bootstrap, health,
 readiness, bounded metrics, online checksummed backup and create-only restore
-pass daemon, restart and real container tests. TQ-807 is
-`candidate_done_external_gate`: protected multi-architecture image
-publication, SBOM, checksums and provenance remain.
+pass daemon, restart and real container tests. TQ-807 is shipped: protected
+multi-architecture image publication, SBOM, checksums, provenance and
+exact-digest browser replay pass.
 
 This is the public canonical source repository. `main` requires pull requests,
 green macOS and Linux verification, conversation resolution and linear history;
 deletion and non-fast-forward updates are blocked. `v*` tags are immutable,
 the `release` environment accepts only `v*`, secret scanning and push protection
 are enabled, and private vulnerability reporting is active. The repository
-contains the seven published package sources plus one ADR-010 remote-client
-package candidate and private compatibility, example and eval workspaces.
+contains eight published package sources plus private compatibility, example
+and eval workspaces.
 A package is not available merely because its source exists here; npm
 availability starts only after an explicitly authorized protected attested
 release.
 
 Public source launch occurred on 2026-07-22 and protected public alpha
-`v0.3.0` is the current release, published on 2026-07-23. TQ-607 private dogfood remains the
+`v0.4.0` is the current release, published on 2026-08-11. TQ-607 private dogfood remains the
 stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may install `0.3.0`, build from
+`go`, `extend` or `no_go` decision. Early users may install `0.4.0`, build from
 source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
@@ -312,7 +313,7 @@ explicitly and preserved the ledger byte-for-byte through native uninstall.
 The exact machine certificate is `../../evidence/tq-321/latest.json`.
 
 TQ-608 protects both release and source evolution. Published `v0.3.0` uses
-store format 26, and the release policy's `compatibility` block is explicitly
+store format 32, and the release policy's `compatibility` block is explicitly
 scoped to that published release. Repository source uses candidate format 32
 for signed statements, replica-principal binding, portable trusted-binder
 descriptors, provider-neutral attestations, exact agreement history, and
@@ -406,49 +407,33 @@ replication operations and checkpoints. Cross-language canonical vectors,
 purpose/routing isolation, untrusted-root rejection, lifecycle failures,
 revocation races, transaction composition and portable pruning pass. A valid
 signature authenticates bytes and principal only; it never establishes truth,
-completion or effect authority. TQ-616 remains
-`candidate_done_external_gate` until exact protected downloaded artifacts,
-supported-platform replay and an unbriefed-agent trial pass.
+completion or effect authority. TQ-616 exact protected downloaded artifacts
+pass on both supported platforms across Node, Bun and Python; an unbriefed
+agent/operator trial remains.
 
 TQ-806 binds every replica generation to one authenticated principal. Server
 push requires exactly one accepted purpose-bound signed origin per operation
 and persists each operation plus proof in the same domain transaction.
 Pull also requires the owning principal. Claims, leases, approvals and effects
 remain online-only. Existing reorder, duplicate, conflict, cursor-expiry,
-process-kill and old-backup chaos evidence still passes; published Server and
-client artifacts plus a clean-room multi-machine trial remain external.
+process-kill and old-backup chaos evidence still passes; a clean-room
+multi-machine trial remains external.
 
 TQ-810 adds a checked-in OpenAPI 3.1 remote contract and dependency-free
 Python 3.11+ client for reads, event cursors, operation discovery, idempotent
 mutation and enrollment. It is deliberately transport-only and contains no
 Core, SQLite or migration logic. PyPI publication, provenance and exact
-downloaded-wheel replay against the published Server digest remain open.
+downloaded-wheel replay against the published Server digest pass for `0.4.0`.
 
-Protected Server GHCR and Python PyPI publish/certify workflows are prepared
-with exact version/source/confirmation inputs, least-privilege jobs and
-candidate-specific policy authorization. The maintainer has authorized the
-exact `v0.4.0` public-alpha release, its Server image, Python wheel,
-`@tasq-run/client` package and TQ-616 downloaded-byte replay. The protected
-workflows have not run, so authorization changes no shipped surface and
-published `v0.3.0` remains seven packages.
-
-The release handoff is an external-activation checkpoint. Latest
-behavior-changing protected CI
-[31455469251](https://github.com/gwendall/tasq/actions/runs/31455469251) and the
-current two-target format-32 protected migration run above are green. No
-`v0.4.0` tag exists.
-The one-shot `@tasq-run/client@0.1.0-alpha.0` identity was created from
-protected `main`, but a public registry check at 2026-08-11T02:57:46Z found
-both `alpha-bootstrap` and `latest` resolving to that unsupported bootstrap.
-TQ-633 adds protected source controls, while an npm package-owner session must
-remove `latest` or a supported `v0.4.0` publication must replace it before any
-default-install claim. The client trusted publisher and bootstrap-authority
-revocation remain to be verified with npm authority. PyPI still needs the
-`tasq-remote` pending publisher. The
-experimental GCP profile is fixed to `europe-west9-a` and
-`experimental.tasq.run`, but needs a dedicated billed project, active identity,
-DNS control and exact published image digests. Dogfood and blind-human adoption
-continue after the alpha; remote effects stay disabled.
+Protected workflows published and certified the exact `v0.4.0` npm/native,
+GHCR and PyPI artifacts. `latest` resolves to `0.4.0`; the unsupported client
+bootstrap remains only on `alpha-bootstrap`. The Server digest is
+`sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452`
+and the Python wheel SHA-256 is
+`2e59bd0d3554cb94c2c1b086bff2760d53416142912c916e39bdb4bab99293c2`.
+Full lifecycle, migration, TQ-616 and client replays pass on Linux/macOS.
+Dogfood and blind-human adoption continue after the alpha; remote effects stay
+disabled.
 
 TQ-901–TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
 tests pass colliding names, isolated storage bindings, concurrent quota,

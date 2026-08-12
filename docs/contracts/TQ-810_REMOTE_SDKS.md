@@ -1,7 +1,7 @@
 # TQ-810 — Stable remote schemas and Python client
 
-> **Status:** source candidate complete; package publication gate open
-> **Date:** 2026-07-30
+> **Status:** `tasq-remote==0.4.0` published and exact-artifact certified
+> **Date:** 2026-08-12
 > **Machine certificate:** `TQ-810_REMOTE_SDK_CERTIFICATION.json`
 
 The checked-in OpenAPI 3.1 contract freezes the bounded REST paths already
@@ -19,8 +19,10 @@ The Python package does not import or reproduce Core, LibSQL, migrations,
 authorization, conflict resolution or effect policy. The Server remains the
 single authority and operation catalog.
 
-The source candidate is not yet a PyPI support claim. Publication, provenance
-and an exact downloaded-wheel test remain external release work.
+PyPI publication and provenance passed in protected run
+[31518219329](https://github.com/gwendall/tasq/actions/runs/31518219329).
+The canonical wheel SHA-256 is
+`2e59bd0d3554cb94c2c1b086bff2760d53416142912c916e39bdb4bab99293c2`.
 
 `.github/workflows/publish-python.yml` and
 `.github/workflows/certify-published-python.yml` now prepare that release path.
@@ -54,12 +56,8 @@ replay, an empty read, a real
 invalid-credential failure. Its redacted JSON evidence is retained as the
 workflow artifact `tasq-python-tq810-exact-artifact-evidence`.
 
-The corresponding policy entry authorizes the exact `v0.4.0` public-alpha
-coordinate. No wheel or Server image has been published and this protected
-exact-artifact workflow has not run, so the
-Python-against-exact-Server-digest external gate remains open.
-Before tagging, configure the PyPI pending trusted publisher for project
-`tasq-remote`, owner `gwendall`, repository `tasq`, workflow
-`publish-python.yml` and GitHub environment `release`. Publication follows the
-GitHub release and requires the exact protected Server digest; source or local
-wheel evidence cannot substitute for either authority.
+Protected run
+[31619014178](https://github.com/gwendall/tasq/actions/runs/31619014178)
+downloaded that exact wheel, verified its attestation and exercised it against
+the immutable Server digest. TQ-810's public-alpha Python gate is complete;
+source or local wheel evidence still cannot substitute for those authorities.

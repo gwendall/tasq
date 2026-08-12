@@ -1,7 +1,7 @@
 # TQ-811 — Hosted human actions
 
-> **Status:** implementation complete; exact published Server image gate remains
-> **Date:** 2026-07-30
+> **Status:** exact published Server image browser gate passed
+> **Date:** 2026-08-12
 > **Machine certificate:** `TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json`
 
 ## Boundary
@@ -68,12 +68,14 @@ A local tag proves only the source candidate. `exactPublishedDigest` becomes
 true only when the requested `name@sha256:…` is present in the inspected
 image's repository digests.
 
-The candidate is not publicly shipped until the TQ-807/TQ-808 immutable
-multi-architecture image and external browser replay gates close. No managed
-Cloud or anonymous mutation claim is made.
+The bounded hosted action surface is shipped in the immutable v0.4.0
+multi-architecture image. Protected run
+[31619011510](https://github.com/gwendall/tasq/actions/runs/31619011510)
+passed the exact-digest Chromium replay. No managed multi-tenant Cloud,
+anonymous mutation or remote-effects claim is made.
 
 The prepared exact-image certification workflow pulls the immutable Server
 digest, runs the container lifecycle, passes that exact digest to this real
 Chromium certifier and preserves the machine result as a downloadable artifact.
-The entrypoint alone does not claim the external gate: it remains open until an
-authorized published digest is actually replayed and the evidence is accepted.
+That replay is now complete for digest
+`sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452`.

@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
-  "updatedAt": "2026-08-11",
+  "updatedAt": "2026-08-12",
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",
@@ -51,8 +51,8 @@
       "boundary": "static ledger-free product and documentation site; not Tasq Server, remote MCP, hosted Console or a package-release claim"
     },
     "flyPrivateBeta": {
-      "state": "provisioned_waiting_exact_image",
-      "verifiedAt": "2026-08-11",
+      "state": "deployed_private_beta",
+      "verifiedAt": "2026-08-12",
       "app": "tasq-api",
       "region": "cdg",
       "publicOrigin": "https://api.tasq.run/",
@@ -60,15 +60,14 @@
       "evidence": [
         "docs/decisions/ADR-018_FLY_PRIVATE_BETA.md",
         "deploy/fly-private-beta/README.md",
-        ".github/workflows/deploy-fly-private-beta.yml"
+        ".github/workflows/deploy-fly-private-beta.yml",
+        "https://github.com/gwendall/tasq/actions/runs/31621714116"
       ],
       "remaining": [
-        "publish_exact_protected_server_image",
-        "initialize_volume_and_bootstrap",
-        "pass_digest_bound_public_route_proof",
         "copy_native_backup_off_site_and_restore_it"
       ],
-      "boundary": "provider substrate and DNS only; no running Machine or hosted product claim"
+      "exactServerDigest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+      "boundary": "one private-beta Fly writer Machine is running in cdg from the exact certified digest with one encrypted volume; no SLA, managed multi-tenant Cloud or remote effects claim"
     },
     "npmScopeControl": {
       "state": "verified",
@@ -97,19 +96,22 @@
       }
     },
     "pypiTrustedPublishing": {
-      "state": "maintainer_confirmed_pending_publisher",
-      "verifiedAt": "2026-08-11",
+      "state": "verified_by_successful_publication",
+      "verifiedAt": "2026-08-12",
       "coordinate": "tasq-remote",
       "requiredBinding": "gwendall/tasq:.github/workflows/publish-python.yml:release",
-      "boundary": "the pending publisher is configured; the project remains absent from the public PyPI JSON API until the first successful OIDC publication"
+      "version": "0.4.0",
+      "wheelSha256": "2e59bd0d3554cb94c2c1b086bff2760d53416142912c916e39bdb4bab99293c2",
+      "evidence": "https://github.com/gwendall/tasq/actions/runs/31518219329",
+      "boundary": "tasq-remote 0.4.0 was published through the protected OIDC workflow and certified against the exact Server digest"
     },
     "npmClientDefaultTag": {
-      "state": "external_remediation_required",
-      "verifiedAt": "2026-08-11T02:57:46Z",
+      "state": "complete",
+      "verifiedAt": "2026-08-11T14:16:24Z",
       "coordinate": "@tasq-run/client",
-      "observation": "npm dist-tags resolve both alpha-bootstrap and latest to unsupported 0.1.0-alpha.0",
+      "observation": "alpha-bootstrap resolves to 0.1.0-alpha.0 and latest resolves to the supported protected 0.4.0 release",
       "requiredEvidence": "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",
-      "blocks": "any_default_install_claim_until_an_exact_supported_release_replaces_or_removes_the_tag"
+      "blocks": null
     },
     "firstProtectedRelease": {
       "state": "complete",
@@ -123,13 +125,13 @@
     "currentProtectedRelease": {
       "state": "complete",
       "channel": "public_alpha",
-      "version": "0.3.0",
-      "completedAt": "2026-07-23",
-      "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
-      "evidence": "docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json"
+      "version": "0.4.0",
+      "completedAt": "2026-08-12",
+      "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
+      "evidence": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "nextProtectedRelease": {
-      "state": "authorized_ready_to_tag",
+      "state": "complete_published_certified",
       "channel": "public_alpha",
       "version": "0.4.0",
       "sourceCandidate": {
@@ -147,14 +149,17 @@
         "run_exact_downloaded_byte_certifications",
         "deploy_fly_private_beta_from_exact_server_digest"
       ],
-      "externalPrerequisites": ["exact_published_server_image_digest"],
+      "externalPrerequisites": [],
       "nonBlockingEvidence": [
         "independent_blind_human_adoption",
         "private_multi_app_dogfood"
       ],
       "remoteEffectsEnabled": false,
-      "tagCreated": false,
-      "published": false
+      "tagCreated": true,
+      "published": true,
+      "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
+      "releaseWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31497848901",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "maintainerPublicAlphaAuthorization": {
       "state": "complete_for_v0_4_0_public_alpha",
@@ -164,27 +169,27 @@
     },
     "publishedLifecycleCertification": {
       "state": "complete",
-      "completedAt": "2026-07-23",
+      "completedAt": "2026-08-12",
       "evidence": "docs/contracts/TQ-604_LIFECYCLE_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "publishedConsoleLifecycleCertification": {
       "state": "complete",
-      "completedAt": "2026-07-23",
+      "completedAt": "2026-08-12",
       "evidence": "docs/contracts/TQ-704_INSTALLED_CONSOLE_LIFECYCLE.md",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "publishedAdoptionCertification": {
       "state": "automated_complete_human_pending",
-      "completedAt": "2026-07-23",
+      "completedAt": "2026-08-12",
       "evidence": "docs/contracts/TQ-606_ADOPTION_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "publishedInteractiveRuntimeCertification": {
       "state": "complete",
-      "completedAt": "2026-07-23",
+      "completedAt": "2026-08-12",
       "evidence": "docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CERTIFICATION.json",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/30051196124"
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
     },
     "independentBlindHumanAdoption": {
       "state": "not_run",
@@ -294,13 +299,11 @@
     },
     {
       "id": "TQ-608",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-403", "TQ-405", "TQ-604"],
       "outcome": "Guarantee data-preserving upgrades with explicit schema compatibility ranges, verified pre-migration backups, fail-closed newer-schema handling, post-migration doctor checks and portable export",
-      "remaining": [
-        "replay-exact-published-v0.4.0-bytes-after-publication"
-      ],
+      "remaining": [],
       "evidence": ["docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md", "docs/contracts/TQ-608_MIGRATION_CERTIFICATION.json", "docs/contracts/TQ-608_V040_PRERELEASE_MATRIX.json", "docs/guides/DATA_SAFETY.md", "packages/tasq-service/test/data-safety.test.ts", "packages/tasq-evals/tq608-v040-migration-contract.test.ts", "packages/tasq-evals/scripts/certify-v040-migration-candidate.ts", ".github/workflows/certify-v040-migration-candidate.yml", "https://github.com/gwendall/tasq/actions/runs/30625856802"]
     },
     {
@@ -530,17 +533,17 @@
     },
     {
       "id": "TQ-807",
-      "status": "in_progress_external_gate",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-805", "TQ-809"],
       "outcome": "Deployable online server artifact with configuration, concrete credential verification, hosted Console BFF base (bounded guarded actions owned by TQ-811), health, backup, restore and upgrade contracts",
-      "remaining": [
-        "publish_immutable_multi_arch_image_sbom_checksums_and_provenance"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-807_DEPLOYABLE_SERVER.md",
         "docs/contracts/TQ-807_SERVER_CERTIFICATION.json",
-        "deploy/server/README.md"
+        "deploy/server/README.md",
+        "https://github.com/gwendall/tasq/actions/runs/31613501777",
+        "https://github.com/gwendall/tasq/actions/runs/31619011510"
       ]
     },
     {
@@ -550,7 +553,6 @@
       "dependsOn": ["TQ-807"],
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification",
       "remaining": [
-        "protected_multi_arch_image_and_provenance",
         "macos_and_linux_clients_against_exact_published_digest",
         "previously_unbriefed_operator_deployment"
       ],
@@ -562,14 +564,11 @@
     },
     {
       "id": "TQ-811",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "hosted-human-loop",
       "dependsOn": ["TQ-808"],
       "outcome": "Add a deliberately small authenticated human action surface for create, claim, block, evidence, completion proposal and approval through the identical Server guard without turning Console into a second domain service",
-      "remaining": [
-        "exact_published_server_image_browser_replay",
-        "tq807_tq808_server_publication"
-      ],
+      "remaining": [],
       "evidenceTarget": [
         "docs/contracts/TQ-811_HOSTED_HUMAN_ACTIONS.md",
         "docs/contracts/TQ-811_HOSTED_HUMAN_ACTIONS_CERTIFICATION.json",
@@ -645,17 +644,14 @@
       "dependsOn": ["TQ-615", "TQ-808"],
       "outcome": "Pass hostile cross-surface, cross-language, revocation-race, migration, restore and protected published-byte certification without treating signatures as truth or authority",
       "remaining": [
-        "protected_release_workflow",
-        "exact_downloaded_bytes",
-        "supported_macos_arm64_and_linux_x64",
-        "node_bun_python_clean_room",
         "unbriefed_agent_and_operator_trial"
       ],
       "evidence": [
         "docs/contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.md",
         "docs/contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.json",
         "packages/tasq-evals/signed-statement-cross-language.test.ts",
-        "packages/tasq-server/test/workspace.test.ts"
+        "packages/tasq-server/test/workspace.test.ts",
+        "https://github.com/gwendall/tasq/actions/runs/31625205138"
       ]
     },
     {
@@ -665,8 +661,6 @@
       "dependsOn": ["TQ-405", "TQ-808", "TQ-616"],
       "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority",
       "remaining": [
-        "protected_published_server_digest",
-        "supported_client_artifacts",
         "clean_room_multi_machine_trial"
       ],
       "evidence": [
@@ -678,22 +672,19 @@
     },
     {
       "id": "TQ-810",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "remote-sdks",
       "dependsOn": ["TQ-808", "TQ-616"],
       "outcome": "Publish stable remote API schemas and thin cross-language clients beginning with Python, without reimplementing the kernel",
-      "remaining": [
-        "publish_python_wheel_with_provenance",
-        "download_exact_wheel_from_registry",
-        "run_against_exact_published_server_digest"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-810_REMOTE_SDKS.md",
         "docs/contracts/TQ-810_REMOTE_SDK_CERTIFICATION.json",
         "clients/python/tests/test_client.py",
         "packages/tasq-evals/python-remote-client.test.ts",
         "scripts/release/certify_published_python_server.py",
-        ".github/workflows/certify-published-python.yml"
+        ".github/workflows/certify-published-python.yml",
+        "https://github.com/gwendall/tasq/actions/runs/31619014178"
       ]
     },
     {
@@ -800,7 +791,6 @@
       "dependsOn": ["TQ-905", "ADR-005", "TQ-612", "TQ-616"],
       "outcome": "Remote effects only after independent evidence and authority review; disabled by default",
       "remaining": [
-        "published_artifact_signed_statement_certification",
         "exact_deployed_connector_permit_receipt_chain",
         "live_revocation_and_compromise_races",
         "independent_evidence_and_authority_review",
@@ -815,13 +805,11 @@
     },
     {
       "id": "TQ-617",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-608"],
       "outcome": "Mid-task discoveries become first-class linked work: a discovered_from dependency type plus a zero-cost capture command that never releases the discovering claim",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-617_DISCOVERY_CAPTURE.md",
         "docs/contracts/TQ-617_DISCOVERY_CAPTURE.json",
@@ -831,13 +819,11 @@
     },
     {
       "id": "TQ-618",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-608"],
       "outcome": "Observed cost attributed per attempt at the claim, cumulative per task, with a hard bound that can refuse lease renewal",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.md",
         "docs/contracts/TQ-618_ATTEMPT_COST_BOUNDS.json",
@@ -847,13 +833,11 @@
     },
     {
       "id": "TQ-619",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "autonomous-direction",
       "dependsOn": ["TQ-608", "TQ-612"],
       "outcome": "A task records the observation that motivates it, and that premise is refutable with the same mechanics completion resolution already uses",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.md",
         "docs/contracts/TQ-619_REFUTABLE_TASK_PREMISES.json",
@@ -1061,13 +1045,11 @@
     },
     {
       "id": "TQ-633",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "public-distribution",
       "dependsOn": ["TQ-603"],
       "outcome": "An unsupported one-shot npm bootstrap can never remain the default install channel, and every protected release proves latest resolves to its exact published version",
-      "remaining": [
-        "remove_or_replace_bootstrap_latest_dist_tag_on_npm_registry"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md",
         "docs/contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.json",
@@ -1078,13 +1060,11 @@
     },
     {
       "id": "TQ-634",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "local-adoption",
       "dependsOn": ["TQ-321"],
       "outcome": "Select a schema-valid coordination space for one canonical directory tree without changing the operator's global default or writing repository state",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-634_DIRECTORY_SPACE_SELECTION.md",
         "docs/contracts/TQ-634_DIRECTORY_SPACE_SELECTION.json",
@@ -1094,13 +1074,11 @@
     },
     {
       "id": "TQ-635",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "agent-adoption",
       "dependsOn": ["TQ-321"],
       "outcome": "Generate one versioned digest-bound AGENTS.md block from static protocol text only, with idempotent writes, hand-edit protection, CI states and an explicit ledger-versus-backlog authority split",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-635_MANAGED_AGENT_INSTRUCTIONS.md",
         "docs/contracts/TQ-635_MANAGED_AGENT_INSTRUCTIONS.json",
@@ -1112,13 +1090,11 @@
     },
     {
       "id": "TQ-636",
-      "status": "candidate_done_publication_gate",
+      "status": "done",
       "milestone": "feedback-loop",
       "dependsOn": ["TQ-812"],
       "outcome": "Capture actionable secret-free CLI feedback locally in one line while offline, then explicitly reconcile and publish a bounded batch to GitHub without granting issue activity completion authority",
-      "remaining": [
-        "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-636_OFFLINE_FEEDBACK.md",
         "docs/contracts/TQ-636_OFFLINE_FEEDBACK.json",

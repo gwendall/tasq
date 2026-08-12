@@ -1,6 +1,8 @@
 {
   "contractVersion": "tasq.tq-636-certification.v1",
-  "status": "source_candidate_complete_publication_pending",
+  "status": "published_and_certified",
+  "release": "v0.4.0",
+  "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
   "commands": [
     "tasq feedback",
     "tasq feedback list",
@@ -36,7 +38,5 @@
     "packages/tasq-github-bridge/src/index.ts",
     "packages/tasq-github-bridge/test/github-bridge.test.ts"
   ],
-  "remaining": [
-    "publish_exact_implementation_in_authorized_v0.4.0_artifacts"
-  ]
+  "remaining": []
 }

@@ -5,14 +5,14 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-08-11
+**Updated:** 2026-08-12
 
 **Current product:** Tasq Core + Tasq Local  
-**Current priority:** make the eighth npm identity safe for default installs,
-verify its trusted publisher, then publish the maintainer-authorized `v0.4.0`
-public alpha: all eight packages and both native artifacts, the
-multi-architecture Server image and Python wheel, followed by exact
-downloaded-byte certifications. Continue the independent
+**Current priority:** operate the shipped `v0.4.0` public alpha and Fly private
+beta, complete the off-site backup/restore drill, unbriefed adoption and
+self-host trials, and retained-data dogfood. All eight npm packages, both
+native artifacts, the multi-architecture Server image and Python wheel are
+published and exact-artifact certified. Continue the independent
 blind-human session and retained-data dogfood after publication; they gate
 human usability and stable graduation, not alpha delivery. Remote effects
 remain disabled.
@@ -21,45 +21,32 @@ The detailed task inventory, acceptance criteria and verification routes for
 public adoption through Server and Cloud are in
 [`PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
-### 2026-08-11 external-activation handoff
+### 2026-08-12 v0.4.0 release closure
 
-The complete `v0.4.0` public-alpha source candidate is merged on `main`. The
-latest behavior-changing merge, TQ-633 at
-`bbf9bde9a23764feb2e3c81aac039fe566e2f5dc`, passes protected CI run
-[31455469251](https://github.com/gwendall/tasq/actions/runs/31455469251): the
-full Linux/macOS, browser and secret-scan matrix. Protected migration run
-[31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496) binds
-commit `e27451d3510c71a9f875a48991eb2fd80496bfdb` and passes the exact
-`v0.2.0`/`v0.3.0` to candidate-format-32 replay on both supported targets.
-
-The eighth identity now exists as unsupported
-`@tasq-run/client@0.1.0-alpha.0`. A public read at 2026-08-11T02:57:46Z found
-both `alpha-bootstrap` and `latest` pointing at it, so a default install is not
-safe. No `v0.4.0` tag, GHCR image, PyPI wheel or hosted Cloud deployment exists
-yet. Resume in this order:
-
-1. verify `@tasq-run/client` trusts `gwendall/tasq:release.yml:release`, the
-   GitHub bootstrap secret is absent and its granular token is revoked;
-2. configure the `tasq-remote` PyPI pending trusted publisher for
-   `gwendall/tasq`, `publish-python.yml`, environment `release`;
-3. either remove `latest` from the unsupported bootstrap immediately, or
-   create immutable tag `v0.4.0` and let `release.yml` replace it with all eight
-   exact npm packages and native assets; verify the public dist-tags, then run
-   the protected Server, Python and downloaded-byte certification workflows;
-4. deploy the provisioned Fly private-beta profile from the exact protected
-   Server digest. The Fly app, Paris volume, CI environment and
-   `api.tasq.run`/`cloud.tasq.run` DNS now exist; no Machine is started until
-   the digest-bound workflow can verify and deploy the published image.
+Immutable tag `v0.4.0` binds commit
+`47408faccaad5638ab7d1da94c37eda6ba1dc3c1`. Protected release run
+[31497848901](https://github.com/gwendall/tasq/actions/runs/31497848901)
+published all eight npm packages and both native targets. `latest` now resolves
+to `0.4.0`; the unsupported client bootstrap remains only on
+`alpha-bootstrap`. Server run
+[31613501777](https://github.com/gwendall/tasq/actions/runs/31613501777)
+published digest `sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452`;
+Python run [31518219329](https://github.com/gwendall/tasq/actions/runs/31518219329)
+published `tasq-remote==0.4.0`. Exact Server, Python and full downloaded-byte
+certifications pass in runs
+[31619011510](https://github.com/gwendall/tasq/actions/runs/31619011510),
+[31619014178](https://github.com/gwendall/tasq/actions/runs/31619014178) and
+[31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138).
+Fly run [31621714116](https://github.com/gwendall/tasq/actions/runs/31621714116)
+deployed one private-beta writer in Paris from that exact digest.
 
 Independent blind-human adoption and retained dogfood continue after the alpha
 and block only human-usability closure and stable graduation. Remote effects
 remain disabled.
 
-The latest behavior-changing protected CI run above passed documentation and
-generated-truth checks, all typechecks, every functional suite, public-package
-reproducibility, Linux/macOS verification, browser suites and the secret scan.
-That protected result supersedes the earlier local timeout as the handoff
-closure verdict; the registry and deployment gates below remain external.
+The remaining gates are product evidence and operations drills, not release
+publication: dogfood, blind-human adoption, unbriefed self-host operation,
+off-site restore, independent Cloud/security review and remote-effects review.
 
 ## What is already proven
 
@@ -79,10 +66,9 @@ The dedicated canonical repository is public and Linux/macOS CI is live.
 Pull requests, both verification checks, linear history, immutable `v*` tags,
 secret scanning, push protection and private vulnerability reporting are
 platform-enforced. Repository visibility is still not release evidence.
-Release archives and seven `@tasq-run/*` package candidates are deterministic and
-clean-room tested. PR [#5](https://github.com/gwendall/tasq/pull/5) added and
-certified the candidate install/upgrade/restore/uninstall lifecycle on both
-native targets.
+Release archives and all eight `@tasq-run/*` packages are deterministic,
+published and clean-room tested. The current install/upgrade/restore/uninstall
+lifecycle is certified on both native targets.
 
 The repository follows open-source engineering discipline as a public alpha:
 standalone source authority, public/private package boundaries, DCO,
@@ -93,30 +79,27 @@ operation through real adopters, not more repository-only architecture.
 
 ## Current gates
 
-- **Fly private beta — substrate provisioned, runtime image pending.** ADR-018
+- **Fly private beta — deployed, off-site restore drill pending.** ADR-018
   replaces GKE as the first hosted-beta step. Fly app `tasq-api`, one encrypted
   `cdg` volume with 30-day snapshots, ingress, certificate request, registrar
   DNS and GitHub environment `beta` exist. `api.tasq.run` is the sole future
   Server origin; `cloud.tasq.run` is the human redirect. The protected workflow
-  accepts only the attested GHCR digest and enforces one writer. No public
-  endpoint or Managed Cloud claim exists until v0.4.0 Server publication,
-  bootstrap and the live HTTP proof pass. See
+  accepts only the attested GHCR digest and enforces one writer. One Machine is
+  healthy at `api.tasq.run`; `cloud.tasq.run` redirects to its Console. This is
+  a private beta without SLA or managed multi-tenant Cloud claim. See
   [`ADR-018`](../decisions/ADR-018_FLY_PRIVATE_BETA.md) and the
   [runbook](../../deploy/fly-private-beta/README.md).
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
-  seven `@tasq-run/*@0.3.0` packages from npm, or download the attested
+  eight `@tasq-run/*@0.4.0` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
-  [`v0.3.0`](https://github.com/gwendall/tasq/releases/tag/v0.3.0) release.
-  The historical `alpha-bootstrap` tag is not a supported channel. The separate
-  `@tasq-run/client` bootstrap currently also occupies `latest`; do not use its
-  default install until TQ-633's external registry gate is cleared.
-- **TQ-633 — source controls complete; npm cleanup required.** The one-shot
+  [`v0.4.0`](https://github.com/gwendall/tasq/releases/tag/v0.4.0) release.
+  The historical `alpha-bootstrap` tag is not a supported channel.
+- **TQ-633 — done.** The one-shot
   client workflow serializes with protected releases, preserves
   `alpha-bootstrap`, removes a bootstrap-only `latest`, and verifies the result.
   Every protected release verifies each public package's `latest` against the
-  exact release version. The current public registry still needs an npm
-  package-owner mutation, so the ticket is not marked done.
+  exact release version. The public registry now resolves `latest` to `0.4.0`.
 - **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
   uninstall trials. Both hosts read before mutation, resume the same attempt
@@ -124,7 +107,7 @@ operation through real adopters, not more repository-only architecture.
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — source candidate complete; published-v0.4 replay open.** The
+- **TQ-608 — done for v0.4.0.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
@@ -135,8 +118,8 @@ operation through real adopters, not more repository-only architecture.
   The format-32 harness passed against source commit
   `e27451d3510c71a9f875a48991eb2fd80496bfdb` in protected Linux and macOS run
   [31447846496](https://github.com/gwendall/tasq/actions/runs/31447846496).
-  Only candidate artifact attestations and the exact published `v0.4.0` replay
-  remain open. No source-candidate pass grants a public support claim.
+  Exact published `v0.4.0` attestations and migration replay passed in run
+  [31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138).
 
 - **TQ-607 — in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
@@ -184,10 +167,8 @@ Server/Cloud breadth remains behind published-byte Local certification.
 
 - **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
   passes from the public marketplace with no repository briefing.
-- **TQ-608 — done for current release:** exact published `v0.3.0` replay
-  passes; the exact `v0.2.0`/`v0.3.0` N-2 candidate harness passes locally and
-  in protected CI on both targets. Only the published-`v0.4.0` replay remains
-  `not_run`.
+- **TQ-608 — done for current release:** exact published `v0.4.0` replay and
+  the exact `v0.2.0`/`v0.3.0` N-2 migration matrix pass on both targets.
 
 ### 2. Finish Local alpha distribution
 
@@ -331,21 +312,20 @@ Server/Cloud breadth remains behind published-byte Local certification.
   mutation tools through the same TQ-803/TQ-804 handlers and live ADR-004
   guard. It adds no listener, concrete verifier or deployable Server; see
   `../contracts/TQ-805_REMOTE_MCP.md`.
-- **TQ-809 — done:** the Fetch-only `@tasq-run/client` source candidate,
+- **TQ-809 — done:** the Fetch-only `@tasq-run/client`,
   `tasq remote` CLI profiles and one-use human/workload enrollment now use an
   explicit endpoint/workspace, private local credential storage, exact
   idempotent replay, live revocation and cursor-expiry recovery. Two-client
-  claim/resource contention and REST/MCP parity pass. The package is not in
-  published `v0.3.0`, and no deployable endpoint ships; see
+  claim/resource contention and REST/MCP parity pass. The package ships in
+  `v0.4.0`, and the private-beta endpoint is available at `api.tasq.run`; see
   `../contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md`.
-- **TQ-807 — candidate complete, authorized publication in progress:** the Bun daemon and local
+- **TQ-807 — done:** the Bun daemon and local
   Linux container now include strict config/bootstrap, concrete RS256 and
   opaque verification, real Core operations, immutable mutation receipts,
   the same-origin authenticated Console BFF base, health/metrics and checksummed
   backup/restore. Its original read-only slice is historical; TQ-811 owns the
-  current bounded guarded actions. `v0.4.0` publication is authorized; the
-  remaining gate is the protected multi-architecture image with immutable
-  registry digest, SBOM, checksums and provenance; see
+  current bounded guarded actions. The protected multi-architecture image,
+  immutable registry digest, SBOM, checksums and provenance are published; see
   `../contracts/TQ-807_DEPLOYABLE_SERVER.md`.
 - **TQ-808 — candidate complete, external gate:** the production daemon passes
   two independent issuers/workspaces, hostile credentials, REST/MCP/CLI
@@ -359,13 +339,13 @@ Server/Cloud breadth remains behind published-byte Local certification.
 These are consumer adapters over the certified Server. They do not add task
 state, provider schemas or notification policy to Core.
 
-- **TQ-811 — candidate complete, Server publication gate:** the authenticated
+- **TQ-811 — done:** the authenticated
   Console now supports create, claim, block, evidence, explicit unverified
   evidence-trust attribution, completion proposal and independent approval.
   Every action is a bounded same-origin form translated into the same
   registered Server operation, live ADR-004 authorization and Core service
   used by REST and MCP. Console owns no mutation semantics. Exact
-  published-image browser certification remains coupled to TQ-807/TQ-808; see
+  published-image browser certification passed against the exact digest; see
   `../contracts/TQ-811_HOSTED_HUMAN_ACTIONS.md`.
 - **TQ-812 — done:** `@tasq-internal/github-bridge` freezes one owner per issue
   field, produces Core-compatible immutable `external_ref` inputs and verifies
@@ -412,11 +392,11 @@ support claims remain TQ-901–TQ-905.
   Server, CLI, MCP, Console, doctor and portable-data projections pass; the
   unsigned journey is unchanged. See
   `../contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md`.
-- **TQ-616 — candidate done; external gate remains:** the critical machine
+- **TQ-616 — published-artifact certification passed; human trial remains:** the critical machine
   threat matrix, Python cross-language vector, nonce/identity replay,
   revocation race, process-loss migration and restore tests pass. Public
-  support still requires the protected exact downloaded-byte, supported
-  platform and unbriefed-agent certification. See
+  exact downloaded-byte replay passes on both supported platforms across
+  Node, Bun and Python. The unbriefed agent/operator trial remains. See
   `../contracts/TQ-616_SIGNED_STATEMENT_CERTIFICATION.md`.
 
 The accepted contract is
@@ -424,8 +404,8 @@ The accepted contract is
 the machine gate is
 [`SIGNED_STATEMENT_ACCEPTANCE.json`](../contracts/SIGNED_STATEMENT_ACCEPTANCE.json).
 This work does not interrupt TQ-607 retained-data dogfood. Signed statements
-are implemented in the source candidate but remain an unpublished support
-claim until TQ-616's external gate is attached to exact release bytes.
+ship in `v0.4.0` and pass exact release-byte replay. The unbriefed
+agent/operator trial remains a distinct external observation.
 
 - **TQ-806 — candidate done; external gate remains:** guarded Server
   enrollment/push/pull now bind each replica generation to one principal and
@@ -433,11 +413,11 @@ claim until TQ-616's external gate is attached to exact release bytes.
   Existing chaos, cursor, conflict and old-backup recovery pass; claims,
   leases, approvals and effects remain online-only. See
   `../contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`.
-- **TQ-810 — candidate done; external gate remains:** the checked-in OpenAPI
+- **TQ-810 — done:** the checked-in OpenAPI
   contract and dependency-free Python 3.11+ client cover reads, event cursors,
   operation discovery, idempotent mutation and enrollment without embedding
-  Core or migrations. PyPI publication, provenance and downloaded-wheel
-  replay remain. See `../contracts/TQ-810_REMOTE_SDKS.md`.
+  Core or migrations. PyPI publication, provenance and exact-wheel replay
+  against the exact Server digest pass. See `../contracts/TQ-810_REMOTE_SDKS.md`.
 
 Server is not the Local loopback inspector exposed on a public interface. It
 must implement the complete ADR-004 trust chain first.
@@ -455,26 +435,24 @@ prevent it - locks plus shared state do
 (<https://arxiv.org/html/2606.19616v1>). Public postmortems of uncapped agents
 reaching $4,200 and $47,000 motivate the cost bound.
 
-- **TQ-617 — source candidate complete; v0.4 publication gate remains:**
+- **TQ-617 — done in v0.4.0:**
   `discovered_from` is a first-class relation plus
   a zero-cost capture command: an agent that finds work mid-task files it as a
   linked task without releasing its claim or widening its diff, and the CLI
   prints the ready capture command at the moment of a refusal or error.
   Capture stays local and explicit by default.
-- **TQ-618 — candidate done, publication gate:** provider-neutral observed cost
+- **TQ-618 — done in v0.4.0:** provider-neutral observed cost
   is attributed per attempt through explicit immutable meter receipts and
   aggregated per task. A typed hard bound can refuse lease renewal without
   instrumenting agent reasoning; strict mode also refuses an unmetered active
-  attempt. This source candidate adds no migration and makes no billing-truth
-  claim. It becomes supported only when the exact implementation ships in the
-  authorized `v0.4.0` artifacts.
-- **TQ-619 — candidate done, publication gate:** a task can atomically record
+  attempt. This adds no migration and makes no billing-truth claim; the exact
+  implementation ships in `v0.4.0`.
+- **TQ-619 — done in v0.4.0:** a task can atomically record
   the exact observation and proposition that motivate it. That premise is
   refutable through proposal, challenge and independent decision mechanics;
   accepted refutation invalidates actionability, releases active authority and
-  preserves the commitment plus its full history. The Local/Core source is
-  complete and becomes supported only in the exact authorized `v0.4.0`
-  artifacts.
+  preserves the commitment plus its full history. The exact Local/Core
+  implementation ships in `v0.4.0`.
 - **TQ-620 — done:** human attention is a bounded resource. Digest-bound
   `input_required` requests batch through the existing durable outbox; absolute
   do-not-disturb intervals suppress transport, and cohort metrics compare
@@ -571,25 +549,24 @@ publication sequence and create no current support claim.
 
 ### 7E. Keep unsupported bootstrap off default install
 
-- **TQ-633 — candidate done; external registry gate remains:** protected
+- **TQ-633 — done:** protected
   bootstrap and release workflows now serialize package publication and prove
-  their intended dist-tags. Public observation still shows unsupported
-  `@tasq-run/client@0.1.0-alpha.0` as `latest`; only npm package-owner authority
-  can remove it or replace it with the exact supported `v0.4.0` publication.
+  their intended dist-tags. Public observation shows `latest=0.4.0` and keeps
+  the unsupported bootstrap isolated on `alpha-bootstrap`.
 
 ### 7F. Make local multi-space work and feedback self-describing
 
-- **TQ-634 — source candidate complete; v0.4 publication gate remains:**
+- **TQ-634 — done in v0.4.0:**
   `tasq use` privately binds a canonical directory tree to a validated space,
   inherits the closest binding and preserves explicit flag/environment
   precedence without changing the global default or writing repository state.
-- **TQ-635 — source candidate complete; v0.4 publication gate remains:**
+- **TQ-635 — done in v0.4.0:**
   `tasq agent instructions` renders static protocol text with only a validated
   space as input. Full digest markers, atomic idempotent writes, hand-edit
   refusal/force and distinct missing/stale/edited CI exits keep one root block
   current. Documentation now consistently distinguishes live ledger ownership,
   versioned backlog scope and product support truth.
-- **TQ-636 — source candidate complete; v0.4 publication gate remains:**
+- **TQ-636 — done in v0.4.0:**
   `tasq feedback` fsyncs a bounded private report while offline and records
   only secret-free failed-command shape. Listing, dry-run and explicit
   token-from-environment GitHub batch publication retain local receipts and
@@ -621,7 +598,7 @@ publication sequence and create no current support claim.
   deletion recovery. Exact deployed artifacts, real provider drills,
   multi-region recovery and independent review remain.
 - **TQ-906 — pending independent review:** ADR-005 and TQ-612 are accepted,
-  but TQ-616 is not published-artifact certified and the current author cannot
+  TQ-616 is published-artifact certified, but the current author cannot
   independently approve their own authority boundary. Server reports effects
   disabled, Cloud denies every `/effects` path and no remote dispatch
   operation is registered. See
@@ -648,8 +625,8 @@ maintainer launch decision.
 ## Decisions still required
 
 ADR-005 and ADR-009 are accepted. TQ-612 is published and certified;
-TQ-613–TQ-615 are implemented in source, while TQ-616 still requires protected
-published-artifact and unbriefed-agent evidence. TQ-906 remote effects requires
+TQ-613–TQ-616 are published and exact-artifact certified; TQ-616 still requires
+unbriefed-agent evidence. TQ-906 remote effects requires
 its own independent authority review and deployment evidence; completion trust
 and a valid principal signature do not grant effect authority.
 

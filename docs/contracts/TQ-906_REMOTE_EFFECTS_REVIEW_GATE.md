@@ -1,10 +1,10 @@
 # TQ-906 — Remote effects independent review gate
 
 > **Status:** blocked on independent authority review and deployed evidence
-> **Date:** 2026-07-24
+> **Date:** 2026-08-12
 > **Machine gate:** `TQ-906_REMOTE_EFFECTS_REVIEW_GATE.json`
 
-ADR-005, TQ-612 and the signed-statement source candidate define important
+ADR-005, TQ-612 and the published signed-statement stack define important
 ingredients, but none of them grants remote effect authority. Completion
 evidence, a valid signature, tenant membership, an ordinary Server grant,
 billing status, support access and a browser session are all insufficient.
@@ -16,15 +16,14 @@ the release invariant.
 
 Enabling remote effects requires all of the following:
 
-1. TQ-616 published-artifact signed-statement certification;
-2. the TQ-205/TQ-206 connector permit, fence, receipt, uncertainty and
+1. the TQ-205/TQ-206 connector permit, fence, receipt, uncertainty and
    compensation chain composed through the exact deployed Server digest;
-3. tenant/workspace/principal/credential/action binding in one live authority
+2. tenant/workspace/principal/credential/action binding in one live authority
    decision immediately before I/O;
-4. revocation and credential-compromise races against real connectors;
-5. an independent reviewer who did not author the implementation approving
+3. revocation and credential-compromise races against real connectors;
+4. an independent reviewer who did not author the implementation approving
    both evidence trust and effect authority;
-6. protected deployment evidence, rollback and incident response.
+5. protected deployment evidence, rollback and incident response.
 
 The current agent cannot independently review its own implementation.
 Therefore TQ-906 remains open and remote effects remain disabled.

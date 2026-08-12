@@ -1,8 +1,7 @@
 # TQ-608 — Migration and data-safety envelope
 
-**Status:** complete for published `v0.3.0`; the `v0.4.0` format-32 source
-candidate requires a fresh protected N-2 replay on both supported targets,
-followed by exact published-byte replay
+**Status:** complete for published `v0.4.0`; format-32 source and exact
+published-byte N-2 replay pass on both supported targets
 **Depends on:** TQ-403, TQ-405 and the TQ-604 candidate lifecycle  
 **Blocks:** each protected package line that changes the store format
 
@@ -143,7 +142,7 @@ target format from the machine matrix. Protected run
 passed on Darwin arm64 and Linux x64 GNU against source commit
 `e27451d3510c71a9f875a48991eb2fd80496bfdb` and target format 32. The
 downloaded evidence files are SHA-256 bound in the machine certificates. After
-`v0.4.0` publication,
-the exact downloaded artifacts and attestations must still be replayed
-separately. Until that external gate passes, `publishedV040Replay` remains
-`not_run` and no `v0.4.0` support claim exists.
+`v0.4.0` publication, protected run
+[31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138)
+replayed the exact downloaded artifacts and attestations on both supported
+targets. `publishedV040Replay` is `passed` and TQ-608 is closed for `v0.4.0`.

@@ -1,6 +1,6 @@
 # TQ-618 — Observed attempt cost and hard claim bounds
 
-> **Status:** source candidate complete; TQ-608 release dependency open
+> **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11
 > **Machine certificate:** [`TQ-618_ATTEMPT_COST_BOUNDS.json`](TQ-618_ATTEMPT_COST_BOUNDS.json)
 

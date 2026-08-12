@@ -1,6 +1,6 @@
 # TQ-619 — Observation-backed, refutable task premises
 
-> **Status:** source candidate complete; protected publication pending
+> **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11
 > **Machine certificate:** [`TQ-619_REFUTABLE_TASK_PREMISES.json`](TQ-619_REFUTABLE_TASK_PREMISES.json)
 
@@ -103,4 +103,3 @@ append-only record; `show` returns `tasq.task-premise-state.v1` and an explicit
 - retained, readable non-deleted history;
 - generic external-reference bypass denial;
 - Core/service typechecks and Local CLI end-to-end execution.
-

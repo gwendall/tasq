@@ -1,7 +1,7 @@
 # TQ-808 — Hostile self-hosted Server certification
 
-> **Status:** repository/daemon hostile matrix complete; external release gate remains
-> **Date:** 2026-07-24
+> **Status:** protected image published and exact-digest certified; clean-client and unbriefed-operator gates remain
+> **Date:** 2026-08-12
 > **Machine certificate:** `TQ-808_SERVER_HOSTILE_CERTIFICATION.json`
 
 ## Tested boundary
@@ -56,20 +56,21 @@ finite-retention claim and therefore cannot manufacture an expiry event.
 
 ## External release gate
 
-The remaining evidence cannot be created by an in-repository unit test:
+The protected multi-architecture image, SBOM, checksums and provenance were
+published in run `31613501777`; exact-digest Server lifecycle and hosted
+Console certification passed in run `31619011510`. The remaining evidence
+cannot be created by an in-repository unit test:
 
-- publish the protected immutable multi-architecture image, SBOM, checksums and
-  provenance;
 - replay clean macOS and Linux clients against that exact Linux image digest;
 - record one previously unbriefed operator following only
   `deploy/server/README.md`.
 
-The protected publish and exact-digest lifecycle entrypoints are prepared in
+The protected publish and exact-digest lifecycle entrypoints live in
 `.github/workflows/publish-server.yml` and
 `.github/workflows/certify-published-server.yml`. Their policy authorization is
-intentionally closed. The certification entrypoint verifies GitHub provenance,
+closed to the protected release environment. The certification entrypoint verifies GitHub provenance,
 pulls by digest and replays the packaged Server lifecycle; clean macOS/Linux
 clients and the unbriefed operator remain external even after that run.
 
-Until those exist, Server remains an
-`implemented_candidate_not_published` product, not a shipped hosted service.
+Server is a shipped public-alpha artifact. TQ-808 remains open only for the two
+clean-room operator/client observations above; it is not a managed-service SLA.

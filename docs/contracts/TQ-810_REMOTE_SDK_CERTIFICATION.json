@@ -1,21 +1,21 @@
 {
   "contractVersion": "tasq.remote-sdk-certification.v1",
-  "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-30",
+  "status": "published_exact_artifacts_certified",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-810",
   "apiSchema": "docs/contracts/TASQ_REMOTE_API.openapi.json",
   "clients": {
     "typescript": {
       "path": "packages/tasq-client",
       "runtime": ["node_22", "bun_1_3"],
-      "state": "source_candidate"
+      "state": "published_certified_v0_4_0"
     },
     "python": {
       "path": "clients/python",
       "runtime": ["python_3_11_plus"],
       "dependencies": [],
       "kernelReimplementation": false,
-      "state": "source_candidate"
+      "state": "published_certified_v0_4_0"
     }
   },
   "evidence": [
@@ -28,17 +28,19 @@
     "docs/contracts/TASQ_REMOTE_API.openapi.json"
   ],
   "publicationAutomation": {
-    "state": "authorized_not_run",
+    "state": "published",
     "version": "0.4.0",
     "publishWorkflow": ".github/workflows/publish-python.yml",
     "certificationWorkflow": ".github/workflows/certify-published-python.yml",
     "package": "tasq-remote",
     "trustedPublishing": "pypi_oidc_with_provenance",
     "deterministicWheelBuilder": "scripts/release/build-python-wheel.py",
-    "externalPublicationPerformed": false
+    "externalPublicationPerformed": true,
+    "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31518219329",
+    "wheelSha256": "2e59bd0d3554cb94c2c1b086bff2760d53416142912c916e39bdb4bab99293c2"
   },
   "exactArtifactIntegrationAutomation": {
-    "state": "prepared_not_executed",
+    "state": "passed_protected_exact_artifacts",
     "wheelSource": "exact_pypi_download_with_sha256_and_provenance",
     "serverSource": "exact_ghcr_digest_with_oci_identity_and_provenance",
     "harness": "scripts/release/certify_published_python_server.py",
@@ -50,13 +52,11 @@
       "typed_invalid_credential_failure"
     ],
     "isolatedServer": true,
-    "externalWorkflowRunPerformed": false,
-    "publicSupportClaim": false
+    "externalWorkflowRunPerformed": true,
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31619014178",
+    "exactServerDigest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "publicSupportClaim": true
   },
-  "remainingExternalGate": [
-    "publish_python_wheel_with_provenance",
-    "download_exact_wheel_from_registry",
-    "run_against_exact_published_server_digest"
-  ],
-  "publicPythonSupportClaim": false
+  "remainingExternalGate": [],
+  "publicPythonSupportClaim": true
 }

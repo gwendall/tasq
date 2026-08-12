@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.signed-statement-hostile-certification.v1",
-  "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-30",
+  "status": "published_artifacts_certified_human_trial_pending",
+  "updatedAt": "2026-08-12",
   "backlogItem": "TQ-616",
   "testedArtifact": "source_and_local_built_candidate",
   "criticalThreats": {
@@ -81,21 +81,19 @@
     "packages/tasq-inspector/test/inspector.test.ts"
   ],
   "protectedReplayAutomation": {
-    "state": "authorized_not_run",
+    "state": "passed",
     "version": "0.4.0",
     "workflow": ".github/workflows/certify-published-release.yml",
     "eligibilityAuthority": "docs/releases/PUBLIC_RELEASE_POLICY.json",
     "historicalV0_3_0": "explicitly_incompatible_skipped_without_gate_closure",
     "unknownReleaseBehavior": "fail_closed",
     "exactCompatibleVersionAndProtectedRuntimeTagBindingRequired": true,
-    "externalWorkflowRunPerformed": false,
+    "externalWorkflowRunPerformed": true,
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
+    "targets": ["darwin-arm64", "linux-x64-gnu"],
     "publicSupportClaim": false
   },
   "remainingExternalGate": [
-    "protected_release_workflow",
-    "exact_downloaded_bytes",
-    "supported_macos_arm64_and_linux_x64",
-    "node_bun_python_clean_room",
     "unbriefed_agent_and_operator_trial"
   ],
   "publicSupportClaim": false

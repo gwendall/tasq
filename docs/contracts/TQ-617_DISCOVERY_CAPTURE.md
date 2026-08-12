@@ -1,6 +1,6 @@
 # TQ-617 — Atomic discovery capture
 
-> **Status:** source candidate complete; authorized v0.4 publication open
+> **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11
 > **Machine certificate:** [`TQ-617_DISCOVERY_CAPTURE.json`](TQ-617_DISCOVERY_CAPTURE.json)
 
