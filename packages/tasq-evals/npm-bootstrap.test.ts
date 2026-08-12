@@ -217,6 +217,8 @@ describe("one-shot npm identity bootstrap", () => {
     expect(workflow).not.toContain("NPM_BOOTSTRAP_TOKEN");
     expect(releaseWorkflow).toContain("group: tasq-package-publication");
     expect(releaseWorkflow).toContain('npm view "$package_name" dist-tags --json');
+    expect(releaseWorkflow).toContain("for attempt in 1 2 3 4 5 6; do");
+    expect(releaseWorkflow).toContain("sleep $((attempt * 5))");
     expect(releaseWorkflow).toContain('= "${{ needs.identity.outputs.version }}"');
 
     const policy = JSON.parse(await readFile(
