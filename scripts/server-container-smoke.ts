@@ -92,7 +92,11 @@ try {
   const port = published.match(/:(\d+)$/)?.[1];
   if (!port) throw new Error(`could not parse published port: ${published}`);
   let health: Response | null = null;
-  for (let attempt = 0; attempt < 50; attempt += 1) {
+  // Native startup is usually sub-second, while an arm64 image replayed under
+  // QEMU on an amd64 release runner can spend materially longer in Bun startup
+  // and migrations. Keep the wait bounded but large enough to certify both
+  // published platforms rather than accidentally benchmarking emulation.
+  for (let attempt = 0; attempt < 300; attempt += 1) {
     try {
       health = await fetch(`http://127.0.0.1:${port}/healthz`);
       if (health.ok) break;
@@ -102,7 +106,12 @@ try {
     await Bun.sleep(100);
   }
   if (!health?.ok || (await health.json() as { status?: string }).status !== "ok") {
-    throw new Error("container health endpoint did not become ready");
+    const state = await command([
+      "docker", "inspect", container, "--format",
+      "status={{.State.Status}} exit={{.State.ExitCode}} error={{json .State.Error}}",
+    ], true);
+    const logs = await command(["docker", "logs", "--tail", "100", container], true);
+    throw new Error(`container health endpoint did not become ready (${state}): ${logs}`);
   }
   const inspected = JSON.parse(await command([
     "docker", "image", "inspect", image, "--format", "{{json .}}",

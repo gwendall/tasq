@@ -214,6 +214,9 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("subject-digest: ${{ steps.selected-image.outputs.digest }}");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-amd64");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-arm64");
+    const smokeHarness = read("scripts/server-container-smoke.ts");
+    expect(smokeHarness).toContain("attempt < 300");
+    expect(smokeHarness).toContain('"docker", "logs", "--tail", "100", container');
     expect(publish.indexOf('docker image rm tasq-server:protected-amd64 "$reference"')).toBeLessThan(
       publish.indexOf('docker pull --platform linux/arm64 "$reference"'),
     );
