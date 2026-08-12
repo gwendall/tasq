@@ -197,10 +197,12 @@ describe("protected candidate publication entrypoints", () => {
     const tagGuard = read("scripts/release/ensure-oci-tag.sh");
     expect(publish).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(publish).toContain("test \"$INPUT_CONFIRMATION\" = \"publish-tasq-server\"");
-    expect(publish).toContain('test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"');
     expect(publish).toContain('test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"');
     expect(publish).toContain(
-      'test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(publish).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
     );
     expect(publish).toContain("--surface serverImage");
     expect(publish).toContain("environment: release");
@@ -234,7 +236,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain(
       'reference="${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"',
     );
-    expect(publish).toContain("gh release view \"$GITHUB_REF_NAME\"");
+    expect(publish).toContain("gh release view \"$release_tag\"");
     expect(publish).toContain("run: pnpm verify:handoff");
     expect(publish).not.toContain(":latest");
     expect(publish.indexOf("id: build")).toBeLessThan(
