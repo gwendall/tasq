@@ -106,11 +106,22 @@ jobs:
       - name: Initialize the exact bootstrap manifest
         if: inputs.initialize
         shell: bash
-        run: >-
-          flyctl ssh console --app "$TASQ_APP" --command
-          "bun /app/packages/tasq-server/src/daemon.ts bootstrap
-          --config /etc/tasq/server.json
-          --bootstrap /etc/tasq/bootstrap.json"
+        run: |
+          set -euo pipefail
+          machine_id=""
+          for attempt in $(seq 1 30); do
+            machine_id="$(
+              flyctl machines list --app "$TASQ_APP" --json |
+                jq --raw-output '[.[] | select(.state == "started")][0].id // empty'
+            )"
+            test -n "$machine_id" && break
+            sleep 2
+          done
+          test -n "$machine_id"
+          flyctl ssh console --app "$TASQ_APP" --machine "$machine_id" --command \
+            "bun /app/packages/tasq-server/src/daemon.ts bootstrap \
+            --config /etc/tasq/server.json \
+            --bootstrap /etc/tasq/bootstrap.json"
       - name: Prove canonical public routes
         shell: bash
         run: |
