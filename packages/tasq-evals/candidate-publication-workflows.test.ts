@@ -212,8 +212,8 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
     expect(publish).toContain("subject-digest: ${{ steps.selected-image.outputs.digest }}");
-    expect(publish).toContain("bun scripts/server-container-smoke.ts tasq-server:protected-amd64");
-    expect(publish).toContain("bun scripts/server-container-smoke.ts tasq-server:protected-arm64");
+    expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-amd64");
+    expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-arm64");
     expect(publish).toContain('.metadata.version == $version');
     expect(publish).toContain('.metadata.revision == $revision');
     expect(publish).toContain("scripts/release/resolve-oci-publication-resume.sh");

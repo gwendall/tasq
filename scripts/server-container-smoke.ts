@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { generateKeyPairSync, randomUUID } from "node:crypto";
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -26,7 +26,11 @@ async function command(args: string[], allowFailure = false): Promise<string> {
 }
 
 try {
-  await mkdir(data, { mode: 0o700 });
+  // The released image intentionally runs as uid 10001. A bind-mounted host
+  // directory keeps host ownership, so make the isolated smoke fixture
+  // traversable and its database directory writable by that unprivileged uid.
+  await chmod(root, 0o755);
+  await mkdir(data, { mode: 0o777 });
   const { publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
   await writeFile(config, JSON.stringify({
     contractVersion: "tasq.server-config.v1",

@@ -105,6 +105,9 @@ jobs:
           install -m 0755 \
             scripts/release/ensure-oci-tag.sh \
             "$automation/ensure-oci-tag.sh"
+          install -m 0755 \
+            scripts/server-container-smoke.ts \
+            "$automation/server-container-smoke.ts"
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ needs.authorize.outputs.commit }}
@@ -213,7 +216,7 @@ jobs:
           reference="${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"
           docker pull --platform linux/amd64 "$reference"
           docker tag "$reference" tasq-server:protected-amd64
-          amd64="$(bun scripts/server-container-smoke.ts tasq-server:protected-amd64)"
+          amd64="$(bun "$RUNNER_TEMP/tasq-release-automation/server-container-smoke.ts" tasq-server:protected-amd64)"
           jq --exit-status \
             --arg version "${{ needs.authorize.outputs.version }}" \
             --arg revision "${{ needs.authorize.outputs.commit }}" \
@@ -224,7 +227,7 @@ jobs:
             ' <<< "$amd64" >/dev/null
           docker pull --platform linux/arm64 "$reference"
           docker tag "$reference" tasq-server:protected-arm64
-          arm64="$(bun scripts/server-container-smoke.ts tasq-server:protected-arm64)"
+          arm64="$(bun "$RUNNER_TEMP/tasq-release-automation/server-container-smoke.ts" tasq-server:protected-arm64)"
           jq --exit-status \
             --arg version "${{ needs.authorize.outputs.version }}" \
             --arg revision "${{ needs.authorize.outputs.commit }}" \
