@@ -208,6 +208,7 @@ if (runtime === "bun" && !process.versions.bun) {
 }
 
 const digest = "sha256:" + "a".repeat(64);
+const fixtureRetryIdentity = "idempotency-1";
 const requests = [];
 const requestIds = [
   "request-list",
