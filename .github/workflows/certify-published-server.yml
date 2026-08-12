@@ -93,8 +93,8 @@ jobs:
             resolved=""
             for attempt in 1 2 3 4 5 6; do
               resolved="$(
-                docker buildx imagetools inspect "$reference" 2>/dev/null |
-                  awk '$1 == "Digest:" { print $2; exit }'
+                docker buildx imagetools inspect "$reference" --format '{{json .}}' 2>/dev/null |
+                  jq --raw-output '.manifest.digest // empty'
               )" || resolved=""
               test "$resolved" = "$INPUT_DIGEST" && break
               test "$attempt" = 6 || sleep $((attempt * 5))
