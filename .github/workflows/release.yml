@@ -159,8 +159,14 @@ jobs:
               --version "${{ needs.identity.outputs.version }}" \
               --source-commit "${{ needs.identity.outputs.commit }}" \
               --tarball "$tarball"
-            tags="$(npm view "$package_name" dist-tags --json)"
-            test "$(jq --raw-output '.latest // empty' <<< "$tags")" = "${{ needs.identity.outputs.version }}"
+            latest=""
+            for attempt in 1 2 3 4 5 6; do
+              tags="$(npm view "$package_name" dist-tags --json)"
+              latest="$(jq --raw-output '.latest // empty' <<< "$tags")"
+              test "$latest" = "${{ needs.identity.outputs.version }}" && break
+              test "$attempt" = 6 || sleep $((attempt * 5))
+            done
+            test "$latest" = "${{ needs.identity.outputs.version }}"
             published=$((published + 1))
           done < <(jq -r '.packages[] | [.name, .filename] | @tsv' "$release")
           test "$published" = "$(jq 'length' <<< "$TASQ_PUBLIC_PACKAGES")"
