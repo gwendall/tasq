@@ -202,9 +202,13 @@ bun scripts/server-container-smoke.ts tasq-server:tq807
 
 ## Protected image status
 
-Maintainer-only publish and exact-digest certification workflows are prepared,
-but their release-policy authorization is intentionally closed. No public
-Server image exists yet. A future authorized run publishes
-`ghcr.io/gwendall/tasq-server` for Linux amd64/arm64 with OCI SBOM and
-provenance, then records the immutable digest. Operators must pin that digest;
-the version tag and `latest` are never deployment authority.
+Tasq Server `0.4.0` is published for Linux amd64/arm64 with OCI SBOM and
+provenance. The protected release replay certified this immutable reference:
+
+```text
+ghcr.io/gwendall/tasq-server@sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452
+```
+
+Operators must pin that digest; the version tag is discovery metadata, never
+deployment authority. Publication evidence is recorded in
+`docs/contracts/TQ-808_SERVER_HOSTILE_CERTIFICATION.json`.
