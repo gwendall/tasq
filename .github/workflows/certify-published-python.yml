@@ -93,8 +93,7 @@ jobs:
           gh attestation verify "$wheel" \
             --repo "$GITHUB_REPOSITORY" \
             --signer-workflow "gwendall/tasq/.github/workflows/publish-python.yml" \
-            --source-digest "$INPUT_SOURCE_COMMIT" \
-            --source-ref "$GITHUB_REF" \
+            --source-ref "refs/heads/main" \
             --deny-self-hosted-runners
       - name: Pull and bind the exact Server digest
         shell: bash
@@ -133,8 +132,7 @@ jobs:
           "oci://ghcr.io/gwendall/tasq-server@$INPUT_SERVER_DIGEST"
           --repo "$GITHUB_REPOSITORY"
           --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"
-          --source-digest "$INPUT_SOURCE_COMMIT"
-          --source-ref "$GITHUB_REF"
+          --source-ref "refs/heads/main"
           --deny-self-hosted-runners
       - name: Install exact wheel and replay client tests
         shell: bash

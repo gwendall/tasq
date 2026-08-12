@@ -240,7 +240,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain(
       '--signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"',
     );
-    expect(publish).toContain('--source-digest "${{ needs.authorize.outputs.commit }}"');
+    expect(publish).toContain('--source-ref "refs/heads/main"');
     expect(publish).toContain(
       'reference="${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"',
     );
@@ -276,6 +276,9 @@ describe("protected candidate publication entrypoints", () => {
     expect(certify).toContain("ghcr.io/gwendall/tasq-server@$INPUT_DIGEST");
     expect(certify).toContain("tasq-server:published-certification");
     expect(certify).toContain("test \"$resolved\" = \"$INPUT_DIGEST\"");
+    expect(certify).toContain("for attempt in 1 2 3 4 5 6; do");
+    expect(certify).toContain("sleep $((attempt * 5))");
+    expect(certify).toContain('--source-ref "refs/heads/main"');
     expect(certify).toContain("org.opencontainers.image.version");
     expect(certify).toContain("org.opencontainers.image.revision");
     expect(certify).toContain("certify-hosted-console-image.ts");
@@ -309,6 +312,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain(
       '--signer-workflow "gwendall/tasq/.github/workflows/publish-python.yml"',
     );
+    expect(publish).toContain('--source-ref "refs/heads/main"');
     expect(publish).not.toContain("skip-existing");
     expect(resumeVerifier).toContain("existing PyPI wheel differs from protected candidate bytes");
     expect(resumeVerifier).toContain("error.code == 404");
@@ -341,6 +345,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(certify).toContain(
       '--signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"',
     );
+    expect(certify).toContain('--source-ref "refs/heads/main"');
     expect(certify).toContain("org.opencontainers.image.version");
     expect(certify).toContain("org.opencontainers.image.revision");
     expect(certify).toContain(

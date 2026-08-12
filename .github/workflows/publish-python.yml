@@ -198,8 +198,7 @@ jobs:
           gh attestation verify "${wheels[0]}" \
             --repo "$GITHUB_REPOSITORY" \
             --signer-workflow "gwendall/tasq/.github/workflows/publish-python.yml" \
-            --source-digest "${{ needs.authorize.outputs.commit }}" \
-            --source-ref "$GITHUB_REF" \
+            --source-ref "refs/heads/main" \
             --deny-self-hosted-runners
       - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         if: steps.resume.outputs.state == 'absent'
