@@ -100,9 +100,11 @@ def rsa_public_jwk(root: Path) -> dict[str, str]:
     return {"kty": "RSA", "n": encoded, "e": "AQAB", "alg": "RS256", "use": "sig"}
 
 
-def write_private_json(path: Path, value: object) -> None:
+def write_container_readable_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, separators=(",", ":")) + "\n", encoding="utf-8")
-    os.chmod(path, 0o600)
+    # The released Server deliberately runs as uid 10001. These files contain
+    # public configuration and bootstrap identities, not enrollment secrets.
+    os.chmod(path, 0o644)
 
 
 def wait_ready(endpoint: str) -> None:
@@ -178,7 +180,7 @@ def main() -> None:
             root = Path(temporary)
             config_path = root / "server.json"
             bootstrap_path = root / "bootstrap.json"
-            write_private_json(config_path, {
+            write_container_readable_json(config_path, {
                 "contractVersion": "tasq.server-config.v1",
                 "publicUrl": PUBLIC_URL,
                 "listen": {"host": "0.0.0.0", "port": 8787, "trustTlsProxy": True},
@@ -201,7 +203,7 @@ def main() -> None:
                 }],
                 "support": {},
             })
-            write_private_json(bootstrap_path, {
+            write_container_readable_json(bootstrap_path, {
                 "contractVersion": "tasq.server-bootstrap.v1",
                 "hostTenantId": "tq810-certification",
                 "createdAt": 0,

@@ -209,7 +209,7 @@ try {
       receiptDatabaseUrl: "file:/var/lib/tasq/receipts.sqlite",
     }],
     support: {},
-  })}\n`, { encoding: "utf8", mode: 0o600 });
+  })}\n`, { encoding: "utf8", mode: 0o644 });
   await writeFile(bootstrapPath, `${JSON.stringify({
     contractVersion: "tasq.server-bootstrap.v1",
     hostTenantId: "tq811-certification",
@@ -225,7 +225,7 @@ try {
         role: "coordinator",
       }],
     }],
-  })}\n`, { encoding: "utf8", mode: 0o600 });
+  })}\n`, { encoding: "utf8", mode: 0o644 });
   await writeFile(
     environmentPath,
     `TASQ_SERVER_ENROLLMENT_PEPPER=${randomBytes(32).toString("base64url")}\n`,

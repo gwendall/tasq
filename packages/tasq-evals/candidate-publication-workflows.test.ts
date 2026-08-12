@@ -278,6 +278,7 @@ describe("protected candidate publication entrypoints", () => {
     expect(certify).toContain("test \"$resolved\" = \"$INPUT_DIGEST\"");
     expect(certify).toContain("for attempt in 1 2 3 4 5 6; do");
     expect(certify).toContain("sleep $((attempt * 5))");
+    expect(certify).toContain(".manifest.digest // empty");
     expect(certify).toContain('--source-ref "refs/heads/main"');
     expect(certify).toContain("org.opencontainers.image.version");
     expect(certify).toContain("org.opencontainers.image.revision");
@@ -353,6 +354,12 @@ describe("protected candidate publication entrypoints", () => {
     );
     expect(certify).toContain(".python.installedWheelOnly == true");
     expect(certify).toContain(".server.exactPublishedDigest == true");
+    expect(read("scripts/release/certify_published_python_server.py")).toContain(
+      "os.chmod(path, 0o644)",
+    );
+    expect(read("packages/tasq-evals/scripts/certify-hosted-console-image.ts")).toContain(
+      '{ encoding: "utf8", mode: 0o644 }',
+    );
     expect(certify).toContain(".journey.exactMutationReplay == true");
     expect(certify).toContain("tasq-python-tq810-exact-artifact-evidence");
     expect(publish).toContain("python-remote-client.test.ts");
