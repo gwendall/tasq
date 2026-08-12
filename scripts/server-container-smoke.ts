@@ -30,7 +30,9 @@ try {
   // directory keeps host ownership, so make the isolated smoke fixture
   // traversable and its database directory writable by that unprivileged uid.
   await chmod(root, 0o755);
-  await mkdir(data, { mode: 0o777 });
+  await mkdir(data);
+  // mkdir mode is filtered through the runner's umask; chmod is intentional.
+  await chmod(data, 0o777);
   const { publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
   await writeFile(config, JSON.stringify({
     contractVersion: "tasq.server-config.v1",
