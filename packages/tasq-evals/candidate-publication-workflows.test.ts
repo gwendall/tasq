@@ -214,6 +214,9 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("subject-digest: ${{ steps.selected-image.outputs.digest }}");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-amd64");
     expect(publish).toContain("server-container-smoke.ts\" tasq-server:protected-arm64");
+    const smokeHarness = read("scripts/server-container-smoke.ts");
+    expect(smokeHarness).toContain("attempt < 300");
+    expect(smokeHarness).toContain('"docker", "logs", "--tail", "100", container');
     expect(publish.indexOf('docker image rm tasq-server:protected-amd64 "$reference"')).toBeLessThan(
       publish.indexOf('docker pull --platform linux/arm64 "$reference"'),
     );
@@ -262,8 +265,16 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).not.toContain("--pattern \"$name\" >/dev/null 2>&1");
     expect(certify).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(certify).toContain("test \"$INPUT_CONFIRMATION\" = \"certify-tasq-server\"");
+    expect(certify).toContain(
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(certify).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+    );
+    expect(certify).toContain("ref: ${{ github.sha }}");
+    expect(certify).toContain("$RUNNER_TEMP/tasq-certification-automation/server-container-smoke.ts");
     expect(certify).toContain("ghcr.io/gwendall/tasq-server@$INPUT_DIGEST");
-    expect(certify).toContain("bun scripts/server-container-smoke.ts tasq-server:published-certification");
+    expect(certify).toContain("tasq-server:published-certification");
     expect(certify).toContain("test \"$resolved\" = \"$INPUT_DIGEST\"");
     expect(certify).toContain("org.opencontainers.image.version");
     expect(certify).toContain("org.opencontainers.image.revision");
@@ -315,6 +326,12 @@ describe("protected candidate publication entrypoints", () => {
     expect(builder).not.toContain("datetime");
     expect(certify).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(certify).toContain("test \"$INPUT_CONFIRMATION\" = \"certify-tasq-python\"");
+    expect(certify).toContain(
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(certify).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+    );
     expect(certify).toContain("tasq-remote==$INPUT_VERSION");
     expect(certify).toContain("sha256sum --check --status");
     expect(certify).toContain("--no-deps");

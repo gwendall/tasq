@@ -37,6 +37,20 @@ jobs:
       INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
       INPUT_VERSION: ${{ inputs.version }}
     steps:
+      - name: Check out the protected certification automation
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Snapshot the Server replay harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          automation="$RUNNER_TEMP/tasq-certification-automation"
+          mkdir -p "$automation"
+          install -m 0755 \
+            scripts/server-container-smoke.ts \
+            "$automation/server-container-smoke.ts"
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ inputs.source_commit }}
@@ -65,9 +79,10 @@ jobs:
           [[ "$INPUT_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
           [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
           [[ "$INPUT_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
-          test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"
+          release_tag="v${INPUT_VERSION}"
+          test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"
           test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
-          test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"
       - name: Bind both immutable publication tags to the supplied digest
         shell: bash
         run: |
@@ -110,7 +125,8 @@ jobs:
             docker image inspect tasq-server:published-certification \
               --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
           )" = "$INPUT_SOURCE_COMMIT"
-          bun scripts/server-container-smoke.ts tasq-server:published-certification
+          bun "$RUNNER_TEMP/tasq-certification-automation/server-container-smoke.ts" \
+            tasq-server:published-certification
       - name: Install the hosted Console certification browser
         run: pnpm --filter @tasq-run/console exec playwright install --with-deps chromium
       - name: Certify hosted human actions against the exact digest
