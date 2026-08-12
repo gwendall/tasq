@@ -65,9 +65,10 @@ jobs:
           [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
           [[ "$INPUT_WHEEL_SHA256" =~ ^[a-f0-9]{64}$ ]]
           [[ "$INPUT_SERVER_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
-          test "$GITHUB_REF" = "refs/tags/v${INPUT_VERSION}"
+          release_tag="v${INPUT_VERSION}"
+          test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"
           test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
-          test "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" = "$INPUT_SOURCE_COMMIT"
+          test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"
       - name: Download exact registry wheel without dependencies
         shell: bash
         run: |

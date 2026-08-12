@@ -262,8 +262,16 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).not.toContain("--pattern \"$name\" >/dev/null 2>&1");
     expect(certify).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(certify).toContain("test \"$INPUT_CONFIRMATION\" = \"certify-tasq-server\"");
+    expect(certify).toContain(
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(certify).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+    );
+    expect(certify).toContain("ref: ${{ github.sha }}");
+    expect(certify).toContain("$RUNNER_TEMP/tasq-certification-automation/server-container-smoke.ts");
     expect(certify).toContain("ghcr.io/gwendall/tasq-server@$INPUT_DIGEST");
-    expect(certify).toContain("bun scripts/server-container-smoke.ts tasq-server:published-certification");
+    expect(certify).toContain("tasq-server:published-certification");
     expect(certify).toContain("test \"$resolved\" = \"$INPUT_DIGEST\"");
     expect(certify).toContain("org.opencontainers.image.version");
     expect(certify).toContain("org.opencontainers.image.revision");
@@ -315,6 +323,12 @@ describe("protected candidate publication entrypoints", () => {
     expect(builder).not.toContain("datetime");
     expect(certify).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(certify).toContain("test \"$INPUT_CONFIRMATION\" = \"certify-tasq-python\"");
+    expect(certify).toContain(
+      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
+    );
+    expect(certify).toContain(
+      'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
+    );
     expect(certify).toContain("tasq-remote==$INPUT_VERSION");
     expect(certify).toContain("sha256sum --check --status");
     expect(certify).toContain("--no-deps");
