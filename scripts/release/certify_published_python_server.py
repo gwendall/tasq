@@ -178,6 +178,7 @@ def main() -> None:
     try:
         with tempfile.TemporaryDirectory(prefix="tasq-tq810-") as temporary:
             root = Path(temporary)
+            os.chmod(root, 0o755)
             config_path = root / "server.json"
             bootstrap_path = root / "bootstrap.json"
             write_container_readable_json(config_path, {

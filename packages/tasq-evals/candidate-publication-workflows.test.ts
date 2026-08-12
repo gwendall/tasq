@@ -273,6 +273,7 @@ describe("protected candidate publication entrypoints", () => {
     );
     expect(certify).toContain("ref: ${{ github.sha }}");
     expect(certify).toContain("$RUNNER_TEMP/tasq-certification-automation/server-container-smoke.ts");
+    expect(certify).toContain("$RUNNER_TEMP/tasq-certification-automation/certify-hosted-console-image.ts");
     expect(certify).toContain("ghcr.io/gwendall/tasq-server@$INPUT_DIGEST");
     expect(certify).toContain("tasq-server:published-certification");
     expect(certify).toContain("test \"$resolved\" = \"$INPUT_DIGEST\"");
@@ -357,8 +358,15 @@ describe("protected candidate publication entrypoints", () => {
     expect(read("scripts/release/certify_published_python_server.py")).toContain(
       "os.chmod(path, 0o644)",
     );
+    expect(read("scripts/release/certify_published_python_server.py")).toContain(
+      "os.chmod(root, 0o755)",
+    );
+    expect(certify).toContain("$RUNNER_TEMP/tasq-certification-automation/certify_published_python_server.py");
     expect(read("packages/tasq-evals/scripts/certify-hosted-console-image.ts")).toContain(
       '{ encoding: "utf8", mode: 0o644 }',
+    );
+    expect(read("packages/tasq-evals/scripts/certify-hosted-console-image.ts")).toContain(
+      "await chmod(root, 0o755)",
     );
     expect(certify).toContain(".journey.exactMutationReplay == true");
     expect(certify).toContain("tasq-python-tq810-exact-artifact-evidence");
