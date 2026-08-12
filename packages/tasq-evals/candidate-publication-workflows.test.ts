@@ -218,6 +218,8 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain('.metadata.revision == $revision');
     expect(publish).toContain("scripts/release/resolve-oci-publication-resume.sh");
     expect(publish).toContain("scripts/release/ensure-oci-tag.sh");
+    expect(publish).toContain("ref: ${{ github.sha }}");
+    expect(publish).toContain("$RUNNER_TEMP/tasq-release-automation");
     expect(resumeGuard).toContain(
       "Registry lookup failed without an explicit missing-manifest result",
     );
@@ -249,7 +251,7 @@ describe("protected candidate publication entrypoints", () => {
       publish.indexOf('"$version_tag" "$reference"'),
     );
     expect(publish.indexOf("Verify protected source provenance before reusing")).toBeLessThan(
-      publish.indexOf("scripts/release/ensure-oci-tag.sh"),
+      publish.lastIndexOf("ensure-oci-tag.sh"),
     );
     expect(publish).toContain('--json assets');
     expect(publish).toContain('[.assets[] | select(.name == $name)] | length');
