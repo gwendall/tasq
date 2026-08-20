@@ -701,7 +701,9 @@
         "docs/contracts/TQ-901_MANAGED_CLOUD_CONTROL_PLANE.md",
         "docs/contracts/TQ-901_CLOUD_CONTROL_PLANE_CERTIFICATION.json",
         "packages/tasq-cloud-control-plane/test/cloud.test.ts",
-        "evidence/cloud-bootstrap-2026-08-13.json"
+        "evidence/cloud-bootstrap-2026-08-13.json",
+        "evidence/managed-cloud-deployment-2026-08-20.json",
+        "https://github.com/gwendall/tasq/actions/runs/32406910459"
       ]
     },
     {
@@ -711,7 +713,6 @@
       "dependsOn": ["TQ-901"],
       "outcome": "Same-origin hosted BFF sessions and authenticated Console integration",
       "remaining": [
-        "deploy_basic_gated_reference_identity_and_rerun_browser_matrix",
         "real_identity_provider_integration",
         "independent_web_security_review"
       ],
@@ -720,7 +721,10 @@
         "docs/contracts/TQ-902_CLOUD_BFF_CERTIFICATION.json",
         "packages/tasq-cloud-control-plane/test/cloud.test.ts",
         "packages/tasq-cloud-control-plane/test/reference-identity.test.ts",
-        "evidence/managed-cloud-browser-2026-08-13.json"
+        "evidence/managed-cloud-browser-2026-08-13.json",
+        "evidence/managed-cloud-browser-2026-08-20.json",
+        "evidence/managed-cloud-deployment-2026-08-20.json",
+        "https://github.com/gwendall/tasq/actions/runs/32406910459"
       ]
     },
     {
@@ -737,7 +741,8 @@
         "docs/contracts/TQ-903_CLOUD_IDENTITY_LIFECYCLE.md",
         "docs/contracts/TQ-903_CLOUD_IDENTITY_CERTIFICATION.json",
         "packages/tasq-cloud-control-plane/test/cloud.test.ts",
-        "evidence/cloud-identity-drill-2026-08-13.json"
+        "evidence/cloud-identity-drill-2026-08-13.json",
+        "evidence/managed-cloud-deployment-2026-08-20.json"
       ]
     },
     {
@@ -768,7 +773,6 @@
       "dependsOn": ["TQ-902", "TQ-903", "TQ-904", "TQ-616"],
       "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification",
       "remaining": [
-        "deploy_current_basic_gated_identity_runtime",
         "region_failover",
         "independent_multi_tenant_security_review",
         "previously_unbriefed_operator_incident_drill"
@@ -779,7 +783,10 @@
         "packages/tasq-cloud-control-plane/test/cloud.test.ts",
         "evidence/cloud-bootstrap-2026-08-13.json",
         "evidence/cloud-secret-rotation-2026-08-13.json",
-        "evidence/cloud-offsite-backup-2026-08-13.json"
+        "evidence/cloud-offsite-backup-2026-08-13.json",
+        "evidence/managed-cloud-browser-2026-08-20.json",
+        "evidence/managed-cloud-deployment-2026-08-20.json",
+        "https://github.com/gwendall/tasq/actions/runs/32406910459"
       ]
     },
     {

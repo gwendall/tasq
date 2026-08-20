@@ -16,8 +16,10 @@ sessions, identity lifecycle, quota, export/delete, backup/restore, opaque
 credential-reference rotation and operations records around that Server
 contract. One Fly private-beta Server runs at `api.tasq.run`; experimental
 control and reference-identity origins run at `control.tasq.run` and
-`id.tasq.run`. They are not an available managed multi-tenant Cloud or a public
-SLA.
+`id.tasq.run`. The current Basic-gated reference runtime and same-origin
+control plane were deployed from exact source and passed the hardened
+three-engine browser matrix on 2026-08-20. They are not an available managed
+multi-tenant Cloud or a public SLA.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
 ADR-018 selects Fly for the first hosted private-beta Server instead of the
@@ -446,12 +448,14 @@ recovery. Raw identity subjects, session tokens and Server bearer credentials
 are not stored. A 2026-08-13 experimental Fly composition additionally proved
 exact Server-digest binding, three-engine browser behavior, identity
 invalidation, secret-reference rotation and encrypted off-site restore.
-Subsequent review found that the deployed reference IdP could mint an
-authorization code without an operator authentication step; current source
-adds a fail-closed Basic gate, but that correction is not yet deployed or
-browser-recertified. A real IdP/workload secret manager, database acceptance,
-region recovery, independent security review and unbriefed operations remain,
-so Tasq Cloud is not available.
+Subsequent review found that the original reference IdP could mint an
+authorization code without an operator authentication step. Protected run
+`32406910459` deployed the fail-closed Basic gate from exact source on
+2026-08-20, proved anonymous 401/authenticated 303 behavior and passed
+Chromium, Firefox and WebKit callback, session, BFF, effect-denial and logout
+checks. A real IdP/workload secret manager, database acceptance, region
+recovery, independent security review and unbriefed operations remain, so Tasq
+Cloud is not available.
 TQ-906 remains pending independent review; Server and Cloud both keep remote
 effects disabled.
 

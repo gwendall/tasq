@@ -135,9 +135,11 @@ or alternate protocol truth.
 two-tenant test matrix are implemented. A bounded Fly experiment exercises
 `control.tasq.run` and `id.tasq.run`, exact Server-digest binding, browser
 sessions, identity invalidation, rotation and encrypted off-site restore.
-Current fail-closed identity source still needs deployment and browser replay;
-real identity/workload issuance, database acceptance, multi-region and
-independent security/human-operation gates remain. There is no availability or
+The current fail-closed Basic-gated identity and control runtimes were deployed
+from exact source and passed anonymous/authenticated boundary checks plus the
+hardened three-engine browser replay on 2026-08-20. Real identity/workload
+issuance, database acceptance, multi-region and independent
+security/human-operation gates remain. There is no availability or
 managed-service claim. The open-source local product does not depend on Cloud.
 
 ## 3. Current deliverables
@@ -166,7 +168,7 @@ managed-service claim. The open-source local product does not depend on Cloud.
 | Self-hosted server | `tasq-server`; protected multi-architecture image | Published and exact-digest certified | Operator owns HTTPS, identity, durable storage and support |
 | Authenticated offline replication | Server `replication.enroll/push/pull` operations | Published and clean-room certified | Live claims, leases, approvals and effects stay online-only |
 | Python remote client | `tasq-remote==0.4.0` | Published to PyPI and exact Server-digest certified | Transport-only; explicit credential; no local authority cache |
-| Managed service | `@tasq-internal/cloud-control-plane` | Private source plus bounded Fly experiment | Not available; hardened identity redeployment, provider and independent operations/security gates remain; remote effects disabled |
+| Managed service | `@tasq-internal/cloud-control-plane` | Private source plus bounded Fly experiment | Not available; real identity, provider, multi-region and independent operations/security gates remain; remote effects disabled |
 
 `PRODUCT_SURFACE_MATRIX.json` is the machine-readable version of this table.
 

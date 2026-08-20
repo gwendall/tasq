@@ -81,10 +81,11 @@ published and exact-artifact certified. A private-beta Server runs at
 `api.tasq.run`.
 
 The private provider-neutral Cloud control-plane/BFF also has a bounded Fly
-experiment. It is not an available managed service or SLA: the hardened
-reference identity source still needs deployment and browser replay, and real
-identity, region recovery, independent review and human operations gates
-remain. Remote effects remain disabled pending independent review.
+experiment. Its Basic-gated reference identity and control runtimes passed a
+protected hardened three-engine browser replay on 2026-08-20. It is not an
+available managed service or SLA: real identity, region recovery, independent
+review and human operations gates remain. Remote effects remain disabled
+pending independent review.
 
 ## The core concepts
 

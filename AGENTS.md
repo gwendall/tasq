@@ -97,8 +97,9 @@ digest. TQ-901–TQ-905 provide the private provider-neutral Cloud
 control-plane/BFF source candidate plus a bounded experimental composition at
 `control.tasq.run` and `id.tasq.run`. The Server is deployed on Fly.io at
 `api.tasq.run`; `cloud.tasq.run` redirects to its guarded Console. Current
-source makes the reference identity adapter fail closed, but that correction
-still needs deployment and browser recertification. This is a private-beta
+source makes the reference identity adapter fail closed; the exact-source
+deployment and hardened three-engine browser recertification passed on
+2026-08-20. This is a private-beta
 experiment, not a claim that managed Cloud is available. TQ-906 keeps remote effects disabled pending independent
 review. Never treat an actor label, project descriptor or database URL as
 remote authentication.
