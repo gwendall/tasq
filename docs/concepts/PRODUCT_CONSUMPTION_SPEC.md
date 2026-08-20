@@ -200,10 +200,12 @@ local actor or bridge an isolated store.
 workspace, actor and capabilities. The agent discovers only the tools its host
 registered.
 
-**Support:** implemented for read, propose and coordinate; effect capability
-requires a trusted embedded authority resolver and is absent from generic
-stdio. Exact Codex, Claude Code and generic host recipes are published without
-ambient registration.
+**Support:** implemented for read, propose and coordinate. A separate
+host-granted `direction` envelope protects creation or revision of commitments
+that carry public-roadmap projection metadata; it is absent from ordinary
+agent recipes. Effect capability requires a trusted embedded authority
+resolver and is absent from generic stdio. Exact Codex, Claude Code and generic
+host recipes are published without ambient registration.
 
 **Non-claim:** an MCP client cannot choose another workspace, grant itself a
 capability, self-approve an effect or use the current transport remotely.

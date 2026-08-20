@@ -71,8 +71,13 @@ import {
   type TasqDb,
 } from "@tasq-run/core";
 
-export const TASQ_MCP_CAPABILITIES = ["read", "propose", "coordinate", "effect"] as const;
+export const TASQ_MCP_CAPABILITIES = ["read", "propose", "coordinate", "direction", "effect"] as const;
 export type TasqMcpCapability = typeof TASQ_MCP_CAPABILITIES[number];
+
+const DIRECTION_METADATA_KEYS = new Set([
+  "roadmapProjectionVersion",
+  "publicId",
+]);
 
 type DispatchAuthority = Pick<BeginEffectExecutionOptions, "policy" | "permitIssuer">;
 
@@ -156,6 +161,22 @@ function guarded<T>(operation: () => Promise<T> | T) {
   return Promise.resolve().then(operation).then(result, errorResult);
 }
 
+function isDirectionMetadata(metadata: Record<string, unknown> | null | undefined): boolean {
+  return metadata !== null && metadata !== undefined &&
+    Object.keys(metadata).some((key) => DIRECTION_METADATA_KEYS.has(key));
+}
+
+function requireDirectionCapability(
+  capabilities: ReadonlySet<TasqMcpCapability>,
+  ...metadata: Array<Record<string, unknown> | null | undefined>
+): void {
+  if (metadata.some(isDirectionMetadata) && !capabilities.has("direction")) {
+    throw new Error(
+      "Direction-level commitment metadata requires the host-granted direction capability",
+    );
+  }
+}
+
 export function parseTasqMcpCapabilities(value: string): TasqMcpCapability[] {
   const requested = value.split(",").map((part) => part.trim()).filter(Boolean);
   const unknown = requested.filter((part) => !(TASQ_MCP_CAPABILITIES as readonly string[]).includes(part));
@@ -165,6 +186,9 @@ export function parseTasqMcpCapabilities(value: string): TasqMcpCapability[] {
     throw new Error(
       "Tasq MCP mutation capabilities require read; autonomous actors must observe before they mutate",
     );
+  }
+  if (parsed.includes("direction") && !parsed.includes("propose")) {
+    throw new Error("Tasq MCP direction capability requires propose");
   }
   return parsed;
 }
@@ -180,6 +204,9 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
   }
   if (capabilities.has("effect") && !options.resolveDispatchAuthority) {
     throw new Error("effect capability requires a trusted dispatch-authority resolver");
+  }
+  if (capabilities.has("direction") && !capabilities.has("propose")) {
+    throw new Error("direction capability requires propose");
   }
 
   const server = new McpServer({ name: "tasq", version: "0.1.0" }, {
@@ -494,7 +521,7 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
 
   if (capabilities.has("propose")) {
     server.registerTool("tasq_commitment_create", {
-      description: "Create a durable commitment. The workspace and actor are injected by the host.",
+      description: "Create a durable commitment. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability.",
       inputSchema: {
         title: z.string().trim().min(1).max(500),
         description: z.string().max(20_000).nullable().optional(),
@@ -508,12 +535,13 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
         idempotencyKey: IdempotencyKey,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
-    }, ({ idempotencyKey, ...input }) => guarded(async () => createCommitment(
-      options.db, input, kernelContext(idempotencyKey),
-    )));
+    }, ({ idempotencyKey, ...input }) => guarded(async () => {
+      requireDirectionCapability(capabilities, input.metadata);
+      return createCommitment(options.db, input, kernelContext(idempotencyKey));
+    }));
 
     server.registerTool("tasq_commitment_update", {
-      description: "Update a commitment with mandatory compare-and-swap revision.",
+      description: "Update a commitment with mandatory compare-and-swap revision. Direction-level commitments and public-roadmap metadata require the direction capability.",
       inputSchema: {
         commitmentId: Id,
         expectedRevision: Revision,
@@ -531,9 +559,13 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
         idempotencyKey: IdempotencyKey,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
-    }, ({ commitmentId, expectedRevision, patch, idempotencyKey }) => guarded(async () => updateCommitment(
-      options.db, commitmentId, patch, { ...kernelContext(idempotencyKey), expectedRevision },
-    )));
+    }, ({ commitmentId, expectedRevision, patch, idempotencyKey }) => guarded(async () => {
+      const current = await getCommitment(options.db, commitmentId, options.workspaceId);
+      requireDirectionCapability(capabilities, current?.metadata, patch.metadata);
+      return updateCommitment(
+        options.db, commitmentId, patch, { ...kernelContext(idempotencyKey), expectedRevision },
+      );
+    }));
 
     server.registerTool("tasq_effect_propose", {
       description: "Durably propose an external effect without authorizing or dispatching it.",

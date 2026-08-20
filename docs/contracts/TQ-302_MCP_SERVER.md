@@ -24,11 +24,23 @@ The host constructs one server with an immutable capability set:
 | `read` | Inspect and onboard without mutation | discovery, onboarding, commitment/effect/event/resource reads |
 | `propose` | Create or revise internal intent without external dispatch | commitment create/update, effect proposal |
 | `coordinate` | Claim work and record execution/proof | transitions, claims, attempts, evidence, generic resource leases/fences |
+| `direction` | Admit or revise public-roadmap direction; requires `propose` | direction metadata on commitment create/update |
 | `effect` | Cross the guarded pre-dispatch lifecycle | effect authorize/begin/cancel |
 
 Separation happens at registration time, not by prompt convention. A tool
 outside the granted set is absent from `tools/list` and has no handler. A
 read-only client cannot reach mutations through tool confusion.
+
+`direction` is a host-selected envelope above ordinary proposal. It is absent
+from the stdio default and every generated worker recipe. Without it,
+commitment create/update rejects the reserved public-roadmap metadata
+markers (`roadmapProjectionVersion` and `publicId`), and rejects all updates to
+an existing commitment carrying either marker. The other metadata keys remain
+generic actor data until a direction-capable host admits the record to the
+projection. This keeps execution workers able to propose ordinary work without
+silently appointing themselves as roadmap editors. The repository-reviewed
+backlog projection remains the publication step; the capability does not write
+repository files.
 
 The host injects `workspaceId`, `actor`, optional authenticated `principalId`,
 capabilities, database and clock. Client arguments cannot select another
