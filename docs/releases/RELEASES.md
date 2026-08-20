@@ -20,15 +20,16 @@ precondition is handled once by the protected `bootstrap-npm.yml` workflow: it
 uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
-seven packages. Current `v0.3.0` and all seven packages are published; the
-post-release workflow certifies their complete lifecycle without a repository checkout on both
-supported targets. TQ-607 remains the retained-data gate for stable graduation,
-not for the explicitly labeled pre-1.0 alpha.
+seven original packages. The separately bootstrapped client identity followed
+the same fail-closed handoff. Current `v0.4.0` and all eight packages are
+published; the post-release workflow certifies their complete lifecycle
+without a repository checkout on both supported targets. TQ-607 remains the
+retained-data gate for stable graduation, not for the explicitly labeled
+pre-1.0 alpha.
 
-ADR-010 adds `@tasq-run/client` as an eighth deterministic candidate.
-Maintainer authorization now targets `v0.4.0`; the client is not part of
-`v0.3.0` and receives no npm support claim until the protected bootstrap,
-trusted-publisher binding, publication and clean-room replay finish.
+ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
+bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
+clean-room replay are complete.
 
 ## `v0.4.0` public-alpha checkpoint
 
@@ -37,22 +38,23 @@ Protected run
 attestation-verifies the exact public `v0.2.0` and `v0.3.0` inputs and passes
 their format-32 migration/restore matrix on both supported targets, bound to
 commit `e27451d3510c71a9f875a48991eb2fd80496bfdb`. The source-candidate data-safety
-gate is therefore passed; exact published `v0.4.0` bytes remain a separate
-post-publication gate.
+gate passed before publication.
 
-`v0.4.0` is authorized but not published. No tag or release coordinate should
-be created before this ordered activation sequence:
+Immutable tag `v0.4.0` binds source commit
+`47408faccaad5638ab7d1da94c37eda6ba1dc3c1`. Protected run
+[31497848901](https://github.com/gwendall/tasq/actions/runs/31497848901)
+published all eight npm packages and both native targets on 2026-08-11.
+Downloaded-byte lifecycle, migration, interactive-runtime and client replay
+passed on both supported targets in run
+[31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138).
 
-1. verify the `release.yml`/`release` npm trusted-publisher binding, absence of
-   the bootstrap secret and revocation of the bootstrap token;
-2. configure the PyPI pending trusted publisher for `tasq-remote` using
-   `publish-python.yml` and environment `release`;
-3. either remove `latest` from the unsupported bootstrap immediately or create
-   immutable tag `v0.4.0` and let the protected eight-package/native release
-   replace it; then verify the public dist-tags;
-4. protected Server GHCR and Python PyPI publication, followed by every exact
-   downloaded-byte certification;
-5. experimental GCP deployment only from the resulting exact image digests.
+Protected runs
+[31613501777](https://github.com/gwendall/tasq/actions/runs/31613501777) and
+[31518219329](https://github.com/gwendall/tasq/actions/runs/31518219329)
+published the multi-architecture Server image and `tasq-remote==0.4.0`.
+Their exact downloaded artifacts passed the Server and Python certification
+workflows. The separately governed Fly private beta runs one writer from the
+exact Server digest; this is not a managed Cloud or SLA claim.
 
 Independent adoption and retained dogfood are nonblocking for this alpha and
 remain required for later usability and stable-graduation claims. Remote
@@ -63,31 +65,29 @@ can be configured, `bootstrap-npm-client.yml` is the one-shot protected
 bootstrap for **only** `@tasq-run/client`. It is separately fail-closed in
 `PUBLIC_RELEASE_POLICY.json`, publishes only byte-verified
 `0.1.0-alpha.0` under `alpha-bootstrap`, and uses a dedicated revocable
-`NPM_CLIENT_BOOTSTRAP_TOKEN`. After the protected run, configure and verify the
-`release.yml:release` trusted-publisher binding, then immediately delete the
-environment secret and revoke the token. The bootstrap coordinate grants no
-support claim. The completed run unexpectedly left that bootstrap on `latest`;
-TQ-633 records the public observation and source prevention, while an npm
-package-owner mutation remains required before default installs are safe. See
+`NPM_CLIENT_BOOTSTRAP_TOKEN`. The bootstrap coordinate grants no support claim.
+The completed run unexpectedly left that bootstrap on `latest`; protected
+`v0.4.0` publication replaced it with the supported client. TQ-633 records the
+anonymous registry proof that `latest=0.4.0` while
+`alpha-bootstrap=0.1.0-alpha.0`. See
 [`../contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md`](../contracts/TQ-633_NPM_DEFAULT_TAG_SAFETY.md).
 
 The tag workflow now consumes the exact package list returned by release
-authorization. It therefore continues to publish seven packages for `v0.3.0`
-and includes `@tasq-run/client` only when its separate candidate authorization
-matches the exact next version. The policy cannot contain the hash of the
-commit that contains the policy itself. Instead it declares
+authorization. It published seven packages for `v0.3.0` and all eight for
+`v0.4.0`, including `@tasq-run/client` only when its separate authorization
+matched the exact version. The policy cannot contain the hash of the commit
+that contains the policy itself. Instead it declares
 `protected_immutable_version_tag_runtime_commit`; protected workflows bind the
 runtime commit by requiring `v<version>^{commit}`, checked-out `HEAD` and the
 explicit `source_commit` input to be identical under the `release`
 environment.
 
-Protected Server and Python publication entrypoints are prepared in
+Protected Server and Python publication entrypoints live in
 `publish-server.yml` and `publish-python.yml`, with separate exact-artifact
 certification workflows. All four require the `release` environment, immutable
-tag/source identity and candidate-specific authorization. The maintainer has
-authorized their exact `v0.4.0` public-alpha coordinates. Authorization is not
-publication evidence: no GHCR image or PyPI wheel is claimed until the
-protected workflows publish and replay the downloaded bytes.
+tag/source identity and candidate-specific authorization. Their exact `v0.4.0`
+GHCR image and PyPI wheel are published and replay-certified; future versions
+still receive no support claim from authorization alone.
 
 Both candidate publication workflows are fail-closed and idempotent after a
 partial successful run. Server reuse requires matching version/source tags,
@@ -99,17 +99,16 @@ duplicate-asset or identity ambiguity is an error, never an implicit
 `skip-existing`.
 
 `compatibility` in `PUBLIC_RELEASE_POLICY.json` is scoped to
-`publishedRelease`, so it truthfully remains format 26 while `v0.3.0` is the
-published release. `sourceCandidateCompatibility` separately records repository
-format 32 with `publishedSupportGranted: false`. The published block advances
-to 32 only in the post-release certification change; this separation is not a
-claim that candidate bytes have shipped.
+`publishedRelease`. It now records format 32 for published `v0.4.0`;
+`sourceCandidateCompatibility` matches that release and grants published
+support. Future schema work must separate source-candidate compatibility again
+until exact new release bytes pass post-publication certification.
 
 The implemented candidate builder is:
 
 ```bash
 bun scripts/release/build-public-release.ts \
-  --version 0.3.0 \
+  --version 0.4.0 \
   --source-commit <40-character-git-commit> \
   --target darwin-arm64 \
   --outdir ./release

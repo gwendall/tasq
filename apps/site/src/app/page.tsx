@@ -144,7 +144,7 @@ export default function HomePage() {
         <div className="site-container flex flex-col gap-2 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
           <p>
             <strong>{published ? `Tasq Local ${releaseVersion} is available now.` : "Tasq Local builds from source today."}</strong>{" "}
-            You and your agents share one machine and one store. Server and cross-machine coordination are not shipped yet.
+            Local remains same-machine and one-store. A separately published Server image supports authenticated remote coordination; managed Cloud is not available.
           </p>
           <Link className="font-mono text-xs font-semibold uppercase tracking-[0.06em] underline underline-offset-4" href="/status">
             Verify product status
