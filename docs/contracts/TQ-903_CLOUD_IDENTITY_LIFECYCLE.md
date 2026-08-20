@@ -21,7 +21,9 @@ workload-revocation invalidation against the experimental composition. The
 caller remains responsible for proving the upstream identity or recovery event
 before invoking these methods. The reference adapter is not a real identity
 provider and does not implement email recovery, passkeys or secret-manager
-workload issuance. Real OIDC and workload issuance evidence is recorded only
+workload issuance. Its fail-closed Basic authentication boundary was deployed
+and browser-replayed on 2026-08-20, but that bounded proof does not close the
+real OIDC or workload issuance gates. Their evidence is recorded only
 through the external gates in
 [`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json);
 opaque references never substitute for upstream identity proof.

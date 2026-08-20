@@ -27,6 +27,13 @@ composition at `control.tasq.run`. It reconciled an opaque storage binding,
 Fly secret references and the exact protected `v0.4.0` Server digest. The
 compact record is `../../evidence/cloud-bootstrap-2026-08-13.json`.
 
+On 2026-08-20 protected workflow run
+[`32406910459`](https://github.com/gwendall/tasq/actions/runs/32406910459)
+redeployed the current control and fail-closed reference-identity runtimes from
+source commit `70325474fd795eb8cc5db05044d989ae0469c1dc`, while retaining the
+exact certified Server digest. The compact, secret-free deployment record is
+`../../evidence/managed-cloud-deployment-2026-08-20.json`.
+
 That composition uses one encrypted-volume SQLite control database. It is a
 private experiment, not a running managed service or a production database
 claim. Independent acceptance or replacement of that database, infrastructure

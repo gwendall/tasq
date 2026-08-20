@@ -584,20 +584,23 @@ publication sequence and create no current support claim.
   provider-neutral control-plane package implements authorized tenant
   lifecycle, isolated workspace bindings, durable provisioning intent,
   reconciliation and concurrent quota admission. The 2026-08-13 Fly experiment
-  bound opaque secret references and the exact protected Server digest. Its
-  single-volume database needs independent acceptance or replacement, and
-  multi-tenant infrastructure review remains.
-- **TQ-902 — browser experiment passed; hardened redeployment remains:** the same-origin
+  bound opaque secret references and the exact protected Server digest;
+  protected run `32406910459` redeployed the current control and reference
+  identity source on 2026-08-20. Its single-volume database needs independent
+  acceptance or replacement, and multi-tenant infrastructure review remains.
+- **TQ-902 — hardened reference browser matrix passed; external gates remain:** the same-origin
   BFF keeps Server credentials out of browsers, binds sessions to tenant and
   device, requires CSRF plus exact Origin for mutations and strips cookies.
-  Three browser engines passed on 2026-08-13. Current source adds an explicit
-  operator authentication gate after review found the deployed reference IdP
-  could mint anonymous authorization codes. Deploying that correction,
-  rerunning the browser matrix, a real IdP and security review remain.
+  Current source adds an explicit operator authentication gate after review
+  found the original reference IdP could mint anonymous authorization codes.
+  Protected run `32406910459` deployed that correction and passed anonymous
+  denial plus the Chromium, Firefox and WebKit callback/session/BFF/logout
+  matrix on 2026-08-20. A real IdP and independent security review remain.
 - **TQ-903 — lifecycle drill passed; external identity gate remains:** HMACed identity
   subjects, device-bound sessions, recovery/tenant epochs and revision-checked
   workload revocation are implemented. The recovery/revocation drill passed;
-  real OIDC and secret-manager workload issuance remain.
+  the deployed Basic-gated reference flow is bounded evidence only. Real OIDC
+  and secret-manager workload issuance remain.
 - **TQ-904 — provider drills passed; human operations gates remain:** quotas,
   expiring exports/backups, retention sweep, retryable deletion, restore,
   credential-reference rotation, incidents, restricted support and
@@ -608,8 +611,9 @@ publication sequence and create no current support claim.
   two-tenant hostile source matrix passes isolation, quota race, BFF,
   revocation, reconciliation, rotation, backup/restore, retention and
   deletion recovery. The exact Server digest, provider rotation and encrypted
-  off-site restore were exercised. Current identity-runtime deployment,
-  region recovery, independent review and an unbriefed incident remain.
+  off-site restore were exercised. The current Basic-gated identity runtime
+  and hardened three-engine browser matrix are also deployed and certified.
+  Region recovery, independent review and an unbriefed incident remain.
 - **TQ-906 — pending independent review:** ADR-005 and TQ-612 are accepted,
   TQ-616 is published-artifact certified, but the current author cannot
   independently approve their own authority boundary. Server reports effects

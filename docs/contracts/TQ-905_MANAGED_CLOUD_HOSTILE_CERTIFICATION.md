@@ -23,10 +23,17 @@ The 2026-08-13 experiment additionally bound the exact protected Server image,
 rotated an opaque Fly secret reference and restored a native backup from an
 encrypted off-site object. Those records close those bounded automated gates.
 
-This is not a production certification. The current fail-closed reference
-identity source still needs deployment and browser replay. Region failover,
-external multi-tenant security review and a previously unbriefed incident
-operator also remain required before Tasq Cloud can be advertised as available.
+Protected workflow run
+[`32406910459`](https://github.com/gwendall/tasq/actions/runs/32406910459)
+deployed the current Basic-gated reference identity and control-plane source
+on 2026-08-20, proved anonymous denial and authenticated redirect, and passed
+the hardened Chromium, Firefox and WebKit matrix. Remote effects remained
+unconditionally denied.
+
+This is not a production certification. A real identity provider, region
+failover, external multi-tenant security review and a previously unbriefed
+incident operator remain required before Tasq Cloud can be advertised as
+available.
 
 The complete external matrix is frozen in
 [`MANAGED_CLOUD_PRODUCTION_READINESS.template.json`](MANAGED_CLOUD_PRODUCTION_READINESS.template.json).

@@ -12,11 +12,13 @@
     "tenantSuspensionInvalidatesSessions": true,
     "workloadCredentialCustody": "external_opaque_reference",
     "workloadRevocationRevisionChecked": true,
-    "operatorRecoveryAndRevocationDrill": "passed"
+    "operatorRecoveryAndRevocationDrill": "passed",
+    "referenceIdentityAuthenticationBoundary": "http_basic_fail_closed_deployed_2026-08-20"
   },
   "evidence": [
     "packages/tasq-cloud-control-plane/test/cloud.test.ts",
-    "evidence/cloud-identity-drill-2026-08-13.json"
+    "evidence/cloud-identity-drill-2026-08-13.json",
+    "evidence/managed-cloud-deployment-2026-08-20.json"
   ],
   "remainingExternalGate": [
     "real_oidc_integration",

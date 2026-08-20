@@ -1,0 +1,57 @@
+{
+  "contractVersion": "tasq.managed-cloud-browser-evidence.v1",
+  "executedAt": "2026-08-20T19:10:34.201Z",
+  "publicOrigin": "https://control.tasq.run/",
+  "identityIssuer": "https://id.tasq.run/",
+  "status": "passed",
+  "results": [
+    {
+      "engine": "chromium",
+      "status": "passed",
+      "navigationOrigins": [
+        "https://control.tasq.run",
+        "https://id.tasq.run"
+      ],
+      "sessionCookie": {
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "Strict"
+      },
+      "bffReadStatus": 200,
+      "remoteEffectStatus": 403,
+      "logout": "passed"
+    },
+    {
+      "engine": "firefox",
+      "status": "passed",
+      "navigationOrigins": [
+        "https://control.tasq.run",
+        "https://id.tasq.run"
+      ],
+      "sessionCookie": {
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "Strict"
+      },
+      "bffReadStatus": 200,
+      "remoteEffectStatus": 403,
+      "logout": "passed"
+    },
+    {
+      "engine": "webkit",
+      "status": "passed",
+      "navigationOrigins": [
+        "https://control.tasq.run",
+        "https://id.tasq.run"
+      ],
+      "sessionCookie": {
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "Strict"
+      },
+      "bffReadStatus": 200,
+      "remoteEffectStatus": 403,
+      "logout": "passed"
+    }
+  ]
+}

@@ -75,7 +75,7 @@ or erase the original failure record.
 | Ticket | Required external proof |
 |---|---|
 | TQ-901 | Production database; secret-manager plus exact Server digest; independent multi-tenant infrastructure review |
-| TQ-902 | Deployed browser matrix; real identity callback/logout; independent web security review |
+| TQ-902 | Real identity callback/logout; independent web security review (the Basic-gated reference browser matrix passed on 2026-08-20) |
 | TQ-903 | Real OIDC; workload secret issuance; recovery and revocation drill |
 | TQ-904 | Provider backup/restore; key rotation; export and verified deletion; on-call incident/support drill |
 | TQ-905 | Exact artifact deployment; off-site restore and region failover; independent multi-tenant security review; unbriefed-operator incident drill |

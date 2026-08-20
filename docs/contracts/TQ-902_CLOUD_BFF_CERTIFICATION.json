@@ -13,18 +13,23 @@
     "downstreamCookiesForwarded": false,
     "downstreamSetCookieForwarded": false,
     "remoteEffects": "unconditionally_denied",
-    "threeEngineBrowserMatrixOn20260813Deployment": "passed",
-    "currentReferenceIdentitySource": "http_basic_fail_closed"
+    "threeEngineBrowserMatrixOn20260820HardenedDeployment": "passed",
+    "currentReferenceIdentityRuntime": "http_basic_fail_closed_deployed",
+    "anonymousAuthorization": "denied_401",
+    "authenticatedAuthorization": "redirected_303",
+    "exactSourceCommitBound": "70325474fd795eb8cc5db05044d989ae0469c1dc"
   },
   "evidence": [
     "packages/tasq-cloud-control-plane/test/cloud.test.ts",
     "packages/tasq-cloud-control-plane/src/index.ts",
     "packages/tasq-cloud-control-plane/src/reference-identity.ts",
     "packages/tasq-cloud-control-plane/test/reference-identity.test.ts",
-    "evidence/managed-cloud-browser-2026-08-13.json"
+    "evidence/managed-cloud-browser-2026-08-13.json",
+    "evidence/managed-cloud-browser-2026-08-20.json",
+    "evidence/managed-cloud-deployment-2026-08-20.json",
+    "https://github.com/gwendall/tasq/actions/runs/32406910459"
   ],
   "remainingExternalGate": [
-    "deploy_basic_gated_reference_identity_and_rerun_browser_matrix",
     "real_identity_provider_integration",
     "independent_web_security_review"
   ],
