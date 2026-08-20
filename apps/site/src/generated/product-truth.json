@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.public-site-truth.v1",
-  "sourceUpdatedAt": "2026-08-11",
+  "sourceUpdatedAt": "2026-08-20",
   "definition": "Local-first commitment coordination for humans, agents and their runtimes.",
   "release": {
     "status": "published-alpha",
@@ -82,7 +82,7 @@
     },
     {
       "id": "server",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "entrypoints": [
         "server_daemon",
         "rest",
@@ -95,7 +95,7 @@
         "remote_human",
         "self_host_operator"
       ],
-      "publiclyDistributed": false
+      "publiclyDistributed": true
     },
     {
       "id": "cloud",
@@ -132,7 +132,7 @@
       "id": "embedded_typescript",
       "support": "implemented_integration_required",
       "transport": "in_process",
-      "entrypoint": "@tasq-run/core@0.3.0 createLocalTasq({ url, workspaceId, actor, clock })",
+      "entrypoint": "@tasq-run/core@0.4.0 createLocalTasq({ url, workspaceId, actor, clock })",
       "mutations": true,
       "authorityBoundary": "integrator_owned"
     },
@@ -194,7 +194,7 @@
     },
     {
       "id": "authenticated_offline_replication",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "guarded_server_operations_plus_integrator_transport",
       "entrypoint": "Tasq Server replication.enroll|push|pull",
       "mutations": true,
@@ -202,7 +202,7 @@
     },
     {
       "id": "signed_statements",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "in_process_and_guarded_server_operation_composition",
       "entrypoint": "@tasq-run/core signed statement services; @tasq-internal/server signing credential authority",
       "mutations": true,
@@ -218,7 +218,7 @@
     },
     {
       "id": "server_daemon",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "http_behind_required_https_reverse_proxy",
       "entrypoint": "bun packages/tasq-server/src/daemon.ts serve --config /absolute/server.json; deploy/server/Dockerfile",
       "mutations": true,
@@ -226,7 +226,7 @@
     },
     {
       "id": "rest",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "authenticated_https_request_response",
       "entrypoint": "Tasq Server /v1/workspaces/{workspace}/...",
       "mutations": true,
@@ -234,7 +234,7 @@
     },
     {
       "id": "remote_mcp",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "streamable_http",
       "entrypoint": "@tasq-internal/server createHostedMcpHandler",
       "mutations": true,
@@ -242,7 +242,7 @@
     },
     {
       "id": "remote_typescript",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "authenticated_https_fetch",
       "entrypoint": "@tasq-run/client createRemoteTasq({ endpoint, workspaceId, accessToken })",
       "mutations": true,
@@ -250,7 +250,7 @@
     },
     {
       "id": "remote_cli",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "authenticated_https_cli",
       "entrypoint": "tasq remote enroll|status|list|show|events|operations|call|logout",
       "mutations": true,
@@ -258,7 +258,7 @@
     },
     {
       "id": "remote_python",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "authenticated_https_standard_library",
       "entrypoint": "clients/python tasq_remote.TasqRemoteClient",
       "mutations": true,
@@ -266,7 +266,7 @@
     },
     {
       "id": "remote_enrollment",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "one_use_https_bootstrap",
       "entrypoint": "@tasq-internal/server createRemoteEnrollmentAuthority; createRemoteEnrollmentHandler",
       "mutations": true,
@@ -274,7 +274,7 @@
     },
     {
       "id": "hosted_console",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "transport": "https_bff",
       "entrypoint": "Tasq Server /console",
       "mutations": true,
@@ -283,16 +283,16 @@
     {
       "id": "cloud_control_plane",
       "support": "implemented_candidate_not_published",
-      "transport": "provider_neutral_private_service",
-      "entrypoint": "@tasq-internal/cloud-control-plane CloudControlPlane",
+      "transport": "provider_neutral_private_service_experiment",
+      "entrypoint": "@tasq-internal/cloud-control-plane CloudControlPlane; experimental https://control.tasq.run",
       "mutations": true,
       "authorityBoundary": "host_authorized_tenant_scoped_audited_operations_opaque_provider_references_only"
     },
     {
       "id": "cloud_bff",
       "support": "implemented_candidate_not_published",
-      "transport": "same_origin_https_bff",
-      "entrypoint": "@tasq-internal/cloud-control-plane createCloudBff",
+      "transport": "same_origin_https_bff_experiment",
+      "entrypoint": "@tasq-internal/cloud-control-plane createCloudBff; experimental https://control.tasq.run",
       "mutations": true,
       "authorityBoundary": "httponly_tenant_device_session_exact_origin_csrf_live_server_guard_remote_effects_denied"
     },
@@ -450,7 +450,7 @@
         "server_daemon"
       ],
       "irreducibleInputs": [
-        "tasq_server_candidate_image",
+        "tasq_server_exact_digest_image",
         "https_domain",
         "identity_issuer",
         "public_jwk",
@@ -565,7 +565,7 @@
     },
     {
       "id": "remote_multi_user_collaboration",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": [
         "preprovision_identity_and_grant",
         "redeem_one_use_enrollment",
@@ -577,7 +577,7 @@
     },
     {
       "id": "self_host_lifecycle",
-      "support": "implemented_candidate_not_published",
+      "support": "implemented_certified",
       "steps": [
         "install_server",
         "configure_identity",
@@ -655,12 +655,12 @@
     "cli_is_the_most_complete_current_composition",
     "from_scratch_starts_after_executable_or_transport_handoff",
     "same_workspace_text_does_not_bridge_isolated_stores",
-    "published_mcp_is_local_stdio_while_remote_mcp_exists_only_as_an_unpublished_server_candidate",
+    "published_local_mcp_is_stdio_while_published_server_remote_mcp_is_authenticated_streamable_http",
     "local_console_is_read_only_not_an_agent_api",
     "local_console_is_explicit_foreground_not_an_installed_daemon",
-    "deployable_server_source_and_local_container_candidate_exist_but_no_provenance_published_image_ships",
-    "self_hosted_server_candidate_requires_operator_https_identity_and_durable_storage",
-    "managed_cloud_source_candidate_is_not_a_deployed_or_available_managed_service",
+    "provenance_published_server_image_and_exact_digest_certification_ship_in_v0_4_0",
+    "self_hosted_server_requires_operator_https_identity_and_durable_storage",
+    "managed_cloud_has_a_private_experimental_deployment_but_is_not_an_available_managed_service",
     "canonical_source_repository_is_public_alpha",
     "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
     "first_supported_public_alpha_release_is_published_with_oidc_provenance",
@@ -673,16 +673,16 @@
     "hosted_authority_store_and_router_are_internal_and_do_not_implement_a_remote_surface",
     "hosted_read_rest_requires_a_host_verifier_listener_and_workspace_reader",
     "hosted_mutation_rest_requires_host_registered_operations_and_durable_workspace_idempotency",
-    "remote_client_and_cli_source_exist_but_are_not_in_published_v0_3_0",
+    "remote_typescript_client_and_cli_ship_in_published_v0_4_0",
     "hosted_console_is_an_authenticated_guarded_bff_not_the_local_loopback_console",
     "server_effects_and_provider_connectors_are_disabled_and_absent_by_default",
     "one_use_enrollment_issues_only_preprovisioned_bounded_identity_and_stores_no_raw_token",
     "remote_clients_never_receive_database_credentials_or_cache_server_authority",
     "separate_authority_and_workspace_databases_are_serialized_not_falsely_claimed_as_cross_database_acid",
-    "signed_statement_source_candidate_authenticates_exact_bytes_and_principal_but_never_truth_completion_or_effect_authority",
-    "signed_statement_public_support_waits_for_tq_616_published_artifact_certification",
+    "published_signed_statements_authenticate_exact_bytes_and_principal_but_never_truth_completion_or_effect_authority",
+    "signed_statement_v0_4_0_artifacts_are_protected_downloaded_byte_certified_while_unbriefed_use_remains_open",
     "authenticated_offline_replication_never_extends_live_claim_lease_approval_or_effect_authority",
-    "python_remote_client_source_exists_but_is_not_published_to_pypi",
+    "python_remote_client_0_4_0_is_published_to_pypi_and_exact_server_digest_certified",
     "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
     "physical_verification_profile_is_private_reference_only_and_supplies_no_worker_provider_access_identity_or_remote_effect",
     "mid_task_discovery_capture_is_local_explicit_non_blocking_and_not_yet_in_the_published_release",
@@ -881,7 +881,7 @@
     },
     {
       "id": "TQ-806",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "self-hosted-server",
       "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority"
     },
@@ -1058,12 +1058,12 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "a07ff1d9b4d73ee7638a74774dd6e4745763c73ac2d1e650a23c7a7ec0b22d0a"
+      "sha256": "9c62f47f1644df1f9a03eda6f97e88d792d3c3f19af2a4a50c99fcc287debc55"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "dbfbe2a594c5177d6160dfbfd6da35d205272728578035a4a072212ad199dda5"
+      "sha256": "196c86d7b6e8b8187830ae86f1182285ca3903f081e92bbd2a667bb977f667fd"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",

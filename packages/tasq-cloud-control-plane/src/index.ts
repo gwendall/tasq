@@ -1760,11 +1760,11 @@ export function createCloudBff(options: CloudBffOptions) {
   return async (request: Request): Promise<Response> => {
     const url = new URL(request.url);
     if (url.origin + "/" !== publicOrigin) {
-      return new Response("not found", { status: 404 });
+      return new Response("not found", { status: 404, headers: { "x-tasq-bff-rejection": "origin" } });
     }
     const match = /^\/api\/tenants\/([^/]+)\/workspaces\/([^/]+)(\/.*)$/
       .exec(url.pathname);
-    if (!match) return new Response("not found", { status: 404 });
+    if (!match) return new Response("not found", { status: 404, headers: { "x-tasq-bff-rejection": "route" } });
     const tenantId = decodeURIComponent(match[1]!);
     const workspaceId = decodeURIComponent(match[2]!);
     let workspace: CloudWorkspace | null;
@@ -1825,6 +1825,11 @@ export function createCloudBff(options: CloudBffOptions) {
     } as RequestInit & { duplex: "half" });
     const outgoing = new Headers(response.headers);
     outgoing.delete("set-cookie");
+    // The runtime fetch implementation decodes compressed upstream bodies.
+    // Forwarding the stale transport headers makes browsers decode them twice.
+    outgoing.delete("content-encoding");
+    outgoing.delete("content-length");
+    outgoing.delete("transfer-encoding");
     outgoing.set("cache-control", "private, no-store");
     outgoing.set("x-content-type-options", "nosniff");
     return new Response(response.body, {

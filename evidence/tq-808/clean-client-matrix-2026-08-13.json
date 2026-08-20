@@ -1,0 +1,48 @@
+{
+  "contractVersion": "tasq.tq808.clean-client-matrix.v1",
+  "status": "passed",
+  "observedAt": "2026-08-13T14:17:17Z",
+  "runId": "tq808-20260813T141717Z",
+  "server": {
+    "origin": "https://api.tasq.run/",
+    "manifestDigest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "platformDigest": "sha256:224c3125bc6d01c86a407e035730a528e3f043174f00149e725f73ba2e061002",
+    "platform": "linux/amd64"
+  },
+  "clients": {
+    "macos": {
+      "platform": "darwin/arm64",
+      "package": "@tasq-run/cli@0.4.0",
+      "mutation": {
+        "resultType": "commitment",
+        "resultId": "019ffb7c-2731-7c66-bce0-0aca3c39f52d",
+        "replayed": false
+      }
+    },
+    "linux": {
+      "platform": "linux/amd64",
+      "libc": "gnu",
+      "package": "@tasq-run/cli@0.4.0",
+      "exactReplay": {
+        "resultType": "commitment",
+        "resultId": "019ffb7c-2731-7c66-bce0-0aca3c39f52d",
+        "replayed": true
+      },
+      "readback": {
+        "id": "019ffb7c-2731-7c66-bce0-0aca3c39f52d",
+        "title": "TQ-808 clean-client certification tq808-20260813T141717Z",
+        "status": "open",
+        "revision": 1
+      }
+    }
+  },
+  "sameResultId": true,
+  "credentials": {
+    "source": "one_use_live_server_enrollments",
+    "recorded": false
+  },
+  "nonClaims": {
+    "unbriefedOperatorTested": false,
+    "linuxArm64ClientSupported": false
+  }
+}

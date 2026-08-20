@@ -1,6 +1,6 @@
 # TQ-808 — Hostile self-hosted Server certification
 
-> **Status:** protected image published and exact-digest certified; clean-client and unbriefed-operator gates remain
+> **Status:** protected image and clean-client matrix certified; unbriefed-operator gate remains
 > **Date:** 2026-08-12
 > **Machine certificate:** `TQ-808_SERVER_HOSTILE_CERTIFICATION.json`
 
@@ -58,10 +58,18 @@ finite-retention claim and therefore cannot manufacture an expiry event.
 
 The protected multi-architecture image, SBOM, checksums and provenance were
 published in run `31613501777`; exact-digest Server lifecycle and hosted
-Console certification passed in run `31619011510`. The remaining evidence
-cannot be created by an in-repository unit test:
+Console certification passed in run `31619011510`.
 
-- replay clean macOS and Linux clients against that exact Linux image digest;
+The macOS ARM64 and Linux x64 GNU clean-client matrix passed on 2026-08-13
+against `api.tasq.run`, which resolves to the exact published manifest's
+Linux/amd64 child digest. A package-only macOS client created a commitment and
+a package-only Linux client replayed the same idempotency key, received the
+same result with `replayed=true`, then read the exact record. The redacted
+machine evidence is
+[`../../evidence/tq-808/clean-client-matrix-2026-08-13.json`](../../evidence/tq-808/clean-client-matrix-2026-08-13.json).
+
+The remaining evidence cannot be created by an in-repository unit test:
+
 - record one previously unbriefed operator following only
   `deploy/server/README.md`.
 
@@ -69,8 +77,8 @@ The protected publish and exact-digest lifecycle entrypoints live in
 `.github/workflows/publish-server.yml` and
 `.github/workflows/certify-published-server.yml`. Their policy authorization is
 closed to the protected release environment. The certification entrypoint verifies GitHub provenance,
-pulls by digest and replays the packaged Server lifecycle; clean macOS/Linux
-clients and the unbriefed operator remain external even after that run.
+pulls by digest and replays the packaged Server lifecycle. The clean-client
+gate is now passed; the unbriefed operator remains external.
 
-Server is a shipped public-alpha artifact. TQ-808 remains open only for the two
-clean-room operator/client observations above; it is not a managed-service SLA.
+Server is a shipped public-alpha artifact. TQ-808 remains open only for the
+unbriefed-operator observation above; it is not a managed-service SLA.

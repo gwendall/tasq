@@ -44,9 +44,9 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
   its local descriptor and instance ID are discovery metadata, not credentials
   or authorization. Install creates no listener or daemon.
 - Host-integrated authenticated read, registered-mutation REST and stateless
-  remote-MCP handlers plus a daemon/container candidate exist, but no public
-  REST/MCP endpoint, protected Tasq Server image or Tasq Cloud service is
-  shipped.
+  remote-MCP handlers ship in the protected `v0.4.0` Server image. A private
+  beta is operated at `api.tasq.run`; this is not an SLA or a generally
+  available managed service.
 - The internal TQ-801 authority evaluator is deny-by-default and
   injected-clock-only, but it trusts that an upstream adapter already verified
   credentials and that the TQ-802 authority store supplied a current snapshot.
@@ -99,12 +99,13 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
   double handoff locally; authenticated distributed custody remains unshipped.
 - Ledger prose is untrusted data and cannot widen tool or effect authority.
 - Content digests alone prove byte identity, not principal authorship. The
-  TQ-613–TQ-615 source candidate adds purpose-bound Ed25519 statements,
+  TQ-613–TQ-615 add purpose-bound Ed25519 statements,
   authority-owned credential lifecycle and append-only verification bindings.
   It accepts only configured trust roots and fails closed on purpose, digest,
-  routing, lifecycle, nonce or signature drift. It is not in published
-  `v0.3.0`; TQ-616 protected-artifact evidence remains open. Existing connector
-  permits and release attestations retain narrower trust domains.
+  routing, lifecycle, nonce or signature drift. It is published and
+  protected-artifact certified in `v0.4.0`; the unbriefed-agent/operator gate
+  remains open. Existing connector permits and release attestations retain
+  narrower trust domains.
 - Signed statements do not prove semantic
   truth, prevent deletion/full-ledger rollback or protect a software key that
   every distrusted same-user process can read. Those guarantees require
@@ -116,7 +117,11 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
 - The Cloud source candidate stores HMACed identity subjects and session
   tokens, uses opaque provider/secret-manager references, tenant/device/recovery
   epochs, exact Origin plus CSRF, and tenant-scoped support grants. This does
-  not certify a real provider or make Cloud available.
+  not make Cloud available. A private Fly experiment exercised these paths,
+  but review found its reference IdP minted authorization codes without an
+  operator authentication step. Current source adds an explicit fail-closed
+  HTTP Basic gate; it must be deployed and browser-recertified before that
+  experiment is reused. The adapter is not a real production identity provider.
 - Server reports remote effects disabled and Cloud denies every `/effects`
   route. A signature, completion decision, tenant session, support grant or
   billing record never grants effect authority; TQ-906 requires independent

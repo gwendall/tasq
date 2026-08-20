@@ -206,6 +206,9 @@ describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
             headers: {
               "content-type": "application/json",
               "set-cookie": "must-not-escape=1",
+              "content-encoding": "gzip",
+              "content-length": "999",
+              "transfer-encoding": "chunked",
             },
           });
         },
@@ -216,6 +219,9 @@ describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
       ));
       expect(alphaRead.status).toBe(200);
       expect(alphaRead.headers.get("set-cookie")).toBeNull();
+      expect(alphaRead.headers.get("content-encoding")).toBeNull();
+      expect(alphaRead.headers.get("content-length")).toBeNull();
+      expect(alphaRead.headers.get("transfer-encoding")).toBeNull();
       expect(downstream[0]).toMatchObject({
         url: "https://alpha-shared.server.example/v1/workspaces/shared/commitments",
         authorization: "Bearer server-token:alpha:human:alpha",

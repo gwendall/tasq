@@ -1,0 +1,18 @@
+{
+  "contractVersion": "tasq.cloud-identity-drill.v1",
+  "status": "passed",
+  "humanId": "human:drill:83ac771d-aeab-4f62-bb91-32e9120a5287",
+  "recoveryRevision": 2,
+  "recoveryInvalidatedSession": true,
+  "revokedDevice": {
+    "deviceId": "browser:drill:83ac771d-aeab-4f62-bb91-32e9120a5287",
+    "revision": 2,
+    "status": "revoked"
+  },
+  "deviceInvalidatedSession": true,
+  "revokedWorkload": {
+    "workloadId": "workload-instance:drill:83ac771d-aeab-4f62-bb91-32e9120a5287",
+    "revision": 2,
+    "status": "revoked"
+  }
+}

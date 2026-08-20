@@ -105,8 +105,8 @@ describe("TQ-601 product consumption design", () => {
       publiclyDistributed: true,
     });
     expect(byId(matrix.productShapes, "server")).toMatchObject({
-      support: "implemented_candidate_not_published",
-      publiclyDistributed: false,
+      support: "implemented_certified",
+      publiclyDistributed: true,
     });
     expect(byId(matrix.productShapes, "cloud")).toMatchObject({
       support: "implemented_candidate_not_published",
@@ -151,44 +151,44 @@ describe("TQ-601 product consumption design", () => {
       authorityBoundary: "versioned_repository_truth_no_ledger_access",
     });
     expect(byId(matrix.surfaces, "rest")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       entrypoint: "Tasq Server /v1/workspaces/{workspace}/...",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "remote_mcp")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       entrypoint: "@tasq-internal/server createHostedMcpHandler",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "remote_typescript")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       entrypoint: "@tasq-run/client createRemoteTasq({ endpoint, workspaceId, accessToken })",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "remote_cli")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "remote_enrollment")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "hosted_console")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       entrypoint: "Tasq Server /console",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "signed_statements")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "authenticated_offline_replication"))
       .toMatchObject({
-        support: "implemented_candidate_not_published",
+        support: "implemented_certified",
         mutations: true,
       });
     expect(byId(matrix.surfaces, "remote_python")).toMatchObject({
-      support: "implemented_candidate_not_published",
+      support: "implemented_certified",
       mutations: true,
     });
     expect(byId(matrix.surfaces, "cloud_bff")).toMatchObject({
@@ -250,7 +250,7 @@ describe("TQ-601 product consumption design", () => {
     expect(byId(matrix.consumers, "self_host_operator")).toMatchObject({
       supportedSurfaces: ["server_daemon"],
       irreducibleInputs: [
-        "tasq_server_candidate_image",
+        "tasq_server_exact_digest_image",
         "https_domain",
         "identity_issuer",
         "public_jwk",
@@ -263,7 +263,7 @@ describe("TQ-601 product consumption design", () => {
     });
   });
 
-  test("separates the certified candidate install from absent remote products", () => {
+  test("separates certified public products from experimental managed Cloud", () => {
     expect(byId(matrix.journeys, "local_agent_from_executable").support)
       .toBe("implemented_certified");
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
@@ -273,9 +273,9 @@ describe("TQ-601 product consumption design", () => {
       steps: ["visit_public_site", "choose_consumer_path", "inspect_support_truth", "read_adoption_manifest", "install_release"],
     });
     expect(byId(matrix.journeys, "remote_multi_user_collaboration").support)
-      .toBe("implemented_candidate_not_published");
+      .toBe("implemented_certified");
     expect(byId(matrix.journeys, "self_host_lifecycle").support)
-      .toBe("implemented_candidate_not_published");
+      .toBe("implemented_certified");
     expect(byId(matrix.journeys, "managed_cloud_lifecycle").support)
       .toBe("implemented_candidate_not_published");
   });
@@ -285,11 +285,11 @@ describe("TQ-601 product consumption design", () => {
       "tasq_is_not_only_a_cli",
       "from_scratch_starts_after_executable_or_transport_handoff",
       "same_workspace_text_does_not_bridge_isolated_stores",
-      "published_mcp_is_local_stdio_while_remote_mcp_exists_only_as_an_unpublished_server_candidate",
+      "published_local_mcp_is_stdio_while_published_server_remote_mcp_is_authenticated_streamable_http",
       "local_console_is_read_only_not_an_agent_api",
-      "deployable_server_source_and_local_container_candidate_exist_but_no_provenance_published_image_ships",
-      "self_hosted_server_candidate_requires_operator_https_identity_and_durable_storage",
-      "managed_cloud_source_candidate_is_not_a_deployed_or_available_managed_service",
+      "provenance_published_server_image_and_exact_digest_certification_ship_in_v0_4_0",
+      "self_hosted_server_requires_operator_https_identity_and_durable_storage",
+      "managed_cloud_has_a_private_experimental_deployment_but_is_not_an_available_managed_service",
       "canonical_source_repository_is_public_alpha",
       "public_package_bootstrap_identities_exist_under_a_non_default_prerelease_tag",
       "first_supported_public_alpha_release_is_published_with_oidc_provenance",
@@ -299,9 +299,9 @@ describe("TQ-601 product consumption design", () => {
       "pre_executable_agent_adoption_is_machine_readable_and_fails_closed",
       "hosted_console_is_an_authenticated_guarded_bff_not_the_local_loopback_console",
       "server_effects_and_provider_connectors_are_disabled_and_absent_by_default",
-      "signed_statement_source_candidate_authenticates_exact_bytes_and_principal_but_never_truth_completion_or_effect_authority",
+      "published_signed_statements_authenticate_exact_bytes_and_principal_but_never_truth_completion_or_effect_authority",
       "authenticated_offline_replication_never_extends_live_claim_lease_approval_or_effect_authority",
-      "python_remote_client_source_exists_but_is_not_published_to_pypi",
+      "python_remote_client_0_4_0_is_published_to_pypi_and_exact_server_digest_certified",
       "managed_cloud_remote_effects_are_unconditionally_disabled_pending_independent_review",
       "package_publication_requires_agent_integration_migration_hardening_maintainer_alpha_authorization_and_external_registry_control",
       "private_multi_app_dogfood_blocks_stable_graduation_not_labeled_public_alpha",

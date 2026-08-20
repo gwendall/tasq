@@ -1,7 +1,7 @@
 # TQ-902 — Same-origin Cloud BFF and authenticated Console
 
-> **Status:** source candidate complete; deployed-browser gate open
-> **Date:** 2026-07-24
+> **Status:** experimental browser matrix passed; hardened redeployment gate open
+> **Date:** 2026-08-20
 > **Machine certificate:** `TQ-902_CLOUD_BFF_CERTIFICATION.json`
 
 The Cloud BFF accepts only requests whose URL matches its canonical HTTPS
@@ -20,8 +20,16 @@ Every `/effects` path is denied unconditionally. The BFF can carry the
 authenticated read-only hosted Console and guarded non-effect Server
 operations, but it is not an alternate authority layer.
 
-A real public origin, identity provider integration, CSP deployment,
-browser-automation matrix and external web security review remain external.
+The experimental origins passed Chromium, Firefox and WebKit session, BFF,
+remote-effect-denial and logout checks on 2026-08-13. Review then found that
+the reference identity runtime minted authorization codes without first
+authenticating an operator. Current source corrects that boundary with an
+explicit HTTP Basic gate, exact redirect coordinates and one-use expiring
+codes, backed by adversarial tests. The hardened runtime has not been deployed
+or browser-recertified; the older browser result is historical evidence, not
+proof of the current source.
+
+A real identity provider and external web security review remain external.
 Their evidence slots and independent-review requirement are frozen by the
 [`managed Cloud production-readiness schema`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json);
 the checked-in template remains intentionally incomplete.

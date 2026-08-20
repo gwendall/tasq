@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.cloud-bff-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-08-20",
   "backlogItem": "TQ-902",
   "proof": {
     "canonicalHttpsOrigin": true,
@@ -12,16 +12,22 @@
     "serverBearerExposedToBrowser": false,
     "downstreamCookiesForwarded": false,
     "downstreamSetCookieForwarded": false,
-    "remoteEffects": "unconditionally_denied"
+    "remoteEffects": "unconditionally_denied",
+    "threeEngineBrowserMatrixOn20260813Deployment": "passed",
+    "currentReferenceIdentitySource": "http_basic_fail_closed"
   },
   "evidence": [
     "packages/tasq-cloud-control-plane/test/cloud.test.ts",
-    "packages/tasq-cloud-control-plane/src/index.ts"
+    "packages/tasq-cloud-control-plane/src/index.ts",
+    "packages/tasq-cloud-control-plane/src/reference-identity.ts",
+    "packages/tasq-cloud-control-plane/test/reference-identity.test.ts",
+    "evidence/managed-cloud-browser-2026-08-13.json"
   ],
   "remainingExternalGate": [
-    "deployed_browser_matrix",
-    "identity_provider_callback_and_logout_drill",
+    "deploy_basic_gated_reference_identity_and_rerun_browser_matrix",
+    "real_identity_provider_integration",
     "independent_web_security_review"
   ],
+  "experimentalHostedConsoleObserved": true,
   "hostedConsoleAvailable": false
 }

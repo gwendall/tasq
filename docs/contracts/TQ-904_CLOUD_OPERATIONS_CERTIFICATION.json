@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.cloud-operations-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-08-20",
   "backlogItem": "TQ-904",
   "proof": {
     "workspaceQuota": "transactionally_admitted",
@@ -13,16 +13,22 @@
     "deletionRetryAfterUnknownOutcome": true,
     "supportExpiryAndRevocation": true,
     "billingGrantsAuthority": false,
-    "incidentAudit": true
+    "incidentAudit": true,
+    "providerBackupRestoreDrill": "passed",
+    "offsiteEncryptedBackupRestore": "passed",
+    "providerKeyRotationDrill": "passed"
   },
   "evidence": [
-    "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+    "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+    "evidence/cloud-operations-drill-2026-08-13.json",
+    "evidence/cloud-secret-rotation-2026-08-13.json",
+    "evidence/cloud-offsite-backup-2026-08-13.json",
+    "evidence/cloud-server-restore-2026-08-13.json",
+    "evidence/cloud-server-restore-check-2026-08-13.json"
   ],
   "remainingExternalGate": [
-    "provider_backup_restore_drill",
-    "provider_key_rotation_drill",
     "provider_export_and_verified_byte_deletion",
-    "on_call_incident_and_support_access_drill"
+    "previously_unbriefed_on_call_incident_and_support_access_drill"
   ],
   "operatedCloudLifecycleAvailable": false
 }

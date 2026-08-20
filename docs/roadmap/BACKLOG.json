@@ -553,13 +553,13 @@
       "dependsOn": ["TQ-807"],
       "outcome": "Multi-issuer, cross-workspace, revocation-race and clean-room self-host certification",
       "remaining": [
-        "macos_and_linux_clients_against_exact_published_digest",
         "previously_unbriefed_operator_deployment"
       ],
       "evidence": [
         "docs/contracts/TQ-808_SELF_HOSTED_HOSTILE_CERTIFICATION.md",
         "docs/contracts/TQ-808_SERVER_HOSTILE_CERTIFICATION.json",
-        "packages/tasq-evals/self-hosted-server-hostile.test.ts"
+        "packages/tasq-evals/self-hosted-server-hostile.test.ts",
+        "evidence/tq-808/clean-client-matrix-2026-08-13.json"
       ]
     },
     {
@@ -656,18 +656,18 @@
     },
     {
       "id": "TQ-806",
-      "status": "candidate_done_external_gate",
+      "status": "done",
       "milestone": "self-hosted-server",
       "dependsOn": ["TQ-405", "TQ-808", "TQ-616"],
       "outcome": "Optional authenticated offline replication with recovery, conflict visibility and no stale offline claim or effect authority",
-      "remaining": [
-        "clean_room_multi_machine_trial"
-      ],
+      "remaining": [],
       "evidence": [
         "docs/contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md",
         "docs/contracts/TQ-806_OFFLINE_REPLICATION_CERTIFICATION.json",
         "packages/tasq-server/test/workspace.test.ts",
-        "packages/tasq-evals/sync-chaos-recovery.test.ts"
+        "packages/tasq-evals/sync-chaos-recovery.test.ts",
+        "scripts/certify-tq806-clean-room.ts",
+        "evidence/tq-806/clean-room-multi-machine-2026-08-13.json"
       ]
     },
     {
@@ -694,14 +694,14 @@
       "dependsOn": ["TQ-808"],
       "outcome": "Tenant control plane and isolated workspace provisioning",
       "remaining": [
-        "deploy_control_plane_with_production_database",
-        "bind_real_secret_manager_and_server_image_digest",
+        "independent_acceptance_or_replacement_of_single_volume_control_database",
         "independent_multi_tenant_infrastructure_review"
       ],
       "evidence": [
         "docs/contracts/TQ-901_MANAGED_CLOUD_CONTROL_PLANE.md",
         "docs/contracts/TQ-901_CLOUD_CONTROL_PLANE_CERTIFICATION.json",
-        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+        "evidence/cloud-bootstrap-2026-08-13.json"
       ]
     },
     {
@@ -711,14 +711,16 @@
       "dependsOn": ["TQ-901"],
       "outcome": "Same-origin hosted BFF sessions and authenticated Console integration",
       "remaining": [
-        "deployed_browser_matrix",
-        "identity_provider_callback_and_logout_drill",
+        "deploy_basic_gated_reference_identity_and_rerun_browser_matrix",
+        "real_identity_provider_integration",
         "independent_web_security_review"
       ],
       "evidence": [
         "docs/contracts/TQ-902_CLOUD_BFF_AND_CONSOLE.md",
         "docs/contracts/TQ-902_CLOUD_BFF_CERTIFICATION.json",
-        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+        "packages/tasq-cloud-control-plane/test/reference-identity.test.ts",
+        "evidence/managed-cloud-browser-2026-08-13.json"
       ]
     },
     {
@@ -729,13 +731,13 @@
       "outcome": "Human-device and workload onboarding, recovery and revocation",
       "remaining": [
         "real_oidc_integration",
-        "real_secret_manager_workload_issuance",
-        "operator_recovery_and_revocation_drill"
+        "real_secret_manager_workload_issuance"
       ],
       "evidence": [
         "docs/contracts/TQ-903_CLOUD_IDENTITY_LIFECYCLE.md",
         "docs/contracts/TQ-903_CLOUD_IDENTITY_CERTIFICATION.json",
-        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+        "evidence/cloud-identity-drill-2026-08-13.json"
       ]
     },
     {
@@ -745,15 +747,18 @@
       "dependsOn": ["TQ-901"],
       "outcome": "Quotas, retention, export/delete, incident, support and billing boundaries",
       "remaining": [
-        "provider_backup_restore_drill",
-        "provider_key_rotation_drill",
         "provider_export_and_verified_byte_deletion",
-        "on_call_incident_and_support_access_drill"
+        "previously_unbriefed_on_call_incident_and_support_access_drill"
       ],
       "evidence": [
         "docs/contracts/TQ-904_CLOUD_OPERATIONS.md",
         "docs/contracts/TQ-904_CLOUD_OPERATIONS_CERTIFICATION.json",
-        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+        "evidence/cloud-operations-drill-2026-08-13.json",
+        "evidence/cloud-secret-rotation-2026-08-13.json",
+        "evidence/cloud-offsite-backup-2026-08-13.json",
+        "evidence/cloud-server-restore-2026-08-13.json",
+        "evidence/cloud-server-restore-check-2026-08-13.json"
       ]
     },
     {
@@ -763,16 +768,18 @@
       "dependsOn": ["TQ-902", "TQ-903", "TQ-904", "TQ-616"],
       "outcome": "Multi-tenant isolation, key rotation, recovery and support-access certification",
       "remaining": [
-        "exact_published_server_image_and_control_plane_deployment",
-        "real_secret_manager_rotation",
-        "off_site_backup_restore_and_region_failover",
+        "deploy_current_basic_gated_identity_runtime",
+        "region_failover",
         "independent_multi_tenant_security_review",
         "previously_unbriefed_operator_incident_drill"
       ],
       "evidence": [
         "docs/contracts/TQ-905_MANAGED_CLOUD_HOSTILE_CERTIFICATION.md",
         "docs/contracts/TQ-905_CLOUD_HOSTILE_CERTIFICATION.json",
-        "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+        "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+        "evidence/cloud-bootstrap-2026-08-13.json",
+        "evidence/cloud-secret-rotation-2026-08-13.json",
+        "evidence/cloud-offsite-backup-2026-08-13.json"
       ]
     },
     {

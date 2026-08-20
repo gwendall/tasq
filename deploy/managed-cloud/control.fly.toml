@@ -1,0 +1,39 @@
+app = "tasq-control"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  TASQ_CLOUD_DATA_DIR = "/data"
+  TASQ_CLOUD_PUBLIC_ORIGIN = "https://control.tasq.run/"
+  TASQ_CLOUD_OIDC_ISSUER = "https://id.tasq.run/"
+  TASQ_CLOUD_OIDC_CLIENT_ID = "tasq-control"
+  TASQ_CLOUD_SERVER_ORIGIN = "https://api.tasq.run/"
+  TASQ_CLOUD_SERVER_INTERNAL_ORIGIN = "https://tasq-api.fly.dev/"
+  TASQ_CLOUD_SERVER_IMAGE_DIGEST = "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452"
+
+[mounts]
+  source = "tasq_control_data"
+  destination = "/data"
+  snapshot_retention = 30
+  scheduled_snapshots = true
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "15s"
+    method = "GET"
+    path = "/healthz"
+    timeout = "5s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"

@@ -1,0 +1,44 @@
+{
+  "contractVersion": "tasq.cloud-operations-drill.v1",
+  "status": "passed",
+  "backup": {
+    "id": "backup-drill-695a5435-02bc-49e7-8aff-6f2fbf42d52c",
+    "status": "ready",
+    "artifactDigest": "sha256:074bedf279d4b8111d97fb16a02d7bda7786dc24ee0109801e1716694c1f17f8",
+    "expiresAt": 1786720680214
+  },
+  "restored": {
+    "tenantId": "tasq-beta",
+    "id": "main",
+    "region": "cdg",
+    "status": "ready",
+    "storageBindingId": "cloud-binding:b2bdf030-68b2-4942-955d-a446890a9af8",
+    "deploymentRef": "fly:tasq-api@sha256:35ef0553262ba5ec9d068b64c4bf5eead78a9ed0187de6191402528eb17cbdc8",
+    "serverOrigin": "https://api.tasq.run/",
+    "secretRefs": [
+      "fly-secret://tasq-control/TASQ_CLOUD_DOWNSTREAM_BEARER"
+    ],
+    "lastErrorCode": null,
+    "createdAt": 1786632462785,
+    "updatedAt": 1786634280222
+  },
+  "exported": {
+    "id": "017d4835-76b6-4338-a580-c623d7e5c894",
+    "status": "ready",
+    "artifactRef": "fly-volume://tasq-control-data/artifacts/export-017d4835-76b6-4338-a580-c623d7e5c894.json",
+    "artifactDigest": "sha256:210326d94ef62d002538be278024aa77cc92673d244dc8a3894eba489559edc5",
+    "expiresAt": 1786720680227
+  },
+  "rotation": {
+    "rotationId": "rotation-drill-695a5435-02bc-49e7-8aff-6f2fbf42d52c",
+    "status": "ready",
+    "secretRefs": [
+      "fly-secret://tasq-control/TASQ_CLOUD_ROTATION_rotation-drill-695a5435-02bc-49e7-8aff-6f2fbf42d52c"
+    ]
+  },
+  "support": {
+    "id": "3bfd49c8-d108-4383-a97f-8e9cb73f9087",
+    "activeBeforeRevocation": true,
+    "revoked": true
+  }
+}

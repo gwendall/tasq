@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@tasq-internal/authority": "workspace:*",
     "@tasq-run/core": "workspace:*",
     "@tasq-run/extension-sdk": "workspace:*",

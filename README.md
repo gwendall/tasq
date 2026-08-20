@@ -8,7 +8,7 @@
 Website and documentation: [tasq.run](https://tasq.run)
 
 ```bash
-npx @tasq-run/cli@0.3.0 demo    # three seconds, no install, touches no data
+npx @tasq-run/cli@0.4.0 demo    # three seconds, no install, touches no data
 ```
 
 ## For you
@@ -55,16 +55,16 @@ Tasq is not an agent runtime. It does not launch agents or call providers. It
 gives the tools you already use one shared, inspectable place to agree on what
 is done.
 
-> **Public alpha:** `v0.3.0` is available from npm and as an attested GitHub
-> release for macOS arm64 and Linux x64. The complete `v0.4.0` candidate is
-> merged and certified on `main` but not yet tagged or published. This is an
+> **Public alpha:** `v0.4.0` is available from npm and as an attested GitHub
+> release for macOS arm64 and Linux x64. The Server image and Python client are
+> also published and exact-artifact certified. This is an
 > intentionally early pre-1.0 line: keep backups of retained ledgers and expect
 > documented migrations as the contracts evolve.
 
 ## What is available today
 
 - **Tasq Core** — an embeddable, profile-neutral TypeScript coordination
-  kernel. `@tasq-run/core@0.3.0` exposes the high-level `createLocalTasq`
+  kernel. `@tasq-run/core@0.4.0` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
@@ -73,14 +73,18 @@ is done.
 - **Data safety** — verified pre-migration snapshots, doctor checks, backups,
   bounded export/import, and explicit store compatibility metadata.
 
-Tasq Server now has a repository-certified daemon and Docker/Compose
-candidate with remote REST/MCP, enrollment and a hosted Console whose small
-human action surface reuses the same live authorization guard.
-Authenticated offline replication, a thin Python remote client and a private
-provider-neutral Cloud control-plane/BFF also exist as repository source
-candidates. No immutable public Server image, PyPI client, managed Cloud
-deployment or public remote endpoint ships yet. Remote effects remain
-disabled pending independent review.
+Tasq Server ships as an exact-digest-certified multi-architecture image with
+remote REST/MCP, enrollment and a hosted Console whose small human action
+surface reuses the same live authorization guard. Authenticated offline
+replication, `@tasq-run/client`, the remote CLI and `tasq-remote==0.4.0` are
+published and exact-artifact certified. A private-beta Server runs at
+`api.tasq.run`.
+
+The private provider-neutral Cloud control-plane/BFF also has a bounded Fly
+experiment. It is not an available managed service or SLA: the hardened
+reference identity source still needs deployment and browser replay, and real
+identity, region recovery, independent review and human operations gates
+remain. Remote effects remain disabled pending independent review.
 
 ## The core concepts
 
@@ -96,7 +100,7 @@ disabled pending independent review.
 An attempt succeeding never completes its commitment automatically.
 Validated commitments also cannot be completed by evidence alone.
 
-Published `v0.3.0` implements opt-in independent completion resolution across
+Published `v0.4.0` implements opt-in independent completion resolution across
 Core, embedded client, CLI, local MCP and Console. Ordinary commitments retain
 the short evidence-backed path; validated commitments use frozen policies,
 proposals, challenges and explicit decisions. See the
@@ -107,9 +111,9 @@ proposals, challenges and explicit decisions. See the
 Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.3.0.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.3.0 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.3.0 --prefix "$HOME/.local"
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.4.0.sh
+sh /tmp/tasq-install.sh --dry-run --version 0.4.0 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.4.0 --prefix "$HOME/.local"
 
 # Keep this evaluation isolated from any existing Tasq ledger.
 export TASQ_HOME="$PWD/.tasq"
@@ -129,7 +133,7 @@ before using a long-lived ledger.
 The current machine-readable acquisition contract is available at
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
-immutable `v0.3.0` npm and GitHub release coordinates, the supported targets,
+immutable `v0.4.0` npm and GitHub release coordinates, the supported targets,
 the explicit install prefix, and the exact onboarding argument vector.
 The generic agent entrypoints are
 [`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
@@ -173,24 +177,25 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 ## Packages
 
 The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
-`@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`, and
-`@tasq-run/console`. Version `0.3.0` is published from protected GitHub Actions
+`@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`,
+`@tasq-run/console`, and `@tasq-run/client`. Version `0.4.0` is published from
+protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
-on the [`v0.3.0` release](https://github.com/gwendall/tasq/releases/tag/v0.3.0).
+on the [`v0.4.0` release](https://github.com/gwendall/tasq/releases/tag/v0.4.0).
 The exact registry and release bytes pass the published lifecycle, migration,
 adoption and interactive-runtime matrix on macOS ARM64 and Linux x64. The
 compiled Core dependency closure additionally passes the same fresh-install
 and same-ledger restart program under Node 22 and Bun.
 
-ADR-010 adds `@tasq-run/client` as an eighth remote-client source candidate.
-It builds deterministically and passes repository tests, but it is not present
-in `v0.3.0` or npm yet. TQ-807's Server container candidate is likewise not a
-published artifact; its exact self-hosting runbook is in
+ADR-010 defines `@tasq-run/client` as the eighth public package. It and the
+TQ-807 Server container are published and protected-artifact certified; the
+exact self-hosting runbook is in
 [`deploy/server/README.md`](deploy/server/README.md).
-The dependency-free Python client source is in [`clients/python`](clients/python)
-and the private managed-service composition is in
+The published dependency-free Python client source is in
+[`clients/python`](clients/python), and the private experimental managed-service
+composition is in
 [`packages/tasq-cloud-control-plane`](packages/tasq-cloud-control-plane);
-neither is a published or deployed product.
+Cloud itself remains unpublished and unavailable as a managed product.
 
 ## Status and feedback
 

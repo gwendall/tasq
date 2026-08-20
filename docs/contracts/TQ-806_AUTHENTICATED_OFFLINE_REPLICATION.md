@@ -1,7 +1,7 @@
 # TQ-806 — Authenticated optional offline replication
 
-> **Status:** published artifact matrix complete; clean-room multi-machine trial open
-> **Date:** 2026-08-12
+> **Status:** done
+> **Date:** 2026-08-13
 > **Machine certificate:** `TQ-806_OFFLINE_REPLICATION_CERTIFICATION.json`
 
 Tasq Server now composes the existing ADR-003/TQ-405 replication protocol with
@@ -58,5 +58,12 @@ conflicts. Restoring an older authority rotates the epoch and marks every old
 generation stale.
 
 The protected Server digest and supported client artifacts are published and
-certified. TQ-806 closes only after a clean-room multi-machine trial exercises
-the same boundary outside the authoring environment.
+certified. The external gate closed on 2026-08-13 with a reproducible clean-room
+trial using only the public `0.4.0` Core, Schema and Extension SDK packages.
+Three isolated stores represented authority, replica A and replica B; five
+network-disabled one-shot containers exchanged canonical JSON but no database
+file. Replica A signed an offline operation, the authority rejected both an
+unsigned attempt and a foreign-principal attempt, accepted the exact bound
+proof, and replica B installed the resulting verified snapshot. The executable
+harness is `scripts/certify-tq806-clean-room.ts`; the compact evidence record is
+`evidence/tq-806/clean-room-multi-machine-2026-08-13.json`.
