@@ -20,12 +20,17 @@ async function main(): Promise<void> {
     process.stderr.write(`[${name}] launch\n`);
     const browser = await engine.launch({ headless: true });
     try {
-      const context = await browser.newContext({
-        httpCredentials: {
-          username: required("TASQ_ID_OPERATOR_USERNAME"),
-          password: required("TASQ_ID_OPERATOR_PASSWORD"),
-          origin: "https://id.tasq.run",
-        },
+      const identityAuthorization = `Basic ${Buffer.from(
+        `${required("TASQ_ID_OPERATOR_USERNAME")}:${required("TASQ_ID_OPERATOR_PASSWORD")}`,
+      ).toString("base64")}`;
+      const context = await browser.newContext();
+      await context.route("https://id.tasq.run/**", async (route) => {
+        await route.continue({
+          headers: {
+            ...route.request().headers(),
+            authorization: identityAuthorization,
+          },
+        });
       });
       const page = await context.newPage();
       page.on("console", (message) => process.stderr.write(`[${name}] console ${message.type()}: ${message.text()}\n`));
