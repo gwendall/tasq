@@ -21,6 +21,7 @@ contributor guides, and executable engineering contracts.
 | Compare same-backlog multi-agent behavior | [Multi-agent comparison](concepts/MULTI_AGENT_BACKLOG_COMPARISON.md) → [machine matrix](contracts/TQ-621_MULTI_AGENT_COMPARISON.json) |
 | Evaluate public support claims | [Product surface matrix](concepts/PRODUCT_SURFACE_MATRIX.json) |
 | Understand release policy | [Release overview](releases/RELEASES.md) |
+| Prepare the v0.4.0 announcement | [Launch posts](releases/V0.4.0_LAUNCH_POSTS.md) |
 
 Coding agents start at [`AGENTS.md`](../AGENTS.md). Agents operating a Tasq
 ledger start at [`SKILL.md`](../SKILL.md) and then use the recipes returned by
