@@ -25,12 +25,14 @@ async function main(): Promise<void> {
       ).toString("base64")}`;
       const context = await browser.newContext();
       await context.route("https://id.tasq.run/**", async (route) => {
-        await route.continue({
+        const response = await route.fetch({
           headers: {
             ...route.request().headers(),
             authorization: identityAuthorization,
           },
+          maxRedirects: 0,
         });
+        await route.fulfill({ response });
       });
       const page = await context.newPage();
       page.on("console", (message) => process.stderr.write(`[${name}] console ${message.type()}: ${message.text()}\n`));
