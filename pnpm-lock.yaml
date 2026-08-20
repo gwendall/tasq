@@ -16,6 +16,9 @@ importers:
 
   .:
     devDependencies:
+      '@tasq-run/schema':
+        specifier: workspace:*
+        version: link:packages/tasq-schema
       playwright:
         specifier: 1.62.1
         version: 1.62.1
