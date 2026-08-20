@@ -1063,7 +1063,7 @@
     {
       "path": "docs/roadmap/BACKLOG.json",
       "contractVersion": "tasq.backlog.v1",
-      "sha256": "aa720e3125ea8ee256e1842073a7028a99c95b64b5ff5fc575cbf5eec7d394bf"
+      "sha256": "4c7e3441b5ac6bbfa6050ef3d84ce8ac982269439a2c4b342b3561589f0096c7"
     },
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
