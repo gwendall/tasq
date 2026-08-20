@@ -12,6 +12,8 @@ Machine integration: https://tasq.run/integration.json
 Product truth: https://tasq.run/product-truth.json
 Source: https://github.com/gwendall/tasq
 
-Current boundary: Tasq Local 0.3.0 is published for macOS ARM64 and Linux x64
+Current boundary: Tasq Local 0.4.0 is published for macOS ARM64 and Linux x64
 GNU. Local actors coordinate only when they share the same store and exact
-space. Tasq Server, remote MCP and Cloud are not shipped.
+space. Tasq Server, remote MCP and the remote TypeScript, CLI and Python
+clients are published and certified. Managed Tasq Cloud is not available, and
+remote effects remain disabled.
