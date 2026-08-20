@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { createHash } from "node:crypto";
 
 import { docPages } from "../src/lib/docs";
 import { productTruth, supportPresentation } from "../src/lib/product-truth";
@@ -80,7 +81,6 @@ describe("public site truth", () => {
     // public-commands.test.ts actually executes. Literal blocks are not run by
     // anything, so a command invented while writing prose reaches a reader
     // untouched. Check the verb of every literal line against the CLI.
-    const docsSource = await Bun.file(new URL("../src/lib/docs.ts", import.meta.url)).text();
     const cliSource = await Bun.file(
       new URL("../../../packages/tasq-cli/src/index.ts", import.meta.url),
     ).text();
@@ -89,7 +89,7 @@ describe("public site truth", () => {
     ).text();
     const cli = cliSource + usageSource;
 
-    const literals = [...docsSource.matchAll(/code:\s*`([^`]+)`/g)].map((match) => match[1]!);
+    const literals = docPages.flatMap((page) => page.sections.flatMap((section) => section.code ?? []));
     const verbs = new Set<string>();
     for (const block of literals) {
       for (const line of block.split("\n")) {
@@ -106,6 +106,24 @@ describe("public site truth", () => {
     for (const verb of verbs) {
       expect(cli, `the docs show "tasq ${verb}", which the CLI must accept`).toContain(verb);
     }
+  });
+
+  test("generates all documentation prose from the canonical docs source", async () => {
+    const generated = (await import("../src/generated/docs.json")).default;
+    const source = await Bun.file(
+      new URL("../../../docs/site/PUBLIC_SITE_DOCS.json", import.meta.url),
+    ).text();
+    const adapter = await Bun.file(new URL("../src/lib/docs.ts", import.meta.url)).text();
+
+    expect(generated.contractVersion).toBe("tasq.public-site-docs.v1");
+    expect(generated.source).toEqual({
+      path: "docs/site/PUBLIC_SITE_DOCS.json",
+      contractVersion: "tasq.public-site-docs-source.v1",
+      sha256: createHash("sha256").update(source).digest("hex"),
+    });
+    expect(generated.pages).toHaveLength(docPages.length);
+    expect(adapter).not.toContain("One ledger. Two actors. Five minutes.");
+    expect(adapter).not.toContain('slug: "getting-started"');
   });
 
   test("the generated CLI reference matches the shipped help", async () => {

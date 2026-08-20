@@ -41,20 +41,24 @@ not parse the marketing HTML to coordinate work.
 
 - `../concepts/PRODUCT_SURFACE_MATRIX.json` for shapes, surfaces, consumers and support;
 - `../roadmap/BACKLOG.json` for execution status and external gates;
-- `../releases/PUBLIC_RELEASE_POLICY.json` for identity, packages and distribution state.
+- `../releases/PUBLIC_RELEASE_POLICY.json` for identity, packages and distribution state;
+- `../site/PUBLIC_SITE_DOCS.json` for public documentation prose, navigation and
+  references to executable code examples.
 
 It emits identical deterministic bytes to:
 
 - `src/generated/product-truth.json` for the rendered application;
-- `public/product-truth.json` for machine consumers.
+- `public/product-truth.json` for machine consumers;
+- `src/generated/docs.json` for the rendered documentation application.
 
 Each output includes the SHA-256 digest and contract version of every source.
 Build, typecheck and tests run the generator in `--check` mode and fail if a
-contract changed without regenerating the snapshot. An unimplemented surface
+contract changed without regenerating the snapshot. Documentation prose does
+not live in the TypeScript rendering adapter. That adapter resolves named code
+examples from the executable example registry, so prose has one source while
+commands retain their independent execution tests. An unimplemented surface
 cannot have an entrypoint. An unpublished release cannot render a distributed
-product shape. Published installation copy is intentionally fail-closed: the
-current tests require the source-build journey until the protected release
-policy changes and a maintainer reviews the new instructions.
+product shape.
 
 ## 4. Information architecture
 
@@ -93,6 +97,8 @@ deployment decision.
 The checkpoint requires:
 
 - deterministic truth generation and stale-output refusal;
+- deterministic documentation generation bound to the source prose digest;
+- no documentation prose duplicated in the TypeScript rendering adapter;
 - exact support vocabulary coverage and no entrypoint for absent surfaces;
 - unpublished-release and seven-package boundary assertions;
 - all eight consumer learning paths;
