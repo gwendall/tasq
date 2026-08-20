@@ -170,7 +170,8 @@ jobs:
       packages: read
       attestations: read
     env:
-      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      FLY_CONTROL_API_TOKEN: ${{ secrets.FLY_CONTROL_API_TOKEN }}
+      FLY_IDENTITY_API_TOKEN: ${{ secrets.FLY_IDENTITY_API_TOKEN }}
       INPUT_CONFIRMATION: ${{ inputs.confirmation }}
       INPUT_DIGEST: ${{ inputs.image_digest }}
       INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
@@ -192,7 +193,8 @@ jobs:
           [[ "$INPUT_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]
           [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
           test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
-          test -n "$FLY_API_TOKEN"
+          test -n "$FLY_CONTROL_API_TOKEN"
+          test -n "$FLY_IDENTITY_API_TOKEN"
           test -n "$TASQ_ID_OPERATOR_USERNAME"
           test -n "$TASQ_ID_OPERATOR_PASSWORD"
           test "${#TASQ_ID_OPERATOR_PASSWORD}" -ge 32
@@ -221,31 +223,32 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for app in tasq-control tasq-identity; do
-            test "$(flyctl status --app "$app" --json | jq -r .Name)" = "$app"
-          done
-          volumes="$(flyctl volumes list --app tasq-control --json)"
+          test "$(FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl status --app tasq-control --json | jq -r .Name)" = tasq-control
+          test "$(FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl status --app tasq-identity --json | jq -r .Name)" = tasq-identity
+          volumes="$(FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl volumes list --app tasq-control --json)"
           test "$(jq '[.[] | select(.name == "tasq_control_data")] | length' <<< "$volumes")" = 1
           jq --exit-status '.[] | select(.name == "tasq_control_data")
             | .region == "cdg" and .encrypted == true and .snapshot_retention >= 30' \
             <<< "$volumes" >/dev/null
-          control_secrets="$(flyctl secrets list --app tasq-control --json)"
+          control_secrets="$(FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl secrets list --app tasq-control --json)"
           for required in TASQ_CLOUD_ADMIN_TOKEN TASQ_CLOUD_DOWNSTREAM_BEARER \
             TASQ_CLOUD_IDENTITY_PEPPER TASQ_CLOUD_OIDC_CLIENT_SECRET \
             TASQ_CLOUD_SESSION_PEPPER TASQ_CLOUD_STATE_KEY; do
             jq --exit-status --arg name "$required" 'any(.[]; .name == $name)' \
               <<< "$control_secrets" >/dev/null
           done
-          identity_secrets="$(flyctl secrets list --app tasq-identity --json)"
+          identity_secrets="$(FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl secrets list --app tasq-identity --json)"
           for required in TASQ_ID_CLIENT_SECRET TASQ_ID_OPERATOR_SUBJECT \
             TASQ_ID_SIGNING_KEY_PKCS8; do
             jq --exit-status --arg name "$required" 'any(.[]; .name == $name)' \
               <<< "$identity_secrets" >/dev/null
           done
-          flyctl certs check control.tasq.run --app tasq-control >/dev/null
-          flyctl certs check id.tasq.run --app tasq-identity >/dev/null
+          FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl certs check control.tasq.run --app tasq-control >/dev/null
+          FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl certs check id.tasq.run --app tasq-identity >/dev/null
       - name: Stage fail-closed operator credentials
         shell: bash
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_IDENTITY_API_TOKEN }}
         run: >-
           flyctl secrets set
           --app tasq-identity
@@ -254,6 +257,8 @@ jobs:
           TASQ_ID_OPERATOR_PASSWORD="$TASQ_ID_OPERATOR_PASSWORD"
       - name: Deploy fail-closed reference identity
         shell: bash
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_IDENTITY_API_TOKEN }}
         run: >-
           flyctl deploy
           --config deploy/managed-cloud/identity.fly.toml
@@ -297,6 +302,8 @@ jobs:
           printf '%s\n' "$authenticated_status" > identity-authenticated-status.txt
       - name: Deploy same-origin Cloud control plane
         shell: bash
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_CONTROL_API_TOKEN }}
         run: >-
           flyctl deploy
           --config deploy/managed-cloud/control.fly.toml
@@ -331,10 +338,10 @@ jobs:
           set -euo pipefail
           curl --fail --retry 12 --retry-all-errors --retry-delay 5 \
             https://control.tasq.run/healthz > control-health.json
-          control_machine="$(flyctl machines list --app tasq-control --json | jq '[.[] | select(.state == "started")][0]')"
-          identity_machine="$(flyctl machines list --app tasq-identity --json | jq '[.[] | select(.state == "started")][0]')"
-          test "$(flyctl machines list --app tasq-control --json | jq '[.[] | select(.state == "started")] | length')" = 1
-          test "$(flyctl machines list --app tasq-identity --json | jq '[.[] | select(.state == "started")] | length')" = 1
+          control_machine="$(FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl machines list --app tasq-control --json | jq '[.[] | select(.state == "started")][0]')"
+          identity_machine="$(FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl machines list --app tasq-identity --json | jq '[.[] | select(.state == "started")][0]')"
+          test "$(FLY_API_TOKEN="$FLY_CONTROL_API_TOKEN" flyctl machines list --app tasq-control --json | jq '[.[] | select(.state == "started")] | length')" = 1
+          test "$(FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl machines list --app tasq-identity --json | jq '[.[] | select(.state == "started")] | length')" = 1
           browser_digest="sha256:$(sha256sum managed-cloud-browser.json | cut -d' ' -f1)"
           jq --null-input \
             --arg sourceCommit "$INPUT_SOURCE_COMMIT" \
