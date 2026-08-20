@@ -2,6 +2,12 @@
   "contractVersion": "tasq.backlog.v1",
   "status": "active",
   "updatedAt": "2026-08-12",
+  "itemsProjection": {
+    "source": "tasq-ledger",
+    "space": "tasq/dev",
+    "publicIdMetadataKey": "publicId",
+    "checkCommand": "pnpm backlog:project -- --check"
+  },
   "canonicalRepository": "https://github.com/gwendall/tasq",
   "publicSite": "https://tasq.run",
   "repositoryVisibility": "public_alpha",

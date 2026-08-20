@@ -24,7 +24,8 @@
     "certify:agents": "bun scripts/run-zero-context-agent-certification.ts",
     "build:packages": "bun scripts/release/build-public-packages.ts",
     "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts",
-    "verify:live": "bun scripts/verify-live-site.ts"
+    "verify:live": "bun scripts/verify-live-site.ts",
+    "backlog:project": "bun scripts/backlog-from-ledger.ts"
   },
   "devDependencies": {
     "@tasq-run/schema": "workspace:*",

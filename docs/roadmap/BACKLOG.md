@@ -165,6 +165,29 @@ operation through real adopters, not more repository-only architecture.
 During alpha and TQ-607, fixes discovered by real adopters are in scope. New
 Server/Cloud breadth remains behind published-byte Local certification.
 
+### Ledger-backed execution items
+
+The `items` array and `executionOrder` in `BACKLOG.json` are a deterministic,
+reviewed projection of tasks in the `tasq/dev` ledger space. Each published
+task opts in with `metadata.publicId`; ordinary execution tasks never appear in
+the public roadmap. The task lifecycle owns whether work is actually done,
+while `metadata.publicStatus` preserves distinctions such as dogfood, an
+external evidence gate or independent review.
+
+`pnpm backlog:project -- --import` is the idempotent bootstrap/reconciliation
+path. It records the public fields, materializes dependencies whose targets are
+also roadmap items for non-terminal work, attaches the reviewed repository
+evidence and completes historically done items through the normal service
+layer. Historical dependencies remain publication metadata because old release
+ordering can contain cycles that the live kernel correctly rejects. Afterwards,
+`pnpm backlog:project -- --check` fails if an item or the execution order was
+hand-edited, and `--write` regenerates them for a reviewed pull request.
+
+These commands require the maintainer's ledger and therefore do not run in
+ledger-free CI. CI tests the pure projection contract. The rest of
+`BACKLOG.json` remains hand-authored release scope, and
+`PRODUCT_SURFACE_MATRIX.json` remains the authority for support truth.
+
 ## Ordered checkpoints
 
 ### 1. Harden the public alpha
