@@ -112,10 +112,10 @@ export function createReferenceIdentityHandler(options: ReferenceIdentityOptions
 
   return async (request: Request): Promise<Response> => {
     const url = new URL(request.url);
-    if (url.origin + "/" !== issuer) return new Response("not found", { status: 404 });
     if (url.pathname === "/healthz" || url.pathname === "/readyz") {
       return json({ status: "ok", authorizationCodeAuthentication: "http_basic" });
     }
+    if (url.origin + "/" !== issuer) return new Response("not found", { status: 404 });
     if (url.pathname === "/.well-known/openid-configuration") {
       return json({
         issuer,
