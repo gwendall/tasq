@@ -6,6 +6,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMutableClock } from "@tasq-run/schema";
 import {
+  createCommitment,
   getCommitment,
   localPrincipalId,
   openDb,
@@ -139,13 +140,96 @@ describe("Tasq MCP capability boundary", () => {
     }
   });
 
+  it("requires proposal authority before a host can add direction authority", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "tasq-mcp-direction-"));
+    const opened = await openDb({ url: `file:${join(dir, "db.sqlite")}`, wal: false });
+    const clock = createMutableClock(10_000);
+    await runKernelMigrations(opened.client, { clock });
+    try {
+      expect(() => createTasqMcpServer({
+        db: opened.db,
+        workspaceId: "robotics-lab",
+        actor: "agent:planner",
+        capabilities: ["read", "direction"],
+        clock,
+      })).toThrow(/direction capability requires propose/);
+    } finally {
+      await opened.close();
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("rejects unknown capability labels instead of silently widening authority", () => {
     expect(parseTasqMcpCapabilities("read,coordinate")).toEqual(["read", "coordinate"]);
     expect(parseTasqMcpCapabilities("read,read")).toEqual(["read"]);
     expect(() => parseTasqMcpCapabilities("read,admin")).toThrow(/Unknown Tasq MCP capabilities: admin/);
     expect(() => parseTasqMcpCapabilities("propose")).toThrow(/require read/);
     expect(() => parseTasqMcpCapabilities("coordinate")).toThrow(/require read/);
+    expect(() => parseTasqMcpCapabilities("read,direction")).toThrow(/requires propose/);
+    expect(parseTasqMcpCapabilities("read,propose,direction"))
+      .toEqual(["read", "propose", "direction"]);
     expect(() => parseTasqMcpCapabilities("effect")).toThrow(/require read/);
+  });
+
+  it("reserves public-roadmap direction to a separately granted capability", async () => {
+    const ordinary = await fixture(["read", "propose", "coordinate"]);
+    const refusedCreate = await ordinary.client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Publish a roadmap item",
+        metadata: { publicId: "TQ-999" },
+        idempotencyKey: "ordinary-direction-create",
+      },
+    });
+    expect(refusedCreate.isError).toBe(true);
+    expect(refusedCreate.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringMatching(/requires.*direction capability/i),
+    });
+
+    const directionTask = await createCommitment(ordinary.db, {
+      title: "Existing direction item",
+      metadata: { roadmapProjectionVersion: 1, publicId: "TQ-998" },
+    }, {
+      workspaceId: "robotics-lab",
+      actor: "maintainer",
+      now: ordinary.clock.now(),
+      clock: ordinary.clock,
+    });
+    const refusedUpdate = await ordinary.client.callTool({
+      name: "tasq_commitment_update",
+      arguments: {
+        commitmentId: directionTask.id,
+        expectedRevision: directionTask.revision,
+        patch: { title: "Worker cannot redirect it" },
+        idempotencyKey: "ordinary-direction-update",
+      },
+    });
+    expect(refusedUpdate.isError).toBe(true);
+    expect(refusedUpdate.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringMatching(/requires.*direction capability/i),
+    });
+
+    const privileged = await fixture(["read", "propose", "direction"]);
+    const created = structured<{ id: string }>(await privileged.client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Authorized direction item",
+        metadata: {
+          roadmapProjectionVersion: 1,
+          publicId: "TQ-997",
+          publicOrder: 61,
+          publicStatus: "pending",
+          milestone: "future",
+          dependsOn: [],
+          outcome: "Prove direction authority is separately bounded",
+        },
+        idempotencyKey: "authorized-direction-create",
+      },
+    }));
+    expect((await getCommitment(privileged.db, created.id, "robotics-lab"))?.metadata)
+      .toMatchObject({ publicId: "TQ-997", publicStatus: "pending" });
   });
 
   it("advertises retriable writes only with a required idempotency key", async () => {
