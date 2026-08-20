@@ -87,6 +87,25 @@ type RootPackage = {
   engines: { bun: string; node: string };
 };
 
+type SiteDocsSource = {
+  contractVersion: "tasq.public-site-docs-source.v1";
+  pages: Array<{
+    slug: string;
+    eyebrow: string;
+    title: string;
+    summary: string;
+    sections: Array<{
+      title: string;
+      body: string[];
+      bullets?: string[];
+      code?: string;
+      codeTitle?: string;
+      codeExample?: string;
+      callout?: string;
+    }>;
+  }>;
+};
+
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDirectory, "../../..");
 const truthOutputPaths = [
@@ -132,11 +151,13 @@ function optionalFlag(name: string): string | undefined {
   return value;
 }
 
-const [matrixFile, backlogFile, policyFile, rootPackageFile] = await Promise.all([
+const siteDocsSourcePath = "docs/site/PUBLIC_SITE_DOCS.json";
+const [matrixFile, backlogFile, policyFile, rootPackageFile, siteDocsFile] = await Promise.all([
   readJson<ProductMatrix>(optionalFlag("--matrix") ?? "docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
   readJson<Backlog>("docs/roadmap/BACKLOG.json"),
   readJson<ReleasePolicy>(optionalFlag("--policy") ?? "docs/releases/PUBLIC_RELEASE_POLICY.json"),
   readJson<RootPackage>("package.json"),
+  readJson<SiteDocsSource>(siteDocsSourcePath),
 ]);
 
 const matrix = matrixFile.value;
@@ -180,6 +201,47 @@ if (published && matrix.productShapes.find((shape) => shape.id === "local")?.pub
 }
 
 const sourceDigest = (raw: string) => createHash("sha256").update(raw).digest("hex");
+
+if (siteDocsFile.value.contractVersion !== "tasq.public-site-docs-source.v1") {
+  throw new Error(`Unsupported public-site docs contract: ${siteDocsFile.value.contractVersion}`);
+}
+const docSlugs = siteDocsFile.value.pages.map((page) => page.slug);
+if (new Set(docSlugs).size !== docSlugs.length) {
+  throw new Error("Public-site docs slugs must be unique");
+}
+for (const page of siteDocsFile.value.pages) {
+  if (!page.slug || !page.title || !page.summary || page.sections.length === 0) {
+    throw new Error(`Public-site docs page ${page.slug || "<missing>"} is incomplete`);
+  }
+  for (const section of page.sections) {
+    if (section.code && section.codeExample) {
+      throw new Error(`Public-site docs section ${page.slug}/${section.title} has two code sources`);
+    }
+    if (section.code && !section.codeTitle) {
+      throw new Error(`Public-site docs section ${page.slug}/${section.title} needs a code title`);
+    }
+  }
+}
+
+const docsTemplate = JSON.stringify(siteDocsFile.value.pages);
+const docsPages = JSON.parse(
+  docsTemplate.replaceAll("{{releaseVersion}}", policy.publishedRelease?.version ?? "unpublished"),
+) as SiteDocsSource["pages"];
+if (JSON.stringify(docsPages).includes("{{")) {
+  throw new Error("Public-site docs contain an unresolved template placeholder");
+}
+const generatedDocs = {
+  contractVersion: "tasq.public-site-docs.v1",
+  source: {
+    path: siteDocsSourcePath,
+    contractVersion: siteDocsFile.value.contractVersion,
+    sha256: sourceDigest(siteDocsFile.raw),
+  },
+  pages: docsPages,
+};
+const docsSerialized = `${JSON.stringify(generatedDocs, null, 2)}\n`;
+const docsOutputPaths = [resolve(repoRoot, "apps/site/src/generated/docs.json")];
+
 const truth = {
   contractVersion: "tasq.public-site-truth.v1",
   sourceUpdatedAt: matrix.updatedAt,
@@ -527,6 +589,7 @@ if (process.argv.includes("--stdout")) {
   await checkOutputs(installerOutputPaths, installerSerialized);
   await checkOutputs(changelogOutputPaths, changelogSerialized);
   await checkOutputs(cliReferenceOutputPaths, cliReferenceSerialized);
+  await checkOutputs(docsOutputPaths, docsSerialized);
   for (const entry of publicEntries) {
     await checkOutputs([entry.outputPath], entry.serialized);
   }
@@ -538,5 +601,6 @@ if (process.argv.includes("--stdout")) {
     ...publicEntries.map(({ outputPath, serialized }) => writeFile(outputPath, serialized, "utf8")),
     ...changelogOutputPaths.map((outputPath) => writeFile(outputPath, changelogSerialized, "utf8")),
     ...cliReferenceOutputPaths.map((outputPath) => writeFile(outputPath, cliReferenceSerialized, "utf8")),
+    ...docsOutputPaths.map((outputPath) => writeFile(outputPath, docsSerialized, "utf8")),
   ]);
 }

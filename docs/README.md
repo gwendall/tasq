@@ -39,6 +39,7 @@ ledger start at [`SKILL.md`](../SKILL.md) and then use the recipes returned by
 | [`contracts/`](contracts) | Feature acceptance contracts and certificates (`TQ-*`) | Maintainers working on one subsystem |
 | [`roadmap/`](roadmap) | Human roadmap and machine-readable release scope, dependencies and external gates | Contributors planning releases |
 | [`releases/`](releases) | Distribution, governance, lifecycle, and historical export provenance | Release maintainers |
+| [`site/`](site) | Canonical prose and structure rendered by the generated public documentation site | Product writers and site maintainers |
 
 ## Source of truth
 
@@ -53,6 +54,8 @@ Different questions have different authorities:
   a managed `AGENTS.md` block names the Tasq ledger when live work uses one.
 - Release ownership and gates:
   [`releases/PUBLIC_RELEASE_POLICY.json`](releases/PUBLIC_RELEASE_POLICY.json).
+- Public documentation prose and navigation:
+  [`site/PUBLIC_SITE_DOCS.json`](site/PUBLIC_SITE_DOCS.json).
 - Stable agent-facing CLI shapes:
   [`reference/CLI_JSON_CONTRACT.md`](reference/CLI_JSON_CONTRACT.md).
 
