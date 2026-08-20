@@ -9,6 +9,7 @@ import {
   createCloudBff,
   type CloudProvisioner,
 } from "./index.js";
+import { oidcTemporalClaimsAccepted } from "./oidc-claims.js";
 
 function required(name: string): string {
   const value = process.env[name]?.trim();
@@ -421,10 +422,7 @@ async function oidcCallback(request: Request, url: URL): Promise<Response> {
   if (
     payload.iss !== oidcIssuer ||
     payload.aud !== oidcClientId ||
-    payload.exp * 1_000 <= requestNow ||
-    payload.iat * 1_000 > requestNow ||
-    payload.auth_time * 1_000 > requestNow ||
-    payload.exp - payload.iat > 300 ||
+    !oidcTemporalClaimsAccepted(payload, requestNow) ||
     payload.nonce !== expectedNonce ||
     actualNonceDigest.byteLength !== storedNonceDigest.byteLength ||
     !timingSafeEqual(actualNonceDigest, storedNonceDigest)
