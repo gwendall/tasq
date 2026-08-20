@@ -1,9 +1,9 @@
 {
   "contractVersion": "tasq.authenticated-offline-replication-certification.v1",
-  "status": "candidate_done_external_gate",
-  "updatedAt": "2026-08-12",
+  "status": "done",
+  "updatedAt": "2026-08-13",
   "backlogItem": "TQ-806",
-  "storeFormat": 29,
+  "storeFormat": 32,
   "serverOperations": [
     "replication.enroll",
     "replication.push",
@@ -39,10 +39,11 @@
     "packages/tasq-service/test/replication.test.ts",
     "packages/tasq-evals/sync-chaos-recovery.test.ts",
     "packages/tasq-server/src/workspace.ts",
-    "packages/tasq-server/test/workspace.test.ts"
+    "packages/tasq-server/test/workspace.test.ts",
+    "scripts/certify-tq806-clean-room.ts",
+    "scripts/tq806-clean-room-worker.ts",
+    "evidence/tq-806/clean-room-multi-machine-2026-08-13.json"
   ],
-  "remainingExternalGate": [
-    "clean_room_multi_machine_trial"
-  ],
-  "publicSupportClaim": false
+  "remainingExternalGate": [],
+  "publicSupportClaim": true
 }

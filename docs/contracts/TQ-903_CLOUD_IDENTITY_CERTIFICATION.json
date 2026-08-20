@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.cloud-identity-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-07-24",
+  "updatedAt": "2026-08-20",
   "backlogItem": "TQ-903",
   "proof": {
     "rawIdentitySubjectStored": false,
@@ -11,15 +11,16 @@
     "recoveryRevisionInvalidatesSessions": true,
     "tenantSuspensionInvalidatesSessions": true,
     "workloadCredentialCustody": "external_opaque_reference",
-    "workloadRevocationRevisionChecked": true
+    "workloadRevocationRevisionChecked": true,
+    "operatorRecoveryAndRevocationDrill": "passed"
   },
   "evidence": [
-    "packages/tasq-cloud-control-plane/test/cloud.test.ts"
+    "packages/tasq-cloud-control-plane/test/cloud.test.ts",
+    "evidence/cloud-identity-drill-2026-08-13.json"
   ],
   "remainingExternalGate": [
     "real_oidc_integration",
-    "real_secret_manager_workload_issuance",
-    "operator_recovery_and_revocation_drill"
+    "real_secret_manager_workload_issuance"
   ],
   "managedIdentityAvailable": false
 }

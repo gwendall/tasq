@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-08-12
+**Updated:** 2026-08-20
 
 Tasq currently ships source for two local product shapes:
 
@@ -9,13 +9,15 @@ Tasq currently ships source for two local product shapes:
 
 Server now has a published and exact-digest-certified multi-architecture image.
 Cloud now has a private, provider-neutral control-plane and same-origin BFF
-source candidate. Server composes guarded REST, stateless remote MCP, one-use
+source candidate plus a bounded experimental Fly composition. Server composes guarded REST, stateless remote MCP, one-use
 enrollment, real Core operations and an authenticated Console with a small
 TQ-811 guarded human action surface. Cloud adds isolated provisioning,
 sessions, identity lifecycle, quota, export/delete, backup/restore, opaque
 credential-reference rotation and operations records around that Server
-contract. One Fly private-beta Server runs at `api.tasq.run`; no managed
-multi-tenant Cloud or public SLA ships yet.
+contract. One Fly private-beta Server runs at `api.tasq.run`; experimental
+control and reference-identity origins run at `control.tasq.run` and
+`id.tasq.run`. They are not an available managed multi-tenant Cloud or a public
+SLA.
 Provider connectors, domain policy and agent runtimes remain outside Core.
 
 ADR-018 selects Fly for the first hosted private-beta Server instead of the
@@ -23,9 +25,10 @@ earlier GKE-first proposal. The `tasq-api` Fly app, one encrypted Paris volume,
 ingress, certificate request, `api.tasq.run`/`cloud.tasq.run` DNS and the GitHub
 `beta` environment are provisioned. One writer Machine now runs in `cdg` from
 the exact certified Server digest; `api.tasq.run` is healthy and
-`cloud.tasq.run` redirects to its authenticated Console. The off-site
-backup/restore drill remains open. The profile and fail-closed workflow live
-under `deploy/fly-private-beta/`.
+`cloud.tasq.run` redirects to its authenticated Console. A native backup was
+encrypted, stored off-site and restored with an exact digest match on
+2026-08-13. The profile and fail-closed workflow live under
+`deploy/fly-private-beta/`.
 
 TQ-621 adds a public, source-linked comparison of same-backlog behavior across
 Tasq, Claude Code, GitHub Copilot, Codex, Cursor, MCP and A2A. It does not turn
@@ -196,7 +199,7 @@ immediate revocation and no foreign-workspace opener. The adapter remains
 stateless; TQ-807 exposes it through the candidate daemon without adding a
 stateful MCP session.
 
-TQ-809 adds the Fetch-only `@tasq-run/client` source candidate and `tasq
+TQ-809 adds the Fetch-only `@tasq-run/client` and `tasq
 remote` CLI workflow. Endpoint, workspace and credential profile are explicit;
 actor text never authenticates. The authority control plane now supports
 expiring one-use human-device/workload enrollment, atomically consumed into a
@@ -253,10 +256,10 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. The current assets are published at immutable `v0.3.0`. Protected run
-[30051196124](https://github.com/gwendall/tasq/actions/runs/30051196124)
-downloaded them, verified every attestation and passed the lifecycle on both
-supported targets, closing TQ-604.
+`TASQ_HOME`. The current assets are published at immutable `v0.4.0`. Protected
+run [31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138)
+downloaded them, verified attestations and replayed the release and migration
+matrix on both supported targets.
 
 The loopback Console has canonical TQ-701 overview, actor, claim, resource,
 wait, effect, redacted audit and bounded operational-health JSON contracts.
@@ -267,9 +270,9 @@ bounded filters, audit timeline and previewable redacted support artifact. The
 original commitment graph remains available as a deep inspection surface.
 TQ-704 now bundles that full surface into installed Local artifacts and adds a
 versioned foreground-listener announcement plus proof-of-life `web status`
-discovery. Candidate install, v1-to-v2 same-ledger upgrade, stop and uninstall
-are certified without a checkout or hidden service; the same path now also
-passes from exact `v0.3.0` published bytes on both supported targets.
+discovery. Install, same-ledger upgrade, stop and uninstall are certified
+without a checkout or hidden service; the same path passes from exact current
+published bytes on both supported targets.
 
 TQ-605 adds a separate static public product and documentation application in
 `apps/site`. It covers the human, agent, MCP, SDK and operator paths and derives
@@ -417,7 +420,7 @@ and persists each operation plus proof in the same domain transaction.
 Pull also requires the owning principal. Claims, leases, approvals and effects
 remain online-only. Existing reorder, duplicate, conflict, cursor-expiry,
 process-kill and old-backup chaos evidence still passes; a clean-room
-multi-machine trial remains external.
+multi-machine trial against exact `v0.4.0` packages passed on 2026-08-13.
 
 TQ-810 adds a checked-in OpenAPI 3.1 remote contract and dependency-free
 Python 3.11+ client for reads, event cursors, operation discovery, idempotent
@@ -440,8 +443,15 @@ tests pass colliding names, isolated storage bindings, concurrent quota,
 cross-tenant denial, BFF CSRF/origin rules, revocation epochs, provider
 reconciliation, rotation, backup/restore, retention, support and deletion
 recovery. Raw identity subjects, session tokens and Server bearer credentials
-are not stored. Real provider, secret-manager, multi-region, operations and
-independent security evidence remain external, so Tasq Cloud is not available.
+are not stored. A 2026-08-13 experimental Fly composition additionally proved
+exact Server-digest binding, three-engine browser behavior, identity
+invalidation, secret-reference rotation and encrypted off-site restore.
+Subsequent review found that the deployed reference IdP could mint an
+authorization code without an operator authentication step; current source
+adds a fail-closed Basic gate, but that correction is not yet deployed or
+browser-recertified. A real IdP/workload secret manager, database acceptance,
+region recovery, independent security review and unbriefed operations remain,
+so Tasq Cloud is not available.
 TQ-906 remains pending independent review; Server and Cloud both keep remote
 effects disabled.
 

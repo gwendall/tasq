@@ -91,13 +91,15 @@ operator lifecycle; read
 [TQ-807_DEPLOYABLE_SERVER.md](docs/contracts/TQ-807_DEPLOYABLE_SERVER.md).
 TQ-806 adds principal-bound authenticated offline replication with atomically
 persisted signed origins; live claims, leases, approvals and effects remain
-online-only. Its clean-room multi-machine trial remains external. TQ-810's thin
+online-only. Its exact-package clean-room multi-machine trial passes. TQ-810's thin
 Python remote client is published on PyPI and certified against the exact image
 digest. TQ-901–TQ-905 provide the private provider-neutral Cloud
-control-plane/BFF source candidate. The Server is deployed on Fly.io at
-`api.tasq.run`; `cloud.tasq.run` redirects to its guarded Console. This is a
-private-beta deployment, not a claim that the complete managed Cloud control
-plane is public. TQ-906 keeps remote effects disabled pending independent
+control-plane/BFF source candidate plus a bounded experimental composition at
+`control.tasq.run` and `id.tasq.run`. The Server is deployed on Fly.io at
+`api.tasq.run`; `cloud.tasq.run` redirects to its guarded Console. Current
+source makes the reference identity adapter fail closed, but that correction
+still needs deployment and browser recertification. This is a private-beta
+experiment, not a claim that managed Cloud is available. TQ-906 keeps remote effects disabled pending independent
 review. Never treat an actor label, project descriptor or database URL as
 remote authentication.
 

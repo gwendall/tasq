@@ -5,12 +5,13 @@ form is [`BACKLOG.json`](BACKLOG.json). Product claims remain authoritative in
 [`../concepts/PRODUCT_SURFACE_MATRIX.json`](../concepts/PRODUCT_SURFACE_MATRIX.json); a backlog item
 never turns planned work into shipped behavior.
 
-**Updated:** 2026-08-12
+**Updated:** 2026-08-20
 
 **Current product:** Tasq Core + Tasq Local  
 **Current priority:** operate the shipped `v0.4.0` public alpha and Fly private
-beta, complete the off-site backup/restore drill, unbriefed adoption and
-self-host trials, and retained-data dogfood. All eight npm packages, both
+beta, deploy and recertify the fail-closed experimental identity runtime,
+complete unbriefed adoption and self-host trials, and retained-data dogfood.
+All eight npm packages, both
 native artifacts, the multi-architecture Server image and Python wheel are
 published and exact-artifact certified. Continue the independent
 blind-human session and retained-data dogfood after publication; they gate
@@ -46,7 +47,8 @@ remain disabled.
 
 The remaining gates are product evidence and operations drills, not release
 publication: dogfood, blind-human adoption, unbriefed self-host operation,
-off-site restore, independent Cloud/security review and remote-effects review.
+current identity-runtime redeployment, region recovery, independent
+Cloud/security review and remote-effects review.
 
 ## What is already proven
 
@@ -79,7 +81,7 @@ operation through real adopters, not more repository-only architecture.
 
 ## Current gates
 
-- **Fly private beta — deployed, off-site restore drill pending.** ADR-018
+- **Fly private beta — deployed; off-site restore passed.** ADR-018
   replaces GKE as the first hosted-beta step. Fly app `tasq-api`, one encrypted
   `cdg` volume with 30-day snapshots, ingress, certificate request, registrar
   DNS and GitHub environment `beta` exist. `api.tasq.run` is the sole future
@@ -89,6 +91,8 @@ operation through real adopters, not more repository-only architecture.
   a private beta without SLA or managed multi-tenant Cloud claim. See
   [`ADR-018`](../decisions/ADR-018_FLY_PRIVATE_BETA.md) and the
   [runbook](../../deploy/fly-private-beta/README.md).
+  On 2026-08-13 a native Server backup was encrypted, uploaded off-site and
+  restored with an exact plaintext digest match.
 
 - **Public Local alpha — live.** Anonymous users can clone `main`, install all
   eight `@tasq-run/*@0.4.0` packages from npm, or download the attested
@@ -407,11 +411,13 @@ This work does not interrupt TQ-607 retained-data dogfood. Signed statements
 ship in `v0.4.0` and pass exact release-byte replay. The unbriefed
 agent/operator trial remains a distinct external observation.
 
-- **TQ-806 — candidate done; external gate remains:** guarded Server
+- **TQ-806 — done:** guarded Server
   enrollment/push/pull now bind each replica generation to one principal and
   require one atomically persisted signed-origin proof per pushed operation.
   Existing chaos, cursor, conflict and old-backup recovery pass; claims,
-  leases, approvals and effects remain online-only. See
+  leases, approvals and effects remain online-only. A three-store, network-
+  disabled clean-room run against the public `0.4.0` packages closed the final
+  multi-machine gate, including negative unsigned and foreign-principal cases. See
   `../contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`.
 - **TQ-810 — done:** the checked-in OpenAPI
   contract and dependency-free Python 3.11+ client cover reads, event cursors,
@@ -574,29 +580,36 @@ publication sequence and create no current support claim.
 
 ### 8. Build managed Tasq Cloud
 
-- **TQ-901 — candidate done; deployed-service gate remains:** the private,
+- **TQ-901 — experimental deployment observed; independent gate remains:** the private,
   provider-neutral control-plane package implements authorized tenant
   lifecycle, isolated workspace bindings, durable provisioning intent,
-  reconciliation and concurrent quota admission. A production database,
-  provider binding and independent infrastructure review remain.
-- **TQ-902 — candidate done; deployed-browser gate remains:** the same-origin
+  reconciliation and concurrent quota admission. The 2026-08-13 Fly experiment
+  bound opaque secret references and the exact protected Server digest. Its
+  single-volume database needs independent acceptance or replacement, and
+  multi-tenant infrastructure review remains.
+- **TQ-902 — browser experiment passed; hardened redeployment remains:** the same-origin
   BFF keeps Server credentials out of browsers, binds sessions to tenant and
   device, requires CSRF plus exact Origin for mutations and strips cookies.
-  Real IdP/browser/security-review evidence remains.
-- **TQ-903 — candidate done; external identity gate remains:** HMACed identity
+  Three browser engines passed on 2026-08-13. Current source adds an explicit
+  operator authentication gate after review found the deployed reference IdP
+  could mint anonymous authorization codes. Deploying that correction,
+  rerunning the browser matrix, a real IdP and security review remain.
+- **TQ-903 — lifecycle drill passed; external identity gate remains:** HMACed identity
   subjects, device-bound sessions, recovery/tenant epochs and revision-checked
-  workload revocation are implemented. Real OIDC, secret-manager issuance and
-  operator recovery drills remain.
-- **TQ-904 — candidate done; operated-provider gate remains:** quotas,
+  workload revocation are implemented. The recovery/revocation drill passed;
+  real OIDC and secret-manager workload issuance remain.
+- **TQ-904 — provider drills passed; human operations gates remain:** quotas,
   expiring exports/backups, retention sweep, retryable deletion, restore,
   credential-reference rotation, incidents, restricted support and
-  non-authoritative billing are implemented. Provider byte deletion,
-  backup/restore, rotation and on-call evidence remain.
-- **TQ-905 — candidate done; independent operations gate remains:** the
+  non-authoritative billing are implemented. Native/off-site restore and
+  secret-reference rotation passed. Provider export plus verified byte
+  deletion and an unbriefed on-call drill remain.
+- **TQ-905 — automated provider gates narrowed; independent operations gate remains:** the
   two-tenant hostile source matrix passes isolation, quota race, BFF,
   revocation, reconciliation, rotation, backup/restore, retention and
-  deletion recovery. Exact deployed artifacts, real provider drills,
-  multi-region recovery and independent review remain.
+  deletion recovery. The exact Server digest, provider rotation and encrypted
+  off-site restore were exercised. Current identity-runtime deployment,
+  region recovery, independent review and an unbriefed incident remain.
 - **TQ-906 — pending independent review:** ADR-005 and TQ-612 are accepted,
   TQ-616 is published-artifact certified, but the current author cannot
   independently approve their own authority boundary. Server reports effects

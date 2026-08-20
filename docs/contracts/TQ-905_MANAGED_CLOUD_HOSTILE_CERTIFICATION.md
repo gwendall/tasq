@@ -1,7 +1,7 @@
-# TQ-905 — Managed Cloud hostile source certification
+# TQ-905 — Managed Cloud hostile certification
 
-> **Status:** repository candidate complete; independent operations gate open
-> **Date:** 2026-07-24
+> **Status:** source and experimental provider drills complete; independent gate open
+> **Date:** 2026-08-20
 > **Machine certificate:** `TQ-905_CLOUD_HOSTILE_CERTIFICATION.json`
 
 The executable source matrix creates two tenants with colliding workspace
@@ -19,10 +19,14 @@ unknown provider outcome.
 A byte scan proves raw identity subjects, browser tokens, Server credentials
 and replaced secret references are not retained in the control database.
 
-This is not a production certification. It does not prove a real infrastructure
-provider, multi-region failover, off-site restore, secret-manager rotation,
-external penetration testing or an on-call operator. Those remain required
-before Tasq Cloud can be advertised as available.
+The 2026-08-13 experiment additionally bound the exact protected Server image,
+rotated an opaque Fly secret reference and restored a native backup from an
+encrypted off-site object. Those records close those bounded automated gates.
+
+This is not a production certification. The current fail-closed reference
+identity source still needs deployment and browser replay. Region failover,
+external multi-tenant security review and a previously unbriefed incident
+operator also remain required before Tasq Cloud can be advertised as available.
 
 The complete external matrix is frozen in
 [`MANAGED_CLOUD_PRODUCTION_READINESS.template.json`](MANAGED_CLOUD_PRODUCTION_READINESS.template.json).

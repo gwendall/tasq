@@ -190,7 +190,6 @@ describe("canonical Tasq roadmap", () => {
     expect(roadmap.items.find(({ id }) => id === "TQ-808")).toMatchObject({
       status: "candidate_done_external_gate",
       remaining: [
-        "macos_and_linux_clients_against_exact_published_digest",
         "previously_unbriefed_operator_deployment",
       ],
     });
@@ -224,7 +223,14 @@ describe("canonical Tasq roadmap", () => {
         "packages/tasq-cli/test/premise.test.ts",
       ],
     });
-    for (const id of ["TQ-806", "TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
+    expect(roadmap.items.find(({ id }) => id === "TQ-806")).toMatchObject({
+      status: "done",
+      remaining: [],
+      evidence: expect.arrayContaining([
+        "evidence/tq-806/clean-room-multi-machine-2026-08-13.json",
+      ]),
+    });
+    for (const id of ["TQ-901", "TQ-902", "TQ-903", "TQ-904", "TQ-905"]) {
       const item = roadmap.items.find((candidate) => candidate.id === id);
       expect(item?.status, `${id}: source candidate status`).toBe(
         "candidate_done_external_gate",

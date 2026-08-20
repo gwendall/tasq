@@ -1,0 +1,22 @@
+{
+  "tenant": {
+    "id": "tasq-beta",
+    "status": "active"
+  },
+  "workspace": {
+    "tenantId": "tasq-beta",
+    "id": "main",
+    "region": "cdg",
+    "status": "ready",
+    "storageBindingId": "cloud-binding:b2bdf030-68b2-4942-955d-a446890a9af8",
+    "deploymentRef": "fly:tasq-api@sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+    "serverOrigin": "https://api.tasq.run/",
+    "secretRefs": [
+      "fly-secret://tasq-api/TASQ_SERVER_ENROLLMENT_PEPPER",
+      "fly-secret://tasq-control/TASQ_CLOUD_DOWNSTREAM_BEARER"
+    ],
+    "lastErrorCode": null,
+    "createdAt": 1786632462785,
+    "updatedAt": 1786634757859
+  }
+}

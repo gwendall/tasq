@@ -46,11 +46,11 @@
     "exactDigestCertificationRun": "https://github.com/gwendall/tasq/actions/runs/31619011510",
     "publishWorkflow": ".github/workflows/publish-server.yml",
     "exactDigestCertificationWorkflow": ".github/workflows/certify-published-server.yml",
-    "cleanClientMatrixStillExternal": true,
+    "cleanClientMatrixStillExternal": false,
+    "cleanClientMatrixEvidence": "evidence/tq-808/clean-client-matrix-2026-08-13.json",
     "unbriefedOperatorStillExternal": true
   },
   "remainingExternalGate": [
-    "macos_and_linux_clients_against_exact_published_digest",
     "previously_unbriefed_operator_deployment"
   ],
   "tq808ImplementationComplete": true,
