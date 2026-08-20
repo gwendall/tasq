@@ -56,6 +56,33 @@ describe("reference identity provider", () => {
     expect((await fetch(new Request("http://fly-machine.internal:8787/authorize"))).status).toBe(404);
   });
 
+  test("accepts only the exact public authority forwarded by the platform", async () => {
+    const { fetch } = fixture();
+    const forwarded = await fetch(new Request("http://fly-machine.internal:8787/authorize", {
+      headers: {
+        host: "id.example",
+        "fly-forwarded-proto": "https",
+      },
+    }));
+    expect(forwarded.status).toBe(401);
+
+    const wrongHost = await fetch(new Request("http://fly-machine.internal:8787/authorize", {
+      headers: {
+        host: "evil.example",
+        "fly-forwarded-proto": "https",
+      },
+    }));
+    expect(wrongHost.status).toBe(404);
+
+    const wrongProtocol = await fetch(new Request("http://fly-machine.internal:8787/authorize", {
+      headers: {
+        host: "id.example",
+        "fly-forwarded-proto": "http",
+      },
+    }));
+    expect(wrongProtocol.status).toBe(404);
+  });
+
   test("never mints an authorization code for an anonymous or wrong operator", async () => {
     const { fetch } = fixture();
     const anonymous = await fetch(new Request(authorizationUrl()));

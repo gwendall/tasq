@@ -77,7 +77,8 @@ export function createReferenceIdentityHandler(options: ReferenceIdentityOptions
   if (options.operatorUsername.includes(":")) {
     throw new Error("reference identity operator username cannot contain ':'");
   }
-  const issuer = new URL(options.issuer).href;
+  const issuerUrl = new URL(options.issuer);
+  const issuer = issuerUrl.href;
   const redirectUri = new URL(options.redirectUri).href;
   const postLogoutRedirectUri = new URL(options.postLogoutRedirectUri).href;
   const privateKey = createPrivateKey({
@@ -115,7 +116,12 @@ export function createReferenceIdentityHandler(options: ReferenceIdentityOptions
     if (url.pathname === "/healthz" || url.pathname === "/readyz") {
       return json({ status: "ok", authorizationCodeAuthentication: "http_basic" });
     }
-    if (url.origin + "/" !== issuer) return new Response("not found", { status: 404 });
+    const forwardedProto = request.headers.get("fly-forwarded-proto") ??
+      request.headers.get("x-forwarded-proto");
+    const publicOriginMatches = url.origin + "/" === issuer ||
+      (request.headers.get("host") === issuerUrl.host &&
+        forwardedProto === issuerUrl.protocol.slice(0, -1));
+    if (!publicOriginMatches) return new Response("not found", { status: 404 });
     if (url.pathname === "/.well-known/openid-configuration") {
       return json({
         issuer,
