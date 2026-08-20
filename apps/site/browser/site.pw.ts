@@ -16,7 +16,7 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByRole("img", {
     name: "The real Tasq Local Console showing a mature coordination workspace",
   })).toBeVisible();
-  await expect(page.getByText("Server and cross-machine coordination are not shipped yet.", {
+  await expect(page.getByText("A separately published Server image supports authenticated remote coordination; managed Cloud is not available.", {
     exact: false,
   })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
