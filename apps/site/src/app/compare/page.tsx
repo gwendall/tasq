@@ -44,7 +44,7 @@ export default function ComparePage() {
           <div className="mt-9 inline-flex max-w-3xl items-start gap-3 border border-white/20 bg-white/[0.04] p-4 text-sm leading-6 text-white/65">
             <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[var(--signal)]" />
             <p>
-              Published boundary: <strong className="text-white">Tasq Local {comparison.tasqClaimBoundary.version}</strong> coordinates consumers sharing one user-owned ledger on one machine. Server is not shipped.
+              Published boundary: <strong className="text-white">Tasq {comparison.tasqClaimBoundary.version}</strong> ships Local for consumers sharing one user-owned ledger on one machine and a separately operated Server for authenticated remote coordination. Managed Cloud is unavailable.
             </p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function ComparePage() {
               <p className="font-semibold">What Tasq does not do</p>
               <ul className="mt-4 grid gap-2 text-sm leading-6 text-[var(--ink-muted)]">
                 <li>It does not make Git edits conflict-free.</li>
-                <li>Local does not coordinate machines through a hosted service.</li>
+                <li>Local remains same-machine; remote coordination requires a separately operated Server.</li>
                 <li>It does not replace issue/PR review or vendor-native orchestration.</li>
                 <li>An MCP or A2A execution completing never completes a Tasq commitment implicitly.</li>
               </ul>

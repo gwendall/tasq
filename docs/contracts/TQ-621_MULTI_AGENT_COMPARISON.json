@@ -4,11 +4,12 @@
   "checkedAt": "2026-08-11",
   "question": "What happens when several agents work the same backlog in parallel?",
   "tasqClaimBoundary": {
-    "version": "0.3.0",
-    "shape": "Tasq Local",
-    "sameMachineOnly": true,
-    "remoteServerShipped": false,
-    "sourceCandidatesExcluded": ["TQ-617", "TQ-618", "TQ-619", "TQ-620"]
+    "version": "0.4.0",
+    "shape": "Tasq Local and self-hosted Tasq Server",
+    "localSameMachineOnly": true,
+    "remoteServerShipped": true,
+    "managedCloudAvailable": false,
+    "sourceCandidatesExcluded": []
   },
   "sources": [
     {
@@ -26,8 +27,14 @@
     {
       "id": "tasq-release",
       "owner": "Tasq",
-      "title": "Published v0.3.0 release",
-      "url": "https://github.com/gwendall/tasq/releases/tag/v0.3.0"
+      "title": "Published v0.4.0 release",
+      "url": "https://github.com/gwendall/tasq/releases/tag/v0.4.0"
+    },
+    {
+      "id": "tasq-server",
+      "owner": "Tasq",
+      "title": "Published self-hosted Server contract",
+      "url": "https://github.com/gwendall/tasq/blob/main/docs/contracts/TQ-807_DEPLOYABLE_SERVER.md"
     },
     {
       "id": "claude-teams",
@@ -87,15 +94,15 @@
   "systems": [
     {
       "id": "tasq-local",
-      "name": "Tasq Local v0.3.0",
+      "name": "Tasq Local + Server v0.4.0",
       "category": "durable_coordination_ledger",
       "availability": "published_alpha",
       "coordinationUnit": "A commitment in one user-owned local ledger, separate from its temporary claim and each execution attempt.",
       "parallelBehavior": "A live expiring claim hides the commitment from another actor's default next-work selection; expiry permits a higher-fence reclaim without rewriting attempt history.",
       "collisionBoundary": "Coordinates who may work the commitment. It does not create a Git worktree or merge code.",
       "completionBoundary": "A successful runtime attempt does not complete the commitment; evidence and, when configured, an independent decision remain separate.",
-      "scopeBoundary": "The published shape coordinates local CLI/MCP consumers on one machine. No public remote Server endpoint is claimed.",
-      "sourceIds": ["tasq-primitives", "tasq-runtime", "tasq-release"],
+      "scopeBoundary": "Published Local coordinates CLI/MCP consumers sharing one user-owned ledger on one machine. The published self-hosted Server coordinates authenticated remote clients; managed Cloud is unavailable.",
+      "sourceIds": ["tasq-primitives", "tasq-runtime", "tasq-release", "tasq-server"],
       "inference": false
     },
     {
@@ -180,6 +187,6 @@
   "conclusion": {
     "differentiated": true,
     "claim": "Tasq's narrow differentiation is a runtime-neutral durable commitment/claim/attempt/evidence boundary. It is not the existence of parallel agents, subagents, worktrees, issue assignment or asynchronous task IDs.",
-    "limits": "Claude Code already demonstrates atomic claiming inside one vendor team; GitHub already owns issue-to-agent-to-PR workflow; Codex and Cursor already isolate parallel code execution. Tasq Local is still same-machine only and does not replace those execution or code-merge surfaces."
+    "limits": "Claude Code already demonstrates atomic claiming inside one vendor team; GitHub already owns issue-to-agent-to-PR workflow; Codex and Cursor already isolate parallel code execution. Tasq Local remains same-machine, Tasq Server remains self-hosted, managed Cloud is unavailable, and neither shape replaces those execution or code-merge surfaces."
   }
 }

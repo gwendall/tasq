@@ -491,8 +491,9 @@ reaching $4,200 and $47,000 motivate the cost bound.
   question that separates coordination tools - what happens when several
   agents work the same backlog in parallel - with every claim carrying its
   source and no claim exceeding what the shipped product does. The canonical
-  matrix freezes the published Tasq Local `v0.3.0` boundary, labels inferences
-  and backs the rendered `/compare/` page with executable traceability tests.
+  matrix freezes the published Tasq `v0.4.0` Local/self-hosted-Server boundary,
+  keeps managed Cloud unavailable, labels inferences and backs the rendered
+  `/compare/` page with executable traceability tests.
 
 ### 7D. Coordinate delegated action without verticalizing Core
 
