@@ -32,8 +32,8 @@ time and is safe to serve as static public content. It cannot inspect or mutate
 a Tasq workspace.
 
 It is also not an agent API. A machine can read `/product-truth.json`, then use
-the advertised local CLI/MCP or future authenticated Server surface. Agents do
-not parse the marketing HTML to coordinate work.
+the advertised Local CLI/MCP or authenticated self-hosted Server surface.
+Agents do not parse the marketing HTML to coordinate work.
 
 ## 3. Truth pipeline
 
@@ -67,10 +67,12 @@ The static application provides:
 - `/` — product thesis, failure model, kernel boundary and product shapes;
 - `/docs/getting-started` — current source build and causal onboarding handoff;
 - `/docs/agents` — safe loop, claims, revisions, cursors and untrusted prose;
-- `/docs/mcp` — local stdio launch and host-owned capability closure;
+- `/docs/mcp` — Local stdio launch, host-owned capability closure and the
+  distinct authenticated Server transport;
 - `/docs/humans` — CLI mutation and read-only Local Console inspection;
 - `/docs/sdk` — integrator-owned store, identity and injected `Clock`;
-- `/docs/operators` — local storage, backup, diagnosis and security boundary;
+- `/docs/operators` — Local storage, backup and diagnosis plus the explicit
+  self-hosted Server operator boundary;
 - `/docs/architecture` — commitment/claim/attempt/evidence separation;
 - `/docs/support` — exact current product and publication non-claims;
 - `/status` — generated release gates, surfaces and source-contract digests;
@@ -100,7 +102,7 @@ The checkpoint requires:
 - deterministic documentation generation bound to the source prose digest;
 - no documentation prose duplicated in the TypeScript rendering adapter;
 - exact support vocabulary coverage and no entrypoint for absent surfaces;
-- unpublished-release and seven-package boundary assertions;
+- protected-release, eight-package, Server and managed-Cloud boundary assertions;
 - all eight consumer learning paths;
 - source scans for ambient clocks, fake install/remote claims and Console/Core
   runtime coupling;
@@ -125,7 +127,7 @@ TQ-605 certifies the versioned application in the public source repository. On
 root directory. The canonical domain returns HTTP 200 with HTTPS at
 <https://tasq.run>.
 
-This deployment does not claim an uptime SLA, analytics, a remote coordination
-surface or a published Tasq package. TQ-603 remains the authority for the first
-protected package and artifact release. The custom domain does not change the
-package support state.
+This static-site deployment does not itself provide an uptime SLA, analytics,
+remote coordination or managed Cloud. Protected releases separately publish
+Tasq Local, remote clients and the self-hosted Server image; the custom domain
+does not change those package or service support states.

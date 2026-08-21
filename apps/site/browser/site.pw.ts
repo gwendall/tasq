@@ -39,6 +39,15 @@ test("documentation gives a complete causal onboarding path", async ({ page }) =
   await expect(page.getByRole("heading", { level: 1 })).toContainText("without sharing a runtime");
 });
 
+test("documentation distinguishes self-hosted Server from managed Cloud", async ({ page }) => {
+  await page.goto("/docs/support/");
+  await expect(page.getByText("ghcr.io/gwendall/tasq-server:0.4.0", { exact: false })).toBeVisible();
+  await expect(page.getByText("Managed Cloud remains unavailable", { exact: false })).toBeVisible();
+
+  await page.goto("/docs/mcp/");
+  await expect(page.getByText("authenticated Streamable HTTP remote MCP", { exact: false })).toBeVisible();
+});
+
 test("an unknown agent can discover host recipes and stable machine entrypoints", async ({ page }) => {
   await page.goto("/agents/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("same work");

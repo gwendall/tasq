@@ -31,15 +31,20 @@ describe("public site boundary", () => {
     expect(source).not.toMatch(/\bperformance\.now\s*\(/);
   });
 
-  test("guards package installation behind generated release truth and never invents remote surfaces", async () => {
-    const source = await sourceText();
+  test("guards package installation and separates published Server from managed Cloud", async () => {
+    const [source, docsSource] = await Promise.all([
+      sourceText(),
+      readFile(resolve(siteRoot, "../../docs/site/PUBLIC_SITE_DOCS.json"), "utf8"),
+    ]);
     expect(source).toContain("productTruth.release.published");
     expect(source).toContain("@tasq-run/cli@");
     expect(source).toContain("https://tasq.run/install-v${releaseVersion}.sh");
     expect(source).not.toMatch(/curl[^\n]*\|\s*(?:ba)?sh/i);
     expect(source).not.toMatch(/curl[^\n]+releases\/download/i);
-    expect(source).not.toMatch(/remote MCP (?:is )?(?:available|shipped)/i);
-    expect(source).not.toMatch(/self-host(?:ed|ing)[^\n]+(?:available|shipped|ready)/i);
+    expect(docsSource).toContain("ghcr.io/gwendall/tasq-server:0.4.0");
+    expect(docsSource).toContain("managed service, public signup or SLA");
+    expect(docsSource).not.toContain("there is no remote MCP endpoint today");
+    expect(docsSource).not.toContain("Server, remote clients, hosted Console and Cloud remain unavailable");
   });
 
   test("has no API route or Console coupling", async () => {
