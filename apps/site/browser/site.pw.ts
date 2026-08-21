@@ -22,9 +22,25 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByText(`Local ${truth.release.version} and the authenticated self-hosted Server are published alphas.`, {
     exact: false,
   })).toBeVisible();
-  await expect(page.getByRole("table")).toContainText("Tasq Local");
-  await expect(page.getByRole("table")).toContainText("Tasq Server");
-  await expect(page.getByRole("table")).toContainText("Candidate");
+  const demo = page.getByRole("img", {
+    name: "Tasq public CLI demo creating and completing one isolated task",
+  });
+  const productTable = page.getByRole("table");
+  await expect(demo).toBeVisible();
+  await demo.scrollIntoViewIfNeeded();
+  await demo.evaluate((image: HTMLImageElement) => image.decode());
+  await expect.poll(() => demo.evaluate((image: HTMLImageElement) => ({
+    complete: image.complete,
+    naturalHeight: image.naturalHeight,
+    naturalWidth: image.naturalWidth,
+  }))).toEqual({ complete: true, naturalHeight: 360, naturalWidth: 640 });
+  expect(await demo.evaluate((image) => Boolean(
+    image.compareDocumentPosition(document.querySelector(".product-table")!)
+      & Node.DOCUMENT_POSITION_FOLLOWING
+  ))).toBe(true);
+  await expect(productTable).toContainText("Tasq Local");
+  await expect(productTable).toContainText("Tasq Server");
+  await expect(productTable).toContainText("Candidate");
   if (!truth.release.published) await expect(page.locator("body")).not.toContainText("npm install @tasq-run/");
 });
 

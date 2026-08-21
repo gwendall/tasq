@@ -71,16 +71,22 @@ describe("public site boundary", () => {
   });
 
   test("keeps the public demo recording reproducible and readable at mobile width", async () => {
-    const [tape, recording] = await Promise.all([
+    const [tape, recording, truthRaw] = await Promise.all([
       readFile(resolve(siteRoot, "media/tasq-demo.tape"), "utf8"),
       readFile(resolve(siteRoot, "public/tasq-demo.gif")),
+      readFile(resolve(siteRoot, "src/generated/product-truth.json"), "utf8"),
     ]);
-    expect(tape).toContain('Type "npx --yes @tasq-run/cli@0.4.0 demo"');
+    const home = await readFile(resolve(siteRoot, "src/app/page.tsx"), "utf8");
+    const truth = JSON.parse(truthRaw);
+    expect(tape).toContain(`Type "npx --yes @tasq-run/cli@${truth.release.version} demo"`);
     expect(tape).toContain("Set Width 640");
     expect(tape).toContain("Set FontSize 18");
     expect(recording.subarray(0, 6).toString("ascii")).toMatch(/^GIF8[79]a$/);
     expect(recording.readUInt16LE(6)).toBeLessThanOrEqual(640);
     expect(recording.readUInt16LE(8)).toBeLessThanOrEqual(360);
+    expect(home).toContain('data-public-demo="true"');
+    expect(home).toContain('src="/tasq-demo.gif"');
+    expect(home.indexOf('src="/tasq-demo.gif"')).toBeLessThan(home.indexOf('className="product-table"'));
   });
 
   test("keeps interaction feedback physical and motion-safe", async () => {
