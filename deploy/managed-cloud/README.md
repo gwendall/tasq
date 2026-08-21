@@ -97,9 +97,13 @@ Fly without printing either value or writing them into a Terraform file:
   turso db show EXACT_DATABASE --url
   printf 'TASQ_CLOUD_DATABASE_AUTH_TOKEN='
   turso db tokens create EXACT_DATABASE --expiration 30d
+  printf 'TASQ_CLOUD_MAINTENANCE=false\n'
 } | flyctl secrets import --app tasq-control --stage
-flyctl secrets set --app tasq-control --stage TASQ_CLOUD_MAINTENANCE=false
 ```
+
+Use exactly one staged import for the complete cutover secret set. A later
+staged secret mutation replaces the pending Machine release instead of merging
+reliably with it, so splitting these values can deploy an incomplete binding.
 
 Before deployment, export the same values into the operator process and compare
 the complete imported contents with the immutable snapshot:
@@ -134,16 +138,22 @@ exact source commit and certified Server digest. After deployment:
 5. keep the old volume and migration snapshot untouched through the complete
    rollback and observation window.
 
-Rollback first re-enables maintenance, stages removal of both remote secrets,
-then runs the protected workflow with `control_database_mode=local` and the
-last known-good source/image coordinates:
+Rollback first re-enables maintenance, applies removal of both remote secrets,
+then clears maintenance and runs the protected workflow with
+`control_database_mode=local` and the last known-good source/image coordinates:
 
 ```bash
 flyctl secrets set --app tasq-control TASQ_CLOUD_MAINTENANCE=true
-flyctl secrets unset --app tasq-control --stage \
+flyctl secrets unset --app tasq-control \
   TASQ_CLOUD_DATABASE_URL TASQ_CLOUD_DATABASE_AUTH_TOKEN
-flyctl secrets set --app tasq-control --stage TASQ_CLOUD_MAINTENANCE=false
+flyctl secrets set --app tasq-control TASQ_CLOUD_MAINTENANCE=false
 ```
+
+The managed-mode process is expected to stay fail-closed after the remote
+credentials are removed and before the local-mode deployment completes. Do
+not split the removals and maintenance change across staged releases: a later
+staged mutation can replace the pending removal. The preserved volume and
+snapshot remain the rollback authority throughout this bounded outage.
 
 This returns the runtime to the preserved local volume. Never delete the
 remote database, local volume or migration snapshot as part of rollback.
