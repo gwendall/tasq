@@ -284,6 +284,30 @@ export default function HomePage() {
               Every status below comes from the versioned product matrix. A designed server never masquerades as a shipped endpoint.
             </p>
           </div>
+          <figure
+            className="mt-12 grid overflow-hidden border border-[var(--line-strong)] bg-[var(--ink)] shadow-[5px_5px_0_var(--signal)] lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]"
+            data-public-demo="true"
+          >
+            <div className="flex items-center justify-center bg-[#1e1e2e] p-3 sm:p-6">
+              <Image
+                alt="Tasq public CLI demo creating and completing one isolated task"
+                className="h-auto w-full max-w-[640px]"
+                height={360}
+                src="/tasq-demo.gif"
+                unoptimized
+                width={640}
+              />
+            </div>
+            <figcaption className="flex flex-col justify-center border-t border-white/15 p-7 text-[var(--paper)] sm:p-9 lg:border-l lg:border-t-0">
+              <h3 className="text-2xl font-semibold tracking-[-0.04em]">Watch one isolated cycle.</h3>
+              <p className="mt-4 text-sm leading-6 text-white/55">
+                The public demo creates and completes a temporary task, then discards it. Your configured ledger stays untouched.
+              </p>
+              <code className="mt-6 overflow-x-auto whitespace-nowrap font-mono text-xs text-[var(--signal)]">
+                npx --yes @tasq-run/cli@{releaseVersion} demo
+              </code>
+            </figcaption>
+          </figure>
           <div className="mt-12 overflow-x-auto border border-[var(--line-strong)]">
             <table className="product-table">
               <thead><tr><th>Shape</th><th>Status</th><th>What it is</th><th>Entrypoints</th></tr></thead>
