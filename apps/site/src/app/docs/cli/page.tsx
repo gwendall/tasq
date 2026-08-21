@@ -12,12 +12,8 @@ export const metadata: Metadata = {
     "Every Tasq command, generated from the shipped binary's own help so the page cannot drift from the tool.",
 };
 
-/**
- * Commands that exist in the binary but whose product is not published. Showing
- * them without that marker would be the exact overclaim the site's contract
- * tests exist to prevent.
- */
-const UNSHIPPED_SECTIONS = new Set(["REMOTE SERVER"]);
+const serverPublished = productTruth.productShapes.find(({ id }) => id === "server")?.publiclyDistributed === true;
+const UNSHIPPED_SECTIONS = serverPublished ? new Set<string>() : new Set(["REMOTE SERVER"]);
 
 export default function CliReferencePage() {
   const version = productTruth.release.version;

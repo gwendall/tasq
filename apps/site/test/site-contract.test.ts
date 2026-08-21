@@ -45,6 +45,8 @@ describe("public site boundary", () => {
     expect(docsSource).toContain("managed service, public signup or SLA");
     expect(docsSource).not.toContain("there is no remote MCP endpoint today");
     expect(docsSource).not.toContain("Server, remote clients, hosted Console and Cloud remain unavailable");
+    expect(source).not.toContain("Server, remote clients and Cloud have source candidates but are still not shipped");
+    expect(source).not.toContain("Remote paths exist as source candidates");
   });
 
   test("has no API route or Console coupling", async () => {

@@ -22,12 +22,13 @@ describe("public site truth", () => {
   test("keeps source and published alpha states internally coherent", () => {
     expect(productTruth.release.website).toBe("https://tasq.run");
     expect(productTruth.release.repositoryState).toBe("public-alpha-source");
-    expect(productTruth.release.publicPackages).toHaveLength(7);
     if (productTruth.release.published) {
       expect(productTruth.release.status).toBe("published-alpha");
       expect(productTruth.release.installAction).toBe("install_release");
       expect(productTruth.release.version).toMatch(/^\d+\.\d+\.\d+$/);
       expect(productTruth.release.githubRelease).toMatch(/^https:\/\/github\.com\/gwendall\/tasq\/releases\/tag\/v/);
+      expect(productTruth.release.publicPackages).toHaveLength(8);
+      expect(productTruth.release.publicPackages).toContain("@tasq-run/client");
       expect(productTruth.productShapes.find((entry) => entry.id === "local")?.publiclyDistributed).toBe(true);
     } else {
       expect(productTruth.release.installAction).toBe("build_from_source");
@@ -159,10 +160,12 @@ describe("public site truth", () => {
       }
     }
 
-    // Commands whose product is not published must stay visibly marked.
+    // Commands whose product is not published must stay visibly marked, while
+    // the current published Server must not inherit its historical marker.
     const page = await Bun.file(new URL("../src/app/docs/cli/page.tsx", import.meta.url)).text();
     if (reference.some((section) => section.heading === "REMOTE SERVER")) {
-      expect(page).toContain("product not shipped");
+      expect(page).toContain("serverPublished ? new Set<string>()");
+      expect(productTruth.productShapes.find(({ id }) => id === "server")?.publiclyDistributed).toBe(true);
     }
   });
 });

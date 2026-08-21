@@ -58,14 +58,16 @@ not live in the TypeScript rendering adapter. That adapter resolves named code
 examples from the executable example registry, so prose has one source while
 commands retain their independent execution tests. An unimplemented surface
 cannot have an entrypoint. An unpublished release cannot render a distributed
-product shape.
+product shape. Once a release exists, the displayed public-package inventory
+comes from its immutable published coordinates rather than the historical
+first-release candidate set.
 
 ## 4. Information architecture
 
 The static application provides:
 
 - `/` — product thesis, failure model, kernel boundary and product shapes;
-- `/docs/getting-started` — current source build and causal onboarding handoff;
+- `/docs/getting-started` — current installation and causal onboarding handoff;
 - `/docs/agents` — safe loop, claims, revisions, cursors and untrusted prose;
 - `/docs/mcp` — Local stdio launch, host-owned capability closure and the
   distinct authenticated Server transport;
