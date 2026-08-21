@@ -70,6 +70,19 @@ describe("public site boundary", () => {
     expect(home).not.toContain('className="map-line');
   });
 
+  test("keeps the public demo recording reproducible and readable at mobile width", async () => {
+    const [tape, recording] = await Promise.all([
+      readFile(resolve(siteRoot, "media/tasq-demo.tape"), "utf8"),
+      readFile(resolve(siteRoot, "public/tasq-demo.gif")),
+    ]);
+    expect(tape).toContain('Type "npx --yes @tasq-run/cli@0.4.0 demo"');
+    expect(tape).toContain("Set Width 640");
+    expect(tape).toContain("Set FontSize 18");
+    expect(recording.subarray(0, 6).toString("ascii")).toMatch(/^GIF8[79]a$/);
+    expect(recording.readUInt16LE(6)).toBeLessThanOrEqual(640);
+    expect(recording.readUInt16LE(8)).toBeLessThanOrEqual(360);
+  });
+
   test("keeps interaction feedback physical and motion-safe", async () => {
     const [buttons, styles] = await Promise.all([
       readFile(resolve(siteRoot, "src/components/ui/button.tsx"), "utf8"),
