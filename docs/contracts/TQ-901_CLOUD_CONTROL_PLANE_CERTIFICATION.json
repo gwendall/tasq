@@ -13,14 +13,29 @@
     "hostInjectedAuthorization": true,
     "tenantScopedAudit": true,
     "experimentalFlyComposition": "hardened_reference_runtime_deployed_2026-08-20",
-    "exactSourceCommitBound": "70325474fd795eb8cc5db05044d989ae0469c1dc",
+    "exactSourceCommitBound": "2d8ee6dd3b2a83ab59e4519330477eb21291877a",
     "exactServerImageDigestBound": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
     "opaqueFlySecretReferences": true,
     "managedLibsqlConnectionCandidate": true,
     "createOnlyMigrationSnapshot": true,
     "schemaAndOrderedRowDigestVerification": true,
     "failClosedMaintenanceCutover": true,
-    "liveManagedDatabaseMigration": "not_run"
+    "liveManagedDatabaseMigration": {
+      "status": "passed",
+      "protectedWorkflowRun": 32483015765,
+      "provider": "Turso",
+      "databaseId": "01a02434-b001-797c-8fbd-ddd59d3c8904",
+      "group": "tasq-production",
+      "primaryLocation": "aws-eu-west-1",
+      "deleteProtection": true,
+      "sourceSnapshotObservedAt": "2026-08-21T12:03:10.000Z",
+      "sourceSnapshotSizeBytes": 184320,
+      "sourceSnapshotSha256": "3f58db88c6be7680925b1bb29e384c2ca470de0605feb2f0708117babc277580",
+      "fullFingerprintMatch": true,
+      "rollbackAssetsPreserved": true,
+      "boundedCredentialRotation": "30d_after_invalidating_probe_tokens",
+      "multiRegionRecovery": false
+    }
   },
   "evidence": [
     "packages/tasq-cloud-control-plane/test/cloud.test.ts",
@@ -29,10 +44,11 @@
     "deploy/managed-cloud/README.md",
     "evidence/cloud-bootstrap-2026-08-13.json",
     "evidence/managed-cloud-deployment-2026-08-20.json",
-    "https://github.com/gwendall/tasq/actions/runs/32406910459"
+    "evidence/managed-cloud-deployment-2026-08-21.json",
+    "https://github.com/gwendall/tasq/actions/runs/32406910459",
+    "https://github.com/gwendall/tasq/actions/runs/32483015765"
   ],
   "remainingExternalGate": [
-    "independent_acceptance_or_replacement_of_single_volume_control_database",
     "independent_multi_tenant_infrastructure_review"
   ],
   "experimentalControlPlaneDeployed": true,

@@ -104,6 +104,14 @@ Fly without printing either value or writing them into a Terraform file:
 Use exactly one staged import for the complete cutover secret set. A later
 staged secret mutation replaces the pending Machine release instead of merging
 reliably with it, so splitting these values can deploy an incomplete binding.
+The protected workflow explicitly runs `flyctl secrets deploy` immediately
+before the managed-mode application deploy when it sees pending secrets. A
+normal `flyctl deploy` does not itself apply that staged secret release.
+
+Applying the remote credentials restarts the still-local process, which rejects
+the cross-mode binding and stays fail-closed until the immediately following
+managed-mode deploy. This bounded cutover outage is expected; the preserved
+volume remains the rollback authority.
 
 Before deployment, export the same values into the operator process and compare
 the complete imported contents with the immutable snapshot:

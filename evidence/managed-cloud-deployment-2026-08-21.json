@@ -1,0 +1,85 @@
+{
+  "contractVersion": "tasq.managed-cloud-deployment.v1",
+  "sourceCommit": "2d8ee6dd3b2a83ab59e4519330477eb21291877a",
+  "serverImage": "ghcr.io/gwendall/tasq-server@sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
+  "region": "cdg",
+  "identity": {
+    "app": "tasq-identity",
+    "publicOrigin": "https://id.tasq.run/",
+    "machineId": "86e276fe272738",
+    "image": "registry.fly.io/tasq-identity:deployment-01M0J5DCKYQ7J9KZ87R46ZNCDC",
+    "health": {
+      "status": "ok",
+      "authorizationCodeAuthentication": "http_basic"
+    },
+    "anonymousAuthorizationStatus": 401,
+    "authenticatedAuthorizationStatus": 303
+  },
+  "control": {
+    "app": "tasq-control",
+    "publicOrigin": "https://control.tasq.run/",
+    "machineId": "8e7366c76e1e98",
+    "image": "registry.fly.io/tasq-control:deployment-01M0J5DY21D28WAW1N64W85DAY",
+    "databaseMode": "managed"
+  },
+  "browserEvidenceDigest": "sha256:15d59e80a2688ace5a25cafec552eed55786b789f6115635df8d37d80cde1da0",
+  "browser": {
+    "contractVersion": "tasq.managed-cloud-browser-evidence.v1",
+    "executedAt": "2026-08-21T12:42:59.681Z",
+    "publicOrigin": "https://control.tasq.run/",
+    "identityIssuer": "https://id.tasq.run/",
+    "status": "passed",
+    "results": [
+      {
+        "engine": "chromium",
+        "status": "passed",
+        "navigationOrigins": [
+          "https://control.tasq.run",
+          "https://id.tasq.run"
+        ],
+        "sessionCookie": {
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "Strict"
+        },
+        "bffReadStatus": 200,
+        "remoteEffectStatus": 403,
+        "logout": "passed"
+      },
+      {
+        "engine": "firefox",
+        "status": "passed",
+        "navigationOrigins": [
+          "https://control.tasq.run",
+          "https://id.tasq.run"
+        ],
+        "sessionCookie": {
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "Strict"
+        },
+        "bffReadStatus": 200,
+        "remoteEffectStatus": 403,
+        "logout": "passed"
+      },
+      {
+        "engine": "webkit",
+        "status": "passed",
+        "navigationOrigins": [
+          "https://control.tasq.run",
+          "https://id.tasq.run"
+        ],
+        "sessionCookie": {
+          "secure": true,
+          "httpOnly": true,
+          "sameSite": "Strict"
+        },
+        "bffReadStatus": 200,
+        "remoteEffectStatus": 403,
+        "logout": "passed"
+      }
+    ]
+  },
+  "remoteEffectsEnabled": false,
+  "managedCloudAvailable": false
+}

@@ -1,6 +1,6 @@
 # Current state
 
-**Updated:** 2026-08-20
+**Updated:** 2026-08-21
 
 Tasq currently ships source for two local product shapes:
 
@@ -460,10 +460,14 @@ Cloud is not available.
 TQ-901 source additionally supports a separately authenticated remote libSQL
 control database plus create-only snapshot and full schema/row fingerprint
 verification. A fail-closed maintenance mode prevents late writes during the
-final import and makes the local/managed binding explicit. The live Fly
-composition still uses its preserved single
-encrypted volume until a protected migration is executed, so database
-replacement and independent infrastructure review remain open.
+final import and makes the local/managed binding explicit. On 2026-08-21,
+protected run `32483015765` deployed the live Fly composition in explicit
+managed mode against a delete-protected, single-location Turso database after
+the full imported schema and ordered-row fingerprint matched the final local
+snapshot. The original encrypted volume and create-only snapshots remain
+preserved for rollback. Database replacement is therefore evidenced;
+independent multi-tenant infrastructure review and multi-region recovery remain
+open.
 TQ-906 remains pending independent review; Server and Cloud both keep remote
 effects disabled.
 
