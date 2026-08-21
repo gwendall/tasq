@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default function StatusPage() {
   const published = productTruth.release.published;
   const releaseVersion = productTruth.release.version ?? "0.1.0";
+  const serverPublished = productTruth.productShapes.find(({ id }) => id === "server")?.publiclyDistributed === true;
 
   return (
     <main id="main-content">
@@ -41,7 +42,7 @@ export default function StatusPage() {
             </div>
             <p className="mt-5 max-w-xl text-sm leading-6 text-[var(--ink-muted)]">
               {published
-                ? "The protected release publishes scoped npm packages and checksummed native artifacts. Retained-data dogfood continues; Server and Cloud are separate unshipped products."
+                ? `The protected release publishes ${productTruth.release.publicPackages.length} scoped npm packages, checksummed native artifacts, the self-hosted Server image and the Python remote client. Managed Cloud remains unavailable.`
                 : "Source, deterministic candidates, seven bootstrap identities and npm OIDC bindings are verified. The bootstrap tag is not supported distribution; the immutable protected release is the remaining gate."}
             </p>
             <div className="mt-7 grid gap-px border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2">
@@ -55,7 +56,7 @@ export default function StatusPage() {
           </div>
           <div className="border border-[var(--line-strong)] bg-[var(--ink)] p-7 text-[var(--paper)] sm:p-8">
             <PackageOpen className="size-7 text-[var(--signal)]" strokeWidth={1.5} />
-            <p className="mt-8 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-white/40">First release boundary</p>
+            <p className="mt-8 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-white/40">Published package boundary</p>
             <p className="mt-3 text-2xl font-semibold tracking-[-0.035em]">{productTruth.release.publicPackages.length} public packages</p>
             {published && productTruth.release.githubRelease ? (
               <a className="mt-3 inline-flex font-mono text-xs text-[var(--signal)] hover:text-white" href={productTruth.release.githubRelease}>
@@ -69,7 +70,7 @@ export default function StatusPage() {
         </div>
 
         <section className="mt-16">
-          <div className="section-intro"><div><p className="eyebrow">Surfaces</p><h2>Every way in.<br />Every boundary visible.</h2></div><p>Agents consume machine contracts. Humans use CLI, projections and Console. Remote paths exist as source candidates, but are unsupported until their exact Server and Cloud artifacts pass the external gates.</p></div>
+          <div className="section-intro"><div><p className="eyebrow">Surfaces</p><h2>Every way in.<br />Every boundary visible.</h2></div><p>{serverPublished ? "Local and authenticated self-hosted Server surfaces are published and certified. Managed Cloud remains experimental and unavailable; remote effects remain disabled." : "Remote paths remain unsupported until their exact Server and Cloud artifacts pass the external gates."}</p></div>
           <div className="mt-10 overflow-x-auto border border-[var(--line-strong)]">
             <table className="product-table">
               <thead><tr><th>Surface</th><th>Status</th><th>Transport</th><th>Entrypoint</th><th>Writes</th></tr></thead>

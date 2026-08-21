@@ -20,7 +20,8 @@
       "@tasq-run/mcp",
       "@tasq-run/extension-sdk",
       "@tasq-run/protocol-adapters",
-      "@tasq-run/console"
+      "@tasq-run/console",
+      "@tasq-run/client"
     ],
     "candidateTargets": [
       "darwin-arm64",

@@ -19,6 +19,9 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByText("A separately published Server image supports authenticated remote coordination; managed Cloud is not available.", {
     exact: false,
   })).toBeVisible();
+  await expect(page.getByText(`Local ${truth.release.version} and the authenticated self-hosted Server are published alphas.`, {
+    exact: false,
+  })).toBeVisible();
   await expect(page.getByRole("table")).toContainText("Tasq Local");
   await expect(page.getByRole("table")).toContainText("Tasq Server");
   await expect(page.getByRole("table")).toContainText("Candidate");
@@ -80,6 +83,8 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   await expect(surfaces).toContainText("Rest");
   await expect(surfaces).toContainText("Cloud Bff");
   await expect(surfaces).toContainText("Candidate");
+  await expect(page.getByText("8 public packages", { exact: true })).toBeVisible();
+  await expect(page.getByText("Managed Cloud remains experimental and unavailable", { exact: false })).toBeVisible();
   const response = await page.request.get("/product-truth.json");
   expect(response.ok()).toBe(true);
   expect((await response.json()).contractVersion).toBe("tasq.public-site-truth.v1");
@@ -90,6 +95,10 @@ test("status page is traceable to machine contracts", async ({ page }) => {
   expect(adoptionContract.distribution.mode).toBe(
     adoptionContract.distribution.published ? "npm_and_github_release" : "source_build",
   );
+
+  await page.goto("/docs/cli/");
+  await expect(page.getByRole("heading", { level: 2, name: "REMOTE SERVER" })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText("product not shipped");
 });
 
 test("comparison page separates execution, orchestration and durable coordination", async ({ page }) => {

@@ -261,9 +261,11 @@ const truth = {
     npmScope: policy.identity.npmScope,
     license: policy.legal.license,
     contributionTerms: policy.legal.contributionTerms,
-    publicPackages: policy.packages
-      .filter((entry) => entry.firstRelease && entry.publicName !== null)
-      .map((entry) => entry.publicName),
+    publicPackages: policy.publishedRelease
+      ? policy.publishedRelease.publishedPackages.map(({ name }) => name)
+      : policy.packages
+          .filter((entry) => entry.firstRelease && entry.publicName !== null)
+          .map((entry) => entry.publicName),
     candidateTargets: policy.candidateCliTargets,
     gates: policy.externalPublicationGateStatus,
     version: policy.publishedRelease?.version ?? null,
