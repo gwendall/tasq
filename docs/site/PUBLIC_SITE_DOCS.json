@@ -93,7 +93,7 @@
         {
           "title": "Launch contract",
           "body": [
-            "Configure your MCP host to launch the installed Tasq executable as a local child process. Stdio is the transport; there is no remote MCP endpoint today."
+            "Configure your MCP host to launch the installed Tasq executable as a local child process. Stdio is the Local transport. The separately published self-hosted Server exposes authenticated Streamable HTTP remote MCP; every request still crosses the Server's identity and live authorization guards."
           ],
           "codeExample": "mcp"
         },
@@ -171,7 +171,7 @@
         {
           "title": "Security boundary",
           "body": [
-            "Local aliases are attribution only. Local MCP capabilities come from the host. The Console is loopback-only. There is no supported REST service, remote MCP endpoint or self-hosted server yet."
+            "Local aliases are attribution only. Local MCP capabilities come from the host, and the Local Console is loopback-only. For network access, published Server v0.4.0 provides guarded REST, authenticated remote MCP and a hosted Console behind operator-managed HTTPS, identity and durable storage. It remains self-hosted software, not managed Cloud."
           ]
         }
       ]
@@ -213,13 +213,13 @@
         {
           "title": "Current product shapes",
           "body": [
-            "Core is implemented for integrator-owned embedding. Local is the complete published composition. Server and Cloud have repository-certified source candidates, but no protected Server image, public endpoint or managed deployment is shipped."
+            "Core is implemented for integrator-owned embedding. Local and the self-hosted Server are publicly distributed in v0.4.0. Cloud has a private experimental composition, but no managed service, public signup or SLA is available."
           ]
         },
         {
           "title": "The publication gate",
           "body": [
-            "Tasq Local {{releaseVersion}} is publicly distributed as a protected alpha with scoped npm packages, checksummed native artifacts and repository-bound provenance. Server, remote clients, hosted Console and Cloud remain unavailable even though their source candidates are visible."
+            "Tasq Local {{releaseVersion}} is publicly distributed as a protected alpha with all eight scoped npm packages, checksummed native artifacts and repository-bound provenance. The Server image at ghcr.io/gwendall/tasq-server:0.4.0 and the tasq-remote==0.4.0 Python client are also published and exact-artifact certified. Managed Cloud remains unavailable, and remote effects remain disabled pending independent review."
           ]
         }
       ]

@@ -126,6 +126,20 @@ describe("public site truth", () => {
     expect(adapter).not.toContain('slug: "getting-started"');
   });
 
+  test("describes published self-hosting without implying managed Cloud availability", () => {
+    const server = productTruth.productShapes.find((entry) => entry.id === "server");
+    const cloud = productTruth.productShapes.find((entry) => entry.id === "cloud");
+    const docs = JSON.stringify(docPages);
+
+    expect(server).toMatchObject({ support: "implemented_certified", publiclyDistributed: true });
+    expect(cloud).toMatchObject({ publiclyDistributed: false });
+    expect(docs).toContain("ghcr.io/gwendall/tasq-server:0.4.0");
+    expect(docs).toContain("authenticated Streamable HTTP remote MCP");
+    expect(docs).toContain("Managed Cloud remains unavailable");
+    expect(docs).not.toContain("there is no remote MCP endpoint today");
+    expect(docs).not.toContain("no protected Server image");
+  });
+
   test("the generated CLI reference matches the shipped help", async () => {
     const reference = (await import("../src/generated/cli-reference.json")).default as Array<{
       heading: string;
