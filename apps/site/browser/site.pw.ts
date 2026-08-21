@@ -95,8 +95,9 @@ test("status page is traceable to machine contracts", async ({ page }) => {
 test("comparison page separates execution, orchestration and durable coordination", async ({ page }) => {
   await page.goto("/compare/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Parallel is not the same as coordinated");
-  await expect(page.getByText("Tasq Local 0.3.0", { exact: false })).toBeVisible();
-  await expect(page.getByText("Server is not shipped", { exact: false })).toBeVisible();
+  await expect(page.getByText("Tasq 0.4.0", { exact: false })).toBeVisible();
+  await expect(page.getByText("separately operated Server", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Managed Cloud is unavailable", { exact: false }).first()).toBeVisible();
   const matrix = page.getByRole("table");
   await expect(matrix).toContainText("Claude Code agent teams");
   await expect(matrix).toContainText("OpenAI Codex app");
@@ -104,7 +105,7 @@ test("comparison page separates execution, orchestration and durable coordinatio
   await expect(page.getByText("Tasq is the coordination record, not the agent runner.")).toBeVisible();
   await expect(page.getByRole("link", { name: /Anthropic: Orchestrate teams/ })).toHaveAttribute("href", "https://code.claude.com/docs/en/agent-teams");
   await expect(page.getByRole("link", { name: /Machine-readable matrix/ })).toHaveAttribute("href", /TQ-621_MULTI_AGENT_COMPARISON\.json$/);
-  await expect(page.locator("body")).not.toContainText("Tasq Server is available");
+  await expect(page.locator("body")).not.toContainText("Server is not shipped");
 });
 
 test("mobile layout stays within the viewport and exposes navigation", async ({ page }) => {

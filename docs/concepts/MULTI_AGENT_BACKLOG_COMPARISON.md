@@ -22,15 +22,16 @@ because it can run agents in parallel or because it has a task list.
 
 Tasq's narrower distinction is a runtime-neutral durable boundary between a
 commitment, an expiring claim, each execution attempt, evidence and an optional
-independent completion decision. Its published limit matters just as much:
-Tasq Local v0.3.0 shares one user-owned ledger among local CLI/MCP consumers on
-one machine; a public remote Server is not shipped.
+independent completion decision. Its published limits matter just as much:
+Tasq Local v0.4.0 shares one user-owned ledger among local CLI/MCP consumers on
+one machine; the separately published Server supports authenticated remote
+coordination but remains self-hosted, and managed Cloud is unavailable.
 
 ## Evidence matrix
 
 | System | Same-backlog behavior | Collision boundary | Completion boundary |
 |---|---|---|---|
-| **Tasq Local v0.3.0** | A live expiring claim removes a commitment from another actor's default next-work selection; expiry permits higher-fence reclaim without rewriting attempts. | Coordinates work ownership, not Git files or merges. | Runtime success remains an attempt; evidence and configured independent validation are separate. [Primitives](https://github.com/gwendall/tasq/blob/main/docs/concepts/AGENTIC_PRIMITIVES.md), [runtime contract](https://github.com/gwendall/tasq/blob/main/docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md), [published release](https://github.com/gwendall/tasq/releases/tag/v0.3.0). |
+| **Tasq Local + Server v0.4.0** | A live expiring claim removes a commitment from another actor's default next-work selection; expiry permits higher-fence reclaim without rewriting attempts. Local consumers share one machine-owned ledger; authenticated remote consumers use an operator-run Server. | Coordinates work ownership, not Git files or merges. | Runtime success remains an attempt; evidence and configured independent validation are separate. [Primitives](https://github.com/gwendall/tasq/blob/main/docs/concepts/AGENTIC_PRIMITIVES.md), [runtime contract](https://github.com/gwendall/tasq/blob/main/docs/contracts/TQ-320_INTERACTIVE_RUNTIME_CONSUMER.md), [published release](https://github.com/gwendall/tasq/releases/tag/v0.4.0), [Server contract](https://github.com/gwendall/tasq/blob/main/docs/contracts/TQ-807_DEPLOYABLE_SERVER.md). |
 | **Claude Code agent teams** | A team-local shared list has three states, dependencies, lead assignment and self-claim; file locking arbitrates racing claims. | Teammates are not worktree-isolated, so Anthropic advises file ownership to avoid overwrites. | `TaskCompleted` hooks can block completion, while status lag is a documented experimental limitation. [Agent teams](https://code.claude.com/docs/en/agent-teams), [parallel approaches](https://code.claude.com/docs/en/agents). |
 | **GitHub Copilot agents** | Issue assignment or an Agents prompt starts a session; GitHub documents parallel sessions and worktree/cloud-sandbox isolation. | Branches, worktrees and GitHub merge/review reconcile code. | The documented handoff is a pull request reviewed and iterated by a human. [Agent walkthrough](https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/overview), [third-party agent apps](https://docs.github.com/en/copilot/concepts/agents/agent-apps). |
 | **GitHub Copilot CLI `/fleet`** | A main agent decomposes one request, evaluates dependencies and runs suitable subtasks in parallel. | Coordination belongs to the parent Copilot workflow. | The main agent manages dependencies and integrates results. [Fleet](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet). |
@@ -57,12 +58,14 @@ and disprove any broad claim that Tasq invented atomic task claiming.
 ## What Tasq must not claim
 
 - Tasq does not make code edits conflict-free; use worktrees and merge tooling.
-- Tasq Local does not coordinate machines through a hosted service.
+- Tasq Local remains same-machine; remote coordination requires a separately
+  operated Tasq Server.
+- Tasq Server is not managed Cloud, and its publication grants no hosted SLA.
 - Tasq does not replace GitHub issues/PR review or a vendor's internal agent
   orchestration.
 - MCP/A2A `completed` never becomes Tasq commitment completion implicitly.
-- Main-branch candidates added after v0.3.0 are excluded from the public
-  comparison until exact published artifacts contain them.
+- Main-branch candidates remain excluded from the public comparison until
+  exact published artifacts contain them.
 
 ## Method
 

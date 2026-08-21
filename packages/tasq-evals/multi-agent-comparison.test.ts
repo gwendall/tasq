@@ -12,8 +12,9 @@ const comparison = JSON.parse(readFileSync(
   tasqClaimBoundary: {
     version: string;
     shape: string;
-    sameMachineOnly: boolean;
+    localSameMachineOnly: boolean;
     remoteServerShipped: boolean;
+    managedCloudAvailable: boolean;
     sourceCandidatesExcluded: string[];
   };
   sources: Array<{ id: string; owner: string; title: string; url: string }>;
@@ -28,20 +29,32 @@ const comparison = JSON.parse(readFileSync(
     scopeBoundary: string;
   }>;
 };
+const releasePolicy = JSON.parse(readFileSync(
+  resolve(root, "docs/releases/PUBLIC_RELEASE_POLICY.json"),
+  "utf8",
+)) as { publishedRelease: null | { version: string } };
+const productMatrix = JSON.parse(readFileSync(
+  resolve(root, "docs/concepts/PRODUCT_SURFACE_MATRIX.json"),
+  "utf8",
+)) as { productShapes: Array<{ id: string; publiclyDistributed: boolean }> };
 
 describe("TQ-621 multi-agent backlog comparison", () => {
-  test("pins the comparison to published Local truth", () => {
+  test("pins the comparison to published Local and Server truth", () => {
     expect(comparison).toMatchObject({
       contractVersion: "tasq.multi-agent-backlog-comparison.v1",
       checkedAt: "2026-08-11",
       tasqClaimBoundary: {
-        version: "0.3.0",
-        shape: "Tasq Local",
-        sameMachineOnly: true,
-        remoteServerShipped: false,
-        sourceCandidatesExcluded: ["TQ-617", "TQ-618", "TQ-619", "TQ-620"],
+        version: releasePolicy.publishedRelease?.version,
+        shape: "Tasq Local and self-hosted Tasq Server",
+        localSameMachineOnly: true,
+        remoteServerShipped: true,
+        managedCloudAvailable: false,
+        sourceCandidatesExcluded: [],
       },
     });
+    expect(productMatrix.productShapes.find(({ id }) => id === "local")?.publiclyDistributed).toBe(true);
+    expect(productMatrix.productShapes.find(({ id }) => id === "server")?.publiclyDistributed).toBe(true);
+    expect(productMatrix.productShapes.find(({ id }) => id === "cloud")?.publiclyDistributed).toBe(false);
   });
 
   test("makes every system claim traceable and every classification explicit", () => {
@@ -74,10 +87,11 @@ describe("TQ-621 multi-agent backlog comparison", () => {
     }
   });
 
-  test("does not turn execution protocols or source candidates into shipped Tasq features", () => {
+  test("does not turn execution protocols or managed Cloud into shipped Tasq features", () => {
     const tasq = comparison.systems.find(({ id }) => id === "tasq-local");
     const protocols = comparison.systems.find(({ id }) => id === "mcp-a2a");
-    expect(tasq?.scopeBoundary).toContain("No public remote Server endpoint");
+    expect(tasq?.scopeBoundary).toContain("published self-hosted Server");
+    expect(tasq?.scopeBoundary).toContain("managed Cloud is unavailable");
     expect(tasq?.completionBoundary).toContain("does not complete");
     expect(protocols).toMatchObject({ inference: true });
     expect(protocols?.completionBoundary).toContain("separate organizational commitment decision");
