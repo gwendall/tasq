@@ -354,6 +354,15 @@ export function cloudRuntimeDatabase(input: {
   });
 }
 
+export function cloudDatabaseStartupStatements(
+  database: CloudControlPlaneDatabase,
+): readonly string[] {
+  const validated = cloudControlPlaneDatabase(database);
+  return validated.url.startsWith("file:")
+    ? ["PRAGMA foreign_keys = ON", "PRAGMA busy_timeout = 30000"]
+    : ["PRAGMA foreign_keys = ON"];
+}
+
 export interface CloudWorkspace {
   tenantId: string;
   id: string;
@@ -470,8 +479,9 @@ export class CloudControlPlane {
     const { database: databaseInput, ...runtimeOptions } = options;
     const database = cloudControlPlaneDatabase(databaseInput);
     const client = createClient(database);
-    await client.execute("PRAGMA foreign_keys = ON");
-    await client.execute("PRAGMA busy_timeout = 30000");
+    for (const statement of cloudDatabaseStartupStatements(database)) {
+      await client.execute(statement);
+    }
     await client.executeMultiple(migration);
     return new CloudControlPlane(client, runtimeOptions);
   }

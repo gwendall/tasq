@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   CloudControlPlane,
+  cloudDatabaseStartupStatements,
   cloudControlPlaneDatabase,
   cloudMaintenanceMode,
   cloudRuntimeDatabase,
@@ -99,6 +100,19 @@ describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
       remoteUrl: undefined,
       remoteAuthToken: undefined,
     })).toThrow("TASQ_CLOUD_DATABASE_MODE must be local or managed");
+  });
+
+  test("does not send the local busy timeout pragma to managed libSQL", () => {
+    expect(cloudDatabaseStartupStatements({
+      url: "file:/data/control.sqlite",
+    })).toEqual([
+      "PRAGMA foreign_keys = ON",
+      "PRAGMA busy_timeout = 30000",
+    ]);
+    expect(cloudDatabaseStartupStatements({
+      url: "libsql://control.example",
+      authToken: "opaque-token",
+    })).toEqual(["PRAGMA foreign_keys = ON"]);
   });
 
   test("creates a verified create-only migration snapshot without path disclosure", async () => {
