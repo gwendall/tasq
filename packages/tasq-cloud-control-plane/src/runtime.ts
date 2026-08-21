@@ -5,6 +5,8 @@ import { systemClock } from "@tasq-run/schema";
 import { z } from "zod";
 import {
   CloudControlPlane,
+  cloudMaintenanceMode,
+  cloudRuntimeDatabase,
   cloudSessionCookie,
   createCloudBff,
   type CloudProvisioner,
@@ -33,6 +35,13 @@ function safeSegment(value: string): string {
 }
 
 const dataDir = process.env.TASQ_CLOUD_DATA_DIR ?? "/data";
+const maintenance = cloudMaintenanceMode(process.env.TASQ_CLOUD_MAINTENANCE);
+const database = cloudRuntimeDatabase({
+  mode: process.env.TASQ_CLOUD_DATABASE_MODE,
+  localUrl: `file:${join(dataDir, "control.sqlite")}`,
+  remoteUrl: process.env.TASQ_CLOUD_DATABASE_URL,
+  remoteAuthToken: process.env.TASQ_CLOUD_DATABASE_AUTH_TOKEN,
+});
 const artifactDir = join(dataDir, "artifacts");
 const publicOrigin = required("TASQ_CLOUD_PUBLIC_ORIGIN");
 const oidcIssuer = required("TASQ_CLOUD_OIDC_ISSUER");
@@ -114,7 +123,7 @@ const provisioner: CloudProvisioner = {
 };
 
 const controlPlane = await CloudControlPlane.open({
-  url: `file:${join(dataDir, "control.sqlite")}`,
+  database,
   clock: runtimeClock,
   identityPepper: bytes("TASQ_CLOUD_IDENTITY_PEPPER"),
   sessionPepper: bytes("TASQ_CLOUD_SESSION_PEPPER"),
@@ -191,7 +200,7 @@ async function admin(request: Request, url: URL): Promise<Response> {
       });
     } else if (workspace.deploymentRef !== `fly:tasq-api@${serverImageDigest}`) {
       const { createClient } = await import("@libsql/client");
-      const client = createClient({ url: `file:${join(dataDir, "control.sqlite")}` });
+      const client = createClient(database);
       try {
         await client.execute({
           sql: `UPDATE cloud_workspace SET status='failed',last_error_code='deployment_digest_reconciliation',updated_at=?
@@ -478,7 +487,15 @@ const server = Bun.serve({
   port,
   async fetch(request) {
     const url = new URL(request.url);
-    if (url.pathname === "/healthz") return responseJson({ status: "ok" });
+    if (url.pathname === "/healthz") {
+      return responseJson({ status: "ok", maintenance });
+    }
+    if (maintenance) {
+      return responseJson({
+        contractVersion: "tasq.cloud-maintenance.v1",
+        code: "database_migration_in_progress",
+      }, 503);
+    }
     if (url.pathname === "/readyz") {
       const workspace = await controlPlane.getWorkspace("tasq-beta", "main").catch(() => null);
       return responseJson({ status: workspace?.status === "ready" ? "ready" : "initializing", workspace }, workspace ? 200 : 503);

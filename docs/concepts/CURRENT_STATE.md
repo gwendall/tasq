@@ -457,6 +457,13 @@ Chromium, Firefox and WebKit callback, session, BFF, effect-denial and logout
 checks. A real IdP/workload secret manager, database acceptance, region
 recovery, independent security review and unbriefed operations remain, so Tasq
 Cloud is not available.
+TQ-901 source additionally supports a separately authenticated remote libSQL
+control database plus create-only snapshot and full schema/row fingerprint
+verification. A fail-closed maintenance mode prevents late writes during the
+final import and makes the local/managed binding explicit. The live Fly
+composition still uses its preserved single
+encrypted volume until a protected migration is executed, so database
+replacement and independent infrastructure review remain open.
 TQ-906 remains pending independent review; Server and Cloud both keep remote
 effects disabled.
 

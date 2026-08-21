@@ -78,4 +78,41 @@ describe("TQ-901–TQ-906 managed Cloud truth gate", () => {
     expect(cloudSource).toContain('code: "remote_effects_disabled"');
     expect(cloudSource).not.toContain("effect.dispatch");
   });
+
+  test("keeps managed database migration create-only and deployment fail-closed", async () => {
+    const certificate = await json(
+      "docs/contracts/TQ-901_CLOUD_CONTROL_PLANE_CERTIFICATION.json",
+    );
+    expect(certificate.proof).toMatchObject({
+      managedLibsqlConnectionCandidate: true,
+      createOnlyMigrationSnapshot: true,
+      schemaAndOrderedRowDigestVerification: true,
+      failClosedMaintenanceCutover: true,
+      liveManagedDatabaseMigration: "not_run",
+    });
+    const [snapshot, runtime, workflow, runbook] = await Promise.all([
+      readFile(resolve(root,
+        "packages/tasq-cloud-control-plane/src/database-snapshot.ts"), "utf8"),
+      readFile(resolve(root,
+        "packages/tasq-cloud-control-plane/src/runtime.ts"), "utf8"),
+      readFile(resolve(root,
+        ".github/workflows/deploy-fly-private-beta.yml"), "utf8"),
+      readFile(resolve(root, "deploy/managed-cloud/README.md"), "utf8"),
+    ]);
+    expect(snapshot).toContain('sql: "VACUUM INTO ?"');
+    expect(snapshot).toContain("fingerprintCloudDatabase");
+    expect(snapshot).not.toContain("unlink(");
+    expect(runtime).toContain("TASQ_CLOUD_DATABASE_URL");
+    expect(runtime).toContain("TASQ_CLOUD_DATABASE_AUTH_TOKEN");
+    expect(runtime).toContain("TASQ_CLOUD_MAINTENANCE");
+    expect(workflow).toContain(
+      "for required in TASQ_CLOUD_DATABASE_URL TASQ_CLOUD_DATABASE_AUTH_TOKEN",
+    );
+    expect(workflow).toContain("control_database_mode:");
+    expect(workflow).toContain('--env TASQ_CLOUD_DATABASE_MODE="$INPUT_CONTROL_DATABASE_MODE"');
+    expect(runbook).toMatch(/Never delete the\s+remote database, local volume/);
+    expect(runbook).toContain("database_migration_in_progress");
+    expect(runbook).toContain("it is not multi-region recovery evidence");
+    expect(runbook).toMatch(/independent\s+multi-tenant infrastructure review/);
+  });
 });
