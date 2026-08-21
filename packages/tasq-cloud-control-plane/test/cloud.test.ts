@@ -1,15 +1,22 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   CloudControlPlane,
+  cloudControlPlaneDatabase,
+  cloudMaintenanceMode,
+  cloudRuntimeDatabase,
   cloudSessionCookie,
   createCloudBff,
   type CloudAction,
   type CloudAuthorizationRequest,
   type CloudProvisioner,
 } from "../src/index.js";
+import {
+  snapshotLocalCloudDatabase,
+  verifyCloudDatabaseMigration,
+} from "../src/database-snapshot.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -34,6 +41,146 @@ function authority(now: () => number) {
 }
 
 describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
+  test("requires secret-free local URLs and separate credentials for remote libSQL", () => {
+    expect(cloudControlPlaneDatabase({ url: " file:/tmp/control.sqlite " })).toEqual({
+      url: "file:/tmp/control.sqlite",
+    });
+    expect(cloudControlPlaneDatabase({
+      url: "libsql://control.example",
+      authToken: " opaque-token ",
+    })).toEqual({
+      url: "libsql://control.example",
+      authToken: "opaque-token",
+    });
+    expect(() => cloudControlPlaneDatabase({
+      url: "libsql://control.example",
+    })).toThrow("remote cloud database requires an auth token");
+    expect(() => cloudControlPlaneDatabase({
+      url: "libsql://user:secret@control.example",
+      authToken: "opaque-token",
+    })).toThrow("cloud database URL must not contain credentials");
+    expect(() => cloudControlPlaneDatabase({
+      url: "file:/tmp/control.sqlite",
+      authToken: "must-not-be-ignored",
+    })).toThrow("local cloud database must not receive an auth token");
+  });
+
+  test("accepts only an explicit fail-closed maintenance mode", () => {
+    expect(cloudMaintenanceMode(undefined)).toBe(false);
+    expect(cloudMaintenanceMode(" false ")).toBe(false);
+    expect(cloudMaintenanceMode("TRUE")).toBe(true);
+    expect(() => cloudMaintenanceMode("1")).toThrow(
+      "TASQ_CLOUD_MAINTENANCE must be true or false",
+    );
+  });
+
+  test("requires an explicit database mode and never silently crosses bindings", () => {
+    expect(cloudRuntimeDatabase({
+      mode: undefined,
+      localUrl: "file:/data/control.sqlite",
+      remoteUrl: undefined,
+      remoteAuthToken: undefined,
+    })).toEqual({ url: "file:/data/control.sqlite" });
+    expect(cloudRuntimeDatabase({
+      mode: "managed",
+      localUrl: "file:/data/control.sqlite",
+      remoteUrl: "libsql://control.example",
+      remoteAuthToken: "opaque-token",
+    })).toEqual({ url: "libsql://control.example", authToken: "opaque-token" });
+    expect(() => cloudRuntimeDatabase({
+      mode: "local",
+      localUrl: "file:/data/control.sqlite",
+      remoteUrl: "libsql://control.example",
+      remoteAuthToken: "opaque-token",
+    })).toThrow("local cloud database mode must not receive remote database secrets");
+    expect(() => cloudRuntimeDatabase({
+      mode: "other",
+      localUrl: "file:/data/control.sqlite",
+      remoteUrl: undefined,
+      remoteAuthToken: undefined,
+    })).toThrow("TASQ_CLOUD_DATABASE_MODE must be local or managed");
+  });
+
+  test("creates a verified create-only migration snapshot without path disclosure", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tasq-cloud-snapshot-"));
+    roots.push(root);
+    const databasePath = join(root, "control.sqlite");
+    const snapshotPath = join(root, "control-migration.sqlite");
+    const authorization = authority(() => 1_900_000_000_000);
+    const control = await CloudControlPlane.open({
+      database: { url: `file:${databasePath}` },
+      clock: { now: () => 1_900_000_000_000 },
+      identityPepper: new Uint8Array(32).fill(1),
+      sessionPepper: new Uint8Array(32).fill(2),
+      authorize: authorization.authorize,
+      provisioner: {
+        async provision() {
+          throw new Error("unused");
+        },
+        async export() {
+          throw new Error("unused");
+        },
+        async rotateCredentials() {
+          throw new Error("unused");
+        },
+        async backup() {
+          throw new Error("unused");
+        },
+        async restore() {
+          throw new Error("unused");
+        },
+        async delete() {},
+      },
+    });
+    await control.createTenant({
+      id: "snapshot",
+      slug: "snapshot",
+      plan: "migration",
+      maxWorkspaces: 1,
+      retentionDays: 30,
+      operationId: "snapshot-tenant",
+    });
+    control.close();
+
+    const receipt = await snapshotLocalCloudDatabase({
+      sourceUrl: `file:${databasePath}`,
+      destination: snapshotPath,
+      observedAt: "2030-03-17T17:46:40.000Z",
+      sourceRef: "urn:tasq-provider:fly:tasq-control:volume",
+    });
+    expect(receipt).toMatchObject({
+      contractVersion: "tasq.cloud-database-snapshot.v1",
+      integrity: "ok",
+      foreignKeyViolations: 0,
+      snapshotFile: "control-migration.sqlite",
+      tables: {
+        cloud_tenant: {
+          rows: 1,
+        },
+      },
+    });
+    expect(JSON.stringify(receipt)).not.toContain(root);
+    expect((await stat(snapshotPath)).mode & 0o777).toBe(0o600);
+    expect(await verifyCloudDatabaseMigration({
+      source: { url: `file:${databasePath}` },
+      target: { url: `file:${snapshotPath}` },
+      observedAt: "2030-03-17T17:46:40.000Z",
+      sourceRef: "urn:tasq-provider:fly:tasq-control:volume",
+      targetRef: "urn:tasq-provider:test:managed-libsql",
+    })).toMatchObject({
+      contractVersion: "tasq.cloud-database-migration.v1",
+      status: "passed",
+      sourceRef: "urn:tasq-provider:fly:tasq-control:volume",
+      targetRef: "urn:tasq-provider:test:managed-libsql",
+    });
+    await expect(snapshotLocalCloudDatabase({
+      sourceUrl: `file:${databasePath}`,
+      destination: snapshotPath,
+      observedAt: "2030-03-17T17:46:40.000Z",
+      sourceRef: "urn:tasq-provider:fly:tasq-control:volume",
+    })).rejects.toThrow();
+  });
+
   test("isolates provisioning, sessions, BFF, lifecycle, support and deletion", async () => {
     const root = await mkdtemp(join(tmpdir(), "tasq-cloud-"));
     roots.push(root);
@@ -84,7 +231,7 @@ describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
       },
     };
     const control = await CloudControlPlane.open({
-      url: `file:${databasePath}`,
+      database: { url: `file:${databasePath}` },
       clock: { now: () => current },
       identityPepper: new Uint8Array(32).fill(1),
       sessionPepper: new Uint8Array(32).fill(2),
@@ -479,7 +626,7 @@ describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
       async delete() {},
     };
     const control = await CloudControlPlane.open({
-      url: `file:${databasePath}`,
+      database: { url: `file:${databasePath}` },
       clock: { now: () => current },
       identityPepper: new Uint8Array(32).fill(3),
       sessionPepper: new Uint8Array(32).fill(4),

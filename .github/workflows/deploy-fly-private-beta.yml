@@ -16,6 +16,14 @@ on:
         required: true
         default: false
         type: boolean
+      control_database_mode:
+        description: Control database binding for managed Cloud
+        required: true
+        default: local
+        type: choice
+        options:
+          - local
+          - managed
       confirmation:
         description: Type deploy-tasq-fly-beta or deploy-tasq-managed-cloud
         required: true
@@ -175,6 +183,7 @@ jobs:
       INPUT_CONFIRMATION: ${{ inputs.confirmation }}
       INPUT_DIGEST: ${{ inputs.image_digest }}
       INPUT_SOURCE_COMMIT: ${{ inputs.source_commit }}
+      INPUT_CONTROL_DATABASE_MODE: ${{ inputs.control_database_mode }}
       TASQ_ID_OPERATOR_USERNAME: ${{ secrets.TASQ_ID_OPERATOR_USERNAME }}
       TASQ_ID_OPERATOR_PASSWORD: ${{ secrets.TASQ_ID_OPERATOR_PASSWORD }}
       TASQ_SERVER_IMAGE: ghcr.io/gwendall/tasq-server
@@ -198,6 +207,7 @@ jobs:
           test -n "$TASQ_ID_OPERATOR_USERNAME"
           test -n "$TASQ_ID_OPERATOR_PASSWORD"
           test "${#TASQ_ID_OPERATOR_PASSWORD}" -ge 32
+          test "$INPUT_CONTROL_DATABASE_MODE" = local || test "$INPUT_CONTROL_DATABASE_MODE" = managed
           grep -F 'operatorUsername: required("TASQ_ID_OPERATOR_USERNAME")' \
             packages/tasq-cloud-control-plane/src/identity-runtime.ts >/dev/null
           grep -F 'operatorPassword: required("TASQ_ID_OPERATOR_PASSWORD")' \
@@ -237,6 +247,12 @@ jobs:
             jq --exit-status --arg name "$required" 'any(.[]; .name == $name)' \
               <<< "$control_secrets" >/dev/null
           done
+          if test "$INPUT_CONTROL_DATABASE_MODE" = managed; then
+            for required in TASQ_CLOUD_DATABASE_URL TASQ_CLOUD_DATABASE_AUTH_TOKEN; do
+              jq --exit-status --arg name "$required" 'any(.[]; .name == $name)' \
+                <<< "$control_secrets" >/dev/null
+            done
+          fi
           identity_secrets="$(FLY_API_TOKEN="$FLY_IDENTITY_API_TOKEN" flyctl secrets list --app tasq-identity --json)"
           for required in TASQ_ID_CLIENT_SECRET TASQ_ID_OPERATOR_SUBJECT \
             TASQ_ID_SIGNING_KEY_PKCS8; do
@@ -309,6 +325,7 @@ jobs:
           --config deploy/managed-cloud/control.fly.toml
           --dockerfile deploy/managed-cloud/Dockerfile
           --app tasq-control
+          --env TASQ_CLOUD_DATABASE_MODE="$INPUT_CONTROL_DATABASE_MODE"
           --remote-only
           --ha=false
           --strategy immediate
@@ -350,6 +367,7 @@ jobs:
             --arg identityImage "$(jq -r .config.image <<< "$identity_machine")" \
             --arg controlMachineId "$(jq -r .id <<< "$control_machine")" \
             --arg controlImage "$(jq -r .config.image <<< "$control_machine")" \
+            --arg controlDatabaseMode "$INPUT_CONTROL_DATABASE_MODE" \
             --arg browserDigest "$browser_digest" \
             --argjson browser "$(cat managed-cloud-browser.json)" \
             --argjson identityHealth "$(cat identity-health.json)" \
@@ -371,7 +389,8 @@ jobs:
                 app: "tasq-control",
                 publicOrigin: "https://control.tasq.run/",
                 machineId: $controlMachineId,
-                image: $controlImage
+                image: $controlImage,
+                databaseMode: $controlDatabaseMode
               },
               browserEvidenceDigest: $browserDigest,
               browser: $browser,

@@ -39,6 +39,24 @@ private experiment, not a running managed service or a production database
 claim. Independent acceptance or replacement of that database, infrastructure
 review, SLO and multi-region evidence remain external.
 
+The current source can now bind the same control-plane service to a remote
+libSQL database with a credential-free URL and separately supplied token. It
+also provides a create-only, WAL-safe local migration snapshot and a
+deterministic verifier over every `cloud_*` table's schema and ordered row
+contents. An explicit maintenance mode rejects every non-health route while
+the final snapshot and import run, closing the late-write loss window. The Fly
+workflow refuses managed database mode unless the remote database URL and token
+exist as encrypted app secrets. The complete non-destructive migration and
+rollback sequence is in
+[`deploy/managed-cloud/README.md`](../../deploy/managed-cloud/README.md).
+
+No live managed database has yet been created or imported by this source
+change. The replacement gate therefore remains open until protected deployment
+evidence resolves the exact database reference, fingerprints and rollback; the
+independent multi-tenant infrastructure review remains separate.
+Managed database durability or point-in-time restore must not be described as
+multi-region recovery; that remains a separate production-readiness gate.
+
 The provider-neutral evidence fields and fail-closed validation route are
 defined in
 [`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](MANAGED_CLOUD_PRODUCTION_READINESS.schema.json)

@@ -288,13 +288,70 @@ export interface CloudProvisioner {
   }): Promise<void>;
 }
 
-export interface CloudControlPlaneOptions {
+export interface CloudControlPlaneDatabase {
   url: string;
+  authToken?: string;
+}
+
+export interface CloudControlPlaneOptions {
+  database: CloudControlPlaneDatabase;
   clock: Clock;
   identityPepper: Uint8Array;
   sessionPepper: Uint8Array;
   authorize(input: CloudAuthorizationRequest): Promise<CloudAuthorizationDecision>;
   provisioner: CloudProvisioner;
+}
+
+type CloudControlPlaneRuntimeOptions = Omit<CloudControlPlaneOptions, "database">;
+
+export function cloudMaintenanceMode(input: string | undefined): boolean {
+  const value = input?.trim().toLowerCase();
+  if (!value || value === "false") return false;
+  if (value === "true") return true;
+  throw new Error("TASQ_CLOUD_MAINTENANCE must be true or false");
+}
+
+export function cloudControlPlaneDatabase(
+  input: CloudControlPlaneDatabase,
+): CloudControlPlaneDatabase {
+  const url = input.url.trim();
+  if (!url) throw new Error("cloud database URL is required");
+  const parsed = new URL(url);
+  if (!["file:", "libsql:", "https:"].includes(parsed.protocol)) {
+    throw new Error("cloud database URL must use file, libsql or https");
+  }
+  if (parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error("cloud database URL must not contain credentials, query or fragment");
+  }
+  const authToken = input.authToken?.trim();
+  if (parsed.protocol === "file:") {
+    if (authToken) throw new Error("local cloud database must not receive an auth token");
+    return { url };
+  }
+  if (!authToken) throw new Error("remote cloud database requires an auth token");
+  return { url, authToken };
+}
+
+export function cloudRuntimeDatabase(input: {
+  mode: string | undefined;
+  localUrl: string;
+  remoteUrl: string | undefined;
+  remoteAuthToken: string | undefined;
+}): CloudControlPlaneDatabase {
+  const mode = input.mode?.trim().toLowerCase() || "local";
+  if (mode === "local") {
+    if (input.remoteUrl?.trim() || input.remoteAuthToken?.trim()) {
+      throw new Error("local cloud database mode must not receive remote database secrets");
+    }
+    return cloudControlPlaneDatabase({ url: input.localUrl });
+  }
+  if (mode !== "managed") {
+    throw new Error("TASQ_CLOUD_DATABASE_MODE must be local or managed");
+  }
+  return cloudControlPlaneDatabase({
+    url: input.remoteUrl ?? "",
+    authToken: input.remoteAuthToken,
+  });
 }
 
 export interface CloudWorkspace {
@@ -403,18 +460,20 @@ export class CloudControlPlane {
 
   private constructor(
     private readonly client: Client,
-    private readonly options: CloudControlPlaneOptions,
+    private readonly options: CloudControlPlaneRuntimeOptions,
   ) {}
 
   static async open(options: CloudControlPlaneOptions): Promise<CloudControlPlane> {
     if (options.identityPepper.byteLength < 32 || options.sessionPepper.byteLength < 32) {
       throw new Error("cloud peppers must contain at least 32 bytes");
     }
-    const client = createClient({ url: options.url });
+    const { database: databaseInput, ...runtimeOptions } = options;
+    const database = cloudControlPlaneDatabase(databaseInput);
+    const client = createClient(database);
     await client.execute("PRAGMA foreign_keys = ON");
     await client.execute("PRAGMA busy_timeout = 30000");
     await client.executeMultiple(migration);
-    return new CloudControlPlane(client, options);
+    return new CloudControlPlane(client, runtimeOptions);
   }
 
   close(): void {

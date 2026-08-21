@@ -1,7 +1,7 @@
 {
   "contractVersion": "tasq.cloud-control-plane-certification.v1",
   "status": "candidate_done_external_gate",
-  "updatedAt": "2026-08-20",
+  "updatedAt": "2026-08-21",
   "backlogItem": "TQ-901",
   "implementation": "packages/tasq-cloud-control-plane",
   "proof": {
@@ -15,11 +15,18 @@
     "experimentalFlyComposition": "hardened_reference_runtime_deployed_2026-08-20",
     "exactSourceCommitBound": "70325474fd795eb8cc5db05044d989ae0469c1dc",
     "exactServerImageDigestBound": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
-    "opaqueFlySecretReferences": true
+    "opaqueFlySecretReferences": true,
+    "managedLibsqlConnectionCandidate": true,
+    "createOnlyMigrationSnapshot": true,
+    "schemaAndOrderedRowDigestVerification": true,
+    "failClosedMaintenanceCutover": true,
+    "liveManagedDatabaseMigration": "not_run"
   },
   "evidence": [
     "packages/tasq-cloud-control-plane/test/cloud.test.ts",
     "packages/tasq-cloud-control-plane/src/index.ts",
+    "packages/tasq-cloud-control-plane/src/database-snapshot.ts",
+    "deploy/managed-cloud/README.md",
     "evidence/cloud-bootstrap-2026-08-13.json",
     "evidence/managed-cloud-deployment-2026-08-20.json",
     "https://github.com/gwendall/tasq/actions/runs/32406910459"

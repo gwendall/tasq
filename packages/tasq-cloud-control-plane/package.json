@@ -11,6 +11,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "snapshot:database": "bun src/database-snapshot.ts",
+    "verify:database": "bun src/database-verify.ts",
     "start": "bun src/runtime.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
