@@ -604,14 +604,18 @@ publication sequence and create no current support claim.
 
 ### 8. Build managed Tasq Cloud
 
-- **TQ-901 — experimental deployment observed; independent gate remains:** the private,
+- **TQ-901 — managed-database experiment deployed; independent gate remains:** the private,
   provider-neutral control-plane package implements authorized tenant
   lifecycle, isolated workspace bindings, durable provisioning intent,
   reconciliation and concurrent quota admission. The 2026-08-13 Fly experiment
   bound opaque secret references and the exact protected Server digest;
   protected run `32406910459` redeployed the current control and reference
-  identity source on 2026-08-20. Its single-volume database needs independent
-  acceptance or replacement, and multi-tenant infrastructure review remains.
+  identity source on 2026-08-20. On 2026-08-21, the final local snapshot matched
+  the complete imported Turso schema and ordered rows; protected run
+  `32483015765` then passed managed-mode health and the three-engine browser
+  matrix. The original volume and snapshots remain available for rollback.
+  Database replacement is evidenced; independent multi-tenant infrastructure
+  review remains.
 - **TQ-902 — hardened reference browser matrix passed; external gates remain:** the same-origin
   BFF keeps Server credentials out of browsers, binds sessions to tenant and
   device, requires CSRF plus exact Origin for mutations and strips cookies.

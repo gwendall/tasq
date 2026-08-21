@@ -316,6 +316,20 @@ jobs:
           test "$authenticated_status" = 303
           printf '%s\n' "$anonymous_status" > identity-anonymous-status.txt
           printf '%s\n' "$authenticated_status" > identity-authenticated-status.txt
+      - name: Apply pending managed database credentials
+        if: inputs.control_database_mode == 'managed'
+        shell: bash
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_CONTROL_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          staged_count="$(
+            flyctl secrets list --app tasq-control --json |
+              jq '[.[] | select(.status == "Staged")] | length'
+          )"
+          if test "$staged_count" -gt 0; then
+            flyctl secrets deploy --app tasq-control --detach
+          fi
       - name: Deploy same-origin Cloud control plane
         shell: bash
         env:

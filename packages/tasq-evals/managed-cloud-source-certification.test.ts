@@ -88,7 +88,11 @@ describe("TQ-901–TQ-906 managed Cloud truth gate", () => {
       createOnlyMigrationSnapshot: true,
       schemaAndOrderedRowDigestVerification: true,
       failClosedMaintenanceCutover: true,
-      liveManagedDatabaseMigration: "not_run",
+      liveManagedDatabaseMigration: {
+        status: "passed",
+        fullFingerprintMatch: true,
+        rollbackAssetsPreserved: true,
+      },
     });
     const [snapshot, runtime, workflow, runbook] = await Promise.all([
       readFile(resolve(root,
@@ -109,6 +113,8 @@ describe("TQ-901–TQ-906 managed Cloud truth gate", () => {
       "for required in TASQ_CLOUD_DATABASE_URL TASQ_CLOUD_DATABASE_AUTH_TOKEN",
     );
     expect(workflow).toContain("control_database_mode:");
+    expect(workflow).toContain("flyctl secrets deploy --app tasq-control --detach");
+    expect(workflow).toContain('select(.status == "Staged")');
     expect(workflow).toContain('--env TASQ_CLOUD_DATABASE_MODE="$INPUT_CONTROL_DATABASE_MODE"');
     expect(runbook).toMatch(/Never delete the\s+remote database, local volume/);
     expect(runbook).toContain("database_migration_in_progress");

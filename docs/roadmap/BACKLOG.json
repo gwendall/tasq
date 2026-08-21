@@ -700,7 +700,6 @@
       "dependsOn": ["TQ-808"],
       "outcome": "Tenant control plane and isolated workspace provisioning",
       "remaining": [
-        "independent_acceptance_or_replacement_of_single_volume_control_database",
         "independent_multi_tenant_infrastructure_review"
       ],
       "evidence": [
@@ -709,7 +708,9 @@
         "packages/tasq-cloud-control-plane/test/cloud.test.ts",
         "evidence/cloud-bootstrap-2026-08-13.json",
         "evidence/managed-cloud-deployment-2026-08-20.json",
-        "https://github.com/gwendall/tasq/actions/runs/32406910459"
+        "evidence/managed-cloud-deployment-2026-08-21.json",
+        "https://github.com/gwendall/tasq/actions/runs/32406910459",
+        "https://github.com/gwendall/tasq/actions/runs/32483015765"
       ]
     },
     {
