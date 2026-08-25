@@ -343,14 +343,16 @@ describe("TQ-601 product consumption design", () => {
       trusted_publishing_configured: true,
       tag_protection_configured: true,
     });
-    expect(releasePolicy).toMatchObject({
-      publishedRelease: {
-        version: "0.4.0",
-        tag: "v0.4.0",
-        sourceCommit: "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
-        githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.4.0",
-      },
-    });
+    // Bind the published release to itself rather than to one version: the tag,
+    // the commit and the release URL must agree. Pinning the version made this
+    // test fail on the next publication, which it has nothing to say about.
+    const published = releasePolicy.publishedRelease as {
+      version: string; tag: string; sourceCommit: string; githubRelease: string;
+    };
+    expect(published.tag).toBe(`v${published.version}`);
+    expect(published.sourceCommit).toMatch(/^[a-f0-9]{40}$/);
+    expect(published.githubRelease)
+      .toBe(`https://github.com/gwendall/tasq/releases/tag/${published.tag}`);
     // The authorization block is the NEXT release's decision, not a record of
     // the last one. Pinning it to the published version made authorizing any
     // subsequent release fail this test, the same way the release validator
