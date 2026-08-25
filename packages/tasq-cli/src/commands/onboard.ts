@@ -194,6 +194,22 @@ function recipes(
       outputContract: "tasq.cli-json.v1/TaskV1",
     },
     {
+      id: "discovery.capture", version: 1, requiredCapability: "propose", mutates: true,
+      description:
+        "File work you discovered while executing, linked to the commitment that surfaced it. "
+        + "Use it for a bug, a missing capability or an inconsistency between surfaces, including "
+        + "when the command you ran SUCCEEDED. Capturing never widens, renews or releases your lease.",
+      argvTemplate: [
+        executable, "capture", "{commitmentId}", "{title}", "--source", "{sourceCommand}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment you were executing when you found it."),
+        parameter("title", "What you found, in one line."),
+        parameter("sourceCommand", "Command or surface that surfaced it."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskV1",
+    },
+    {
       id: "commitment.claim", version: 1, requiredCapability: "coordinate", mutates: true,
       description: "Acquire or renew the exclusive lease for an existing commitment.",
       argvTemplate: [executable, "claim", "{commitmentId}", "--for", "{duration}", ...scope],
