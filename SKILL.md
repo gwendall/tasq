@@ -106,12 +106,32 @@ must use an isolated `TASQ_HOME` or temporary database URL.
 The Local Console is loopback-only and read-only. It is for human inspection,
 not agent onboarding, scraping or authority decisions.
 
+## File what you find
+
+Recording a defect is part of the work, not an interruption of it. When you
+hit a bug, a missing capability, an inconsistency between two surfaces, or a
+refusal you could not act on, capture it against the commitment that surfaced
+it before moving on:
+
+```bash
+tasq capture <commitment-id> "what you found" --source "<command or surface>"
+```
+
+This creates a linked follow-up and never widens, renews or releases your
+lease, so it is always safe mid-task. The `discovery.capture` recipe returned
+by `tasq onboard --json` is the machine form.
+
+Do not wait for an error to give you permission: most defects are visible
+while commands SUCCEED - a flag silently ignored, two surfaces disagreeing, a
+result that is right for the wrong reason. An observation you do not capture
+dies with your context window.
+
 ## When blocked
 
 Use `tasq help <command>` for human syntax or repeat `tasq onboard ... --json`
-to refresh machine recipes. If required behavior is absent, report the missing
-recipe or observable product gap; do not bypass the service through SQL,
-Markdown edits or hidden provider-specific state.
+to refresh machine recipes. If required behavior is absent, capture it as
+above; do not bypass the service through SQL, Markdown edits or hidden
+provider-specific state.
 
 For repository development, follow [AGENTS.md](AGENTS.md) and
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md). Stable JSON compatibility is documented in

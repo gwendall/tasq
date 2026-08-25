@@ -32,76 +32,19 @@ The complete current public-adoption-to-Cloud sequence, including detailed
 acceptance criteria and verification routes, is in
 [`docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md`](docs/roadmap/PUBLIC_ADOPTION_TO_CLOUD_EXECUTION_PLAN.md).
 
-Tasq `v0.4.0` is the current protected public alpha. Eight `@tasq-run/*`
-packages, native Tasq Local assets, the `tasq-remote` Python package and the
-immutable Server image are published. The release tag resolves to commit
-`47408faccaad5638ab7d1da94c37eda6ba1dc3c1`; exact registry/downloaded-byte
-certification passed in protected run
-[31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138).
-Canonical release truth is in
-[PUBLIC_RELEASE_POLICY.json](docs/releases/PUBLIC_RELEASE_POLICY.json).
-Independent blind-human adoption and retained dogfood remain external gates for
-human-usability claims and stable graduation. TQ-608 is complete for the
-current release; read
-[TQ-608_MIGRATION_AND_DATA_SAFETY.md](docs/contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md) and
-[DATA_SAFETY.md](docs/guides/DATA_SAFETY.md) before changing store format or recovery.
-TQ-610's acquisition and universal-agent source implementation is in
-[TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md](docs/contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md).
-The public installer, `setup`, `demo`, deterministic `agent install` helper and
-static agent entrypoints are published and downloaded-byte certified on both
-supported targets. TQ-321's zero-context Codex/Claude matrix is passed.
-The embedded-consumer boundary is in
-[TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md](docs/contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md):
-`createLocalTasq` and compiled ESM/declarations pass exact published-package
-Node 22 and Bun restart certification at `v0.4.0`; earlier interface evidence
-is frozen in
-[TQ-611_RELEASE_CERTIFICATION.json](docs/contracts/TQ-611_RELEASE_CERTIFICATION.json)
-and the current replay in the TQ-612 certificate below.
-ADR-005 is accepted and the published TQ-612 contract is documented in
-[TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md](docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md).
-Public `v0.4.0` advances stores to format 32 and includes append-only evidence trust,
-proposal, challenge and validation records across Core, embedded client, CLI,
-local MCP and Console. The protected release and downloaded-byte certification
-are frozen in
-[TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json](docs/contracts/TQ-612_COMPLETION_RESOLUTION_CERTIFICATION.json).
-ADR-009 is accepted. TQ-613–TQ-615 implement purpose-bound signed statements,
-authority-owned signing-credential lifecycle and append-only exact bindings;
-The protected TQ-616 downloaded-artifact replay passes; the unbriefed-agent and
-operator trial remains external.
-Signatures authenticate exact bytes and principal, never truth, completion or
-effect authority. Read
-[the ADR](docs/decisions/ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md),
-[the full stack contract](docs/contracts/TQ-613_SIGNED_STATEMENT_ARCHITECTURE.md)
-and [the machine threat matrix](docs/contracts/SIGNED_STATEMENT_ACCEPTANCE.json)
-before changing signatures, credential lifecycle, portable authorship,
-replication origin or signed approvals.
-TQ-805's host-integrated remote MCP adapter is implemented and certified in
-[TQ-805_REMOTE_MCP.md](docs/contracts/TQ-805_REMOTE_MCP.md). It authenticates
-each Streamable HTTP request and projects tools through the existing
-TQ-803/TQ-804 handler and ADR-004 guard; it is not a listener or deployable
-Server.
-TQ-809 publishes the repository-certified `@tasq-run/client`,
-`tasq remote` CLI profiles, one-use enrollment and digest-only opaque
-credentials; read
-[TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md](docs/contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md)
-and [ADR-010](docs/decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md).
-TQ-807 publishes a runnable daemon/container, RS256 verification, real
-Core operations, durable remote receipts, an authenticated guarded Console and
-operator lifecycle; read
-[TQ-807_DEPLOYABLE_SERVER.md](docs/contracts/TQ-807_DEPLOYABLE_SERVER.md).
-TQ-806 adds principal-bound authenticated offline replication with atomically
-persisted signed origins; live claims, leases, approvals and effects remain
-online-only. Its exact-package clean-room multi-machine trial passes. TQ-810's thin
-Python remote client is published on PyPI and certified against the exact image
-digest. TQ-901–TQ-905 provide the private provider-neutral Cloud
-control-plane/BFF source candidate plus a bounded experimental composition at
-`control.tasq.run` and `id.tasq.run`. The Server is deployed on Fly.io at
-`api.tasq.run`; `cloud.tasq.run` redirects to its guarded Console. Current
-source makes the reference identity adapter fail closed; the exact-source
-deployment and hardened three-engine browser recertification passed on
-2026-08-20. This is a private-beta
-experiment, not a claim that managed Cloud is available. TQ-906 keeps remote effects disabled pending independent
-review. Never treat an actor label, project descriptor or database URL as
+Release, certification and per-surface support status are NOT restated here:
+three prose copies of one state is what let four public documents drift a
+full release behind. Read them where they are owned:
+
+- current state: [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md)
+- release truth: [PUBLIC_RELEASE_POLICY.json](docs/releases/PUBLIC_RELEASE_POLICY.json)
+  and [RELEASES.md](docs/releases/RELEASES.md)
+- per-surface support: [PRODUCT_SURFACE_MATRIX.json](docs/concepts/PRODUCT_SURFACE_MATRIX.json)
+- scope, dependencies and external gates: [BACKLOG.json](docs/roadmap/BACKLOG.json)
+
+Before changing a behavior, read the contract or ADR that owns it. Signatures
+authenticate exact bytes and principal, never truth, completion or effect
+authority. Never treat an actor label, project descriptor or database URL as
 remote authentication.
 
 Agents operating a Tasq ledger rather than modifying this repository use the
@@ -133,6 +76,12 @@ Agents arriving through Codex or Claude Code use the native plugin paths in
 9. Do not commit secrets, live ledgers, private transcripts or workstation
    paths. Use an isolated `TASQ_HOME` or temporary database for tests.
 10. Use DCO sign-off on commits. Do not commit or push unless the user asks.
+11. File what you find. When you hit a bug, a missing capability, an
+    inconsistency between two surfaces, or a refusal you could not act on,
+    record it in the ledger before moving on - `tasq capture <task-id> "<what
+    you found>"` links it to the work that surfaced it. Most defects are found
+    while commands SUCCEED, not when they fail, so do not wait for an error to
+    give you permission. An unfiled observation dies with the context window.
 
 ## Work loop
 

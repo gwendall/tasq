@@ -41,6 +41,11 @@ release history selected by ADR-008.
   actor holding the active claim, naming the `--actor` value that would
   attribute the receipt to the holder.
 
+## v0.4.0 - 2026-08-11
+
+### Changed
+
+
 - Use the controlled product-aligned `@tasq-run/*` namespace for every public
   package, workspace import, release artifact and SBOM identity; explicitly
   prohibit the unrelated `tasq` package and `@tasq/*` scope.

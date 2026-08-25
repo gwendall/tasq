@@ -34,7 +34,7 @@ const benefits = [
   {
     icon: Fingerprint,
     title: "Make ownership explicit",
-    body: "Expiring claims and monotone fences prevent two workers from quietly acting as the current owner.",
+    body: "Claims expire and never overlap, so two workers cannot quietly act as the current owner of the same task.",
   },
   {
     icon: ShieldCheck,
@@ -47,7 +47,7 @@ const boundaries = [
   ["Agent runtime", "Reasoning, tools, execution"],
   ["Policy", "Priority and domain decisions"],
   ["Connector", "Provider credentials and I/O"],
-  ["Tasq kernel", "Durable coordination truth"],
+  ["Tasq", "Who owns what, and the proof it is done"],
 ] as const;
 
 export default function HomePage() {

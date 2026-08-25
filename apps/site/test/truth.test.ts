@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
 import { docPages } from "../src/lib/docs";
 import { productTruth, supportPresentation } from "../src/lib/product-truth";
@@ -47,6 +48,21 @@ describe("public site truth", () => {
     });
     expect(surface?.entrypoint).toContain("https://tasq.run");
     expect(productTruth.criticalTruths).toContain("public_site_is_deployed_at_tasq_run");
+  });
+
+  test("reaches every documentation page from the sidebar", async () => {
+    // The concepts page, which teaches the whole model, was published and
+    // sitemapped but absent from every sidebar group, so it was reachable
+    // only by pagination. Navigation must cover the pages that exist.
+    const layout = await readFile(
+      new URL("../src/app/docs/layout.tsx", import.meta.url),
+      "utf8",
+    );
+    const grouped = new Set(
+      Array.from(layout.matchAll(/slugs:\s*\[([^\]]+)\]/g))
+        .flatMap((match) => Array.from(match[1]!.matchAll(/"([^"]+)"/g), (slug) => slug[1]!)),
+    );
+    expect(grouped).toEqual(new Set(docPages.map((page) => page.slug)));
   });
 
   test("covers the current consumer journeys in public learning paths", () => {

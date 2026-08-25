@@ -72,4 +72,23 @@ describe("local discovery capture", () => {
     expect(sourceAfterRecipe.dependencies.filter((edge: { type: string }) => edge.type === "discovered_from"))
       .toHaveLength(2);
   });
+
+  it("teaches capture as an onboarding recipe, not only after a refusal", async () => {
+    // An agent onboarded by the documented path was taught 20 ways to execute
+    // work and none to report a defect, so noticing one had no machine form.
+    const home = mkdtempSync(join(tmpdir(), "tasq-capture-recipe-"));
+    homes.push(home);
+    const onboarded = JSON.parse(
+      (await run(home, ["onboard", "--space", "recipe/probe", "--actor", "probe", "--json"])).stdout,
+    );
+    const recipe = onboarded.recipes.find(
+      (entry: { id: string }) => entry.id === "discovery.capture",
+    );
+    expect(recipe).toBeDefined();
+    expect(recipe.requiredCapability).toBe("propose");
+    expect(recipe.mutates).toBe(true);
+    expect(recipe.argvTemplate).toContain("capture");
+    // The description must not frame reporting as a failure-only activity.
+    expect(recipe.description).toContain("SUCCEEDED");
+  });
 });

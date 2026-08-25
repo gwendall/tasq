@@ -480,7 +480,14 @@ function parseChangelog(source: string): Array<{
   for (const raw of source.split("\n")) {
     const heading = /^##\s+(.+?)\s*$/.exec(raw);
     if (heading) {
-      const [version, date] = heading[1]!.split("—").map((part) => part.trim());
+      // Accept both separators. Splitting only on the em-dash meant a heading
+      // written with the plain hyphen this repository's style requires parsed
+      // as one version string with a null date, silently rendering a published
+      // release as "not released" and emitting a broken tag link.
+      const [version, date] = heading[1]!.split(/\s+[—-]\s+/).map((part) => part.trim());
+      if (date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        throw new Error(`Changelog heading has an unparseable date: ${heading[1]}`);
+      }
       release = { version: version!, date: date ?? null, note: null, groups: [] };
       releases.push(release);
       group = null;
@@ -514,6 +521,23 @@ function parseChangelog(source: string): Array<{
 }
 
 const changelog = parseChangelog(changelogSource);
+// The published release must have a dated changelog entry. Without this, the
+// site can claim a version is available while /changelog renders its content
+// as "not released" - the one drift class this generator did not cover, and
+// the one that reached production for v0.4.0.
+if (policy.publishedRelease) {
+  const published = policy.publishedRelease.version;
+  const entry = changelog.find((release) => release.version.replace(/^v/, "") === published);
+  if (!entry) {
+    throw new Error(
+      `CHANGELOG.md has no entry for the published release ${published}; ` +
+        "add a dated `## v<version> - <YYYY-MM-DD>` section",
+    );
+  }
+  if (!entry.date) {
+    throw new Error(`CHANGELOG.md entry for ${published} has no date`);
+  }
+}
 const changelogSerialized = `${JSON.stringify(changelog, null, 2)}\n`;
 const changelogOutputPaths = [resolve(scriptDirectory, "../src/generated/changelog.json")];
 // ── CLI reference ──────────────────────────────────────────────────────────

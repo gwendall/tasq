@@ -250,7 +250,7 @@
           "body": [
             "Record that one task waits on another with a dependency, and `tasq next` stops offering the blocked one until its blocker closes. Nothing schedules the work: the queue simply stops proposing what is not actionable yet."
           ],
-          "code": "tasq depend <id> --on <other-id>\ntasq next        # the blocked task is absent until its blocker is done",
+          "code": "tasq depend <id> --on <other-id>\ntasq next        # the blocked task is absent until its blocker is done\ntasq next --priority 5   # only what you marked most important",
           "codeTitle": "dependencies"
         },
         {
