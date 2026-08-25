@@ -109,6 +109,14 @@ describe("managed agent instructions", () => {
     expect(first).toMatch(/digest="sha256:[0-9a-f]{64}"/);
     expect(first).toContain("space=\"tasq/dev\"");
     expect(first).not.toContain("CANARY TASK CONTENT");
+    // The managed block is what `agent instructions --write` puts into a
+    // consumer's own repository, so it is the only instruction surface that
+    // reaches an agent working on someone else's project. Reporting a defect
+    // has to be part of the loop it teaches, and it must not be framed as a
+    // failure-only activity.
+    expect(first).toContain("capture <task-id>");
+    expect(first).toContain("most defects are visible while");
+    expect(first).toContain("never widens, renews or releases your claim");
     const checked = await ok(home, project, ["agent", "instructions", "--space", "tasq/dev", "--check", "--json"]);
     expect(JSON.parse(checked.stdout)).toMatchObject({ state: "current", ok: true, exitCode: 0 });
     const repeated = JSON.parse((await ok(home, project, ["agent", "instructions", "--space", "tasq/dev", "--write", "--json"])).stdout);
