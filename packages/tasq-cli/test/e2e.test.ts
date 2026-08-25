@@ -128,6 +128,77 @@ async function runOk(home: string, args: string[]): Promise<RunResult> {
 // Meta
 // ──────────────────────────────────────────────────────────────────────
 
+describe("--json problem contract", () => {
+  it("emits a contract for a thrown refusal, an argument error and an early return", async () => {
+    const home = await freshHome();
+    await runOk(home, ["setup", "--space", "problem/test", "--actor", "human"]);
+    const created = JSON.parse(
+      (await runOk(home, ["add", "gated", "--completion", "evidence", "--success", "proof", "--json"])).stdout,
+    );
+
+    // The product's differentiating refusal, on the channel agents drive.
+    const refused = await runCli(home, ["done", created.id, "--note", "x", "--json"]);
+    expect(refused.exitCode).toBe(1);
+    const refusedBody = JSON.parse(refused.stdout);
+    expect(refusedBody.contractVersion).toBe("tasq.command-problem.v1");
+    expect(refusedBody.ok).toBe(false);
+    expect(refusedBody.code).toBe("refused");
+    expect(refusedBody.summary).toContain("requires explicit evidence");
+
+    const badEnum = await runCli(home, ["list", "--status", "todo", "--json"]);
+    expect(badEnum.exitCode).toBe(2);
+    const badEnumBody = JSON.parse(badEnum.stdout);
+    expect(badEnumBody.code).toBe("usage");
+    expect(badEnumBody.summary).toContain("Invalid value for --status");
+
+    // Commands that print and return non-zero without throwing.
+    const missing = await runCli(home, ["update", created.id, "--project", "deadbeef", "--json"]);
+    expect(missing.exitCode).toBe(1);
+    const missingBody = JSON.parse(missing.stdout);
+    expect(missingBody.contractVersion).toBe("tasq.command-problem.v1");
+    expect(missingBody.summary).toContain("project not found");
+
+    // A successful command must not gain a problem envelope.
+    const ok = await runOk(home, ["list", "--json"]);
+    expect(Array.isArray(JSON.parse(ok.stdout))).toBe(true);
+  });
+});
+
+describe("evidence attribution", () => {
+  it("warns when evidence is filed by someone other than the claim holder", async () => {
+    const home = await freshHome();
+    await runOk(home, ["setup", "--space", "attr/test", "--actor", "human"]);
+    const created = JSON.parse((await runOk(home, ["add", "work", "--json"])).stdout);
+    await runOk(home, ["claim", created.id, "--for", "30m", "--actor", "agent:a"]);
+
+    const asDefault = await runOk(home, ["evidence", "add", created.id, "--kind", "note", "--summary", "did it"]);
+    expect(asDefault.stderr).toContain("filing as human while agent:a holds the claim");
+    expect(asDefault.stderr).toContain("--actor agent:a");
+
+    const asHolder = await runOk(
+      home,
+      ["evidence", "add", created.id, "--kind", "note", "--summary", "did it", "--actor", "agent:a"],
+    );
+    expect(asHolder.stderr).not.toContain("holds the claim");
+
+    // The note must never reach stdout: under --json that stream has to stay
+    // exactly one parseable document.
+    const asJson = await runOk(
+      home,
+      ["evidence", "add", created.id, "--kind", "note", "--summary", "did it", "--json"],
+    );
+    expect(() => JSON.parse(asJson.stdout)).not.toThrow();
+    expect(asJson.stderr).toContain("holds the claim");
+  });
+
+  it("shows the global flags in per-command help", async () => {
+    const home = await freshHome();
+    const r = await runOk(home, ["help", "evidence"]);
+    expect(r.stdout).toContain("--actor <name>");
+    expect(r.stdout).toContain("Also on every command");
+  });
+});
+
 describe("CLI meta commands", () => {
   it("version prints semver", async () => {
     const home = await freshHome();

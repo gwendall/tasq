@@ -45,7 +45,7 @@ import {
   printJson,
   shortId,
 } from "../output/format.js";
-import { enumArg, parseDateArg, positiveIntegerArg, type ParsedArgs } from "../args.js";
+import { enumArg, parseDateArg, positiveIntegerArg, priorityFilterArg, type ParsedArgs } from "../args.js";
 import { resolveGoalIdOrError, resolveProjectIdOrError, resolveTaskIdOrError } from "./_resolve.js";
 import { ADD_USAGE, SHOW_USAGE, UPDATE_USAGE, transitionUsage } from "./usage.js";
 
@@ -287,6 +287,7 @@ async function listImpl(args: ParsedArgs, opts: { orphanOnly: boolean }): Promis
       areaId,
       goalId,
       projectId,
+      priority: priorityFilterArg(args),
       orphanOnly: opts.orphanOnly,
       includeScheduled,
       limit: args.number("limit") ?? 100,

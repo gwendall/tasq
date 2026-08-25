@@ -117,7 +117,10 @@ export function scoreTask(inputs: ScoreInputs): ScoreBreakdown {
 function computeLeverage(inputs: ScoreInputs, reasons: string[]): number {
   const importance = inputs.goal?.importance ?? inputs.area?.importance ?? 3;
   const priority = inputs.task.priority;
-  const base = priority != null && priority > importance ? priority : importance;
+  // An explicit task priority replaces inherited importance in both directions.
+  // Treating importance as a floor made every task in an important area score
+  // the same, which silently discarded the ordering the caller asked for.
+  const base = priority ?? importance;
 
   if (inputs.goal?.importance != null) {
     reasons.push(`goal-importance:${inputs.goal.importance}`);

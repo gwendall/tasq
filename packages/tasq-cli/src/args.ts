@@ -150,6 +150,21 @@ export function enumArg<T extends string>(
   );
 }
 
+/**
+ * Parse the optional `--priority` filter shared by `list` and `next`.
+ * Rejects out-of-range values rather than silently matching nothing, so a
+ * caller learns the difference between "no task has this priority" and
+ * "this priority cannot exist".
+ */
+export function priorityFilterArg(args: ParsedArgs): number | undefined {
+  const value = args.number("priority");
+  if (value === undefined) return undefined;
+  if (!Number.isSafeInteger(value) || value < 1 || value > 5) {
+    throw new Error(`Invalid value for --priority: "${args.string("priority")}". Allowed: 1, 2, 3, 4, 5`);
+  }
+  return value;
+}
+
 /** Parse an optional strictly positive integer flag used for CAS revisions. */
 export function positiveIntegerArg(args: ParsedArgs, flagName: string): number | undefined {
   const value = args.number(flagName);

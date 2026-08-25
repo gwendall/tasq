@@ -43,6 +43,18 @@ describe("bundled life-planning policy", () => {
     ]);
   });
 
+  test("lets an explicit priority order tasks inside an important area", () => {
+    const area = { importance: 5 };
+    const low = scoreTask({ task: task({ priority: 2 }), goal: null, area, now: NOW });
+    const high = scoreTask({ task: task({ priority: 5 }), goal: null, area, now: NOW });
+    const inherited = scoreTask({ task: task(), goal: null, area, now: NOW });
+
+    expect(low.leverage).toBe(2);
+    expect(high.leverage).toBe(5);
+    expect(low.total).toBeLessThan(high.total);
+    expect(inherited.leverage).toBe(5);
+  });
+
   test("keeps planning heuristics outside kernel state", () => {
     const base = scoreTask({ task: task(), goal: null, area: null, now: NOW });
     const blocked = scoreTask({

@@ -57,9 +57,9 @@ export const CAPTURE_USAGE =
   "capture <discovering-task-id> <title> [--next <text>] [--context <json-object>] [--source <command>] [--idempotency-key <key>]";
 
 export const LIST_USAGE =
-  "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>] [--limit N] [--include-scheduled] [--include-deferred]";
+  "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>] [--priority 1-5] [--limit N] [--include-scheduled] [--include-deferred]";
 export const INBOX_USAGE = "inbox [--limit N] [--include-scheduled] [--include-deferred] — tasks without a project";
-export const NEXT_USAGE = "next [--limit N] [--area <slug>] [--goal <id>] [--project <id>] [--include-scheduled] [--include-deferred] [--include-claimed] — prioritized next-action list";
+export const NEXT_USAGE = "next [--limit N] [--area <slug>] [--goal <id>] [--project <id>] [--priority 1-5] [--include-scheduled] [--include-deferred] [--include-claimed] - prioritized next-action list";
 export const CONTEXT_USAGE = "context [--max-records N] [--max-tokens N] [--include-deferred] [--json] — bounded profile-neutral context packet (`brief` alias)";
 export const SUMMARY_USAGE = `summary add <commitment-id> --text <text> --idempotency-key <key> [--supersedes <summary-id>]
 summary list <commitment-id> [--limit N]

@@ -17,7 +17,7 @@ import {
   type Metadata,
 } from "@tasq-internal/local-service";
 import { enumArg, parseDateArg, positiveIntegerArg, type ParsedArgs } from "../args.js";
-import { color, printError, printInfo, printJson, shortId } from "../output/format.js";
+import { color, printError, printInfo, printJson, printWarn, shortId } from "../output/format.js";
 import { openRuntime, regenerateProjection } from "../runtime.js";
 import { resolveTaskIdOrError } from "./_resolve.js";
 import { ATTEMPT_USAGE, CLAIM_USAGE, EVIDENCE_USAGE, RELEASE_USAGE } from "./usage.js";
@@ -237,6 +237,19 @@ export async function evidenceCmd(args: ParsedArgs): Promise<number> {
         const evidence = await listTaskEvidence(rt.db, taskId, { ...rt.ctx, limit: 10_000 });
         supersedesEvidenceId = await resolveRelatedId(supersedesRaw, "evidence", evidence.map((item) => item.id));
         if (!supersedesEvidenceId) return 1;
+      }
+
+      // Evidence is the receipt: filing it under the wrong principal is a
+      // silent attribution bug. `--actor` is a global flag that per-command
+      // help never shows, so a caller working under a claim can file as the
+      // config default without noticing. Say so rather than guessing.
+      const activeClaim = await getActiveTaskClaim(rt.db, taskId, rt.config.tenantId);
+      if (activeClaim && activeClaim.actor !== rt.ctx.actor) {
+        // stderr, never stdout: under --json stdout must stay exactly one
+        // parseable document, and a human note there corrupts it.
+        printWarn(
+          `filing as ${rt.ctx.actor} while ${activeClaim.actor} holds the claim; pass --actor ${activeClaim.actor} to attribute it to the holder`,
+        );
       }
 
       const item = await addTaskEvidence(

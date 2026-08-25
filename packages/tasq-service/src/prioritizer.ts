@@ -112,6 +112,8 @@ export interface PickNextOptions {
    * `scheduledAt <= now` is unchanged.
    */
   includeScheduled?: boolean;
+  /** Keep only tasks whose explicit priority equals this value (1-5). */
+  priority?: number;
   /** Requesting actor. Active claims owned by others are excluded by default. */
   actor?: string;
   /** Surface work currently claimed by another actor. */
@@ -157,6 +159,7 @@ export async function pickNext(
   if (options.areaId) filters.push(eq(task.areaId, options.areaId));
   if (options.goalId) filters.push(eq(task.goalId, options.goalId));
   if (options.projectId) filters.push(eq(task.projectId, options.projectId));
+  if (options.priority !== undefined) filters.push(eq(task.priority, options.priority));
 
   const taskRows = await db
     .select()

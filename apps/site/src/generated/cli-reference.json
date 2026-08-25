@@ -100,7 +100,7 @@
       },
       {
         "usage": "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>]",
-        "description": ""
+        "description": "[--priority 1-5]"
       },
       {
         "usage": "show <id>",
@@ -333,7 +333,7 @@
         "description": "reusable external context pointers; no content"
       },
       {
-        "usage": "next [--limit N] [--area <slug>]",
+        "usage": "next [--limit N] [--area <slug>] [--priority 1-5]",
         "description": "prioritized next-action list"
       },
       {

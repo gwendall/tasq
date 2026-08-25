@@ -15,9 +15,17 @@
 - Metadata is always a JSON object.
 - List commands always return arrays, including `[]` for no results.
 - Success writes one JSON value to stdout and exits `0`.
-- Errors from historical v1 commands write human-readable text to stderr and
-  exit non-zero. The separately versioned `onboard --json` surface below has a
-  typed JSON problem envelope; generic resource commands do too.
+- Errors write human-readable text to stderr and exit non-zero. Under `--json`
+  they additionally write a `tasq.command-problem.v1` envelope to stdout, with
+  keys `contractVersion`, `ok` (always `false`), `command`, `code`, `summary`
+  and `exitCode`. `code` is one of `usage` (unparsable or out-of-set argument),
+  `validation` (schema or constraint violation), `storage`, `config`, or
+  `refused` (the command was understood and declined, for example completing an
+  evidence-mode commitment without evidence). This covers refusals raised as
+  errors and those where a command prints and returns a non-zero code.
+  Surfaces with their own richer envelopes keep them and are documented below:
+  `onboard --json`, generic resource commands, store-compatibility and
+  cost-bound failures.
 - Within v1, changing/removing a key, changing its type, changing nullability,
   or wrapping an existing response is breaking. A deliberate schema addition
   must update this document and the executable contract test.

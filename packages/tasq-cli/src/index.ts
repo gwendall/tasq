@@ -24,7 +24,7 @@ import {
 } from "@tasq-internal/local-service";
 import { parseArgs } from "./args.js";
 import { errorMatches, errorMessage } from "./errors.js";
-import { color, printError, printInfo, printJson } from "./output/format.js";
+import { color, printError, printInfo, printJson, takeLastErrorMessage } from "./output/format.js";
 import { configCmd, init } from "./commands/init.js";
 import { areaCmd } from "./commands/area.js";
 import { goalCmd, projectCmd } from "./commands/goal-project.js";
@@ -75,6 +75,22 @@ const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0
 
 const COMMON_FLAGS = ["json", "j", "actor", "tenant", "help", "h"] as const;
 
+/**
+ * Per-command help used to omit the flags that work on EVERY command, so a
+ * reader of `tasq help evidence` never learned that `--actor` exists there.
+ * That is how evidence gets filed under the wrong principal. Only explicit
+ * help requests get this; the same usage strings are reused verbatim in
+ * argument errors, which stay terse.
+ */
+function withGlobalFlags(usage: string): string {
+  return `${usage}
+
+Also on every command:
+  --json / -j                    machine-readable JSON output
+  --actor <name>                 attribute this call to a principal
+  --tenant <id>                  override the default space (rare)`;
+}
+
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
@@ -97,7 +113,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
     project: ["area", "goal", "status", "description", "title", "cascade"],
     add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
-    list: ["area", "goal", "project", "status", "limit", "include-scheduled", "include-deferred"],
+    list: ["area", "goal", "project", "status", "priority", "limit", "include-scheduled", "include-deferred"],
     show: [],
     inspect: [],
     discover: ["hello"],
@@ -112,7 +128,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     delete: ["cascade"],
     rm: ["cascade"],
     restore: [],
-    next: ["limit", "area", "goal", "project", "include-scheduled", "include-deferred", "include-claimed"],
+    next: ["limit", "area", "goal", "project", "priority", "include-scheduled", "include-deferred", "include-claimed"],
     context: ["max-records", "max-tokens", "include-deferred"],
     brief: ["max-records", "max-tokens", "include-deferred"],
     summary: ["text", "supersedes", "limit", "idempotency-key"],
@@ -189,6 +205,7 @@ ${color.bold("TASKS — the core verbs")}
                                  --completion evidence requires --success;
                                  --validated requires --completion evidence
   list [--status ...] [--area <slug>] [--goal <id>] [--project <id>]
+       [--priority 1-5]
   show <id>
   inspect <id> [--json]          canonical commitment graph + resume cursor
   update <id> [--title ...] [--next ...] [--due ...] [--recurrence ...] [...]
@@ -268,7 +285,8 @@ ${color.bold("VIEWS")}
   summary add|list|show [...]    source-bound compact context for closed work
   context-link attach|detach|list|show [...]
                                  reusable external context pointers; no content
-  next [--limit N] [--area <slug>]   prioritized next-action list
+  next [--limit N] [--area <slug>] [--priority 1-5]
+                                     prioritized next-action list
   search "<query>"                   substring search across task text
   inbox                              tasks without project
   tree <id>                          show a task + its sub-tasks
@@ -320,6 +338,10 @@ export async function main(
       const sub = rest[0];
       const usage = sub ? commandUsage(sub) : undefined;
       if (usage) {
+        printInfo(withGlobalFlags(usage));
+        return 0;
+      }
+      if (usage) {
         printInfo(usage);
         return 0;
       }
@@ -354,7 +376,7 @@ export async function main(
   if (args.bool("help", "h") || rest[0] === "help") {
     const usage = commandUsage(command);
     if (usage) {
-      printInfo(usage);
+      printInfo(withGlobalFlags(usage));
       return 0;
     }
   }
@@ -363,6 +385,42 @@ export async function main(
     // Resource owns validation so every `--json` failure, including an unknown
     // flag, can stay on its typed stdout-only problem channel.
     if (command !== "resource") assertKnownFlags(command, args);
+    const dispatched = await dispatch(command, args, rest, clock, executable);
+    // Commands that refuse by printing and returning non-zero never reach the
+    // catch below, so `--json` callers used to get an empty stdout for a whole
+    // class of refusals (an unresolvable id, a missing required argument).
+    // `args.bool` THROWS on a malformed value (`--json=maybe`), so asking it
+    // here would turn a clean typed refusal into an exception. And `resource`
+    // owns a stdout-only problem channel with a strict empty-stderr contract,
+    // so it must never receive this generic envelope on top of its own.
+    const wantsJson = args.flag("json", "j") !== undefined;
+    if (dispatched !== 0 && wantsJson && command !== "resource") {
+      const summary = takeLastErrorMessage();
+      if (summary !== null) {
+        printJson({
+          contractVersion: "tasq.command-problem.v1",
+          ok: false,
+          command,
+          code: dispatched === 2 ? "validation" : dispatched === 3 ? "storage" : dispatched === 4 ? "config" : "refused",
+          summary,
+          exitCode: dispatched,
+        });
+      }
+    }
+    return dispatched;
+  } catch (err) {
+    return handleCommandError(err, command, args, executable);
+  }
+}
+
+async function dispatch(
+  command: string,
+  args: ReturnType<typeof parseArgs>,
+  rest: string[],
+  clock: Clock,
+  executable: string,
+): Promise<number> {
+  {
     switch (command) {
       case "init":
         return await init(args);
@@ -503,7 +561,16 @@ export async function main(
         printError(`run \`tasq help\` for usage`);
         return 1;
     }
-  } catch (err) {
+  }
+}
+
+function handleCommandError(
+  err: unknown,
+  command: string,
+  args: ReturnType<typeof parseArgs>,
+  executable: string,
+): number {
+  {
     if (err instanceof Error) {
       // Transient SQLite contention bubbles up to runWithRetry, which only
       // replays read-only commands (mutations are atomic + serialized; see
@@ -554,16 +621,59 @@ export async function main(
         return printOnboardProblem(err, executable);
       }
 
-      printError(message);
+      // Classify once: the exit code and the machine-channel problem code are
+      // the same decision, and they must not drift apart.
+      const isConfig = /^Config error/.test(message);
+      const isStorage = errorMatches(err, /database|disk|permission|SQLITE/i);
+      const exitCode = isZod || isFK || isUnique || isCheck || isEnumArg || isArgError
+        ? 2
+        : isConfig
+          ? 4
+          : isStorage
+            ? 3
+            : 1;
+      const code = isEnumArg || isArgError
+        ? "usage"
+        : isZod || isFK || isUnique || isCheck
+          ? "validation"
+          : isConfig
+            ? "config"
+            : isStorage
+              ? "storage"
+              : "refused";
 
-      if (isZod) return 2;
-      if (isFK || isUnique || isCheck) return 2;
-      if (isEnumArg || isArgError) return 2;
-      if (/^Config error/.test(message)) return 4;
-      if (errorMatches(err, /database|disk|permission|SQLITE/i)) return 3;
-      return 1;
+      // A `--json` caller drives Tasq programmatically. Printing only to stderr
+      // and leaving stdout empty tells an agent nothing it can act on — and it
+      // hit the product's own differentiator, since an evidence-mode completion
+      // refusal came back as an empty machine channel. Every non-zero exit now
+      // carries a problem contract. Typed contracts above (store compatibility,
+      // cost bounds, onboard) keep their richer shapes and return earlier.
+      // stderr keeps the human diagnostic in every mode: a JSON consumer reads
+      // stdout, and existing callers (plus tests) rely on the stderr text.
+      printError(message);
+      if (args.bool("json", "j")) {
+        printJson({
+          contractVersion: "tasq.command-problem.v1",
+          ok: false,
+          command,
+          code,
+          summary: message,
+          exitCode,
+        });
+      }
+      return exitCode;
     }
     printError(String(err));
+    if (args.bool("json", "j")) {
+      printJson({
+        contractVersion: "tasq.command-problem.v1",
+        ok: false,
+        command,
+        code: "refused",
+        summary: String(err),
+        exitCode: 1,
+      });
+    }
     return 1;
   }
 }
