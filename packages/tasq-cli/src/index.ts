@@ -163,7 +163,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
 }
 
 function printHelp(): void {
-  printInfo(`${color.bold("tasq")} — agent-first task substrate (v${VERSION})
+  printInfo(`${color.bold("tasq")} - the project tracker you share with your agents (v${VERSION})
 
 ${color.bold("USAGE")}
   tasq <command> [args...] [--json]

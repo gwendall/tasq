@@ -8,7 +8,9 @@
 - [`PUBLIC_SOURCE_MANIFEST.json`](PUBLIC_SOURCE_MANIFEST.json) — frozen
   provenance for the initial standalone export, not a live file inventory.
 
-The public repository and protected Local `v0.3.0` npm/native artifacts are
-published alpha. Server, remote clients, Python and Cloud remain source
-candidates until their own external publication, deployment and clean-room
-gates pass.
+This README does not carry release status. Current publication truth lives in
+[RELEASES.md](RELEASES.md) for humans and
+[PUBLIC_RELEASE_POLICY.json](PUBLIC_RELEASE_POLICY.json) for machines; per
+surface support lives in
+[PRODUCT_SURFACE_MATRIX.json](../concepts/PRODUCT_SURFACE_MATRIX.json).
+Restating it here is what let this file sit a full release behind.

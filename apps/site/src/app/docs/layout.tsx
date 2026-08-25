@@ -3,7 +3,7 @@ import Link from "next/link";
 import { docPages } from "@/lib/docs";
 
 const groups = [
-  { label: "Learn", slugs: ["getting-started", "architecture"] },
+  { label: "Learn", slugs: ["getting-started", "concepts", "architecture"] },
   { label: "Use", slugs: ["agents", "mcp", "humans"] },
   { label: "Build & operate", slugs: ["sdk", "operators", "support"] },
 ];

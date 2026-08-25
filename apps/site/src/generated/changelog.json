@@ -17,7 +17,19 @@
         "kind": "Added",
         "items": [
           "`tasq list --priority 1-5` and `tasq next --priority 1-5` filter by explicit priority. Filtering happens in the query rather than after the limit, so a match beyond the limit is never hidden.",
-          "`tasq evidence add` prints a note when the filing actor differs from the actor holding the active claim, naming the `--actor` value that would attribute the receipt to the holder.",
+          "`tasq evidence add` prints a note when the filing actor differs from the actor holding the active claim, naming the `--actor` value that would attribute the receipt to the holder."
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v0.4.0",
+    "date": "2026-08-11",
+    "note": null,
+    "groups": [
+      {
+        "kind": "Changed",
+        "items": [
           "Use the controlled product-aligned `@tasq-run/*` namespace for every public package, workspace import, release artifact and SBOM identity; explicitly prohibit the unrelated `tasq` package and `@tasq/*` scope.",
           "Make `https://tasq.run` the canonical public website, documentation and pre-executable agent-acquisition entrypoint while retaining `https://github.com/gwendall/tasq` as the source authority."
         ]

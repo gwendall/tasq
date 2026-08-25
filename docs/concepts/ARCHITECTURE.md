@@ -15,8 +15,8 @@ profile, while a minimal `@tasq-run/core` composition boots without loading it.
 The kernel and the product are deliberately distinct:
 
 ```text
-Tasq Cloud (private provider-neutral source candidate, not deployed)
-└── Tasq Server (implemented source/container candidate, not published)
+Tasq Cloud (private provider-neutral experiment, not an offered service)
+└── Tasq Server (published exact-digest-certified image; private beta endpoint)
     ├── authority DTOs + pure guard (implemented internally, TQ-801)
     ├── authority control plane + opaque ledger router (implemented, TQ-802)
     ├── host-integrated authenticated read REST handler (implemented, TQ-803)
@@ -35,9 +35,12 @@ Tasq Local (implemented single-host reference product)
 └── Tasq Core + one local LibSQL ledger
 ```
 
-Cloud has a private control-plane/BFF source candidate but is not deployed
-behavior. Server has a local container candidate but no
-published image or public endpoint. Both must reuse Core through the
+Cloud has a private control-plane/BFF with a bounded Fly experiment; it is not
+an available managed service. Server publishes an exact-digest-certified
+multi-architecture image and runs a private-beta endpoint at `api.tasq.run`.
+Support status is owned by
+[PRODUCT_SURFACE_MATRIX.json](PRODUCT_SURFACE_MATRIX.json), never by this
+prose. Both must reuse Core through the
 ADR-004 identity/routing/authorization guard, not fork state or expose current
 local listeners remotely. `PRODUCT_CONSUMPTION_SPEC.md` owns the product
 contract and `PRODUCT_SURFACE_MATRIX.json` owns its machine-readable support

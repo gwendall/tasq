@@ -15,8 +15,9 @@ tasq version --json
 ```
 
 The `storeFormat` object declares the executable's current, readable, writable
-and directly migratable ranges. Published `v0.3.0` reports format 26; current
-repository source reports format 32 after signed-statement,
+and directly migratable ranges. Published `v0.4.0` and current repository
+source both report format 32; the earlier published `v0.3.0` reports format 26,
+after signed-statement,
 replica-principal-binding, trusted-binder-registry, attestation and agreement
 migrations plus settlement/recourse. Trust the exact executable output rather
 than this prose when upgrading a retained ledger. An executable
@@ -83,15 +84,17 @@ ledger.
 
 ## N-2 compatibility rule
 
-For the `v0.4.0` candidate, exact public `v0.2.0`/format-25 and
-`v0.3.0`/format-26 binaries and bytes are mandatory inputs. The local
-source-candidate matrix passes locally and in protected CI on Darwin arm64 and
-Linux x64 GNU, including nontrivial retained ledgers, format-28 migration
-receipts, doctor and matching-binary restore. The protected result is run
-[30625856802](https://github.com/gwendall/tasq/actions/runs/30625856802),
-bound to source commit `71f7f8c3f70f712ff06d51bec0f30b82cbe372b5`.
-The later exact published `v0.4.0` replay has not run, so candidate evidence is
-not shipped support.
+For `v0.4.0`, exact public `v0.2.0`/format-25 and `v0.3.0`/format-26 binaries
+and bytes are mandatory inputs. The matrix passes locally and in protected CI
+on Darwin arm64 and Linux x64 GNU, including nontrivial retained ledgers,
+migration receipts, doctor and matching-binary restore. After publication,
+protected run
+[31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138)
+replayed the exact downloaded artifacts and attestations on both supported
+targets: `publishedV040Replay` is `passed` and TQ-608 is closed for `v0.4.0`.
+This is shipped support, not candidate evidence. See
+[TQ-608_MIGRATION_AND_DATA_SAFETY.md](../contracts/TQ-608_MIGRATION_AND_DATA_SAFETY.md)
+for the machine certificates.
 
 An old binary's typed refusal guarantees no logical ledger, journal, receipt
 or recovery-snapshot mutation. Do not interpret that as a byte-exact

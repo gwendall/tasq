@@ -48,8 +48,8 @@ Tasq is the serious version of that file:
 - two agents never start the same task, because claims are exclusive and expire;
 - a successful run is never mistaken for a finished outcome;
 - ownership does not survive a crashed worker;
-- a replacement agent resumes from a monotone event cursor instead of replaying
-  your chat history.
+- a replacement agent picks up exactly where the last one stopped, instead of
+  replaying your chat history.
 
 Tasq is not an agent runtime. It does not launch agents or call providers. It
 gives the tools you already use one shared, inspectable place to agree on what
@@ -63,8 +63,8 @@ is done.
 
 ## What is available today
 
-- **Tasq Core** — an embeddable, profile-neutral TypeScript coordination
-  kernel. `@tasq-run/core@0.4.0` exposes the high-level `createLocalTasq`
+- **Tasq Core** - the embeddable TypeScript library behind the CLI, with no
+  opinion about your domain. `@tasq-run/core@0.4.0` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.

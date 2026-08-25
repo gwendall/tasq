@@ -3,7 +3,7 @@
   "source": {
     "path": "docs/site/PUBLIC_SITE_DOCS.json",
     "contractVersion": "tasq.public-site-docs-source.v1",
-    "sha256": "3c0dcdcee3b304a7de3a35ed96cb3e989d98397d2d20c611c92d90deb0fbe766"
+    "sha256": "4e073aba08c3f8b2cbd76e88292a55a5a76b7fc2f560fe6f43a99cb8c8255852"
   },
   "pages": [
     {
@@ -255,7 +255,7 @@
           "body": [
             "Record that one task waits on another with a dependency, and `tasq next` stops offering the blocked one until its blocker closes. Nothing schedules the work: the queue simply stops proposing what is not actionable yet."
           ],
-          "code": "tasq depend <id> --on <other-id>\ntasq next        # the blocked task is absent until its blocker is done",
+          "code": "tasq depend <id> --on <other-id>\ntasq next        # the blocked task is absent until its blocker is done\ntasq next --priority 5   # only what you marked most important",
           "codeTitle": "dependencies"
         },
         {
