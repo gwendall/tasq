@@ -10,6 +10,13 @@ release history selected by ADR-008.
 
 ### Changed
 
+- **Behaviour change.** A terminal transition (`done`, `cancel`) by an actor
+  other than the one holding an active claim is now refused, naming the holder
+  and the expiry. Previously the exclusivity guard existed on `claim` and
+  `attempt` but not on completion, so a third actor could close a claimed task
+  and silently force-release the holder's claim at the decisive moment. Expiry
+  still ends ownership, and `--force` records a deliberate takeover, exactly
+  like `release --force`. Unclaimed tasks are unaffected.
 - **Behaviour change.** An explicit task `--priority` now replaces the
   importance inherited from its area or goal, in both directions. Importance
   previously acted as a floor, so `priority` could only raise it: every task in

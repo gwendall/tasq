@@ -11,7 +11,7 @@
  * silently fail.
  */
 
-import { and, asc, desc, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { createHash } from "node:crypto";
 import {
   task,
@@ -725,6 +725,12 @@ export interface StatusChangeOptions extends TaskServiceContext {
   evidenceIds?: string[];
   /** Accepted current decision required when validationRequired is true. */
   validationDecisionId?: string;
+  /**
+   * Take a terminal transition over another actor's active claim. Off by
+   * default: closing is the decisive act of claimed work, so a non-holder is
+   * refused unless the takeover is explicit. Mirrors releaseTaskClaim.
+   */
+  force?: boolean;
 }
 
 export interface RecurringCompletionMaterializer {
@@ -923,6 +929,37 @@ export async function transitionTaskStatus(
       : await ensureLocalPrincipal(tx, tenantId, actor, now);
     if (!attribution) throw new Error(`Principal not found in workspace: ${options.principalId}`);
     if (attribution.status !== "enabled") throw new Error(`Principal is disabled: ${attribution.id}`);
+
+    // A claim is an exclusive, expiring right to work the commitment, and a
+    // terminal transition is the decisive act of that work. Until now the
+    // guard existed on claim and attempt but not here, so a third actor could
+    // complete a claimed task and silently force-release the holder's claim,
+    // which contradicts the promise the claim makes. Expiry still ends
+    // ownership (a crashed worker never blocks), and `force` records a
+    // deliberate takeover instead of an accidental one.
+    if (to === "done" || to === "cancelled") {
+      const [activeClaim] = await tx
+        .select()
+        .from(taskClaim)
+        .where(
+          and(
+            eq(taskClaim.tenantId, tenantId),
+            eq(taskClaim.taskId, id),
+            isNull(taskClaim.releasedAt),
+            gt(taskClaim.expiresAt, now),
+          ),
+        )
+        .limit(1);
+      const heldByCaller = !activeClaim ||
+        (activeClaim.principalId ? activeClaim.principalId === attribution.id : activeClaim.actor === actor);
+      if (!heldByCaller && !options.force) {
+        throw new Error(
+          `Task ${id} is claimed by ${activeClaim.actor} until ${new Date(activeClaim.expiresAt).toISOString()}. `
+            + `Complete or cancel it as its holder, wait for the claim to expire, `
+            + `or force the transition to take over deliberately.`,
+        );
+      }
+    }
 
     let completionRecordId: string | null = null;
 
