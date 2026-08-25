@@ -359,6 +359,11 @@ When the prioritizer or projection ranks tasks, it does so by traversing `task â
 - Goal importance dominates the leverage score
 - Area cadence drives drift detection
 - Tasks without ancestry default to importance 3
+- An explicit task `priority` (1-5) **replaces** that inherited importance,
+  in both directions: it can lower a task inside an important area as well as
+  raise one. Importance is the default, not a floor. Before this was the case,
+  every task in an importance-5 area scored identically and `tasq next`
+  degraded to creation order. Filter the queue with `tasq next --priority N`.
 
 **But** : goal ancestry is a guide for *what to surface*, never a filter for *what is allowed*. The system never refuses to log a spontaneous action that doesn't trace cleanly â€” personal life has a legitimate non-traceable surface (a friend in crisis, a parent in grief, a creative intuition).
 
