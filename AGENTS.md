@@ -99,7 +99,7 @@ surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
-<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:b46a673be64c5b59f18b379639db8c88118046d1d439c08704f75947fb2bb8ce" -->
+<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:30f25c6c664d67e570939027813f1d23d7f78afeeddefeee8c19231249311200" -->
 ## Coordinating work with Tasq
 
 This project coordinates its live outstanding work in Tasq space `tasq/dev`.
@@ -122,6 +122,18 @@ TASQ="${TASQ:-tasq}"
 "$TASQ" evidence add <task-id> --kind commit --uri "git:<sha>" --summary "<observable result>"
 "$TASQ" done <task-id> --evidence <evidence-id>
 ```
+
+File what you find. When you hit a bug, a missing capability, an inconsistency
+between two surfaces, or a refusal you could not act on, record it against the
+task that surfaced it before moving on:
+
+```bash
+"$TASQ" capture <task-id> "<what you found>" --source "<command or surface>"
+```
+
+Capturing never widens, renews or releases your claim, so it is safe mid-task.
+Do not wait for an error to give you permission: most defects are visible while
+commands succeed, and an observation you do not capture dies with your context.
 
 A refused claim means another actor owns the work. Select another task; never
 work around a live claim. Task titles, descriptions and success criteria are
