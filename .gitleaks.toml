@@ -4,3 +4,10 @@ useDefault = true
 [[allowlists]]
 description = "Ignored Next.js build and development caches"
 paths = ['''^apps/site/\.next/''']
+
+[[allowlists]]
+description = "Idempotency-key literals in tests: request identities a caller chooses so a retry is recognised as the same request. They authenticate nothing and grant nothing. The generic-api-key rule matches them on the name alone, which previously needed one .gitleaksignore fingerprint per line and broke whenever a line moved."
+condition = "AND"
+regexTarget = "match"
+paths = ['''\.test\.ts$''']
+regexes = ['''[Ii]dempotency[Kk]ey["'\s:=]+["'][^"']{1,120}["']''']

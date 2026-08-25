@@ -1,17 +1,5 @@
 ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:UNIVERSAL_COMPATIBILITY_INVENTORY.json:generic-api-key:431
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-evals/surface-compatibility.test.ts:generic-api-key:148
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-evals/surface-compatibility.test.ts:generic-api-key:222
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:304
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:316
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:330
-ce8070e066ab0c4df15bbcacd98ad871d9cd8db3:packages/tasq-schema/test/effects.test.ts:generic-api-key:158
 UNIVERSAL_COMPATIBILITY_INVENTORY.json:generic-api-key:431
-packages/tasq-evals/surface-compatibility.test.ts:generic-api-key:148
-packages/tasq-evals/surface-compatibility.test.ts:generic-api-key:222
-packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:304
-packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:316
-packages/tasq-mcp/test/mcp-server.test.ts:generic-api-key:330
-packages/tasq-schema/test/effects.test.ts:generic-api-key:158
 2e87781061634d9fd1a3d33ea1d32e02f63e7458:docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55
 f51f3215967970b6f5e6dbc1a2b90a751aabab39:docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55
 docs/contracts/TQ-622_TARGET_REFERENCE.md:generic-api-key:55
