@@ -18,7 +18,7 @@ import {
   loadConfig,
   saveConfig,
 } from "../config.js";
-import { printInfo, printJson } from "../output/format.js";
+import { color, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 import { agentInstructionsCmd } from "./agent-instructions.js";
 
@@ -136,7 +136,45 @@ async function runIsolated(
   return JSON.parse(stdout);
 }
 
-/** Run a complete assertion-mode journey without consulting the live home. */
+/**
+ * Run a step the demo EXPECTS to be refused, and return the typed problem
+ * contract. The refusals are the point of the demo: they are what a shared
+ * ledger does that a scratchpad cannot.
+ */
+async function runIsolatedRefusal(
+  executable: string,
+  home: string,
+  argv: string[],
+): Promise<{ code: string; summary: string }> {
+  const child = Bun.spawn([executable, ...argv], {
+    env: { ...process.env, TASQ_HOME: home, TASQ_DB_URL: "", TASQ_EVENT_JOURNAL_PATH: "" },
+    stdin: "ignore",
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const [exitCode, stdout, stderr] = await Promise.all([
+    child.exited,
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+  ]);
+  if (exitCode === 0) {
+    throw new Error(`isolated demo expected a refusal from: ${argv.join(" ")}`);
+  }
+  const problem = JSON.parse(stdout) as { code?: string; summary?: string };
+  if (!problem.summary) {
+    throw new Error(`isolated demo refusal carried no problem contract: ${stderr.trim()}`);
+  }
+  return { code: problem.code ?? "refused", summary: problem.summary };
+}
+
+/**
+ * Play the scene the product exists for, in an isolated home: two agents on
+ * one task, exclusive ownership, and a completion that needs a receipt.
+ *
+ * The previous demo ran add, list, done with a single actor, which is what any
+ * todo CLI does, under a headline promising that agents stay aligned. The
+ * refusals below are the difference, so they are the demo.
+ */
 export async function demoCmd(
   args: ParsedArgs,
   executable: string,
@@ -151,29 +189,83 @@ export async function demoCmd(
       "setup", "--space", "demo/local", "--actor", "demo:human", "--json",
     ]);
     const created = await runIsolated(executable, home, [
-      "add", "Ship the demo outcome", "--next", "Run tasq list", "--json",
+      "add", "Ship the release notes",
+      "--next", "Draft and publish",
+      "--completion", "evidence",
+      "--success", "The published URL is attached as evidence",
+      "--json",
     ]) as { id: string };
-    const before = await runIsolated(executable, home, ["list", "--json"]);
+
+    // One agent takes exclusive ownership; the second is refused, by name.
+    const claimed = await runIsolated(executable, home, [
+      "claim", created.id, "--for", "30m", "--actor", "agent:a", "--json",
+    ]) as { expiresAt: number };
+    const claimRefused = await runIsolatedRefusal(executable, home, [
+      "claim", created.id, "--for", "30m", "--actor", "agent:b", "--json",
+    ]);
+
+    // Closing is the decisive act, so the claim guards it too.
+    const closeRefused = await runIsolatedRefusal(executable, home, [
+      "done", created.id, "--actor", "agent:b", "--json",
+    ]);
+
+    // The holder cannot close on its own say-so either: proof is required.
+    const evidenceRefused = await runIsolatedRefusal(executable, home, [
+      "done", created.id, "--actor", "agent:a", "--note", "trust me", "--json",
+    ]);
+    const evidence = await runIsolated(executable, home, [
+      "evidence", "add", created.id,
+      "--kind", "url",
+      "--uri", "https://example.test/release-notes",
+      "--summary", "Published release notes",
+      "--actor", "agent:a", "--json",
+    ]) as { id: string };
     const completed = await runIsolated(executable, home, [
-      "done", created.id, "--note", "Completed inside the isolated demo", "--json",
+      "done", created.id, "--evidence", evidence.id, "--actor", "agent:a", "--json",
     ]);
     const after = await runIsolated(executable, home, ["inspect", created.id, "--json"]);
+
     const result = {
-      contractVersion: "tasq.isolated-demo.v1",
+      contractVersion: "tasq.isolated-demo.v2",
       isolation: "temporary-home-removed-after-run",
       liveHomeConsulted: false,
       setup,
       created,
-      before,
+      claimed,
+      refusals: {
+        secondClaim: claimRefused,
+        closeByNonHolder: closeRefused,
+        closeWithoutEvidence: evidenceRefused,
+      },
+      evidence,
       completed,
       after,
     };
     if (json) printJson(result);
     else {
+      const expiry = new Date(claimed.expiresAt).toISOString().slice(11, 16);
       printInfo([
-        "Tasq isolated demo completed.",
-        `Created and completed: ${created.id}`,
-        "Your configured TASQ_HOME and ledger were not read or changed.",
+        `${color.bold("Two agents, one task.")} Everything below ran in a throwaway home.`,
+        "",
+        `  ${color.dim("$")} tasq add "Ship the release notes" --completion evidence`,
+        `    ${color.green("✓")} ${shortId(created.id)}  closing this one will require proof`,
+        "",
+        `  ${color.dim("$")} tasq claim ${shortId(created.id)} --actor agent:a --for 30m`,
+        `    ${color.green("✓")} agent:a owns it until ${expiry} UTC`,
+        "",
+        `  ${color.dim("$")} tasq claim ${shortId(created.id)} --actor agent:b`,
+        `    ${color.red("refused")} ${claimRefused.summary}`,
+        "",
+        `  ${color.dim("$")} tasq done ${shortId(created.id)} --actor agent:b`,
+        `    ${color.red("refused")} ${closeRefused.summary}`,
+        "",
+        `  ${color.dim("$")} tasq done ${shortId(created.id)} --actor agent:a --note "trust me"`,
+        `    ${color.red("refused")} ${evidenceRefused.summary}`,
+        "",
+        `  ${color.dim("$")} tasq evidence add ... && tasq done ... --evidence`,
+        `    ${color.green("✓")} done, with a receipt you can inspect`,
+        "",
+        color.dim("Your configured TASQ_HOME and ledger were not read or changed."),
       ].join("\n"));
     }
     return 0;
