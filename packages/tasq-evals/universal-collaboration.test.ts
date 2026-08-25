@@ -143,6 +143,10 @@ describe("universal collaboration", () => {
         principalId: worker.id,
         actor: "remote-session-7",
         reason: "attempt succeeded; handing over for acceptance",
+        // This file exercises the hardened kernel surface, which requires the
+        // CAS revision on release; the compat surface does not. See the
+        // two-philosophies finding: same operation, two strictness levels.
+        expectedRevision: claim.revision,
         now: 2_050,
       });
 
