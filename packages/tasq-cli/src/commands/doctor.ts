@@ -229,7 +229,13 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     } else {
       printInfo(ok ? `${color.green("✓")} tasq store healthy` : "tasq doctor found issues");
       printInfo(`  SQLite: ${store.sqliteIntegrity}; FK violations: ${store.foreignKeyViolations}`);
-      for (const issue of store.issues) printInfo(`  - ${issue.code}: ${issue.message}`);
+      // An integrity finding without an identifier is a dead end: the operator
+      // cannot find, inspect or repair the row it names. DoctorIssue has always
+      // carried entityType/entityId; only this renderer dropped them.
+      for (const issue of store.issues) {
+        printInfo(`  - ${issue.code}: ${issue.message}`);
+        printInfo(`      ${color.dim(`${issue.entityType} ${issue.entityId}`)}`);
+      }
       for (const issue of permissionIssues) printInfo(`  - permissions: ${issue}`);
       for (const repair of permissionRepairs) printInfo(`  - permissions repaired: ${repair.path} ${repair.before} → ${repair.after}`);
       for (const repair of outboxRepairs) {
@@ -237,6 +243,14 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
       }
       if (outboxCounts.quarantined > 0) {
         printInfo(`  - outbox: ${outboxCounts.quarantined} quarantined delivery record(s)`);
+        const quarantined = outbox.filter((row) => row.status === "quarantined");
+        for (const row of quarantined.slice(0, 20)) {
+          printInfo(`      ${color.dim(row.id)}`);
+        }
+        if (quarantined.length > 20) {
+          printInfo(`      ${color.dim(`... ${quarantined.length - 20} more; use --json for the full list`)}`);
+        }
+        printInfo(`      ${color.dim("repair with: tasq doctor --repair-outbox")}`);
       }
       if (!journalOk) {
         printInfo(`  - journal cursors: DB ${databaseMaxSequence}, journal ${journalMaxSequence}, common ${commonMaxSequence}`);

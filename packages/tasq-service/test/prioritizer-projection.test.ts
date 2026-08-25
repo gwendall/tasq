@@ -14,6 +14,7 @@ import {
   createProject,
   updateProject,
   createTask,
+  updateTask,
   listTasks,
   completeTask,
   cancelTask,
@@ -164,6 +165,35 @@ describe("prioritizer score formula (pure)", () => {
 });
 
 describe("pickNext — DB-aware", () => {
+  it("adopts the destination project scope when a task moves", async () => {
+    const { db, close } = await freshDb();
+    try {
+      const area = await createArea(db, { name: "A", slug: "a", importance: 3 });
+      const goal = await createGoal(db, { areaId: area.id, title: "G", importance: 3 });
+      const withGoal = await createProject(db, { title: "with goal", goalId: goal.id, areaId: area.id });
+      const withoutGoal = await createProject(db, { title: "no goal" });
+      const t = await createTask(db, { title: "t", projectId: withGoal.id });
+      expect(t.goalId).toBe(goal.id);
+
+      // A plain move used to fail against the destination's own hierarchy.
+      const moved = await updateTask(db, t.id, { projectId: withoutGoal.id });
+      expect(moved.projectId).toBe(withoutGoal.id);
+      expect(moved.goalId).toBeNull();
+
+      // Moving back adopts the destination's goal rather than staying null.
+      const back = await updateTask(db, t.id, { projectId: withGoal.id });
+      expect(back.goalId).toBe(goal.id);
+
+      // An explicitly conflicting goal still refuses, and says what to do.
+      const other = await createGoal(db, { areaId: area.id, title: "other", importance: 3 });
+      await expect(
+        updateTask(db, t.id, { projectId: withGoal.id, goalId: other.id }),
+      ).rejects.toThrow(/belongs to goal .* was supplied.*adopt the project/s);
+    } finally {
+      await close();
+    }
+  });
+
   it("filters by explicit priority in the query, before the limit", async () => {
     const { db, close } = await freshDb();
     try {
