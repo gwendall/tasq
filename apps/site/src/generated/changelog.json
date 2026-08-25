@@ -9,6 +9,7 @@
         "items": [
           "**Behaviour change.** A terminal transition (`done`, `cancel`) by an actor other than the one holding an active claim is now refused, naming the holder and the expiry. Previously the exclusivity guard existed on `claim` and `attempt` but not on completion, so a third actor could close a claimed task and silently force-release the holder's claim at the decisive moment. Expiry still ends ownership, and `--force` records a deliberate takeover, exactly like `release --force`. Unclaimed tasks are unaffected.",
           "**Behaviour change.** An explicit task `--priority` now replaces the importance inherited from its area or goal, in both directions. Importance previously acted as a floor, so `priority` could only raise it: every task in an important area scored identically and `tasq next` silently degraded to creation order. Tasks with no explicit priority are unaffected and still inherit importance. Existing ledgers will see `tasq next` reorder where a deliberately low priority was being discarded.",
+          "`tasq doctor` no longer reports healthy ledgers as missing completion records. The check required a receipt whose revision equalled the task's CURRENT revision, so any edit after closing orphaned it: on a real ledger all twelve findings were false positives. It now requires one receipt per completion, which still catches a reopen and re-close that produced none.",
           "Under `--json`, every non-zero exit now writes a `tasq.command-problem.v1` envelope to stdout alongside the existing stderr message, so an agent-driven caller can act on a refusal instead of receiving an empty machine channel. See [`docs/reference/CLI_JSON_CONTRACT.md`](docs/reference/CLI_JSON_CONTRACT.md).",
           "Per-command help (`tasq help <cmd>` and `tasq <cmd> --help`) now lists the flags accepted by every command, including `--actor`. Argument-error output is unchanged."
         ]
@@ -16,6 +17,7 @@
       {
         "kind": "Added",
         "items": [
+          "`tasq mcp --completion assertion|evidence` sets the completion policy for commitments that MCP server creates when the caller states none, and `tasq agent install` now registers `--completion evidence`. Work an agent proposes through the documented integration therefore states what done looks like and closes only against an inspectable receipt. An explicit `completionPolicy` on the call always wins, and creating an evidence-backed commitment without `successCriteria` is refused rather than silently downgraded.",
           "`tasq list --priority 1-5` and `tasq next --priority 1-5` filter by explicit priority. Filtering happens in the query rather than after the limit, so a match beyond the limit is never hidden.",
           "`tasq evidence add` prints a note when the filing actor differs from the actor holding the active claim, naming the `--actor` value that would attribute the receipt to the holder."
         ]

@@ -15,6 +15,10 @@ Reads its configuration from the environment; there are no flags.
   TASQ_MCP_ACTOR       required   principal every mutation is attributed to
   TASQ_MCP_CAPABILITIES optional  comma-separated, default read,propose,coordinate
                                   read is required; effect is refused here
+  TASQ_MCP_COMPLETION_POLICY optional  assertion | evidence, default assertion
+                                  applied to commitments this server creates
+                                  when the caller states none; agent install
+                                  sets evidence
   TASQ_MCP_PRINCIPAL_ID optional  explicit principal id
   TASQ_HOME            optional   ledger location, default ~/.tasq
 
@@ -52,10 +56,16 @@ if (capabilities.includes("effect")) {
 const opened = await openDb();
 await runKernelMigrations(opened.client, { clock: systemClock });
 
+const completionPolicy = process.env.TASQ_MCP_COMPLETION_POLICY?.trim();
+if (completionPolicy !== undefined && completionPolicy !== "assertion" && completionPolicy !== "evidence") {
+  configError(`TASQ_MCP_COMPLETION_POLICY must be assertion or evidence, received ${completionPolicy}`);
+}
+
 const server = createTasqMcpServer({
   db: opened.db,
   workspaceId,
   actor,
+  defaultCompletionPolicy: completionPolicy as "assertion" | "evidence" | undefined,
   principalId: process.env.TASQ_MCP_PRINCIPAL_ID?.trim() || undefined,
   capabilities,
   clock: systemClock,

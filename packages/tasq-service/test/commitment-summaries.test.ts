@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { eq } from "drizzle-orm";
-import { commitmentSummary } from "@tasq-run/schema";
+import { commitmentSummary, completionRecord, task } from "@tasq-run/schema";
 import {
   appendCommitmentSummary,
   completeCommitment,
@@ -14,6 +14,7 @@ import {
   listCurrentCommitmentSummaries,
   openDb,
   reopenCommitment,
+  updateCommitment,
   runKernelMigrations,
 } from "../src/kernel.js";
 import { diagnoseStore } from "../src/doctor.js";
@@ -31,6 +32,72 @@ async function fixture() {
   await runKernelMigrations(opened.client, { now: 1_000 });
   return opened;
 }
+
+describe("completion receipt invariant", () => {
+  it("counts one receipt per completion, not one per current revision", async () => {
+    const { db, client, close } = await fixture();
+    const workspaceId = "robotics/lab";
+    const actor = "human:operator";
+    try {
+      const commitment = await createCommitment(db, { title: "Ship it" }, {
+        workspaceId, actor, now: 1_100,
+      });
+      const done = await completeCommitment(db, commitment.id, {
+        workspaceId, actor, expectedRevision: commitment.revision, now: 1_200,
+      });
+      expect((await diagnoseStore(db, client, workspaceId))
+        .issues.filter((entry) => entry.code === "missing_completion_record")).toHaveLength(0);
+
+      // Editing a closed task bumps its revision. The receipt still exists and
+      // still describes the completion, so nothing is missing. The old check
+      // keyed on the CURRENT revision and reported every such task as broken.
+      const edited = await updateCommitment(db, commitment.id, { title: "Ship it, revised" }, {
+        workspaceId, actor, expectedRevision: done.revision, now: 1_300,
+      });
+      expect(edited.revision).toBeGreaterThan(done.revision);
+      expect((await diagnoseStore(db, client, workspaceId))
+        .issues.filter((entry) => entry.code === "missing_completion_record")).toHaveLength(0);
+
+      // Reopening and closing again is a second completion, so it owes a
+      // second receipt: the check must still catch a genuinely missing one.
+      const reopened = await reopenCommitment(db, commitment.id, {
+        workspaceId, actor, expectedRevision: edited.revision, now: 1_400,
+      });
+      await completeCommitment(db, commitment.id, {
+        workspaceId, actor, expectedRevision: reopened.revision, now: 1_500,
+      });
+      expect((await diagnoseStore(db, client, workspaceId))
+        .issues.filter((entry) => entry.code === "missing_completion_record")).toHaveLength(0);
+
+      // Two completions owe two receipts, and completion_record is append-only
+      // at the SQL level, so the receipts cannot be removed to fake a shortfall.
+      expect(await db.select().from(completionRecord)
+        .where(eq(completionRecord.taskId, commitment.id))).toHaveLength(2);
+
+      // A genuinely receipt-less closed task is still reported. This is the
+      // real shape of the case: rows closed before completion records existed,
+      // which is what the live ledger turned out to be holding.
+      const legacyId = "00000000-0000-7000-8000-00000000dead";
+      await db.insert(task).values({
+        id: legacyId,
+        tenantId: workspaceId,
+        title: "Closed before receipts existed",
+        status: "done",
+        revision: 2,
+        createdAt: 1_600,
+        updatedAt: 1_600,
+        completedAt: 1_600,
+      });
+      const missing = (await diagnoseStore(db, client, workspaceId))
+        .issues.filter((entry) => entry.code === "missing_completion_record");
+      expect(missing).toHaveLength(1);
+      expect(missing[0]).toMatchObject({ entityType: "task", entityId: legacyId });
+      expect(missing[0]!.message).toContain("0 completion record(s) for 1 completion(s)");
+    } finally {
+      await close();
+    }
+  });
+});
 
 describe("source-bound commitment summaries", () => {
   it("compacts terminal work without hiding raw audit and detects stale sources", async () => {

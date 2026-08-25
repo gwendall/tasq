@@ -226,7 +226,7 @@
       },
       {
         "usage": "mcp --tenant <space> --actor <label> [--capabilities read,coordinate]",
-        "description": "run a capability-scoped local MCP stdio server"
+        "description": "[--completion assertion|evidence] run a capability-scoped local MCP stdio server"
       },
       {
         "usage": "web --tenant <space> [--host 127.0.0.1] [--port 4137]",

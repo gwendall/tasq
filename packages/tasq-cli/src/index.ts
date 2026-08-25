@@ -101,7 +101,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
     onboard: ["space", "capabilities"],
     resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
-    mcp: ["capabilities"],
+    mcp: ["capabilities", "completion"],
     remote: [
       "profile", "endpoint", "workspace", "token", "replace", "cursor", "limit",
       "after-sequence", "resource-kind", "resource-id", "input", "idempotency-key",
@@ -247,6 +247,7 @@ ${color.bold("AGENT COORDINATION")}
   resource acquire|renew|release|verify|get|list|events|sweep
                                  coordinate any opaque external resource key
   mcp --tenant <space> --actor <label> [--capabilities read,coordinate]
+      [--completion assertion|evidence]
                                  run a capability-scoped local MCP stdio server
   web --tenant <space> [--host 127.0.0.1] [--port 4137]
                                  explicit foreground read-only Local Console

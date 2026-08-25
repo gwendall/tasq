@@ -23,7 +23,10 @@ afterEach(async () => {
   while (cleanups.length > 0) await cleanups.pop()!();
 });
 
-async function fixture(capabilities: CreateTasqMcpServerOptions["capabilities"]) {
+async function fixture(
+  capabilities: CreateTasqMcpServerOptions["capabilities"],
+  defaultCompletionPolicy?: CreateTasqMcpServerOptions["defaultCompletionPolicy"],
+) {
   const dir = mkdtempSync(join(tmpdir(), "tasq-mcp-"));
   const opened = await openDb({ url: `file:${join(dir, "db.sqlite")}`, wal: false });
   const clock = createMutableClock(10_000);
@@ -34,6 +37,7 @@ async function fixture(capabilities: CreateTasqMcpServerOptions["capabilities"])
     actor: "agent:planner",
     principalId: undefined,
     capabilities,
+    defaultCompletionPolicy,
     clock,
   });
   const client = new Client({ name: "tasq-mcp-test", version: "1.0.0" });
@@ -119,6 +123,55 @@ describe("Tasq MCP capability boundary", () => {
     });
     expect(hiddenEffect.isError).toBe(true);
     expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+  });
+
+  it("makes agent-proposed work evidence-backed when the host registers it", async () => {
+    // `tasq agent install` registers --completion evidence, which is what makes
+    // "they cannot mark anything done without a receipt you can inspect" true
+    // for the work an agent proposes.
+    const { client } = await fixture(["read", "propose", "coordinate"], "evidence");
+
+    const backed = structured<{ completionPolicy: string; id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Ship the release notes",
+        successCriteria: "The published URL is attached as evidence",
+        idempotencyKey: "evidence-default-1",
+      },
+    }));
+    expect(backed.completionPolicy).toBe("evidence");
+
+    // An explicit policy on the call still wins: the default is a default.
+    const asserted = structured<{ completionPolicy: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Quick note",
+        completionPolicy: "assertion",
+        idempotencyKey: "evidence-default-2",
+      },
+    }));
+    expect(asserted.completionPolicy).toBe("assertion");
+
+    // Evidence judges a receipt against stated criteria, so omitting them is
+    // refused rather than silently downgraded, which would hole the guarantee.
+    const refused = await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Vague work", idempotencyKey: "evidence-default-3" },
+    });
+    expect(refused.isError).toBe(true);
+    expect(refused.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringMatching(/successCriteria/),
+    });
+  });
+
+  it("leaves completion policy alone when the host registers no default", async () => {
+    const { client } = await fixture(["read", "propose", "coordinate"]);
+    const created = structured<{ completionPolicy: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Plain work", idempotencyKey: "no-default-1" },
+    }));
+    expect(created.completionPolicy).toBe("assertion");
   });
 
   it("requires a trusted host resolver before effect-capable tools can exist", async () => {

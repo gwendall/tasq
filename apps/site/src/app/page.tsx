@@ -205,8 +205,9 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-base leading-7 text-[var(--ink-muted)]">
               Claude Code, Codex or any MCP client reads the same ledger you do. They take
-              work with an expiring claim, so two agents never start the same task, and they
-              cannot mark anything done without a receipt you can inspect.
+              work with an expiring claim, so two agents never start the same task and nobody
+              closes work someone else is holding. Work they propose this way says up front
+              what done looks like, and closes only against a receipt you can inspect.
             </p>
             <div className="mt-7">
               <CodeWindow title={publicCodeExamples.agentConnect.title}>{publicCodeExamples.agentConnect.display}</CodeWindow>

@@ -20,6 +20,14 @@ export async function mcpCmd(args: ParsedArgs, clock: Clock = systemClock): Prom
   if (capabilities.includes("effect")) {
     throw new Error("The generic stdio composition root cannot expose effect dispatch authority");
   }
+  // The receipt guarantee the product advertises for agent integrations is
+  // exactly this: work an agent proposes is closeable only against evidence.
+  // `agent install` passes `--completion evidence`; a caller stating its own
+  // policy per commitment always wins.
+  const completionRaw = args.string("completion");
+  if (completionRaw !== undefined && completionRaw !== "assertion" && completionRaw !== "evidence") {
+    throw new Error(`Invalid value for --completion: "${completionRaw}". Allowed: assertion, evidence`);
+  }
   const rt = await openRuntime(actor, workspaceId, clock, { installReferenceExtension: false });
   try {
     await serveTasqMcpStdio({
@@ -27,6 +35,7 @@ export async function mcpCmd(args: ParsedArgs, clock: Clock = systemClock): Prom
       workspaceId,
       actor,
       capabilities,
+      defaultCompletionPolicy: completionRaw as "assertion" | "evidence" | undefined,
       clock: rt.ctx.clock,
     });
     return 0;
