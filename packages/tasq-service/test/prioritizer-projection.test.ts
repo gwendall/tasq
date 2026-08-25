@@ -14,6 +14,7 @@ import {
   createProject,
   updateProject,
   createTask,
+  listTasks,
   completeTask,
   cancelTask,
   startTask,
@@ -163,6 +164,33 @@ describe("prioritizer score formula (pure)", () => {
 });
 
 describe("pickNext — DB-aware", () => {
+  it("filters by explicit priority in the query, before the limit", async () => {
+    const { db, close } = await freshDb();
+    try {
+      const area = await createArea(db, { name: "Tasq", slug: "tasq", importance: 5 });
+      await createTask(db, { title: "low", areaId: area.id, priority: 2 });
+      await createTask(db, { title: "high", areaId: area.id, priority: 5 });
+      await createTask(db, { title: "unset", areaId: area.id });
+
+      const p5 = await pickNext(db, { priority: 5 });
+      expect(p5.map((r) => r.task.title)).toEqual(["high"]);
+
+      const p2 = await pickNext(db, { priority: 2 });
+      expect(p2.map((r) => r.task.title)).toEqual(["low"]);
+
+      const listed = await listTasks(db, { priority: 5 });
+      expect(listed.map((t) => t.title)).toEqual(["high"]);
+
+      // A limit smaller than the unfiltered set must not hide a match.
+      const limited = await listTasks(db, { priority: 2, limit: 1 });
+      expect(limited.map((t) => t.title)).toEqual(["low"]);
+
+      expect((await pickNext(db, {})).length).toBe(3);
+    } finally {
+      await close();
+    }
+  });
+
   it("orders by score, due-then-created tie-break", async () => {
     const { db, close } = await freshDb();
     try {

@@ -1451,6 +1451,8 @@ export interface ListTasksOptions extends TaskServiceContext {
   parentTaskId?: string | null;
   /** Tasks with no project (inbox). */
   orphanOnly?: boolean;
+  /** Keep only tasks whose explicit priority equals this value (1-5). */
+  priority?: number;
   includeDeleted?: boolean;
   /**
    * Override the default defer filter. By default tasks with
@@ -1479,6 +1481,10 @@ export async function listTasks(
   if (options.goalId) filters.push(eq(task.goalId, options.goalId));
   if (options.projectId) filters.push(eq(task.projectId, options.projectId));
   if (options.orphanOnly) filters.push(isNull(task.projectId));
+  // Filter in the query, not after LIMIT, for the same reason as defer
+  // visibility below: a post-filter can return a short page while matching
+  // tasks sit just past the limit.
+  if (options.priority !== undefined) filters.push(eq(task.priority, options.priority));
   if (options.parentTaskId === null) {
     filters.push(isNull(task.parentTaskId));
   } else if (typeof options.parentTaskId === "string") {

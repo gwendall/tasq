@@ -81,7 +81,22 @@ function formatUnit(diffMs: number, unitMs: number, suffix: string): string {
   return `${-n}${suffix} ago`;
 }
 
+/**
+ * Last message passed to `printError`. Several commands refuse by printing and
+ * returning a non-zero code rather than throwing, so the top-level catch never
+ * sees them and a `--json` caller was left with an empty stdout. `main` reads
+ * this to emit a problem contract on ANY non-zero exit.
+ */
+let lastErrorMessage: string | null = null;
+
+export function takeLastErrorMessage(): string | null {
+  const message = lastErrorMessage;
+  lastErrorMessage = null;
+  return message;
+}
+
 export function printError(msg: string): void {
+  lastErrorMessage = msg;
   process.stderr.write(color.red(`tasq: ${msg}\n`));
 }
 

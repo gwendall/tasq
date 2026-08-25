@@ -10,6 +10,30 @@ release history selected by ADR-008.
 
 ### Changed
 
+- **Behaviour change.** An explicit task `--priority` now replaces the
+  importance inherited from its area or goal, in both directions. Importance
+  previously acted as a floor, so `priority` could only raise it: every task in
+  an important area scored identically and `tasq next` silently degraded to
+  creation order. Tasks with no explicit priority are unaffected and still
+  inherit importance. Existing ledgers will see `tasq next` reorder where a
+  deliberately low priority was being discarded.
+- Under `--json`, every non-zero exit now writes a `tasq.command-problem.v1`
+  envelope to stdout alongside the existing stderr message, so an agent-driven
+  caller can act on a refusal instead of receiving an empty machine channel.
+  See [`docs/reference/CLI_JSON_CONTRACT.md`](docs/reference/CLI_JSON_CONTRACT.md).
+- Per-command help (`tasq help <cmd>` and `tasq <cmd> --help`) now lists the
+  flags accepted by every command, including `--actor`. Argument-error output
+  is unchanged.
+
+### Added
+
+- `tasq list --priority 1-5` and `tasq next --priority 1-5` filter by explicit
+  priority. Filtering happens in the query rather than after the limit, so a
+  match beyond the limit is never hidden.
+- `tasq evidence add` prints a note when the filing actor differs from the
+  actor holding the active claim, naming the `--actor` value that would
+  attribute the receipt to the holder.
+
 - Use the controlled product-aligned `@tasq-run/*` namespace for every public
   package, workspace import, release artifact and SBOM identity; explicitly
   prohibit the unrelated `tasq` package and `@tasq/*` scope.

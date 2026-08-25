@@ -17,7 +17,7 @@ import {
   printJson,
   shortId,
 } from "../output/format.js";
-import { enumArg, parseDateArg, type ParsedArgs } from "../args.js";
+import { enumArg, parseDateArg, priorityFilterArg, type ParsedArgs } from "../args.js";
 import { SEARCH_USAGE } from "./usage.js";
 import { mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
@@ -43,6 +43,7 @@ export async function nextCmd(args: ParsedArgs): Promise<number> {
       areaId,
       goalId: args.string("goal"),
       projectId: args.string("project"),
+      priority: priorityFilterArg(args),
       includeScheduled,
       actor: rt.ctx.actor,
       includeClaimed: args.bool("include-claimed"),
