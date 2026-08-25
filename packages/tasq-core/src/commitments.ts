@@ -107,6 +107,12 @@ export interface CommitmentTransitionOptions extends KernelContext {
   occurredAt?: number;
   evidenceIds?: string[];
   validationDecisionId?: string;
+  /**
+   * Take a terminal transition over another principal's active claim, as a
+   * recorded, deliberate supervision act (a maintainer closing agent work on
+   * independent evidence). The MCP surface deliberately does not expose this.
+   */
+  force?: boolean;
 }
 
 export async function createCommitment(
@@ -205,6 +211,7 @@ function transition(
     occurredAt: options.occurredAt,
     evidenceIds: options.evidenceIds,
     validationDecisionId: options.validationDecisionId,
+    force: options.force,
   }));
 }
 

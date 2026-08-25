@@ -13,6 +13,7 @@ import { join } from "node:path";
 import {
   acceptAssignment,
   acquireTaskClaim,
+  releaseTaskClaim,
   addCommitmentRelation,
   addTaskEvidence,
   appendArtifact,
@@ -224,6 +225,19 @@ describe("UK-007 cross-domain conformance", () => {
       });
       expect(mergeResult.effect).toBe("satisfied");
       const releaseBeforeCompletion = await getCommitment(db, release.id, workspaceId);
+      // coding-b's claim is still live (expires at 3_301). The maintainer's
+      // closure over it is a supervision takeover: refused by default, then
+      // recorded deliberately with force. Exclusivity holds at the decisive
+      // moment even against the human supervisor.
+      await expect(completeCommitment(db, release.id, {
+        workspaceId,
+        actor: "maintainer",
+        principalId: maintainer.id,
+        expectedRevision: releaseBeforeCompletion!.revision,
+        evidenceIds: [mergeResult.evidenceId!],
+        occurredAt: 2_400,
+        now: 2_400,
+      })).rejects.toThrow(/claimed by coding-b/);
       await completeCommitment(db, release.id, {
         workspaceId,
         actor: "maintainer",
@@ -232,6 +246,7 @@ describe("UK-007 cross-domain conformance", () => {
         evidenceIds: [mergeResult.evidenceId!],
         occurredAt: 2_400,
         now: 2_400,
+        force: true,
       });
       expect(await schemaFingerprint(client)).toBe(baselineSchema);
 
@@ -317,6 +332,17 @@ describe("UK-007 cross-domain conformance", () => {
         occurredAt: 3_110,
       });
       expect((await getCommitment(db, reportTask.id, workspaceId))?.status).toBe("open");
+      // The runtime's work is finished and its receipts are on the record, so
+      // it releases its exclusive claim before human acceptance. Completion by
+      // the committee over a live claim would otherwise be refused; narrative A
+      // exercises that takeover path, this one exercises the clean handover.
+      await releaseTaskClaim(db, reportTask.id, {
+        tenantId: workspaceId,
+        principalId: researcher.id,
+        actor: "research-runtime",
+        reason: "attempt succeeded; handing over for acceptance",
+        now: 3_115,
+      });
       const coverage = await addTaskEvidence(db, {
         tenantId: workspaceId,
         taskId: reportTask.id,
