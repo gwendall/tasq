@@ -46,7 +46,11 @@ export const SEARCH_USAGE = 'search "<query>"';
 
 /** transitionCmd builds its missing-arg usage from the verb name. */
 export function transitionUsage(verb: string): string {
-  return `${verb} <id>${verb === "done" ? " [--evidence <id,...>] [--decision <accepted-validation-id>]" : ""} [--reason <text>] [--note <text>] [--at <iso>] [--expected-revision <n>] [--idempotency-key <key>]`;
+  const evidence = verb === "done" ? " [--evidence <id,...>] [--decision <accepted-validation-id>]" : "";
+  // Terminal transitions refuse over another actor's active claim without an
+  // explicit takeover, so only they advertise --force.
+  const force = verb === "done" || verb === "cancel" ? " [--force]" : "";
+  return `${verb} <id>${evidence} [--reason <text>] [--note <text>] [--at <iso>] [--expected-revision <n>] [--idempotency-key <key>]${force}`;
 }
 
 export const DEPEND_USAGE =

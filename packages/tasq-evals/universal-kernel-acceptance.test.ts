@@ -397,6 +397,9 @@ describe("UK-011 universal-kernel acceptance", () => {
         clock,
       });
       clock.set(2_300);
+      // The worker's claim deliberately survives restarts so resume stays
+      // possible; the coordinator's evaluator-backed closure over it is a
+      // supervision takeover and must say so.
       const done = await completeCommitment(db, commitment.id, {
         workspaceId: "gwendall",
         actor: "runtime:coordinator",
@@ -405,6 +408,7 @@ describe("UK-011 universal-kernel acceptance", () => {
         evidenceIds: [evidence.id],
         occurredAt: 2_300,
         clock,
+        force: true,
       });
       expect(done.status).toBe("done");
 

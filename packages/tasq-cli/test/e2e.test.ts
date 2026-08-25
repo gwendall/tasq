@@ -128,6 +128,27 @@ async function runOk(home: string, args: string[]): Promise<RunResult> {
 // Meta
 // ──────────────────────────────────────────────────────────────────────
 
+describe("claim-gated completion", () => {
+  it("refuses done by a non-holder, allows the holder, honours --force", async () => {
+    const home = await freshHome();
+    await runOk(home, ["setup", "--space", "gate/test", "--actor", "human"]);
+    const created = JSON.parse((await runOk(home, ["add", "guarded", "--json"])).stdout);
+    await runOk(home, ["claim", created.id, "--for", "30m", "--actor", "agent:a"]);
+
+    const sniped = await runCli(home, ["done", created.id, "--actor", "agent:b", "--json"]);
+    expect(sniped.exitCode).toBe(1);
+    const body = JSON.parse(sniped.stdout);
+    expect(body.contractVersion).toBe("tasq.command-problem.v1");
+    expect(body.summary).toContain("claimed by agent:a");
+    // The refusal must not have completed the task nor released the claim.
+    const after = JSON.parse((await runOk(home, ["show", created.id, "--json"])).stdout);
+    expect(after.status).toBe("open");
+
+    const forced = await runOk(home, ["done", created.id, "--actor", "agent:b", "--force", "--note", "takeover"]);
+    expect(forced.stdout).toContain("task done");
+  });
+});
+
 describe("doctor output", () => {
   it("names the entity behind every finding", async () => {
     const home = await freshHome();

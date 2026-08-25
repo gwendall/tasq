@@ -36,6 +36,50 @@ async function freshDb() {
   return handle;
 }
 
+describe("claim-gated terminal transitions", () => {
+  it("refuses completion and cancellation by a non-holder while a claim is active", async () => {
+    const { db, close } = await freshDb();
+    try {
+      const task = await createTask(db, { title: "Guarded" });
+      await acquireTaskClaim(db, task.id, { actor: "agent-a", leaseMs: 60_000 });
+
+      await expect(
+        completeTask(db, task.id, { actor: "agent-b" }),
+      ).rejects.toThrow(/claimed by agent-a .*holder.*expire.*force/s);
+      expect((await getTask(db, task.id))?.status).toBe("open");
+      // The holder's claim must survive the refused attempt untouched.
+      expect(await getActiveTaskClaim(db, task.id)).not.toBeNull();
+
+      // The holder itself closes normally.
+      await completeTask(db, task.id, { actor: "agent-a" });
+      expect((await getTask(db, task.id))?.status).toBe("done");
+    } finally {
+      await close();
+    }
+  });
+
+  it("allows an explicit force takeover and completion after expiry", async () => {
+    const { db, close } = await freshDb();
+    try {
+      const forced = await createTask(db, { title: "Taken over" });
+      await acquireTaskClaim(db, forced.id, { actor: "agent-a", leaseMs: 60_000 });
+      await completeTask(db, forced.id, { actor: "agent-b", force: true });
+      expect((await getTask(db, forced.id))?.status).toBe("done");
+
+      const expiring = await createTask(db, { title: "Expired lease" });
+      const claim = await acquireTaskClaim(db, expiring.id, { actor: "agent-a", leaseMs: 60_000 });
+      // Ownership must not survive the lease: complete strictly after expiry.
+      await completeTask(db, expiring.id, {
+        actor: "agent-b",
+        now: claim.expiresAt + 1,
+      });
+      expect((await getTask(db, expiring.id))?.status).toBe("done");
+    } finally {
+      await close();
+    }
+  });
+});
+
 describe("exclusive task claims", () => {
   it("allows exactly one actor to win a concurrent claim race", async () => {
     const { db, close } = await freshDb();

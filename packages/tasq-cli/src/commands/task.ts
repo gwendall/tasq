@@ -527,6 +527,9 @@ export async function transitionCmd(verb: Transition, args: ParsedArgs): Promise
       occurredAt: args.string("at") ? parseDateArg(args.string("at")!) : undefined,
       evidenceIds,
       validationDecisionId: verb === "done" ? args.string("decision") : undefined,
+      // Terminal transitions refuse over another actor's active claim; the
+      // takeover has to be explicit, exactly like `release --force`.
+      force: verb === "done" || verb === "cancel" ? args.bool("force") : undefined,
     });
     await regenerateProjection(rt);
 

@@ -31,14 +31,31 @@ for (const test of tests) {
     // assertion and the fail-fast process boundary remain unchanged.
     const args = [process.execPath, "test", "--timeout", "15000", `test/${test}`];
     if (pattern) args.push("--test-name-pattern", pattern);
-    const child = Bun.spawn(args, {
-      cwd: packageRoot,
-      env: process.env,
-      stdin: "ignore",
-      stdout: "inherit",
-      stderr: "inherit",
-    });
-    const exitCode = await child.exited;
+    // A Bun runtime crash is not a test failure. Assertion failures exit 1;
+    // the observed macOS crashes panic with exit 133 (and POSIX signal deaths
+    // land in the 128+ range), at startup of arbitrary files. Retry the FILE a
+    // bounded number of times, loudly, only for crash exits - a red test can
+    // never be masked because exit 1 is excluded, and a persistent crash still
+    // fails the job with its original code.
+    const CRASH_RETRIES = 2;
+    let exitCode = 1;
+    for (let attempt = 0; attempt <= CRASH_RETRIES; attempt += 1) {
+      const child = Bun.spawn(args, {
+        cwd: packageRoot,
+        env: process.env,
+        stdin: "ignore",
+        stdout: "inherit",
+        stderr: "inherit",
+      });
+      exitCode = await child.exited;
+      const crashed = exitCode >= 128 || exitCode === 133;
+      if (!crashed || attempt === CRASH_RETRIES) break;
+      console.error(
+        `[tasq test runner] bun crashed (exit ${exitCode}) running test/${test}` +
+          `${pattern ? ` (${pattern})` : ""}; retrying (${attempt + 1}/${CRASH_RETRIES}) - ` +
+          "this is a runtime crash, not a test failure",
+      );
+    }
     if (exitCode !== 0) process.exit(exitCode);
   }
 }
