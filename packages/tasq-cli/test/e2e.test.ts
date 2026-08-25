@@ -429,14 +429,22 @@ describe("progressive public adoption", () => {
 
     const demo = JSON.parse((await runOk(home, ["demo", "--json"])).stdout);
     expect(demo).toMatchObject({
-      contractVersion: "tasq.isolated-demo.v1",
+      contractVersion: "tasq.isolated-demo.v2",
       isolation: "temporary-home-removed-after-run",
       liveHomeConsulted: false,
       completed: { status: "done" },
     });
-    expect(demo.after.claims).toEqual([]);
-    expect(demo.after.attempts).toEqual([]);
-    expect(demo.after.evidence).toEqual([]);
+    // The demo exists to show what a shared ledger does that a scratchpad
+    // cannot, so the refusals are part of its contract, in the order a caller
+    // should meet them: ownership before proof.
+    expect(demo.refusals.secondClaim.summary).toContain("is claimed by agent:a");
+    expect(demo.refusals.closeByNonHolder.summary).toContain("is claimed by agent:a");
+    expect(demo.refusals.closeWithoutEvidence.summary).toContain("requires explicit evidence");
+    expect(demo.after.evidence).toHaveLength(1);
+    // The winning claim is released by the terminal transition, not left open.
+    expect(demo.after.claims).toHaveLength(1);
+    expect(demo.after.claims[0]).toMatchObject({ releaseReason: "task_done" });
+    expect(demo.after.claims[0].releasedAt).not.toBeNull();
     expect(readFileSync(dbPath)).toEqual(before);
     const live = JSON.parse((await runOk(home, ["list", "--json"])).stdout);
     expect(live).toHaveLength(1);
