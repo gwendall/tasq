@@ -510,6 +510,20 @@ async function resume(checkpoint: Checkpoint) {
     assert(preCompletion);
     assert.equal(preCompletion.commitment.status, "in_progress");
     clock.advance(1_000);
+    // The worker's replacement claim is still live by design (resume must stay
+    // possible until the supervisor ends the runtime), so the coordinator's
+    // closure is a recorded takeover: refused without force, deliberate with it.
+    await assert.rejects(
+      completeCommitment(opened.db, checkpoint.commitmentId, {
+        workspaceId,
+        actor: coordinatorActor,
+        principalId: coordinator.principal.id,
+        expectedRevision: preCompletion.commitment.revision,
+        evidenceIds: [evidence.id],
+        clock,
+      }),
+      /claimed by runtime:worker/,
+    );
     const completed = await completeCommitment(opened.db, checkpoint.commitmentId, {
       workspaceId,
       actor: coordinatorActor,
@@ -518,6 +532,7 @@ async function resume(checkpoint: Checkpoint) {
       evidenceIds: [evidence.id],
       idempotencyKey: "runtime:commitment:complete:1",
       clock,
+      force: true,
     });
     assert.equal(completed.status, "done");
     const delta = await listEvents(opened.db, {

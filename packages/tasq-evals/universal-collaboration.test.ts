@@ -10,6 +10,7 @@ import { join } from "node:path";
 import {
   acceptAssignment,
   acquireTaskClaim,
+  releaseTaskClaim,
   addTaskEvidence,
   appendArtifact,
   appendExternalRef,
@@ -133,6 +134,16 @@ describe("universal collaboration", () => {
         actor: "remote-session-7",
         expectedRevision: attempt.revision,
         occurredAt: 2_000,
+      });
+
+      // The worker's run is finished and its receipts are on the record, so it
+      // releases its exclusive claim before the coordinator's acceptance.
+      // Completion over a live claim it does not hold would now be refused.
+      await releaseTaskClaim(db, commitment.id, {
+        principalId: worker.id,
+        actor: "remote-session-7",
+        reason: "attempt succeeded; handing over for acceptance",
+        now: 2_050,
       });
 
       // Execution success and an artifact still do not complete the outcome.
