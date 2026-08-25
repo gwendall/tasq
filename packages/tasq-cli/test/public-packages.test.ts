@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
-import { mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 
@@ -91,6 +91,45 @@ async function files(root: string): Promise<string[]> {
 }
 
 describe("Tasq public npm package candidates", () => {
+  test("name the Bun prerequisite instead of dying on a missing interpreter", async () => {
+    // `npx @tasq-run/cli demo` is the first gesture the README advertises. The
+    // bundle carries a bun shebang, so without Bun the kernel used to answer
+    // `env: bun: No such file or directory` and the funnel ended there.
+    const root = await mkdtemp(join(tmpdir(), "tasq-launcher-"));
+    roots.push(root);
+    const out = join(root, "packages");
+    expect(await build(out)).toMatchObject({ exitCode: 0, stderr: "" });
+
+    const tarball = (await readdir(out)).find((name) => name.startsWith("tasq-run-cli-"));
+    expect(tarball).toBeDefined();
+    const extracted = join(root, "extracted");
+    await mkdir(extracted, { recursive: true });
+    expect(await run(["tar", "-xzf", join(out, tarball!)], extracted)).toMatchObject({ exitCode: 0 });
+    const staged = join(extracted, "package");
+
+    const manifest = JSON.parse(await readFile(join(staged, "package.json"), "utf8"));
+    // npm must be willing to run the bin on a Node host: the message is the point.
+    expect(manifest.bin).toEqual({ tasq: "./tasq.cjs" });
+    expect(manifest.engines.node).toBeDefined();
+    expect(manifest.files).toContain("tasq.cjs");
+
+    // A PATH holding node but no bun is the machine this protects.
+    const fakeBin = join(root, "bin");
+    await mkdir(fakeBin, { recursive: true });
+    const node = Bun.which("node");
+    expect(node).toBeTruthy();
+    await symlink(node!, join(fakeBin, "node"));
+
+    const refused = await run([node!, join(staged, "tasq.cjs"), "demo"], staged, {
+      PATH: `${fakeBin}:/usr/bin:/bin`,
+      HOME: join(root, "home"),
+    });
+    expect(refused.exitCode).toBe(3);
+    expect(refused.stderr).toContain("runs on Bun, which was not found");
+    expect(refused.stderr).toContain("https://bun.sh/install");
+    expect(refused.stderr).toContain("TASQ_BUN_PATH");
+  });
+
   test("are deterministic, public-only, and install together in a clean room", async () => {
     const root = await mkdtemp(join(tmpdir(), "tasq-public-packages-"));
     roots.push(root);

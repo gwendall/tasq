@@ -52,6 +52,79 @@ const importRewrites = new Map([
   ["@tasq-run/client", "@tasq-run/client"],
 ]);
 
+const CLI_LAUNCHER = "tasq.cjs";
+
+/**
+ * Node-executable bin for the Bun-built CLI bundle. Locates Bun, forwards the
+ * call verbatim, and otherwise explains the prerequisite instead of letting the
+ * kernel report a missing interpreter.
+ */
+const cliLauncherSource = (version: string): string => `#!/usr/bin/env node
+"use strict";
+
+// Transparent wrapper: the caller must not be able to tell that a Node process
+// sits in front of the Bun bundle. It forwards argv, stdio, signals and the
+// exit status verbatim, so \`tasq web\` still shuts down cleanly on SIGTERM
+// instead of dying as an unhandled signal in this launcher.
+const { spawn } = require("node:child_process");
+const { existsSync } = require("node:fs");
+const { join } = require("node:path");
+const { homedir } = require("node:os");
+
+const bundle = join(__dirname, "index.js");
+const candidates = [
+  process.env.TASQ_BUN_PATH,
+  process.versions && process.versions.bun ? process.execPath : undefined,
+  "bun",
+  join(homedir(), ".bun", "bin", "bun"),
+].filter(Boolean);
+
+function start(index) {
+  const candidate = candidates[index];
+  if (candidate === undefined) {
+    process.stderr.write(
+      [
+        "tasq: this release runs on Bun, which was not found on this machine.",
+        "",
+        "  Install Bun:      curl -fsSL https://bun.sh/install | bash",
+        "  Or install Tasq:  curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v${version}.sh",
+        "                    sh /tmp/tasq-install.sh --version ${version}",
+        "",
+        "  Set TASQ_BUN_PATH to point at a Bun binary in a non-standard location.",
+        "",
+      ].join("\\n"),
+    );
+    process.exit(3);
+  }
+  if (candidate !== "bun" && !existsSync(candidate)) return start(index + 1);
+
+  const child = spawn(candidate, [bundle, ...process.argv.slice(2)], { stdio: "inherit" });
+  const forward = ["SIGINT", "SIGTERM", "SIGHUP"];
+  const relay = (signal) => () => { if (!child.killed) child.kill(signal); };
+  const handlers = forward.map((signal) => {
+    const handler = relay(signal);
+    process.on(signal, handler);
+    return [signal, handler];
+  });
+  child.on("error", (error) => {
+    if (error && error.code === "ENOENT") return start(index + 1);
+    process.stderr.write(\`tasq: could not start \${candidate}: \${error.message}\\n\`);
+    process.exit(1);
+  });
+  child.on("exit", (code, signal) => {
+    for (const [name, handler] of handlers) process.removeListener(name, handler);
+    if (signal) {
+      // Re-raise so the caller observes the same signal death the bundle had.
+      process.kill(process.pid, signal);
+      return;
+    }
+    process.exit(code === null ? 1 : code);
+  });
+}
+
+start(0);
+`;
+
 function requiredFlag(name: string): string {
   const index = process.argv.indexOf(name);
   const value = index === -1 ? undefined : process.argv[index + 1];
@@ -203,7 +276,7 @@ async function definitions(version: string): Promise<PublicPackage[]> {
       name: "@tasq-run/cli",
       sourceDirectory: "tasq-cli",
       entrypoint: "./index.js",
-      bin: { tasq: "./index.js" },
+      bin: { tasq: `./${CLI_LAUNCHER}` },
       optionalDependencies: {
         "@libsql/darwin-arm64": "0.4.7",
         "@libsql/linux-x64-gnu": "0.4.7",
@@ -233,13 +306,18 @@ function manifest(definition: PublicPackage, inputs: Inputs) {
     exports: definition.exports,
     bin: definition.bin,
     files: definition.copyMode === "cli-bundle"
-      ? ["index.js", "artifact.json", "*.sql", "LICENSE", "README.md"]
+      ? [CLI_LAUNCHER, "index.js", "artifact.json", "*.sql", "LICENSE", "README.md"]
       : definition.copyMode === "compiled-esm"
         ? ["dist", "LICENSE", "README.md"]
         : ["src", "LICENSE", "README.md"],
-    engines: definition.runtime === "bun-node"
-      ? { bun: ">=1.3.0", node: ">=22" }
-      : { bun: ">=1.3.0" },
+    // The CLI is executed through a Node launcher that locates Bun and
+    // reports its absence, so npm must not refuse to run the bin on a Node
+    // host: the actionable message is the point.
+    engines: definition.copyMode === "cli-bundle"
+      ? { node: ">=18", bun: ">=1.3.0" }
+      : definition.runtime === "bun-node"
+        ? { bun: ">=1.3.0", node: ">=22" }
+        : { bun: ">=1.3.0" },
     repository: {
       type: "git",
       url: "git+https://github.com/gwendall/tasq.git",
@@ -413,6 +491,11 @@ async function stagePackage(definition: PublicPackage, inputs: Inputs, stage: st
     ], { cwd: productRoot, stdout: "pipe", stderr: "inherit" });
     if (await build.exited !== 0) throw new Error("CLI npm package build failed");
     await rm(join(stage, "node_modules"), { recursive: true, force: true });
+    // The bundle carries a `#!/usr/bin/env bun` shebang, so on a machine
+    // without Bun `npx @tasq-run/cli demo` - the first gesture the README
+    // advertises - died with `env: bun: No such file or directory`. Ship a
+    // Node launcher as the bin so the prerequisite is named instead.
+    await writeFile(join(stage, CLI_LAUNCHER), cliLauncherSource(inputs.version), "utf8");
   }
   await copyFile(join(productRoot, "LICENSE"), join(stage, "LICENSE"));
   await writeReadme(stage, definition);
