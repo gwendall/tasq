@@ -582,6 +582,22 @@ export async function updateTaskInTransaction(
     }
   }
 
+  // Moving into a project adopts that project's goal and area, exactly as
+  // moving under a parent adopts the parent's. Carrying the previous goal over
+  // made a plain `--project X` fail against the destination's own hierarchy
+  // with an invariant message the caller could not act on. An explicitly
+  // supplied conflicting goal or area still refuses.
+  const adoptsProjectScope = parsed.projectId != null && parsed.projectId !== before.projectId;
+  const inherit = <T>(
+    supplied: T | undefined,
+    previous: T,
+  ): T | undefined =>
+    (desiredParent != null || adoptsProjectScope) && supplied === undefined
+      ? undefined
+      : supplied !== undefined
+        ? supplied
+        : previous;
+
   const scope = await (options.hierarchyPolicy ?? flatHierarchyPolicy).resolveScope(tx, tenantId, {
     parentTaskId: desiredParent,
     projectId:
@@ -590,18 +606,8 @@ export async function updateTaskInTransaction(
         : parsed.projectId !== undefined
           ? parsed.projectId
           : before.projectId,
-    goalId:
-      desiredParent != null && parsed.goalId === undefined
-        ? undefined
-        : parsed.goalId !== undefined
-          ? parsed.goalId
-          : before.goalId,
-    areaId:
-      desiredParent != null && parsed.areaId === undefined
-        ? undefined
-        : parsed.areaId !== undefined
-          ? parsed.areaId
-          : before.areaId,
+    goalId: inherit(parsed.goalId, before.goalId),
+    areaId: inherit(parsed.areaId, before.areaId),
   });
 
   const patch: Partial<typeof task.$inferInsert> = {

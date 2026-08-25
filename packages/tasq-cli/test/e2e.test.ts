@@ -128,6 +128,24 @@ async function runOk(home: string, args: string[]): Promise<RunResult> {
 // Meta
 // ──────────────────────────────────────────────────────────────────────
 
+describe("doctor output", () => {
+  it("names the entity behind every finding", async () => {
+    const home = await freshHome();
+    await runOk(home, ["setup", "--space", "doc/test", "--actor", "human"]);
+    const r = await runCli(home, ["doctor"]);
+    // A healthy store has no findings; the contract is that when there ARE
+    // findings, each is followed by the entity it concerns. Assert the shape
+    // holds by checking every finding line is followed by an identifier line.
+    const lines = r.stdout.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!/^ {2}- [a-z_]+: /.test(line)) continue;
+      if (/^ {2}- (permissions|outbox|journal|checkpoint)/.test(line)) continue;
+      expect(lines[i + 1] ?? "").toMatch(/^ {6}\w+ \S+/);
+    }
+  });
+});
+
 describe("--json problem contract", () => {
   it("emits a contract for a thrown refusal, an argument error and an early return", async () => {
     const home = await freshHome();

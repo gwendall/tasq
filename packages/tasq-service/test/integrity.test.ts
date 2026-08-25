@@ -436,7 +436,7 @@ describe("canonical ancestry", () => {
 
       await expect(
         createTask(db, { title: "bad", projectId: project.id, areaId: other.id }),
-      ).rejects.toThrow(/must match project/);
+      ).rejects.toThrow(/belongs to area .* was supplied.*adopt the project/s);
     } finally {
       await close();
     }

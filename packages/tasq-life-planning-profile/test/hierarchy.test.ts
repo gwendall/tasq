@@ -65,7 +65,7 @@ describe("bundled planning hierarchy", () => {
     await expect(resolveCanonicalLifePlanningScope(
       { projectId: "project", areaId: "other" },
       lookup(),
-    )).rejects.toThrow(/must match project/);
+    )).rejects.toThrow(/belongs to area .* was supplied.*adopt the project/s);
     await expect(resolveCanonicalLifePlanningScope(
       { parentTaskId: "parent", goalId: null },
       lookup(),

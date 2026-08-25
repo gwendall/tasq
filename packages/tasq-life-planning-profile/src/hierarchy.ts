@@ -77,14 +77,18 @@ export async function resolveCanonicalLifePlanningScope(
   const projectId = input.projectId ?? null;
   if (projectId) {
     const project = await requireLive("Project", projectId, lookup.project);
+    // Name the conflict and the way out. A caller who reaches this passed a
+    // goal or area explicitly; stating only the invariant left them guessing.
     if (input.goalId !== undefined && input.goalId !== project.goalId) {
       throw new Error(
-        `Task goalId must match project ${projectId} (expected ${project.goalId ?? "null"})`,
+        `Project ${projectId} belongs to goal ${project.goalId ?? "none"}, but goal ${input.goalId ?? "none"} was supplied. `
+          + `Move the task without passing a goal to adopt the project's, or pass --goal ${project.goalId ?? "(and --clear-goal for none)"}.`,
       );
     }
     if (input.areaId !== undefined && input.areaId !== project.areaId) {
       throw new Error(
-        `Task areaId must match project ${projectId} (expected ${project.areaId ?? "null"})`,
+        `Project ${projectId} belongs to area ${project.areaId ?? "none"}, but area ${input.areaId ?? "none"} was supplied. `
+          + `Move the task without passing an area to adopt the project's, or pass --area ${project.areaId ?? "(and --clear-area for none)"}.`,
       );
     }
     if (project.areaId) await requireLive("Area", project.areaId, lookup.area);
