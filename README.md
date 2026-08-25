@@ -36,8 +36,8 @@ Without `--apply` the command prints the exact registration it would make and
 changes nothing, so you can read it first.
 
 Now they see your real work and take it with an expiring claim: while that
-claim is live, nobody else closes the task. Ask for proof and they cannot
-close it without a receipt you can inspect.
+claim is live, nobody else closes the task. Work they propose has to say what
+done looks like, and closes only against a receipt you can inspect.
 
 ## Why this exists
 

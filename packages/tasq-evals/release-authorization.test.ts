@@ -76,7 +76,12 @@ function authorizedPolicy() {
   candidate.publishedRelease.publishedPackages = candidate.publishedRelease.publishedPackages
     .filter(({ name }) => name !== "@tasq-run/client")
     .map((entry) => ({ ...entry, version: "0.3.0" }));
+  // Authorizing the client without moving its version left the fixture
+  // self-contradictory the moment the release version advanced past the one it
+  // was first authorized for, failing tests that had nothing to say about it.
   candidate.candidatePublications.remoteTypeScriptClient.state = "authorized";
+  candidate.candidatePublications.remoteTypeScriptClient.version = authorizedVersion;
+  candidate.candidatePublications.remoteTypeScriptClient.decision = "go";
   return candidate;
 }
 
@@ -195,7 +200,7 @@ describe("protected public release authorization", () => {
     expect(drift.stderr).toContain("first-release package boundary drift");
   });
 
-  test("includes the remote TypeScript client only under exact v0.4.0 authorization", async () => {
+  test("includes the remote TypeScript client only when its candidate is authorized for this version", async () => {
     const candidate = authorizedPolicy();
     const accepted = await verify(candidate);
     expect(accepted.exitCode, accepted.stderr).toBe(0);

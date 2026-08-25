@@ -285,6 +285,10 @@ function agentPlan(
   const serverArgv = [
     executable, "mcp", "--tenant", space, "--actor", actor,
     "--capabilities", capabilities.join(","),
+    // Agent integrations default to evidence-backed completion: this is the
+    // registration that makes "they cannot mark anything done without a
+    // receipt you can inspect" true for the work an agent proposes.
+    "--completion", "evidence",
   ];
   const configuration = {
     command: serverArgv[0],

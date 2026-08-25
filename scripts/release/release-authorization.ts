@@ -150,7 +150,14 @@ function verifyCandidateShape(
   if (candidate.sourceBinding !== "protected_immutable_version_tag_runtime_commit") {
     fail(`${surface} source binding drift`);
   }
-  if (!["prepared_not_authorized", "authorized"].includes(candidate.state)) {
+  // `published_certified` is the state a candidate reaches AFTER its surface
+  // ships. Omitting it here made every release following the first one
+  // impossible to authorize: publishing v0.4.0 moved all three candidates into
+  // a state this validator rejected, so the next release was blocked by its own
+  // success. A published candidate is simply not re-authorized for this
+  // version, which the caller below already handles by only publishing
+  // candidates whose state is exactly "authorized".
+  if (!["prepared_not_authorized", "authorized", "published_certified"].includes(candidate.state)) {
     fail(`${surface} has unknown authorization state`);
   }
   return candidate;

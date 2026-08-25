@@ -24,6 +24,11 @@ release history selected by ADR-008.
   creation order. Tasks with no explicit priority are unaffected and still
   inherit importance. Existing ledgers will see `tasq next` reorder where a
   deliberately low priority was being discarded.
+- `tasq doctor` no longer reports healthy ledgers as missing completion
+  records. The check required a receipt whose revision equalled the task's
+  CURRENT revision, so any edit after closing orphaned it: on a real ledger all
+  twelve findings were false positives. It now requires one receipt per
+  completion, which still catches a reopen and re-close that produced none.
 - Under `--json`, every non-zero exit now writes a `tasq.command-problem.v1`
   envelope to stdout alongside the existing stderr message, so an agent-driven
   caller can act on a refusal instead of receiving an empty machine channel.
@@ -34,6 +39,14 @@ release history selected by ADR-008.
 
 ### Added
 
+- `tasq mcp --completion assertion|evidence` sets the completion policy for
+  commitments that MCP server creates when the caller states none, and
+  `tasq agent install` now registers `--completion evidence`. Work an agent
+  proposes through the documented integration therefore states what done looks
+  like and closes only against an inspectable receipt. An explicit
+  `completionPolicy` on the call always wins, and creating an evidence-backed
+  commitment without `successCriteria` is refused rather than silently
+  downgraded.
 - `tasq list --priority 1-5` and `tasq next --priority 1-5` filter by explicit
   priority. Filtering happens in the query rather than after the limit, so a
   match beyond the limit is never hidden.

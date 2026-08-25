@@ -1069,7 +1069,7 @@
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "6e04316bea2758f4c1f7bb51a3e65dc178b497364edb8b4c4817d9bc98982788"
+      "sha256": "a12be000e2097595e23dfec2987a7c888afae6f694c9da9f8b2bd4db90a77536"
     }
   ]
 }

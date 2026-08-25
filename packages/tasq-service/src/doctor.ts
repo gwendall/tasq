@@ -170,8 +170,16 @@ export async function diagnoseStore(
   const summaryParents = new Set(summaries.flatMap((row) =>
     row.supersedesSummaryId ? [row.supersedesSummaryId] : []));
   const rawEventSequencesByTask = new Map<string, number[]>();
+  // A task can be completed, reopened and completed again, so the receipt
+  // invariant is one completion record per completion, not one record matching
+  // the task's CURRENT revision: any edit after closing bumps that revision and
+  // orphaned the old check, reporting healthy ledgers as missing their records.
+  const completionsSeenByTask = new Map<string, number>();
   for (const row of events) {
     if (row.entityType !== "task" || row.eventType === COMMITMENT_SUMMARY_EVENT_TYPE) continue;
+    if (row.eventType === "completed") {
+      completionsSeenByTask.set(row.entityId, (completionsSeenByTask.get(row.entityId) ?? 0) + 1);
+    }
     const sequences = rawEventSequencesByTask.get(row.entityId);
     if (sequences) sequences.push(row.sequence);
     else rawEventSequencesByTask.set(row.entityId, [row.sequence]);
@@ -590,9 +598,9 @@ export async function diagnoseStore(
 
   const supersededDecisions = new Set(decisions.flatMap((row) =>
     row.supersedesDecisionId ? [row.supersedesDecisionId] : []));
-  const completionsByTaskRevision = new Set<string>();
+  const completionRecordsByTask = new Map<string, number>();
   for (const row of completions) {
-    completionsByTaskRevision.add(`${row.taskId}\u0000${row.resultingRevision}`);
+    completionRecordsByTask.set(row.taskId, (completionRecordsByTask.get(row.taskId) ?? 0) + 1);
     const linkedTask = taskById.get(row.taskId);
     if (!linkedTask || row.resultingRevision > linkedTask.revision) {
       issues.push(issue("completion_task_mismatch", "completion", row.id, `Completion ${row.id} has an impossible task revision`));
@@ -619,8 +627,19 @@ export async function diagnoseStore(
     }
   }
   for (const row of tasks) {
-    if (row.status === "done" && !completionsByTaskRevision.has(`${row.id}\u0000${row.revision}`)) {
-      issues.push(issue("missing_completion_record", "task", row.id, `Done task revision ${row.revision} has no completion record`));
+    if (row.status !== "done") continue;
+    const recorded = completionRecordsByTask.get(row.id) ?? 0;
+    // Fall back to expecting one when the event history has been truncated or
+    // predates the completion event, so a genuinely missing receipt is still
+    // reported rather than excused by an absent event.
+    const expected = Math.max(completionsSeenByTask.get(row.id) ?? 0, 1);
+    if (recorded < expected) {
+      issues.push(issue(
+        "missing_completion_record",
+        "task",
+        row.id,
+        `Done task has ${recorded} completion record(s) for ${expected} completion(s)`,
+      ));
     }
   }
 

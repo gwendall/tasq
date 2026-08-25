@@ -344,13 +344,6 @@ describe("TQ-601 product consumption design", () => {
       tag_protection_configured: true,
     });
     expect(releasePolicy).toMatchObject({
-      releaseAuthorization: {
-        state: "published_certified",
-        version: "0.4.0",
-        channel: "public-alpha",
-        decision: "go",
-        authorizedBy: "@gwendall",
-      },
       publishedRelease: {
         version: "0.4.0",
         tag: "v0.4.0",
@@ -358,6 +351,29 @@ describe("TQ-601 product consumption design", () => {
         githubRelease: "https://github.com/gwendall/tasq/releases/tag/v0.4.0",
       },
     });
+    // The authorization block is the NEXT release's decision, not a record of
+    // the last one. Pinning it to the published version made authorizing any
+    // subsequent release fail this test, the same way the release validator
+    // rejected the post-publication candidate state. Assert the invariant
+    // instead: the decision is either already consumed by the published
+    // release, or it is a go for a strictly newer version.
+    const authorization = releasePolicy.releaseAuthorization as {
+      state: string; version: string; channel: string; decision: string; authorizedBy: string;
+    };
+    expect(authorization).toMatchObject({
+      channel: "public-alpha",
+      decision: "go",
+      authorizedBy: "@gwendall",
+    });
+    expect(["published_certified", "authorized"]).toContain(authorization.state);
+    const asParts = (value: string) => value.split(".").map((part) => Number(part));
+    const [publishedMajor, publishedMinor, publishedPatch] = asParts("0.4.0");
+    const [major, minor, patch] = asParts(authorization.version);
+    if (authorization.state === "published_certified") {
+      expect(authorization.version).toBe("0.4.0");
+    } else {
+      expect([major, minor, patch] > [publishedMajor, publishedMinor, publishedPatch]).toBe(true);
+    }
     expect(byId(matrix.journeys, "public_install_to_first_agent").support)
       .toBe("implemented_certified");
   });

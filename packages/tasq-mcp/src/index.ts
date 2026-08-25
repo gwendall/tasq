@@ -87,6 +87,14 @@ export interface CreateTasqMcpServerOptions {
   actor: string;
   principalId?: string;
   capabilities: readonly TasqMcpCapability[];
+  /**
+   * Completion policy applied to commitments this server creates when the
+   * caller does not state one. `tasq agent install` sets it to "evidence" so
+   * work an agent proposes is closeable only against an inspectable receipt,
+   * which is the guarantee the product advertises for agent integrations.
+   * An explicit completionPolicy on the call always wins.
+   */
+  defaultCompletionPolicy?: "assertion" | "evidence";
   clock: Clock;
   /** Trusted host-only resolver. Connector policy and signing material never cross MCP. */
   resolveDispatchAuthority?: (effectId: string) => DispatchAuthority | Promise<DispatchAuthority>;
@@ -521,7 +529,7 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
 
   if (capabilities.has("propose")) {
     server.registerTool("tasq_commitment_create", {
-      description: "Create a durable commitment. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability.",
+      description: "Create a durable commitment. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability. When this server is configured for evidence-backed completion, successCriteria is required: it states what an inspectable receipt must show before the commitment can be closed.",
       inputSchema: {
         title: z.string().trim().min(1).max(500),
         description: z.string().max(20_000).nullable().optional(),
@@ -537,7 +545,23 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     }, ({ idempotencyKey, ...input }) => guarded(async () => {
       requireDirectionCapability(capabilities, input.metadata);
-      return createCommitment(options.db, input, kernelContext(idempotencyKey));
+      const completionPolicy = input.completionPolicy ?? options.defaultCompletionPolicy;
+      // Evidence mode judges a receipt against stated criteria, so there is
+      // nothing to judge without them. Silently downgrading to assertion here
+      // would put a hole straight through the guarantee this default exists to
+      // provide, so state the requirement instead.
+      if (completionPolicy === "evidence" && !input.successCriteria) {
+        throw new Error(
+          "This server creates evidence-backed commitments: provide successCriteria "
+            + "describing what an inspectable receipt must show, or pass "
+            + "completionPolicy \"assertion\" for work that closes on assertion alone.",
+        );
+      }
+      return createCommitment(
+        options.db,
+        completionPolicy === undefined ? input : { ...input, completionPolicy },
+        kernelContext(idempotencyKey),
+      );
     }));
 
     server.registerTool("tasq_commitment_update", {
