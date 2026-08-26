@@ -21,6 +21,8 @@ const policy = await Bun.file(resolve(root, "docs/releases/PUBLIC_RELEASE_POLICY
       rollback: string;
     };
     publishedSupportGranted: boolean;
+    requiresForwardMigrationFromPublished?: boolean;
+    rationale?: string;
   };
   certificationPrograms: {
     tq616SignedStatements: Record<string, unknown>;
@@ -137,23 +139,31 @@ describe("protected public release authorization", () => {
       .toContain("private_multi_app_dogfood_accepted");
   });
 
-  test("binds published v0.4.0 and repository source to store format 32", () => {
+  test("keeps the published line at store format 32 while the source advances to 33", () => {
+    // These two blocks describe different things and must be allowed to differ:
+    // `compatibility` is what the PUBLISHED release supports, and it cannot move
+    // until a release ships. `sourceCandidateCompatibility` is what this working
+    // tree would require, and ADR-021's migration 0033 makes it diverge. Editing
+    // the published block to silence this test would claim support for a format
+    // no published binary can read.
     expect(policy.compatibility).toMatchObject({
       scope: "publishedRelease",
       storeFormat: { current: 32 },
     });
     expect(policy.sourceCandidateCompatibility).toEqual({
-      status: "matches_published_v0_4_0",
+      status: "advances_published_v0_4_2_to_store_format_33",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 32,
-        readable: { min: 32, max: 32 },
-        writable: { min: 32, max: 32 },
-        directlyMigratable: { min: 0, max: 32 },
+        current: 33,
+        readable: { min: 33, max: 33 },
+        writable: { min: 33, max: 33 },
+        directlyMigratable: { min: 0, max: 33 },
         irreversible: true,
         rollback: "restore-matching-verified-pre-migration-snapshot-and-binary",
       },
-      publishedSupportGranted: true,
+      publishedSupportGranted: false,
+      requiresForwardMigrationFromPublished: true,
+      rationale: expect.stringContaining("migration 0033"),
     });
     for (const authorization of Object.values(policy.candidatePublications)) {
       expect(authorization.sourceBinding)

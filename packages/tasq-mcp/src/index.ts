@@ -28,7 +28,11 @@ import {
   cancelEffect,
   challengeCompletion,
   completeCommitment,
+  attachCommitmentAssumption,
   captureCommitmentDiscovery,
+  getCommitmentAssumptions,
+  listWorkspaceAssumptions,
+  withdrawCommitmentAssumption,
   createCommitment,
   createResolutionContract,
   detachExternalContextLink,
@@ -526,6 +530,33 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       if (!schema) throw new Error(`Tasq schema resource not found: ${resourceId}`);
       return { contents: [{ uri: uri.href, mimeType: "application/schema+json", text: JSON.stringify(schema) }] };
     });
+
+    server.registerTool("tasq_assumption_state", {
+      description:
+        "Read what a commitment rests on: the assumptions attached to it, who stated each one, "
+        + "and whether any has been withdrawn. A commitment is PAUSED while it holds a live link "
+        + "to a withdrawn assumption, which means the reason it exists is gone and claiming it "
+        + "will be refused. Read this before starting work you did not queue yourself.",
+      inputSchema: { commitmentId: Id },
+      annotations: { readOnlyHint: true },
+    }, ({ commitmentId }) => guarded(async () => getCommitmentAssumptions(
+      options.db,
+      commitmentId,
+      kernelContext(undefined),
+    )));
+
+    server.registerTool("tasq_assumption_list", {
+      description:
+        "List what this workspace currently believes: every assumption, standing or withdrawn, "
+        + "with the commitments resting on it. Use it to check whether a belief you are about to "
+        + "state is already recorded, so two agents share one record instead of writing two.",
+      inputSchema: { status: z.enum(["standing", "withdrawn"]).optional() },
+      annotations: { readOnlyHint: true },
+    }, ({ status }) => guarded(async () => listWorkspaceAssumptions(
+      options.db,
+      kernelContext(undefined),
+      status ? { status } : {},
+    )));
   }
 
   if (capabilities.has("propose")) {
@@ -586,6 +617,44 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       options.db,
       input,
       kernelContext(idempotencyKey),
+    )));
+
+    server.registerTool("tasq_assumption_attach", {
+      description:
+        "Record why a commitment exists, in one sentence: what has to be TRUE for this work to be "
+        + "worth doing. Several commitments can rest on the same sentence, and they are matched by "
+        + "the text itself, so phrase it the way you would say it out loud. This is not a "
+        + "description of the work: it is the belief the work depends on, the thing that could "
+        + "later turn out to be false.",
+      inputSchema: {
+        commitmentId: Id,
+        because: z.string().trim().min(1).max(200),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, (input) => guarded(async () => attachCommitmentAssumption(
+      options.db,
+      { commitmentId: input.commitmentId, because: input.because },
+      kernelContext(undefined),
+    )));
+
+    server.registerTool("tasq_assumption_withdraw", {
+      description:
+        "Say that a recorded belief turned out to be false. Every OPEN commitment resting on it is "
+        + "paused and stops being offered as next work; nothing is cancelled and no history is "
+        + "rewritten. Use this instead of cancelling commitments one by one: cancelling records "
+        + "that someone chose not to do the work and says nothing about why it stopped making "
+        + "sense, so the next agent inherits a silent status instead of your reasoning. Evidence "
+        + "is encouraged and not required; a reason always is.",
+      inputSchema: {
+        because: z.string().trim().min(1).max(200),
+        reason: z.string().trim().min(1).max(2_000),
+        evidenceIds: z.array(Id).max(128).optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, (input) => guarded(async () => withdrawCommitmentAssumption(
+      options.db,
+      { because: input.because, reason: input.reason, evidenceIds: input.evidenceIds ?? [] },
+      kernelContext(undefined),
     )));
 
     server.registerTool("tasq_commitment_update", {

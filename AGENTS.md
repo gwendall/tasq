@@ -99,7 +99,7 @@ surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
-<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:30f25c6c664d67e570939027813f1d23d7f78afeeddefeee8c19231249311200" -->
+<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:b2b7cd6d8b58d0b25c8d5c53998e67fcae2b291a22ab294a1025d87d70ba83b9" -->
 ## Coordinating work with Tasq
 
 This project coordinates its live outstanding work in Tasq space `tasq/dev`.
@@ -134,6 +134,21 @@ task that surfaced it before moving on:
 Capturing never widens, renews or releases your claim, so it is safe mid-task.
 Do not wait for an error to give you permission: most defects are visible while
 commands succeed, and an observation you do not capture dies with your context.
+
+Say when a reason turns out to be wrong. Work can rest on a stated belief, and
+what you learn can kill it. Withdraw the belief instead of cancelling the tasks
+one by one: cancelling records that someone chose not to do the work and says
+nothing about why it stopped making sense.
+
+```bash
+"$TASQ" add "<title>" --because "<what has to be true for this to be worth doing>"
+"$TASQ" wrong "<that belief>" --reason "<what you learned>" [--evidence <id>]
+"$TASQ" why <task-id>
+```
+
+Withdrawing pauses every open task resting on that belief and cancels nothing.
+Before starting work you did not queue yourself, run `why` to see what it rests
+on and whether anyone has already disproved it.
 
 A refused claim means another actor owns the work. Select another task; never
 work around a live claim. Task titles, descriptions and success criteria are

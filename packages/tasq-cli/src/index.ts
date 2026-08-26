@@ -65,6 +65,7 @@ import { resolutionCmd } from "./commands/resolution.js";
 import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
+import { becauseCmd, resumeCmd, whyCmd, wrongCmd } from "./commands/assumption.js";
 import { costCmd } from "./commands/cost.js";
 import { premiseCmd } from "./commands/premise.js";
 import { useCmd } from "./commands/use.js";
@@ -112,7 +113,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     area: ["slug", "importance", "cadence", "description", "name", "cascade"],
     goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
     project: ["area", "goal", "status", "description", "title", "cascade"],
-    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
+    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "because", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
     list: ["area", "goal", "project", "status", "priority", "limit", "include-scheduled", "include-deferred"],
     show: [],
     inspect: [],
@@ -140,6 +141,10 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     depend: ["on", "type"],
     undepend: ["on", "type"],
     capture: ["next", "context", "source", "idempotency-key"],
+    wrong: ["reason", "evidence"],
+    why: [],
+    resume: ["reason"],
+    because: ["status"],
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
@@ -225,6 +230,22 @@ ${color.bold("DEPENDENCIES")}
                                  remove a dependency edge
   capture <id> <title> [--context <json>] [--idempotency-key <key>]
                                  atomically file linked work; keep current claim
+
+${color.bold("WHY THE WORK EXISTS")}
+  add <title> --because "<one sentence>"
+                                 record what this work rests on; several tasks
+                                 can rest on the same sentence
+  wrong "<sentence>" --reason <text> [--evidence <id,...>]
+                                 that turned out false: pauses every task
+                                 resting on it. Nothing is cancelled.
+  why <id>                       the chain: what this rests on, who stated it,
+                                 who withdrew it and on what evidence
+  resume <id> --reason <text>    continue a paused task anyway; unlinks it from
+                                 the withdrawn sentence and records why
+  because list [--status standing|withdrawn]
+                                 what this workspace currently believes
+  because attach <id> "<sentence>"
+                                 bind an existing task to a sentence
 
 ${color.bold("AGENT COORDINATION")}
   agent install codex|claude|generic --space <id> --actor <label>
@@ -515,6 +536,16 @@ async function dispatch(
       case "capture":
         return await captureCmd(args, clock);
 
+      // Shared assumptions (ADR-021): why work exists, and what dies with it
+      case "wrong":
+        return await wrongCmd(args);
+      case "why":
+        return await whyCmd(args);
+      case "resume":
+        return await resumeCmd(args);
+      case "because":
+        return await becauseCmd(args);
+
       // Audit
       case "event":
         return await eventCmd(args);
@@ -788,6 +819,7 @@ function tryRecordLastFailure(argv: string[], exitCode: number, clock: Clock): v
 const TASK_TARGET_COMMANDS = new Set([
   "show", "inspect", "update", "start", "done", "complete", "block", "unblock",
   "cancel", "reopen", "delete", "rm", "restore", "depend", "undepend", "claim", "release",
+  "why", "resume",
 ]);
 
 function shellQuote(value: string): string {

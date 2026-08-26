@@ -77,6 +77,7 @@ import { activeTaskClaimMap } from "./service/agentic.js";
 import { scoreTask } from "@tasq-internal/life-planning-profile";
 import { serviceNow } from "./util/clock.js";
 import { TASK_PREMISE_INVALIDATION_URI } from "@tasq-run/core/internal/service/premises";
+import { pausedTaskIds } from "@tasq-run/core/internal/service/assumptions";
 
 export {
   LIFE_PRIORITIZER_CONFIG as PRIORITIZER_CONFIG,
@@ -180,6 +181,12 @@ export async function pickNext(
   ));
   const invalidatedTaskIds = new Set(invalidatedRows.map((row) => row.taskId));
   tasks = tasks.filter((candidate) => !invalidatedTaskIds.has(candidate.id));
+
+  // ADR-021: a commitment whose motivating assumption was withdrawn is paused,
+  // not cancelled. It stays inspectable and `tasq resume` returns it, but it is
+  // never offered as autonomous next work while the reason for it is gone.
+  const paused = await pausedTaskIds(db, tenantId);
+  tasks = tasks.filter((candidate) => !paused.has(candidate.id));
 
   // Default defer filter (SPEC §5.2.1): a task scheduled for the future is
   // hidden from the daily push until its `scheduledAt` arrives. Survivors with

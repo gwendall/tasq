@@ -23,6 +23,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { STORE_FORMAT_COMPATIBILITY as F } from "@tasq-internal/local-service";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -252,10 +253,10 @@ describe("CLI meta commands", () => {
       contractVersion: "tasq.executable-version.v1",
       storeFormat: {
         contractVersion: "tasq.store-format.v1",
-        current: 32,
-        readable: { min: 32, max: 32 },
-        writable: { min: 32, max: 32 },
-        directlyMigratable: { min: 0, max: 32 },
+        current: F.current,
+        readable: { min: F.readable.min, max: F.readable.max },
+        writable: { min: F.writable.min, max: F.writable.max },
+        directlyMigratable: { min: 0, max: F.directlyMigratable.max },
         irreversible: true,
       },
     });
@@ -2435,7 +2436,7 @@ describe("durability", () => {
     expect(report.ok).toBe(true);
     expect(report.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 32,
+      current: F.current,
     });
     expect(report.store.sqliteIntegrity).toBe("ok");
     expect(report.journal.databaseOnly).toEqual([]);
@@ -2702,7 +2703,7 @@ describe("durability", () => {
     expect(result.contractVersion).toBe("tasq.backup-receipt.v1");
     expect(result.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.verified).toBe(true);
-    expect(result.storeFormat).toBe(32);
+    expect(result.storeFormat).toBe(F.current);
     expect(result.sizeBytes).toBeGreaterThan(0);
     expect(result.eventCursor).toBe(2);
     expect(existsSync(target)).toBe(true);
@@ -2719,7 +2720,7 @@ describe("durability", () => {
       ok: true,
       target: exportPath,
       workspaceId: "gwendall",
-      storeFormat: 32,
+      storeFormat: F.current,
     });
     expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
 

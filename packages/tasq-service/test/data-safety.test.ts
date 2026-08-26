@@ -70,7 +70,7 @@ describe("migration data-safety envelope", () => {
         afterFormat: STORE_FORMAT_COMPATIBILITY.current,
         migrationRequired: true,
         irreversible: true,
-        receipt: { status: "complete", sourceFormat: 5, targetFormat: 32 },
+        receipt: { status: "complete", sourceFormat: 5, targetFormat: STORE_FORMAT_COMPATIBILITY.current },
       });
       const receipt = JSON.parse(readFileSync(result.receipt!.path, "utf8"));
       expect(receipt).toMatchObject({
@@ -78,13 +78,13 @@ describe("migration data-safety envelope", () => {
         status: "complete",
         recoveredAfterRestart: false,
         source: { format: 5, eventCursor: expect.any(Number) },
-        target: { format: 32 },
+        target: { format: STORE_FORMAT_COMPATIBILITY.current },
         snapshot: {
           path: result.receipt!.snapshotPath,
           sha256: result.receipt!.snapshotSha256,
           verification: { ok: true },
         },
-        postVerification: { schemaFormat: 32, service: { ok: true, issues: [] } },
+        postVerification: { schemaFormat: STORE_FORMAT_COMPATIBILITY.current, service: { ok: true, issues: [] } },
       });
       expect(statSync(result.receipt!.snapshotPath).mode & 0o777).toBe(0o600);
       expect(statSync(result.receipt!.path).mode & 0o777).toBe(0o600);
@@ -136,11 +136,11 @@ describe("migration data-safety envelope", () => {
         runMigrations(left.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
         runMigrations(right.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
       ]);
-      expect(results.reduce((count, result) => count + result.applied.length, 0)).toBe(27);
+      expect(results.reduce((count, result) => count + result.applied.length, 0)).toBe(28);
       expect(results.filter((result) => result.receipt?.status === "complete")).toHaveLength(1);
       expect(results.filter((result) => result.receipt === null)).toHaveLength(1);
       expect(receiptDocuments(seeded.path).map((receipt) => receipt.status)).toEqual(["complete"]);
-      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(33);
+      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(34);
     } finally {
       await left.close();
       await right.close();
@@ -191,8 +191,8 @@ describe("migration data-safety envelope", () => {
           now: 1_700_000_000_175,
           installReferenceExtension: false,
         });
-        expect(result.afterFormat, boundary).toBe(32);
-        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(33);
+        expect(result.afterFormat, boundary).toBe(STORE_FORMAT_COMPATIBILITY.current);
+        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(34);
         expect(receiptDocuments(seeded.path).some((receipt) => receipt.status === "snapshot_verified")).toBe(false);
       } finally {
         await resumed.close();
@@ -247,7 +247,7 @@ describe("migration data-safety envelope", () => {
         now: 1_700_000_000_176,
         installReferenceExtension: false,
       });
-      expect(resumed).toMatchObject({ afterFormat: 32, receipt: { status: "complete" } });
+      expect(resumed).toMatchObject({ afterFormat: STORE_FORMAT_COMPATIBILITY.current, receipt: { status: "complete" } });
     } finally {
       await afterFailure.close();
     }
@@ -272,11 +272,11 @@ describe("migration data-safety envelope", () => {
         postMigrationCheck: async () => ({ ok: true, issues: [] }),
       });
       expect(resumed.applied).toEqual([]);
-      expect(resumed.receipt).toMatchObject({ status: "complete", sourceFormat: 5, targetFormat: 32 });
+      expect(resumed.receipt).toMatchObject({ status: "complete", sourceFormat: 5, targetFormat: STORE_FORMAT_COMPATIBILITY.current });
       expect(JSON.parse(readFileSync(first.receipt!.path, "utf8"))).toMatchObject({
         status: "complete",
         recoveredAfterRestart: true,
-        postVerification: { schemaFormat: 32, service: { ok: true } },
+        postVerification: { schemaFormat: STORE_FORMAT_COMPATIBILITY.current, service: { ok: true } },
       });
     } finally {
       await opened.close();
@@ -325,7 +325,7 @@ describe("migration data-safety envelope", () => {
       expect(problem).toBeInstanceOf(MigrationSafetyError);
       expect(problem!.toJSON()).toMatchObject({
         code: "migration_postcheck_failed",
-        receipt: { status: "failed", sourceFormat: 5, targetFormat: 32 },
+        receipt: { status: "failed", sourceFormat: 5, targetFormat: STORE_FORMAT_COMPATIBILITY.current },
         restore: {
           snapshotPath: expect.any(String),
           requiredStoreFormat: 5,
