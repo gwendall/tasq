@@ -198,7 +198,8 @@ function recipes(
       description:
         "File work you discovered while executing, linked to the commitment that surfaced it. "
         + "Use it for a bug, a missing capability or an inconsistency between surfaces, including "
-        + "when the command you ran SUCCEEDED. Capturing never widens, renews or releases your lease.",
+        + "when the command you ran SUCCEEDED. Capturing never widens, renews or releases your lease. "
+        + "Over MCP the same operation is the tasq_discovery_capture tool.",
       argvTemplate: [
         executable, "capture", "{commitmentId}", "{title}", "--source", "{sourceCommand}", ...scope,
       ],

@@ -26,6 +26,8 @@ import {
   updateTask,
   type StatusChangeOptions,
 } from "./service/tasks.js";
+import { captureDiscovery as captureDiscoveryRecord } from "./service/discoveries.js";
+import type { CaptureDiscoveryResult } from "./service/discoveries.js";
 
 export interface KernelContext {
   /** Explicit workspace identity; the minimal kernel has no local-person default. */
@@ -186,6 +188,42 @@ export async function updateCommitment(
     ...(parsed.metadata !== undefined ? { metadata: parsed.metadata } : {}),
   }, { ...legacyContext(context), expectedRevision: context.expectedRevision });
   return toCommitment(row);
+}
+
+/**
+ * Record work discovered while executing a commitment, linked to the
+ * commitment that surfaced it.
+ *
+ * The source commitment and any active claim are read ONLY. Capture never
+ * widens, renews or releases execution authority, which is what makes it safe
+ * to call in the middle of a task and why it needs no coordination capability.
+ * See ADR-020: the relation table and the `discovered_from` type were already
+ * kernel, but no kernel API wrote a relation, so an agent working over MCP had
+ * no way to report anything at all.
+ */
+export async function captureCommitmentDiscovery(
+  db: TasqDb,
+  input: {
+    sourceCommitmentId: string;
+    title: string;
+    nextAction?: string | null;
+    sourceCommand?: string | null;
+    context?: Record<string, unknown>;
+  },
+  context: KernelContext,
+): Promise<{ commitment: Commitment; discoveredFrom: string; replayed: boolean }> {
+  const captured: CaptureDiscoveryResult = await captureDiscoveryRecord(db, {
+    sourceTaskId: input.sourceCommitmentId,
+    title: input.title,
+    nextAction: input.nextAction ?? null,
+    sourceCommand: input.sourceCommand ?? null,
+    context: input.context ?? {},
+  }, legacyContext(context));
+  return {
+    commitment: toCommitment(captured.task),
+    discoveredFrom: captured.relation.toTaskId,
+    replayed: captured.replayed,
+  };
 }
 
 export const startCommitment = transition(startTask);

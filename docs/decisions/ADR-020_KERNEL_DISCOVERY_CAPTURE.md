@@ -1,11 +1,14 @@
 # ADR-020 — Discovery capture belongs to the kernel
 
-- **Status:** Proposed — 2026-08-26
+- **Status:** Accepted - 2026-08-26
 - **Decision owner:** Tasq kernel ontology and agent-facing surfaces
 - **Depends on:** ADR-UK-006 (collaboration records), UNIVERSAL_KERNEL_SPEC P10
-- **Implementation:** none yet; TQ ticket tracked in the `tasq/dev` ledger
-- **Does not change published support:** `v0.4.1` behaviour is unchanged. This
-  proposes a kernel API, not a new record type or store format.
+- **Implementation:** complete. `captureCommitmentDiscovery` is exported from
+  `@tasq-run/core`; `tasq_discovery_capture` is registered under the `propose`
+  capability; `tasq-service` keeps a forwarding export so the CLI is unchanged
+- **Does not change published support:** no new record type and no store-format
+  change. The relation and its `discovered_from` type already existed; this adds
+  the kernel API that writes one and the MCP tool that reaches it.
 
 ## 1. Context
 

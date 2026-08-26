@@ -7,6 +7,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMutableClock } from "@tasq-run/schema";
 import {
   createCommitment,
+  getActiveTaskClaim,
   getCommitment,
   localPrincipalId,
   openDb,
@@ -123,6 +124,56 @@ describe("Tasq MCP capability boundary", () => {
     });
     expect(hiddenEffect.isError).toBe(true);
     expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+  });
+
+  it("lets an agent report a discovery without touching its claim", async () => {
+    // The agents best placed to notice a defect had no way to record one: the
+    // relation table and discovered_from were already kernel, but no kernel API
+    // wrote a relation. See ADR-020.
+    const { db, client, clock } = await fixture(["read", "propose", "coordinate"]);
+    const source = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Port the client", idempotencyKey: "discovery-source" },
+    }));
+    const claim = structured<{ id: string; actor: string }>(await client.callTool({
+      name: "tasq_claim_acquire",
+      arguments: { commitmentId: source.id, leaseMs: 60_000, idempotencyKey: "discovery-claim" },
+    }));
+
+    const captured = structured<{ commitment: { id: string; title: string }; discoveredFrom: string; replayed: boolean }>(
+      await client.callTool({
+        name: "tasq_discovery_capture",
+        arguments: {
+          sourceCommitmentId: source.id,
+          title: "The API drops the field we depend on",
+          sourceCommand: "reading the changelog",
+          idempotencyKey: "discovery-1",
+        },
+      }),
+    );
+    expect(captured.commitment.title).toBe("The API drops the field we depend on");
+    expect(captured.discoveredFrom).toBe(source.id);
+    expect(captured.replayed).toBe(false);
+
+    // The whole point: reporting must be safe mid-task, so the claim the agent
+    // is working under has to survive it untouched.
+    const stillHeld = await getActiveTaskClaim(db, source.id, "robotics-lab", clock);
+    expect(stillHeld).toMatchObject({ id: claim.id, releasedAt: null });
+
+    // Replaying the same identity returns the same discovery, not a second one.
+    const replayed = structured<{ commitment: { id: string }; replayed: boolean }>(
+      await client.callTool({
+        name: "tasq_discovery_capture",
+        arguments: {
+          sourceCommitmentId: source.id,
+          title: "The API drops the field we depend on",
+          sourceCommand: "reading the changelog",
+          idempotencyKey: "discovery-1",
+        },
+      }),
+    );
+    expect(replayed.commitment.id).toBe(captured.commitment.id);
+    expect(replayed.replayed).toBe(true);
   });
 
   it("makes agent-proposed work evidence-backed when the host registers it", async () => {
