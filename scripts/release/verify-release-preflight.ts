@@ -12,6 +12,14 @@
  *
  * This runs BEFORE the tag, where a stale block is still fixable.
  *
+ * Two axes are guarded, and they fail differently:
+ *
+ *   - VERSION-pinned blocks, which go stale every time a release succeeds;
+ *   - the FORMAT-pinned migration certification, which goes stale only when the
+ *     store format moves - rarely, which is exactly why nobody remembers it.
+ *     Nothing read that block at all until 2026-08-26, so a tag could have
+ *     shipped store format 33 carrying a certification that says 32.
+ *
  * Scope is deliberately narrow: only blocks a workflow reads from the tagged
  * commit. Anything that tracks the PUBLISHED version instead - the public
  * comparison contract, the site's generated truth - is corrected after
@@ -19,6 +27,7 @@
  */
 
 import { readFile } from "node:fs/promises";
+import { STORE_FORMAT_COMPATIBILITY } from "../../packages/tasq-core/src/migrations/index.js";
 import { resolve } from "node:path";
 
 const productRoot = resolve(import.meta.dir, "../..");
@@ -75,6 +84,39 @@ function collect(policy: Record<string, any>): PinnedBlock[] {
   ];
 }
 
+/**
+ * The protected migration certification proves that PUBLISHED binaries migrate
+ * real stores forward to a specific target format. It is evidence about a
+ * format, not about a version, so it survives release after release and then
+ * silently stops describing what ships the one time the format moves.
+ */
+function certifiedMigrationFormat(policy: Record<string, any>): number | undefined {
+  return policy.sourceCandidateCheckpoint?.protectedMigrationCandidate?.targetStoreFormat;
+}
+
+/**
+ * A waiver for a format nothing has yet written.
+ *
+ * The certification proves that PUBLISHED binaries migrate real user stores.
+ * Before a release has adopters there are no such stores, so re-running a
+ * two-target workflow would prove a property nothing depends on. Record the
+ * decision rather than faking the evidence: the certification block keeps
+ * saying exactly what it proved, and the waiver says why this release ships
+ * without a fresh one - and when it must stop being acceptable.
+ */
+function migrationWaiverCovers(policy: Record<string, any>, format: number): boolean {
+  const waiver = policy.sourceCandidateCheckpoint?.migrationCertificationWaiver;
+  if (!waiver) return false;
+  if (waiver.storeFormat !== format) return false;
+  if (typeof waiver.reason !== "string" || waiver.reason.trim().length < 40) {
+    fail("policy.sourceCandidateCheckpoint.migrationCertificationWaiver.reason must state why, in one sentence");
+  }
+  if (typeof waiver.withdrawWhen !== "string" || waiver.withdrawWhen.trim().length < 20) {
+    fail("policy.sourceCandidateCheckpoint.migrationCertificationWaiver.withdrawWhen must name what ends it");
+  }
+  return true;
+}
+
 const targetVersion = flag("--version");
 parseVersion(targetVersion, "--version");
 
@@ -110,9 +152,33 @@ if (typeof published === "string" && !isOlder(published, targetVersion)) {
   );
 }
 
+// A release that moves the store format needs a certification describing THAT
+// format. The candidate block records a passed run and no gate read it, which is
+// the same shape that cost v0.4.1 its full certification, one axis over.
+const certifiedFormat = certifiedMigrationFormat(policy);
+const waived = migrationWaiverCovers(policy, STORE_FORMAT_COMPATIBILITY.current);
+const candidate = policy.sourceCandidateCheckpoint?.protectedMigrationCandidate;
+if (candidate === undefined) {
+  stale.push(
+    "policy.sourceCandidateCheckpoint.protectedMigrationCandidate is missing "
+      + "(no evidence that published binaries can migrate a real store to this release)",
+  );
+} else if (candidate.status !== "passed") {
+  stale.push(
+    `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.status is ${candidate.status}, not passed`,
+  );
+} else if (certifiedFormat !== STORE_FORMAT_COMPATIBILITY.current && !waived) {
+  stale.push(
+    `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat is `
+      + `${certifiedFormat ?? "missing"}, but this source writes store format `
+      + `${STORE_FORMAT_COMPATIBILITY.current}. Re-run the protected migration certification against `
+      + "the new format, or record a waiver naming this format if no published store is at risk.",
+  );
+}
+
 if (stale.length > 0) {
   fail(
-    `${stale.length} version-pinned block(s) must be advanced to ${targetVersion} before tagging:\n`
+    `${stale.length} release-pinned block(s) must be corrected before tagging ${targetVersion}:\n`
       + stale.map((entry) => `  - ${entry}`).join("\n"),
   );
 }
@@ -120,6 +186,11 @@ if (stale.length > 0) {
 process.stdout.write(`${JSON.stringify({
   contractVersion: "tasq.release-preflight.v1",
   version: targetVersion,
-  checkedBlocks: collect(policy).map((block) => block.path),
+  checkedBlocks: [
+    ...collect(policy).map((block) => block.path),
+    "policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat",
+  ],
+  storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+  migrationCertificationWaived: waived,
   ok: true,
 }, null, 2)}\n`);
