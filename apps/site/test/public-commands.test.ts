@@ -62,21 +62,29 @@ describe("displayed public commands", () => {
     }
   });
 
+  // These download the published package from the real registry, twice for the
+  // two-runner case, and the demo they run is now a multi-step scene rather
+  // than a single add/done. The old 60s budget was tight enough that a loaded
+  // host failed them on timing rather than on truth.
   test("executes both exact one-shot package runners", async () => {
     const result = await runShell(publicCodeExamples.quickTry.display);
     expect(result.exitCode, result.stderr).toBe(0);
     const lines = result.stdout.trim().split("\n");
-    expect(lines.filter((line) => line === "Tasq isolated demo completed.")).toHaveLength(2);
-    expect(lines.filter((line) => line.startsWith("Created and completed: "))).toHaveLength(2);
-  }, 60_000);
+    // The demo plays two agents on one task, so both runners must show the
+    // exclusivity that a single-actor todo cycle could not.
+    expect(lines.filter((line) => line.startsWith("Two agents, one task."))).toHaveLength(2);
+    expect(lines.filter((line) => line.includes("is claimed by agent:a"))).toHaveLength(4);
+    expect(lines.filter((line) => line.includes("requires explicit evidence"))).toHaveLength(2);
+  }, 180_000);
 
   test("the hero one-liner runs a real cycle and leaves the ledger untouched", async () => {
     const result = await runShell(publicCodeExamples.demo.display);
     expect(result.exitCode, result.stderr).toBe(0);
-    expect(result.stdout).toContain("Tasq isolated demo completed.");
+    expect(result.stdout).toContain("Two agents, one task.");
+    expect(result.stdout).toContain("done, with a receipt you can inspect");
     expect(result.stdout).toContain("were not read or changed");
     expect(publicCodeExamples.demo.display).toContain(`@tasq-run/cli@${releaseVersion}`);
-  }, 60_000);
+  }, 180_000);
 
   test("runs the generated verified installer lifecycle without touching data", async () => {
     const prefix = resolve(home, "native-prefix");

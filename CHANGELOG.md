@@ -8,6 +8,8 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.4.1 - 2026-08-25
+
 ### Changed
 
 - **Behaviour change.** A terminal transition (`done`, `cancel`) by an actor

@@ -41,10 +41,10 @@
       "candidate_targets_clean_room_certified": true,
       "agent_integration_candidate_certified": true
     },
-    "version": "0.4.0",
-    "tag": "v0.4.0",
-    "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.4.0"
+    "version": "0.4.1",
+    "tag": "v0.4.1",
+    "sourceCommit": "7206e28380315b46902a8cb7aed81acb9c249ae8",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.4.1"
   },
   "productShapes": [
     {
@@ -1069,7 +1069,7 @@
     {
       "path": "docs/releases/PUBLIC_RELEASE_POLICY.json",
       "contractVersion": "tasq.public-release-policy.v1",
-      "sha256": "a12be000e2097595e23dfec2987a7c888afae6f694c9da9f8b2bd4db90a77536"
+      "sha256": "627d9be02e1120d5c7754544eff0574b36d16f9e50bf67d6632fa3e1ab6868b6"
     }
   ]
 }

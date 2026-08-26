@@ -82,8 +82,10 @@ describe("public site boundary", () => {
     expect(tape).toContain("Set Width 640");
     expect(tape).toContain("Set FontSize 18");
     expect(recording.subarray(0, 6).toString("ascii")).toMatch(/^GIF8[79]a$/);
+    // Width is the mobile constraint; the two-agent scene needs more rows than
+    // the single-actor cycle it replaced, so height is bounded but taller.
     expect(recording.readUInt16LE(6)).toBeLessThanOrEqual(640);
-    expect(recording.readUInt16LE(8)).toBeLessThanOrEqual(360);
+    expect(recording.readUInt16LE(8)).toBeLessThanOrEqual(560);
     expect(home).toContain('data-public-demo="true"');
     expect(home).toContain('src="/tasq-demo.gif"');
     expect(home.indexOf('src="/tasq-demo.gif"')).toBeLessThan(home.indexOf('className="product-table"'));

@@ -370,22 +370,23 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-07-31",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
+      "authorizedAt": "2026-08-26",
+      "certificationWorkflowRun": null,
       "historicalIncompatibleReleases": [
         {
           "version": "0.3.0",
           "sourceCommit": "c093ed58ab2a9e38dbd9d877ba75021997761057",
           "reason": "v0.3.0 predates the TQ-613 through TQ-615 signed-statement public package surface"
         }
-      ]
+      ],
+      "basis": "v0.4.1 carries the TQ-613 through TQ-615 signed-statement surface unchanged from v0.4.0: git diff v0.4.0..v0.4.1 touches no file in packages/tasq-extension-sdk or packages/tasq-schema, and reaches packages/tasq-core only in commitments.ts and service/tasks.ts, neither of which participates in statement signing, verification, credential lifecycle or binding."
     }
   },
   "npmBootstrap": {
@@ -501,40 +502,40 @@
     }
   },
   "publishedRelease": {
-    "version": "0.4.0",
-    "tag": "v0.4.0",
-    "sourceCommit": "47408faccaad5638ab7d1da94c37eda6ba1dc3c1",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.4.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31497848901",
-    "publishedAt": "2026-08-11T14:29:06Z",
+    "version": "0.4.1",
+    "tag": "v0.4.1",
+    "sourceCommit": "7206e28380315b46902a8cb7aed81acb9c249ae8",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.4.1",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/32910361809",
+    "publishedAt": "2026-08-25T23:24:39Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       {
         "name": "@tasq-run/client",
@@ -543,24 +544,37 @@
     ],
     "certification": "docs/releases/PUBLIC_RELEASE_POLICY.json",
     "postReleaseCertification": {
-      "status": "passed",
-      "certifiedAt": "2026-08-12T17:58:56Z",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
+      "status": "partial",
+      "certifiedAt": "2026-08-25T23:27:10Z",
+      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/32910822726",
       "targets": [
         "darwin-arm64",
         "linux-x64-gnu"
       ],
-      "registryTarballsMatched": true,
       "downloadedByteLifecyclePassed": true,
-      "downloadedByteMigrationPassed": true,
-      "publishedPackageInteractiveRuntimePassed": true,
-      "automatedAdoptionPassed": true,
-      "embeddedClientNodePassed": true,
-      "embeddedClientBunPassed": true,
-      "sameLedgerRestartPassed": true,
-      "signedStatementDownloadedByteReplayPassed": true,
-      "remoteTypeScriptClientNodePassed": true,
-      "remoteTypeScriptClientBunPassed": true
+      "registryTarballsMatched": false,
+      "tq616EligibilityPassed": false,
+      "note": "Exact downloaded-byte replay of the published binaries passed on both targets. The npm-registry stage failed before comparing registry bytes: the TQ-616 signed-statement program block still named 0.4.0 at the tagged commit, and the certification reads the policy from the immutable tag, so it cannot be re-run green for this version. The surface itself is unchanged between v0.4.0 and v0.4.1 (no diff in packages/tasq-extension-sdk or packages/tasq-schema), so this is a missing declaration, not a compatibility regression. The program block is corrected on the default branch so the next release certifies.",
+      "previous": {
+        "status": "passed",
+        "certifiedAt": "2026-08-12T17:58:56Z",
+        "workflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
+        "targets": [
+          "darwin-arm64",
+          "linux-x64-gnu"
+        ],
+        "registryTarballsMatched": true,
+        "downloadedByteLifecyclePassed": true,
+        "downloadedByteMigrationPassed": true,
+        "publishedPackageInteractiveRuntimePassed": true,
+        "automatedAdoptionPassed": true,
+        "embeddedClientNodePassed": true,
+        "embeddedClientBunPassed": true,
+        "sameLedgerRestartPassed": true,
+        "signedStatementDownloadedByteReplayPassed": true,
+        "remoteTypeScriptClientNodePassed": true,
+        "remoteTypeScriptClientBunPassed": true
+      }
     }
   },
   "externalPublicationGateStatus": {

@@ -1,4 +1,22 @@
+import { readFileSync } from "node:fs";
+
 import { expect, test } from "@playwright/test";
+
+import comparison from "../../../docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json" with { type: "json" };
+
+// Read the version the page itself renders, not one release's number. A
+// literal here failed the moment a release shipped, which is the same trap
+// several policy blocks and evals fell into: encoding a release instead of
+// the rule that outlives it.
+const publishedVersion = comparison.tasqClaimBoundary.version;
+
+// Dimensions come from the shipped GIF header, so the recording and the
+// assertion cannot disagree.
+const recording = readFileSync(
+  new URL("../public/tasq-demo.gif", import.meta.url),
+);
+const recordingWidth = recording.readUInt16LE(6);
+const recordingHeight = recording.readUInt16LE(8);
 
 test("homepage explains the product and its generated release boundary", async ({ page }) => {
   await page.goto("/");
@@ -22,9 +40,9 @@ test("homepage explains the product and its generated release boundary", async (
   await expect(page.getByText(`Local ${truth.release.version} and the authenticated self-hosted Server are published alphas.`, {
     exact: false,
   })).toBeVisible();
-  const demo = page.getByRole("img", {
-    name: "Tasq public CLI demo creating and completing one isolated task",
-  });
+  // Match on what the recording IS rather than a caption that changes with the
+  // scene, so re-recording the demo cannot silently break this test.
+  const demo = page.locator('img[src="/tasq-demo.gif"]');
   const productTable = page.getByRole("table");
   await expect(demo).toBeVisible();
   await demo.scrollIntoViewIfNeeded();
@@ -33,7 +51,9 @@ test("homepage explains the product and its generated release boundary", async (
     complete: image.complete,
     naturalHeight: image.naturalHeight,
     naturalWidth: image.naturalWidth,
-  }))).toEqual({ complete: true, naturalHeight: 360, naturalWidth: 640 });
+    // Assert the recording actually decoded at the size it ships, read from the
+    // file itself: a literal here has to be edited every time the scene changes.
+  }))).toEqual({ complete: true, naturalHeight: recordingHeight, naturalWidth: recordingWidth });
   expect(await demo.evaluate((image) => Boolean(
     image.compareDocumentPosition(document.querySelector(".product-table")!)
       & Node.DOCUMENT_POSITION_FOLLOWING
@@ -120,7 +140,7 @@ test("status page is traceable to machine contracts", async ({ page }) => {
 test("comparison page separates execution, orchestration and durable coordination", async ({ page }) => {
   await page.goto("/compare/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Parallel is not the same as coordinated");
-  await expect(page.getByText("Tasq 0.4.0", { exact: false })).toBeVisible();
+  await expect(page.getByText(`Tasq ${publishedVersion}`, { exact: false })).toBeVisible();
   await expect(page.getByText("separately operated Server", { exact: false }).first()).toBeVisible();
   await expect(page.getByText("Managed Cloud is unavailable", { exact: false }).first()).toBeVisible();
   const matrix = page.getByRole("table");
