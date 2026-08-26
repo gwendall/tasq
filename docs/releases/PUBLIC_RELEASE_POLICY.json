@@ -283,12 +283,12 @@
   },
   "releaseAuthorization": {
     "state": "authorized",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-26",
-    "rationale": "Ship the 2026-08-25 review remediation as a patch on the public alpha line. Two guarantees the surfaces already advertised become true in the product: a claim now guards the terminal transition, so a third actor can no longer close work another holds, and agent integrations registered by `tasq agent install` create evidence-backed commitments, so work an agent proposes states what done looks like and closes only against an inspectable receipt. Under --json every non-zero exit now carries a typed problem contract, which is the channel agents drive. Behaviour changes are documented in CHANGELOG and are additive to the store: format 32 is unchanged, so no migration and no downgrade barrier is introduced. Independent blind-human adoption and retained multi-application dogfood remain external gates and continue to block only stable graduation, not this alpha patch."
+    "rationale": "Complete the certification v0.4.1 could not obtain. v0.4.1 published byte-verified binaries, but its npm-registry certification stage failed on a TQ-616 program block that still named 0.4.0 at the tagged commit, and that stage reads the policy from the immutable tag. This release carries the same product surface plus the preflight that makes the failure impossible to repeat, so the published line ends on a version whose certification is complete rather than partial. Store format 32 is unchanged and no behaviour changes: the difference from v0.4.1 is release machinery and an ADR."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -373,7 +373,7 @@
       "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
@@ -386,7 +386,7 @@
           "reason": "v0.3.0 predates the TQ-613 through TQ-615 signed-statement public package surface"
         }
       ],
-      "basis": "v0.4.1 carries the TQ-613 through TQ-615 signed-statement surface unchanged from v0.4.0: git diff v0.4.0..v0.4.1 touches no file in packages/tasq-extension-sdk or packages/tasq-schema, and reaches packages/tasq-core only in commitments.ts and service/tasks.ts, neither of which participates in statement signing, verification, credential lifecycle or binding."
+      "basis": "v0.4.2 carries the TQ-613 through TQ-615 signed-statement surface unchanged from v0.4.0 and v0.4.1: no diff in packages/tasq-extension-sdk or packages/tasq-schema across either tag, and nothing in the signing, verification, credential lifecycle or binding paths."
     }
   },
   "npmBootstrap": {

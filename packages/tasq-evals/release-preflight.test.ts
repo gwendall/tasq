@@ -65,7 +65,6 @@ describe("release preflight", () => {
       // one that escaped review is only fixable before the tag exists.
       expect(refused.stderr).toContain("policy.releaseAuthorization.version");
       expect(refused.stderr).toContain("certificationPrograms.tq616SignedStatements.version");
-      expect(refused.stderr).toContain("comparison.tasqClaimBoundary.version");
       expect(refused.stderr).toContain("immutable tag");
     } finally {
       await rm(root, { recursive: true, force: true });
@@ -79,9 +78,6 @@ describe("release preflight", () => {
         [policyPath, (value: Record<string, any>) => {
           value.releaseAuthorization.version = "9.9.10";
           value.certificationPrograms.tq616SignedStatements.version = "9.9.10";
-        }],
-        [comparisonPath, (value: Record<string, any>) => {
-          value.tasqClaimBoundary.version = "9.9.10";
         }],
       ] as const) {
         const file = join(root, relative);

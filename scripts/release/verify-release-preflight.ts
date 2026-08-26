@@ -11,6 +11,11 @@
  * v0.4.1 could never be fully certified afterwards.
  *
  * This runs BEFORE the tag, where a stale block is still fixable.
+ *
+ * Scope is deliberately narrow: only blocks a workflow reads from the tagged
+ * commit. Anything that tracks the PUBLISHED version instead - the public
+ * comparison contract, the site's generated truth - is corrected after
+ * publication and would contradict this check if it were included here.
  */
 
 import { readFile } from "node:fs/promises";
@@ -53,7 +58,7 @@ interface PinnedBlock {
   readonly why: string;
 }
 
-function collect(policy: Record<string, any>, comparison: Record<string, any>): PinnedBlock[] {
+function collect(policy: Record<string, any>): PinnedBlock[] {
   return [
     {
       path: "policy.releaseAuthorization.version",
@@ -67,11 +72,6 @@ function collect(policy: Record<string, any>, comparison: Record<string, any>): 
         "the published-release certification reads this from the immutable tag, "
         + "so a stale value cannot be fixed after tagging",
     },
-    {
-      path: "comparison.tasqClaimBoundary.version",
-      version: comparison.tasqClaimBoundary?.version,
-      why: "the public comparison page and its browser test render this version",
-    },
   ];
 }
 
@@ -83,15 +83,14 @@ parseVersion(targetVersion, "--version");
 const rootIndex = process.argv.indexOf("--policy-root");
 const policyRoot = rootIndex === -1 ? productRoot : resolve(process.argv[rootIndex + 1] ?? productRoot);
 
-const [policyRaw, comparisonRaw] = await Promise.all([
-  readFile(resolve(policyRoot, "docs/releases/PUBLIC_RELEASE_POLICY.json"), "utf8"),
-  readFile(resolve(policyRoot, "docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json"), "utf8"),
-]);
+const policyRaw = await readFile(
+  resolve(policyRoot, "docs/releases/PUBLIC_RELEASE_POLICY.json"),
+  "utf8",
+);
 const policy = JSON.parse(policyRaw) as Record<string, any>;
-const comparison = JSON.parse(comparisonRaw) as Record<string, any>;
 
 const stale: string[] = [];
-for (const block of collect(policy, comparison)) {
+for (const block of collect(policy)) {
   if (block.version === undefined) {
     stale.push(`${block.path} is missing (${block.why})`);
     continue;
@@ -121,6 +120,6 @@ if (stale.length > 0) {
 process.stdout.write(`${JSON.stringify({
   contractVersion: "tasq.release-preflight.v1",
   version: targetVersion,
-  checkedBlocks: collect(policy, comparison).map((block) => block.path),
+  checkedBlocks: collect(policy).map((block) => block.path),
   ok: true,
 }, null, 2)}\n`);
