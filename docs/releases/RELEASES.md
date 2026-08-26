@@ -51,6 +51,20 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
+## `v0.5.0` is retired, never published
+
+Its tag was pushed while `verify-release-preflight.ts` imported `@tasq-run/core`.
+The release workflow's identity job runs that gate before `pnpm install`, on
+purpose - a gate that needs dependencies installed is a gate an install failure
+can skip - so the job failed on `Cannot find module '@tasq-run/schema'`. Identity
+is the first job; `cli`, `npm` and `github-release` were all skipped, so nothing
+was published under the tag.
+
+Tag protection correctly refuses to delete it. An immutable tag stays immutable
+even when it shipped nothing, so the version is retired rather than reused, and
+the line continues at `v0.5.1`. The preflight now reads the store format from
+the migration filenames and a test asserts it imports only `node:` specifiers.
+
 ## `v0.4.2` current release
 
 Published 2026-08-26 from tag `v0.4.2`. Its post-release certification passed
