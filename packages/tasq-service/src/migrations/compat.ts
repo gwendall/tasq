@@ -30,6 +30,8 @@ export async function runMigrations(
 export type { KernelMigrationOptions, MigrationResult };
 export {
   inspectStoreFormat,
+  listRecoveryPoints,
+  restoreRecoveryPoint,
   STORE_FORMAT_COMPATIBILITY,
   StoreCompatibilityError,
   MigrationSafetyError,
@@ -38,5 +40,7 @@ export type {
   MigrationReceiptSummary,
   MigrationPostCheck,
   MigrationSafetyBoundary,
+  RecoveryPoint,
+  RestoreOutcome,
   StoreFormatInspection,
 } from "./index.js";

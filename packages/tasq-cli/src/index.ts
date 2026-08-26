@@ -66,6 +66,7 @@ import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
 import { becauseCmd, resumeCmd, whyCmd, wrongCmd } from "./commands/assumption.js";
+import { storeCmd } from "./commands/store.js";
 import { costCmd } from "./commands/cost.js";
 import { premiseCmd } from "./commands/premise.js";
 import { useCmd } from "./commands/use.js";
@@ -145,6 +146,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     why: [],
     resume: ["reason"],
     because: ["status"],
+    store: ["force"],
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
@@ -323,6 +325,12 @@ ${color.bold("AUDIT")}
 ${color.bold("PROJECTION")}
   projection [--target <path>]   regenerate markdown projection
                                  (writes to config.projectionTarget if no --target)
+
+${color.bold("STORE SAFETY")}
+  store status                   what format this store is, and whether opening
+                                 it would apply an irreversible upgrade
+  store recovery-points          verified snapshots written before each upgrade
+  store restore <id> [--force]   roll back to one, after checking its digest
 
 ${color.bold("DURABILITY")}
   backup [<path>] [--rotate N]   snapshot DB to ~/.tasq/snapshots/db-<ts>.sqlite
@@ -545,6 +553,10 @@ async function dispatch(
         return await resumeCmd(args);
       case "because":
         return await becauseCmd(args);
+
+      // Store safety envelope (recovery points and their rollback rule)
+      case "store":
+        return await storeCmd(args, clock);
 
       // Audit
       case "event":

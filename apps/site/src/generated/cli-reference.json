@@ -406,6 +406,23 @@
     ]
   },
   {
+    "heading": "STORE SAFETY",
+    "entries": [
+      {
+        "usage": "store status",
+        "description": "what format this store is, and whether opening it would apply an irreversible upgrade"
+      },
+      {
+        "usage": "store recovery-points",
+        "description": "verified snapshots written before each upgrade"
+      },
+      {
+        "usage": "store restore <id> [--force]",
+        "description": "roll back to one, after checking its digest"
+      }
+    ]
+  },
+  {
     "heading": "DURABILITY",
     "entries": [
       {

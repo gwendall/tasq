@@ -1514,7 +1514,8 @@
       "doctor",
       "journal",
       "help",
-      "version"
+      "version",
+      "store"
     ],
     "compatibility": [
       "complete",
