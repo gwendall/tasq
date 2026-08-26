@@ -10,8 +10,24 @@
  * no command behind it is not a safety rule.
  */
 
-import { existsSync } from "node:fs";
-import { listRecoveryPoints, restoreRecoveryPoint } from "@tasq-internal/local-service";
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { join, resolve } from "node:path";
+import {
+  inspectStoreFormat,
+  listRecoveryPoints,
+  openDb,
+  restoreRecoveryPoint,
+  verifyDatabaseFile,
+} from "@tasq-internal/local-service";
 import type { Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { configUrl, loadConfig } from "../config.js";
@@ -36,11 +52,12 @@ function size(bytes: number): string {
 
 export async function storeCmd(args: ParsedArgs, clock: Clock): Promise<number> {
   const sub = args.positional[0];
-  if (sub !== "status" && sub !== "recovery-points" && sub !== "restore") {
+  if (sub !== "status" && sub !== "recovery-points" && sub !== "restore" && sub !== "clone") {
     printError(
       "usage: tasq store status\n"
       + "       tasq store recovery-points\n"
-      + "       tasq store restore <recovery-point-id> [--force]",
+      + "       tasq store restore <recovery-point-id> [--force]\n"
+      + "       tasq store clone --to <dir>",
     );
     return 1;
   }
@@ -65,6 +82,24 @@ export async function storeCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     if (!inspection.readableByThisExecutable) {
       printInfo(color.red(`  this store is NEWER than this executable (writes ${inspection.current})`));
     }
+    return 0;
+  }
+
+
+  if (sub === "clone") {
+    const to = args.string("to");
+    if (!to) {
+      printError("usage: tasq store clone --to <dir>");
+      return 1;
+    }
+    const outcome = await cloneStore(dbPath, resolve(to));
+    if (json) {
+      printJson(outcome);
+      return 0;
+    }
+    printInfo(`${color.green("✓")} cloned to ${outcome.home}`);
+    printInfo(`  format ${outcome.format}  ${size(outcome.sizeBytes)}`);
+    printInfo(color.dim(`  work on it with: TASQ_HOME=${outcome.home} tasq <command>`));
     return 0;
   }
 
@@ -112,4 +147,92 @@ export async function storeCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
   printInfo(color.dim(`  the replaced store was kept at ${outcome.replacedStorePath}`));
   return 0;
+}
+
+interface CloneOutcome {
+  contractVersion: "tasq.store-clone.v1";
+  source: string;
+  home: string;
+  dbPath: string;
+  format: number | null;
+  sizeBytes: number;
+  journalCopied: boolean;
+}
+
+/**
+ * Produce a Tasq home that is genuinely independent of the one it came from.
+ *
+ * Two things make a hand-rolled copy wrong, and the second is invisible:
+ *
+ *   - config.json holds dbPath and eventJournalPath as ABSOLUTE paths, so a
+ *     copied home still drives the original. Rehearsing a migration on such a
+ *     copy destroys the store it was rehearsing for, which is what happened to
+ *     this project's own ledger on 2026-08-26.
+ *   - the database runs in WAL mode, so `cp db.sqlite` without its -wal
+ *     sidecar yields a silently EMPTY OR STALE store. Reproduced with a 4 KiB
+ *     db.sqlite whose entire content sat in a 1.5 MiB WAL.
+ *
+ * So this uses VACUUM INTO, the canonical WAL-safe online copy, and rewrites
+ * every path in the cloned config to point inside the clone. The source store
+ * is never migrated: cloning a store you are unsure about is exactly when you
+ * must not modify it.
+ */
+async function cloneStore(sourceDbPath: string, home: string): Promise<CloneOutcome> {
+  if (existsSync(home) && readdirSync(home).length > 0) {
+    throw new Error(`Refusing to clone into a non-empty directory: ${home}`);
+  }
+  if (!existsSync(sourceDbPath)) throw new Error(`No store to clone at ${sourceDbPath}`);
+
+  mkdirSync(home, { recursive: true, mode: 0o700 });
+  chmodSync(home, 0o700);
+  const clonedDb = join(home, "db.sqlite");
+
+  const source = await openDb({ url: `file:${sourceDbPath}` });
+  let format: number | null;
+  try {
+    // Read the format before copying so the clone can be described without
+    // opening it through a path that would migrate it.
+    format = (await inspectStoreFormat(source.client)).format;
+    await source.client.execute({ sql: "VACUUM INTO ?", args: [clonedDb] });
+  } finally {
+    await source.close();
+  }
+
+  const verification = await verifyDatabaseFile(clonedDb);
+  if (!verification.ok) {
+    unlinkSync(clonedDb);
+    throw new Error(
+      `Clone verification failed: integrity=${verification.integrity}, `
+      + `foreignKeys=${verification.foreignKeyViolations}`,
+    );
+  }
+  chmodSync(clonedDb, 0o600);
+
+  const loaded = loadConfig();
+  const clonedJournal = join(home, "events.jsonl");
+  let journalCopied = false;
+  if (loaded.eventJournalPath && existsSync(loaded.eventJournalPath)) {
+    copyFileSync(loaded.eventJournalPath, clonedJournal);
+    chmodSync(clonedJournal, 0o600);
+    journalCopied = true;
+  }
+
+  // projectionTarget is deliberately dropped rather than rewritten: a clone
+  // must never write a projection over the file the original maintains.
+  writeFileSync(join(home, "config.json"), `${JSON.stringify({
+    dbPath: clonedDb,
+    eventJournalPath: clonedJournal,
+    tenantId: loaded.tenantId,
+    defaultActor: loaded.defaultActor,
+  }, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
+
+  return {
+    contractVersion: "tasq.store-clone.v1",
+    source: sourceDbPath,
+    home,
+    dbPath: clonedDb,
+    format,
+    sizeBytes: statSync(clonedDb).size,
+    journalCopied,
+  };
 }
