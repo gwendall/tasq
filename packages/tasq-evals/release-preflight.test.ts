@@ -114,6 +114,8 @@ describe("release preflight", () => {
       policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
       policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat =
         STORE_FORMAT_COMPATIBILITY.current - 1;
+      // This is the no-waiver path; the waiver has its own test.
+      delete policy.sourceCandidateCheckpoint.migrationCertificationWaiver;
       await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
 
       const refused = await run(["--version", "9.9.10"], root);
@@ -128,6 +130,64 @@ describe("release preflight", () => {
     }
   });
 
+  test("accepts a waiver that names the shipping format, and refuses one that does not", async () => {
+    // Before a release has adopters there are no published stores to protect, so
+    // re-running the certification proves nothing. Record the decision rather
+    // than editing the certification to claim more than it proved.
+    const root = await afterPublication("9.9.9");
+    try {
+      const file = join(root, policyPath);
+      const policy = JSON.parse(await readFile(file, "utf8"));
+      policy.releaseAuthorization.version = "9.9.10";
+      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat =
+        STORE_FORMAT_COMPATIBILITY.current - 1;
+      policy.sourceCandidateCheckpoint.migrationCertificationWaiver = {
+        storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+        reason: "No published store exists at this format, so the certification would prove nothing yet.",
+        withdrawWhen: "Before the first release published while a third party holds a store.",
+      };
+      await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+
+      const accepted = await run(["--version", "9.9.10"], root);
+      expect(accepted.exitCode, accepted.stderr).toBe(0);
+      expect(JSON.parse(accepted.stdout).migrationCertificationWaived).toBe(true);
+
+      // A waiver for a format this source does not write covers nothing. Without
+      // this the block would silently outlive the situation it was written for.
+      policy.sourceCandidateCheckpoint.migrationCertificationWaiver.storeFormat =
+        STORE_FORMAT_COMPATIBILITY.current - 1;
+      await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+      const refused = await run(["--version", "9.9.10"], root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).toContain("targetStoreFormat");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test("refuses a waiver that does not say why or what ends it", async () => {
+    const root = await afterPublication("9.9.9");
+    try {
+      const file = join(root, policyPath);
+      const policy = JSON.parse(await readFile(file, "utf8"));
+      policy.releaseAuthorization.version = "9.9.10";
+      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      policy.sourceCandidateCheckpoint.migrationCertificationWaiver = {
+        storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+        reason: "too short",
+        withdrawWhen: "never",
+      };
+      await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+
+      const refused = await run(["--version", "9.9.10"], root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).toContain("must state why");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   test("refuses a tag whose migration certification did not pass", async () => {
     const root = await afterPublication("9.9.9");
     try {
@@ -136,6 +196,7 @@ describe("release preflight", () => {
       policy.releaseAuthorization.version = "9.9.10";
       policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
       policy.sourceCandidateCheckpoint.protectedMigrationCandidate.status = "failed";
+      delete policy.sourceCandidateCheckpoint.migrationCertificationWaiver;
       await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
 
       const refused = await run(["--version", "9.9.10"], root);

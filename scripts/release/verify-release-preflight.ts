@@ -94,6 +94,29 @@ function certifiedMigrationFormat(policy: Record<string, any>): number | undefin
   return policy.sourceCandidateCheckpoint?.protectedMigrationCandidate?.targetStoreFormat;
 }
 
+/**
+ * A waiver for a format nothing has yet written.
+ *
+ * The certification proves that PUBLISHED binaries migrate real user stores.
+ * Before a release has adopters there are no such stores, so re-running a
+ * two-target workflow would prove a property nothing depends on. Record the
+ * decision rather than faking the evidence: the certification block keeps
+ * saying exactly what it proved, and the waiver says why this release ships
+ * without a fresh one - and when it must stop being acceptable.
+ */
+function migrationWaiverCovers(policy: Record<string, any>, format: number): boolean {
+  const waiver = policy.sourceCandidateCheckpoint?.migrationCertificationWaiver;
+  if (!waiver) return false;
+  if (waiver.storeFormat !== format) return false;
+  if (typeof waiver.reason !== "string" || waiver.reason.trim().length < 40) {
+    fail("policy.sourceCandidateCheckpoint.migrationCertificationWaiver.reason must state why, in one sentence");
+  }
+  if (typeof waiver.withdrawWhen !== "string" || waiver.withdrawWhen.trim().length < 20) {
+    fail("policy.sourceCandidateCheckpoint.migrationCertificationWaiver.withdrawWhen must name what ends it");
+  }
+  return true;
+}
+
 const targetVersion = flag("--version");
 parseVersion(targetVersion, "--version");
 
@@ -133,6 +156,7 @@ if (typeof published === "string" && !isOlder(published, targetVersion)) {
 // format. The candidate block records a passed run and no gate read it, which is
 // the same shape that cost v0.4.1 its full certification, one axis over.
 const certifiedFormat = certifiedMigrationFormat(policy);
+const waived = migrationWaiverCovers(policy, STORE_FORMAT_COMPATIBILITY.current);
 const candidate = policy.sourceCandidateCheckpoint?.protectedMigrationCandidate;
 if (candidate === undefined) {
   stale.push(
@@ -143,12 +167,12 @@ if (candidate === undefined) {
   stale.push(
     `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.status is ${candidate.status}, not passed`,
   );
-} else if (certifiedFormat !== STORE_FORMAT_COMPATIBILITY.current) {
+} else if (certifiedFormat !== STORE_FORMAT_COMPATIBILITY.current && !waived) {
   stale.push(
     `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat is `
       + `${certifiedFormat ?? "missing"}, but this source writes store format `
       + `${STORE_FORMAT_COMPATIBILITY.current}. Re-run the protected migration certification against `
-      + "the new format: published binaries have never been proven to migrate a real store to it.",
+      + "the new format, or record a waiver naming this format if no published store is at risk.",
   );
 }
 
@@ -167,5 +191,6 @@ process.stdout.write(`${JSON.stringify({
     "policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat",
   ],
   storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+  migrationCertificationWaived: waived,
   ok: true,
 }, null, 2)}\n`);

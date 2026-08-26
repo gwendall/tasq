@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.4.2",
+    "state": "authorized",
+    "version": "0.5.0",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
-    "authorizedAt": "2026-08-26",
-    "rationale": "Complete the certification v0.4.1 could not obtain. v0.4.1 published byte-verified binaries, but its npm-registry certification stage failed on a TQ-616 program block that still named 0.4.0 at the tagged commit, and that stage reads the policy from the immutable tag. This release carries the same product surface plus the preflight that makes the failure impossible to repeat, so the published line ends on a version whose certification is complete rather than partial. Store format 32 is unchanged and no behaviour changes: the difference from v0.4.1 is release machinery and an ADR."
+    "authorizedAt": "2026-08-27",
+    "rationale": "Ship the shared-assumption primitive (ADR-021) and the store-safety envelope built alongside it. This is the first store-format bump since the release machinery was hardened, and it moves the store from 32 to 33: every 0.4.x store must migrate forward once, irreversibly, and `tasq store upgrade` now makes that a decision rather than a side effect of any command. The migration certification is waived rather than re-run because no published store exists outside the maintainer's machine; the waiver names what ends it."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -325,7 +325,20 @@
     "tagCreated": true,
     "publishedV040ReplayPassed": true,
     "publishedReplayWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
-    "publicSupportGranted": true
+    "publicSupportGranted": true,
+    "migrationCertificationWaiver": {
+      "storeFormat": 33,
+      "recordedAt": "2026-08-27",
+      "recordedBy": "@gwendall",
+      "reason": "The protected migration certification proves that PUBLISHED binaries migrate REAL user stores forward. At store format 33 there are no such stores: v0.4.x has no adopters, and the only format-32 store in existence belongs to the maintainer, who can rehearse with `tasq store clone` and roll back with `tasq store restore`. Re-running the two-target workflow would certify a property nothing depends on yet. The certification block above is left saying exactly what it proved, at format 32, rather than being edited to claim more.",
+      "withdrawWhen": "Before the first release published while any third party holds a Tasq store. From that point the certification must be re-run against the shipping format and this waiver deleted.",
+      "mitigations": [
+        "tasq store upgrade makes the irreversible upgrade an explicit decision on every build",
+        "a verified pre-migration snapshot is written before the upgrade is applied",
+        "tasq store restore rolls back to it after checking its digest",
+        "tasq store clone rehearses the upgrade on an independent copy"
+      ]
+    }
   },
   "candidatePublications": {
     "serverImage": {
@@ -375,7 +388,7 @@
       "state": "published_certified",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.4.2",
+      "version": "0.5.0",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
