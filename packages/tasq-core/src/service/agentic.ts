@@ -45,6 +45,7 @@ import {
 import { assertTaskCostAllowsClaim } from "./costs.js";
 import { assertTaskPremiseActionable } from "./premises.js";
 import { assertCommitmentNotPaused } from "./assumptions.js";
+import { assertBlockersResolved } from "./collaboration.js";
 
 const MIN_LEASE_MS = 1_000;
 const MAX_LEASE_MS = 7 * 24 * 60 * 60 * 1_000;
@@ -147,6 +148,12 @@ async function resolveCallerPrincipal(
 export interface AcquireClaimOptions extends ServiceContext {
   leaseMs?: number;
   metadata?: Metadata;
+  /**
+   * Take a commitment whose blockers have not resolved. Deliberate, recorded in
+   * the claim metadata, and never the default: an agent that wants work should
+   * pick unblocked work, and a human overriding should mean it.
+   */
+  force?: boolean;
   /** Deterministic clock for tests and reconciliation. */
   now?: number;
 }
@@ -185,6 +192,7 @@ export async function acquireTaskClaim(
     }
     await assertTaskPremiseActionable(tx, taskId, tenantId);
     await assertCommitmentNotPaused(tx, taskId, tenantId);
+    if (!options.force) await assertBlockersResolved(tx, taskId, tenantId);
 
     const rows = await tx
       .select()

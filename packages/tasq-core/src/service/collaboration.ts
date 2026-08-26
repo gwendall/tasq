@@ -1,6 +1,6 @@
 /** Universal collaboration records: delegation, relations, outputs and refs. */
 
-import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, notInArray, sql } from "drizzle-orm";
 import {
   Artifact as ArtifactZ,
   ArtifactInsert,
@@ -387,6 +387,69 @@ export async function getCommitmentRelation(
   const rows = await db.select().from(commitmentRelation)
     .where(and(eq(commitmentRelation.id, id), eq(commitmentRelation.tenantId, tenantId))).limit(1);
   return rows[0] ? parseRelation(rows[0]) : null;
+}
+
+export interface UnresolvedBlocker {
+  commitmentId: string;
+  title: string;
+  status: string;
+}
+
+/**
+ * Blockers of a commitment that have not resolved: live `depends_on` edges
+ * whose target is still open work.
+ */
+export async function unresolvedBlockers(
+  tx: TasqDbOrTx,
+  taskId: string,
+  tenantId: string,
+): Promise<UnresolvedBlocker[]> {
+  const rows = await tx.select({
+    id: task.id,
+    title: task.title,
+    status: task.status,
+  })
+    .from(commitmentRelation)
+    .innerJoin(task, eq(commitmentRelation.toTaskId, task.id))
+    .where(and(
+      eq(commitmentRelation.tenantId, tenantId),
+      eq(commitmentRelation.fromTaskId, taskId),
+      eq(commitmentRelation.relationType, "depends_on"),
+      isNull(commitmentRelation.endedAt),
+      isNull(task.deletedAt),
+      notInArray(task.status, ["done", "cancelled"]),
+    ));
+  return rows.map((row) => ({ commitmentId: row.id, title: row.title, status: row.status }));
+}
+
+/**
+ * Refuse execution authority over a commitment whose blockers have not resolved.
+ *
+ * Until this existed, blocking was enforced in exactly ONE place: the
+ * prioritizer filtered blocked commitments out of `next`. A blocked commitment
+ * could still be claimed, started and completed by asking for it directly, so
+ * the door was not locked - it was merely off the map. Verified on the
+ * maintainer's own ledger on 2026-08-27.
+ *
+ * This is the same two-layer argument the premise and assumption paths already
+ * settled: selection is advisory and a caller holding a stale list still
+ * reaches claim, so the claim layer has to refuse on its own.
+ */
+export async function assertBlockersResolved(
+  tx: TasqDbOrTx,
+  taskId: string,
+  tenantId: string,
+): Promise<void> {
+  const blockers = await unresolvedBlockers(tx, taskId, tenantId);
+  if (blockers.length === 0) return;
+  const named = blockers.slice(0, 3)
+    .map((blocker) => `${blocker.commitmentId} (${blocker.status}) ${blocker.title}`)
+    .join("; ");
+  const more = blockers.length > 3 ? ` and ${blockers.length - 3} more` : "";
+  throw new Error(
+    `Task ${taskId} is blocked by ${blockers.length} unresolved commitment(s): ${named}${more}. `
+      + "Finish a blocker, drop the edge with `tasq undepend`, or pass force to take it anyway.",
+  );
 }
 
 export async function listCommitmentRelations(
