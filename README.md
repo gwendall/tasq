@@ -8,7 +8,7 @@
 Website and documentation: [tasq.run](https://tasq.run)
 
 ```bash
-npx @tasq-run/cli@0.4.0 demo    # three seconds, no install, touches no data
+npx @tasq-run/cli@0.4.2 demo    # three seconds, no install, touches no data
 ```
 
 ## For you
@@ -59,7 +59,7 @@ Tasq is not an agent runtime. It does not launch agents or call providers. It
 gives the tools you already use one shared, inspectable place to agree on what
 is done.
 
-> **Public alpha:** `v0.4.0` is available from npm and as an attested GitHub
+> **Public alpha:** `v0.4.2` is available from npm and as an attested GitHub
 > release for macOS arm64 and Linux x64. The Server image and Python client are
 > also published and exact-artifact certified. This is an
 > intentionally early pre-1.0 line: keep backups of retained ledgers and expect
@@ -68,7 +68,7 @@ is done.
 ## What is available today
 
 - **Tasq Core** - the embeddable TypeScript library behind the CLI, with no
-  opinion about your domain. `@tasq-run/core@0.4.0` exposes the high-level `createLocalTasq`
+  opinion about your domain. `@tasq-run/core@0.4.2` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
@@ -105,7 +105,7 @@ pending independent review.
 An attempt succeeding never completes its commitment automatically.
 Validated commitments also cannot be completed by evidence alone.
 
-Published `v0.4.0` implements opt-in independent completion resolution across
+Published `v0.4.2` implements opt-in independent completion resolution across
 Core, embedded client, CLI, local MCP and Console. Ordinary commitments retain
 the short evidence-backed path; validated commitments use frozen policies,
 proposals, challenges and explicit decisions. See the
@@ -116,9 +116,9 @@ proposals, challenges and explicit decisions. See the
 Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.4.0.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.4.0 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.4.0 --prefix "$HOME/.local"
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.4.2.sh
+sh /tmp/tasq-install.sh --dry-run --version 0.4.2 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.4.2 --prefix "$HOME/.local"
 
 # Keep this evaluation isolated from any existing Tasq ledger.
 export TASQ_HOME="$PWD/.tasq"
@@ -138,7 +138,7 @@ before using a long-lived ledger.
 The current machine-readable acquisition contract is available at
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
-immutable `v0.4.0` npm and GitHub release coordinates, the supported targets,
+immutable `v0.4.2` npm and GitHub release coordinates, the supported targets,
 the explicit install prefix, and the exact onboarding argument vector.
 The generic agent entrypoints are
 [`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
@@ -183,10 +183,12 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`,
-`@tasq-run/console`, and `@tasq-run/client`. Version `0.4.0` is published from
+`@tasq-run/console`, and `@tasq-run/client`. Version `0.4.2` is published from
 protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
-on the [`v0.4.0` release](https://github.com/gwendall/tasq/releases/tag/v0.4.0).
+on the [`v0.4.2` release](https://github.com/gwendall/tasq/releases/tag/v0.4.2).
+A package that carries no change in a release is not republished, so
+`@tasq-run/client` remains at the version it was last published at.
 The exact registry and release bytes pass the published lifecycle, migration,
 adoption and interactive-runtime matrix on macOS ARM64 and Linux x64. The
 compiled Core dependency closure additionally passes the same fresh-install

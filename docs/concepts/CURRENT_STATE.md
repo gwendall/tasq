@@ -35,7 +35,7 @@ encrypted, stored off-site and restored with an exact digest match on
 TQ-621 adds a public, source-linked comparison of same-backlog behavior across
 Tasq, Claude Code, GitHub Copilot, Codex, Cursor, MCP and A2A. It does not turn
 source candidates into shipped features: the comparison is pinned to Tasq
-`v0.4.0`, distinguishes same-machine Local from the published self-hosted
+`v0.4.2`, distinguishes same-machine Local from the published self-hosted
 Server and unavailable managed Cloud, and labels classifications inferred from
 first-party or normative sources. The defensible boundary is durable,
 runtime-neutral commitment, claim, attempt, evidence and decision state — not
@@ -239,13 +239,13 @@ availability starts only after an explicitly authorized protected attested
 release.
 
 Public source launch occurred on 2026-07-22 and protected public alpha
-`v0.4.0` is the current release, published on 2026-08-11. TQ-607 private dogfood remains the
+`v0.4.2` is the current release, published on 2026-08-26. TQ-607 private dogfood remains the
 stable-graduation gate. The
 minimum program spans 30 calendar days and three real consumers: the personal
 life-pilot, Kami Robotics resource coordination and a Denshin-shaped or
 equivalent interactive agent runtime. It requires retained-data upgrades,
 backup/restore, crash recovery, cold onboarding and an explicit maintainer
-`go`, `extend` or `no_go` decision. Early users may install `0.4.0`, build from
+`go`, `extend` or `no_go` decision. Early users may install `0.4.2`, build from
 source and file issues while this retained-data gate continues.
 
 The retained baseline and isolated restore are verified. Kami and the
@@ -259,7 +259,10 @@ figures are a 2026-07-22 checkpoint only; `../contracts/TQ-607_DOGFOOD_STATUS.js
 The Local release lifecycle is certified from exact published bytes. Generated
 target assets can be verified and installed outside the checkout, upgraded,
 paired with a matching snapshot for rollback, and uninstalled without touching
-`TASQ_HOME`. The current assets are published at immutable `v0.4.0`. Protected
+`TASQ_HOME`. The current assets are published at immutable `v0.4.2`, whose
+post-release certification passed on both targets in protected run
+[32941390312](https://github.com/gwendall/tasq/actions/runs/32941390312).
+The earlier protected
 run [31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138)
 downloaded them, verified attestations and replayed the release and migration
 matrix on both supported targets.
