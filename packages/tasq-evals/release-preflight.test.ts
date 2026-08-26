@@ -61,6 +61,22 @@ async function afterPublication(released: string) {
 }
 
 describe("release preflight", () => {
+  test("runs before dependencies exist, because the identity job has no install", async () => {
+    // The release workflow's identity job runs this gate with no `pnpm install`
+    // before it: a gate that needs dependencies installed is a gate an install
+    // failure can skip. Importing @tasq-run/core here once failed the whole
+    // v0.5.0 tag with "Cannot find module '@tasq-run/schema'", and nothing
+    // caught it until the tag existed.
+    const source = await readFile(join(productRoot, "scripts/release/verify-release-preflight.ts"), "utf8");
+    const imports = [...source.matchAll(/^import\s[^;]*?from\s+["']([^"']+)["'];/gm)]
+      .map((match) => match[1]!);
+    expect(imports.length).toBeGreaterThan(0);
+    for (const specifier of imports) {
+      expect(specifier.startsWith("node:"), `${specifier} is not available before install`).toBe(true);
+    }
+  });
+
+
   test("refuses a tag while any block still names the released version", async () => {
     const root = await afterPublication("9.9.9");
     try {
