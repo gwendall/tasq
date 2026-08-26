@@ -329,6 +329,8 @@ ${color.bold("PROJECTION")}
 ${color.bold("STORE SAFETY")}
   store status                   what format this store is, and whether opening
                                  it would apply an irreversible upgrade
+  store upgrade                  apply a pending format upgrade deliberately;
+                                 a verified snapshot is written first
   store recovery-points          verified snapshots written before each upgrade
   store restore <id> [--force]   roll back to one, after checking its digest
   store clone --to <dir>         an independent copy to work on: WAL-safe, with

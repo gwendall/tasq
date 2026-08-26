@@ -73,43 +73,38 @@ function resolveDbUrl(config: TasqConfig): string {
 }
 
 
-/**
- * A build that is not a published release must not irreversibly upgrade a store
- * the operator did not offer up for it.
- *
- * Every command migrates on open, so on 2026-08-26 running this project's own
- * working tree against its own live ledger moved the store from format 32 to 33
- * and the installed published binary then refused it. The operator asked for a
- * diagnosis; they got an irreversible format change performed by an unreleased
- * executable.
- *
- * Released builds are deliberately NOT gated here: auto-migrating on upgrade is
- * the expected local-first behaviour, and whether it should ask first is a
- * separate product question about a SHARED ledger - two machines on one store
- * with different released versions means whoever runs first locks the other out.
- */
 type StoreClient = Parameters<typeof inspectStoreFormat>[0];
 
+/**
+ * Crossing a store format is a decision, not a side effect of asking a question.
+ *
+ * Every command migrates on open, so on 2026-08-26 running this project's own
+ * working tree against its own live ledger moved the store from format 32 to 33,
+ * and the installed published binary then refused it. The operator asked for a
+ * diagnosis; they got an irreversible format change.
+ *
+ * Released builds are gated too, and that is the substantive part. Tasq is a
+ * SHARED ledger: two machines, or two agents in one fleet, on one store with
+ * different Tasq versions means whoever runs first silently locks the others
+ * out. The refusal they hit afterwards is clear and non-destructive; the
+ * unconsented upgrade that caused it is what needed a gate.
+ *
+ * `tasq store upgrade` is the consent: typing the verb IS the decision, so
+ * there is no prompt to script around and no flag to set blindly.
+ */
 async function assertMigrationIsIntended(client: StoreClient): Promise<void> {
-  if (isPublishedRelease() || process.env.TASQ_ALLOW_DEV_MIGRATION === "1") return;
+  if (process.env.TASQ_ALLOW_STORE_UPGRADE === "1") return;
   const inspection = await inspectStoreFormat(client);
   if (!inspection.requiresIrreversibleUpgrade) return;
   throw new Error(
-    `This executable is not a published release (${EXECUTABLE_VERSION}), and opening this store would `
-    + `irreversibly migrate it from format ${inspection.format} to ${inspection.current}.\n`
+    `This store is format ${inspection.format}; this executable (${EXECUTABLE_VERSION}) writes `
+    + `${inspection.current}. Opening it would apply an irreversible upgrade.\n`
     + `Pending: ${inspection.pending.map((entry) => entry.name).join(", ")}\n`
-    + "A released binary could no longer read the store afterwards. Refusing.\n"
-    + "Rehearse on a copy, or set TASQ_ALLOW_DEV_MIGRATION=1 if you mean to upgrade this store now.",
+    + "Afterwards, any older Tasq sharing this store - another machine, another agent - could no "
+    + "longer read it.\n"
+    + "Run `tasq store upgrade` to do it deliberately; a verified snapshot is written first and "
+    + "`tasq store restore` can roll it back. Run `tasq store clone --to <dir>` to rehearse instead.",
   );
-}
-
-/**
- * True only for a stable SemVer stamped in at build time. Running from source
- * leaves `TASQ_BUILD_VERSION` undefined, and a dev artifact stamps a version
- * carrying a prerelease or build-metadata suffix.
- */
-function isPublishedRelease(): boolean {
-  return /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(EXECUTABLE_VERSION);
 }
 
 export interface ConfiguredStoreInspection extends StoreFormatInspection {
