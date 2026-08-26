@@ -419,6 +419,10 @@
       {
         "usage": "store restore <id> [--force]",
         "description": "roll back to one, after checking its digest"
+      },
+      {
+        "usage": "store clone --to <dir>",
+        "description": "an independent copy to work on: WAL-safe, with every path rewritten inside the copy"
       }
     ]
   },

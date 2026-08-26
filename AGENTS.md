@@ -14,6 +14,13 @@ git status --short --branch
 Then run `pnpm --silent agent:preflight --json` for one machine-readable repository,
 toolchain, worktree and active-backlog check.
 
+**Before you push, run `pnpm verify:quick`.** It runs the documentation contracts
+and the workspace typecheck, and the workspace typecheck includes the generated
+public-site truth, whose digests are pinned to files you may have edited. Skipping
+it is how a single stale hash fails three CI jobs at once; it has cost this
+repository a full CI cycle more than once. Use `pnpm verify:handoff` for the same
+checks plus the complete test suite.
+
 Read [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md) first. Before changing a public contract,
 also read [CURRENT_STATE.md](docs/concepts/CURRENT_STATE.md),
 [CONTEXT.md](docs/concepts/CONTEXT.md),
