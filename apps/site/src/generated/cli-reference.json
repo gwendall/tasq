@@ -413,6 +413,10 @@
         "description": "what format this store is, and whether opening it would apply an irreversible upgrade"
       },
       {
+        "usage": "store upgrade",
+        "description": "apply a pending format upgrade deliberately; a verified snapshot is written first"
+      },
+      {
         "usage": "store recovery-points",
         "description": "verified snapshots written before each upgrade"
       },

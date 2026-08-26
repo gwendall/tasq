@@ -32,7 +32,7 @@ import type { Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { configUrl, loadConfig } from "../config.js";
 import { color, printError, printInfo, printJson } from "../output/format.js";
-import { inspectConfiguredStore } from "../runtime.js";
+import { inspectConfiguredStore, openRuntime } from "../runtime.js";
 
 function configuredStorePath(): string {
   const url = process.env.TASQ_DB_URL || configUrl(loadConfig());
@@ -52,9 +52,11 @@ function size(bytes: number): string {
 
 export async function storeCmd(args: ParsedArgs, clock: Clock): Promise<number> {
   const sub = args.positional[0];
-  if (sub !== "status" && sub !== "recovery-points" && sub !== "restore" && sub !== "clone") {
+  const known = ["status", "upgrade", "recovery-points", "restore", "clone"];
+  if (!sub || !known.includes(sub)) {
     printError(
       "usage: tasq store status\n"
+      + "       tasq store upgrade\n"
       + "       tasq store recovery-points\n"
       + "       tasq store restore <recovery-point-id> [--force]\n"
       + "       tasq store clone --to <dir>",
@@ -85,6 +87,53 @@ export async function storeCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     return 0;
   }
 
+
+
+  if (sub === "upgrade") {
+    const inspection = await inspectConfiguredStore(args.string("tenant"));
+    if (!inspection.requiresIrreversibleUpgrade) {
+      if (json) {
+        printJson({ ...inspection, contractVersion: "tasq.store-upgrade.v1", ok: true, upgraded: false });
+        return 0;
+      }
+      printInfo(color.green("✓") + ` already format ${inspection.format}; nothing to upgrade`);
+      return 0;
+    }
+
+    const before = inspection.format;
+    // Typing `store upgrade` IS the consent, so the gate steps aside for the
+    // command that exists to express it - and only for that command.
+    const previous = process.env.TASQ_ALLOW_STORE_UPGRADE;
+    process.env.TASQ_ALLOW_STORE_UPGRADE = "1";
+    try {
+      const rt = await openRuntime(args.string("actor"), args.string("tenant"), clock);
+      await rt.close();
+    } finally {
+      if (previous === undefined) delete process.env.TASQ_ALLOW_STORE_UPGRADE;
+      else process.env.TASQ_ALLOW_STORE_UPGRADE = previous;
+    }
+
+    const after = await inspectConfiguredStore(args.string("tenant"));
+    const point = (await listRecoveryPoints(dbPath))[0];
+    if (json) {
+      printJson({
+        contractVersion: "tasq.store-upgrade.v1",
+        ok: true,
+        upgraded: true,
+        formatBefore: before,
+        formatAfter: after.format,
+        applied: inspection.pending.map((entry) => entry.name),
+        recoveryPointId: point?.id ?? null,
+      });
+      return 0;
+    }
+    printInfo(`${color.green("✓")} upgraded format ${before} → ${after.format}`);
+    for (const entry of inspection.pending) printInfo(color.dim(`    ${entry.name}`));
+    if (point) {
+      printInfo(color.dim(`  roll back with: tasq store restore ${point.id}`));
+    }
+    return 0;
+  }
 
   if (sub === "clone") {
     const to = args.string("to");
