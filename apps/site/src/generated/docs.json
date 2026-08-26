@@ -22,7 +22,7 @@
         {
           "title": "Install the public alpha",
           "body": [
-            "Tasq Local 0.4.1 is a public alpha. The versioned installer selects only a certified platform asset, verifies the pinned checksum manifest and installs side by side without editing your shell files."
+            "Tasq Local 0.4.2 is a public alpha. The versioned installer selects only a certified platform asset, verifies the pinned checksum manifest and installs side by side without editing your shell files."
           ],
           "callout": "Inspect the downloaded script before running it. Uninstall removes only managed program files; TASQ_HOME, the ledger and backups remain untouched. The npm-prefix path remains available in /adopt.json for machine acquisition.",
           "codeExample": "nativeInstall"
@@ -149,7 +149,7 @@
           "body": [
             "Core reads no global CLI config, provider credential or ambient device clock. The host supplies every authority dependency at composition time."
           ],
-          "callout": "Install @tasq-run/core@0.4.1 for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.",
+          "callout": "Install @tasq-run/core@0.4.2 for the protected public alpha. Pre-1.0 compatibility follows the published SemVer and migration policy; deep imports remain unsupported.",
           "codeExample": "sdk"
         },
         {
@@ -224,7 +224,7 @@
         {
           "title": "The publication gate",
           "body": [
-            "Tasq Local 0.4.1 is publicly distributed as a protected alpha with all eight scoped npm packages, checksummed native artifacts and repository-bound provenance. The Server image at ghcr.io/gwendall/tasq-server:0.4.0 and the tasq-remote==0.4.0 Python client are also published and exact-artifact certified. Managed Cloud remains unavailable, and remote effects remain disabled pending independent review."
+            "Tasq Local 0.4.2 is publicly distributed as a protected alpha with all eight scoped npm packages, checksummed native artifacts and repository-bound provenance. The Server image at ghcr.io/gwendall/tasq-server:0.4.0 and the tasq-remote==0.4.0 Python client are also published and exact-artifact certified. Managed Cloud remains unavailable, and remote effects remain disabled pending independent review."
           ]
         }
       ]

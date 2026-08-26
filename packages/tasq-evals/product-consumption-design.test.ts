@@ -369,10 +369,11 @@ describe("TQ-601 product consumption design", () => {
     });
     expect(["published_certified", "authorized"]).toContain(authorization.state);
     const asParts = (value: string) => value.split(".").map((part) => Number(part));
-    const [publishedMajor, publishedMinor, publishedPatch] = asParts("0.4.0");
+    const [publishedMajor, publishedMinor, publishedPatch] = asParts(published.version);
     const [major, minor, patch] = asParts(authorization.version);
     if (authorization.state === "published_certified") {
-      expect(authorization.version).toBe("0.4.0");
+      // Consumed: the decision belongs to the release that is already out.
+      expect(authorization.version).toBe(published.version);
     } else {
       expect([major, minor, patch] > [publishedMajor, publishedMinor, publishedPatch]).toBe(true);
     }
