@@ -205,11 +205,13 @@ export type {
 
 // Migrations
 export {
+  inspectStoreFormat,
   runMigrations,
   STORE_FORMAT_COMPATIBILITY,
   StoreCompatibilityError,
   MigrationSafetyError,
 } from "./migrations/compat.js";
+export type { StoreFormatInspection } from "./migrations/compat.js";
 
 export {
   PORTABLE_EXPORT_CONTRACT_VERSION,
