@@ -23,3 +23,4 @@ boundary; they are not required for a first product evaluation.
 | [`ADR-017`](ADR-017_CUSTODY_IS_AN_EXPERIMENTAL_LINEAGE.md) | Exclusive custody handoff lineage remains a private experimental Module, distinct from leases, observations and authority |
 | [`ADR-UK-006`](ADR-UK-006_COLLABORATION_RECORDS.md) | Universal collaboration records |
 | [`ADR-UK-EXT`](ADR-UK-EXT_EXTENSION_REGISTRY.md) | Extension identity, registry, and trust |
+| [`ADR-020`](ADR-020_KERNEL_DISCOVERY_CAPTURE.md) | Discovery capture as a kernel operation reachable from every agent surface |
