@@ -23,6 +23,7 @@ import type { TaskServiceContext } from "./tasks.js";
 import { getTask } from "./tasks.js";
 import { ensureLocalPrincipal } from "./principals.js";
 import { emitAfterCommit, recordEvent } from "./events.js";
+import type { Event as EventT } from "@tasq-run/schema";
 
 export const ASSUMPTION_TEXT_MAX = 200;
 export const ASSUMPTION_REASON_MAX = 2_000;
@@ -118,7 +119,7 @@ async function findStanding(
 async function attachInTransaction(
   tx: TasqDbOrTx,
   args: { tenantId: string; actor: string; taskId: string; text: string; now: number },
-): Promise<{ assumption: AssumptionRecord; link: AssumptionLinkRecord; events: unknown[] }> {
+): Promise<{ assumption: AssumptionRecord; link: AssumptionLinkRecord; events: EventT[] }> {
   const { tenantId, actor, taskId, now } = args;
   const text = AssumptionText.parse(args.text);
   const normalized = normalizeAssumptionText(text);
@@ -129,7 +130,7 @@ async function attachInTransaction(
   if (task.deletedAt !== null) throw new Error(`Task is deleted: ${taskId}`);
 
   const principal = await ensureLocalPrincipal(tx, tenantId, actor, now);
-  const events: unknown[] = [];
+  const events: EventT[] = [];
 
   let row = await findStanding(tx, tenantId, normalized);
   if (!row) {
@@ -194,7 +195,7 @@ export async function attachAssumption(
     const attached = await attachInTransaction(tx, { tenantId, actor, taskId: parsed.taskId, text: parsed.text, now });
     return { result: attached, events: attached.events };
   });
-  for (const event of outcome.events) emitAfterCommit(event as never);
+  for (const event of outcome.events) emitAfterCommit(event);
   return { assumption: outcome.result.assumption, link: outcome.result.link };
 }
 
@@ -297,18 +298,27 @@ export async function withdrawAssumption(
     }
     paused.sort();
 
-    const events = [await recordEvent(tx, {
-      tenantId, actor, principalId: principal.id,
-      entityType: "task",
-      entityId: paused[0] ?? row.id,
-      eventType: "assumption_withdrawn",
-      payload: {
-        after: {
-          assumptionId: row.id, text: row.text, reason: parsed.reason,
-          evidenceIds: parsed.evidenceIds, pausedTaskIds: paused,
+    // One event per paused commitment, never one keyed on the assumption:
+    // `entityType` is a closed enum with no assumption member, so parking an
+    // assumption id in `entityId` would silently corrupt every audit query that
+    // joins events to tasks. The assumption row itself already records who
+    // withdrew the belief and why; these events record why each commitment
+    // changed state, which is what `tasq event list --entity-id <task>` answers.
+    const events: EventT[] = [];
+    for (const pausedTaskId of paused) {
+      events.push(await recordEvent(tx, {
+        tenantId, actor, principalId: principal.id,
+        entityType: "task",
+        entityId: pausedTaskId,
+        eventType: "assumption_withdrawn",
+        payload: {
+          after: {
+            assumptionId: row.id, text: row.text, reason: parsed.reason,
+            evidenceIds: parsed.evidenceIds, pausedTaskIds: paused,
+          },
         },
-      },
-    }, { defer: true, now })];
+      }, { defer: true, now }));
+    }
 
     const updated = (await tx.select().from(assumption).where(and(
       eq(assumption.tenantId, tenantId), eq(assumption.id, row.id),

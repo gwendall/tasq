@@ -18,6 +18,7 @@ import {
   dependTask,
   getTaskAssumptions,
   listAssumptions,
+  listEvents,
   normalizeAssumptionText,
   openDb,
   pickNext,
@@ -196,6 +197,29 @@ describe("shared assumptions", () => {
         actor: "agent-a", now: NOW + 1, durationMs: 60_000, idempotencyKey: "claim:plain",
       });
       expect(claim.actor).toBe("agent-a");
+    } finally {
+      await f.close();
+    }
+  });
+
+  it("records the withdrawal against each paused commitment, never against the belief", async () => {
+    // `entityType` is a closed enum with no assumption member. An event whose
+    // entityId is an assumption would look like a task to every audit query.
+    const f = await fixture();
+    try {
+      const a = await createTask(f.db, { title: "first" });
+      const b = await createTask(f.db, { title: "second" });
+      for (const task of [a, b]) {
+        await attachAssumption(f.db, { taskId: task.id, text: "a shared belief" }, { now: NOW });
+      }
+      await withdrawAssumption(f.db, {
+        text: "a shared belief", reason: "learned otherwise",
+      }, { now: NOW + 1 });
+
+      const events = await listEvents(f.db, { tenantId: "gwendall", limit: 200 });
+      const withdrawals = events.filter((event) => event.eventType === "assumption_withdrawn");
+      expect(withdrawals.map((event) => event.entityId).sort()).toEqual([a.id, b.id].sort());
+      expect(withdrawals.every((event) => event.entityType === "task")).toBe(true);
     } finally {
       await f.close();
     }
