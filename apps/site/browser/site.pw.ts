@@ -1,5 +1,13 @@
 import { expect, test } from "@playwright/test";
 
+import comparison from "../../../docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json" with { type: "json" };
+
+// Read the version the page itself renders, not one release's number. A
+// literal here failed the moment a release shipped, which is the same trap
+// several policy blocks and evals fell into: encoding a release instead of
+// the rule that outlives it.
+const publishedVersion = comparison.tasqClaimBoundary.version;
+
 test("homepage explains the product and its generated release boundary", async ({ page }) => {
   await page.goto("/");
   const truth = await (await page.request.get("/product-truth.json")).json();
@@ -120,7 +128,7 @@ test("status page is traceable to machine contracts", async ({ page }) => {
 test("comparison page separates execution, orchestration and durable coordination", async ({ page }) => {
   await page.goto("/compare/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Parallel is not the same as coordinated");
-  await expect(page.getByText("Tasq 0.4.0", { exact: false })).toBeVisible();
+  await expect(page.getByText(`Tasq ${publishedVersion}`, { exact: false })).toBeVisible();
   await expect(page.getByText("separately operated Server", { exact: false }).first()).toBeVisible();
   await expect(page.getByText("Managed Cloud is unavailable", { exact: false }).first()).toBeVisible();
   const matrix = page.getByRole("table");

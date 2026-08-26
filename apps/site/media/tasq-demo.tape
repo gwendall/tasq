@@ -8,14 +8,14 @@ Require npx
 Set Shell "bash"
 Set FontSize 18
 Set Width 640
-Set Height 360
+Set Height 520
 Set Padding 18
 Set Framerate 30
 Set TypingSpeed 20ms
 Set Theme "Catppuccin Mocha"
 Set WindowBar Rings
 
-Type "npx --yes @tasq-run/cli@0.4.0 demo"
+Type "npx --yes @tasq-run/cli@0.4.1 demo"
 Sleep 400ms
 Enter
-Sleep 3s
+Sleep 6s

@@ -291,7 +291,7 @@ export default function HomePage() {
           >
             <div className="flex items-center justify-center bg-[#1e1e2e] p-3 sm:p-6">
               <Image
-                alt="Tasq public CLI demo creating and completing one isolated task"
+                alt="Tasq public CLI demo: one agent claims a task, a second is refused, and the task closes only against a receipt"
                 className="h-auto w-full max-w-[640px]"
                 height={360}
                 src="/tasq-demo.gif"
@@ -300,9 +300,9 @@ export default function HomePage() {
               />
             </div>
             <figcaption className="flex flex-col justify-center border-t border-white/15 p-7 text-[var(--paper)] sm:p-9 lg:border-l lg:border-t-0">
-              <h3 className="text-2xl font-semibold tracking-[-0.04em]">Watch one isolated cycle.</h3>
+              <h3 className="text-2xl font-semibold tracking-[-0.04em]">Watch two agents share one task.</h3>
               <p className="mt-4 text-sm leading-6 text-white/55">
-                The public demo creates and completes a temporary task, then discards it. Your configured ledger stays untouched.
+                One agent takes the task, a second is refused by name and expiry, and it closes only once a receipt is attached. Everything runs in a throwaway home; your configured ledger stays untouched.
               </p>
               <code className="mt-6 overflow-x-auto whitespace-nowrap font-mono text-xs text-[var(--signal)]">
                 npx --yes @tasq-run/cli@{releaseVersion} demo
