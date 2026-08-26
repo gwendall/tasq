@@ -211,6 +211,35 @@ function recipes(
       outputContract: "tasq.cli-json.v1/TaskV1",
     },
     {
+      id: "assumption.attach", version: 1, requiredCapability: "propose", mutates: true,
+      description:
+        "Record why a commitment exists, in one sentence: what has to be TRUE for this work to be "
+        + "worth doing. Commitments are matched to a belief by the text itself, so several can rest "
+        + "on one record. This is not a description of the work; it is the thing that could later "
+        + "turn out to be false. Over MCP the same operation is the tasq_assumption_attach tool.",
+      argvTemplate: [executable, "because", "attach", "{commitmentId}", "{because}", ...scope],
+      parameters: [
+        parameter("commitmentId", "Commitment whose reason for existing you are recording."),
+        parameter("because", "What has to be true for this work to be worth doing, in one line."),
+      ],
+      outputContract: "tasq.assumption-attached.v1",
+    },
+    {
+      id: "assumption.withdraw", version: 1, requiredCapability: "propose", mutates: true,
+      description:
+        "Say that a recorded belief turned out to be false. Every OPEN commitment resting on it is "
+        + "paused and stops being offered as next work; nothing is cancelled and no history is "
+        + "rewritten. Use this instead of cancelling commitments one by one: cancelling records that "
+        + "someone chose not to do the work and says nothing about why it stopped making sense. "
+        + "Over MCP the same operation is the tasq_assumption_withdraw tool.",
+      argvTemplate: [executable, "wrong", "{because}", "--reason", "{reason}", ...scope],
+      parameters: [
+        parameter("because", "The recorded belief, in its exact recorded wording."),
+        parameter("reason", "What you learned that makes it false."),
+      ],
+      outputContract: "tasq.assumption-withdrawn.v1",
+    },
+    {
       id: "commitment.claim", version: 1, requiredCapability: "coordinate", mutates: true,
       description: "Acquire or renew the exclusive lease for an existing commitment.",
       argvTemplate: [executable, "claim", "{commitmentId}", "--for", "{duration}", ...scope],
