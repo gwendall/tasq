@@ -5,6 +5,7 @@
 import {
   chmodSync,
   closeSync,
+  copyFileSync,
   existsSync,
   fsyncSync,
   linkSync,
@@ -211,6 +212,174 @@ export async function inspectStoreFormat(client: Client): Promise<StoreFormatIns
     requiresIrreversibleUpgrade: state.existingStore && pending.length > 0,
     readableByThisExecutable: format === null || format <= STORE_FORMAT_COMPATIBILITY.current,
   };
+}
+
+export interface RecoveryPoint {
+  id: string;
+  receiptPath: string;
+  status: ReceiptDocument["status"];
+  snapshotPath: string;
+  snapshotSha256: string;
+  snapshotSizeBytes: number;
+  sourceFormat: number;
+  targetFormat: number;
+  startedAt: number;
+  /** Event cursor captured in the snapshot, for reporting what a restore drops. */
+  eventCursor: number | null;
+  /** The snapshot passed integrity and foreign-key verification when it was taken. */
+  snapshotVerified: boolean;
+  /** The snapshot file is present and its bytes still hash to the recorded digest. */
+  usable: boolean;
+  unusableReason: string | null;
+}
+
+function recoveryDirFor(dbPath: string): string {
+  return `${resolve(dbPath)}.tasq-migrations`;
+}
+
+/**
+ * Enumerate the recovery points beside a store, newest first.
+ *
+ * PUBLIC_RELEASE_POLICY names `restore-matching-verified-pre-migration-snapshot-and-binary`
+ * as the rollback rule, and the migration machinery produces exactly what that
+ * rule needs. Nothing read any of it back until this existed, so recovery meant
+ * listing a hidden directory, matching a digest by hand and copying a file over
+ * a live database. A safety rule with no implementation is not a safety rule.
+ */
+export async function listRecoveryPoints(dbPath: string): Promise<RecoveryPoint[]> {
+  const recoveryDir = recoveryDirFor(dbPath);
+  if (!existsSync(recoveryDir)) return [];
+  const points: RecoveryPoint[] = [];
+  for (const name of readdirSync(recoveryDir).filter((entry) => /^receipt-.+\.json$/.test(entry))) {
+    const receiptPath = join(recoveryDir, name);
+    let document: ReceiptDocument;
+    try {
+      document = JSON.parse(readFileSync(receiptPath, "utf8")) as ReceiptDocument;
+    } catch {
+      continue;
+    }
+    const snapshotPath = document.snapshot?.path ?? "";
+    let usable = true;
+    let unusableReason: string | null = null;
+    if (!snapshotPath || !existsSync(snapshotPath)) {
+      usable = false;
+      unusableReason = "the snapshot file is gone";
+    } else if (sha256File(snapshotPath) !== document.snapshot.sha256) {
+      usable = false;
+      unusableReason = "the snapshot no longer matches the digest in its receipt";
+    } else if (!document.snapshot.verification?.ok) {
+      usable = false;
+      unusableReason = "the snapshot did not pass verification when it was taken";
+    }
+    points.push({
+      id: document.id,
+      receiptPath,
+      status: document.status,
+      snapshotPath,
+      snapshotSha256: document.snapshot?.sha256 ?? "",
+      snapshotSizeBytes: document.snapshot?.sizeBytes ?? 0,
+      sourceFormat: document.source.format,
+      targetFormat: document.target.format,
+      startedAt: document.startedAt,
+      eventCursor: document.source.eventCursor,
+      snapshotVerified: Boolean(document.snapshot?.verification?.ok),
+      usable,
+      unusableReason,
+    });
+  }
+  return points.sort((left, right) => right.startedAt - left.startedAt);
+}
+
+export interface RestoreOutcome {
+  contractVersion: "tasq.store-restore.v1";
+  restored: RecoveryPoint;
+  /** Where the pre-restore state was preserved, so a restore is itself reversible. */
+  replacedStorePath: string;
+  formatBefore: number | null;
+  formatAfter: number;
+  /** Events present before the restore that the snapshot does not contain. */
+  eventsDropped: number;
+}
+
+/**
+ * Restore a digest-verified recovery point over a store.
+ *
+ * Refuses an unusable point rather than reporting success on a snapshot whose
+ * bytes drifted, and preserves the replaced store beside the recovery point so
+ * the restore itself can be undone.
+ */
+export async function restoreRecoveryPoint(
+  dbPath: string,
+  recoveryPointId: string,
+  options: { now: number; force?: boolean } = { now: 0 },
+): Promise<RestoreOutcome> {
+  const target = resolve(dbPath);
+  const points = await listRecoveryPoints(target);
+  const point = points.find((entry) => entry.id === recoveryPointId);
+  if (!point) throw new Error(`Recovery point not found beside ${target}: ${recoveryPointId}`);
+  if (!point.usable) {
+    throw new Error(
+      `Refusing to restore ${recoveryPointId}: ${point.unusableReason}. `
+      + "Restoring an unverified snapshot would replace a store you can still read with one you cannot.",
+    );
+  }
+
+  let formatBefore: number | null = null;
+  let eventsBefore = 0;
+  if (existsSync(target)) {
+    const current = await openReadOnlyClient(target);
+    try {
+      const state = await inspectMigrationState(current, migrationDefinitions());
+      formatBefore = state.format;
+      eventsBefore = await maxEventSequence(current);
+    } catch {
+      // An unreadable store is precisely what a restore is for.
+    } finally {
+      await current.close();
+    }
+  }
+
+  const dropped = Math.max(0, eventsBefore - (point.eventCursor ?? eventsBefore));
+  if (dropped > 0 && !options.force) {
+    throw new Error(
+      `Refusing to restore ${recoveryPointId}: ${dropped} event(s) were written after this recovery `
+      + `point (store is at ${eventsBefore}, snapshot holds ${point.eventCursor}). Restoring would `
+      + "discard them. Export or back up first, then pass force to proceed.",
+    );
+  }
+
+  const replaced = join(recoveryDirFor(target), `${basename(target)}.replaced-${options.now}.sqlite`);
+  if (existsSync(target)) copyFileSync(target, replaced);
+  copyFileSync(point.snapshotPath, target);
+  chmodSync(target, 0o600);
+  // WAL and shm belong to the store that was just replaced; leaving them would
+  // graft a newer log onto an older database.
+  for (const sidecar of [`${target}-wal`, `${target}-shm`]) {
+    if (existsSync(sidecar)) unlinkSync(sidecar);
+  }
+
+  return {
+    contractVersion: "tasq.store-restore.v1",
+    restored: point,
+    replacedStorePath: replaced,
+    formatBefore,
+    formatAfter: point.sourceFormat,
+    eventsDropped: dropped,
+  };
+}
+
+async function openReadOnlyClient(dbPath: string) {
+  const { createClient } = await import("@libsql/client");
+  return createClient({ url: `file:${dbPath}` });
+}
+
+async function maxEventSequence(client: Client): Promise<number> {
+  try {
+    const rows = await client.execute("SELECT COALESCE(MAX(sequence), 0) AS max FROM event");
+    return Number(rows.rows[0]?.["max"] ?? 0);
+  } catch {
+    return 0;
+  }
 }
 
 export async function runMigrations(
