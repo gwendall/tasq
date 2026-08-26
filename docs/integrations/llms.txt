@@ -1,8 +1,35 @@
 # Tasq
 
-Tasq is a local-first durable coordination ledger for humans and independent
-agents. It coordinates shared commitments, claims, attempts, evidence and audit
-history. It does not replace an agent runtime's private scratchpad.
+The project tracker you share with your agents.
+
+If you run several coding agents on one project - across worktrees, in
+parallel sessions, or as a fleet - they duplicate work, overwrite each other's
+progress, and forget what happened between sessions. The usual answer is a
+hand-maintained PLAN.md or TODO.md, which drifts the moment two of them touch
+it. Tasq is the durable version of that file: one SQLite ledger you own, shared
+by you and every agent you point at it.
+
+What it gives agents that a scratchpad cannot:
+
+- Exclusive, expiring claims, so two agents never start the same task and
+  nobody closes work another is holding.
+- Persistent memory of the work itself: a replacement agent resumes from the
+  ledger instead of replaying your chat history.
+- Evidence-backed completion, so a successful run is never mistaken for a
+  finished outcome.
+- A way to report what it found - a bug, a missing capability, an
+  inconsistency - linked to the task that surfaced it, without losing its claim.
+
+Local-first. One file you own. No account, no cloud, no telemetry.
+
+Try it without installing:
+  npx @tasq-run/cli demo
+
+Current boundary: Tasq Local 0.4.2 is published for macOS ARM64 and Linux x64
+GNU. Local actors coordinate only when they share the same store and exact
+space. Tasq Server, remote MCP and the remote TypeScript, CLI and Python
+clients are published and certified. Managed Tasq Cloud is not available, and
+remote effects remain disabled.
 
 Agent instructions: https://tasq.run/SKILL.md
 Human setup: https://tasq.run/docs/getting-started/
@@ -10,10 +37,3 @@ Agent integrations: https://tasq.run/agents/
 Machine acquisition: https://tasq.run/adopt.json
 Machine integration: https://tasq.run/integration.json
 Product truth: https://tasq.run/product-truth.json
-Source: https://github.com/gwendall/tasq
-
-Current boundary: Tasq Local 0.4.0 is published for macOS ARM64 and Linux x64
-GNU. Local actors coordinate only when they share the same store and exact
-space. Tasq Server, remote MCP and the remote TypeScript, CLI and Python
-clients are published and certified. Managed Tasq Cloud is not available, and
-remote effects remain disabled.

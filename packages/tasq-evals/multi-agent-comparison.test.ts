@@ -63,6 +63,7 @@ describe("TQ-621 multi-agent backlog comparison", () => {
     expect(comparison.systems.map(({ id }) => id)).toEqual([
       "tasq-local",
       "claude-agent-teams",
+      "beads",
       "github-copilot",
       "github-fleet",
       "codex-app",
