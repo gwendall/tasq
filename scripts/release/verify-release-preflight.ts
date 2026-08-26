@@ -26,8 +26,7 @@
  * publication and would contradict this check if it were included here.
  */
 
-import { readFile } from "node:fs/promises";
-import { STORE_FORMAT_COMPATIBILITY } from "../../packages/tasq-core/src/migrations/index.js";
+import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const productRoot = resolve(import.meta.dir, "../..");
@@ -95,6 +94,33 @@ function certifiedMigrationFormat(policy: Record<string, any>): number | undefin
 }
 
 /**
+ * The store format this source writes, read from the migration files themselves.
+ *
+ * Deliberately NOT imported from @tasq-run/core: this script runs in the release
+ * workflow's identity job, which has no `pnpm install` before it, because a gate
+ * that needs dependencies installed is a gate that can be skipped by an install
+ * failure. Importing core here made the whole v0.5.0 tag fail with
+ * "Cannot find module '@tasq-run/schema'".
+ *
+ * Counting is exact rather than approximate: migrations are named `NNNN_*.sql`
+ * from 0000, and `assertDefinitionEnvelope` in the migration runner refuses to
+ * run at all unless the bundled count equals the declared format plus one. So
+ * the highest migration number IS the current format, enforced everywhere else.
+ */
+async function currentStoreFormat(): Promise<number> {
+  const entries = await readdir(resolve(productRoot, "packages/tasq-core/src/migrations"));
+  const formats = entries
+    .filter((name) => /^\d{4}_.+\.sql$/.test(name))
+    .map((name) => Number.parseInt(name.slice(0, 4), 10));
+  if (formats.length === 0) fail("no bundled migrations found; refusing to guess the store format");
+  const highest = Math.max(...formats);
+  if (formats.length !== highest + 1) {
+    fail(`bundled migrations are non-contiguous: ${formats.length} files but the highest is ${highest}`);
+  }
+  return highest;
+}
+
+/**
  * A waiver for a format nothing has yet written.
  *
  * The certification proves that PUBLISHED binaries migrate real user stores.
@@ -155,8 +181,9 @@ if (typeof published === "string" && !isOlder(published, targetVersion)) {
 // A release that moves the store format needs a certification describing THAT
 // format. The candidate block records a passed run and no gate read it, which is
 // the same shape that cost v0.4.1 its full certification, one axis over.
+const storeFormat = await currentStoreFormat();
 const certifiedFormat = certifiedMigrationFormat(policy);
-const waived = migrationWaiverCovers(policy, STORE_FORMAT_COMPATIBILITY.current);
+const waived = migrationWaiverCovers(policy, storeFormat);
 const candidate = policy.sourceCandidateCheckpoint?.protectedMigrationCandidate;
 if (candidate === undefined) {
   stale.push(
@@ -167,11 +194,11 @@ if (candidate === undefined) {
   stale.push(
     `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.status is ${candidate.status}, not passed`,
   );
-} else if (certifiedFormat !== STORE_FORMAT_COMPATIBILITY.current && !waived) {
+} else if (certifiedFormat !== storeFormat && !waived) {
   stale.push(
     `policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat is `
       + `${certifiedFormat ?? "missing"}, but this source writes store format `
-      + `${STORE_FORMAT_COMPATIBILITY.current}. Re-run the protected migration certification against `
+      + `${storeFormat}. Re-run the protected migration certification against `
       + "the new format, or record a waiver naming this format if no published store is at risk.",
   );
 }
@@ -190,7 +217,7 @@ process.stdout.write(`${JSON.stringify({
     ...collect(policy).map((block) => block.path),
     "policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat",
   ],
-  storeFormat: STORE_FORMAT_COMPATIBILITY.current,
+  storeFormat,
   migrationCertificationWaived: waived,
   ok: true,
 }, null, 2)}\n`);
