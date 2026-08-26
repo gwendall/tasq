@@ -81,6 +81,7 @@ export {
   unblockCommitment,
   cancelCommitment,
   reopenCommitment,
+  captureCommitmentDiscovery,
   CommitmentStatus,
 } from "./commitments.js";
 

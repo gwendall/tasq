@@ -8,6 +8,20 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Added
+
+- `tasq_discovery_capture` on the MCP surface, under the `propose` capability.
+  An agent working over MCP could not report a bug, a missing capability or an
+  inconsistency at all: the flagship integration exposed 44 tools and none of
+  them recorded a finding. Capturing never widens, renews or releases the
+  caller's claim, so it is safe mid-task. See
+  [ADR-020](docs/decisions/ADR-020_KERNEL_DISCOVERY_CAPTURE.md).
+- `captureCommitmentDiscovery` exported from `@tasq-run/core`. The relation
+  table and the `discovered_from` type were already kernel, but no kernel API
+  wrote a relation of any type, so this closes a gap rather than widening the
+  ontology. The CLI behaviour and its tests are unchanged, which is the
+  evidence that this is a move rather than a redesign.
+
 ## v0.4.2 - 2026-08-26
 
 ### Added

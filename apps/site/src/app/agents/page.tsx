@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Bot, Download, PlugZap, ShieldCheck } from "lucide-react";
 
 import { CodeWindow } from "@/components/code-window";
 import { Button } from "@/components/ui/button";
 import { publicCodeExamples } from "@/lib/examples";
+
+// This page is the entrypoint practitioners reach for, and it inherited the
+// homepage title and description, so two indexed URLs described themselves
+// identically.
+export const metadata: Metadata = {
+  title: "Connect Claude Code and Codex to one shared backlog",
+  description:
+    "Point Claude Code, Codex or any MCP client at the same ledger with one command. "
+    + "Exclusive expiring claims stop agents duplicating work across worktrees and "
+    + "parallel sessions, and a replacement agent resumes from the ledger.",
+};
 
 const codexMcp = `codex mcp add tasq -- \\
   /absolute/path/to/tasq mcp \\

@@ -28,6 +28,7 @@ import {
   cancelEffect,
   challengeCompletion,
   completeCommitment,
+  captureCommitmentDiscovery,
   createCommitment,
   createResolutionContract,
   detachExternalContextLink,
@@ -563,6 +564,29 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
         kernelContext(idempotencyKey),
       );
     }));
+
+    server.registerTool("tasq_discovery_capture", {
+      description:
+        "Record work you discovered while executing a commitment, linked to the commitment that "
+        + "surfaced it. Use it for a bug, a missing capability, an inconsistency between two "
+        + "surfaces, or a refusal you could not act on. Capturing never widens, renews or "
+        + "releases your claim, so it is safe in the middle of a task. Do not wait for an error: "
+        + "most defects are visible while commands SUCCEED, and an observation you do not capture "
+        + "is lost when your context ends.",
+      inputSchema: {
+        sourceCommitmentId: Id,
+        title: z.string().trim().min(1).max(500),
+        nextAction: z.string().trim().min(1).max(2_000).nullable().optional(),
+        sourceCommand: z.string().trim().min(1).max(500).nullable().optional(),
+        context: JsonObject.optional(),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ idempotencyKey, ...input }) => guarded(async () => captureCommitmentDiscovery(
+      options.db,
+      input,
+      kernelContext(idempotencyKey),
+    )));
 
     server.registerTool("tasq_commitment_update", {
       description: "Update a commitment with mandatory compare-and-swap revision. Direction-level commitments and public-roadmap metadata require the direction capability.",

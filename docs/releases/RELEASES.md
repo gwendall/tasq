@@ -18,7 +18,10 @@ shipped byte-verified but only partially certified, permanently.
 and the site deploys continuously from the default branch: `publishedRelease`,
 the generated site truth, the versioned installer, and the public comparison
 contract. Advancing these early makes the repository claim a release that does
-not exist yet.
+not exist yet. `scripts/release/verify-publication-recorded.ts` is the mirror of
+the preflight and runs in the ordinary test suite: it refuses a tree where the
+recorded published release still has surfaces describing an older one, or where
+the installer its own documentation points at does not exist.
 
 Public releases use immutable SemVer tags and are built only by protected
 GitHub Actions workflows. Each release publishes SHA-256 checksums, signatures
