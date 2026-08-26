@@ -6,7 +6,7 @@
  */
 
 import { chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
 import { CoordinationSpaceId } from "@tasq-run/schema";
 
@@ -78,6 +78,7 @@ export function loadConfig(): TasqConfig {
   if (!existsSync(path)) {
     return { ...DEFAULT_CONFIG };
   }
+  let config: TasqConfig;
   try {
     const raw = readFileSync(path, "utf-8");
     const parsed: Partial<TasqConfig> = JSON.parse(raw);
@@ -107,10 +108,69 @@ export function loadConfig(): TasqConfig {
         CoordinationSpaceId.parse(space);
       }
     }
-    return merged;
+    config = merged;
   } catch (e) {
     throw new Error(`Config error in ${path}: ${(e as Error).message}`);
   }
+  assertStoreInsideHome(path, config);
+  return config;
+}
+
+/** True when `candidate` is `root` itself or lives under it, following symlinks. */
+function isInside(root: string, candidate: string): boolean {
+  const real = (value: string): string => {
+    try {
+      return realpathSync(value);
+    } catch {
+      // The path may not exist yet (a store about to be created). Resolve the
+      // nearest existing ancestor so /tmp vs /private/tmp still compares equal.
+      const parent = dirname(value);
+      return parent === value ? value : join(real(parent), value.slice(parent.length + 1));
+    }
+  };
+  const base = real(root);
+  const target = real(candidate);
+  return target === base || target.startsWith(base.endsWith(sep) ? base : base + sep);
+}
+
+/**
+ * Refuse a config whose store lives outside the TASQ_HOME it was loaded from.
+ *
+ * Copying a Tasq home to another directory carries absolute `dbPath` and
+ * `eventJournalPath` along with it, so `TASQ_HOME=<copy> tasq <anything>` reads
+ * the copy's config and then operates on the ORIGINAL store. Rehearsing a
+ * migration on a copy - the responsible thing to do, and what an agent does
+ * unprompted - destroys the original instead. That happened to this project's
+ * own ledger on 2026-08-26: a dev build migrated the live store to a format the
+ * installed binary could no longer read.
+ *
+ * Refuse rather than silently rebasing the paths onto TASQ_HOME: relocating
+ * someone's store without asking is its own footgun, and a deliberate
+ * split-layout is a real, if rare, configuration.
+ */
+function assertStoreInsideHome(configFile: string, config: TasqConfig): void {
+  const home = process.env.TASQ_HOME;
+  if (!home) return;
+  if (process.env.TASQ_ALLOW_EXTERNAL_STORE === "1") return;
+
+  const outside: string[] = [];
+  for (const key of ["dbPath", "eventJournalPath"] as const) {
+    const value = config[key];
+    // An empty journal path disables the journal; a relative path already
+    // resolves under the home, so neither can escape it.
+    if (!value || !isAbsolute(value)) continue;
+    if (!isInside(home, value)) outside.push(`  ${key} = ${value}`);
+  }
+  if (outside.length === 0) return;
+
+  throw new Error(
+    `TASQ_HOME is ${home}, but ${configFile} points at a store outside it:\n`
+    + `${outside.join("\n")}\n`
+    + "Refusing, because commands would read this config and then write that other store - "
+    + "which is how copying a Tasq home to rehearse on it destroys the original instead.\n"
+    + "Either point those paths inside TASQ_HOME, or set TASQ_ALLOW_EXTERNAL_STORE=1 if the "
+    + "split layout is deliberate.",
+  );
 }
 
 export interface EffectiveSpace {
