@@ -114,6 +114,9 @@ describe("Migration runner", () => {
         DROP TABLE agreement_offer;
         DROP TABLE attestation_revocation;
         DROP TABLE attestation;
+        DROP TABLE assumption_link;
+        DROP TABLE assumption;
+        DELETE FROM _migration WHERE name = '0033_shared_assumptions.sql';
         DELETE FROM _migration WHERE name = '0032_settlement_recourse.sql';
         DELETE FROM _migration WHERE name = '0031_agreements.sql';
         DELETE FROM _migration WHERE name = '0030_attestations.sql';
@@ -171,12 +174,13 @@ describe("Migration runner", () => {
       const result = await runMigrations(client, { now: 2 });
       expect(result).toMatchObject({
         beforeFormat: 28,
-        afterFormat: 32,
+        afterFormat: 33,
         applied: [
           "0029_statement_binder_registry.sql",
           "0030_attestations.sql",
           "0031_agreements.sql",
           "0032_settlement_recourse.sql",
+          "0033_shared_assumptions.sql",
         ],
       });
       const rows = await client.execute(`
@@ -573,6 +577,7 @@ describe("Migration runner", () => {
         "0030_attestations.sql",
         "0031_agreements.sql",
         "0032_settlement_recourse.sql",
+        "0033_shared_assumptions.sql",
       ]);
 
       const open = await getTask(db, "01910000-0000-7000-8000-000000000010");
@@ -679,6 +684,7 @@ describe("Migration runner", () => {
         "0030_attestations.sql",
         "0031_agreements.sql",
         "0032_settlement_recourse.sql",
+        "0033_shared_assumptions.sql",
       ]);
       expect(result.skipped).toEqual([
         "0000_init.sql",
@@ -733,7 +739,7 @@ describe("Migration runner", () => {
       const migrationRows = await client.execute(
         "SELECT name, checksum FROM _migration ORDER BY name",
       );
-      expect(migrationRows.rows).toHaveLength(33);
+      expect(migrationRows.rows).toHaveLength(34);
       expect(migrationRows.rows.every((row) => typeof row["checksum"] === "string")).toBe(true);
 
       const legacyIdentity = await client.execute(
@@ -764,7 +770,7 @@ describe("Migration runner", () => {
 
       const second = await runMigrations(client);
       expect(second.applied).toEqual([]);
-      expect(second.skipped).toHaveLength(33);
+      expect(second.skipped).toHaveLength(34);
     } finally {
       await close();
     }

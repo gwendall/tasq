@@ -2,6 +2,7 @@ import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { STORE_FORMAT_COMPATIBILITY } from "@tasq-internal/local-service";
 
 const temporaryPaths: string[] = [];
 
@@ -58,10 +59,12 @@ describe("released CLI artifact", () => {
     expect(manifest.nativePackages[0]?.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.migrations.length).toBeGreaterThan(20);
     expect(manifest.migrations.at(-1)?.name).toMatch(/^\d{4}_.+\.sql$/);
+    // The artifact must declare the same store format the source does; pinning a
+    // literal here only means editing two places on every bump.
     expect(manifest.storeFormat).toMatchObject({
       contractVersion: "tasq.store-format.v1",
-      current: 32,
-      directlyMigratable: { min: 0, max: 32 },
+      current: STORE_FORMAT_COMPATIBILITY.current,
+      directlyMigratable: { min: 0, max: STORE_FORMAT_COMPATIBILITY.directlyMigratable.max },
     });
 
     const tasqHome = join(root, "home");

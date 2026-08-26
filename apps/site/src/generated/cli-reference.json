@@ -166,6 +166,35 @@
     ]
   },
   {
+    "heading": "WHY THE WORK EXISTS",
+    "entries": [
+      {
+        "usage": "add <title> --because \"<one sentence>\"",
+        "description": "record what this work rests on; several tasks can rest on the same sentence"
+      },
+      {
+        "usage": "wrong \"<sentence>\" --reason <text> [--evidence <id,...>]",
+        "description": "that turned out false: pauses every task resting on it. Nothing is cancelled."
+      },
+      {
+        "usage": "why <id>",
+        "description": "the chain: what this rests on, who stated it, who withdrew it and on what evidence"
+      },
+      {
+        "usage": "resume <id> --reason <text>",
+        "description": "continue a paused task anyway; unlinks it from the withdrawn sentence and records why"
+      },
+      {
+        "usage": "because list [--status standing|withdrawn]",
+        "description": "what this workspace currently believes"
+      },
+      {
+        "usage": "because attach <id> \"<sentence>\"",
+        "description": "bind an existing task to a sentence"
+      }
+    ]
+  },
+  {
     "heading": "AGENT COORDINATION",
     "entries": [
       {

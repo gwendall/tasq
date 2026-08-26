@@ -126,6 +126,35 @@ while commands SUCCEED - a flag silently ignored, two surfaces disagreeing, a
 result that is right for the wrong reason. An observation you do not capture
 dies with your context window.
 
+## Say when a reason turns out to be wrong
+
+Capture answers *I found something new*. Its mirror is *something we believed is
+false*, and at several agents on one ledger that mirror matters more: the common
+failure is not two agents writing the same commitment, it is one agent working
+diligently against a belief another agent disproved an hour ago.
+
+Work can rest on a stated belief, one sentence, shared by every commitment that
+depends on it:
+
+```bash
+tasq add "<title>" --because "<what has to be true for this to be worth doing>"
+tasq wrong "<that belief>" --reason "<what you learned>" [--evidence <id>]
+tasq why <commitment-id>
+```
+
+Withdraw the belief rather than cancelling the commitments one by one.
+Cancelling records that someone chose not to do the work and says nothing about
+why it stopped making sense, so the next agent inherits a silent status instead
+of your reasoning. Withdrawing pauses every open commitment resting on that
+belief, cancels nothing, rewrites no history, and stops at one hop: dependent
+work is never dragged down with it. If a paused commitment still stands on its
+own, `tasq resume <id> --reason <text>` returns it and records why.
+
+A because is optional and most commitments need none. Use it where the work
+rests on something that could turn out to be false: the speculative, the
+debugging, the "we think X". Before starting work you did not queue yourself,
+run `tasq why` to see what it rests on and whether anyone already disproved it.
+
 ## When blocked
 
 Use `tasq help <command>` for human syntax or repeat `tasq onboard ... --json`

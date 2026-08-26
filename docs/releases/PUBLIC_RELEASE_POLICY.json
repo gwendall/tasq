@@ -189,26 +189,28 @@
     "nodeSupport": "certified-for-compiled-core-schema-extension-sdk-and-client"
   },
   "sourceCandidateCompatibility": {
-    "status": "matches_published_v0_4_0",
+    "status": "advances_published_v0_4_2_to_store_format_33",
     "storeFormat": {
       "contractVersion": "tasq.store-format.v1",
-      "current": 32,
+      "current": 33,
       "readable": {
-        "min": 32,
-        "max": 32
+        "min": 33,
+        "max": 33
       },
       "writable": {
-        "min": 32,
-        "max": 32
+        "min": 33,
+        "max": 33
       },
       "directlyMigratable": {
         "min": 0,
-        "max": 32
+        "max": 33
       },
       "irreversible": true,
       "rollback": "restore-matching-verified-pre-migration-snapshot-and-binary"
     },
-    "publishedSupportGranted": true
+    "publishedSupportGranted": false,
+    "requiresForwardMigrationFromPublished": true,
+    "rationale": "ADR-021 adds the assumption and assumption_link tables in migration 0033. Every store written by the published v0.4.x line is format 32 and must migrate forward once, irreversibly, before this source can open it. Published support is not granted from source: it is granted by a release that has certified the verified pre-migration snapshot path for this bump, which is what the next release must obtain. `compatibility` above still describes the published release and stays at 32 until that release ships."
   },
   "candidateCliTargets": [
     "darwin-arm64",

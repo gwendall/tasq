@@ -2,6 +2,7 @@ import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { chmod, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { STORE_FORMAT_COMPATIBILITY as F } from "@tasq-internal/local-service";
 
 const temporaryPaths: string[] = [];
 const productRoot = resolve(import.meta.dir, "../../..");
@@ -73,10 +74,10 @@ describe.skipIf(target === null)("Tasq public release envelope", () => {
         directUpgradeFromMinorLines: 2,
         storeFormat: {
           contractVersion: "tasq.store-format.v1",
-          current: 32,
-          readable: { min: 32, max: 32 },
-          writable: { min: 32, max: 32 },
-          directlyMigratable: { min: 0, max: 32 },
+          current: F.current,
+          readable: { min: F.readable.min, max: F.readable.max },
+          writable: { min: F.writable.min, max: F.writable.max },
+          directlyMigratable: { min: 0, max: F.directlyMigratable.max },
         },
         oldestDirectlyTestedSourceRelease: null,
       },

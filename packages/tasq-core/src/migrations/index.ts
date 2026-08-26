@@ -30,10 +30,10 @@ const __dirname = dirname(__filename);
 
 export const STORE_FORMAT_COMPATIBILITY = Object.freeze({
   contractVersion: "tasq.store-format.v1" as const,
-  current: 32,
-  readable: Object.freeze({ min: 32, max: 32 }),
-  writable: Object.freeze({ min: 32, max: 32 }),
-  directlyMigratable: Object.freeze({ min: 0, max: 32 }),
+  current: 33,
+  readable: Object.freeze({ min: 33, max: 33 }),
+  writable: Object.freeze({ min: 33, max: 33 }),
+  directlyMigratable: Object.freeze({ min: 0, max: 33 }),
   oldestDirectlyTestedSource: "tasq-zero-populated-fixture",
   irreversible: true,
   rollback: "restore-matching-verified-pre-migration-snapshot-and-binary" as const,

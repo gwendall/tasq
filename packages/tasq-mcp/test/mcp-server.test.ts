@@ -65,6 +65,8 @@ describe("Tasq MCP capability boundary", () => {
     const names = tools.tools.map((tool) => tool.name).sort();
 
     expect(names).toEqual([
+      "tasq_assumption_list",
+      "tasq_assumption_state",
       "tasq_commitment_get",
       "tasq_commitment_inspect",
       "tasq_commitment_list",
@@ -124,6 +126,57 @@ describe("Tasq MCP capability boundary", () => {
     });
     expect(hiddenEffect.isError).toBe(true);
     expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+  });
+
+  it("lets an agent retract a belief and reach every commitment resting on it", async () => {
+    // Capture answers "I found something new". This is its mirror: "something we
+    // believed is false". Without it an agent whose discovery invalidates queued
+    // work will cancel it, which records that someone chose not to do the work
+    // and says nothing about why it stopped making sense. See ADR-021.
+    const { client } = await fixture(["read", "propose"]);
+    const first = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Make list paginate", idempotencyKey: "assumption-a" },
+    }));
+    const second = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Add a default limit", idempotencyKey: "assumption-b" },
+    }));
+
+    // Both agents phrase the belief differently and must land on one record.
+    const attached = structured<{ assumption: { id: string; text: string } }>(await client.callTool({
+      name: "tasq_assumption_attach",
+      arguments: { commitmentId: first.id, because: "list times out past 10k tasks" },
+    }));
+    const shared = structured<{ assumption: { id: string } }>(await client.callTool({
+      name: "tasq_assumption_attach",
+      arguments: { commitmentId: second.id, because: "List  Times Out  Past 10k Tasks" },
+    }));
+    expect(shared.assumption.id).toBe(attached.assumption.id);
+
+    const state = structured<{ paused: boolean }>(await client.callTool({
+      name: "tasq_assumption_state",
+      arguments: { commitmentId: first.id },
+    }));
+    expect(state.paused).toBe(false);
+
+    const withdrawn = structured<{ pausedCommitmentIds: string[]; assumption: { status: string } }>(
+      await client.callTool({
+        name: "tasq_assumption_withdraw",
+        arguments: {
+          because: "list times out past 10k tasks",
+          reason: "measured 10k in 240ms; the cost is serialisation",
+        },
+      }),
+    );
+    expect(withdrawn.assumption.status).toBe("withdrawn");
+    expect(withdrawn.pausedCommitmentIds.sort()).toEqual([first.id, second.id].sort());
+
+    const after = structured<{ paused: boolean }>(await client.callTool({
+      name: "tasq_assumption_state",
+      arguments: { commitmentId: second.id },
+    }));
+    expect(after.paused).toBe(true);
   });
 
   it("lets an agent report a discovery without touching its claim", async () => {

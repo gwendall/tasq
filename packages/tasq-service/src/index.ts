@@ -513,6 +513,29 @@ export {
 } from "./service/discoveries.js";
 export type { CaptureDiscoveryResult } from "./service/discoveries.js";
 
+// Service: shared assumptions (ADR-021)
+export {
+  ASSUMPTION_REASON_MAX,
+  ASSUMPTION_TEXT_MAX,
+  assertCommitmentNotPaused,
+  attachAssumption,
+  getTaskAssumptions,
+  listAssumptions,
+  normalizeAssumptionText,
+  pausedTaskIds,
+  resumeCommitment,
+  withdrawAssumption,
+  withdrawnLinksForTask,
+} from "@tasq-run/core/internal/service/assumptions";
+export type {
+  AssumptionLinkRecord,
+  AssumptionRecord,
+  AssumptionSummary,
+  TaskAssumptionState,
+  WithdrawAssumptionResult,
+  WithdrawnLink,
+} from "@tasq-run/core/internal/service/assumptions";
+
 // Service: progress + ETA
 export {
   getProjectProgress,

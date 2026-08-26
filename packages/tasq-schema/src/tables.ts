@@ -2162,6 +2162,60 @@ export const settlementMaterialization = sqliteTable("settlement_materialization
 // Schema bag (for drizzle migrations + service usage)
 // ──────────────────────────────────────────────────────────────────────
 
+/**
+ * ADR-021 — one immutable sentence that work rests on, shared by many
+ * commitments. Identity within a tenant is `normalizedText`, which is what lets
+ * two agents attach to the same belief without looking up an id.
+ */
+export const assumption = sqliteTable(
+  "assumption",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull(),
+    text: text("text").notNull(),
+    normalizedText: text("normalized_text").notNull(),
+    status: text("status").notNull().default("standing"),
+    statedByPrincipalId: text("stated_by_principal_id").notNull(),
+    statedAt: integer("stated_at").notNull(),
+    withdrawnByPrincipalId: text("withdrawn_by_principal_id"),
+    withdrawnAt: integer("withdrawn_at"),
+    withdrawalReason: text("withdrawal_reason"),
+    withdrawalEvidenceIds: text("withdrawal_evidence_ids_json"),
+  },
+  (t) => ({
+    textUniq: uniqueIndex("uniq_assumption_text").on(t.tenantId, t.normalizedText)
+      .where(sql`${t.status} = 'standing'`),
+    statusIdx: index("idx_assumption_status").on(t.tenantId, t.status, t.statedAt),
+  }),
+);
+
+/**
+ * Binds an assumption to a commitment. A commitment is paused exactly while it
+ * holds an `active` link to a withdrawn assumption; that state is derived on
+ * read and never stored, so it cannot drift.
+ */
+export const assumptionLink = sqliteTable(
+  "assumption_link",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id").notNull(),
+    assumptionId: text("assumption_id").notNull(),
+    taskId: text("task_id").notNull(),
+    status: text("status").notNull().default("active"),
+    linkedByPrincipalId: text("linked_by_principal_id").notNull(),
+    linkedAt: integer("linked_at").notNull(),
+    unlinkedByPrincipalId: text("unlinked_by_principal_id"),
+    unlinkedAt: integer("unlinked_at"),
+    unlinkReason: text("unlink_reason"),
+  },
+  (t) => ({
+    activeUniq: uniqueIndex("uniq_assumption_link_active").on(t.tenantId, t.assumptionId, t.taskId)
+      .where(sql`${t.status} = 'active'`),
+    taskIdx: index("idx_assumption_link_task").on(t.tenantId, t.taskId, t.status),
+    assumptionIdx: index("idx_assumption_link_assumption").on(t.tenantId, t.assumptionId, t.status),
+  }),
+);
+
 export const schema = {
   principal,
   coordinationSpace,
@@ -2224,4 +2278,6 @@ export const schema = {
   agreementActivation,
   settlementDecision,
   settlementMaterialization,
+  assumption,
+  assumptionLink,
 };

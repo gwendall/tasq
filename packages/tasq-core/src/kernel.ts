@@ -81,7 +81,11 @@ export {
   unblockCommitment,
   cancelCommitment,
   reopenCommitment,
+  attachCommitmentAssumption,
   captureCommitmentDiscovery,
+  getCommitmentAssumptions,
+  listWorkspaceAssumptions,
+  withdrawCommitmentAssumption,
   CommitmentStatus,
 } from "./commitments.js";
 
@@ -144,6 +148,31 @@ export {
   listCompletionRecords,
 } from "./service/collaboration.js";
 export type { PrincipalContext } from "./service/collaboration.js";
+
+// ADR-021: shared assumptions. What work rests on, so that a change of mind
+// reaches the queue instead of one agent's transcript.
+export {
+  ASSUMPTION_REASON_MAX,
+  ASSUMPTION_TEXT_MAX,
+  assertCommitmentNotPaused,
+  attachAssumption,
+  attachAssumptionInTransaction,
+  getTaskAssumptions,
+  listAssumptions,
+  normalizeAssumptionText,
+  pausedTaskIds,
+  resumeCommitment,
+  withdrawAssumption,
+  withdrawnLinksForTask,
+} from "./service/assumptions.js";
+export type {
+  AssumptionLinkRecord,
+  AssumptionRecord,
+  AssumptionSummary,
+  TaskAssumptionState,
+  WithdrawAssumptionResult,
+  WithdrawnLink,
+} from "./service/assumptions.js";
 
 export { recordCapturedEvidence } from "./service/captured-evidence.js";
 export type {

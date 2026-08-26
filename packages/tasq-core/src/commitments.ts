@@ -27,6 +27,18 @@ import {
   type StatusChangeOptions,
 } from "./service/tasks.js";
 import { captureDiscovery as captureDiscoveryRecord } from "./service/discoveries.js";
+import {
+  attachAssumption as attachAssumptionRecord,
+  getTaskAssumptions as getTaskAssumptionsRecord,
+  listAssumptions as listAssumptionsRecord,
+  withdrawAssumption as withdrawAssumptionRecord,
+} from "./service/assumptions.js";
+import type {
+  AssumptionLinkRecord,
+  AssumptionRecord,
+  AssumptionSummary,
+  TaskAssumptionState,
+} from "./service/assumptions.js";
 import type { CaptureDiscoveryResult } from "./service/discoveries.js";
 
 export interface KernelContext {
@@ -224,6 +236,63 @@ export async function captureCommitmentDiscovery(
     discoveredFrom: captured.relation.toTaskId,
     replayed: captured.replayed,
   };
+}
+
+/**
+ * ADR-021 — record why a commitment exists, in the kernel's vocabulary.
+ *
+ * Assumptions are matched by their text inside a workspace, so two agents that
+ * phrase one belief differently attach to the same record and a single
+ * withdrawal reaches all the work resting on it.
+ */
+export async function attachCommitmentAssumption(
+  db: TasqDb,
+  input: { commitmentId: string; because: string },
+  context: KernelContext,
+): Promise<{ assumption: AssumptionRecord; link: AssumptionLinkRecord }> {
+  return attachAssumptionRecord(db, {
+    taskId: input.commitmentId,
+    text: input.because,
+  }, legacyContext(context));
+}
+
+/**
+ * Withdraw a belief and pause every OPEN commitment resting on it. Nothing is
+ * cancelled, the effect stops at one hop, and the history stays readable.
+ */
+export async function withdrawCommitmentAssumption(
+  db: TasqDb,
+  input: { because: string; reason: string; evidenceIds?: string[] },
+  context: KernelContext,
+): Promise<{ assumption: AssumptionRecord; pausedCommitmentIds: string[]; replayed: boolean }> {
+  const result = await withdrawAssumptionRecord(db, {
+    text: input.because,
+    reason: input.reason,
+    evidenceIds: input.evidenceIds ?? [],
+  }, legacyContext(context));
+  return {
+    assumption: result.assumption,
+    pausedCommitmentIds: result.pausedTaskIds,
+    replayed: result.replayed,
+  };
+}
+
+/** What one commitment rests on, and whether it is paused. */
+export async function getCommitmentAssumptions(
+  db: TasqDb,
+  commitmentId: string,
+  context: KernelContext,
+): Promise<TaskAssumptionState> {
+  return getTaskAssumptionsRecord(db, commitmentId, legacyContext(context).tenantId);
+}
+
+/** Everything this workspace currently believes. */
+export async function listWorkspaceAssumptions(
+  db: TasqDb,
+  context: KernelContext,
+  options: { status?: "standing" | "withdrawn" } = {},
+): Promise<AssumptionSummary[]> {
+  return listAssumptionsRecord(db, legacyContext(context).tenantId, options);
 }
 
 export const startCommitment = transition(startTask);

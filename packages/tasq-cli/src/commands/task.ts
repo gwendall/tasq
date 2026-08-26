@@ -2,6 +2,7 @@ import {
   blockTask,
   cancelTask,
   completeTask,
+  attachAssumption,
   createTask,
   createTaskWithPremise,
   getAreaBySlug,
@@ -42,6 +43,7 @@ import {
   formatRelative,
   printError,
   printInfo,
+  printWarn,
   printJson,
   shortId,
 } from "../output/format.js";
@@ -169,6 +171,7 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
       throw new Error("premise-backed add requires --premise-observation, --premise and --premise-validators");
     }
     const context = { ...rt.ctx, idempotencyKey: args.string("idempotency-key") };
+    const because = args.string("because");
     const t = hasPremiseFlag
       ? (await createTaskWithPremise(rt.db, taskInput, {
           observationId: premiseObservationId,
@@ -182,6 +185,19 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
           allowSelfValidation: args.bool("premise-allow-self"),
         }, context)).task
       : await createTask(rt.db, taskInput, context);
+
+    // ADR-021: attach the reason this work exists, so a later change of mind
+    // reaches the queue. Creation already succeeded, so a failure here is
+    // reported without losing the task or its id.
+    if (because) {
+      try {
+        await attachAssumption(rt.db, { taskId: t.id, text: because }, rt.ctx);
+      } catch (error) {
+        printWarn(`task ${shortId(t.id)} was created, but its because was not attached: `
+          + `${error instanceof Error ? error.message : String(error)}`);
+        printWarn(`  retry with: tasq because attach ${shortId(t.id)} ${JSON.stringify(because)}`);
+      }
+    }
     await regenerateProjection(rt);
 
     if (args.bool("json", "j")) printJson(t);
