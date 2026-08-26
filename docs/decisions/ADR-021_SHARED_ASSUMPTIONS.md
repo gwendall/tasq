@@ -112,11 +112,22 @@ offered. Three deliberate limits:
    does today, byte for byte. Zero cost when unused is the condition on which
    this primitive is admitted at all.
 
-**Actionability.** The gate goes where the existing premise gate is missing one:
-`assertTaskPremiseActionable` is called from `acquireTaskClaim` only, so a task
-with an invalidated premise is still *offered* by `next` and fails at claim
-time. Assumption withdrawal must filter at selection **and** refuse at claim.
-The premise gate should be extended to selection in the same change.
+**Actionability.** Copy the two-layer pattern the premise path already uses,
+because it is right: `pickNext` filters commitments carrying an invalidation ref
+out of selection, and `acquireTaskClaim` independently refuses them through
+`assertTaskPremiseActionable`. Selection is advisory and a caller holding a
+stale list can still reach claim, so neither layer is redundant. Assumption
+withdrawal must do both.
+
+> **Correction, 2026-08-26.** An earlier revision of this ADR claimed the
+> premise gate was missing at selection, from grepping `assertTaskPremiseActionable`
+> and finding one caller. That was wrong: `pickNext`
+> (`packages/tasq-service/src/prioritizer.ts`) enforces the same rule by a
+> different mechanism, filtering on `TASK_PREMISE_INVALIDATION_URI` directly.
+> The error is kept here rather than erased, because it is the exact failure
+> this ADR addresses: a conclusion drawn from one search, never restated as a
+> checkable belief, propagated into a filed ticket and into this specification
+> before anyone tested it.
 
 **Surface.** One flag and two verbs:
 
