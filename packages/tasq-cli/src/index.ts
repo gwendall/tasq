@@ -146,7 +146,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     why: [],
     resume: ["reason"],
     because: ["status"],
-    store: ["force"],
+    store: ["force", "to"],
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
@@ -331,6 +331,8 @@ ${color.bold("STORE SAFETY")}
                                  it would apply an irreversible upgrade
   store recovery-points          verified snapshots written before each upgrade
   store restore <id> [--force]   roll back to one, after checking its digest
+  store clone --to <dir>         an independent copy to work on: WAL-safe, with
+                                 every path rewritten inside the copy
 
 ${color.bold("DURABILITY")}
   backup [<path>] [--rotate N]   snapshot DB to ~/.tasq/snapshots/db-<ts>.sqlite
