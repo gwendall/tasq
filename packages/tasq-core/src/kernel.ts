@@ -7,6 +7,8 @@
 
 import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
+export { inspectStoreFormat } from "./migrations/index.js";
+export type { StoreFormatInspection } from "./migrations/index.js";
 import type { TasqDb as KernelDb } from "./db.js";
 import {
   releaseTaskClaim as releaseTaskClaimCompat,

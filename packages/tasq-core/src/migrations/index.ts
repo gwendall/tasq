@@ -169,6 +169,50 @@ interface ReceiptDocument {
 }
 
 /** Run every pending migration, failing closed before writes on unknown state. */
+export interface StoreFormatInspection {
+  contractVersion: "tasq.store-format-inspection.v1";
+  /** False for a path that holds no Tasq store yet. */
+  existingStore: boolean;
+  /** Highest applied format, or null for a store that does not exist yet. */
+  format: number | null;
+  /** The format this executable writes. */
+  current: number;
+  /** Migrations this executable would apply, in order, if it were allowed to. */
+  pending: Array<{ name: string; format: number }>;
+  /** True when applying `pending` would irreversibly move the store forward. */
+  requiresIrreversibleUpgrade: boolean;
+  /** False when the store is NEWER than this executable, which cannot be fixed by migrating. */
+  readableByThisExecutable: boolean;
+}
+
+/**
+ * Report what a store is and what opening it would cost, WITHOUT touching it.
+ *
+ * Every other entry point migrates on open, so until this existed there was no
+ * way to look at a store without changing it - which is exactly backwards for
+ * the cases where you look: the store is corrupt, the store is someone else's,
+ * or you are not certain which store you are pointed at. On 2026-08-26 `tasq
+ * doctor` irreversibly migrated this project's own live ledger for that reason.
+ */
+export async function inspectStoreFormat(client: Client): Promise<StoreFormatInspection> {
+  const definitions = migrationDefinitions();
+  assertDefinitionEnvelope(definitions);
+  const state = await inspectMigrationState(client, definitions);
+  const pending = definitions
+    .filter((definition) => !state.applied.has(definition.name))
+    .map((definition) => ({ name: definition.name, format: definition.format }));
+  const format = state.format;
+  return {
+    contractVersion: "tasq.store-format-inspection.v1",
+    existingStore: state.existingStore,
+    format,
+    current: STORE_FORMAT_COMPATIBILITY.current,
+    pending,
+    requiresIrreversibleUpgrade: state.existingStore && pending.length > 0,
+    readableByThisExecutable: format === null || format <= STORE_FORMAT_COMPATIBILITY.current,
+  };
+}
+
 export async function runMigrations(
   client: Client,
   options: MigrationOptions = {},

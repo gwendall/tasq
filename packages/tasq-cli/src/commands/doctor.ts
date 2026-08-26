@@ -16,6 +16,7 @@ import {
 } from "../journal.js";
 import {
   drainEventJournal,
+  inspectConfiguredStore,
   openRuntime,
   verifyJournalCheckpointCoverage,
   type Runtime,
@@ -23,6 +24,36 @@ import {
 import { color, printInfo, printJson } from "../output/format.js";
 
 export async function doctorCmd(args: ParsedArgs): Promise<number> {
+  // Diagnose before mutating. `openRuntime` migrates on open, so until this
+  // check existed `tasq doctor` could irreversibly upgrade the very store it
+  // was asked to inspect - which is exactly what happened to this project's own
+  // ledger on 2026-08-26. Report the pending upgrade and stop; applying it is a
+  // decision, not a side effect of asking a question.
+  const inspection = await inspectConfiguredStore(args.string("tenant"));
+  if (inspection.requiresIrreversibleUpgrade) {
+    const report = {
+      contractVersion: "tasq.store-upgrade-pending.v1",
+      ok: false,
+      code: "store_upgrade_pending",
+      store: inspection.dbUrl,
+      storeFormat: { current: inspection.format, executable: inspection.current },
+      pending: inspection.pending.map((entry) => entry.name),
+      irreversible: true,
+      message:
+        `This store is format ${inspection.format} and this executable writes ${inspection.current}. `
+        + "Diagnosing it would apply an irreversible upgrade, so nothing was inspected and nothing "
+        + "was changed. A binary older than this one could not read the store afterwards.",
+    };
+    if (args.flag("json", "j") !== undefined) {
+      printJson(report);
+    } else {
+      printInfo(color.red("✗") + ` ${report.message}`);
+      printInfo(`  pending: ${report.pending.join(", ")}`);
+      printInfo(color.dim("  a verified snapshot is written before any upgrade is applied"));
+    }
+    return 1;
+  }
+
   const rt = await openRuntime(args.string("actor"), args.string("tenant"));
   try {
     const outboxRepairs = args.bool("repair-outbox")

@@ -5,6 +5,8 @@
 
 import {
   openDb,
+  inspectStoreFormat,
+  type StoreFormatInspection,
   runMigrations,
   renderProjection,
   ensureDeliverySink,
@@ -70,6 +72,83 @@ function resolveDbUrl(config: TasqConfig): string {
   return configUrl(config);
 }
 
+
+/**
+ * A build that is not a published release must not irreversibly upgrade a store
+ * the operator did not offer up for it.
+ *
+ * Every command migrates on open, so on 2026-08-26 running this project's own
+ * working tree against its own live ledger moved the store from format 32 to 33
+ * and the installed published binary then refused it. The operator asked for a
+ * diagnosis; they got an irreversible format change performed by an unreleased
+ * executable.
+ *
+ * Released builds are deliberately NOT gated here: auto-migrating on upgrade is
+ * the expected local-first behaviour, and whether it should ask first is a
+ * separate product question about a SHARED ledger - two machines on one store
+ * with different released versions means whoever runs first locks the other out.
+ */
+type StoreClient = Parameters<typeof inspectStoreFormat>[0];
+
+async function assertMigrationIsIntended(client: StoreClient): Promise<void> {
+  if (isPublishedRelease() || process.env.TASQ_ALLOW_DEV_MIGRATION === "1") return;
+  const inspection = await inspectStoreFormat(client);
+  if (!inspection.requiresIrreversibleUpgrade) return;
+  throw new Error(
+    `This executable is not a published release (${EXECUTABLE_VERSION}), and opening this store would `
+    + `irreversibly migrate it from format ${inspection.format} to ${inspection.current}.\n`
+    + `Pending: ${inspection.pending.map((entry) => entry.name).join(", ")}\n`
+    + "A released binary could no longer read the store afterwards. Refusing.\n"
+    + "Rehearse on a copy, or set TASQ_ALLOW_DEV_MIGRATION=1 if you mean to upgrade this store now.",
+  );
+}
+
+/**
+ * True only for a stable SemVer stamped in at build time. Running from source
+ * leaves `TASQ_BUILD_VERSION` undefined, and a dev artifact stamps a version
+ * carrying a prerelease or build-metadata suffix.
+ */
+function isPublishedRelease(): boolean {
+  return /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(EXECUTABLE_VERSION);
+}
+
+export interface ConfiguredStoreInspection extends StoreFormatInspection {
+  /** The store that was inspected, so a report can name it. */
+  dbUrl: string;
+}
+
+/**
+ * Inspect the configured store WITHOUT migrating it.
+ *
+ * `openRuntime` migrates on open, so a command that needs to know what it is
+ * looking at before touching it - a diagnosis above all - has to ask here
+ * first. Opening the connection does not modify the store; only `runMigrations`
+ * does, and this never calls it.
+ */
+export async function inspectConfiguredStore(
+  tenantOverride?: string,
+): Promise<ConfiguredStoreInspection> {
+  const loaded = loadConfig();
+  const config = {
+    ...loaded,
+    tenantId: resolveEffectiveSpace({
+      config: loaded,
+      explicit: tenantOverride,
+      environment: process.env.TASQ_TENANT,
+    }).space,
+  };
+  const dbUrl = resolveDbUrl(config);
+  const handle = await openDb({ url: dbUrl });
+  try {
+    return { ...(await inspectStoreFormat(handle.client)), dbUrl };
+  } finally {
+    await handle.close();
+  }
+}
+
+declare const TASQ_BUILD_VERSION: string;
+const EXECUTABLE_VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "source";
+
 export async function openRuntime(
   actorOverride?: string,
   tenantOverride?: string,
@@ -99,6 +178,7 @@ export async function openRuntime(
     : null;
   const createdDatabase = dbPath !== null && !existsSync(dbPath);
   const handle = await openDb({ url: dbUrl });
+  await assertMigrationIsIntended(handle.client);
   await runMigrations(handle.client, {
     clock,
     // The CLI is the universal agent surface. Merely opening a space must
