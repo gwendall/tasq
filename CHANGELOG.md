@@ -8,6 +8,27 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.4.2 - 2026-08-26
+
+### Added
+
+- A release preflight refuses a tag while any version-pinned policy block
+  still names an older release. Publishing v0.4.0 left several blocks naming
+  v0.4.0, and each only failed when the next release reached it; the one that
+  escaped review could not be fixed afterwards, because the certification
+  workflow reads the policy from the immutable tagged commit. That is why
+  v0.4.1 shipped byte-verified but only partially certified.
+- ADR-020 proposes discovery capture as a kernel operation reachable from
+  every agent surface. The relation table is already kernel storage and
+  `discovered_from` is already a first-party relation type, but no kernel API
+  writes a relation, so MCP clients cannot report a defect at all.
+
+### Changed
+
+- No product behaviour changes from v0.4.1. This release exists so the
+  published line ends on a version whose certification is complete rather
+  than partial. Store format 32 is unchanged.
+
 ## v0.4.1 - 2026-08-25
 
 ### Changed

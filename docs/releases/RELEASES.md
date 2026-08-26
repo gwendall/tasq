@@ -3,13 +3,22 @@
 `../decisions/ADR-008_PUBLIC_RELEASE_GOVERNANCE.md` and
 `PUBLIC_RELEASE_POLICY.json` are authoritative.
 
-Before a tag is pushed, `scripts/release/verify-release-preflight.ts` must
-accept the version. It refuses while any version-pinned policy block still
-names an older release: the authorization block, the TQ-616 signed-statement
-program, and the public comparison contract. This exists because the
-certification workflow reads those blocks from the immutable tagged commit, so
-a block left naming the previous release cannot be corrected afterwards. That
-is how `v0.4.1` shipped byte-verified but only partially certified.
+Version-pinned material falls into two groups, and confusing them breaks
+releases in opposite directions.
+
+**Advanced before the tag**, because a workflow reads them from the immutable
+tagged commit and they cannot be corrected afterwards: the release
+authorization block and the TQ-616 signed-statement program.
+`scripts/release/verify-release-preflight.ts` refuses a tag while either still
+names an older release, and the release workflow runs it before authorization.
+This exists because the TQ-616 block was missed for `v0.4.1`, which therefore
+shipped byte-verified but only partially certified, permanently.
+
+**Advanced after publication**, because they describe what is already public
+and the site deploys continuously from the default branch: `publishedRelease`,
+the generated site truth, the versioned installer, and the public comparison
+contract. Advancing these early makes the repository claim a release that does
+not exist yet.
 
 Public releases use immutable SemVer tags and are built only by protected
 GitHub Actions workflows. Each release publishes SHA-256 checksums, signatures
