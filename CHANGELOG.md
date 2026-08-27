@@ -22,6 +22,62 @@ release history selected by ADR-008.
   ontology. The CLI behaviour and its tests are unchanged, which is the
   evidence that this is a move rather than a redesign.
 
+## v0.5.1 - 2026-08-27
+
+Store format 33. Every 0.4.x store migrates forward once, irreversibly, and
+`tasq store upgrade` makes that a decision rather than a side effect of any
+command.
+
+`v0.5.0` is retired and published nothing: its tag failed at the first job
+because the release preflight had begun importing `@tasq-run/core`, which the
+identity job cannot resolve since it deliberately runs before `pnpm install`.
+Tag protection correctly refuses to delete an immutable tag, so the version is
+retired rather than reused.
+
+### Added
+
+- **Shared assumptions.** One immutable sentence that work rests on, shared by
+  every commitment that depends on it and matched by its normalised text, so two
+  agents phrasing the same belief differently land on one record. Withdrawing it
+  pauses the open commitments resting on it. Three limits are load-bearing and
+  tested: **one hop** - the effect never traverses `depends_on` or `parent_of`;
+  **never terminal** - paused, never cancelled, and `tasq resume` recovers;
+  **never required** - a commitment with no assumption behaves exactly as
+  before. `tasq add --because`, `wrong`, `why`, `resume`, `because list|attach`,
+  and four MCP tools. See
+  [ADR-021](docs/decisions/ADR-021_SHARED_ASSUMPTIONS.md).
+- **A store safety envelope.** `tasq store status`, `upgrade`,
+  `recovery-points`, `restore` and `clone`. The rollback rule
+  `restore-matching-verified-pre-migration-snapshot-and-binary` was named in
+  three places in the release policy and had no command behind it; now it has
+  one, refusing a snapshot whose bytes no longer hash to its receipt and
+  refusing to discard work written after a recovery point unless forced.
+  `tasq store clone` uses `VACUUM INTO` and rewrites every path inside the
+  clone, because copying `db.sqlite` by hand is wrong twice: wrong paths, and
+  silently empty when the content is still in the WAL.
+
+### Changed
+
+- Crossing a store format is a decision on **every** build, not only on
+  unreleased ones. Tasq is a shared ledger, so two machines on one store with
+  different versions means whoever runs first silently locks the others out.
+  `tasq store upgrade` is the consent: typing the verb is the decision, so there
+  is no prompt to script around and no flag to set blindly.
+- A diagnosis no longer mutates what it diagnoses. `tasq doctor` inspects the
+  store format first and stops with an actionable report instead of applying an
+  irreversible upgrade.
+- Claiming a commitment with unresolved blockers is refused, naming them, with
+  `--force` for a deliberate override. Blocking previously lived in the
+  prioritizer alone, so a blocked commitment could be claimed, started and
+  completed by asking for it directly.
+
+### Fixed
+
+- `TASQ_HOME` can no longer be overridden by an absolute `dbPath` in the config
+  it loads. Copying a Tasq home to rehearse a migration on it drove the
+  original instead, which cost this project's own ledger a store-format
+  migration under a binary the operator never intended to run there.
+
 ## v0.4.2 - 2026-08-26
 
 ### Added

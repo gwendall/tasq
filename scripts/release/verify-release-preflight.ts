@@ -178,6 +178,22 @@ if (typeof published === "string" && !isOlder(published, targetVersion)) {
   );
 }
 
+// The TQ-616 program must be AUTHORIZED at the tag, not still carrying the
+// previous release's post-certification state. verify-tq616-release-eligibility
+// refuses anything but `authorized`, and it reads the policy from the immutable
+// tagged commit - so `published_certified` left over from the last release makes
+// the new one permanently uncertifiable. That is what happened to v0.4.1 on the
+// `version` field and to v0.5.1 on this one, which is the same trap one field
+// over.
+const tq616State = policy.certificationPrograms?.tq616SignedStatements?.state;
+if (tq616State !== "authorized") {
+  stale.push(
+    `policy.certificationPrograms.tq616SignedStatements.state is ${tq616State ?? "missing"}, not "authorized" `
+      + "(the certification reads this from the immutable tag and refuses anything else, so it cannot be "
+      + "corrected after tagging)",
+  );
+}
+
 // A release that moves the store format needs a certification describing THAT
 // format. The candidate block records a passed run and no gate read it, which is
 // the same shape that cost v0.4.1 its full certification, one axis over.
