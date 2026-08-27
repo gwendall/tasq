@@ -154,7 +154,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     import: ["db"],
     doctor: ["fix-permissions", "repair-outbox"],
     journal: ["accept-database", "reason", "dry-run"],
-    claim: ["for", "until", "metadata", "idempotency-key"],
+    claim: ["for", "until", "metadata", "force", "idempotency-key"],
     cost: ["currency", "max-micros", "reserve-micros", "metering", "meter", "observation", "gross-micros", "basis", "observed-at", "idempotency-key"],
     release: ["reason", "force"],
     attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
@@ -254,7 +254,9 @@ ${color.bold("AGENT COORDINATION")}
                                  preview an exact host-bound MCP registration
   agent instructions --space <id> [--write|--check]
                                  manage the versioned Tasq block in AGENTS.md
-  claim <id> [--for 30m]         atomically claim work (repeat to heartbeat)
+  claim <id> [--for 30m] [--force]
+                                 atomically claim work (repeat to heartbeat);
+                                 --force takes work whose blockers are unresolved
   release <id>                   release the current claim
   attempt start <id> [...]       record one concrete execution
   attempt succeed|fail <id>      close an execution attempt

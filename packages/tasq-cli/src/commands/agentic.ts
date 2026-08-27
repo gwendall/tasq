@@ -84,6 +84,7 @@ export async function claimCmd(args: ParsedArgs): Promise<number> {
       idempotencyKey: args.string("idempotency-key"),
       leaseMs,
       metadata: parseMetadata(args.string("metadata")),
+      force: args.flag("force") !== undefined,
     });
     if (args.bool("json", "j")) printJson(claim);
     else {

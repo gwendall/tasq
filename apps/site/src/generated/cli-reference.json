@@ -206,8 +206,8 @@
         "description": "manage the versioned Tasq block in AGENTS.md"
       },
       {
-        "usage": "claim <id> [--for 30m]",
-        "description": "atomically claim work (repeat to heartbeat)"
+        "usage": "claim <id> [--for 30m] [--force]",
+        "description": "atomically claim work (repeat to heartbeat); --force takes work whose blockers are unresolved"
       },
       {
         "usage": "release <id>",

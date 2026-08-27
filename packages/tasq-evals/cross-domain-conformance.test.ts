@@ -108,6 +108,26 @@ describe("UK-007 cross-domain conformance", () => {
       }, principalContext(maintainer.id, "maintainer", 1_230)))
         .rejects.toThrow(/cycle/);
 
+      // The blocking edge has teeth: the release cannot be claimed while the
+      // reproduction is open, so the narrative reproduces the bug first. Before
+      // 2026-08-27 a blocked commitment could be claimed, started and completed,
+      // and this narrative shipped a fix before reproducing anything.
+      await expect(acquireTaskClaim(db, release.id, {
+        tenantId: workspaceId,
+        principalId: coderA.id,
+        actor: "coding-a",
+        leaseMs: 1_000,
+        now: 1_235,
+      })).rejects.toThrow(/blocked by 1 unresolved commitment/);
+      await completeCommitment(db, reproduction.id, {
+        workspaceId,
+        actor: "maintainer",
+        principalId: maintainer.id,
+        expectedRevision: reproduction.revision,
+        occurredAt: 1_238,
+        now: 1_238,
+      });
+
       const codingAssignment = await proposeAssignment(db, {
         tenantId: workspaceId,
         taskId: release.id,
