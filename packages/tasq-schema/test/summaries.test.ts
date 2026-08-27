@@ -9,7 +9,7 @@ const commitmentId = "01910000-0000-7000-8000-000000000001";
 const summaryId = "01910000-0000-7000-8000-000000000002";
 const digest = `sha256:${"a".repeat(64)}`;
 
-function validSummary() {
+function validSummary(): CommitmentSummary {
   return {
     contractVersion: "tasq.commitment-summary.v1",
     id: summaryId,
@@ -39,7 +39,7 @@ function validSummary() {
     createdAt: 1_000,
     state: "current",
     staleReasons: [],
-  } as const;
+  };
 }
 
 describe("commitment summary contracts", () => {

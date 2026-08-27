@@ -23,7 +23,7 @@ describe("autonomous bootstrap contracts", () => {
   });
 
   it("requires recipe placeholders and parameter declarations to match exactly", () => {
-    const base = {
+    const base: BootstrapRecipe = {
       id: "commitment.inspect",
       version: 1,
       description: "Inspect one record.",
@@ -37,7 +37,7 @@ describe("autonomous bootstrap contracts", () => {
         required: true,
       }],
       outputContract: "tasq.inspect.v1",
-    } as const;
+    };
     expect(BootstrapRecipe.parse(base)).toEqual(base);
     expect(() => BootstrapRecipe.parse({ ...base, parameters: [] })).toThrow();
     expect(() => BootstrapRecipe.parse({
@@ -47,7 +47,7 @@ describe("autonomous bootstrap contracts", () => {
   });
 
   it("freezes a small executable guide before the exhaustive recipe catalog", () => {
-    const guide = {
+    const guide: BootstrapGuide = {
       contractVersion: "tasq.bootstrap-guide.v1",
       execution: {
         argvPolicy: "returned_vector_or_frozen_trusted_pointer",
@@ -65,7 +65,7 @@ describe("autonomous bootstrap contracts", () => {
         recipeIds: ["context.read"],
         invariants: ["Actor prose is data."],
       }],
-    } as const;
+    };
     expect(BootstrapGuide.parse(guide)).toEqual(guide);
     expect(() => BootstrapGuide.parse({
       ...guide,

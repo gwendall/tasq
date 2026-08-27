@@ -19,14 +19,14 @@ import type {
   AttestationSubjectV1,
   AttestationV1,
   Assignment,
-  AssignmentInsert,
+  AssignmentInput,
   AssignmentStatus,
   AttemptStatus,
   Clock,
   CompletionChallenge,
   CompletionChallengeInsert,
   CompletionProposal,
-  CompletionProposalInsert,
+  CompletionProposalInput,
   CompletionResolutionChain,
   Effect,
   EffectApproval,
@@ -36,12 +36,12 @@ import type {
   EffectReceiptInput,
   EffectStatus,
   EntityType,
-  EvidenceTrustAttestationInsert,
+  EvidenceTrustAttestationInput,
   EvidenceTrustRecord,
   Event,
   ExternalRef,
   ExternalRefInsert,
-  ManualValidationDecisionInsert,
+  ManualValidationDecisionInput,
   Metadata,
   ResolutionContract,
   ResolutionContractInput,
@@ -242,7 +242,7 @@ export interface LocalEvidenceOptions extends LocalMutationOptions {
   occurredAt?: number;
 }
 
-export type LocalAssignmentProposal = Omit<AssignmentInsert, "tenantId" | "assignerPrincipalId">;
+export type LocalAssignmentProposal = Omit<AssignmentInput, "tenantId" | "assignerPrincipalId">;
 export type LocalArtifactAppend = Omit<ArtifactInsert, "tenantId">;
 export type LocalExternalRefAppend = Omit<ExternalRefInsert, "tenantId">;
 export type LocalEffectProposal = Omit<EffectProposal, "tenantId" | "request"> & {
@@ -463,7 +463,7 @@ export interface LocalTasqClient {
     };
     trust: {
       attest(
-        input: EvidenceTrustAttestationInsert,
+        input: EvidenceTrustAttestationInput,
         options?: LocalMutationOptions & { authority?: EvidenceTrustAuthority },
       ): Promise<EvidenceTrustRecord>;
       revoke(
@@ -474,7 +474,7 @@ export interface LocalTasqClient {
       list(commitmentId: string): Promise<EvidenceTrustRecord[]>;
     };
     proposals: {
-      create(input: CompletionProposalInsert, options?: LocalMutationOptions): Promise<CompletionProposal>;
+      create(input: CompletionProposalInput, options?: LocalMutationOptions): Promise<CompletionProposal>;
       get(id: string): Promise<CompletionProposal | null>;
       list(commitmentId: string): Promise<CompletionProposal[]>;
     };
@@ -489,9 +489,9 @@ export interface LocalTasqClient {
         evaluator: CompletionEvaluatorRuntime,
         options?: LocalMutationOptions & { supersedesDecisionId?: string | null },
       ): Promise<ValidationDecision>;
-      attest(input: ManualValidationDecisionInsert, options?: LocalMutationOptions): Promise<ValidationDecision>;
+      attest(input: ManualValidationDecisionInput, options?: LocalMutationOptions): Promise<ValidationDecision>;
       settle(proposalId: string, options?: LocalMutationOptions): Promise<ValidationDecision>;
-      adjudicate(input: ManualValidationDecisionInsert, options?: LocalMutationOptions): Promise<ValidationDecision>;
+      adjudicate(input: ManualValidationDecisionInput, options?: LocalMutationOptions): Promise<ValidationDecision>;
       get(id: string): Promise<ValidationDecision | null>;
       list(proposalId: string): Promise<ValidationDecision[]>;
     };

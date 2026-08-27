@@ -415,9 +415,15 @@ describe("TQ-405 explicit replication", () => {
           snapshot: forgedOutcome,
         }],
       };
+      // Deliberately malformed: a create operation whose input is a patch.
+      // The cast is what says "on purpose" - without it this reads as a
+      // fixture someone got wrong, which is the opposite of the point.
+      const forgedUnsigned = unsigned as unknown as Parameters<
+        typeof computeReplicationOperationDigest
+      >[0];
       const forged = ReplicationOperation.parse({
         ...unsigned,
-        operationDigest: computeReplicationOperationDigest(unsigned),
+        operationDigest: computeReplicationOperationDigest(forgedUnsigned),
       });
       await expect(acceptReplicationPush(h.authority.db, {
         ...requestB,

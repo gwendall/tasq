@@ -12,7 +12,7 @@ Bun.plugin({
   },
 });
 
-const kernel = await import("../../src/kernel.ts");
+const kernel = await import("../../src/kernel.js");
 const exposed = Object.keys(kernel);
 for (const forbiddenExport of [
   "createArea",
@@ -51,9 +51,15 @@ try {
       completionPolicy: "assertion",
     }, context);
     clock.advance(1_000);
-    await kernel.startCommitment(handle.db, created.id, context);
+    // expectedRevision is required: a transition that does not name the
+    // revision it expects is the optimistic-concurrency guard turned off.
+    const started = await kernel.startCommitment(handle.db, created.id, {
+      ...context, expectedRevision: created.revision,
+    });
     clock.advance(1_000);
-    const completed = await kernel.completeCommitment(handle.db, created.id, context);
+    const completed = await kernel.completeCommitment(handle.db, created.id, {
+      ...context, expectedRevision: started.revision,
+    });
     const inspection = await kernel.inspectCommitment(handle.db, created.id, {
       workspaceId: context.workspaceId,
       clock,

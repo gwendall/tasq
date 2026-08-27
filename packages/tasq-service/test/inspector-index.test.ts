@@ -100,7 +100,7 @@ describe("read-first inspector index", () => {
           },
         }],
         evaluators: [],
-      }, { tenantId: h.workspaceId, actor: "fixture", principalId: principal.id, clock: h.clock });
+      }, { tenantId: h.workspaceId, actor: "fixture", clock: h.clock });
       const effect = await proposeEffect(h.db, {
         tenantId: h.workspaceId,
         taskId: commitment.id,

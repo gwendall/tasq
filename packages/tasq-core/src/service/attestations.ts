@@ -34,6 +34,7 @@ import {
   saveIdempotencyResult,
 } from "./idempotency.js";
 import type { TrustedStatementBinder } from "./signed-statements.js";
+import type { SignedStatementBinderInput } from "./signed-statements.js";
 
 export const ATTESTATION_ISSUANCE_PURPOSE =
   "https://schemas.tasq.dev/purposes/attestation-issuance/v1" as const;
@@ -367,14 +368,14 @@ export async function evaluateAttestationEligibility(
   });
 }
 
-export function attestationStatementBinding(attestationRecord: Attestation) {
+export function attestationStatementBinding(attestationRecord: Attestation): SignedStatementBinderInput {
   return {
     bindingKind: "attestation_issuance",
     recordType: "attestation",
     recordId: attestationRecord.id,
     recordDigest: attestationRecord.attestationDigest,
     expectedBinder: ATTESTATION_ISSUANCE_BINDER_PIN,
-  } as const;
+  };
 }
 
 /** Stable helper for fixtures and host registries to verify the pinned implementation. */

@@ -3,7 +3,7 @@ import { createClient } from "@libsql/client";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { SettlementClassificationV1, type AgreementTermsV1, type SettlementPolicyV1 } from "@tasq-run/schema";
+import { SettlementClassificationV1, type AgreementTermsInputV1, type SettlementPolicyV1 } from "@tasq-run/schema";
 import {
   createLocalTasq,
   createMutableClock,
@@ -24,7 +24,7 @@ async function store(name: string) {
   return { root, url: `file:${join(root, "db.sqlite")}` };
 }
 
-function agreementTerms(buyer: string, worker: string): AgreementTermsV1 {
+function agreementTerms(buyer: string, worker: string): AgreementTermsInputV1 {
   const parties = [
     { principalId: buyer, roleUri: "https://schemas.example.test/roles/buyer/v1" },
     { principalId: worker, roleUri: "https://schemas.example.test/roles/worker/v1" },

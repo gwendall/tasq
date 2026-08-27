@@ -38,6 +38,7 @@ import { findIdempotencyResult, prepareIdempotency, saveIdempotencyResult } from
 import { getPrincipal } from "./principals.js";
 import { createResolutionContractInTransaction } from "./resolution.js";
 import type { TrustedStatementBinder } from "./signed-statements.js";
+import type { SignedStatementBinderInput } from "./signed-statements.js";
 import { createTaskInTransaction, getTask, transitionTaskStatus } from "./tasks.js";
 
 const MAX_TERMS_BYTES = 65_536;
@@ -449,10 +450,10 @@ export const AGREEMENT_ACCEPTANCE_BINDER: TrustedStatementBinder = {
   },
 };
 
-export function agreementAcceptanceStatementBinding(record: Acceptance) {
+export function agreementAcceptanceStatementBinding(record: Acceptance): SignedStatementBinderInput {
   return {
     bindingKind: "agreement_acceptance", recordType: "agreement_acceptance",
     recordId: record.id, recordDigest: record.acceptanceDigest,
     expectedBinder: AGREEMENT_ACCEPTANCE_BINDER_PIN,
-  } as const;
+  };
 }

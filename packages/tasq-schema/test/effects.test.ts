@@ -137,8 +137,8 @@ describe("effect request identity", () => {
     expect(() => prepareEffectRequest({
       ...request(),
       secretBindings: [{ name: "token", ref: "secret:a", version: "1", value: "raw-secret" }],
-    } as EffectRequestEnvelope)).toThrow();
-    expect(() => prepareEffectRequest({ ...request(), surprise: true } as EffectRequestEnvelope)).toThrow();
+    })).toThrow();
+    expect(() => prepareEffectRequest({ ...request(), surprise: true })).toThrow();
   });
 
   test("enforces canonical size and depth limits", () => {

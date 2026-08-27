@@ -128,7 +128,7 @@ describe("bounded Console read models", () => {
           },
         }],
         evaluators: [],
-      }, { tenantId: h.workspaceId, actor: "runtime", principalId: runtime.id, clock: h.clock });
+      }, { tenantId: h.workspaceId, actor: "runtime", clock: h.clock });
       await proposeEffect(h.db, {
         tenantId: h.workspaceId,
         taskId: commitments[2]!.id,
@@ -174,7 +174,9 @@ describe("bounded Console read models", () => {
       const audit = await buildConsolePage(h.db, {
         workspaceId: h.workspaceId, section: "audit", limit: 100, clock: h.clock,
       });
-      expect(audit.items.every((item) => item.payload.reason === "operator_index_redaction")).toBe(true);
+      const auditItems = audit.items as Array<{ payload?: { reason?: string } }>;
+      expect(auditItems.length, "the audit section returned no items").toBeGreaterThan(0);
+      expect(auditItems.every((item) => item.payload?.reason === "operator_index_redaction")).toBe(true);
 
       const bundle = await buildConsoleSupportBundle(h.db, {
         workspaceId: h.workspaceId, limit: 100, clock: h.clock,

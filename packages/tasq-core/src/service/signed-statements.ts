@@ -30,6 +30,7 @@ import {
   type SignedStatementPayloadV1 as Payload,
   type StoredSignedStatement,
   type SigningCredentialV1 as Credential,
+  type Sha256Digest,
 } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
@@ -172,16 +173,22 @@ export interface VerifiedStatementProof {
   credential: Credential | null;
   verifierImplementationDigest: `sha256:${string}`;
 }
+/**
+ * Digests here are `Sha256Digest`, not hand-rolled `sha256:${string}` template
+ * literals. The schemas these mirror are regex-validated strings, so nothing
+ * parsed from them could ever satisfy a template literal - it was a type no
+ * producer in this codebase could produce, and every caller widened past it.
+ */
 export interface SignedStatementBinderInput {
   bindingKind: string;
   recordType: string;
   recordId: string;
-  recordDigest: `sha256:${string}`;
+  recordDigest: Sha256Digest;
   /** Pins non-built-in callers to the exact trusted host implementation. */
   expectedBinder?: {
     uri: string;
     version: number;
-    implementationDigest: `sha256:${string}`;
+    implementationDigest: Sha256Digest;
   };
   metadata?: Metadata;
 }
