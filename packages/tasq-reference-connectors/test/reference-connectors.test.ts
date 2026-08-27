@@ -378,14 +378,14 @@ describe("TQ-306 reference connectors", () => {
       title: "Bounded title",
       updatedAt: 9_500,
       recordRef: "https://provider.example/projects/robotics/items/issue-42",
-    };
-    const fetcher = (async (input: string | URL | Request, init?: RequestInit) => {
+    } satisfies ProviderWorkItemSnapshot;
+    const fetcher = async (input: RequestInfo | URL, init?: RequestInit) => {
       calls.push({ url: String(input), init: init ?? {} });
       return new Response(JSON.stringify(snapshot), {
         status: 200,
         headers: { "content-type": "application/json" },
       });
-    }) as typeof fetch;
+    };
     const client = createFetchWorkItemProviderClient({
       baseUrl: "https://provider.example/api/",
       accountRef: ACCOUNT_REF,
@@ -410,10 +410,12 @@ describe("TQ-306 reference connectors", () => {
       accountRef: ACCOUNT_REF,
       credentialRef: "secret:provider:test-account",
       resolveCredential: () => "raw-token-must-not-escape",
-      fetch: (async () => {
+      // Typed like fetch rather than cast to it: a stub whose signature does
+      // not match is a stub that can drift from the thing it stands in for.
+      fetch: (async (_input: RequestInfo | URL, _init?: RequestInit) => {
         redirectCalls += 1;
         return new Response(null, { status: 302, headers: { location: "https://attacker.example" } });
-      }) as typeof fetch,
+      }),
     });
     await expect(redirecting.readWorkItem({ projectRef: PROJECT_REF, itemRef: ITEM_REF }))
       .rejects.toThrow(/redirects are refused/);
@@ -467,7 +469,8 @@ describe("TQ-306 reference connectors", () => {
       accountRef: ACCOUNT_REF,
       credentialRef: "secret:provider:test-account",
       resolveCredential: () => "raw-token-must-not-escape",
-      fetch: (async () => new Response("gateway failure", { status: 502 })) as typeof fetch,
+      fetch: async (_input: RequestInfo | URL, _init?: RequestInit) =>
+        new Response("gateway failure", { status: 502 }),
     });
     const uncertainConnector = createReferenceWorkItemEffectConnector({
       instanceRef: INSTANCE_REF,

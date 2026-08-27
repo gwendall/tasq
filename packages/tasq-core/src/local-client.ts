@@ -44,7 +44,7 @@ import type {
   ManualValidationDecisionInsert,
   Metadata,
   ResolutionContract,
-  ResolutionContractInsert,
+  ResolutionContractInput,
   SignedStatementBinding,
   SettlementEvaluationInputV1,
   SettlementViewV1,
@@ -457,7 +457,7 @@ export interface LocalTasqClient {
   };
   readonly resolution: {
     contracts: {
-      create(input: ResolutionContractInsert, options?: LocalMutationOptions): Promise<ResolutionContract>;
+      create(input: ResolutionContractInput, options?: LocalMutationOptions): Promise<ResolutionContract>;
       get(id: string): Promise<ResolutionContract | null>;
       list(commitmentId: string): Promise<ResolutionContract[]>;
     };

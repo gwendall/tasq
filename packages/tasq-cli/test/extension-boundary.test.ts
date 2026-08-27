@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, type Dirent } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "../../..");
@@ -251,7 +251,7 @@ describe("kernel clock boundary", () => {
 
 function walkTypeScript(relativeDir: string): string[] {
   const absolute = resolve(root, relativeDir);
-  let entries: ReturnType<typeof readdirSync>;
+  let entries: Dirent[];
   try {
     entries = readdirSync(absolute, { withFileTypes: true });
   } catch {

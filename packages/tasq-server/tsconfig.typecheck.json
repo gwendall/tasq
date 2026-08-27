@@ -2,10 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "rootDir": "."
+    "rootDir": "../.."
   },
   "include": [
     "src/**/*",
-    "test/**/*.ts"
-  ]
+    "test/**/*.ts",
+    "../tasq-client/src/**/*.ts"
+  ],
+  "_comment": "rootDir is the workspace root here, not the package: test/runtime.test.ts imports @tasq-run/client's SOURCE across the workspace, and a package-scoped rootDir forbids that. rootDir shapes emit and this config never emits."
 }

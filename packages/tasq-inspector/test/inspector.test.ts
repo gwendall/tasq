@@ -29,7 +29,11 @@ async function fresh() {
   tmpDirs.push(dir);
   const handle = await openDb({ url: `file:${join(dir, "db.sqlite")}`, wal: false });
   const clock = createMutableClock(50_000);
-  await runKernelMigrations(handle.client, { clock, installReferenceExtension: false });
+  // No `installReferenceExtension: false` here: the STRICT kernel runner never
+  // accepts that option and never installs the extension, so passing it was a
+  // silently dropped key that read as a guarantee. Using this runner IS the
+  // guarantee; the compatibility wrapper is the one that takes the flag.
+  await runKernelMigrations(handle.client, { clock });
   const workspaceId = "inspection/team-a";
   const commitment = await createCommitment(handle.db, {
     title: `<script>alert("title")</script>`,

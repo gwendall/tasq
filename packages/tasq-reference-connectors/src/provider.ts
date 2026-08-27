@@ -111,7 +111,15 @@ export interface FetchWorkItemProviderOptions {
   accountRef: string;
   credentialRef: string;
   resolveCredential(reference: string): Promise<string> | string;
-  fetch?: typeof globalThis.fetch;
+  /**
+   * The call signature this client uses, not `typeof globalThis.fetch`.
+   *
+   * The global type carries `preconnect`, which nothing here calls and no
+   * injected stub can provide - so every caller had to cast past the checker to
+   * inject one. An injection point that cannot be satisfied without a cast is
+   * not typed, it is decorated.
+   */
+  fetch?: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 }
 
 function exactObject(input: unknown, keys: readonly string[], label: string): Record<string, unknown> {

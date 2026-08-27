@@ -55,7 +55,7 @@ interface Inventory {
   jsonEnvelopes: Record<string, { owner: Classification; fields?: string[]; [key: string]: unknown }>;
 }
 
-function sorted(values: readonly string[]): string[] {
+function sorted(values: Iterable<string>): string[] {
   return [...values].sort();
 }
 
@@ -201,7 +201,9 @@ describe("UK-002 universal compatibility inventory", () => {
   });
 
   test("derived and maintenance JSON envelopes have classified, unique key sets", () => {
-    expect(inventory.jsonEnvelopes.ConfigV1?.fields).toEqual(CONFIG_OUTPUT_KEYS);
+    // Spread: CONFIG_OUTPUT_KEYS is a readonly tuple and the inventory field is
+    // a plain array. Comparing them is the point; the readonly-ness is not.
+    expect(inventory.jsonEnvelopes.ConfigV1?.fields).toEqual([...CONFIG_OUTPUT_KEYS]);
     for (const [name, entry] of Object.entries(inventory.jsonEnvelopes)) {
       expect(inventory.classifications[entry.owner], `${name} has unknown owner`).toBeDefined();
       for (const [key, value] of Object.entries(entry)) {
