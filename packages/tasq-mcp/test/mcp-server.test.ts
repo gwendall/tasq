@@ -78,6 +78,7 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_effect_list",
       "tasq_event_list",
       "tasq_onboard",
+      "tasq_relation_list",
       "tasq_resolution_get",
       "tasq_resource_event_list",
       "tasq_resource_get",
@@ -232,6 +233,59 @@ describe("Tasq MCP capability boundary", () => {
       arguments: { commitmentId: second.id },
     }));
     expect(after.paused).toBe(true);
+  });
+
+  it("lets an agent build the dependency graph, and refuses a cycle", async () => {
+    // discovery.ts advertised a `relations` capability with four operations and
+    // no wire surface served it: MCP had no relation tool at all, so an agent
+    // could not add a single edge. See ADR-022.
+    const { client } = await fixture(["read", "propose"]);
+    const first = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Ship the fix", idempotencyKey: "rel-a" },
+    }));
+    const second = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Reproduce the bug", idempotencyKey: "rel-b" },
+    }));
+
+    const edge = structured<{ id: string; relationType: string; revision: number }>(await client.callTool({
+      name: "tasq_relation_add",
+      arguments: {
+        fromCommitmentId: first.id,
+        toCommitmentId: second.id,
+        relationType: "depends_on",
+        idempotencyKey: "rel-edge",
+      },
+    }));
+    expect(edge.relationType).toBe("depends_on");
+
+    // An array result is wrapped as { value }, because MCP structured content
+    // must be a JSON object.
+    const listed = structured<{ value: Array<{ fromTaskId: string; toTaskId: string }> }>(
+      await client.callTool({ name: "tasq_relation_list", arguments: { commitmentId: first.id } }),
+    );
+    expect(listed.value).toHaveLength(1);
+    expect(listed.value[0]!.toTaskId).toBe(second.id);
+
+    // The cycle guard is the kernel's, reused rather than duplicated.
+    const cycle = await client.callTool({
+      name: "tasq_relation_add",
+      arguments: {
+        fromCommitmentId: second.id,
+        toCommitmentId: first.id,
+        relationType: "depends_on",
+        idempotencyKey: "rel-cycle",
+      },
+    });
+    expect(cycle.isError).toBe(true);
+    expect(JSON.stringify(cycle.content)).toMatch(/cycle/i);
+
+    const ended = structured<{ endedAt: number | null }>(await client.callTool({
+      name: "tasq_relation_end",
+      arguments: { relationId: edge.id, expectedRevision: edge.revision, idempotencyKey: "rel-end" },
+    }));
+    expect(ended.endedAt).not.toBeNull();
   });
 
   it("lets an agent report a discovery without touching its claim", async () => {
@@ -768,6 +822,7 @@ describe("Tasq MCP agent flow", () => {
       name: "tasq_commitment_list",
       arguments: {},
     }));
+    if (!Array.isArray(listed.items)) throw new Error(`shape: ${JSON.stringify(listed).slice(0, 400)}`);
     expect(listed.items).toHaveLength(1);
   });
 });
