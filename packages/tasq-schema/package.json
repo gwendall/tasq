@@ -24,7 +24,8 @@
   "scripts": {
     "test": "bun test",
     "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.typecheck.json"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
