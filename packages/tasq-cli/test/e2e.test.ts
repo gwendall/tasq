@@ -556,6 +556,7 @@ describe("autonomous zero-integrator bootstrap", () => {
     expect(created.guide.journeys.map((journey: any) => journey.id)).toEqual([
       "inspect-first",
       "propose-outcome",
+      "decompose-and-sequence",
       "coordinate-resource-effect",
       "complete-evidenced-work",
       "propose-validated-completion",
