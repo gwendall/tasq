@@ -128,6 +128,61 @@ describe("Tasq MCP capability boundary", () => {
     expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
   });
 
+  it("records which client holds a lease, from the handshake rather than the model", async () => {
+    // The ledger could not tell a Claude Code client from a Codex client: the
+    // only identity reaching a row was the actor label typed at install time,
+    // and `tasq agent install codex|claude|generic` emits a byte-identical
+    // invocation. clientInfo was received and thrown away. See ADR-022.
+    const { db, client, clock } = await fixture(["read", "propose", "coordinate"]);
+    const commitment = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Work someone holds", idempotencyKey: "who-holds-1" },
+    }));
+    await client.callTool({
+      name: "tasq_claim_acquire",
+      arguments: { commitmentId: commitment.id, leaseMs: 60_000, idempotencyKey: "who-holds-claim" },
+    });
+
+    const held = await getActiveTaskClaim(db, commitment.id, "robotics-lab", clock);
+    const attribution = (held?.metadata as Record<string, any>)["tasq.client"];
+    expect(attribution).toBeDefined();
+    expect(attribution.name).toBe("tasq-mcp-test");
+    expect(attribution.source).toBe("mcp.initialize");
+    // It must never read as authentication. A local process cannot prove what
+    // it is, and the record has to keep saying so.
+    expect(attribution.attestation).toBe("client_library_self_asserted");
+
+    // And where it runs, so a panel can say "this session, in this directory"
+    // rather than only "someone".
+    const runtime = (held?.metadata as Record<string, any>)["tasq.runtime"];
+    expect(runtime.contract).toBe("tasq.runtime-location.v1");
+    expect(runtime.pid).toBe(process.pid);
+    expect(runtime.cwd).toBe(process.cwd());
+    expect(runtime).toHaveProperty("parentCommand");
+  });
+
+  it("does not let a caller overwrite who the ledger says is holding", async () => {
+    const { db, client, clock } = await fixture(["read", "propose", "coordinate"]);
+    const commitment = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Work with forged metadata", idempotencyKey: "forge-1" },
+    }));
+    await client.callTool({
+      name: "tasq_claim_acquire",
+      arguments: {
+        commitmentId: commitment.id,
+        leaseMs: 60_000,
+        idempotencyKey: "forge-claim",
+        metadata: { "tasq.client": { name: "something-else" }, mine: "kept" },
+      },
+    });
+
+    const held = await getActiveTaskClaim(db, commitment.id, "robotics-lab", clock);
+    const metadata = held?.metadata as Record<string, any>;
+    expect(metadata["tasq.client"].name).toBe("tasq-mcp-test");
+    expect(metadata.mine).toBe("kept");
+  });
+
   it("lets an agent retract a belief and reach every commitment resting on it", async () => {
     // Capture answers "I found something new". This is its mirror: "something we
     // believed is false". Without it an agent whose discovery invalidates queued
