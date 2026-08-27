@@ -5,6 +5,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -33,8 +34,30 @@ async function run(root: string) {
   return { exitCode, stdout, stderr };
 }
 
+/**
+ * Build the OUTSIDE of the check: a real repository carrying real tags.
+ *
+ * The gate measures the record against the newest release tag, so a fixture
+ * that only writes JSON is testing half of it. These are actual `git tag`
+ * calls on an actual repository, because the thing being tested is precisely
+ * that the reference point is not a field someone can edit.
+ */
+function tagged(root: string, tags: string[]) {
+  const git = (...args: string[]) => execFileSync("git", ["-C", root, ...args], {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      GIT_AUTHOR_NAME: "fixture", GIT_AUTHOR_EMAIL: "fixture@tasq.invalid",
+      GIT_COMMITTER_NAME: "fixture", GIT_COMMITTER_EMAIL: "fixture@tasq.invalid",
+    },
+  });
+  git("init", "--quiet");
+  git("commit", "--quiet", "--allow-empty", "-m", "fixture");
+  for (const tag of tags) git("tag", tag);
+}
+
 /** A tree recorded as having published `version`, with every surface current. */
-async function recorded(version: string) {
+async function recorded(version: string, tags: string[] = [`v${version}`]) {
   const root = await mkdtemp(join(tmpdir(), "tasq-publication-"));
   for (const relative of MIRRORED) {
     const target = join(root, relative);
@@ -44,6 +67,10 @@ async function recorded(version: string) {
   const policyFile = join(root, MIRRORED[0]);
   const policy = JSON.parse(await readFile(policyFile, "utf8"));
   policy.publishedRelease.version = version;
+  // The fixture declares its own outside world rather than inheriting the real
+  // one: a retirement copied in from the live policy names a tag this tree has
+  // never heard of.
+  policy.retiredReleases = [];
   await writeFile(policyFile, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
 
   const comparisonFile = join(root, MIRRORED[1]);
@@ -67,10 +94,79 @@ async function recorded(version: string) {
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, "#!/bin/sh\n", "utf8");
   }
+  tagged(root, tags);
   return root;
 }
 
 describe("publication record", () => {
+  test("holds for THIS repository, not only for fabricated trees", async () => {
+    // Every case below builds its own tree, which is how a gate can be fully
+    // covered and still never look at the repository it exists to protect.
+    // v0.5.1 published, the record kept saying 0.4.2, install-v0.5.1.sh 404'd,
+    // and this suite was green throughout.
+    const accepted = await run(productRoot);
+    expect(accepted.exitCode, accepted.stderr).toBe(0);
+    expect(JSON.parse(accepted.stdout)).toMatchObject({
+      contractVersion: "tasq.publication-record.v1",
+      ok: true,
+    });
+  });
+
+  test("refuses a record left behind the newest release tag, naming both", async () => {
+    // The v0.5.1 shape exactly: the tag exists, the record still says 0.4.2,
+    // and every surface agrees with the record - so every other check passes.
+    const root = await recorded("9.9.8", ["v9.9.8", "v9.9.9"]);
+    try {
+      const refused = await run(root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).toContain("policy.publishedRelease.version is 9.9.8");
+      expect(refused.stderr).toContain("newest release tag is v9.9.9");
+      // Both ways out have to be named, because from inside the repository the
+      // two are indistinguishable: caught up, or the tag published nothing.
+      expect(refused.stderr).toContain("policy.retiredReleases");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test("accepts a newer tag that is recorded as having published nothing", async () => {
+    const root = await recorded("9.9.8", ["v9.9.8", "v9.9.9"]);
+    try {
+      const policyFile = join(root, MIRRORED[0]);
+      const policy = JSON.parse(await readFile(policyFile, "utf8"));
+      policy.retiredReleases = [{
+        tag: "v9.9.9",
+        reason: "The tag failed before publishing anything, and tag protection refuses to delete it.",
+      }];
+      await writeFile(policyFile, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+
+      const accepted = await run(root);
+      expect(accepted.exitCode, accepted.stderr).toBe(0);
+      expect(JSON.parse(accepted.stdout).retiredReleases).toEqual(["v9.9.9"]);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test("refuses a retirement that is fiction, or that does not say why", async () => {
+    const root = await recorded("9.9.9");
+    try {
+      const policyFile = join(root, MIRRORED[0]);
+      const policy = JSON.parse(await readFile(policyFile, "utf8"));
+      // Retiring a tag is how a version stops counting, so it is the one place
+      // an unchecked claim would decide what "published" means.
+      policy.retiredReleases = [{ tag: "v9.9.7", reason: "no" }];
+      await writeFile(policyFile, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+
+      const refused = await run(root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).toContain("v9.9.7, which is not a tag in this repository");
+      expect(refused.stderr).toContain("must say why it published nothing");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   test("accepts a tree whose public surfaces describe the published release", async () => {
     const root = await recorded("9.9.9");
     try {

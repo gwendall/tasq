@@ -572,6 +572,15 @@
       "note": "All four certification jobs passed on both targets, including the npm-registry stage that failed for v0.4.1 on a TQ-616 program block naming an older version. The release preflight introduced in this version refuses a tag while any block a workflow reads from the tagged commit is stale, which is what made this complete."
     }
   },
+  "retiredReleases": [
+    {
+      "tag": "v0.5.0",
+      "retiredAt": "2026-08-26",
+      "reason": "The tag failed at the identity job and published nothing: the release preflight had begun importing @tasq-run/core, which that job cannot resolve because it deliberately runs before `pnpm install`. Tag protection correctly refuses to delete an immutable tag, so the version is retired rather than reused.",
+      "publishedPackages": [],
+      "supersededBy": "v0.5.1"
+    }
+  ],
   "externalPublicationGateStatus": {
     "maintainer_public_alpha_authorization": true,
     "data_safety_source_candidate": true,
