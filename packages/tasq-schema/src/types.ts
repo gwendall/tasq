@@ -55,13 +55,22 @@ export const ASSIGNMENT_STATUSES = [
 export const AssignmentStatus = z.enum(ASSIGNMENT_STATUSES);
 export type AssignmentStatus = z.infer<typeof AssignmentStatus>;
 
+/**
+ * First-party relation types. Every one has a writer (ADR-023).
+ *
+ * `parent_of` and `supersedes` were declared here and produced by nothing.
+ * Decomposition is `task.parentTaskId`, single-parent by construction because
+ * a foreign key gives that for free and a relation table would need a partial
+ * unique index to forbid what a column cannot express. Correction lineage is
+ * per-record-type columns, because what supersedes what is type-specific.
+ *
+ * Extensions may still add namespaced URI types; the column accepts them.
+ */
 export const RELATION_TYPES = [
-  "parent_of",
   "depends_on",
   "discovered_from",
   "relates_to",
   "duplicates",
-  "supersedes",
 ] as const;
 export const RelationType = z.enum(RELATION_TYPES);
 export type RelationType = z.infer<typeof RelationType>;
