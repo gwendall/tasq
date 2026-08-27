@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.typecheck.json"
   },
   "dependencies": {
     "@tasq-run/extension-sdk": "workspace:*",

@@ -36,10 +36,12 @@ try {
     const context = { workspaceId: "robotics-lab", actor: "runtime:planner", clock };
     let profileInputRejected = false;
     try {
+      // Deliberately invalid: the point is that the kernel refuses planning
+      // vocabulary. The cast is what says "on purpose" to the type checker.
       await kernel.createCommitment(handle.db, {
         title: "Invalid profile-shaped input",
         areaId: "01800000-0000-7000-8000-000000000001",
-      }, context);
+      } as never, context);
     } catch {
       profileInputRejected = true;
     }
