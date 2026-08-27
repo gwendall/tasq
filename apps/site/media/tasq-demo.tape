@@ -15,7 +15,7 @@ Set TypingSpeed 20ms
 Set Theme "Catppuccin Mocha"
 Set WindowBar Rings
 
-Type "npx --yes @tasq-run/cli@0.4.2 demo"
+Type "npx --yes @tasq-run/cli@0.5.1 demo"
 Sleep 400ms
 Enter
 Sleep 6s

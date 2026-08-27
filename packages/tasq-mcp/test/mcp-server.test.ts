@@ -70,6 +70,7 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_commitment_get",
       "tasq_commitment_inspect",
       "tasq_commitment_list",
+      "tasq_commitment_tree",
       "tasq_context",
       "tasq_context_link_get",
       "tasq_context_link_list",
@@ -286,6 +287,33 @@ describe("Tasq MCP capability boundary", () => {
       arguments: { relationId: edge.id, expectedRevision: edge.revision, idempotencyKey: "rel-end" },
     }));
     expect(ended.endedAt).not.toBeNull();
+  });
+
+  it("lets an agent decompose a commitment and read the tree back", async () => {
+    // MCP had zero hierarchy tools across 57: an agent could only produce a flat
+    // pile while a human on the CLI got decomposition. ADR-023 separates
+    // decomposition from the planning vocabulary, which is what makes this
+    // expressible without area/goal/project entering the kernel surface.
+    const { client } = await fixture(["read", "propose"]);
+    const parent = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Calibrate the arm", idempotencyKey: "tree-parent" },
+    }));
+    const child = structured<{ id: string; parentCommitmentId: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Home all six axes",
+        parentCommitmentId: parent.id,
+        idempotencyKey: "tree-child",
+      },
+    }));
+    expect(child.parentCommitmentId).toBe(parent.id);
+
+    const tree = structured<{ value: Array<{ id: string }> }>(await client.callTool({
+      name: "tasq_commitment_tree",
+      arguments: { commitmentId: parent.id },
+    }));
+    expect(tree.value.map((node) => node.id)).toEqual([parent.id, child.id]);
   });
 
   it("lets an agent report a discovery without touching its claim", async () => {

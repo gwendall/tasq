@@ -89,6 +89,13 @@ function expectExactKeys(value: Record<string, unknown>, keys: readonly string[]
   expect(Object.keys(value).sort()).toEqual([...keys].sort());
 }
 
+/** The project directory a command runs in, created once per home. */
+function workspaceIn(home: string): string {
+  const workspace = join(home, "workspace");
+  mkdirSync(workspace, { recursive: true });
+  return workspace;
+}
+
 async function freshHome(): Promise<string> {
   const dir = mkdtempSync(join(tmpdir(), "tasq-cli-e2e-"));
   tmpHomes.push(dir);
@@ -101,7 +108,10 @@ async function runCli(
   options: { cwd?: string; env?: Record<string, string> } = {},
 ): Promise<RunResult> {
   const proc = Bun.spawn(["bun", "run", CLI_ENTRY, ...args], {
-    cwd: options.cwd,
+    // A project directory inside the throwaway home. `tasq setup` binds the
+    // working directory and writes AGENTS.md into it, so a suite that ran with
+    // the repository as cwd would set the repository up for itself.
+    cwd: options.cwd ?? workspaceIn(home),
     env: { ...process.env, HOME: home, TASQ_DB_URL: "", ...options.env },
     stdout: "pipe",
     stderr: "pipe",
@@ -393,10 +403,13 @@ describe("progressive public adoption", () => {
   it("persists one explicit human setup then supports bare add, list and done", async () => {
     const home = await freshHome();
     const setup = JSON.parse((await runOk(home, [
-      "setup", "--space", "personal/default", "--actor", "gwendall", "--json",
+      // The suite runs with the repository as cwd, so an unqualified setup
+      // would bind this tree and rewrite the repository's own AGENTS.md.
+      "setup", "--space", "personal/default", "--actor", "gwendall",
+      "--no-bind", "--no-instructions", "--json",
     ])).stdout);
     expect(setup).toMatchObject({
-      contractVersion: "tasq.human-setup.v1",
+      contractVersion: "tasq.human-setup.v2",
       disposition: "created",
       space: "personal/default",
       actor: "gwendall",

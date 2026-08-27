@@ -46,6 +46,7 @@ async function afterPublication(released: string) {
   const policy = JSON.parse(await readFile(policyFile, "utf8"));
   policy.releaseAuthorization.version = released;
   policy.certificationPrograms.tq616SignedStatements.version = released;
+  policy.certificationPrograms.tq616SignedStatements.state = "published_certified";
   policy.publishedRelease.version = released;
   // A properly prepared release carries a migration certification describing the
   // format it ships. The stale-format case is its own test below.
@@ -58,6 +59,19 @@ async function afterPublication(released: string) {
   comparison.tasqClaimBoundary.version = released;
   await writeFile(comparisonFile, `${JSON.stringify(comparison, null, 2)}\n`, "utf8");
   return root;
+}
+
+/**
+ * What advancing a release actually means. Not only the versions: the TQ-616
+ * block's `state` is read from the immutable tag too, and leaving it on
+ * `published_certified` is what made v0.5.1 only partially certifiable - the
+ * same trap as v0.4.1, one field over. Keeping this in one place is the point:
+ * the next field that joins the set joins it for every test at once.
+ */
+function advanceToTag(policy: Record<string, any>, version: string) {
+  policy.releaseAuthorization.version = version;
+  policy.certificationPrograms.tq616SignedStatements.version = version;
+  policy.certificationPrograms.tq616SignedStatements.state = "authorized";
 }
 
 describe("release preflight", () => {
@@ -86,6 +100,9 @@ describe("release preflight", () => {
       // one that escaped review is only fixable before the tag exists.
       expect(refused.stderr).toContain("policy.releaseAuthorization.version");
       expect(refused.stderr).toContain("certificationPrograms.tq616SignedStatements.version");
+      // The state is a separate pin on the same block. v0.4.1 was caught by the
+      // version and v0.5.1 went out partial on the state, so both are named.
+      expect(refused.stderr).toContain("certificationPrograms.tq616SignedStatements.state");
       expect(refused.stderr).toContain("immutable tag");
     } finally {
       await rm(root, { recursive: true, force: true });
@@ -95,17 +112,10 @@ describe("release preflight", () => {
   test("accepts once every block is advanced together", async () => {
     const root = await afterPublication("9.9.9");
     try {
-      for (const [relative, mutate] of [
-        [policyPath, (value: Record<string, any>) => {
-          value.releaseAuthorization.version = "9.9.10";
-          value.certificationPrograms.tq616SignedStatements.version = "9.9.10";
-        }],
-      ] as const) {
-        const file = join(root, relative);
-        const parsed = JSON.parse(await readFile(file, "utf8"));
-        mutate(parsed);
-        await writeFile(file, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
-      }
+      const file = join(root, policyPath);
+      const policy = JSON.parse(await readFile(file, "utf8"));
+      advanceToTag(policy, "9.9.10");
+      await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
       const accepted = await run(["--version", "9.9.10"], root);
       expect(accepted.exitCode, accepted.stderr).toBe(0);
       expect(JSON.parse(accepted.stdout)).toMatchObject({
@@ -126,8 +136,7 @@ describe("release preflight", () => {
     try {
       const file = join(root, policyPath);
       const policy = JSON.parse(await readFile(file, "utf8"));
-      policy.releaseAuthorization.version = "9.9.10";
-      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      advanceToTag(policy, "9.9.10");
       policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat =
         STORE_FORMAT_COMPATIBILITY.current - 1;
       // This is the no-waiver path; the waiver has its own test.
@@ -154,8 +163,7 @@ describe("release preflight", () => {
     try {
       const file = join(root, policyPath);
       const policy = JSON.parse(await readFile(file, "utf8"));
-      policy.releaseAuthorization.version = "9.9.10";
-      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      advanceToTag(policy, "9.9.10");
       policy.sourceCandidateCheckpoint.protectedMigrationCandidate.targetStoreFormat =
         STORE_FORMAT_COMPATIBILITY.current - 1;
       policy.sourceCandidateCheckpoint.migrationCertificationWaiver = {
@@ -187,8 +195,7 @@ describe("release preflight", () => {
     try {
       const file = join(root, policyPath);
       const policy = JSON.parse(await readFile(file, "utf8"));
-      policy.releaseAuthorization.version = "9.9.10";
-      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      advanceToTag(policy, "9.9.10");
       policy.sourceCandidateCheckpoint.migrationCertificationWaiver = {
         storeFormat: STORE_FORMAT_COMPATIBILITY.current,
         reason: "too short",
@@ -209,8 +216,7 @@ describe("release preflight", () => {
     try {
       const file = join(root, policyPath);
       const policy = JSON.parse(await readFile(file, "utf8"));
-      policy.releaseAuthorization.version = "9.9.10";
-      policy.certificationPrograms.tq616SignedStatements.version = "9.9.10";
+      advanceToTag(policy, "9.9.10");
       policy.sourceCandidateCheckpoint.protectedMigrationCandidate.status = "failed";
       delete policy.sourceCandidateCheckpoint.migrationCertificationWaiver;
       await writeFile(file, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
