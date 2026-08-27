@@ -163,7 +163,7 @@ describe("IdempotencyRecord schema", () => {
 
 describe("Enum schemas", () => {
   it("TaskStatus accepts canonical values, rejects others", () => {
-    for (const s of ["open", "in_progress", "blocked", "done", "cancelled"]) {
+    for (const s of ["open", "in_progress", "blocked", "done", "cancelled"] as const) {
       expect(TaskStatus.parse(s)).toBe(s);
     }
     expect(() => TaskStatus.parse("doing")).toThrow();
@@ -171,21 +171,21 @@ describe("Enum schemas", () => {
   });
 
   it("GoalStatus accepts active/paused/done/abandoned", () => {
-    for (const s of ["active", "paused", "done", "abandoned"]) {
+    for (const s of ["active", "paused", "done", "abandoned"] as const) {
       expect(GoalStatus.parse(s)).toBe(s);
     }
     expect(() => GoalStatus.parse("blocked")).toThrow();
   });
 
   it("ProjectStatus accepts active/blocked/waiting/done/cancelled", () => {
-    for (const s of ["active", "blocked", "waiting", "done", "cancelled"]) {
+    for (const s of ["active", "blocked", "waiting", "done", "cancelled"] as const) {
       expect(ProjectStatus.parse(s)).toBe(s);
     }
     expect(() => ProjectStatus.parse("paused")).toThrow();
   });
 
   it("EntityType accepts the 4 first-class entities", () => {
-    for (const t of ["area", "goal", "project", "task"]) {
+    for (const t of ["area", "goal", "project", "task"] as const) {
       expect(EntityType.parse(t)).toBe(t);
     }
     expect(() => EntityType.parse("event")).toThrow();

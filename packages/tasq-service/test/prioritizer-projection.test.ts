@@ -498,13 +498,30 @@ describe("renderProjection — markdown", () => {
 // Helpers
 // ──────────────────────────────────────────────────────────────────────
 
+/** Drop keys the caller left undefined, so an override cannot erase a default. */
+function withOverrides<T extends object>(defaults: T, over: Partial<T>): T {
+  const set = Object.fromEntries(
+    Object.entries(over).filter(([, value]) => value !== undefined),
+  ) as Partial<T>;
+  return { ...defaults, ...set };
+}
+
 function baseTask(over: Partial<Task>): Task {
-  return {
+  return withOverrides<Task>({
     id: "01900000-0000-7000-8000-000000000000",
     tenantId: "gwendall",
     projectId: null,
     goalId: null,
     areaId: null,
+    // These five were missing, and the `...over` spread let the checker
+    // believe an override supplied them. Every prioritizer case has been
+    // running against a commitment with no decomposition and no completion
+    // policy, which is not the shape the kernel produces.
+    parentTaskId: null,
+    successCriteria: null,
+    completionMode: "assertion",
+    validationRequired: false,
+    revision: 1,
     title: "test",
     description: null,
     nextAction: null,
@@ -525,12 +542,11 @@ function baseTask(over: Partial<Task>): Task {
     createdAt: 1_700_000_000_000,
     updatedAt: 1_700_000_000_000,
     deletedAt: null,
-    ...over,
-  };
+  }, over);
 }
 
 function baseGoal(over: Partial<Goal>): Goal {
-  return {
+  return withOverrides<Goal>({
     id: "01900000-0000-7000-8000-000000000001",
     tenantId: "gwendall",
     areaId: "01900000-0000-7000-8000-00000000aaaa",
@@ -544,6 +560,5 @@ function baseGoal(over: Partial<Goal>): Goal {
     createdAt: 1_700_000_000_000,
     updatedAt: 1_700_000_000_000,
     deletedAt: null,
-    ...over,
-  };
+  }, over);
 }

@@ -13,6 +13,7 @@ import {
   canonicalizeEffectJson,
   type SignedStatementPayloadV1,
   type SigningCredentialV1,
+  type AttestationIssueInputV1,
 } from "@tasq-run/schema";
 import {
   ATTESTATION_ISSUANCE_BINDER,
@@ -47,22 +48,22 @@ describe("TQ-625 provider-neutral attestations", () => {
       typeUri: "https://schemas.example.test/subjects/technician/v1",
       id: "technician:42",
       digest: null,
-    } as const;
+    };
     const siteScope = [{
       typeUri: "https://schemas.example.test/scopes/site/v1",
       value: "dc:paris-1",
       digest: null,
-    }] as const;
+    }];
     const licencePurpose = {
       uri: "https://schemas.example.test/purposes/electrical-licence/v1",
       version: 1,
-    } as const;
+    };
     const accessPurpose = {
       uri: "https://schemas.example.test/purposes/site-access/v1",
       version: 1,
-    } as const;
+    };
     try {
-      const licenceInput = {
+      const licenceInput: AttestationIssueInputV1 = {
         subject,
         purpose: licencePurpose,
         scope: [...siteScope],
@@ -77,7 +78,7 @@ describe("TQ-625 provider-neutral attestations", () => {
           uri: "https://registry.example.test/licences/42",
         }],
         expiresAt: clock.now() + 100_000,
-      } as const;
+      };
       const licence = await issuer.attestations.issue(
         licenceInput,
         { idempotencyKey: "licence-42" },
@@ -302,12 +303,29 @@ describe("TQ-625 provider-neutral attestations", () => {
           recordId: record.id,
           recordDigest: record.attestationDigest,
         });
+        // A REAL statement, signed the same way, whose binding names a digest
+        // it does not carry. The previous version of this put a payload OBJECT
+        // where the bundle holds base64url, so it proved that garbage is
+        // refused - not that a mismatched binding is.
+        const wrongBundle = await signPurposeBoundStatement(
+          { ...payload, statementId: "statement-attestation-wrong", nonce: "attestation-twice" },
+          {
+            credentialId: credential.credentialId,
+            profileUri: ED25519_STATEMENT_PROFILE_URI,
+            profileVersion: 1,
+            allowedPurposeUris: [ATTESTATION_ISSUANCE_BINDER_DESCRIPTOR.purposeUri],
+            signStatement: ({ preAuthenticationEncoding }) => sign(null, preAuthenticationEncoding, privateKey),
+          },
+        );
         await expect(acceptSignedStatement(opened.db, {
-          bundle: { ...bundle, payload: { ...payload, statementId: "statement-attestation-wrong" } },
+          bundle: wrongBundle,
           expectedAudience: payload.audience,
           binding: { ...attestationStatementBinding(record), recordDigest: `sha256:${"f".repeat(64)}` },
           binderRegistry: createStatementBinderRegistry([ATTESTATION_ISSUANCE_BINDER]),
-          verify: async () => { throw new Error("invalid fixture"); },
+          verify: async (request) => ({
+            ...await verifyPurposeBoundStatement({ ...request, resolveCredential: () => credential }),
+            verifierImplementationDigest: ED25519_VERIFIER_IMPLEMENTATION_DIGEST,
+          }),
         }, { tenantId: "software/acme", principalId: local.principalId, clock })).rejects.toThrow();
       } finally {
         await opened.close();

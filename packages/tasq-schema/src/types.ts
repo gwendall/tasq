@@ -727,6 +727,8 @@ export const AssignmentInsert = Assignment.omit({
   instructionsRef: z.string().min(1).max(2_000).nullable().default(null),
 });
 export type AssignmentInsert = z.infer<typeof AssignmentInsert>;
+/** What a caller passes, before defaults. See `ResolutionContractInput`. */
+export type AssignmentInput = z.input<typeof AssignmentInsert>;
 
 export const ExternalRef = z.object({
   id: UuidV7,

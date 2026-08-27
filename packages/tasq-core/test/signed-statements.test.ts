@@ -281,7 +281,7 @@ describe("TQ-615 signed statement persistence and typed binding", () => {
           },
         }],
         evaluators: [],
-      }, { tenantId: "team/acme", actor: "server", principalId: corePrincipalId, clock });
+      }, { tenantId: "team/acme", actor: "server", clock });
       const effect = await proposeEffect(opened.db, {
         tenantId: "team/acme",
         taskId: commitment.id,
@@ -302,7 +302,7 @@ describe("TQ-615 signed statement persistence and typed binding", () => {
           parameters: { artifactId: artifact.id },
           secretBindings: [],
         },
-      }, { tenantId: "team/acme", actor: "server", principalId: corePrincipalId, clock });
+      }, { tenantId: "team/acme", actor: "server", clock });
       const approval = await recordEffectApproval(opened.db, {
         tenantId: "team/acme",
         effectId: effect.id,

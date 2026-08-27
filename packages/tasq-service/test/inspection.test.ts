@@ -59,7 +59,7 @@ describe("canonical commitment inspection", () => {
           },
         }],
         evaluators: [],
-      }, { tenantId: workspaceId, actor: "runtime", principalId: runtime.id, now: 1_250 });
+      }, { tenantId: workspaceId, actor: "runtime", now: 1_250 });
       const claim = await acquireTaskClaim(db, commitment.id, {
         tenantId: workspaceId,
         actor: "runtime",
@@ -83,7 +83,7 @@ describe("canonical commitment inspection", () => {
         name: "deployment.json",
         inlineDataRef: "urn:blob:deployment",
         digest: "sha256:deployment",
-      }, { tenantId: workspaceId, actor: "runtime", principalId: runtime.id, now: 1_500 });
+      }, { tenantId: workspaceId, actor: "runtime", now: 1_500 });
       const condition = await createWaitCondition(db, {
         tenantId: workspaceId,
         taskId: commitment.id,

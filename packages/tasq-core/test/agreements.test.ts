@@ -3,7 +3,7 @@ import { createClient } from "@libsql/client";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { AgreementTermsV1, SignedStatementPayloadV1 } from "@tasq-run/schema";
+import type { AgreementTermsInputV1, SignedStatementPayloadV1 } from "@tasq-run/schema";
 import {
   AGREEMENT_ACCEPTANCE_BINDER,
   agreementAcceptanceStatementBinding,
@@ -25,7 +25,7 @@ async function store(name: string) {
 
 const digest = (character: string) => `sha256:${character.repeat(64)}` as const;
 
-function terms(input: { buyer: string; worker: string; title?: string; badValidator?: boolean }): AgreementTermsV1 {
+function terms(input: { buyer: string; worker: string; title?: string; badValidator?: boolean }): AgreementTermsInputV1 {
   const parties = [
     { principalId: input.buyer, roleUri: "https://schemas.example.test/roles/buyer/v1" },
     { principalId: input.worker, roleUri: "https://schemas.example.test/roles/worker/v1" },

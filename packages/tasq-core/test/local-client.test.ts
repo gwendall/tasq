@@ -95,7 +95,9 @@ describe("createLocalTasq", () => {
       });
       const page = await first.cursors.events(0, { limit: 100 });
       expect(page.events.length).toBeGreaterThan(0);
-      expect(page.nextCursor.afterSequence).toBe(page.events.at(-1)?.sequence);
+      const lastEvent = page.events.at(-1);
+      expect(lastEvent, "the page carried no events to take a cursor from").toBeDefined();
+      expect(page.nextCursor.afterSequence).toBe(lastEvent!.sequence);
       expect((await first.cursors.resources(0)).events.length).toBe(2);
     } finally {
       await first.close();

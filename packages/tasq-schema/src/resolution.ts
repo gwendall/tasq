@@ -183,6 +183,8 @@ export const EvidenceTrustAttestationInsert = z.object({
   retentionUntil: UnixMs.nullable().default(null),
 });
 export type EvidenceTrustAttestationInsert = z.infer<typeof EvidenceTrustAttestationInsert>;
+/** What a caller passes, before defaults. See `ResolutionContractInput`. */
+export type EvidenceTrustAttestationInput = z.input<typeof EvidenceTrustAttestationInsert>;
 
 export const CompletionCriterionEvidence = z.object({
   criterionId: CriterionId,
@@ -218,6 +220,8 @@ export const CompletionProposalInsert = CompletionProposal.pick({
   summary: z.string().min(1).max(2_000).nullable().default(null),
 });
 export type CompletionProposalInsert = z.infer<typeof CompletionProposalInsert>;
+/** What a caller passes, before defaults. See `ResolutionContractInput`. */
+export type CompletionProposalInput = z.input<typeof CompletionProposalInsert>;
 
 export const CompletionChallenge = z.object({
   id: UuidV7,
@@ -275,6 +279,8 @@ export const ManualValidationDecisionInsert = ValidationDecision.pick({
   supersedesDecisionId: UuidV7.nullable().default(null),
 });
 export type ManualValidationDecisionInsert = z.infer<typeof ManualValidationDecisionInsert>;
+/** What a caller passes, before defaults. See `ResolutionContractInput`. */
+export type ManualValidationDecisionInput = z.input<typeof ManualValidationDecisionInsert>;
 
 export const CompletionResolutionChain = z.object({
   contract: ResolutionContract,

@@ -54,8 +54,25 @@ async function fixture(
   return { ...opened, clock, client };
 }
 
-function structured<T>(response: Awaited<ReturnType<Client["callTool"]>>): T {
+function structured<T = Record<string, unknown>>(
+  response: Awaited<ReturnType<Client["callTool"]>>,
+): T {
   return response.structuredContent as T;
+}
+
+/**
+ * The first content block of a tool response.
+ *
+ * `callTool` types `content` as unknown, so every assertion on a refusal
+ * message reached through it silently. Narrowing once here also asserts the
+ * block EXISTS - a refusal with no content would otherwise read as a pass.
+ */
+function firstContent(
+  response: Awaited<ReturnType<Client["callTool"]>>,
+): { type: string; text?: string } {
+  const blocks = response.content as Array<{ type: string; text?: string }> | undefined;
+  expect(blocks?.length, "tool response carried no content block").toBeGreaterThan(0);
+  return blocks![0]!;
 }
 
 describe("Tasq MCP capability boundary", () => {
@@ -108,11 +125,11 @@ describe("Tasq MCP capability boundary", () => {
       contractVersion: "tasq.context-packet.v1",
       budget: { maxRecords: 3, maxTokens: 2_048, hardLimitSatisfied: true },
     });
-    expect(structured(await client.callTool({
+    expect(structured<{ proof: unknown }>(await client.callTool({
       name: "tasq_signed_statement_get",
       arguments: { statementId: "missing-statement" },
     }))).toEqual({ proof: null });
-    expect(structured(await client.callTool({
+    expect(structured<{ items: unknown[] }>(await client.callTool({
       name: "tasq_signed_statement_binding_list",
       arguments: { recordId: "missing-record" },
     }))).toEqual({ items: [] });
@@ -121,13 +138,13 @@ describe("Tasq MCP capability boundary", () => {
       arguments: { title: "Hidden mutation", idempotencyKey: "hidden-1" },
     });
     expect(hidden.isError).toBe(true);
-    expect(hidden.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+    expect(firstContent(hidden)).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
     const hiddenEffect = await client.callTool({
       name: "tasq_effect_begin",
       arguments: { effectId: "hidden", expectedRevision: 1, claimId: "hidden", fence: 1 },
     });
     expect(hiddenEffect.isError).toBe(true);
-    expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+    expect(firstContent(hiddenEffect)).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
   });
 
   it("records which client holds a lease, from the handshake rather than the model", async () => {
@@ -400,7 +417,7 @@ describe("Tasq MCP capability boundary", () => {
       arguments: { title: "Vague work", idempotencyKey: "evidence-default-3" },
     });
     expect(refused.isError).toBe(true);
-    expect(refused.content[0]).toMatchObject({
+    expect(firstContent(refused)).toMatchObject({
       type: "text",
       text: expect.stringMatching(/successCriteria/),
     });
@@ -476,7 +493,7 @@ describe("Tasq MCP capability boundary", () => {
       },
     });
     expect(refusedCreate.isError).toBe(true);
-    expect(refusedCreate.content[0]).toMatchObject({
+    expect(firstContent(refusedCreate)).toMatchObject({
       type: "text",
       text: expect.stringMatching(/requires.*direction capability/i),
     });
@@ -500,7 +517,7 @@ describe("Tasq MCP capability boundary", () => {
       },
     });
     expect(refusedUpdate.isError).toBe(true);
-    expect(refusedUpdate.content[0]).toMatchObject({
+    expect(firstContent(refusedUpdate)).toMatchObject({
       type: "text",
       text: expect.stringMatching(/requires.*direction capability/i),
     });

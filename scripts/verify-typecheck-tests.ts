@@ -21,13 +21,15 @@ import { resolve } from "node:path";
 
 const productRoot = resolve(import.meta.dir, "..");
 
-/** Packages with pre-existing errors, and how many. Delete a line when it hits zero. */
-const KNOWN_UNCHECKED: Record<string, number> = {
-  "tasq-core": 22,
-  "tasq-service": 14,
-  "tasq-schema": 8,
-  "tasq-mcp": 7,
-};
+/**
+ * Packages with pre-existing errors, and how many. Delete a line when it hits
+ * zero.
+ *
+ * It is empty, and staying empty is the point. Anything added here is a debt
+ * with a number on it, and the check below refuses to let that number rot in
+ * either direction.
+ */
+const KNOWN_UNCHECKED: Record<string, number> = {};
 
 const child = Bun.spawn(
   ["pnpm", "-r", "--no-bail", "--if-present", "typecheck:tests"],

@@ -88,6 +88,13 @@ export const AgreementTermsV1 = z.object({
   }
 });
 export type AgreementTermsV1 = z.infer<typeof AgreementTermsV1>;
+/**
+ * What a caller passes, before defaults are applied - the same distinction
+ * `AgreementOfferInputV1` already makes. `z.infer` is the PARSED shape, so
+ * using it in an input position forces callers to supply every field the
+ * schema exists to fill.
+ */
+export type AgreementTermsInputV1 = z.input<typeof AgreementTermsV1>;
 
 export const AgreementOfferV1 = z.object({
   contractVersion: z.literal("tasq.agreement-offer.v1"),

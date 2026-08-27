@@ -176,18 +176,18 @@ describe("universal durable idempotency", () => {
       });
       expect(beforeBoundary.id).toBe(first.id);
 
-      const beforePruneMutationCount = committedMutationCount(db);
+      const beforePruneMutationCount = committedMutationCount();
       const notYet = await pruneExpiredIdempotency(db, {
         now: createdAt + DEFAULT_IDEMPOTENCY_RETENTION_MS - 1,
       });
       expect(notYet.pruned).toBe(0);
-      expect(committedMutationCount(db)).toBe(beforePruneMutationCount);
+      expect(committedMutationCount()).toBe(beforePruneMutationCount);
 
       const pruned = await pruneExpiredIdempotency(db, {
         now: createdAt + DEFAULT_IDEMPOTENCY_RETENTION_MS,
       });
       expect(pruned.pruned).toBe(1);
-      expect(committedMutationCount(db)).toBe(beforePruneMutationCount);
+      expect(committedMutationCount()).toBe(beforePruneMutationCount);
 
       const second = await createTask(db, request, {
         ...context,

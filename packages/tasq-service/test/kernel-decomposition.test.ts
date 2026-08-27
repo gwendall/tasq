@@ -40,7 +40,10 @@ describe("decomposition in the kernel", () => {
       expect(child.parentCommitmentId).toBe(parent.id);
 
       const tree = await getTaskTree(f.db, parent.id, "robotics-lab");
-      expect(tree.map((node) => node.id)).toEqual([parent.id, child.id]);
+      // A missing tree would otherwise have thrown inside the assertion and
+      // read as an ordinary failure rather than "the parent was not found".
+      expect(tree, "no tree for the parent commitment").not.toBeNull();
+      expect(tree!.map((node) => node.id)).toEqual([parent.id, child.id]);
     } finally {
       await f.close();
     }
