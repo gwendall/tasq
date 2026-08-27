@@ -118,10 +118,19 @@ surface before the v1 surface is retired.
 These commands were introduced through the protected `v0.1.1` release and
 remain part of the current protected release line:
 
-- `tasq setup --space <id> --actor <label> --json` returns
-  `tasq.human-setup.v1` with `contractVersion`, `disposition`, `space`,
-  `actor`, `configPath`, `nextArgv` and `boundary`. It validates identities and
-  joins the space before atomically persisting the selected human defaults.
+- `tasq setup [--space <id>] [--actor <label>] --json` returns
+  `tasq.human-setup.v2` with `contractVersion`, `disposition`, `space`,
+  `spaceSource`, `actor`, `configPath`, `directoryBinding`, `agentInstructions`,
+  `otherDirectoriesUsingThisSpace`, `nextArgv` and `boundary`. It validates
+  identities and joins the space before atomically persisting the selected human
+  defaults, then binds this directory and its descendants and writes the managed
+  block into `AGENTS.md`. `--no-bind` and `--no-instructions` skip either half,
+  and the result says which of the three it did. `spaceSource` is `explicit` or
+  `inherited-from-config`, because a silently inherited space is how work lands
+  in somebody else's ledger. `otherDirectoriesUsingThisSpace` names the
+  directories already bound to it, which is reported rather than refused.
+  Setting a project up in the home directory or at the filesystem root is
+  refused.
 - `tasq demo --json` returns `tasq.isolated-demo.v1` with
   `contractVersion`, `isolation`, `liveHomeConsulted`, `setup`, `created`,
   `before`, `completed` and `after`. Every nested command executes in a

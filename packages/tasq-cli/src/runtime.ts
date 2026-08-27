@@ -5,6 +5,9 @@
 
 import {
   openDb,
+  committedMutationCount,
+  localPrincipalId,
+  recordPrincipalDevice,
   inspectStoreFormat,
   type StoreFormatInspection,
   runMigrations,
@@ -30,6 +33,7 @@ import {
   resolveEffectiveSpace,
   type TasqConfig,
 } from "./config.js";
+import { loadOrCreateDeviceIdentity } from "./identity.js";
 import {
   appendJournalEvent,
   readLeadingCheckpoint,
@@ -230,6 +234,12 @@ export async function openRuntime(
     clock,
   };
 
+  // The device is recorded once, at close, and only if this process actually
+  // committed something. Recording it per attribution call would have covered
+  // some writes and not others with no way to tell which, and a read must
+  // never leave a mark.
+  const mutationsAtOpen = committedMutationCount();
+
   let closed = false;
   return {
     ...handle,
@@ -239,6 +249,25 @@ export async function openRuntime(
     async close() {
       if (closed) return;
       closed = true;
+      if (committedMutationCount() > mutationsAtOpen) {
+        // Best effort by design: attribution detail must never turn a
+        // committed mutation into a failed command.
+        try {
+          const device = loadOrCreateDeviceIdentity(clock.now());
+          if (device) {
+            await recordPrincipalDevice(
+              handle.db,
+              config.tenantId,
+              localPrincipalId(config.tenantId, ctx.actor ?? "system"),
+              device,
+              clock.now(),
+            );
+          }
+        } catch {
+          // A device we could not record is the state the ledger was in before
+          // this table existed. It is not a reason to fail the user's command.
+        }
+      }
       try {
         if (journal) {
           try {

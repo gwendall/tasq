@@ -71,6 +71,7 @@ import { storeCmd } from "./commands/store.js";
 import { costCmd } from "./commands/cost.js";
 import { premiseCmd } from "./commands/premise.js";
 import { useCmd } from "./commands/use.js";
+import { whoamiCmd } from "./commands/whoami.js";
 import { feedbackCmd, recordLastFailure } from "./commands/feedback.js";
 
 declare const TASQ_BUILD_VERSION: string;
@@ -97,8 +98,9 @@ Also on every command:
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
-    setup: ["space"],
+    setup: ["space", "no-bind", "no-instructions", "target", "force"],
     use: ["clear"],
+    whoami: [],
     feedback: ["details", "repo", "limit", "dry-run"],
     demo: [],
     agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
@@ -178,9 +180,11 @@ ${color.bold("USAGE")}
   tasq <command> [args...] [--json]
 
 ${color.bold("SETUP")}
-  setup --space <id> --actor <label>
-                                persist one explicit human space + attribution
+  setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions]
+                                everything a new project needs: join the space,
+                                bind this directory, write the AGENTS.md block
   use [<space>|--clear]          bind/show this directory's space; keep global default
+  whoami                        who this ledger thinks is writing, and what that proves
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes
   demo [--json]                 isolated add → list → done journey; no live data
@@ -468,6 +472,8 @@ async function dispatch(
         return await setupCmd(args, clock);
       case "use":
         return await useCmd(args);
+      case "whoami":
+        return await whoamiCmd(args, clock);
       case "feedback":
         return await feedbackCmd(args, clock, VERSION);
       case "demo":

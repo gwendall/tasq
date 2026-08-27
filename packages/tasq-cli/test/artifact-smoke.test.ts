@@ -59,6 +59,11 @@ describe("released CLI artifact", () => {
     expect(manifest.nativePackages[0]?.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.migrations.length).toBeGreaterThan(20);
     expect(manifest.migrations.at(-1)?.name).toMatch(/^\d{4}_.+\.sql$/);
+    // Store formats ARE migration numbers, so the declared format and the last
+    // migration cannot disagree. They have twice, each time because a bump
+    // moved one of them.
+    expect(Number(manifest.migrations.at(-1)!.name.slice(0, 4)))
+      .toBe(STORE_FORMAT_COMPATIBILITY.current);
     // The artifact must declare the same store format the source does; pinning a
     // literal here only means editing two places on every bump.
     expect(manifest.storeFormat).toMatchObject({
