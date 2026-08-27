@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -56,6 +56,66 @@ async function ok(home: string, cwd: string, argv: string[], env: Record<string,
   return result;
 }
 
+describe("one-command project setup", () => {
+  test("joins, binds and teaches in one command, and says which of the three it did", async () => {
+    // Bringing Tasq into a project used to take three commands - setup, use,
+    // agent instructions --write - and setup mentioned neither of the others.
+    const { home, project } = sandbox();
+    const first = JSON.parse((await ok(home, project, [
+      "setup", "--space", "acme/app", "--actor", "gwendall", "--json",
+    ])).stdout);
+    expect(first).toMatchObject({
+      contractVersion: "tasq.human-setup.v2",
+      disposition: "created",
+      space: "acme/app",
+      spaceSource: "explicit",
+    });
+    expect(first.directoryBinding).toMatchObject({ directory: realpathSync(project), changed: true });
+    expect(first.agentInstructions).toMatchObject({ changed: true });
+    expect(readFileSync(join(project, "AGENTS.md"), "utf8")).toContain('space="acme/app"');
+
+    // Running it again changes nothing and says so, because a setup command
+    // people are afraid to re-run is a setup command they run wrong once.
+    const again = JSON.parse((await ok(home, project, ["setup", "--json"])).stdout);
+    expect(again).toMatchObject({ disposition: "joined", spaceSource: "inherited-from-config" });
+    expect(again.agentInstructions.changed).toBe(false);
+  });
+
+  test("names the other projects already bound to the space, without refusing", async () => {
+    // Sharing one space across repositories is legitimate. Doing it without
+    // knowing is how work lands in a ledger nobody was watching.
+    const { home, project } = sandbox();
+    const second = join(project, "..", "second");
+    mkdirSync(second, { recursive: true });
+    await ok(home, project, ["setup", "--space", "acme/app", "--actor", "gwendall", "--json"]);
+    const joined = JSON.parse((await ok(home, second, ["setup", "--json"])).stdout);
+    expect(joined.otherDirectoriesUsingThisSpace).toContain(realpathSync(project));
+  });
+
+  test("refuses to set a project up in the home directory", async () => {
+    // Binding `~` makes every project below it inherit the space, which is the
+    // silent inheritance that cost this project's own ledger a migration.
+    const { home } = sandbox();
+    const refused = await run(home, home, ["setup", "--space", "acme/app", "--actor", "gwendall"]);
+    expect(refused.exitCode).not.toBe(0);
+    expect(refused.stderr).toContain("Refusing to set up a project in");
+    expect(refused.stderr).toContain("--no-bind --no-instructions");
+    // And it left nothing behind, which a message alone cannot prove.
+    expect(existsSync(join(home, "AGENTS.md"))).toBe(false);
+  });
+
+  test("skips both when asked, and says it skipped them", async () => {
+    const { home, project } = sandbox();
+    const bare = JSON.parse((await ok(home, project, [
+      "setup", "--space", "acme/app", "--actor", "gwendall",
+      "--no-bind", "--no-instructions", "--json",
+    ])).stdout);
+    expect(bare.directoryBinding).toBeNull();
+    expect(bare.agentInstructions).toBeNull();
+    expect(existsSync(join(project, "AGENTS.md"))).toBe(false);
+  });
+});
+
 describe("directory-scoped space selection", () => {
   test("inherits the closest private binding while explicit sources retain precedence", async () => {
     const { home, project } = sandbox();
@@ -97,7 +157,11 @@ describe("managed agent instructions", () => {
     const { home, project } = sandbox();
     const target = join(project, "AGENTS.md");
     writeFileSync(target, "# Project instructions\n", "utf8");
-    await ok(home, project, ["setup", "--space", "tasq/dev", "--actor", "human", "--json"]);
+    // This case covers the standalone `agent instructions` command, so setup
+    // must not have written the block already.
+    await ok(home, project, [
+      "setup", "--space", "tasq/dev", "--actor", "human", "--no-instructions", "--json",
+    ]);
     await ok(home, project, ["add", "CANARY TASK CONTENT MUST NEVER ENTER AGENTS", "--json"]);
 
     const missing = await run(home, project, ["agent", "instructions", "--space", "tasq/dev", "--check", "--json"]);

@@ -23,6 +23,33 @@ import { check, sqliteTable, text, integer, index, uniqueIndex, primaryKey, fore
 // Principal — stable attribution identity; authority remains a separate guard
 // ──────────────────────────────────────────────────────────────────────
 
+/**
+ * Which device said it was this principal.
+ *
+ * The actor label is self-asserted, and locally that is not a hole: anyone who
+ * can pass `--actor` can also open the store directly. The defect this closes
+ * is quieter - the principal is derived from (space, alias), so two machines
+ * using one label are ONE principal and the ledger merges them in silence.
+ */
+export const principalDevice = sqliteTable(
+  "principal_device",
+  {
+    tenantId: text("tenant_id").notNull(),
+    principalId: text("principal_id").notNull(),
+    /** sha256 of the raw public key, domain-separated. Short enough to print. */
+    fingerprint: text("fingerprint").notNull(),
+    algorithm: text("algorithm").notNull(),
+    publicKey: text("public_key").notNull(),
+    firstSeenAt: integer("first_seen_at").notNull(),
+    lastSeenAt: integer("last_seen_at").notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.tenantId, t.principalId, t.fingerprint] }),
+    fingerprintIdx: index("idx_principal_device_fingerprint")
+      .on(t.tenantId, t.fingerprint, t.lastSeenAt),
+  }),
+);
+
 export const principal = sqliteTable(
   "principal",
   {

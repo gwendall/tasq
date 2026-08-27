@@ -13,6 +13,7 @@ import { appendFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  STORE_FORMAT_COMPATIBILITY,
   createTask,
   listRecoveryPoints,
   openDb,
@@ -37,11 +38,10 @@ async function storeWithARecoveryPoint(): Promise<{ dbPath: string; taskId: stri
   let handle = await openDb({ url: `file:${dbPath}`, wal: false });
   await runMigrations(handle.client);
   const task = await createTask(handle.db, { title: "work that predates the upgrade" });
-  // Roll the history back one migration so the store reads as format 32 again.
+  // Roll the history back one migration so the store reads as the previous format.
   await handle.client.executeMultiple(`
-    DROP TABLE assumption_link;
-    DROP TABLE assumption;
-    DELETE FROM _migration WHERE name = '0033_shared_assumptions.sql';
+    DROP TABLE principal_device;
+    DELETE FROM _migration WHERE name = '0034_principal_device.sql';
   `);
   await handle.close();
 
@@ -58,8 +58,8 @@ describe("store recovery points", () => {
 
     expect(points.length).toBeGreaterThan(0);
     const point = points[0]!;
-    expect(point.sourceFormat).toBe(32);
-    expect(point.targetFormat).toBe(33);
+    expect(point.sourceFormat).toBe(STORE_FORMAT_COMPATIBILITY.current - 1);
+    expect(point.targetFormat).toBe(STORE_FORMAT_COMPATIBILITY.current);
     expect(point.snapshotVerified).toBe(true);
     expect(point.usable).toBe(true);
     expect(point.unusableReason).toBeNull();
@@ -70,14 +70,16 @@ describe("store recovery points", () => {
     const point = (await listRecoveryPoints(dbPath))[0]!;
 
     const outcome = await restoreRecoveryPoint(dbPath, point.id, { now: 1_800_000_000_000 });
-    expect(outcome.formatBefore).toBe(33);
-    expect(outcome.formatAfter).toBe(32);
+    expect(outcome.formatBefore).toBe(STORE_FORMAT_COMPATIBILITY.current);
+    expect(outcome.formatAfter).toBe(STORE_FORMAT_COMPATIBILITY.current - 1);
     expect(outcome.eventsDropped).toBe(0);
 
     const handle = await openDb({ url: `file:${dbPath}`, wal: false });
     try {
       const applied = await handle.client.execute("SELECT name FROM _migration ORDER BY name DESC LIMIT 1");
-      expect(String(applied.rows[0]?.["name"])).toBe("0032_settlement_recourse.sql");
+      // The snapshot was taken one format back, so the restored store must end
+      // at the migration BEFORE the one this build ships.
+      expect(String(applied.rows[0]?.["name"])).toBe("0033_shared_assumptions.sql");
       // The work that predates the upgrade must survive the way back.
       const rows = await handle.client.execute({ sql: "SELECT id FROM task WHERE id = ?", args: [taskId] });
       expect(rows.rows).toHaveLength(1);
@@ -118,7 +120,7 @@ describe("store recovery points", () => {
     const handle = await openDb({ url: `file:${outcome.replacedStorePath}`, wal: false });
     try {
       const applied = await handle.client.execute("SELECT name FROM _migration ORDER BY name DESC LIMIT 1");
-      expect(String(applied.rows[0]?.["name"])).toBe("0033_shared_assumptions.sql");
+      expect(String(applied.rows[0]?.["name"])).toBe("0034_principal_device.sql");
     } finally {
       await handle.close();
     }
