@@ -101,10 +101,25 @@ function recipes(
     },
     {
       id: "commitment.inspect", version: 1, requiredCapability: "read", mutates: false,
-      description: "Inspect one commitment and its coordination, authority and evidence graph.",
+      description:
+        "Inspect one commitment and its coordination, authority and evidence graph. "
+        + "This is also where RELATIONS are read: the `relations` field carries every edge on this "
+        + "commitment, so there is no separate relation.list recipe. Note the vocabulary shift - an "
+        + "edge written with `--type blocks` is reported here as `depends_on`, which is the kernel "
+        + "name for it. Over MCP the same reads are tasq_commitment_inspect and tasq_relation_list.",
       argvTemplate: [executable, "inspect", "{commitmentId}", ...scope],
       parameters: [parameter("commitmentId", "Commitment identifier returned by another recipe.")],
       outputContract: "tasq.inspect.v1",
+    },
+    {
+      id: "commitment.tree", version: 1, requiredCapability: "read", mutates: false,
+      description:
+        "Read a commitment with everything it is MADE OF. Decomposition answers what a commitment "
+        + "consists of; it is not a dependency and it gates nothing. A commitment has exactly one "
+        + "parent or none. Over MCP the same operation is the tasq_commitment_tree tool.",
+      argvTemplate: [executable, "tree", "{commitmentId}", ...scope],
+      parameters: [parameter("commitmentId", "Commitment whose decomposition to read.")],
+      outputContract: "tasq.cli-json.v1/TaskV1[]",
     },
     {
       id: "summary.current", version: 1, requiredCapability: "read", mutates: false,
@@ -191,6 +206,20 @@ function recipes(
       description: "Create a desired outcome. This is not a resource lock or an effect authorization.",
       argvTemplate: [executable, "add", "{title}", ...scope],
       parameters: [parameter("title", "Short desired-outcome title.")],
+      outputContract: "tasq.cli-json.v1/TaskV1",
+    },
+    {
+      id: "commitment.decompose", version: 1, requiredCapability: "propose", mutates: true,
+      description:
+        "Create a commitment as PART OF an existing one. Decomposition answers what the parent is "
+        + "made of; it is not a dependency, it gates nothing, and a commitment has exactly one "
+        + "parent or none. Use relation.add for what blocks what. Over MCP this is "
+        + "tasq_commitment_create with parentCommitmentId.",
+      argvTemplate: [executable, "add", "{title}", "--parent", "{parentCommitmentId}", ...scope],
+      parameters: [
+        parameter("title", "Short desired-outcome title for the part."),
+        parameter("parentCommitmentId", "Live commitment this one is part of."),
+      ],
       outputContract: "tasq.cli-json.v1/TaskV1",
     },
     {
@@ -551,6 +580,41 @@ function recipes(
       outputContract: "tasq.commitment-summary.v1",
     },
     {
+      id: "relation.add", version: 1, requiredCapability: "coordinate", mutates: true,
+      description:
+        "Record that one commitment depends on another. This is coordination, not decomposition: "
+        + "`blocks` gates selection, while what a commitment is MADE OF is commitment.decompose. "
+        + "Relations are many-to-many and carry no authority. A `blocks` edge reads back as "
+        + "`depends_on` from commitment.inspect, which is the kernel name for the same edge. "
+        + "Over MCP this is tasq_relation_add.",
+      argvTemplate: [
+        executable, "depend", "{commitmentId}", "--on", "{otherCommitmentId}",
+        "--type", "{relationType}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment that depends on the other."),
+        parameter("otherCommitmentId", "Commitment it depends on."),
+        parameter("relationType", "One of blocks, discovered_from, relates_to, duplicates."),
+      ],
+      outputContract: "tasq.cli-json.v1/TaskDependency",
+    },
+    {
+      id: "relation.end", version: 1, requiredCapability: "coordinate", mutates: true,
+      description:
+        "Remove one relation edge. Ending a relation never deletes either commitment and never "
+        + "completes anything. Over MCP this is tasq_relation_end.",
+      argvTemplate: [
+        executable, "undepend", "{commitmentId}", "--on", "{otherCommitmentId}",
+        "--type", "{relationType}", ...scope,
+      ],
+      parameters: [
+        parameter("commitmentId", "Commitment the edge starts from."),
+        parameter("otherCommitmentId", "Commitment the edge points at."),
+        parameter("relationType", "Exact type of the edge to remove."),
+      ],
+      outputContract: "tasq.cli-json.v1/RelationEnded",
+    },
+    {
       id: "context-link.attach", version: 1, requiredCapability: "coordinate", mutates: true,
       description: "Attach a version-pinned pointer to reusable context owned by an external system. The pointer grants no read, tool or effect authority.",
       argvTemplate: [
@@ -606,6 +670,16 @@ function guide(selectedRecipes: readonly BootstrapRecipe[]) {
       invariants: [
         "Read before proposing so equivalent shared work is not duplicated blindly.",
         "A proposed commitment is not a claim, execution attempt or effect authorization.",
+      ],
+    },
+    {
+      id: "decompose-and-sequence",
+      intent: "Break a commitment into its parts, and record what has to happen before what.",
+      recipeIds: ["commitment.inspect", "commitment.decompose", "relation.add", "commitment.tree"],
+      invariants: [
+        "Decomposition answers what a commitment is MADE OF; dependency answers who is waiting on what. Only the second is many-to-many.",
+        "A commitment has exactly one parent or none, and a parent must still be live.",
+        "A relation gates selection at most; it never grants authority and never completes anything.",
       ],
     },
     {
