@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import {
   bootstrapCoordinationSpace,
@@ -13,14 +13,17 @@ import {
 } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import {
+  bindDirectorySpace,
+  canonicalDirectory,
   configDir,
   defaultDbPath,
+  inheritedSpaceOwnedElsewhere,
   loadConfig,
   saveConfig,
 } from "../config.js";
 import { color, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
-import { agentInstructionsCmd } from "./agent-instructions.js";
+import { agentInstructionsCmd, writeManagedBlock } from "./agent-instructions.js";
 
 const CAPABILITIES = ["read", "propose", "coordinate"] as const;
 type Capability = (typeof CAPABILITIES)[number];
@@ -41,6 +44,31 @@ function parseCapabilities(raw: string | undefined): Capability[] {
   return CAPABILITIES.filter((capability) => values.includes(capability));
 }
 
+/**
+ * Setting a project up binds this directory AND everything under it, and drops
+ * an AGENTS.md here. Both are right in a repository and wrong in a home
+ * directory: binding `~` makes every project below it inherit this space,
+ * which is the silent-inheritance defect that cost this project's own ledger a
+ * migration under a binary nobody meant to run there.
+ */
+function assertProjectDirectory(directory: string): void {
+  // Both sides canonicalised: process.cwd() resolves symlinks and homedir()
+  // does not, so on macOS, where /var is a link to /private/var, a plain
+  // comparison silently never matches.
+  const here = canonicalDirectory(directory);
+  const isRoot = dirname(here) === here;
+  if (here !== canonicalDirectory(homedir()) && !isRoot) return;
+  throw new Error(
+    `Refusing to set up a project in ${here}.\n`
+    + (isRoot
+      ? "That is the filesystem root."
+      : "That is your home directory, so every project below it would inherit this space "
+        + "and the AGENTS.md would land in your home rather than in a repository.")
+    + "\nRun this from the project directory, or pass --no-bind --no-instructions "
+    + "if you only meant to set the global default.",
+  );
+}
+
 function assertSafeHome(): void {
   const home = configDir();
   if (!existsSync(home)) return;
@@ -56,12 +84,46 @@ function assertSafeHome(): void {
 /**
  * One explicit human setup. Unlike autonomous onboarding this persists the
  * selected space and actor so subsequent human CLI verbs can stay terse.
+ *
+ * It also does the two things that used to be separate commands nobody was
+ * told about. Bringing Tasq into a project required `setup`, then `use` to
+ * bind the directory, then `agent instructions --write` to teach the agents -
+ * and `setup` mentioned neither, so the honest answer to "what do I run in a
+ * new project" was "read the help and assemble it yourself".
+ *
+ * Both are skippable, because a second project sharing one space is a real
+ * case and a repository whose AGENTS.md is managed elsewhere is another. What
+ * is NOT optional is saying what happened: silent directory binding is the
+ * defect that migrated this project's own ledger under the wrong binary.
  */
 export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> {
   const json = args.bool("json", "j");
   if (args.positional.length > 0) throw new Error("setup accepts flags only");
-  const space = CoordinationSpaceId.parse(args.string("space"));
-  const actor = BootstrapActorAlias.parse(args.string("actor"));
+  const current0 = loadConfig();
+  const requested = args.string("space");
+  if (requested === undefined && !current0.tenantId) {
+    throw new Error(
+      "setup --space <id> --actor <label>\n"
+      + "There is no configured space to inherit yet, so the first one has to be named.",
+    );
+  }
+  // The space may be inherited, but never silently: an inherited space is how
+  // work lands in someone else's ledger.
+  const space = CoordinationSpaceId.parse(requested ?? current0.tenantId);
+  const inherited = requested === undefined;
+  const actorInput = args.string("actor") ?? current0.defaultActor;
+  if (!actorInput) {
+    throw new Error(
+      "setup --space <id> --actor <label>\n"
+      + "Attribution is not optional: every claim in the ledger names who made it.",
+    );
+  }
+  const actor = BootstrapActorAlias.parse(actorInput);
+  const bind = !args.bool("no-bind");
+  const teach = !args.bool("no-instructions");
+  const force = args.bool("force");
+  const instructionsTarget = resolve(args.string("target") ?? "AGENTS.md");
+  if (bind || teach) assertProjectDirectory(process.cwd());
   assertSafeHome();
 
   const rt = await openRuntime(actor, space, clock, { installReferenceExtension: false });
@@ -78,33 +140,81 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
 
   const current = loadConfig();
-  const next = {
+  let next = {
     ...current,
     dbPath: current.dbPath || defaultDbPath(),
     tenantId: space,
     defaultActor: actor,
   };
+
+  // Asked BEFORE binding: once this directory owns the space too, the question
+  // "who else is bound to it" can only answer nobody. Sharing a space across
+  // projects is legitimate, so this is said out loud rather than refused.
+  const conflicts = inheritedSpaceOwnedElsewhere(next, space, process.cwd());
+
+  let binding: { directory: string; changed: boolean } | null = null;
+  if (bind) {
+    const bound = bindDirectorySpace(next, process.cwd(), space);
+    next = bound.config;
+    binding = { directory: bound.directory, changed: bound.changed };
+  }
   saveConfig(next);
+
+  let instructions: { target: string; changed: boolean; digest: string } | null = null;
+  if (teach) {
+    const written = writeManagedBlock(instructionsTarget, space, force);
+    instructions = { target: written.target, changed: written.changed, digest: written.digest };
+  }
+
   const result = {
-    contractVersion: "tasq.human-setup.v1",
+    contractVersion: "tasq.human-setup.v2",
     disposition,
     space,
+    spaceSource: inherited ? "inherited-from-config" : "explicit",
     actor,
     configPath: join(configDir(), "config.json"),
+    directoryBinding: binding,
+    agentInstructions: instructions,
+    otherDirectoriesUsingThisSpace: conflicts,
     nextArgv: [
-      ["tasq", "add", "Write the first commitment", "--next", "Open the relevant file"],
-      ["tasq", "list"],
-      ["tasq", "done", "{commitmentId}"],
+      ["tasq", "add", "The first thing an agent should pick up", "--next", "Open the relevant file"],
+      ["tasq", "fleet"],
+      ["tasq", "demo"],
     ],
     boundary: "local-explicit-store",
   };
   if (json) printJson(result);
   else {
-    printInfo([
-      `Tasq is ready for ${actor} in ${space}.`,
-      'Next: tasq add "Write the first commitment" --next "Open the relevant file"',
-      "Then: tasq list",
-    ].join("\n"));
+    const lines: string[] = [];
+    lines.push(`${color.green("✓")} ${disposition === "created" ? "Created" : "Joined"} ${color.bold(space)} as ${actor}.`);
+    if (inherited) {
+      lines.push(color.dim(`  space inherited from ${join(configDir(), "config.json")}; pass --space to choose another`));
+    }
+    if (binding) {
+      lines.push(`${color.green("✓")} Bound ${binding.directory} and everything under it to this space.`);
+    } else {
+      lines.push(color.dim("  directory not bound (--no-bind); this shell falls back to the global default"));
+    }
+    if (instructions) {
+      lines.push(instructions.changed
+        ? `${color.green("✓")} Wrote the managed Tasq block into AGENTS.md, so agents here know the rules.`
+        : `${color.green("✓")} AGENTS.md already carries the current managed Tasq block.`);
+    } else {
+      lines.push(color.dim("  AGENTS.md untouched (--no-instructions); agents here will not be told about Tasq"));
+    }
+    if (conflicts.length > 0) {
+      lines.push("");
+      lines.push(color.yellow(`  ! ${space} is also bound in: ${conflicts.join(", ")}`));
+      lines.push(color.dim("    Those projects share this ledger. That is fine if you meant it."));
+    }
+    lines.push("");
+    // The old next-step block was add, list, done - a single-player todo app,
+    // under a headline promising a tracker you share with your agents.
+    lines.push(color.bold("Now put an agent on it."));
+    lines.push(`  ${color.dim("$")} tasq add "The first thing an agent should pick up" --next "Open the relevant file"`);
+    lines.push(`  ${color.dim("$")} tasq fleet          ${color.dim("who is holding what, right now")}`);
+    lines.push(`  ${color.dim("$")} tasq demo           ${color.dim("two agents on one task, in a throwaway home")}`);
+    printInfo(lines.join("\n"));
   }
   return 0;
 }
@@ -186,7 +296,12 @@ export async function demoCmd(
   await mkdir(home, { mode: 0o700 });
   try {
     const setup = await runIsolated(executable, home, [
-      "setup", "--space", "demo/local", "--actor", "demo:human", "--json",
+      // No binding and no AGENTS.md: the demo runs in the user's working
+      // directory, and it promises below that nothing outside the throwaway
+      // home was touched. Setup now writes two things by default, so the demo
+      // has to say it wants neither.
+      "setup", "--space", "demo/local", "--actor", "demo:human",
+      "--no-bind", "--no-instructions", "--json",
     ]);
     const created = await runIsolated(executable, home, [
       "add", "Ship the release notes",

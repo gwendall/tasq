@@ -219,6 +219,37 @@ export async function agentInstructionsCmd(args: ParsedArgs): Promise<number> {
     return 0;
   }
 
+  const written = writeManagedBlock(target, space, force);
+  if (args.bool("json", "j")) printJson({ ...result, state: "current", changed: written.changed, forced: force });
+  else printInfo(written.changed ? `Updated Tasq agent instructions in ${target}.` : `Tasq agent instructions already current in ${target}.`);
+  return 0;
+}
+
+/**
+ * Write the managed block, or leave it alone if it is already current.
+ *
+ * Extracted so project setup can do this without shelling out to itself: the
+ * refusal to overwrite a hand-edited block is the safety property here, and a
+ * second implementation of it would be a second thing to get wrong.
+ */
+export function writeManagedBlock(
+  target: string,
+  space: string,
+  force: boolean,
+): { target: string; space: string; digest: string; changed: boolean; state: string } {
+  let document = "";
+  let mode = 0o644;
+  if (existsSync(target)) {
+    const info = lstatSync(target);
+    if (info.isSymbolicLink() || !info.isFile()) {
+      throw new Error("agent instructions target must be a regular file, not a symlink");
+    }
+    mode = info.mode & 0o777;
+    document = readFileSync(target, "utf8");
+  }
+  const expected = renderAgentInstructions(space);
+  const inspected = inspectBlock(document, space);
+
   if (inspected.state === "hand_edited" && !force) {
     const actual = inspected.raw ?? document;
     throw new Error(
@@ -239,7 +270,5 @@ export async function agentInstructionsCmd(args: ParsedArgs): Promise<number> {
   }
   const changed = next !== document;
   if (changed) writeAtomic(target, next, mode);
-  if (args.bool("json", "j")) printJson({ ...result, state: "current", changed, forced: force });
-  else printInfo(changed ? `Updated Tasq agent instructions in ${target}.` : `Tasq agent instructions already current in ${target}.`);
-  return 0;
+  return { target, space, digest: expected.digest, changed, state: inspected.state };
 }
