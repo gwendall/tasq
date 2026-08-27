@@ -97,7 +97,7 @@ Also on every command:
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
-    setup: ["space"],
+    setup: ["space", "no-bind", "no-instructions", "target", "force"],
     use: ["clear"],
     feedback: ["details", "repo", "limit", "dry-run"],
     demo: [],
@@ -178,8 +178,9 @@ ${color.bold("USAGE")}
   tasq <command> [args...] [--json]
 
 ${color.bold("SETUP")}
-  setup --space <id> --actor <label>
-                                persist one explicit human space + attribution
+  setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions]
+                                everything a new project needs: join the space,
+                                bind this directory, write the AGENTS.md block
   use [<space>|--clear]          bind/show this directory's space; keep global default
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes

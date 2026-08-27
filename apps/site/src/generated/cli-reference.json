@@ -3,8 +3,8 @@
     "heading": "SETUP",
     "entries": [
       {
-        "usage": "setup --space <id> --actor <label>",
-        "description": "persist one explicit human space + attribution"
+        "usage": "setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions]",
+        "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block"
       },
       {
         "usage": "use [<space>|--clear]",
