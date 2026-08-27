@@ -22,7 +22,14 @@ import {
 import { chmodSync, existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash, randomUUID } from "node:crypto";
-import { configUrl, ensureDbDir, loadConfig, resolveEffectiveSpace, type TasqConfig } from "./config.js";
+import {
+  configUrl,
+  ensureDbDir,
+  inheritedSpaceOwnedElsewhere,
+  loadConfig,
+  resolveEffectiveSpace,
+  type TasqConfig,
+} from "./config.js";
 import {
   appendJournalEvent,
   readLeadingCheckpoint,
@@ -156,6 +163,20 @@ export async function openRuntime(
     explicit: tenantOverride,
     environment: process.env.TASQ_TENANT,
   });
+  if (effectiveSpace.source === "global_default") {
+    const owners = inheritedSpaceOwnedElsewhere(loaded, effectiveSpace.space, process.cwd());
+    if (owners.length > 0) {
+      throw new Error(
+        `This directory is not bound to a Tasq space, so the global default `
+        + `${effectiveSpace.space} would be used - but that space is bound to `
+        + `${owners.join(", ")}.\n`
+        + "Refusing, because a command here would read and write another project's ledger while "
+        + "appearing to succeed.\n"
+        + `Bind this directory with \`tasq use <space>\`, or pass --tenant ${effectiveSpace.space} `
+        + "to say you meant that one.",
+      );
+    }
+  }
   const config = {
     ...loaded,
     tenantId: effectiveSpace.space,

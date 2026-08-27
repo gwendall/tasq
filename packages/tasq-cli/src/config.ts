@@ -218,6 +218,39 @@ export function resolveEffectiveSpace(input: {
   return { space: input.config.tenantId, source: "global_default", directory: null };
 }
 
+/**
+ * Refuse to fall back on the global default when that space is explicitly bound
+ * to a different project.
+ *
+ * Space resolution ends at `config.tenantId`. `tasq setup` sets it. So opening
+ * ANY directory that was never bound and running a command reaches that space -
+ * and on 2026-08-27, walking the newcomer journey, a second git repository with
+ * no Tasq configuration at all listed the first project's tasks and would have
+ * written to them. Every command succeeded and nothing warned.
+ *
+ * The precise signal is not "this looks like a project". It is: someone ran
+ * `tasq use` and bound this space to a directory tree, and we are not inside
+ * it. That means the space belongs to a project, and this is not that project.
+ * A user who has only ever had one space is never affected.
+ */
+export function inheritedSpaceOwnedElsewhere(
+  config: TasqConfig,
+  space: string,
+  directory: string,
+): string[] {
+  const bindings = config.directorySpaces ?? {};
+  const here = canonicalDirectory(directory);
+  const owners: string[] = [];
+  for (const [boundDirectory, boundSpace] of Object.entries(bindings)) {
+    if (boundSpace !== space) continue;
+    // Inside the bound tree the binding would have won resolution, so reaching
+    // here at all means we are outside every tree bound to this space.
+    if (here === boundDirectory || here.startsWith(`${boundDirectory}/`)) return [];
+    owners.push(boundDirectory);
+  }
+  return owners.sort();
+}
+
 /** Set or clear only the exact current-directory binding. */
 export function bindDirectorySpace(
   config: TasqConfig,
