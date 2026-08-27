@@ -97,21 +97,46 @@ export interface TaskHierarchyPolicy {
   ): Promise<void>;
 }
 
+/**
+ * The kernel accepts decomposition and refuses planning vocabulary (ADR-023).
+ *
+ * These were bundled: the flat policy threw for any non-null areaId, goalId,
+ * projectId OR parentTaskId, so a commitment could not be created as the child
+ * of another without an injected life-planning profile.
+ *
+ * They are not the same thing. `area`, `goal` and `project` are a life-planning
+ * vocabulary, and the spec is right to name forcing it on every domain as a
+ * non-goal. Decomposition is not a vocabulary: a robot commitment decomposes
+ * into steps, a research commitment into sources, a software commitment into
+ * changes. Every domain does it, which is the spec's own test for admitting a
+ * primitive.
+ *
+ * Depth and cycles are guarded by the callers regardless of policy; what the
+ * policy owes is that the named parent is real.
+ */
 const flatHierarchyPolicy: TaskHierarchyPolicy = {
-  async resolveScope(_db, _tenantId, input) {
-    if (
-      input.parentTaskId == null &&
-      input.projectId == null &&
-      input.goalId == null &&
-      input.areaId == null
-    ) {
+  async resolveScope(db, tenantId, input) {
+    if (input.projectId != null || input.goalId != null || input.areaId != null) {
+      throw new Error(
+        "area, goal and project require an injected planning-profile policy; "
+          + "the kernel carries decomposition only",
+      );
+    }
+    if (input.parentTaskId == null) {
       return { parentTaskId: null, projectId: null, goalId: null, areaId: null };
     }
-    throw new Error("Hierarchical task scope requires an injected planning-profile policy");
+    const parent = await getTask(db, input.parentTaskId, tenantId);
+    if (!parent || parent.deletedAt !== null) {
+      throw new Error(`Parent commitment not found: ${input.parentTaskId}`);
+    }
+    return { parentTaskId: input.parentTaskId, projectId: null, goalId: null, areaId: null };
   },
   async assertLiveAncestors(_db, _tenantId, ancestors) {
     if (ancestors.areaId == null && ancestors.goalId == null && ancestors.projectId == null) return;
-    throw new Error("Hierarchical task scope requires an injected planning-profile policy");
+    throw new Error(
+      "area, goal and project require an injected planning-profile policy; "
+        + "the kernel carries decomposition only",
+    );
   },
 };
 
