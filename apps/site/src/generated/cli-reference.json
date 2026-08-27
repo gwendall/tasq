@@ -11,6 +11,10 @@
         "description": "bind/show this directory's space; keep global default"
       },
       {
+        "usage": "whoami",
+        "description": "who this ledger thinks is writing, and what that proves"
+      },
+      {
         "usage": "onboard --space <id> --actor <label> --json",
         "description": "create/join a space + return executable recipes"
       },

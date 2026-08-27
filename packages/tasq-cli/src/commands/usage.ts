@@ -96,6 +96,9 @@ export const SETUP_USAGE = `setup --space <id> --actor <stable-label> [--json]  
   --no-instructions     leave AGENTS.md alone
   --target <path>       write the managed block somewhere other than AGENTS.md
   --force               replace a hand-edited managed block after reviewing it`;
+export const WHOAMI_USAGE = `whoami [--json]   the actor, the principal it resolves to, and this installation's device key
+  names any other device that has written under the same actor label here
+  attribution, never authentication: the label is chosen freely`;
 export const USE_USAGE = `use <space> [--json]   bind the current real directory and descendants without changing the global default
 use                       show the effective space and its source
 use --clear               remove the exact current-directory binding`;
@@ -301,6 +304,8 @@ export function commandUsage(command: string): string | undefined {
       return SETUP_USAGE;
     case "use":
       return USE_USAGE;
+    case "whoami":
+      return WHOAMI_USAGE;
     case "feedback":
       return FEEDBACK_USAGE;
     case "demo":

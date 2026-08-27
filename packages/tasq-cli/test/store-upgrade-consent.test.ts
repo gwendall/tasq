@@ -14,7 +14,12 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { openDb, runMigrations, inspectStoreFormat } from "@tasq-internal/local-service";
+import {
+  STORE_FORMAT_COMPATIBILITY,
+  openDb,
+  runMigrations,
+  inspectStoreFormat,
+} from "@tasq-internal/local-service";
 
 const dirs: string[] = [];
 afterEach(() => {
@@ -113,8 +118,8 @@ describe("crossing a store format is a decision", () => {
     expect(upgrade.code, upgrade.stderr).toBe(0);
     const outcome = JSON.parse(upgrade.stdout);
     expect(outcome.upgraded).toBe(true);
-    expect(outcome.formatBefore).toBe(32);
-    expect(outcome.formatAfter).toBe(33);
+    expect(outcome.formatBefore).toBe(STORE_FORMAT_COMPATIBILITY.current - 1);
+    expect(outcome.formatAfter).toBe(STORE_FORMAT_COMPATIBILITY.current);
     expect(outcome.recoveryPointId).toBeTruthy();
 
     // The gate steps aside only for the command that expresses the decision.
@@ -168,9 +173,8 @@ async function storeOneFormatBehind(): Promise<{ dir: string }> {
   const handle = await openDb({ url: `file:${dbPath}`, wal: false });
   await runMigrations(handle.client);
   await handle.client.executeMultiple(`
-    DROP TABLE assumption_link;
-    DROP TABLE assumption;
-    DELETE FROM _migration WHERE name = '0033_shared_assumptions.sql';
+    DROP TABLE principal_device;
+    DELETE FROM _migration WHERE name = '0034_principal_device.sql';
   `);
   await handle.close();
   writeFileSync(join(dir, "config.json"), JSON.stringify({

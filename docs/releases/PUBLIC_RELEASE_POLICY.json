@@ -327,10 +327,10 @@
     "publishedReplayWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138",
     "publicSupportGranted": true,
     "migrationCertificationWaiver": {
-      "storeFormat": 33,
+      "storeFormat": 34,
       "recordedAt": "2026-08-27",
       "recordedBy": "@gwendall",
-      "reason": "The protected migration certification proves that PUBLISHED binaries migrate REAL user stores forward. At store format 33 there are no such stores: v0.4.x has no adopters, and the only format-32 store in existence belongs to the maintainer, who can rehearse with `tasq store clone` and roll back with `tasq store restore`. Re-running the two-target workflow would certify a property nothing depends on yet. The certification block above is left saying exactly what it proved, at format 32, rather than being edited to claim more.",
+      "reason": "The protected migration certification proves that PUBLISHED binaries migrate REAL user stores forward. At store format 34 there are no such stores: v0.4.x has no adopters, and the only format-32 store in existence belongs to the maintainer, who can rehearse with `tasq store clone` and roll back with `tasq store restore`. Re-running the two-target workflow would certify a property nothing depends on yet. The certification block above is left saying exactly what it proved, at format 32, rather than being edited to claim more.",
       "withdrawWhen": "Before the first release published while any third party holds a Tasq store. From that point the certification must be re-run against the shipping format and this waiver deleted.",
       "mitigations": [
         "tasq store upgrade makes the irreversible upgrade an explicit decision on every build",
