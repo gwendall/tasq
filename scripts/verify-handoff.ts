@@ -14,6 +14,10 @@ const steps: Array<{ name: string; argv: string[] }> = [
   { name: "diff integrity", argv: ["git", "diff", "--check"] },
   { name: "documentation contracts", argv: ["pnpm", "docs:check"] },
   { name: "workspace typecheck", argv: ["pnpm", "typecheck"] },
+  // Separate from the workspace typecheck because it checks TEST files, which
+  // no package's build config includes. Ten packages are held clean; the four
+  // with pre-existing errors are named with their counts and cannot grow.
+  { name: "test typecheck", argv: ["pnpm", "typecheck:tests"] },
   ...(!quick ? [{ name: "complete test suite", argv: ["pnpm", "test"] }] : []),
 ];
 

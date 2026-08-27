@@ -124,6 +124,16 @@ export const ResolutionContractInsert = ResolutionContract.omit({
   }
 });
 export type ResolutionContractInsert = z.infer<typeof ResolutionContractInsert>;
+/**
+ * What a CALLER passes, before defaults are applied.
+ *
+ * `z.infer` is the parsed shape, where every `.default(...)` field is present.
+ * Using it in an input position forces callers to supply the exact values the
+ * schema exists to fill - nine criterion fields where three carry the meaning.
+ * The service parses `unknown` and applies the defaults, so this is the honest
+ * type for the boundary.
+ */
+export type ResolutionContractInput = z.input<typeof ResolutionContractInsert>;
 
 export const EvidenceTrustRecord = z.object({
   id: UuidV7,
