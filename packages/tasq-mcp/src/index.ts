@@ -28,9 +28,12 @@ import {
   cancelEffect,
   challengeCompletion,
   completeCommitment,
+  addCommitmentRelation,
   attachCommitmentAssumption,
   captureCommitmentDiscovery,
+  endCommitmentRelation,
   getCommitmentAssumptions,
+  listCommitmentRelations,
   listWorkspaceAssumptions,
   withdrawCommitmentAssumption,
   createCommitment,
@@ -531,6 +534,23 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       return { contents: [{ uri: uri.href, mimeType: "application/schema+json", text: JSON.stringify(schema) }] };
     });
 
+    server.registerTool("tasq_relation_list", {
+      description:
+        "Read the relations around a commitment. `depends_on` is the only type that affects whether work is "
+        + "actionable: a commitment with an unresolved depends_on edge is filtered out of selection and refused at "
+        + "claim. `discovered_from`, `relates_to` and `duplicates` are informational and never gate anything. Use "
+        + "this before assuming a commitment stands alone.",
+      inputSchema: {
+        commitmentId: Id.optional(),
+        activeOnly: z.boolean().optional(),
+      },
+      annotations: { readOnlyHint: true },
+    }, ({ commitmentId, activeOnly }) => guarded(async () => listCommitmentRelations(options.db, {
+      tenantId: options.workspaceId,
+      commitmentId,
+      activeOnly: activeOnly ?? true,
+    })));
+
     server.registerTool("tasq_assumption_state", {
       description:
         "Read what a commitment rests on: the assumptions attached to it, who stated each one, "
@@ -655,6 +675,43 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       options.db,
       { because: input.because, reason: input.reason, evidenceIds: input.evidenceIds ?? [] },
       kernelContext(undefined),
+    )));
+
+    server.registerTool("tasq_relation_add", {
+      description:
+        "Record how two commitments relate. Use `depends_on` when the first genuinely cannot proceed until the "
+        + "second resolves - it removes the commitment from selection and refuses a claim on it, so it is a real "
+        + "constraint and not a note. Use `relates_to` or `duplicates` for association that must not gate anything. "
+        + "A depends_on edge that would close a cycle is refused. This proposes ordering; it exercises no authority "
+        + "over anyone's claim.",
+      inputSchema: {
+        fromCommitmentId: Id,
+        toCommitmentId: Id,
+        relationType: z.enum(["depends_on", "relates_to", "duplicates"]),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ fromCommitmentId, toCommitmentId, relationType, idempotencyKey }) => guarded(async () =>
+      addCommitmentRelation(options.db, {
+        tenantId: options.workspaceId,
+        fromTaskId: fromCommitmentId,
+        toTaskId: toCommitmentId,
+        relationType,
+      }, { ...serviceContext(idempotencyKey) })));
+
+    server.registerTool("tasq_relation_end", {
+      description:
+        "End a relation with a compare-and-swap revision. Ending a depends_on edge makes the dependent actionable "
+        + "again; it does not complete anything. The relation is retained, not deleted, so the history of what was "
+        + "believed to constrain what stays readable.",
+      inputSchema: {
+        relationId: Id,
+        expectedRevision: Revision,
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ relationId, expectedRevision, idempotencyKey }) => guarded(async () => endCommitmentRelation(
+      options.db, relationId, { ...serviceContext(idempotencyKey), expectedRevision },
     )));
 
     server.registerTool("tasq_commitment_update", {
