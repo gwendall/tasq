@@ -204,6 +204,8 @@ export type {
 } from "./service/effects.js";
 
 // Migrations
+export { newlyActionableAfter } from "@tasq-run/core/internal/service/collaboration";
+
 export {
   inspectStoreFormat,
   listRecoveryPoints,

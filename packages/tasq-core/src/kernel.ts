@@ -7,6 +7,7 @@
 
 import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
+export { newlyActionableAfter } from "./service/collaboration.js";
 export { inspectStoreFormat, listRecoveryPoints, restoreRecoveryPoint } from "./migrations/index.js";
 export type { RecoveryPoint, RestoreOutcome, StoreFormatInspection } from "./migrations/index.js";
 import type { TasqDb as KernelDb } from "./db.js";
