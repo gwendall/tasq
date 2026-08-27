@@ -29,12 +29,24 @@ import { serviceNow } from "../util/clock.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/**
+ * The one number a format bump changes.
+ *
+ * Everything below used to be five literals that had to move together, and a
+ * bump that moved only `current` left the executable declaring it could read
+ * and write the PREVIOUS format - a claim nothing downstream questions.
+ */
+const CURRENT_STORE_FORMAT = 34;
+
 export const STORE_FORMAT_COMPATIBILITY = Object.freeze({
   contractVersion: "tasq.store-format.v1" as const,
-  current: 33,
-  readable: Object.freeze({ min: 33, max: 33 }),
-  writable: Object.freeze({ min: 33, max: 33 }),
-  directlyMigratable: Object.freeze({ min: 0, max: 33 }),
+  current: CURRENT_STORE_FORMAT,
+  // A build reads and writes exactly the format it ships. Tasq is a shared
+  // ledger: two versions on one store means whoever runs first locks the
+  // others out, so an older build must refuse rather than guess.
+  readable: Object.freeze({ min: CURRENT_STORE_FORMAT, max: CURRENT_STORE_FORMAT }),
+  writable: Object.freeze({ min: CURRENT_STORE_FORMAT, max: CURRENT_STORE_FORMAT }),
+  directlyMigratable: Object.freeze({ min: 0, max: CURRENT_STORE_FORMAT }),
   oldestDirectlyTestedSource: "tasq-zero-populated-fixture",
   irreversible: true,
   rollback: "restore-matching-verified-pre-migration-snapshot-and-binary" as const,

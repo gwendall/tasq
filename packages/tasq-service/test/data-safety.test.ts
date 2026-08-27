@@ -41,6 +41,15 @@ function temporaryRoot(): string {
   return root;
 }
 
+/**
+ * The format the fixture is frozen at. Store formats are zero-based migration
+ * identifiers, so format N has exactly N + 1 applied rows - and going from the
+ * fixture to the current format applies `current - FIXTURE_FORMAT` of them.
+ * Derived rather than written down, because every previous format bump broke a
+ * hardcoded count here and taught nothing.
+ */
+const FIXTURE_FORMAT = 5;
+
 async function openFixture(root: string) {
   const path = join(root, "db.sqlite");
   const opened = await openDb({ url: `file:${path}`, wal: false });
@@ -77,7 +86,7 @@ describe("migration data-safety envelope", () => {
         contractVersion: "tasq.migration-receipt.v1",
         status: "complete",
         recoveredAfterRestart: false,
-        source: { format: 5, eventCursor: expect.any(Number) },
+        source: { format: FIXTURE_FORMAT, eventCursor: expect.any(Number) },
         target: { format: STORE_FORMAT_COMPATIBILITY.current },
         snapshot: {
           path: result.receipt!.snapshotPath,
@@ -136,11 +145,12 @@ describe("migration data-safety envelope", () => {
         runMigrations(left.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
         runMigrations(right.client, { now: 1_700_000_000_150, installReferenceExtension: false }),
       ]);
-      expect(results.reduce((count, result) => count + result.applied.length, 0)).toBe(28);
+      expect(results.reduce((count, result) => count + result.applied.length, 0))
+        .toBe(STORE_FORMAT_COMPATIBILITY.current - FIXTURE_FORMAT);
       expect(results.filter((result) => result.receipt?.status === "complete")).toHaveLength(1);
       expect(results.filter((result) => result.receipt === null)).toHaveLength(1);
       expect(receiptDocuments(seeded.path).map((receipt) => receipt.status)).toEqual(["complete"]);
-      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(34);
+      expect((await left.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(STORE_FORMAT_COMPATIBILITY.current + 1);
     } finally {
       await left.close();
       await right.close();
@@ -192,7 +202,7 @@ describe("migration data-safety envelope", () => {
           installReferenceExtension: false,
         });
         expect(result.afterFormat, boundary).toBe(STORE_FORMAT_COMPATIBILITY.current);
-        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(34);
+        expect((await resumed.client.execute("SELECT count(*) AS count FROM _migration")).rows[0]?.count).toBe(STORE_FORMAT_COMPATIBILITY.current + 1);
         expect(receiptDocuments(seeded.path).some((receipt) => receipt.status === "snapshot_verified")).toBe(false);
       } finally {
         await resumed.close();

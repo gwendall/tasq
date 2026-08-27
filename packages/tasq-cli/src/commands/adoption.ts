@@ -23,6 +23,7 @@ import {
 } from "../config.js";
 import { color, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
+import { loadOrCreateDeviceIdentity } from "../identity.js";
 import { agentInstructionsCmd, writeManagedBlock } from "./agent-instructions.js";
 
 const CAPABILITIES = ["read", "propose", "coordinate"] as const;
@@ -160,6 +161,11 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
   saveConfig(next);
 
+  // Establish this installation's device identity here rather than on the
+  // first write. The actor label is chosen freely and always will be; the key
+  // is what lets the ledger later say that two machines used one label.
+  const device = loadOrCreateDeviceIdentity(clock.now());
+
   let instructions: { target: string; changed: boolean; digest: string } | null = null;
   if (teach) {
     const written = writeManagedBlock(instructionsTarget, space, force);
@@ -172,6 +178,7 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     space,
     spaceSource: inherited ? "inherited-from-config" : "explicit",
     actor,
+    device: device ? { fingerprint: device.fingerprint, algorithm: device.algorithm } : null,
     configPath: join(configDir(), "config.json"),
     directoryBinding: binding,
     agentInstructions: instructions,
@@ -187,6 +194,9 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   else {
     const lines: string[] = [];
     lines.push(`${color.green("✓")} ${disposition === "created" ? "Created" : "Joined"} ${color.bold(space)} as ${actor}.`);
+    if (device) {
+      lines.push(color.dim(`  this installation signs as ${device.fingerprint.slice(0, 12)} - see \`tasq whoami\``));
+    }
     if (inherited) {
       lines.push(color.dim(`  space inherited from ${join(configDir(), "config.json")}; pass --space to choose another`));
     }

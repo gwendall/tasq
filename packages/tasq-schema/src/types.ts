@@ -339,6 +339,20 @@ export type IdempotencyRecord = z.infer<typeof IdempotencyRecord>;
 // Universal collaboration identities
 // ──────────────────────────────────────────────────────────────────────
 
+/** A device that has written to the ledger while claiming a principal. */
+export const PrincipalDevice = z.object({
+  tenantId: z.string().min(1),
+  principalId: z.string().min(1).max(500),
+  /** sha256 of the raw public key, domain-separated and hex-encoded. */
+  fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+  algorithm: z.literal("ed25519"),
+  /** SPKI DER, base64. Public by construction; the private half never leaves the device. */
+  publicKey: z.string().min(1).max(2000),
+  firstSeenAt: UnixMs,
+  lastSeenAt: UnixMs,
+});
+export type PrincipalDevice = z.infer<typeof PrincipalDevice>;
+
 export const Principal = z.object({
   id: z.string().min(1).max(500),
   tenantId: z.string().min(1),
