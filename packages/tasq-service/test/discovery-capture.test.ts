@@ -34,7 +34,7 @@ describe("discovery capture", () => {
     try {
       const claim = await acquireTaskClaim(f.db, f.source.id, {
         tenantId: "gwendall", actor: "agent-a", now: 1_800_000_000_000,
-        durationMs: 60_000, idempotencyKey: "claim:source",
+        leaseMs: 60_000, idempotencyKey: "claim:source",
       });
       const captured = await captureDiscovery(f.db, {
         sourceTaskId: f.source.id,
