@@ -206,6 +206,10 @@
         "description": "manage the versioned Tasq block in AGENTS.md"
       },
       {
+        "usage": "fleet",
+        "description": "who is holding what right now, and for how much longer their lease runs"
+      },
+      {
         "usage": "claim <id> [--for 30m] [--force]",
         "description": "atomically claim work (repeat to heartbeat); --force takes work whose blockers are unresolved"
       },
