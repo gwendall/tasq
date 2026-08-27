@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, setDefaultTimeout } from "bun:test";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +12,13 @@ afterEach(() => {
 });
 
 async function run(home: string, args: string[]) {
+  // `tasq setup` binds the working directory and writes AGENTS.md into it, so
+  // this runs in a project directory inside the throwaway home rather than in
+  // the repository.
+  const workspace = join(home, "workspace");
+  mkdirSync(workspace, { recursive: true });
   const process = Bun.spawn(["bun", "run", cli, ...args], {
+    cwd: workspace,
     env: { ...globalThis.process.env, HOME: home, TASQ_DB_URL: "" },
     stdout: "pipe",
     stderr: "pipe",
@@ -61,6 +67,10 @@ describe("local discovery capture", () => {
     const recipe = refused.stderr.split("\n").find((line) => line.trimStart().startsWith("'"))?.trim();
     expect(recipe).toBeDefined();
     const shell = Bun.spawn(["sh", "-c", recipe!], {
+      // The recipe runs where the agent is working, and setup bound that
+      // directory. Running it from the repository trips the guard that refuses
+      // to write another project's ledger, which is the guard doing its job.
+      cwd: join(home, "workspace"),
       env: { ...globalThis.process.env, HOME: home, TASQ_DB_URL: "" },
       stdout: "pipe",
       stderr: "pipe",

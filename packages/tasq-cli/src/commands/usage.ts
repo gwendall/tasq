@@ -88,7 +88,17 @@ export const DOCTOR_USAGE = "doctor [--fix-permissions] [--repair-outbox]   veri
 export const JOURNAL_USAGE =
   "journal checkpoint --accept-database --reason <text> [--dry-run]   archive the current segment and accept the DB cursor baseline";
 export const INIT_USAGE = "init   create ~/.tasq/db.sqlite + config";
-export const SETUP_USAGE = "setup --space <id> --actor <stable-label> [--json]   persist one explicit human default";
+export const SETUP_USAGE = `setup --space <id> --actor <stable-label> [--json]   everything a new project needs
+  joins the space, binds this directory and its descendants, and writes the
+  managed Tasq block into AGENTS.md, saying which of the three it did
+  --space/--actor are inherited from the config when omitted, and said out loud
+  --no-bind             leave this directory on the global default
+  --no-instructions     leave AGENTS.md alone
+  --target <path>       write the managed block somewhere other than AGENTS.md
+  --force               replace a hand-edited managed block after reviewing it`;
+export const WHOAMI_USAGE = `whoami [--json]   the actor, the principal it resolves to, and this installation's device key
+  names any other device that has written under the same actor label here
+  attribution, never authentication: the label is chosen freely`;
 export const USE_USAGE = `use <space> [--json]   bind the current real directory and descendants without changing the global default
 use                       show the effective space and its source
 use --clear               remove the exact current-directory binding`;
@@ -294,6 +304,8 @@ export function commandUsage(command: string): string | undefined {
       return SETUP_USAGE;
     case "use":
       return USE_USAGE;
+    case "whoami":
+      return WHOAMI_USAGE;
     case "feedback":
       return FEEDBACK_USAGE;
     case "demo":

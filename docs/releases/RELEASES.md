@@ -51,6 +51,32 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
+## `v0.5.1` current release, partially certified
+
+Published 2026-08-26T23:23:29Z from tag `v0.5.1`. Its byte-verified binaries and
+npm packages are out, and **its post-release certification could not complete.**
+
+Two independent reasons, both worth recording rather than smoothing over.
+
+**The TQ-616 program block was `published_certified` at the tagged commit**,
+carried over from v0.4.2, while `verify-tq616-release-eligibility` refuses
+anything but `authorized`. That check reads the policy from the immutable tag,
+so no re-run can complete it. This is exactly what happened to `v0.4.1`, one
+field over: the preflight added after that release guarded
+`tq616SignedStatements.version` and not `.state`. It now guards both.
+
+**The migration replay was refused by the release's own new safety gate.**
+v0.5.1 ships `tasq store upgrade`, which makes crossing a store format a
+decision rather than a side effect of any command, and the certification's
+replay drives the binary directly - so a published binary correctly refused to
+auto-migrate a populated format-5 ledger. The certification represents an
+operator upgrading, and an operator now types the verb; the replay has to say so
+too.
+
+Neither affects what the release does for a user who installs it. Both are
+recorded here because a release whose certification is partial must say so
+plainly, and because the next release fixes them at the tag rather than after.
+
 ## `v0.5.0` is retired, never published
 
 Its tag was pushed while `verify-release-preflight.ts` imported `@tasq-run/core`.

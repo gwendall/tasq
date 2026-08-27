@@ -4,6 +4,7 @@ import {
   completeTask,
   attachAssumption,
   createTask,
+  newlyActionableAfter,
   createTaskWithPremise,
   getAreaBySlug,
   getTask,
@@ -549,13 +550,26 @@ export async function transitionCmd(verb: Transition, args: ParsedArgs): Promise
     });
     await regenerateProjection(rt);
 
+    // Show what the completion opened. A locked door is only half the mechanic;
+    // the other half is seeing it open the moment you finish the thing that was
+    // holding it. This also tells a fleet what just became claimable.
+    const opened = verb === "done" || verb === "cancel"
+      ? await newlyActionableAfter(rt.db, resolved, rt.config.tenantId)
+      : [];
+
     if (args.bool("json", "j")) {
-      printJson(result);
+      printJson(opened.length > 0 ? { ...result, newlyActionable: opened } : result);
     } else {
       printInfo(
         color.green("✓") +
           ` task ${verb} → ${result.status}  ${color.dim(shortId(resolved))}  ${result.title}`,
       );
+      if (opened.length > 0) {
+        printInfo(`  ${opened.length} commitment(s) just became actionable:`);
+        for (const entry of opened) {
+          printInfo(`    ${color.dim(shortId(entry.commitmentId))}  ${entry.title}`);
+        }
+      }
     }
     return 0;
   } finally {

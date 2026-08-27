@@ -7,6 +7,17 @@
 
 import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
+export { newlyActionableAfter } from "./service/collaboration.js";
+
+// Which device said it was this principal. Attribution, never authentication.
+export {
+  deviceFingerprint,
+  devicesForPrincipal,
+  recordPrincipalDevice,
+  sharedPrincipals,
+  shortFingerprint,
+} from "./service/devices.js";
+export type { DeviceIdentity } from "./service/devices.js";
 export { buildFleetView } from "./fleet.js";
 export type { FleetHeld, FleetHolder, FleetView } from "./fleet.js";
 
