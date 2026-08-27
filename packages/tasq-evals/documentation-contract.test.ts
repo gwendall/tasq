@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 
@@ -20,6 +21,25 @@ function walk(directory: string): string[] {
     }
     return [join(directory, entry.name)];
   });
+}
+
+/**
+ * Markdown this repository actually ships, which is exactly what git tracks.
+ *
+ * Walking the filesystem instead scans ignored directories - local research
+ * notes, scratch files - and reports a workstation path in material that can
+ * never be published. Found on 2026-08-27 when a gitignored notes directory
+ * failed this gate.
+ */
+function trackedMarkdown(): string[] {
+  const listed = spawnSync("git", ["ls-files", "-z", "--", "*.md"], {
+    cwd: repositoryRoot,
+    encoding: "utf8",
+  });
+  if (listed.status !== 0) {
+    throw new Error(`git ls-files failed; cannot determine what this repository publishes: ${listed.stderr}`);
+  }
+  return listed.stdout.split("\0").filter(Boolean).map((value) => join(repositoryRoot, value));
 }
 
 function read(path: string): string {
@@ -223,7 +243,7 @@ describe("standalone documentation contract", () => {
       "universal-from-scratch-onboarding.test.ts",
     ];
     const failures: string[] = [];
-    for (const path of walk(repositoryRoot).filter((value) => extname(value) === ".md")) {
+    for (const path of trackedMarkdown()) {
       const content = readFileSync(path, "utf8");
       const label = relative(repositoryRoot, path);
       if (content.includes("/Users/")) failures.push(`${label}: workstation path`);
