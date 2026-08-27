@@ -423,6 +423,48 @@ export async function unresolvedBlockers(
 }
 
 /**
+ * Commitments that were waiting on this one and are actionable now.
+ *
+ * A Metroidvania does not work because there are locked doors; it works because
+ * the moment you take the item, the game shows you the door that just opened.
+ * Completing a blocker emitted nothing to its dependents, and the only thing
+ * resembling this - `justUnblocked` - is recomputed on every read over a
+ * seven-day window and a bounded event scan, which makes it a heuristic rather
+ * than an answer.
+ *
+ * This is exact at the moment it is asked: it walks the live `depends_on` edges
+ * pointing AT the given commitment, then keeps the dependents whose blockers
+ * are now all resolved. If a concurrent completion also unblocked one of them,
+ * it appears here too - which is honest, since it did become actionable.
+ */
+export async function newlyActionableAfter(
+  tx: TasqDbOrTx,
+  taskId: string,
+  tenantId: string,
+): Promise<UnresolvedBlocker[]> {
+  const dependents = await tx.select({ id: task.id, title: task.title, status: task.status })
+    .from(commitmentRelation)
+    .innerJoin(task, eq(commitmentRelation.fromTaskId, task.id))
+    .where(and(
+      eq(commitmentRelation.tenantId, tenantId),
+      eq(commitmentRelation.toTaskId, taskId),
+      eq(commitmentRelation.relationType, "depends_on"),
+      isNull(commitmentRelation.endedAt),
+      isNull(task.deletedAt),
+      notInArray(task.status, ["done", "cancelled"]),
+    ));
+
+  const opened: UnresolvedBlocker[] = [];
+  for (const dependent of dependents) {
+    const remaining = await unresolvedBlockers(tx, dependent.id, tenantId);
+    if (remaining.length === 0) {
+      opened.push({ commitmentId: dependent.id, title: dependent.title, status: dependent.status });
+    }
+  }
+  return opened.sort((left, right) => left.commitmentId.localeCompare(right.commitmentId));
+}
+
+/**
  * Refuse execution authority over a commitment whose blockers have not resolved.
  *
  * Until this existed, blocking was enforced in exactly ONE place: the

@@ -7,6 +7,7 @@
 
 import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
+export { newlyActionableAfter } from "./service/collaboration.js";
 export { buildFleetView } from "./fleet.js";
 export type { FleetHeld, FleetHolder, FleetView } from "./fleet.js";
 
