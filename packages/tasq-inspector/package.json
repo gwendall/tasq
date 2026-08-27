@@ -12,7 +12,8 @@
     "test": "bun test",
     "test:browser": "playwright test --config playwright.config.ts",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\""
+    "prepublishOnly": "node -e \"throw new Error('Use the protected release workflow')\"",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.typecheck.json"
   },
   "dependencies": {
     "@tasq-run/schema": "workspace:*",
