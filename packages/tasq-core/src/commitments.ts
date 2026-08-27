@@ -57,6 +57,8 @@ export interface Commitment {
   workspaceId: string;
   title: string;
   description: string | null;
+  /** The commitment this one is a part of, when it is part of one. */
+  parentCommitmentId?: string | null;
   successCriteria: string | null;
   completionPolicy: "assertion" | "evidence";
   validationRequired: boolean;
@@ -83,6 +85,12 @@ const CommitmentCreate = z.object({
   notBefore: UnixMs.nullable().default(null),
   dueAt: UnixMs.nullable().default(null),
   metadata: Metadata.default({}),
+  /**
+   * Decomposition: the commitment this one is a part of (ADR-023). A commitment
+   * has exactly one parent or none, which is what makes decomposition mean
+   * anything, and the column gets that from a foreign key.
+   */
+  parentCommitmentId: z.string().uuid().nullable().default(null),
 }).strict();
 
 const CommitmentUpdate = CommitmentCreate.partial().strict();
@@ -97,6 +105,8 @@ export interface CreateCommitmentInput {
   notBefore?: number | null;
   dueAt?: number | null;
   metadata?: MetadataT;
+  /** The commitment this one is a part of. One parent or none. */
+  parentCommitmentId?: string | null;
 }
 
 export type UpdateCommitmentInput = Partial<CreateCommitmentInput>;
@@ -146,6 +156,7 @@ export async function createCommitment(
     scheduledAt: parsed.notBefore,
     dueAt: parsed.dueAt,
     metadata: parsed.metadata,
+    parentTaskId: parsed.parentCommitmentId,
   }, legacyContext(context));
   return toCommitment(row);
 }
@@ -348,6 +359,7 @@ function toCommitment(row: Task): Commitment {
     priority: row.priority,
     notBefore: row.scheduledAt,
     dueAt: row.dueAt,
+    parentCommitmentId: row.parentTaskId,
     startedAt: row.startedAt,
     completedAt: row.completedAt,
     metadata: row.metadata,

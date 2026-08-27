@@ -34,6 +34,7 @@ import {
   captureCommitmentDiscovery,
   endCommitmentRelation,
   getCommitmentAssumptions,
+  getTaskTree,
   listCommitmentRelations,
   listWorkspaceAssumptions,
   withdrawCommitmentAssumption,
@@ -623,6 +624,17 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       activeOnly: activeOnly ?? true,
     })));
 
+    server.registerTool("tasq_commitment_tree", {
+      description:
+        "Read a commitment and everything it decomposes into, breadth first. Decomposition answers what a "
+        + "commitment is MADE OF; it is not a dependency and gates nothing. A commitment has exactly one parent or "
+        + "none. For what a commitment waits on, read its relations instead.",
+      inputSchema: { commitmentId: Id },
+      annotations: { readOnlyHint: true },
+    }, ({ commitmentId }) => guarded(async () => getTaskTree(
+      options.db, commitmentId, options.workspaceId,
+    )));
+
     server.registerTool("tasq_assumption_state", {
       description:
         "Read what a commitment rests on: the assumptions attached to it, who stated each one, "
@@ -653,13 +665,14 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
 
   if (capabilities.has("propose")) {
     server.registerTool("tasq_commitment_create", {
-      description: "Create a durable commitment. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability. When this server is configured for evidence-backed completion, successCriteria is required: it states what an inspectable receipt must show before the commitment can be closed.",
+      description: "Create a durable commitment. Pass parentCommitmentId to decompose an existing one: decomposition answers what a commitment is MADE OF, it is not a dependency and gates nothing, and a commitment has exactly one parent or none. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability. When this server is configured for evidence-backed completion, successCriteria is required: it states what an inspectable receipt must show before the commitment can be closed.",
       inputSchema: {
         title: z.string().trim().min(1).max(500),
         description: z.string().max(20_000).nullable().optional(),
         successCriteria: z.string().trim().min(1).max(2_000).nullable().optional(),
         completionPolicy: z.enum(["assertion", "evidence"]).optional(),
         validationRequired: z.boolean().optional(),
+        parentCommitmentId: Id.optional(),
         priority: z.number().int().min(0).max(4).nullable().optional(),
         notBefore: z.number().int().nonnegative().nullable().optional(),
         dueAt: z.number().int().nonnegative().nullable().optional(),
