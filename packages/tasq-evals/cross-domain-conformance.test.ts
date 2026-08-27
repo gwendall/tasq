@@ -123,6 +123,7 @@ describe("UK-007 cross-domain conformance", () => {
         workspaceId,
         actor: "maintainer",
         principalId: maintainer.id,
+        expectedRevision: reproduction.revision,
         occurredAt: 1_238,
         now: 1_238,
       });
