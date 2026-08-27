@@ -9,6 +9,11 @@ import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
 export { buildFleetView } from "./fleet.js";
 export type { FleetHeld, FleetHolder, FleetView } from "./fleet.js";
+
+// Decomposition reads. ADR-023: a commitment has one parent or none, and the
+// kernel carries that without any planning vocabulary.
+export { getTaskTree } from "./service/tasks.js";
+
 export { inspectStoreFormat, listRecoveryPoints, restoreRecoveryPoint } from "./migrations/index.js";
 export type { RecoveryPoint, RestoreOutcome, StoreFormatInspection } from "./migrations/index.js";
 import type { TasqDb as KernelDb } from "./db.js";
