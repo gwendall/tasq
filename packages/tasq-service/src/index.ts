@@ -205,6 +205,8 @@ export type {
 
 // Migrations
 export { newlyActionableAfter } from "@tasq-run/core/internal/service/collaboration";
+export { buildFleetView } from "@tasq-run/core/internal/fleet";
+export type { FleetHeld, FleetHolder, FleetView } from "@tasq-run/core/internal/fleet";
 
 export {
   inspectStoreFormat,

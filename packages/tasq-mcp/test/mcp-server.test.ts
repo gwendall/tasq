@@ -70,6 +70,7 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_commitment_get",
       "tasq_commitment_inspect",
       "tasq_commitment_list",
+      "tasq_commitment_tree",
       "tasq_context",
       "tasq_context_link_get",
       "tasq_context_link_list",
@@ -78,6 +79,7 @@ describe("Tasq MCP capability boundary", () => {
       "tasq_effect_list",
       "tasq_event_list",
       "tasq_onboard",
+      "tasq_relation_list",
       "tasq_resolution_get",
       "tasq_resource_event_list",
       "tasq_resource_get",
@@ -126,6 +128,61 @@ describe("Tasq MCP capability boundary", () => {
     });
     expect(hiddenEffect.isError).toBe(true);
     expect(hiddenEffect.content[0]).toMatchObject({ type: "text", text: expect.stringMatching(/not found/i) });
+  });
+
+  it("records which client holds a lease, from the handshake rather than the model", async () => {
+    // The ledger could not tell a Claude Code client from a Codex client: the
+    // only identity reaching a row was the actor label typed at install time,
+    // and `tasq agent install codex|claude|generic` emits a byte-identical
+    // invocation. clientInfo was received and thrown away. See ADR-022.
+    const { db, client, clock } = await fixture(["read", "propose", "coordinate"]);
+    const commitment = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Work someone holds", idempotencyKey: "who-holds-1" },
+    }));
+    await client.callTool({
+      name: "tasq_claim_acquire",
+      arguments: { commitmentId: commitment.id, leaseMs: 60_000, idempotencyKey: "who-holds-claim" },
+    });
+
+    const held = await getActiveTaskClaim(db, commitment.id, "robotics-lab", clock);
+    const attribution = (held?.metadata as Record<string, any>)["tasq.client"];
+    expect(attribution).toBeDefined();
+    expect(attribution.name).toBe("tasq-mcp-test");
+    expect(attribution.source).toBe("mcp.initialize");
+    // It must never read as authentication. A local process cannot prove what
+    // it is, and the record has to keep saying so.
+    expect(attribution.attestation).toBe("client_library_self_asserted");
+
+    // And where it runs, so a panel can say "this session, in this directory"
+    // rather than only "someone".
+    const runtime = (held?.metadata as Record<string, any>)["tasq.runtime"];
+    expect(runtime.contract).toBe("tasq.runtime-location.v1");
+    expect(runtime.pid).toBe(process.pid);
+    expect(runtime.cwd).toBe(process.cwd());
+    expect(runtime).toHaveProperty("parentCommand");
+  });
+
+  it("does not let a caller overwrite who the ledger says is holding", async () => {
+    const { db, client, clock } = await fixture(["read", "propose", "coordinate"]);
+    const commitment = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Work with forged metadata", idempotencyKey: "forge-1" },
+    }));
+    await client.callTool({
+      name: "tasq_claim_acquire",
+      arguments: {
+        commitmentId: commitment.id,
+        leaseMs: 60_000,
+        idempotencyKey: "forge-claim",
+        metadata: { "tasq.client": { name: "something-else" }, mine: "kept" },
+      },
+    });
+
+    const held = await getActiveTaskClaim(db, commitment.id, "robotics-lab", clock);
+    const metadata = held?.metadata as Record<string, any>;
+    expect(metadata["tasq.client"].name).toBe("tasq-mcp-test");
+    expect(metadata.mine).toBe("kept");
   });
 
   it("lets an agent retract a belief and reach every commitment resting on it", async () => {
@@ -177,6 +234,86 @@ describe("Tasq MCP capability boundary", () => {
       arguments: { commitmentId: second.id },
     }));
     expect(after.paused).toBe(true);
+  });
+
+  it("lets an agent build the dependency graph, and refuses a cycle", async () => {
+    // discovery.ts advertised a `relations` capability with four operations and
+    // no wire surface served it: MCP had no relation tool at all, so an agent
+    // could not add a single edge. See ADR-022.
+    const { client } = await fixture(["read", "propose"]);
+    const first = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Ship the fix", idempotencyKey: "rel-a" },
+    }));
+    const second = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Reproduce the bug", idempotencyKey: "rel-b" },
+    }));
+
+    const edge = structured<{ id: string; relationType: string; revision: number }>(await client.callTool({
+      name: "tasq_relation_add",
+      arguments: {
+        fromCommitmentId: first.id,
+        toCommitmentId: second.id,
+        relationType: "depends_on",
+        idempotencyKey: "rel-edge",
+      },
+    }));
+    expect(edge.relationType).toBe("depends_on");
+
+    // An array result is wrapped as { value }, because MCP structured content
+    // must be a JSON object.
+    const listed = structured<{ value: Array<{ fromTaskId: string; toTaskId: string }> }>(
+      await client.callTool({ name: "tasq_relation_list", arguments: { commitmentId: first.id } }),
+    );
+    expect(listed.value).toHaveLength(1);
+    expect(listed.value[0]!.toTaskId).toBe(second.id);
+
+    // The cycle guard is the kernel's, reused rather than duplicated.
+    const cycle = await client.callTool({
+      name: "tasq_relation_add",
+      arguments: {
+        fromCommitmentId: second.id,
+        toCommitmentId: first.id,
+        relationType: "depends_on",
+        idempotencyKey: "rel-cycle",
+      },
+    });
+    expect(cycle.isError).toBe(true);
+    expect(JSON.stringify(cycle.content)).toMatch(/cycle/i);
+
+    const ended = structured<{ endedAt: number | null }>(await client.callTool({
+      name: "tasq_relation_end",
+      arguments: { relationId: edge.id, expectedRevision: edge.revision, idempotencyKey: "rel-end" },
+    }));
+    expect(ended.endedAt).not.toBeNull();
+  });
+
+  it("lets an agent decompose a commitment and read the tree back", async () => {
+    // MCP had zero hierarchy tools across 57: an agent could only produce a flat
+    // pile while a human on the CLI got decomposition. ADR-023 separates
+    // decomposition from the planning vocabulary, which is what makes this
+    // expressible without area/goal/project entering the kernel surface.
+    const { client } = await fixture(["read", "propose"]);
+    const parent = structured<{ id: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: { title: "Calibrate the arm", idempotencyKey: "tree-parent" },
+    }));
+    const child = structured<{ id: string; parentCommitmentId: string }>(await client.callTool({
+      name: "tasq_commitment_create",
+      arguments: {
+        title: "Home all six axes",
+        parentCommitmentId: parent.id,
+        idempotencyKey: "tree-child",
+      },
+    }));
+    expect(child.parentCommitmentId).toBe(parent.id);
+
+    const tree = structured<{ value: Array<{ id: string }> }>(await client.callTool({
+      name: "tasq_commitment_tree",
+      arguments: { commitmentId: parent.id },
+    }));
+    expect(tree.value.map((node) => node.id)).toEqual([parent.id, child.id]);
   });
 
   it("lets an agent report a discovery without touching its claim", async () => {
@@ -713,6 +850,7 @@ describe("Tasq MCP agent flow", () => {
       name: "tasq_commitment_list",
       arguments: {},
     }));
+    if (!Array.isArray(listed.items)) throw new Error(`shape: ${JSON.stringify(listed).slice(0, 400)}`);
     expect(listed.items).toHaveLength(1);
   });
 });

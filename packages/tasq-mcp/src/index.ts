@@ -1,4 +1,5 @@
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { spawnSync } from "node:child_process";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { createHash } from "node:crypto";
@@ -28,9 +29,13 @@ import {
   cancelEffect,
   challengeCompletion,
   completeCommitment,
+  addCommitmentRelation,
   attachCommitmentAssumption,
   captureCommitmentDiscovery,
+  endCommitmentRelation,
   getCommitmentAssumptions,
+  getTaskTree,
+  listCommitmentRelations,
   listWorkspaceAssumptions,
   withdrawCommitmentAssumption,
   createCommitment,
@@ -230,6 +235,77 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       `This connection exposes only: ${[...capabilities].sort().join(", ") || "no tool capabilities"}.`,
     ].join(" "),
   });
+  /**
+   * Who is on the other end of this connection, from the MCP `initialize`
+   * handshake.
+   *
+   * Until 2026-08-27 the ledger could not tell a Claude Code client from a
+   * Codex client: the only identity reaching a row was the actor label an
+   * operator typed at install time, and `tasq agent install codex|claude|generic`
+   * emits a byte-identical invocation for all three. `clientInfo` was received
+   * and discarded.
+   *
+   * This is ATTRIBUTION, NOT AUTHENTICATION, and the record says so. A local
+   * process cannot prove what it is - any secret it holds is readable on the
+   * same machine - which is why `localAlias` is already documented as "never
+   * authentication/authority". What makes this worth recording anyway is that
+   * `clientInfo` is set by the client LIBRARY, not chosen by the model, so it
+   * is host-attested rather than self-reported the way `attempt.runtime` is.
+   */
+  let connectedClient: { name: string; version?: string } | undefined;
+  server.server.oninitialized = () => {
+    const reported = server.server.getClientVersion();
+    if (reported?.name) connectedClient = { name: reported.name, version: reported.version };
+  };
+
+  /**
+   * Where this server runs, observed once at construction.
+   *
+   * The MCP server is spawned BY the agent host, so its parent process is that
+   * host and its working directory is the project the agent is in. Nothing in
+   * the ledger recorded any of it: no pid, no cwd, no session, no host column
+   * anywhere. That is the difference between "someone holds this" and "this
+   * session, in this directory, and here is how to reach it".
+   *
+   * Read once - a process does not change its parent or its start directory -
+   * and treated as a hint for a human, never as authority. It goes stale the
+   * moment the process dies, which the expiring lease already handles better
+   * than any process list would.
+   */
+  const runtimeLocation = (() => {
+    let host: string | null = null;
+    try {
+      const parent = spawnSync("ps", ["-p", String(process.ppid), "-o", "comm="], { encoding: "utf8" });
+      const reported = parent.status === 0 ? parent.stdout.trim() : "";
+      if (reported) host = reported;
+    } catch {
+      // No `ps`, or a platform that answers differently. The pid still helps.
+    }
+    return {
+      contract: "tasq.runtime-location.v1" as const,
+      pid: process.pid,
+      parentPid: process.ppid,
+      parentCommand: host,
+      cwd: process.cwd(),
+    };
+  })();
+
+  /** Reserved attribution the caller cannot overwrite by passing its own metadata. */
+  const clientAttribution = (): Record<string, unknown> => ({
+    "tasq.runtime": runtimeLocation,
+    ...(connectedClient
+      ? {
+        "tasq.client": {
+          contract: "tasq.client-attribution.v1",
+          name: connectedClient.name,
+          version: connectedClient.version ?? null,
+          source: "mcp.initialize",
+          attestation: "client_library_self_asserted",
+        },
+      }
+      : {}),
+  });
+
   const now = () => options.clock.now();
   const kernelContext = (idempotencyKey?: string) => {
     const snapshot = now();
@@ -531,6 +607,34 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       return { contents: [{ uri: uri.href, mimeType: "application/schema+json", text: JSON.stringify(schema) }] };
     });
 
+    server.registerTool("tasq_relation_list", {
+      description:
+        "Read the relations around a commitment. `depends_on` is the only type that affects whether work is "
+        + "actionable: a commitment with an unresolved depends_on edge is filtered out of selection and refused at "
+        + "claim. `discovered_from`, `relates_to` and `duplicates` are informational and never gate anything. Use "
+        + "this before assuming a commitment stands alone.",
+      inputSchema: {
+        commitmentId: Id.optional(),
+        activeOnly: z.boolean().optional(),
+      },
+      annotations: { readOnlyHint: true },
+    }, ({ commitmentId, activeOnly }) => guarded(async () => listCommitmentRelations(options.db, {
+      tenantId: options.workspaceId,
+      commitmentId,
+      activeOnly: activeOnly ?? true,
+    })));
+
+    server.registerTool("tasq_commitment_tree", {
+      description:
+        "Read a commitment and everything it decomposes into, breadth first. Decomposition answers what a "
+        + "commitment is MADE OF; it is not a dependency and gates nothing. A commitment has exactly one parent or "
+        + "none. For what a commitment waits on, read its relations instead.",
+      inputSchema: { commitmentId: Id },
+      annotations: { readOnlyHint: true },
+    }, ({ commitmentId }) => guarded(async () => getTaskTree(
+      options.db, commitmentId, options.workspaceId,
+    )));
+
     server.registerTool("tasq_assumption_state", {
       description:
         "Read what a commitment rests on: the assumptions attached to it, who stated each one, "
@@ -561,13 +665,14 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
 
   if (capabilities.has("propose")) {
     server.registerTool("tasq_commitment_create", {
-      description: "Create a durable commitment. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability. When this server is configured for evidence-backed completion, successCriteria is required: it states what an inspectable receipt must show before the commitment can be closed.",
+      description: "Create a durable commitment. Pass parentCommitmentId to decompose an existing one: decomposition answers what a commitment is MADE OF, it is not a dependency and gates nothing, and a commitment has exactly one parent or none. The workspace and actor are injected by the host; public-roadmap direction metadata requires the direction capability. When this server is configured for evidence-backed completion, successCriteria is required: it states what an inspectable receipt must show before the commitment can be closed.",
       inputSchema: {
         title: z.string().trim().min(1).max(500),
         description: z.string().max(20_000).nullable().optional(),
         successCriteria: z.string().trim().min(1).max(2_000).nullable().optional(),
         completionPolicy: z.enum(["assertion", "evidence"]).optional(),
         validationRequired: z.boolean().optional(),
+        parentCommitmentId: Id.optional(),
         priority: z.number().int().min(0).max(4).nullable().optional(),
         notBefore: z.number().int().nonnegative().nullable().optional(),
         dueAt: z.number().int().nonnegative().nullable().optional(),
@@ -655,6 +760,43 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       options.db,
       { because: input.because, reason: input.reason, evidenceIds: input.evidenceIds ?? [] },
       kernelContext(undefined),
+    )));
+
+    server.registerTool("tasq_relation_add", {
+      description:
+        "Record how two commitments relate. Use `depends_on` when the first genuinely cannot proceed until the "
+        + "second resolves - it removes the commitment from selection and refuses a claim on it, so it is a real "
+        + "constraint and not a note. Use `relates_to` or `duplicates` for association that must not gate anything. "
+        + "A depends_on edge that would close a cycle is refused. This proposes ordering; it exercises no authority "
+        + "over anyone's claim.",
+      inputSchema: {
+        fromCommitmentId: Id,
+        toCommitmentId: Id,
+        relationType: z.enum(["depends_on", "relates_to", "duplicates"]),
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ fromCommitmentId, toCommitmentId, relationType, idempotencyKey }) => guarded(async () =>
+      addCommitmentRelation(options.db, {
+        tenantId: options.workspaceId,
+        fromTaskId: fromCommitmentId,
+        toTaskId: toCommitmentId,
+        relationType,
+      }, { ...serviceContext(idempotencyKey) })));
+
+    server.registerTool("tasq_relation_end", {
+      description:
+        "End a relation with a compare-and-swap revision. Ending a depends_on edge makes the dependent actionable "
+        + "again; it does not complete anything. The relation is retained, not deleted, so the history of what was "
+        + "believed to constrain what stays readable.",
+      inputSchema: {
+        relationId: Id,
+        expectedRevision: Revision,
+        idempotencyKey: IdempotencyKey,
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    }, ({ relationId, expectedRevision, idempotencyKey }) => guarded(async () => endCommitmentRelation(
+      options.db, relationId, { ...serviceContext(idempotencyKey), expectedRevision },
     )));
 
     server.registerTool("tasq_commitment_update", {
@@ -988,7 +1130,15 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     }, ({ commitmentId, idempotencyKey, ...input }) => guarded(async () => acquireTaskClaim(
-      options.db, commitmentId, { ...serviceContext(idempotencyKey), ...input },
+      options.db,
+      commitmentId,
+      {
+        ...serviceContext(idempotencyKey),
+        ...input,
+        // Attribution last, so a caller passing its own metadata cannot
+        // overwrite who the ledger recorded as holding the lease.
+        metadata: { ...(input.metadata ?? {}), ...clientAttribution() },
+      },
     )));
 
     server.registerTool("tasq_claim_release", {

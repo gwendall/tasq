@@ -49,11 +49,11 @@ describe("claiming a blocked commitment", () => {
       expect(next.map((entry) => entry.task.id)).not.toContain(f.dependent.id);
 
       await expect(acquireTaskClaim(f.db, f.dependent.id, {
-        actor: "agent-a", now: NOW, durationMs: 60_000, idempotencyKey: "claim:blocked",
+        actor: "agent-a", now: NOW, leaseMs: 60_000, idempotencyKey: "claim:blocked",
       })).rejects.toThrow(/blocked by 1 unresolved commitment/);
 
       await expect(acquireTaskClaim(f.db, f.dependent.id, {
-        actor: "agent-a", now: NOW, durationMs: 60_000, idempotencyKey: "claim:blocked-2",
+        actor: "agent-a", now: NOW, leaseMs: 60_000, idempotencyKey: "claim:blocked-2",
       })).rejects.toThrow(new RegExp(f.blocker.id));
     } finally {
       await f.close();
@@ -64,7 +64,7 @@ describe("claiming a blocked commitment", () => {
     const f = await fixture();
     try {
       const claim = await acquireTaskClaim(f.db, f.dependent.id, {
-        actor: "agent-a", now: NOW, durationMs: 60_000, force: true, idempotencyKey: "claim:forced",
+        actor: "agent-a", now: NOW, leaseMs: 60_000, force: true, idempotencyKey: "claim:forced",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {
@@ -77,7 +77,7 @@ describe("claiming a blocked commitment", () => {
     try {
       await completeTask(f.db, f.blocker.id, { now: NOW + 1 });
       const claim = await acquireTaskClaim(f.db, f.dependent.id, {
-        actor: "agent-a", now: NOW + 2, durationMs: 60_000, idempotencyKey: "claim:unblocked",
+        actor: "agent-a", now: NOW + 2, leaseMs: 60_000, idempotencyKey: "claim:unblocked",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {
@@ -91,7 +91,7 @@ describe("claiming a blocked commitment", () => {
       // The edge id is optional; the natural key is the ergonomic form.
       await undependTask(f.db, null, { fromTaskId: f.dependent.id, toTaskId: f.blocker.id, type: "blocks" });
       const claim = await acquireTaskClaim(f.db, f.dependent.id, {
-        actor: "agent-a", now: NOW + 1, durationMs: 60_000, idempotencyKey: "claim:undepended",
+        actor: "agent-a", now: NOW + 1, leaseMs: 60_000, idempotencyKey: "claim:undepended",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {
@@ -103,7 +103,7 @@ describe("claiming a blocked commitment", () => {
     const f = await fixture();
     try {
       const claim = await acquireTaskClaim(f.db, f.blocker.id, {
-        actor: "agent-a", now: NOW, durationMs: 60_000, idempotencyKey: "claim:plain",
+        actor: "agent-a", now: NOW, leaseMs: 60_000, idempotencyKey: "claim:plain",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {

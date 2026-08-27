@@ -111,7 +111,7 @@ describe("shared assumptions", () => {
       }, { now: NOW + 1 });
 
       await expect(acquireTaskClaim(f.db, task.id, {
-        actor: "agent-a", now: NOW + 2, durationMs: 60_000, idempotencyKey: "claim:paused",
+        actor: "agent-a", now: NOW + 2, leaseMs: 60_000, idempotencyKey: "claim:paused",
       })).rejects.toThrow(/paused/);
     } finally {
       await f.close();
@@ -174,7 +174,7 @@ describe("shared assumptions", () => {
       expect(state.assumptions[0]!.link.unlinkReason).toContain("interactive use");
 
       const claim = await acquireTaskClaim(f.db, task.id, {
-        actor: "agent-a", now: NOW + 3, durationMs: 60_000, idempotencyKey: "claim:resumed",
+        actor: "agent-a", now: NOW + 3, leaseMs: 60_000, idempotencyKey: "claim:resumed",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {
@@ -194,7 +194,7 @@ describe("shared assumptions", () => {
       expect(next.map((entry) => entry.task.id)).toContain(plain.id);
 
       const claim = await acquireTaskClaim(f.db, plain.id, {
-        actor: "agent-a", now: NOW + 1, durationMs: 60_000, idempotencyKey: "claim:plain",
+        actor: "agent-a", now: NOW + 1, leaseMs: 60_000, idempotencyKey: "claim:plain",
       });
       expect(claim.actor).toBe("agent-a");
     } finally {
