@@ -66,6 +66,7 @@ import { remoteCmd } from "./commands/remote.js";
 import { signatureCmd } from "./commands/signature.js";
 import { captureCmd } from "./commands/capture.js";
 import { becauseCmd, resumeCmd, whyCmd, wrongCmd } from "./commands/assumption.js";
+import { fleetCmd } from "./commands/fleet.js";
 import { storeCmd } from "./commands/store.js";
 import { costCmd } from "./commands/cost.js";
 import { premiseCmd } from "./commands/premise.js";
@@ -147,6 +148,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     resume: ["reason"],
     because: ["status"],
     store: ["force", "to"],
+    fleet: [],
     event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
     projection: ["target"],
     backup: ["target", "rotate"],
@@ -254,6 +256,8 @@ ${color.bold("AGENT COORDINATION")}
                                  preview an exact host-bound MCP registration
   agent instructions --space <id> [--write|--check]
                                  manage the versioned Tasq block in AGENTS.md
+  fleet                          who is holding what right now, and for how
+                                 much longer their lease runs
   claim <id> [--for 30m] [--force]
                                  atomically claim work (repeat to heartbeat);
                                  --force takes work whose blockers are unresolved
@@ -559,6 +563,9 @@ async function dispatch(
         return await resumeCmd(args);
       case "because":
         return await becauseCmd(args);
+
+      case "fleet":
+        return await fleetCmd(args);
 
       // Store safety envelope (recovery points and their rollback rule)
       case "store":
