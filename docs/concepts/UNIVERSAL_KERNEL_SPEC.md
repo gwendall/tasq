@@ -253,15 +253,24 @@ from_commitment_id, relation_type, to_commitment_id
 revision, created_by, created_at, ended_by, ended_at
 ```
 
-First-party relation types:
+First-party relation types. Every one has a writer; a declared type nothing
+produces is indistinguishable, to a reader, from one that works (ADR-023):
 
-- `parent_of` — structural decomposition;
 - `depends_on` — the `from` commitment is not actionable until `to` resolves;
 - `discovered_from` — informational provenance from newly captured work to the
   commitment whose execution exposed it; never affects actionability;
 - `relates_to` — non-causal association;
-- `duplicates` — identity/intent overlap;
-- `supersedes` — append-only correction lineage.
+- `duplicates` — identity/intent overlap.
+
+**Decomposition is not a relation.** A commitment has exactly one parent or
+none, and `task.parentTaskId` gets that from a foreign key; a relation table
+would need a partial unique index to forbid what the column cannot express.
+Decomposition answers *what is this made of*, dependency answers *who is
+waiting on what*, and only the second is many-to-many.
+
+**Correction lineage is not a relation either.** What supersedes what is
+type-specific — `supersedesEvidenceId`, `supersedesSummaryId`,
+`supersedesLinkId` — each with its own uniqueness rule.
 
 Extensions may add namespaced types. Relation descriptors declare direction,
 allowed endpoint types, symmetry and whether cycles are forbidden.
