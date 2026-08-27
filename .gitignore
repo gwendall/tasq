@@ -1,6 +1,10 @@
 node_modules/
 dist/
 .tasq/
+
+# Local research wiki. Competitive notes and a survey of a proprietary
+# product; deliberately not published from an Apache-2.0 repository.
+research/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
