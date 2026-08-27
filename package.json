@@ -15,6 +15,7 @@
     "dogfood": "bun scripts/dogfood.ts",
     "verify:quick": "bun scripts/verify-handoff.ts --quick",
     "verify:handoff": "bun scripts/verify-handoff.ts",
+    "verify:release-rehearsal": "bun scripts/verify-release-rehearsal.ts",
     "docs:check": "bun test packages/tasq-evals/documentation-contract.test.ts",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm --workspace-concurrency=1 -r --if-present test",
