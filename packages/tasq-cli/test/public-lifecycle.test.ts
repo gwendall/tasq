@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { chmod, copyFile, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -312,8 +313,20 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
       "--checksums", release.checksums, "--prefix", prefix,
     ]);
     expect(collision.exitCode).toBe(1);
-    expect(collision.stderr).toContain("refusing to replace unmanaged path");
+    // The PROPERTIES, not a sentence. This asserted a fixed string and broke
+    // when the message was made readable, which is the wrong thing to be
+    // brittle about: what matters is that it refused, said how to proceed, and
+    // created nothing.
+    expect(collision.stderr).toContain("is not a managed symlink");
+    expect(collision.stderr).toContain("Nothing has been created");
+    expect(collision.stderr).toContain("--prefix <path>");
     expect(await readFile(join(prefix, "bin", "tasq"), "utf8")).toBe("unmanaged\n");
+    // And nothing was staged before the refusal. The check used to fire after
+    // the archive was extracted and the record written, which left two
+    // directories behind and made the NEXT run fail with a raw EEXIST.
+    for (const created of ["lib/tasq", "share/tasq"]) {
+      expect(existsSync(join(prefix, created)), `${created} was created before refusing`).toBe(false);
+    }
 
     const alteredInstaller = join(root, "altered", basename(release.installer));
     await mkdir(join(root, "altered"), { recursive: true });
