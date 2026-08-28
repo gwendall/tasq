@@ -6,10 +6,17 @@
  * types; they never change the kernel schema. Every time value is injected.
  */
 
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it, setDefaultTimeout } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
+// Every TIME VALUE in these narratives is injected; the WALL CLOCK they run
+// against is not. Three narratives against a real migrated store take about a
+// second here and nearly six on a loaded CI runner, and bun's 5s default
+// turned that into a failure that says nothing about the code. The other eval
+// suites already sit between 20s and 120s.
+setDefaultTimeout(60_000);
 import {
   acceptAssignment,
   acquireTaskClaim,
