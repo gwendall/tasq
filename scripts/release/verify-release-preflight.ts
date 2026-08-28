@@ -185,13 +185,25 @@ if (typeof published === "string" && !isOlder(published, targetVersion)) {
 // the new one permanently uncertifiable. That is what happened to v0.4.1 on the
 // `version` field and to v0.5.1 on this one, which is the same trap one field
 // over.
-const tq616State = policy.certificationPrograms?.tq616SignedStatements?.state;
-if (tq616State !== "authorized") {
-  stale.push(
-    `policy.certificationPrograms.tq616SignedStatements.state is ${tq616State ?? "missing"}, not "authorized" `
-      + "(the certification reads this from the immutable tag and refuses anything else, so it cannot be "
-      + "corrected after tagging)",
-  );
+// Both version-pinned blocks carry a state, and BOTH have to move with their
+// version. When this guard was written after v0.5.1 it was applied to the TQ-616
+// block only, so `releaseAuthorization` kept the state of the release it had
+// already been consumed by while naming the next one. Applying a lesson to one
+// of two identical shapes is how the same trap comes back.
+for (const [path, state] of [
+  ["policy.releaseAuthorization.state", policy.releaseAuthorization?.state],
+  [
+    "policy.certificationPrograms.tq616SignedStatements.state",
+    policy.certificationPrograms?.tq616SignedStatements?.state,
+  ],
+] as const) {
+  if (state !== "authorized") {
+    stale.push(
+      `${path} is ${state ?? "missing"}, not "authorized" `
+        + "(read from the immutable tag, so it cannot be corrected after tagging; "
+        + `"published_certified" belongs to a release that is already out)`,
+    );
+  }
 }
 
 // A release that moves the store format needs a certification describing THAT

@@ -47,6 +47,7 @@ async function afterPublication(released: string) {
   policy.releaseAuthorization.version = released;
   policy.certificationPrograms.tq616SignedStatements.version = released;
   policy.certificationPrograms.tq616SignedStatements.state = "published_certified";
+  policy.releaseAuthorization.state = "published_certified";
   policy.publishedRelease.version = released;
   // A properly prepared release carries a migration certification describing the
   // format it ships. The stale-format case is its own test below.
@@ -72,6 +73,7 @@ function advanceToTag(policy: Record<string, any>, version: string) {
   policy.releaseAuthorization.version = version;
   policy.certificationPrograms.tq616SignedStatements.version = version;
   policy.certificationPrograms.tq616SignedStatements.state = "authorized";
+  policy.releaseAuthorization.state = "authorized";
 }
 
 describe("release preflight", () => {
@@ -103,6 +105,9 @@ describe("release preflight", () => {
       // The state is a separate pin on the same block. v0.4.1 was caught by the
       // version and v0.5.1 went out partial on the state, so both are named.
       expect(refused.stderr).toContain("certificationPrograms.tq616SignedStatements.state");
+      // Both blocks, not one: applying the lesson to half of an identical pair
+      // is exactly how v0.5.1 repeated v0.4.1.
+      expect(refused.stderr).toContain("policy.releaseAuthorization.state");
       expect(refused.stderr).toContain("immutable tag");
     } finally {
       await rm(root, { recursive: true, force: true });
