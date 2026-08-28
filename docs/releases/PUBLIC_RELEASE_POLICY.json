@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "authorized",
+    "state": "published_certified",
     "version": "0.6.0",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-27",
-    "rationale": "Authorized for v0.6.0, not yet published. It ships the first of the live human surface named by ADR-022 (`tasq fleet`, `tasq whoami`), decomposition and relations in the kernel and on both doors, one-command project setup, and per-installation device identity, moving the store from format 33 to 34: every 0.5.x store migrates forward once, irreversibly, and `tasq store upgrade` makes that a decision rather than a side effect. It also carries the release machinery this line kept needing: a rehearsal that runs the whole certification loop before a tag exists, a publication record measured against the newest tag rather than against itself, and a test typecheck that holds every package clean."
+    "rationale": "Consumed by v0.6.0, published 2026-08-28T19:41:42Z. It shipped the first of the live human surface named by ADR-022 (`tasq fleet`, `tasq whoami`), decomposition and relations on both doors, one-command project setup, per-installation device identity, and `tasq contention` - which closed the gap that mattered most: the ledger recorded everything it allowed and nothing it prevented, so nobody could answer how many collisions it stopped. Store format 33 to 35."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,7 +385,7 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "authorized",
+      "state": "published_certified",
       "workflow": "certify-published-release.yml",
       "environment": "release",
       "version": "0.6.0",
@@ -517,60 +517,47 @@
     }
   },
   "publishedRelease": {
-    "version": "0.5.1",
-    "tag": "v0.5.1",
-    "sourceCommit": "d54fb07bd175b21635b3a5cb8f553032ed48a399",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.5.1",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/33022936280",
-    "publishedAt": "2026-08-26T23:23:29Z",
+    "version": "0.6.0",
+    "tag": "v0.6.0",
+    "sourceCommit": "fbf59471d546824e679631d74664300f8d2c6ea6",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.0",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/33204772421",
+    "publishedAt": "2026-08-28T19:41:42Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.5.1"
+        "version": "0.6.0"
       },
       {
         "name": "@tasq-run/client",
         "version": "0.4.0"
       }
     ],
-    "certification": "docs/releases/PUBLIC_RELEASE_POLICY.json",
-    "postReleaseCertification": {
-      "status": "passed",
-      "certifiedAt": "2026-08-26T07:08:55Z",
-      "workflowRun": "https://github.com/gwendall/tasq/actions/runs/32941390312",
-      "targets": [
-        "darwin-arm64",
-        "linux-x64-gnu"
-      ],
-      "downloadedByteLifecyclePassed": true,
-      "registryTarballsMatched": true,
-      "tq616EligibilityPassed": true,
-      "note": "All four certification jobs passed on both targets, including the npm-registry stage that failed for v0.4.1 on a TQ-616 program block naming an older version. The release preflight introduced in this version refuses a tag while any block a workflow reads from the tagged commit is stale, which is what made this complete."
-    }
+    "certification": "docs/releases/PUBLIC_RELEASE_POLICY.json"
   },
   "retiredReleases": [
     {
