@@ -64,6 +64,12 @@ describe("local discovery capture", () => {
     const refused = await run(home, ["start", source.id, "--expected-revision", "999"]);
     expect(refused.exitCode).not.toBe(0);
     expect(refused.stderr).toContain("capture discovered work without leaving this task");
+    // The suggestion is meant to be pasted, so it must name the command a
+    // person has, not the versioned internal path this build lives at - which
+    // stops working the moment the managed symlink moves.
+    expect(refused.stderr).toContain("'tasq' 'capture'");
+    expect(refused.stderr).not.toContain("/lib/tasq/");
+    expect(refused.stderr).not.toContain("index.ts");
     const recipe = refused.stderr.split("\n").find((line) => line.trimStart().startsWith("'"))?.trim();
     expect(recipe).toBeDefined();
     const shell = Bun.spawn(["sh", "-c", recipe!], {

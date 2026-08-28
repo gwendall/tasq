@@ -6,7 +6,10 @@ export const CONSOLE_JS = `
   const query = document.querySelector("#record-query");
   const state = document.querySelector("#record-state");
   const result = document.querySelector("#filter-result");
-  const rows = Array.from(document.querySelectorAll("[data-filter-row]"));
+  // Re-queried rather than captured once: the record list is replaced in place
+  // when the live feed reports a change, and a captured array would keep
+  // filtering rows that are no longer on the page.
+  let rows = Array.from(document.querySelectorAll("[data-filter-row]"));
   const applyFilter = () => {
     const needle = (query?.value || "").trim().toLowerCase();
     const wantedState = state?.value || "";
@@ -30,9 +33,44 @@ export const CONSOLE_JS = `
     liveStatus.textContent = label;
   };
   refresh?.addEventListener("click", () => location.reload());
-  const markStale = () => {
-    setLive("stale", "Changes available");
+  const markStale = (label) => {
+    setLive("stale", label || "Changes available");
     if (refresh) refresh.hidden = false;
+  };
+
+  /**
+   * Bring the records up to date without asking a human to press a button.
+   *
+   * The feed deliberately strips payloads, so the client knows THAT something
+   * changed and never WHAT - it cannot rebuild a row from the event. So it
+   * re-fetches this exact view and swaps the record list, which is also why
+   * the filter inputs live outside the swapped container: a refresh that
+   * discards what someone typed is a refresh they stop trusting.
+   *
+   * On failure it degrades to the old behaviour rather than pretending: a
+   * stale badge and a button that reloads.
+   */
+  let refreshing = false;
+  const refreshRecords = async () => {
+    if (refreshing) return;
+    refreshing = true;
+    try {
+      const response = await fetch(location.href, { headers: { Accept: "text/html" } });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+      const fresh = parsed.querySelector("#record-results");
+      const target = document.querySelector("#record-results");
+      if (!fresh || !target) throw new Error("record list not found");
+      target.innerHTML = fresh.innerHTML;
+      rows = Array.from(document.querySelectorAll("[data-filter-row]"));
+      applyFilter();
+      setLive("connected", "Live connection");
+      if (refresh) refresh.hidden = true;
+    } catch {
+      markStale("Changes available");
+    } finally {
+      refreshing = false;
+    }
   };
 
   let cursor = document.body.dataset.liveCursor || "";
@@ -46,7 +84,7 @@ export const CONSOLE_JS = `
     source.addEventListener("open", () => setLive("connected", "Live connection"));
     source.addEventListener("changes", (event) => {
       if (event.lastEventId) cursor = event.lastEventId;
-      markStale();
+      void refreshRecords();
     });
     source.addEventListener("gap", () => {
       intentionalClose = true;
@@ -70,7 +108,9 @@ export const CONSOLE_JS = `
           cursor = batch.nextCursor;
           if (!batch.hasMore) break;
         }
-        markStale();
+        // Caught up on the cursor; bring the records with it rather than
+        // leaving a badge behind after a recovery that succeeded.
+        await refreshRecords();
         connect();
       } catch (error) {
         setLive("disconnected", "Recovery failed. Refresh required");
