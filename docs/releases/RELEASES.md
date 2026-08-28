@@ -41,7 +41,7 @@ uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
 seven original packages. The separately bootstrapped client identity followed
-the same fail-closed handoff. Current `v0.5.1` is published, carrying the seven packages that changed;
+the same fail-closed handoff. Current `v0.6.0` is published, carrying the seven packages that changed;
 `@tasq-run/client` stays at the version it was last published at; the post-release workflow certifies their complete lifecycle
 without a repository checkout on both supported targets. TQ-607 remains the
 retained-data gate for stable graduation, not for the explicitly labeled
@@ -51,7 +51,24 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
-## `v0.5.1` current release, partially certified
+## `v0.6.0` current release
+
+Published 2026-08-28T19:41:42Z from tag `v0.6.0`, protected run
+[33204772421](https://github.com/gwendall/tasq/actions/runs/33204772421).
+
+It is the first release tagged after `pnpm verify:release-rehearsal` existed:
+the whole certification loop - build a real artifact, install it, drive all
+three replays through it - ran on the tagged commit BEFORE the tag, which is
+what the previous two releases each needed and neither had.
+
+Both version-pinned `state` fields were guarded this time. After `v0.5.1`
+shipped partially certified on `tq616SignedStatements.state`, the preflight was
+taught to guard that field on that block only; `releaseAuthorization` kept the
+state of the release it had already been consumed by while naming the next one,
+and a test caught it during preparation. Applying a lesson to half of an
+identical pair is precisely how `v0.5.1` repeated `v0.4.1`.
+
+## `v0.5.1` partially certified
 
 Published 2026-08-26T23:23:29Z from tag `v0.5.1`. Its byte-verified binaries and
 npm packages are out, and **its post-release certification could not complete.**
