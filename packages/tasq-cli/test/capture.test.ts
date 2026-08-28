@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, setDefaultTimeout } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -66,12 +66,28 @@ describe("local discovery capture", () => {
     expect(refused.stderr).toContain("capture discovered work without leaving this task");
     const recipe = refused.stderr.split("\n").find((line) => line.trimStart().startsWith("'"))?.trim();
     expect(recipe).toBeDefined();
+    // A `tasq` on PATH, because that is what the person pasting this has. The
+    // suggestion names the command rather than the versioned internal path it
+    // used to print, so "pasteable" and "executable" are the same property
+    // here - and testing it without a `tasq` would have made them opposites.
+    const shimDir = join(home, "shim");
+    mkdirSync(shimDir, { recursive: true });
+    writeFileSync(
+      join(shimDir, "tasq"),
+      `#!/bin/sh\nexec bun run ${cli} "$@"\n`,
+      { encoding: "utf8", mode: 0o755 },
+    );
     const shell = Bun.spawn(["sh", "-c", recipe!], {
       // The recipe runs where the agent is working, and setup bound that
       // directory. Running it from the repository trips the guard that refuses
       // to write another project's ledger, which is the guard doing its job.
       cwd: join(home, "workspace"),
-      env: { ...globalThis.process.env, HOME: home, TASQ_DB_URL: "" },
+      env: {
+        ...globalThis.process.env,
+        PATH: `${shimDir}:${globalThis.process.env.PATH ?? ""}`,
+        HOME: home,
+        TASQ_DB_URL: "",
+      },
       stdout: "pipe",
       stderr: "pipe",
     });
