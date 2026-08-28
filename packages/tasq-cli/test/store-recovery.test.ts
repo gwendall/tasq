@@ -40,8 +40,8 @@ async function storeWithARecoveryPoint(): Promise<{ dbPath: string; taskId: stri
   const task = await createTask(handle.db, { title: "work that predates the upgrade" });
   // Roll the history back one migration so the store reads as the previous format.
   await handle.client.executeMultiple(`
-    DROP TABLE principal_device;
-    DELETE FROM _migration WHERE name = '0034_principal_device.sql';
+    DROP TABLE contention;
+    DELETE FROM _migration WHERE name = '0035_contention.sql';
   `);
   await handle.close();
 
@@ -79,7 +79,7 @@ describe("store recovery points", () => {
       const applied = await handle.client.execute("SELECT name FROM _migration ORDER BY name DESC LIMIT 1");
       // The snapshot was taken one format back, so the restored store must end
       // at the migration BEFORE the one this build ships.
-      expect(String(applied.rows[0]?.["name"])).toBe("0033_shared_assumptions.sql");
+      expect(String(applied.rows[0]?.["name"])).toBe("0034_principal_device.sql");
       // The work that predates the upgrade must survive the way back.
       const rows = await handle.client.execute({ sql: "SELECT id FROM task WHERE id = ?", args: [taskId] });
       expect(rows.rows).toHaveLength(1);
@@ -120,7 +120,7 @@ describe("store recovery points", () => {
     const handle = await openDb({ url: `file:${outcome.replacedStorePath}`, wal: false });
     try {
       const applied = await handle.client.execute("SELECT name FROM _migration ORDER BY name DESC LIMIT 1");
-      expect(String(applied.rows[0]?.["name"])).toBe("0034_principal_device.sql");
+      expect(String(applied.rows[0]?.["name"])).toBe("0035_contention.sql");
     } finally {
       await handle.close();
     }

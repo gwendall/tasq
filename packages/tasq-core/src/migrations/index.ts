@@ -36,7 +36,7 @@ const __dirname = dirname(__filename);
  * bump that moved only `current` left the executable declaring it could read
  * and write the PREVIOUS format - a claim nothing downstream questions.
  */
-const CURRENT_STORE_FORMAT = 34;
+const CURRENT_STORE_FORMAT = 35;
 
 export const STORE_FORMAT_COMPATIBILITY = Object.freeze({
   contractVersion: "tasq.store-format.v1" as const,

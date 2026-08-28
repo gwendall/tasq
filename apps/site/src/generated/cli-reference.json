@@ -15,6 +15,10 @@
         "description": "who this ledger thinks is writing, and what that proves"
       },
       {
+        "usage": "contention [--since 7d]",
+        "description": "what the ledger refused: collisions it prevented"
+      },
+      {
         "usage": "onboard --space <id> --actor <label> --json",
         "description": "create/join a space + return executable recipes"
       },

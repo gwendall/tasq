@@ -1,3 +1,4 @@
+import { ContentionError } from "./contention.js";
 /** Universal collaboration records: delegation, relations, outputs and refs. */
 
 import { and, asc, eq, inArray, isNull, notInArray, sql } from "drizzle-orm";
@@ -481,6 +482,8 @@ export async function assertBlockersResolved(
   tx: TasqDbOrTx,
   taskId: string,
   tenantId: string,
+  requestedByPrincipalId?: string,
+  requestedByLabel = "",
 ): Promise<void> {
   const blockers = await unresolvedBlockers(tx, taskId, tenantId);
   if (blockers.length === 0) return;
@@ -488,10 +491,21 @@ export async function assertBlockersResolved(
     .map((blocker) => `${blocker.commitmentId} (${blocker.status}) ${blocker.title}`)
     .join("; ");
   const more = blockers.length > 3 ? ` and ${blockers.length - 3} more` : "";
-  throw new Error(
-    `Task ${taskId} is blocked by ${blockers.length} unresolved commitment(s): ${named}${more}. `
-      + "Finish a blocker, drop the edge with `tasq undepend`, or pass force to take it anyway.",
-  );
+  const message = `Task ${taskId} is blocked by ${blockers.length} unresolved commitment(s): ${named}${more}. `
+    + "Finish a blocker, drop the edge with `tasq undepend`, or pass force to take it anyway.";
+  // Counted only when the caller is known. Without a principal there is nobody
+  // to attribute the standoff to, and an unattributed row would be a number
+  // with no story behind it.
+  if (!requestedByPrincipalId) throw new Error(message);
+  throw new ContentionError(message, {
+    tenantId,
+    commitmentId: taskId,
+    kind: "claim_blocked_by_unresolved",
+    requestedByPrincipalId,
+    requestedByLabel,
+    holderPrincipalId: "",
+    holderLabel: "",
+  });
 }
 
 export async function listCommitmentRelations(

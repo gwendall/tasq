@@ -117,6 +117,8 @@ describe("Migration runner", () => {
         DROP TABLE attestation;
         DROP TABLE assumption_link;
         DROP TABLE assumption;
+        DROP TABLE contention;
+        DELETE FROM _migration WHERE name = '0035_contention.sql';
         DROP TABLE principal_device;
         DELETE FROM _migration WHERE name = '0034_principal_device.sql';
         DELETE FROM _migration WHERE name = '0033_shared_assumptions.sql';
@@ -185,6 +187,7 @@ describe("Migration runner", () => {
           "0032_settlement_recourse.sql",
           "0033_shared_assumptions.sql",
           "0034_principal_device.sql",
+          "0035_contention.sql",
         ],
       });
       const rows = await client.execute(`
@@ -583,6 +586,7 @@ describe("Migration runner", () => {
         "0032_settlement_recourse.sql",
         "0033_shared_assumptions.sql",
         "0034_principal_device.sql",
+        "0035_contention.sql",
       ]);
 
       const open = await getTask(db, "01910000-0000-7000-8000-000000000010");
@@ -691,6 +695,7 @@ describe("Migration runner", () => {
         "0032_settlement_recourse.sql",
         "0033_shared_assumptions.sql",
         "0034_principal_device.sql",
+        "0035_contention.sql",
       ]);
       expect(result.skipped).toEqual([
         "0000_init.sql",

@@ -205,6 +205,15 @@ export type {
 
 // Migrations
 export { newlyActionableAfter } from "@tasq-run/core/internal/service/collaboration";
+export { principalLabels } from "@tasq-run/core/internal/service/assumptions";
+export {
+  ContentionError,
+  contentionSummary,
+  listContention,
+  recordContention,
+  withContentionRecorded,
+} from "@tasq-run/core/internal/service/contention";
+export type { ContentionFacts } from "@tasq-run/core/internal/service/contention";
 export {
   deviceFingerprint,
   devicesForPrincipal,

@@ -10,7 +10,7 @@ release history selected by ADR-008.
 
 ## v0.6.0 - 2026-08-28
 
-Store format 34. Every 0.5.x store migrates forward once, irreversibly, and
+Store format 35. Every 0.5.x store migrates forward once, irreversibly, and
 `tasq store upgrade` makes that a decision rather than a side effect.
 
 This release closes the half of the product that was named and missing.
@@ -22,6 +22,17 @@ set does, so choosing the default is not a downgrade.
 
 ### Added
 
+- **`tasq contention`.** What the ledger refused. Thirty-one event types and a
+  hundred and thirty-four claims acquired, and until now nothing recorded a
+  single refusal: the ledger kept a complete account of everything it ALLOWED
+  and no trace of anything it PREVENTED. The refusal is the product - `tasq
+  demo` exists to show three of them - and nobody could answer "how many
+  collisions did this stop for me last week". All four refusals a second worker
+  can hit are counted, and a contention is a SITUATION rather than an instant:
+  a polling agent turned away four hundred times is one record with a count of
+  four hundred. A refusal is never a mutation - no event, no revision, no claim
+  change - because everything downstream of the event journal describes work
+  that happened, and a refusal is work that did not.
 - **`tasq fleet`.** Who is holding what, right now. The expiring lease is what
   makes this possible without owning any process: a holder that dies stops
   appearing when its claim lapses. Live claims are grouped by client identity

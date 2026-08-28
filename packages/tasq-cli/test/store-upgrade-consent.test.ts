@@ -173,8 +173,8 @@ async function storeOneFormatBehind(): Promise<{ dir: string }> {
   const handle = await openDb({ url: `file:${dbPath}`, wal: false });
   await runMigrations(handle.client);
   await handle.client.executeMultiple(`
-    DROP TABLE principal_device;
-    DELETE FROM _migration WHERE name = '0034_principal_device.sql';
+    DROP TABLE contention;
+    DELETE FROM _migration WHERE name = '0035_contention.sql';
   `);
   await handle.close();
   writeFileSync(join(dir, "config.json"), JSON.stringify({

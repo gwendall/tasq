@@ -9,6 +9,16 @@ import type { Client } from "@libsql/client";
 import { runMigrations, type MigrationOptions } from "./migrations/index.js";
 export { newlyActionableAfter } from "./service/collaboration.js";
 
+// What the ledger refused. The refusal is the product and it left no trace.
+export {
+  ContentionError,
+  contentionSummary,
+  listContention,
+  recordContention,
+  withContentionRecorded,
+} from "./service/contention.js";
+export type { ContentionFacts } from "./service/contention.js";
+
 // Which device said it was this principal. Attribution, never authentication.
 export {
   deviceFingerprint,
