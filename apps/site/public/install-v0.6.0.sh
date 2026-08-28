@@ -72,11 +72,11 @@ done
 case "$(uname -s):$(uname -m)" in
   Darwin:arm64)
     TARGET="darwin-arm64"
-    CHECKSUMS_SHA256="a2521ffa9823d0a7c64890d16028ce0d1466c40822c974e2bbf09bb5b942544a"
+    CHECKSUMS_SHA256="00c2a5bc68f65d180a9746e12f5693d489e282fc85d54f861a1f3d878fc3a4d9"
     ;;
   Linux:x86_64)
     TARGET="linux-x64-gnu"
-    CHECKSUMS_SHA256="6b4dfbc5dd8d506610e6ecf5583751c19b0ffe4947a92065db684585f00d44b2"
+    CHECKSUMS_SHA256="389d31ad8abfe1b7dbe757b753d315e9dddf030a7997e9b3165ddc72c6a08d5f"
     ;;
   *)
     fail "unsupported host: $(uname -s)-$(uname -m); supported: darwin-arm64, linux-x64-gnu"
