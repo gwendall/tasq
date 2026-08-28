@@ -24,6 +24,36 @@ import { check, sqliteTable, text, integer, index, uniqueIndex, primaryKey, fore
 // ──────────────────────────────────────────────────────────────────────
 
 /**
+ * What the ledger refused.
+ *
+ * A contention is a SITUATION, not an instant: the primary key is the shape of
+ * the standoff, and repeated attempts advance a counter rather than adding
+ * rows. Nothing here is a mutation of the commitment, and nothing may read as
+ * one.
+ */
+export const contention = sqliteTable(
+  "contention",
+  {
+    tenantId: text("tenant_id").notNull(),
+    commitmentId: text("commitment_id").notNull(),
+    kind: text("kind").notNull(),
+    requestedByPrincipalId: text("requested_by_principal_id").notNull(),
+    requestedByLabel: text("requested_by_label").notNull(),
+    holderPrincipalId: text("holder_principal_id").notNull().default(""),
+    holderLabel: text("holder_label").notNull().default(""),
+    firstAt: integer("first_at").notNull(),
+    lastAt: integer("last_at").notNull(),
+    attempts: integer("attempts").notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [
+      t.tenantId, t.commitmentId, t.kind, t.requestedByPrincipalId, t.holderPrincipalId,
+    ] }),
+    recentIdx: index("idx_contention_recent").on(t.tenantId, t.lastAt),
+  }),
+);
+
+/**
  * Which device said it was this principal.
  *
  * The actor label is self-asserted, and locally that is not a hole: anyone who

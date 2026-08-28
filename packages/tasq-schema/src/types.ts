@@ -339,6 +339,32 @@ export type IdempotencyRecord = z.infer<typeof IdempotencyRecord>;
 // Universal collaboration identities
 // ──────────────────────────────────────────────────────────────────────
 
+/** The kinds of refusal worth counting: the ones a second worker would hit. */
+export const CONTENTION_KINDS = [
+  "claim_held_by_another",
+  "claim_blocked_by_unresolved",
+  "complete_not_holder",
+  "complete_without_evidence",
+] as const;
+export const ContentionKind = z.enum(CONTENTION_KINDS);
+export type ContentionKind = z.infer<typeof ContentionKind>;
+
+/** One standoff, counted. See the 0035 migration for why this is not an event. */
+export const Contention = z.object({
+  tenantId: z.string().min(1),
+  commitmentId: z.string().min(1).max(500),
+  kind: ContentionKind,
+  requestedByPrincipalId: z.string().min(1).max(500),
+  requestedByLabel: z.string().max(200),
+  /** Empty when the refusal is not about a holder. See the 0035 migration. */
+  holderPrincipalId: z.string().max(500),
+  holderLabel: z.string().max(200),
+  firstAt: UnixMs,
+  lastAt: UnixMs,
+  attempts: z.number().int().positive(),
+});
+export type Contention = z.infer<typeof Contention>;
+
 /** A device that has written to the ledger while claiming a principal. */
 export const PrincipalDevice = z.object({
   tenantId: z.string().min(1),

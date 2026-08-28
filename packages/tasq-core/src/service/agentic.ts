@@ -46,6 +46,7 @@ import { assertTaskCostAllowsClaim } from "./costs.js";
 import { assertTaskPremiseActionable } from "./premises.js";
 import { assertCommitmentNotPaused } from "./assumptions.js";
 import { assertBlockersResolved } from "./collaboration.js";
+import { ContentionError, withContentionRecorded } from "./contention.js";
 
 const MIN_LEASE_MS = 1_000;
 const MAX_LEASE_MS = 7 * 24 * 60 * 60 * 1_000;
@@ -178,7 +179,7 @@ export async function acquireTaskClaim(
     metadata: options.metadata ?? {},
   }, now);
 
-  const { result, event } = await runInTransaction(db, async (tx) => {
+  const { result, event } = await withContentionRecorded(db, now, () => runInTransaction(db, async (tx) => {
     const priorId = await priorResultId(tx, tenantId, identity);
     if (priorId) {
       const prior = await getTaskClaim(tx, priorId, tenantId);
@@ -192,7 +193,7 @@ export async function acquireTaskClaim(
     }
     await assertTaskPremiseActionable(tx, taskId, tenantId);
     await assertCommitmentNotPaused(tx, taskId, tenantId);
-    if (!options.force) await assertBlockersResolved(tx, taskId, tenantId);
+    if (!options.force) await assertBlockersResolved(tx, taskId, tenantId, attribution.id, actor);
 
     const rows = await tx
       .select()
@@ -214,8 +215,19 @@ export async function acquireTaskClaim(
     if (current && current.expiresAt > now && (
       current.principalId ? current.principalId !== attribution.id : current.actor !== actor
     )) {
-      throw new Error(
+      // Typed, so the boundary can count this without parsing the message.
+      // The message stays what an operator reads; the facts travel separately.
+      throw new ContentionError(
         `Task ${taskId} is claimed by ${current.actor} until ${new Date(current.expiresAt).toISOString()}`,
+        {
+          tenantId,
+          commitmentId: taskId,
+          kind: "claim_held_by_another",
+          requestedByPrincipalId: attribution.id,
+          requestedByLabel: actor,
+          holderPrincipalId: current.principalId ?? "",
+          holderLabel: current.actor,
+        },
       );
     }
 
@@ -315,7 +327,7 @@ export async function acquireTaskClaim(
       inserted.revision, event.sequence,
     );
     return { result: inserted, event };
-  });
+  }));
 
   if (event) emitAfterCommit(event);
   return result;

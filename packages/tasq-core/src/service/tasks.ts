@@ -1,3 +1,4 @@
+import { ContentionError, withContentionRecorded } from "./contention.js";
 /**
  * Task service — the core verbs (create, update, status transitions, list).
  *
@@ -799,7 +800,7 @@ export async function transitionTaskStatus(
     { now },
   );
 
-  const { after, committedEvents } = await runInTransaction(db, async (tx) => {
+  const { after, committedEvents } = await withContentionRecorded(db, now, () => runInTransaction(db, async (tx) => {
     const prior = await findIdempotencyResult(tx, identity);
     if (prior) {
       const existing = await getTask(tx, prior.resultId, tenantId);
@@ -854,10 +855,19 @@ export async function transitionTaskStatus(
       const heldByCaller = !activeClaim ||
         (activeClaim.principalId ? activeClaim.principalId === attribution.id : activeClaim.actor === actor);
       if (!heldByCaller && !options.force) {
-        throw new Error(
+        throw new ContentionError(
           `Task ${id} is claimed by ${activeClaim.actor} until ${new Date(activeClaim.expiresAt).toISOString()}. `
             + `Complete or cancel it as its holder, wait for the claim to expire, `
             + `or force the transition to take over deliberately.`,
+          {
+            tenantId,
+            commitmentId: id,
+            kind: "complete_not_holder",
+            requestedByPrincipalId: attribution.id,
+            requestedByLabel: actor,
+            holderPrincipalId: activeClaim.principalId ?? "",
+            holderLabel: activeClaim.actor,
+          },
         );
       }
     }
@@ -929,8 +939,19 @@ export async function transitionTaskStatus(
         throw new Error("Task does not require an independent validation decision");
       }
       if (before.completionMode === "evidence" && completionEvidenceIds.length === 0) {
-        throw new Error(
+        // Counted too: closing on your own say-so is the refusal that makes
+        // "done" mean something, and it is the one a lone agent hits most.
+        throw new ContentionError(
           `Task ${id} requires explicit evidence; add evidence and pass its id when completing`,
+          {
+            tenantId,
+            commitmentId: id,
+            kind: "complete_without_evidence",
+            requestedByPrincipalId: attribution.id,
+            requestedByLabel: actor,
+            holderPrincipalId: "",
+            holderLabel: "",
+          },
         );
       }
       if (completionEvidenceIds.length > 0) {
@@ -1121,7 +1142,7 @@ export async function transitionTaskStatus(
     });
 
     return { after, committedEvents };
-  });
+  }));
 
   for (const e of committedEvents) emitAfterCommit(e);
   return after;
