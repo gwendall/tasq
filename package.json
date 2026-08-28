@@ -27,7 +27,8 @@
     "verify:export": "bun test packages/tasq-cli/test/public-packages.test.ts packages/tasq-cli/test/extension-boundary.test.ts",
     "verify:live": "bun scripts/verify-live-site.ts",
     "backlog:project": "bun scripts/backlog-from-ledger.ts",
-    "typecheck:tests": "bun scripts/verify-typecheck-tests.ts"
+    "typecheck:tests": "bun scripts/verify-typecheck-tests.ts",
+    "dev:link": "bun scripts/dev-cli.ts"
   },
   "devDependencies": {
     "@tasq-run/schema": "workspace:*",
