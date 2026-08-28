@@ -298,7 +298,10 @@ describe.skipIf(target === null)("Tasq clean-room lifecycle", () => {
       "--checksums", release.checksums, "--prefix", join(root, "tampered-prefix"),
     ]);
     expect(tampered.exitCode).toBe(1);
-    expect(JSON.parse(tampered.stderr)).toMatchObject({ contractVersion: "tasq.lifecycle-error.v1", ok: false });
+    // Prose for the person watching, then the contract for anything parsing.
+    expect(tampered.stderr).toMatch(/^tasq installer: /);
+    const contract = tampered.stderr.trim().split("\n").at(-1)!;
+    expect(JSON.parse(contract)).toMatchObject({ contractVersion: "tasq.lifecycle-error.v1", ok: false });
     expect(tampered.stderr).toContain("archive checksum mismatch");
 
     const prefix = join(root, "collision-prefix");
