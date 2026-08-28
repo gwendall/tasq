@@ -78,6 +78,36 @@ product learning path. Historical export provenance is preserved in
 [TQ-603_PUBLIC_REPOSITORY_CONTRACT.md](../contracts/TQ-603_PUBLIC_REPOSITORY_CONTRACT.md);
 it does not override the current repository or current product truth.
 
+## 3b. Run your own build without losing the published one
+
+`pnpm build:cli && pnpm dev:link` puts the working tree's build on PATH as
+`tasq-dev`, beside the published `tasq`.
+
+Use `tasq-dev` for anything you are changing, and keep `tasq` for the question
+only it can answer: **does this work for somebody who installed it.** A dev
+build that displaces the published one takes that question away, and it is the
+mistake that produced a hand-written launcher on the maintainer's machine which
+lived nowhere and nobody could have recreated.
+
+The shim runs the BUILT artifact rather than source, so what you dogfood
+resembles what ships, and it reports an unmistakable version:
+
+```console
+$ tasq-dev --version
+0.0.0-dev+aa2931e
+```
+
+It fails with exit 3 and an actionable line if the checkout moved or the build
+is missing, rather than leaking a stack trace from inside something the
+operator believes is Tasq. It refuses to replace a `tasq-dev` it did not write;
+inspect that file, then pass `--force`.
+
+**The two are not interchangeable writers.** A dev build can hold a store
+format no published binary knows, and doing that to a real ledger is how this
+project once lost an afternoon. The migration receipt records which executable
+performed the migration for exactly that reason, so "a dev build touched this
+store" is a read rather than an inference.
+
 ## 4. Choose work without inventing authority
 
 - Use [`docs/roadmap/BACKLOG.json`](../roadmap/BACKLOG.json) for versioned
