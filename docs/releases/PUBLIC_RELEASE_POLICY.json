@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.5.1",
+    "state": "authorized",
+    "version": "0.6.0",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-27",
-    "rationale": "Consumed by v0.5.1, published 2026-08-26T23:23:29Z. It shipped the shared-assumption primitive (ADR-021) and the store-safety envelope built alongside it, moving the store from format 32 to 33: every 0.4.x store migrates forward once, irreversibly, and `tasq store upgrade` makes that a decision rather than a side effect of any command. The protected migration certification was waived rather than re-run because no published store exists outside the maintainer's machine; the waiver names what ends it. 0.5.0 is retired and published nothing: its tag failed at the identity job, which deliberately runs before `pnpm install`, because the preflight had begun importing @tasq-run/core. Tag protection correctly refuses to delete an immutable tag, so the version is retired rather than reused."
+    "rationale": "Authorized for v0.6.0, not yet published. It ships the first of the live human surface named by ADR-022 (`tasq fleet`, `tasq whoami`), decomposition and relations in the kernel and on both doors, one-command project setup, and per-installation device identity, moving the store from format 33 to 34: every 0.5.x store migrates forward once, irreversibly, and `tasq store upgrade` makes that a decision rather than a side effect. It also carries the release machinery this line kept needing: a rehearsal that runs the whole certification loop before a tag exists, a publication record measured against the newest tag rather than against itself, and a test typecheck that holds every package clean."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,10 +385,10 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.5.1",
+      "version": "0.6.0",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",

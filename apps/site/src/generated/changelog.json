@@ -1,14 +1,47 @@
 [
   {
-    "version": "Unreleased",
-    "date": null,
+    "version": "v0.6.0",
+    "date": "2026-08-28",
     "note": null,
     "groups": [
       {
         "kind": "Added",
         "items": [
-          "`tasq_discovery_capture` on the MCP surface, under the `propose` capability. An agent working over MCP could not report a bug, a missing capability or an inconsistency at all: the flagship integration exposed 44 tools and none of them recorded a finding. Capturing never widens, renews or releases the caller's claim, so it is safe mid-task. See [ADR-020](docs/decisions/ADR-020_KERNEL_DISCOVERY_CAPTURE.md).",
-          "`captureCommitmentDiscovery` exported from `@tasq-run/core`. The relation table and the `discovered_from` type were already kernel, but no kernel API wrote a relation of any type, so this closes a gap rather than widening the ontology. The CLI behaviour and its tests are unchanged, which is the evidence that this is a move rather than a redesign."
+          "**`tasq contention`.** What the ledger refused. Thirty-one event types and a hundred and thirty-four claims acquired, and until now nothing recorded a single refusal: the ledger kept a complete account of everything it ALLOWED and no trace of anything it PREVENTED. The refusal is the product - `tasq demo` exists to show three of them - and nobody could answer \"how many collisions did this stop for me last week\". All four refusals a second worker can hit are counted, and a contention is a SITUATION rather than an instant: a polling agent turned away four hundred times is one record with a count of four hundred. A refusal is never a mutation - no event, no revision, no claim change - because everything downstream of the event journal describes work that happened, and a refusal is work that did not.",
+          "**`tasq fleet`.** Who is holding what, right now. The expiring lease is what makes this possible without owning any process: a holder that dies stops appearing when its claim lapses. Live claims are grouped by client identity AND working directory, because one label on two machines is not one worker.",
+          "**`tasq whoami`.** The actor, the principal it resolves to, this installation's device key, and any OTHER device that has written under the same actor label here. It authenticates nobody and says so, in the prose and in the JSON contract: an identity printed without what it proves reads as authentication.",
+          "**Device identity.** Each installation gets an Ed25519 key it did not choose, written `0600` on first `setup`. Every domain mutation records the device behind it. The principal is derived from (space, alias), so two machines using one label were ONE principal and the ledger merged them without a word; on a shared store that silence is the whole problem, and it cannot be reconstructed after the fact.",
+          "**Decomposition in the kernel.** `tasq add --parent`, `tasq tree`, `parentCommitmentId` on MCP create, and `tasq_commitment_tree`. Decomposition answers what a commitment is MADE OF; it is a column, not a relation, and it gates nothing. See [ADR-023](docs/decisions/ADR-023_DECOMPOSITION_IS_A_COLUMN.md).",
+          "**Relations over MCP.** `tasq_relation_add`, `tasq_relation_end` and `tasq_relation_list` serve the capability the server already advertised and never implemented.",
+          "**Four argv recipes** for decomposition and relations, and a `decompose-and-sequence` journey, so an agent on the CLI can discover what an agent on MCP can.",
+          "**What a completion just opened.** Finishing a commitment reports the work it unblocked, so the next agent does not have to poll for it."
+        ]
+      },
+      {
+        "kind": "Changed",
+        "items": [
+          "**`tasq setup` is one command.** Bringing Tasq into a project took three - `setup`, `use`, `agent instructions --write` - and `setup` mentioned neither of the other two. It now joins the space, binds this directory and its descendants, writes the managed AGENTS.md block, and says which of the three it did. `--no-bind` and `--no-instructions` skip either half. It refuses to set a project up in the home directory or at the filesystem root.",
+          "**The first run teaches the agent path.** It printed `add`, `list`, `done` - a single-player todo app, under a headline promising a tracker you share with your agents. It now points at `tasq fleet` and `tasq demo`.",
+          "`RELATION_TYPES` drops `parent_of` and `supersedes`. Nothing ever wrote either, and two ways to say one thing is how a ledger starts disagreeing with itself."
+        ]
+      },
+      {
+        "kind": "Fixed",
+        "items": [
+          "**A space bound to another project is refused**, naming the directory that owns it. Inheriting a space silently is how work lands in somebody else's ledger.",
+          "**Claiming a commitment with unresolved blockers is refused**, naming them, with `--force` for a deliberate override.",
+          "`tasq_discovery_capture` on the MCP surface, under the `propose` capability. An agent working over MCP could not report a bug, a missing capability or an inconsistency at all. Capturing never widens, renews or releases the caller's claim, so it is safe mid-task. See [ADR-020](docs/decisions/ADR-020_KERNEL_DISCOVERY_CAPTURE.md).",
+          "`captureCommitmentDiscovery` exported from `@tasq-run/core`."
+        ]
+      },
+      {
+        "kind": "Release machinery",
+        "items": [
+          "**The publication record** answered `ok: true` while it named a release one version behind reality and the documented installer 404'd. It is now measured against the newest release tag, which the commit that gets it wrong cannot edit. A tag that published nothing must be recorded in `policy.retiredReleases` with a reason - v0.5.0 is the first entry.",
+          "**That gate had never run against this repository.** Every case built its own tree, so it was fully covered and never looked at the thing it protects.",
+          "**`pnpm verify:release-rehearsal`** builds a real installable release from the working commit and runs every replay the certification job runs, before a tag exists. The last two releases were each broken by something only observable after tagging, and tag protection means a version number does not come back.",
+          "**The certification replay** proves the refusal first, then upgrades through `tasq store upgrade`. v0.5.1's own consent gate correctly refused to migrate unasked, and the test was describing behaviour that release removed.",
+          "**Every package's tests typecheck**, and the debt list is empty. A test could call an API that does not exist and pass; 66 errors were hiding there, including six input types published as parsed types, a type no value could satisfy, a fixture missing five fields, and four more silently dropped keys."
         ]
       }
     ]

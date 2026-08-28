@@ -41,7 +41,7 @@ uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
 seven original packages. The separately bootstrapped client identity followed
-the same fail-closed handoff. Current `v0.4.2` is published, carrying the seven packages that changed;
+the same fail-closed handoff. Current `v0.5.1` is published, carrying the seven packages that changed;
 `@tasq-run/client` stays at the version it was last published at; the post-release workflow certifies their complete lifecycle
 without a repository checkout on both supported targets. TQ-607 remains the
 retained-data gate for stable graduation, not for the explicitly labeled
@@ -91,7 +91,7 @@ even when it shipped nothing, so the version is retired rather than reused, and
 the line continues at `v0.5.1`. The preflight now reads the store format from
 the migration filenames and a test asserts it imports only `node:` specifiers.
 
-## `v0.4.2` current release
+## `v0.4.2`
 
 Published 2026-08-26 from tag `v0.4.2`. Its post-release certification passed
 on both supported targets in protected run
