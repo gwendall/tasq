@@ -4,7 +4,7 @@
   "checkedAt": "2026-08-11",
   "question": "What happens when several agents work the same backlog in parallel?",
   "tasqClaimBoundary": {
-    "version": "0.5.1",
+    "version": "0.6.0",
     "shape": "Tasq Local and self-hosted Tasq Server",
     "localSameMachineOnly": true,
     "remoteServerShipped": true,
