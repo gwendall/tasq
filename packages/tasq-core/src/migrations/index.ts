@@ -164,6 +164,26 @@ interface ReceiptDocument {
   completedAt: number | null;
   source: { pathIdentity: string; format: number; eventCursor: number | null };
   target: { format: number };
+  /**
+   * WHICH executable performed this, and where it ran from.
+   *
+   * The receipt already captured the source path identity, the format, the
+   * cursor and the snapshot digest - everything except who did it. When a
+   * source-only dev build migrated this project's live ledger to a format no
+   * published binary writes, "a dev build touched this store" was invisible
+   * afterwards and had to be inferred. It is one field, and it turns that
+   * inference into a read.
+   *
+   * A local process cannot prove what it is, so this is attribution, not
+   * authentication - the same stance as every other identity in this ledger.
+   */
+  writtenBy: {
+    version: string;
+    /** True for a working-tree run: no build stamped a version into it. */
+    sourceBuild: boolean;
+    executable: string;
+    pid: number;
+  };
   migrations: Array<{ name: string; sha256: string }>;
   snapshot: {
     path: string;
@@ -835,6 +855,7 @@ async function createVerifiedRecoveryPoint(
       eventCursor: verification.eventCursor,
     },
     target: { format: STORE_FORMAT_COMPATIBILITY.current },
+    writtenBy: writingExecutable(),
     migrations: pending.map(({ name, checksum }) => ({ name, sha256: checksum })),
     snapshot: {
       path: snapshotPath,
@@ -850,6 +871,25 @@ async function createVerifiedRecoveryPoint(
   const receiptPath = join(recoveryDir, `receipt-${id}.json`);
   writeReceipt(receiptPath, document);
   return { document, path: receiptPath };
+}
+
+/**
+ * Who is about to migrate this store.
+ *
+ * `TASQ_BUILD_VERSION` is stamped at build time and absent from a working-tree
+ * run, which is exactly the distinction the receipt needs to record: a
+ * published binary and a dev build are not interchangeable writers, and only
+ * one of them is something an operator meant to run against a real ledger.
+ */
+declare const TASQ_BUILD_VERSION: string;
+function writingExecutable(): ReceiptDocument["writtenBy"] {
+  const stamped = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : null;
+  return {
+    version: stamped ?? "0.0.0-source",
+    sourceBuild: stamped === null,
+    executable: process.argv[1] ?? process.execPath,
+    pid: process.pid,
+  };
 }
 
 /** Reconcile a crash that left a durable snapshot receipt pending. */
