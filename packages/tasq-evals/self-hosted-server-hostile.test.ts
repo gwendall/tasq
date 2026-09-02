@@ -325,8 +325,32 @@ describe("TQ-808 hostile self-hosted Server", () => {
     ]);
     const raced = await Promise.allSettled([raceMutation, revocation]);
     expect(raced.some(({ status }) => status === "fulfilled")).toBe(true);
-    await expect(restartedAlpha.listCommitments())
-      .rejects.toEqual(expect.objectContaining({ status: 403, code: "access_denied" }));
+
+    // The claim is "after revocation, access is denied" - not "the instant the
+    // revoking subprocess returns, access is denied". Those are different
+    // statements, and asserting the second made this fail under CI load with
+    // `authority_unavailable (503)`: the transient state while the authority
+    // reloads, rather than the settled one.
+    //
+    // So settle it explicitly, and bound the wait. A 503 that never becomes a
+    // 403 is a real failure and still reported as one.
+    const deniedWithin = async (attempts: number) => {
+      let last: unknown;
+      for (let attempt = 0; attempt < attempts; attempt += 1) {
+        try {
+          await restartedAlpha.listCommitments();
+          last = new Error("the revoked grant still listed commitments");
+        } catch (error) {
+          last = error;
+          const status = (error as { status?: number }).status;
+          if (status !== 503) return error;
+        }
+        await new Promise((resume) => setTimeout(resume, 50));
+      }
+      return last;
+    };
+    expect(await deniedWithin(40))
+      .toEqual(expect.objectContaining({ status: 403, code: "access_denied" }));
 
     const support = await fetch(new URL("support", running.endpoint));
     const supportBody = await support.text();
