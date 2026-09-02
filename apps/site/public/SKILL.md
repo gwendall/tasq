@@ -54,8 +54,9 @@ directory.
 
 ### Moving an existing backlog in
 
-When the project already tracks work in prose - `TODO.md`, `BACKLOG.md`, a
-roadmap section - move it in rather than leaving two sources of truth:
+When the project already tracks work in prose - a plain checklist file, a
+`BACKLOG.md`, a roadmap section - move it in rather than leaving two sources of
+truth:
 
 ```bash
 tasq add "<the item, in its original wording>" --next "<the first concrete step>"
