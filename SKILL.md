@@ -1,7 +1,22 @@
 ---
 name: tasq
-description: Coordinate durable commitments, claims, attempts, evidence and opaque resources through the Tasq CLI or local MCP surface.
+description: Coordinate durable commitments, shared ownership, attempts, evidence, handoffs, and resource leases in Tasq. Use when work must survive the current agent session or be visible to humans or other agents. Do not mirror the runtime's private scratchpad or transient todos into Tasq.
 ---
+
+<!--
+  THE ONLY SKILL SOURCE. `pnpm --filter @tasq-internal/site generate` copies
+  this file to plugins/tasq/skills/tasq/SKILL.md and apps/site/public/SKILL.md,
+  and the generation check fails if either has drifted.
+
+  Links here are absolute on purpose: this file is served at tasq.run/SKILL.md
+  to agents that have no checkout, where a repository-relative link means
+  nothing.
+
+  There used to be two hand-maintained copies. The one served at
+  tasq.run/SKILL.md - the one an agent actually reads - sat six weeks behind
+  and knew nothing about `tasq setup`, so a fix applied to the repository root
+  reached nobody.
+-->
 
 # Tasq agent contract
 
@@ -228,6 +243,6 @@ to refresh machine recipes. If required behavior is absent, capture it as
 above; do not bypass the service through SQL, Markdown edits or hidden
 provider-specific state.
 
-For repository development, follow [AGENTS.md](AGENTS.md) and
-[DEVELOPMENT.md](docs/guides/DEVELOPMENT.md). Stable JSON compatibility is documented in
-[CLI_JSON_CONTRACT.md](docs/reference/CLI_JSON_CONTRACT.md).
+For repository development, follow [AGENTS.md](https://github.com/gwendall/tasq/blob/main/AGENTS.md) and
+[DEVELOPMENT.md](https://github.com/gwendall/tasq/blob/main/docs/guides/DEVELOPMENT.md). Stable JSON compatibility is documented in
+[CLI_JSON_CONTRACT.md](https://github.com/gwendall/tasq/blob/main/docs/reference/CLI_JSON_CONTRACT.md).
