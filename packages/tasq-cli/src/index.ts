@@ -862,6 +862,27 @@ function shellQuote(value: string): string {
   return `'${value.replaceAll("'", `'\"'\"'`)}'`;
 }
 
+/**
+ * The name a person has, not the path this build happens to live at.
+ *
+ * The suggestion below is meant to be copy-pasted, and printing the resolved
+ * executable pasted the VERSIONED internal layout instead:
+ * `/Users/x/.local/lib/tasq/0.4.0/darwin-arm64/index.js`. It exposes a private
+ * path, and it stops working the moment the version changes - which is
+ * guaranteed, because the whole point of the managed symlink is that the
+ * version behind it moves.
+ *
+ * The onboard RECIPES are the opposite case and deliberately keep the absolute
+ * path: an agent is told to execute the returned vector verbatim, and a name
+ * on PATH is a name the host may resolve to something else.
+ */
+function invocationName(executable: string): string {
+  const base = executable.split("/").pop() ?? executable;
+  // A bundled build is `index.js` behind a `tasq` symlink; a source checkout is
+  // `index.ts`. Neither is what a person types.
+  return base.startsWith("index.") ? "tasq" : base;
+}
+
 /** Print an executable, secret-free follow-up capture when task work refuses. */
 export function printCaptureSuggestion(argv: string[], executable: string, exitCode: number): void {
   const command = argv[0];
@@ -872,7 +893,7 @@ export function printCaptureSuggestion(argv: string[], executable: string, exitC
   const title = `Follow up after tasq ${command} was refused`;
   const context = JSON.stringify({ triggerCommand: command, exitCode });
   const suggestion = [
-    executable,
+    invocationName(executable),
     "capture",
     taskId,
     title,
