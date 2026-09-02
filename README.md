@@ -8,7 +8,7 @@
 Website and documentation: [tasq.run](https://tasq.run)
 
 ```bash
-npx @tasq-run/cli@0.4.2 demo    # three seconds, no install, touches no data
+npx @tasq-run/cli@0.6.0 demo    # fifteen seconds, no install, touches no data
 ```
 
 ## For you
@@ -59,7 +59,7 @@ Tasq is not an agent runtime. It does not launch agents or call providers. It
 gives the tools you already use one shared, inspectable place to agree on what
 is done.
 
-> **Public alpha:** `v0.4.2` is available from npm and as an attested GitHub
+> **Public alpha:** `v0.6.0` is available from npm and as an attested GitHub
 > release for macOS arm64 and Linux x64. The Server image and Python client are
 > also published and exact-artifact certified. This is an
 > intentionally early pre-1.0 line: keep backups of retained ledgers and expect
@@ -68,7 +68,7 @@ is done.
 ## What is available today
 
 - **Tasq Core** - the embeddable TypeScript library behind the CLI, with no
-  opinion about your domain. `@tasq-run/core@0.4.2` exposes the high-level `createLocalTasq`
+  opinion about your domain. `@tasq-run/core@0.6.0` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
@@ -105,40 +105,120 @@ pending independent review.
 An attempt succeeding never completes its commitment automatically.
 Validated commitments also cannot be completed by evidence alone.
 
-Published `v0.4.2` implements opt-in independent completion resolution across
+Published `v0.6.0` implements opt-in independent completion resolution across
 Core, embedded client, CLI, local MCP and Console. Ordinary commitments retain
 the short evidence-backed path; validated commitments use frozen policies,
 proposals, challenges and explicit decisions. See the
 [completion-resolution contract](docs/contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md).
 
-## Try the public alpha
+## Get started
 
 Requirements: Node 22+, Bun 1.3+, and npm 10+.
 
+### 1. See what it does, without installing anything
+
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.4.2.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.4.2 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.4.2 --prefix "$HOME/.local"
-
-# Keep this evaluation isolated from any existing Tasq ledger.
-export TASQ_HOME="$PWD/.tasq"
-
-"$HOME/.local/bin/tasq" onboard \
-  --space demo/local \
-  --actor demo:user \
-  --capabilities read,propose,coordinate \
-  --json
+npx @tasq-run/cli@0.6.0 demo
 ```
 
-Read the returned `guide`, then execute its argument-array recipes exactly as
-returned. The executable stores data in `$TASQ_HOME/db.sqlite`; do not edit that
-database directly. See the [data safety guide](docs/guides/DATA_SAFETY.md)
-before using a long-lived ledger.
+Two agents, one task, in a throwaway home. It shows you three refusals in a
+row: a second agent claiming held work, a non-holder closing it, and the holder
+closing it with no receipt. That is the whole product in about fifteen seconds,
+and it reads and changes nothing you already have.
+
+### 2. Install it
+
+```bash
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install.sh
+sh /tmp/tasq-install.sh --dry-run          # prints the plan, changes nothing
+sh /tmp/tasq-install.sh
+```
+
+The dry run predicts what would block the install rather than only describing
+success. Nothing is created until the real run, no shell startup file is
+edited, and `TASQ_HOME` is never read or removed by the installer.
+
+### 3. Put it in a project
+
+One command, from inside the project:
+
+```bash
+cd ~/Code/my-api
+tasq setup --space kami/my-api --actor gwendall
+```
+
+```
+✓ Created kami/my-api as gwendall.
+  this installation signs as 9aadf4704e67 - see `tasq whoami`
+✓ Bound ~/Code/my-api and everything under it to this space.
+✓ Wrote the managed Tasq block into AGENTS.md, so agents here know the rules.
+```
+
+It does three things and says which. It joins or creates the space, binds this
+directory **and everything under it** so later commands need no flags, and
+writes the digest-bound managed block into `AGENTS.md` so agents working here
+are told the rules. `--no-bind` and `--no-instructions` skip either half, and it
+refuses to set a project up in your home directory or at the filesystem root.
+
+**Repeat it per project.** Each directory gets its own space, so work stays
+separated without you passing `--tenant` anywhere:
+
+```bash
+cd ~/Code/my-api  && tasq list   # only my-api's work
+cd ~/Code/my-site && tasq list   # only my-site's work
+```
+
+### 4. Give it to your agents
+
+```bash
+tasq agent install claude --space kami/my-api --actor claude:main --apply
+```
+
+Or nothing at all: an agent with a shell reads the `AGENTS.md` block that
+`setup` already wrote, and `tasq onboard --json` hands it 45 executable argv
+recipes carrying the same capability labels the MCP surface uses. ADR-024
+records why the CLI is the default door for a local agent and MCP is the door
+for remote and sandboxed ones.
+
+### 5. Watch it
+
+```bash
+tasq fleet         # who is holding what, right now, with the lease counting down
+tasq contention    # what the ledger refused: the collisions it prevented
+tasq whoami        # the actor, its principal, and this installation's device key
+```
+
+`tasq fleet` works because a claim is an expiring lease rather than a flag: an
+agent that dies stops appearing when its lease lapses, with no daemon watching
+processes. `tasq contention` answers the question a tracker cannot, because a
+tracker records what it allowed and never what it prevented.
+
+### Before you rely on it
+
+The store is one SQLite file at `$TASQ_HOME/db.sqlite`; do not edit it
+directly. Read the [data safety guide](docs/guides/DATA_SAFETY.md) before a
+long-lived ledger, and note that crossing a store format is deliberate:
+`tasq store upgrade` is the consent, `tasq store clone --to <dir>` rehearses it
+first, and `tasq store restore` rolls it back against a verified snapshot.
+
+To evaluate without touching an existing ledger, point `TASQ_HOME` somewhere
+else for the session:
+
+```bash
+TASQ_HOME="$PWD/.tasq" tasq setup --space demo/local --actor you
+```
+
+### Building on Tasq yourself
+
+`pnpm build:cli && pnpm dev:link` puts a working-tree build on PATH as
+`tasq-dev`, beside the published `tasq`, so your own build never displaces the
+one that answers "does this work for somebody who installed it". See the
+[development guide](docs/guides/DEVELOPMENT.md).
 
 The current machine-readable acquisition contract is available at
 [`tasq.run/adopt.json`](https://tasq.run/adopt.json) and versioned in
 [`apps/site/public/adopt.json`](apps/site/public/adopt.json). It names the
-immutable `v0.4.2` npm and GitHub release coordinates, the supported targets,
+immutable published npm and GitHub release coordinates, the supported targets,
 the explicit install prefix, and the exact onboarding argument vector.
 The generic agent entrypoints are
 [`tasq.run/SKILL.md`](https://tasq.run/SKILL.md),
@@ -183,10 +263,10 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`,
-`@tasq-run/console`, and `@tasq-run/client`. Version `0.4.2` is published from
+`@tasq-run/console`, and `@tasq-run/client`. Version `0.6.0` is published from
 protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
-on the [`v0.4.2` release](https://github.com/gwendall/tasq/releases/tag/v0.4.2).
+on the [`v0.6.0` release](https://github.com/gwendall/tasq/releases/tag/v0.6.0).
 A package that carries no change in a release is not republished, so
 `@tasq-run/client` remains at the version it was last published at.
 The exact registry and release bytes pass the published lifecycle, migration,
