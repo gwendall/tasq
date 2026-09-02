@@ -26,6 +26,58 @@ supplied path, validate it strictly, and treat its capabilities as a request,
 not a grant. Never search the current directory for a descriptor. The
 descriptor never supplies actor identity, credentials or effect authority.
 
+## Set this project up when it has none
+
+`tasq use --json` reports the space that would be used here **and where that
+came from**. Read `effective.source`, never `effective.space`:
+
+- `directory` - this project is set up. Use it.
+- `global_default` or `environment` - **this project is NOT set up.** The value
+  you see belongs to somewhere else, and writing to it puts this project's work
+  in another project's ledger.
+
+The distinction is easy to miss because the space field is populated either
+way. When the source is not `directory`, the whole setup is one command:
+
+```bash
+tasq setup --space <confirmed-id> --actor <stable-label>
+```
+
+It joins or creates the space, binds this directory and everything under it so
+later commands need no `--tenant`, and writes the managed Tasq block into
+`AGENTS.md`.
+
+This does not weaken the rendezvous rule above. Proposing an id derived from
+the repository and having a human confirm or replace it is not inferring one,
+and the difference is the whole point: ask once, then never again for this
+directory.
+
+### Moving an existing backlog in
+
+When the project already tracks work in prose - a plain checklist file, a
+`BACKLOG.md`, a roadmap section - move it in rather than leaving two sources of
+truth:
+
+```bash
+tasq add "<the item, in its original wording>" --next "<the first concrete step>"
+tasq add "<a sub-item>" --parent <parent-id>     # decomposition, not dependency
+tasq depend <id> --on <other-id> --type blocks   # one genuinely waits on another
+```
+
+Keep the original wording: rewriting an item while importing it loses the only
+thing that made it recognisable to whoever wrote it. File one commitment per
+item and stop. Invent nothing the prose did not contain, merge nothing because
+two items look similar, and leave the prose file in place until a human deletes
+it. An import that quietly loses something is worse than two sources of truth.
+
+### Watching, once work is in
+
+```bash
+tasq fleet         # who is holding what right now, with the lease counting down
+tasq contention    # what the ledger refused: the collisions it prevented
+tasq whoami        # the actor, its principal, and this installation's device key
+```
+
 ## Acquire Tasq when the executable is missing
 
 Do not install the unrelated unscoped npm package named `tasq`.
