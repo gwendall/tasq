@@ -251,7 +251,30 @@ async function readRecord(layout: Awaited<ReturnType<typeof managedLayout>>, ver
   return record;
 }
 
+/**
+ * Refuse before creating anything.
+ *
+ * The activation refusal used to fire at the very END, after the archive was
+ * extracted and the install record written, so a refused install left
+ * `lib/tasq/<version>` and `share/tasq/installations` behind. The next run then
+ * hit a raw EEXIST from a deliberately non-recursive mkdir, leaving an operator
+ * between two errors with nothing documenting a way out.
+ *
+ * The check itself is cheap and knowable up front, so it belongs up front.
+ */
+async function assertActivationPossible(prefix: string): Promise<void> {
+  const stable = join(resolve(prefix), "bin", "tasq");
+  if (!(await exists(stable))) return;
+  if ((await lstat(stable)).isSymbolicLink()) return;
+  fail(
+    `${stable} exists and is not a managed symlink, so this install could not activate.\n`
+    + "  Nothing has been created. Inspect that file, then either remove it or install\n"
+    + "  elsewhere with --prefix <path>.",
+  );
+}
+
 async function install(prefix: string): Promise<Record<string, unknown>> {
+  await assertActivationPossible(prefix);
   const archivePath = resolve(flag("--archive")!);
   const manifestPath = resolve(flag("--manifest")!);
   const checksumsPath = resolve(flag("--checksums")!);
@@ -317,6 +340,16 @@ async function install(prefix: string): Promise<Record<string, unknown>> {
   } catch (error) {
     await rm(destination, { recursive: true, force: true });
     await rm(recordFile, { force: true });
+    // The version directory too, when this run created it and nothing else is
+    // in it. Leaving it made the NEXT run fail with a raw EEXIST from the
+    // deliberately non-recursive mkdir above, which is a worse error than the
+    // one that started it.
+    const versionDirectory = dirname(destination);
+    try {
+      if ((await readdir(versionDirectory)).length === 0) await rm(versionDirectory, { recursive: true });
+    } catch {
+      // Already gone, or not ours to remove. Either way the next run is fine.
+    }
     throw error;
   } finally {
     await rm(staging, { recursive: true, force: true });
@@ -377,10 +410,15 @@ async function main(): Promise<void> {
 try {
   await main();
 } catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  // Prose first, because this is invoked by a shell wrapper a person is
+  // watching, and a raw contract document is not an error message. The
+  // contract follows it unchanged, on the same stream, for anything parsing.
+  process.stderr.write(`tasq installer: ${message}\n`);
   process.stderr.write(`${JSON.stringify({
     contractVersion: "tasq.lifecycle-error.v1",
     ok: false,
-    error: error instanceof Error ? error.message : String(error),
+    error: message,
   })}\n`);
   process.exitCode = 1;
 }
