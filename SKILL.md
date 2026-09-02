@@ -21,6 +21,71 @@ tasq done <id> --evidence <id,...>
 Read the returned `guide` before acting. Everything below explains why those
 four commands are shaped the way they are.
 
+If that first command has no space to be given, this project has not been set
+up yet. See the next section rather than inventing one.
+
+## First time in this project
+
+`tasq use --json` reports the space that would be used here **and where that
+came from**. Read `effective.source`, never `effective.space`:
+
+- `directory` - this project is set up. Use it.
+- `global_default` or `environment` - **this project is NOT set up.** The value
+  you see belongs to somewhere else and writing to it puts this project's work
+  in another project's ledger.
+
+That distinction is the whole point and it is easy to miss, because the space
+field is populated either way. If the source is not `directory`, the setup is
+one command:
+
+```bash
+tasq setup --space <confirmed-id> --actor <your-stable-label>
+```
+
+It joins or creates the space, binds this directory **and everything under
+it** so later commands need no `--tenant`, and writes the managed Tasq block
+into `AGENTS.md`.
+
+**Ask for the space id once. Do not choose it alone.** Proposing an id derived
+from the repository and having a human confirm or replace it is not the same as
+inferring one, and the difference is load-bearing: a space silently inherited
+from somewhere else means this project's work lands in another project's
+ledger, which is a defect this tool has already had and fixed. One question,
+once, then never again for this directory.
+
+The same applies to the actor label. Pick a stable one that says which tool you
+are (`claude:main`, `codex:worker`), and keep it: `tasq fleet` groups by it, and
+two tools sharing one label are indistinguishable to everyone reading the
+ledger afterwards.
+
+### Moving an existing backlog in
+
+If the project already tracks work in prose - `TODO.md`, `BACKLOG.md`, a
+roadmap section, an issue list - move it in rather than leaving two sources of
+truth:
+
+```bash
+tasq add "<the item, in its original wording>" --next "<the first concrete step>"
+tasq add "<a sub-item>" --parent <parent-id>     # decomposition, not dependency
+tasq depend <id> --on <other-id> --type blocks   # one genuinely waits on another
+```
+
+Keep the original wording. Rewriting an item while importing it loses the only
+thing that made it recognisable to the person who wrote it.
+
+File one commitment per item and stop. Do not invent items the prose did not
+contain, do not merge two into one because they look similar, and leave the
+prose file in place until a human deletes it: an import that quietly loses
+something is worse than two sources of truth.
+
+### Watching, once work is in
+
+```bash
+tasq fleet         # who is holding what right now, with the lease counting down
+tasq contention    # what the ledger refused: the collisions it prevented
+tasq whoami        # the actor, its principal, and this installation's device key
+```
+
 ## Cold start
 
 Begin every new runtime or replacement-agent session with an explicit space
@@ -31,7 +96,8 @@ tasq onboard --space <explicit-context-id> --actor <stable-label> --json
 ```
 
 Do not infer either value from the checkout, current directory, home directory
-or prose stored in the ledger. A capability profile that can mutate must also
+or prose stored in the ledger. When no space exists yet, propose one and have a
+human confirm it - see "First time in this project" above. A capability profile that can mutate must also
 include `read`.
 
 Read the returned `guide` before acting. Execute its `firstReadRecipeId` first,
