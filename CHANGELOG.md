@@ -8,6 +8,73 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.1 - 2026-09-02
+
+Store format 35, unchanged. Everything here was found by USING v0.6.0 rather
+than by reasoning about it, which is why it is a patch and not a feature
+release.
+
+### Fixed
+
+- **The refusal suggestion could not be pasted.** Refusing a completion printed
+  the resolved `.local/lib/tasq/0.6.0/darwin-arm64/index.js` path. It is
+  meant to be copy-pasted, and it pasted the versioned internal layout instead
+  of the `tasq` on PATH, which stops working the moment the managed symlink
+  moves. The onboard recipes deliberately keep the absolute path for the
+  opposite reason: an agent executes the returned vector verbatim.
+- **The Console had a live feed and asked a human to press a button.** Genuine
+  SSE, an `EventSource` held open, cursor pagination and recovery, and then a
+  badge reading "Changes available" beside a Refresh button. Somebody watching
+  their agents work saw a static page. It re-fetches and swaps the record list
+  now, keeping the filter that was typed, and still degrades to the badge for a
+  history gap where a reload genuinely is required.
+- **The installer refused after creating things, not before.** Installing over
+  a pre-existing unmanaged `bin/tasq` extracted the archive and wrote the
+  install record first, leaving two directories behind; the next run then
+  failed with a raw `EEXIST`. The check happens before the network is touched,
+  `--dry-run` reports `BLOCKED` and exits non-zero instead of printing a
+  successful plan for the command that would refuse, and an error reaches a
+  human as prose before the contract document.
+- **The migration receipt did not record who performed the migration.** It
+  captured the source path identity, the format, the cursor and the snapshot
+  digest, and not the writer. When a source-only dev build migrated a live
+  ledger to a format no published binary writes, that was invisible afterwards
+  and had to be inferred. `writtenBy` now carries the version, whether it was a
+  source build, the executable and the pid.
+
+### Added
+
+- **`pnpm dev:link`** puts a working-tree build on PATH as `tasq-dev`, beside
+  the published `tasq`, so your own build never displaces the one that answers
+  "does this work for somebody who installed it". It refuses to replace a
+  `tasq-dev` it did not write.
+
+### Documentation
+
+- **A getting started that matches the product.** The README taught
+  `tasq onboard`, which is the agent bootstrap, and never mentioned the command
+  that puts Tasq in a project. It also named `v0.4.2` in five places, including
+  the `npx` line that is the first command anyone runs.
+- **A skill that can set a project up.** An agent handed `SKILL.md` could join
+  an existing space and could not put Tasq in a project at all: the skill
+  correctly forbade inferring the space and offered no path from "nothing here
+  yet" to "working". Proposing an id and having a human confirm it once is not
+  inferring, and the difference is load-bearing.
+- **[ADR-025](docs/decisions/ADR-025_WHAT_WOULD_END_THIS.md)** states what
+  evidence would end this project, written before that evidence exists.
+
+### Release machinery
+
+- The publication record is measured against the newest release tag rather than
+  against itself, and a tag that published nothing must be recorded as retired
+  with a reason. It failed the moment v0.6.0 published, which is the gate
+  working.
+- Both version-pinned `state` fields are guarded. After v0.5.1 shipped
+  partially certified on one of them, the guard was applied to that block only;
+  the other kept the state of the release it had already been consumed by.
+- Two vendors on one ledger is an eval that runs in CI, so the claim stays true
+  rather than being made once.
+
 ## v0.6.0 - 2026-08-28
 
 Store format 35. Every 0.5.x store migrates forward once, irreversibly, and
