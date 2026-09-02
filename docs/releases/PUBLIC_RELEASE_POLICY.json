@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.6.0",
+    "state": "authorized",
+    "version": "0.6.1",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-27",
-    "rationale": "Consumed by v0.6.0, published 2026-08-28T19:41:42Z. It shipped the first of the live human surface named by ADR-022 (`tasq fleet`, `tasq whoami`), decomposition and relations on both doors, one-command project setup, per-installation device identity, and `tasq contention` - which closed the gap that mattered most: the ledger recorded everything it allowed and nothing it prevented, so nobody could answer how many collisions it stopped. Store format 33 to 35."
+    "rationale": "Authorized for v0.6.1, not yet published. A patch on top of v0.6.0 at the same store format 35. It carries the corrections found by using v0.6.0 rather than by reasoning about it: the capture suggestion prints the command a person has instead of the versioned internal path, the Console updates itself instead of asking for a Refresh click, the installer refuses before creating anything and its dry run predicts that refusal, and the migration receipt records WHICH executable performed the migration. It also carries the first getting-started that matches the product and a skill that can set a project up."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,10 +385,10 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
