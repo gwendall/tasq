@@ -117,15 +117,9 @@ const adoptionOutputPaths = [
   resolve(repoRoot, "apps/site/public/adopt.json"),
 ];
 const publicEntryCopies = [
-  // One skill source, two derived copies. They were hand-maintained and drifted
-  // six weeks apart, and the one that drifted is the one agents read.
   {
-    source: "SKILL.md",
+    source: "plugins/tasq/skills/tasq/SKILL.md",
     output: "apps/site/public/SKILL.md",
-  },
-  {
-    source: "SKILL.md",
-    output: "plugins/tasq/skills/tasq/SKILL.md",
   },
   {
     source: "docs/integrations/AGENT_INTEGRATIONS.json",
