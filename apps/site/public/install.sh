@@ -90,6 +90,13 @@ MANIFEST="${ROOT}.release.json"
 CHECKSUMS="${ROOT}.SHA256SUMS"
 ARCHIVE="${ROOT}.tar.gz"
 
+# A plan that does not predict the refusal it exists to prevent is not a plan.
+# This is the one blocker knowable without touching the network.
+BLOCKER=""
+if [ -e "${PREFIX}/bin/tasq" ] && [ ! -L "${PREFIX}/bin/tasq" ]; then
+  BLOCKER="${PREFIX}/bin/tasq exists and is not a managed symlink; install would refuse"
+fi
+
 if [ "$DRY_RUN" = "true" ]; then
   printf '%s\n' \
     "Tasq lifecycle plan" \
@@ -100,8 +107,16 @@ if [ "$DRY_RUN" = "true" ]; then
     "  release: ${REPOSITORY}/releases/tag/v${VERSION}" \
     "  checksum-of-checksums: sha256:${CHECKSUMS_SHA256}" \
     "  data: TASQ_HOME is external and will not be touched"
+  if [ -n "$BLOCKER" ]; then
+    printf '%s\n' \
+      "  BLOCKED: ${BLOCKER}" \
+      "  remove that file, or pass --prefix <path> to install elsewhere"
+    exit 1
+  fi
   exit 0
 fi
+
+[ -z "$BLOCKER" ] || fail "${BLOCKER}. Nothing was created. Remove that file, or pass --prefix <path>."
 
 command -v curl >/dev/null 2>&1 || fail "curl is required"
 command -v bun >/dev/null 2>&1 || fail "Bun 1.3+ is required"
