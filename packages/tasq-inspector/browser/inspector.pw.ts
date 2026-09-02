@@ -137,14 +137,23 @@ test("narrow dark Console remains contained, legible and reduced-motion safe", a
     .toBeGreaterThanOrEqual(44);
 });
 
-test("live invalidation observes a fixed-clock external writer", async ({ page }) => {
+test("live invalidation brings the records with it, without a button", async ({ page }) => {
+  // The plumbing was all here and stopped one step short: a change set a badge
+  // reading "Changes available" and un-hid a Refresh button whose handler was
+  // location.reload(). A person watching their agents work saw a static page.
   await page.goto(url("mature"));
   await expect(page.locator("#live-status")).toHaveText("Live connection");
+
+  const typed = page.locator("#record-query");
+  await typed.fill("calibration");
   await mutate("mature");
-  await expect(page.locator("#live-status")).toHaveText("Changes available");
-  const refresh = page.getByRole("button", { name: "Refresh canonical view" });
-  await refresh.click();
+
   await expect(page.getByRole("link", { name: "Inspect new live calibration evidence" })).toBeVisible();
+  // Still live, and the button stays hidden: nothing was asked of the human.
+  await expect(page.locator("#live-status")).toHaveText("Live connection");
+  await expect(page.getByRole("button", { name: "Refresh canonical view" })).toBeHidden();
+  // And the filter someone typed survived the swap.
+  await expect(typed).toHaveValue("calibration");
 });
 
 test("support bundle is previewed exactly and browser mutation stays impossible", async ({ page, request }) => {
