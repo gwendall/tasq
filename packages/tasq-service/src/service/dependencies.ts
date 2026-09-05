@@ -29,8 +29,7 @@ import {
   TaskDependencyInsert,
   TaskDependency as TaskDependencyZ,
   type TaskDependency as TaskDependencyT,
-  type DependencyType as DependencyTypeT,
-} from "@tasq-run/schema";
+  type DependencyType as DependencyTypeT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit, listEvents } from "./events.js";
@@ -323,7 +322,7 @@ export async function undependTask(
   id: string | null,
   ctx: UndependOptions = {},
 ): Promise<void> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 
@@ -447,7 +446,7 @@ export async function listDependencies(
   db: TasqDb,
   options: ListDependenciesOptions,
 ): Promise<TaskDependencyT[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const direction = options.direction ?? "both";
 
   const filters = [eq(taskDependency.tenantId, tenantId)];
@@ -500,7 +499,7 @@ export async function listDependencies(
 export async function unresolvedBlockerCount(
   db: TasqDb,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<number> {
   const edges = await db
     .select({ toTaskId: taskDependency.toTaskId })
@@ -582,7 +581,7 @@ export async function justUnblocked(
   db: TasqDb,
   options: JustUnblockedOptions = {},
 ): Promise<Set<string>> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const sinceMs = options.sinceMs ?? now - 7 * 24 * 60 * 60 * 1000;
 

@@ -7,8 +7,7 @@ import {
   type Event,
   type Reconciliation,
   type WaitCondition,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { emitAfterCommit, recordEvent } from "./events.js";
@@ -68,7 +67,7 @@ export async function evaluateWaitConditionDeadline(
   conditionId: string,
   options: EvaluateDeadlineOptions = {},
 ): Promise<DeadlineEvaluationResult> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "deadline-sweeper";
   if (!actor.trim()) throw new Error("Deadline actor must not be blank");
   const matcherVersion = options.matcherVersion ?? 1;
@@ -181,7 +180,7 @@ export async function sweepWaitConditionDeadlines(
   db: TasqDb,
   options: SweepDeadlineOptions = {},
 ): Promise<DeadlineSweepResult> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const sweepNow = unixMs(serviceNow(options, options.sweepNow), "sweepNow");
   const limit = options.limit ?? 100;
   if (!Number.isSafeInteger(limit) || limit <= 0 || limit > 10_000) {

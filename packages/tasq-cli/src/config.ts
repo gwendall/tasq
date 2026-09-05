@@ -7,7 +7,7 @@
 
 import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, resolve, sep } from "node:path";
-import { homedir } from "node:os";
+import { homedir, userInfo } from "node:os";
 import { CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
 
 export interface TasqConfig {
@@ -72,10 +72,29 @@ export function defaultEventJournalPath(): string {
   return join(configDir(), "events.jsonl");
 }
 
+/** The local space `tasq init` creates when none is named: neutral, and written to the file. */
+export const LOCAL_DEFAULT_SPACE = "local/default";
+
+function defaultActorLabel(): string {
+  try {
+    const name = userInfo().username;
+    if (name && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/.test(name)) return name;
+  } catch {
+    // No account information: fall through to the neutral label.
+  }
+  return "operator";
+}
+
+/**
+ * What a machine with no config file behaves like. There is no space here: a
+ * command in an unbound directory refuses until `tasq setup` or `tasq init`
+ * names one, because the previous default was a person's name and every
+ * unconfigured machine wrote into that person's ledger.
+ */
 const DEFAULT_CONFIG: TasqConfig = {
   dbPath: defaultDbPath(),
-  tenantId: "gwendall",
-  defaultActor: "gwendall",
+  tenantId: "",
+  defaultActor: defaultActorLabel(),
   eventJournalPath: defaultEventJournalPath(),
 };
 
@@ -89,11 +108,14 @@ export function loadConfig(): TasqConfig {
     const raw = readFileSync(path, "utf-8");
     const parsed: Partial<TasqConfig> = JSON.parse(raw);
     const merged = { ...DEFAULT_CONFIG, ...parsed };
-    for (const key of ["dbPath", "tenantId", "defaultActor", "eventJournalPath"] as const) {
+    for (const key of ["dbPath", "defaultActor", "eventJournalPath"] as const) {
       if (typeof merged[key] !== "string" || merged[key].length === 0) {
         throw new Error(`${key} must be a non-empty string`);
       }
     }
+    // An empty tenantId is a config with no global default: every unbound
+    // directory refuses. It is valid, and what a fresh machine looks like.
+    if (typeof merged.tenantId !== "string") throw new Error("tenantId must be a string");
     if (merged.projectionTarget !== undefined && typeof merged.projectionTarget !== "string") {
       throw new Error("projectionTarget must be a string when set");
     }

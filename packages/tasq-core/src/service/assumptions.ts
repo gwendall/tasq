@@ -15,7 +15,7 @@
 
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { assumption, assumptionLink, principal, uuidv7 } from "@tasq-run/schema";
+import { assumption, assumptionLink, principal, uuidv7, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -188,7 +188,7 @@ export async function attachAssumption(
   context: TaskServiceContext = {},
 ): Promise<{ assumption: AssumptionRecord; link: AssumptionLinkRecord }> {
   const parsed = z.object({ taskId: z.string().uuid(), text: AssumptionText }).parse(input);
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = context.actor ?? "system";
   const now = serviceNow(context, context.now);
   const outcome = await runInTransaction(db, async (tx) => {
@@ -233,7 +233,7 @@ export async function withdrawAssumption(
     message: "Withdrawing an assumption requires its text or its id",
   }).parse(input);
 
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = context.actor ?? "system";
   const now = serviceNow(context, context.now);
 
@@ -342,7 +342,7 @@ export async function resumeCommitment(
   context: TaskServiceContext = {},
 ): Promise<{ taskId: string; unlinked: AssumptionLinkRecord[] }> {
   const parsed = z.object({ taskId: z.string().uuid(), reason: Reason }).parse(input);
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = context.actor ?? "system";
   const now = serviceNow(context, context.now);
 

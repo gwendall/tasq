@@ -54,8 +54,7 @@ import {
   WaitCondition as WaitConditionZ,
   IdempotencyRecord as IdempotencyRecordZ,
   MAX_TASK_DEPTH,
-  CommitmentSummarySourceRefs,
-} from "@tasq-run/schema";
+  CommitmentSummarySourceRefs, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import {
   OBSERVATION_KIND_TYPE_URIS,
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,
@@ -93,7 +92,7 @@ export interface DoctorReport {
 export async function diagnoseStore(
   db: TasqDb,
   client: Client,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<DoctorReport> {
   const integrity = await client.execute("PRAGMA integrity_check");
   const sqliteIntegrity = String(integrity.rows[0]?.["integrity_check"] ?? "unknown");

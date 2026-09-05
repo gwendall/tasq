@@ -15,8 +15,7 @@ import {
   type Reconciliation,
   type ReconciliationDecision,
   type ReconciliationEffect,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import {
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,
   WAIT_KIND_EXTENSION_IDENTITIES,
@@ -253,7 +252,7 @@ export async function reconcileWaitObservation(
   observationId: string,
   options: ReconcileOptions = {},
 ): Promise<Reconciliation> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   if (!actor.trim()) throw new Error("Reconciliation actor must not be blank");
   const matcherVersion = options.matcherVersion ?? 1;
@@ -455,7 +454,7 @@ export async function reconcileWaitObservation(
 export async function getReconciliation(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Reconciliation | null> {
   const rows = await db
     .select()
@@ -470,7 +469,7 @@ export async function getReconciliationByEvaluation(
   conditionId: string,
   observationId: string,
   matcherVersion = 1,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Reconciliation | null> {
   const rows = await db
     .select()
@@ -501,7 +500,7 @@ export async function listReconciliations(
   conditionId: string | null,
   options: ListReconciliationsOptions = {},
 ): Promise<Reconciliation[]> {
-  const filters = [eq(reconciliation.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(reconciliation.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (conditionId) filters.push(eq(reconciliation.conditionId, conditionId));
   if (options.observationId) filters.push(eq(reconciliation.observationId, options.observationId));
   if (options.decisions?.length) filters.push(inArray(reconciliation.decision, options.decisions));
@@ -526,7 +525,7 @@ export async function listCandidateObservations(
     recordedBefore?: number;
   } = {},
 ): Promise<Observation[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const condition = await getWaitCondition(db, conditionId, tenantId);
   if (!condition) throw new Error(`Wait condition not found: ${conditionId}`);
   const route = conditionRouteKey(condition, options.matcherVersion ?? 1);

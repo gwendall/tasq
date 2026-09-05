@@ -15,8 +15,7 @@ import {
   type Event as EventT,
   type WaitCondition,
   type WaitConditionKind,
-  type WaitConditionStatus,
-} from "@tasq-run/schema";
+  type WaitConditionStatus, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import {
   REFERENCE_EVALUATOR_IMPLEMENTATION_DIGEST,
   REFERENCE_EVALUATOR_VERSION,
@@ -281,7 +280,7 @@ export async function createWaitCondition(
 export async function getWaitCondition(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<WaitCondition | null> {
   const rows = await db
     .select()
@@ -303,7 +302,7 @@ export async function listWaitConditions(
   taskId: string | null,
   options: ListWaitConditionsOptions = {},
 ): Promise<WaitCondition[]> {
-  const filters = [eq(waitCondition.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(waitCondition.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (taskId) filters.push(eq(waitCondition.taskId, taskId));
   if (options.statuses?.length) filters.push(inArray(waitCondition.status, options.statuses));
   if (options.kinds?.length) filters.push(inArray(waitCondition.kind, options.kinds));
@@ -327,7 +326,7 @@ export async function cancelWaitCondition(
   id: string,
   options: CancelWaitConditionOptions,
 ): Promise<WaitCondition> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = validateUnixMs(serviceNow(options, options.now), "now");
   const reason = options.reason.trim();

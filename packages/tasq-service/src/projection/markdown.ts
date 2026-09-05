@@ -20,8 +20,7 @@ import {
   type Goal as GoalT,
   type Project as ProjectT,
   type Task as TaskT,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import { renderLifePlanningMarkdown } from "@tasq-internal/life-planning-profile";
 import type { TasqDb } from "../db.js";
 import { pickNext } from "../prioritizer.js";
@@ -41,7 +40,7 @@ export async function renderProjection(
   db: TasqDb,
   options: RenderOptions = {},
 ): Promise<string> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
 
   const areaRows = await db

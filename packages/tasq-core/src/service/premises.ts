@@ -13,8 +13,7 @@ import {
   uuidv7,
   type Event as EventT,
   type ExternalRef,
-  type Task,
-} from "@tasq-run/schema";
+  type Task, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";
@@ -210,7 +209,7 @@ export async function createTaskWithPremise(
   premiseInput: unknown,
   ctx: PremiseContext = {},
 ): Promise<{ task: Task; premise: { id: string; value: TaskPremise }; replayed: boolean }> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const taskParsed = TaskInsertZ.parse({ ...(taskInput as Record<string, unknown>), tenantId });
@@ -282,7 +281,7 @@ export async function createTaskWithPremise(
 export async function getTaskPremiseState(
   db: TasqDbOrTx,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<TaskPremiseState | null> {
   const task = await getTask(db, taskId, tenantId);
   if (!task) throw new Error(`Task not found: ${taskId}`);
@@ -457,7 +456,7 @@ async function appendPremiseMutation<T>(
     tenantId: string; now: number; principal: Awaited<ReturnType<typeof callerPrincipal>>; state: TaskPremiseState;
   }) => Promise<MutationBuild<T>>,
 ): Promise<{ id: string; value: T; replayed: boolean }> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const identity = retry(ctx, tenantId, operation, { taskId, request }, now);

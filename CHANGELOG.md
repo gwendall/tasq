@@ -22,6 +22,16 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **A fresh machine wrote into one person's ledger.** The CLI's built-in
+  defaults named a personal space and actor, so any command run before
+  `tasq setup` on any machine landed in that person's space. A machine with no
+  config file now has no space: an unbound directory refuses with the two
+  commands that fix it, `tasq init` creates a neutral `local/default` space
+  and writes it to the file, and the default actor is the account name. The
+  same personal name was the implicit workspace in more than a hundred kernel
+  and service fallbacks; it is now one named constant,
+  `LEGACY_DEFAULT_WORKSPACE_ID`, documented as a defect to remove by requiring
+  the workspace everywhere. Column defaults in the store are unchanged.
 - **One projection file rendered whichever space was effective.** The global
   `projectionTarget` was written after every mutation with the effective
   space, so a life instance's `TASKS.md` received a software project's

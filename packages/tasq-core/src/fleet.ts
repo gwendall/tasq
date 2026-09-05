@@ -1,3 +1,4 @@
+import { LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 /**
  * Who is holding what, right now.
  *
@@ -68,7 +69,7 @@ function text(value: unknown): string | null {
  */
 export async function buildFleetView(
   db: TasqDb,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
   nowOrClock: number | Clock = Date.now(),
 ): Promise<FleetView> {
   const now = typeof nowOrClock === "number" ? nowOrClock : nowOrClock.now();

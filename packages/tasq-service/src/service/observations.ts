@@ -11,8 +11,7 @@ import {
   type Observation,
   type ObservationKind,
   type VerificationLevel,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import { OBSERVATION_KIND_TYPE_URIS } from "@tasq-internal/reference-extension";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
@@ -146,7 +145,7 @@ export async function ingestObservation(
 export async function getObservation(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Observation | null> {
   const rows = await db
     .select()
@@ -160,7 +159,7 @@ export async function getObservationByDelivery(
   db: TasqDbOrTx,
   source: string,
   externalEventId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Observation | null> {
   const rows = await db
     .select()
@@ -194,7 +193,7 @@ export async function listObservations(
   db: TasqDb,
   options: ListObservationsOptions = {},
 ): Promise<Observation[]> {
-  const filters = [eq(observation.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(observation.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.source) filters.push(eq(observation.source, options.source));
   if (options.kinds?.length) filters.push(inArray(observation.kind, options.kinds));
   if (options.subjectRef) filters.push(eq(observation.subjectRef, options.subjectRef));

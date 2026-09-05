@@ -13,8 +13,7 @@ import {
   ProjectStatus,
   type Project as ProjectT,
   type ProjectStatus as ProjectStatusT,
-  type Event as EventT,
-} from "@tasq-run/schema";
+  type Event as EventT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit } from "./events.js";
@@ -165,7 +164,7 @@ export async function createProject(
 export async function getProject(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ProjectT | null> {
   const rows = await db
     .select()
@@ -187,7 +186,7 @@ export async function listProjects(
   db: TasqDb,
   options: ListProjectsOptions = {},
 ): Promise<ProjectT[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const filters = [eq(project.tenantId, tenantId)];
 
   if (!options.includeDeleted) filters.push(isNull(project.deletedAt));
@@ -220,7 +219,7 @@ export async function updateProject(
   ctx: ServiceContext = {},
 ): Promise<ProjectT> {
   const parsed = ProjectUpdate.parse(update);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
 
   const now = serviceNow(ctx);
@@ -333,7 +332,7 @@ export async function softDeleteProject(
   id: string,
   ctx: SoftDeleteOptions = {},
 ): Promise<void> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 
@@ -441,7 +440,7 @@ export async function restoreProject(
   id: string,
   ctx: ServiceContext = {},
 ): Promise<ProjectT> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 

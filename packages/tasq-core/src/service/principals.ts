@@ -7,8 +7,7 @@ import {
   PrincipalInsert,
   principal,
   uuidv7,
-  type Principal,
-} from "@tasq-run/schema";
+  type Principal, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -122,7 +121,7 @@ export async function createPrincipal(
 export async function getPrincipal(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Principal | null> {
   const rows = await db.select().from(principal)
     .where(and(eq(principal.id, id), eq(principal.tenantId, tenantId)))
@@ -134,7 +133,7 @@ export async function listPrincipals(
   db: TasqDb,
   options: { tenantId?: string; status?: "enabled" | "disabled" } = {},
 ): Promise<Principal[]> {
-  const filters = [eq(principal.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(principal.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.status) filters.push(eq(principal.status, options.status));
   return (await db.select().from(principal).where(and(...filters)).orderBy(asc(principal.createdAt)))
     .map(parsePrincipal);
@@ -146,7 +145,7 @@ export async function setPrincipalStatus(
   status: "enabled" | "disabled",
   options: ServiceContext & { expectedRevision: number },
 ): Promise<Principal> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   return runInTransaction(db, async (tx) => {
     const before = await getPrincipal(tx, id, tenantId);

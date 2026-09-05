@@ -21,8 +21,7 @@ import {
   type AttestationRequirementV1 as Requirement,
   type AttestationRevocationV1 as Revocation,
   type AttestationSubjectV1 as Subject,
-  type AttestationV1 as Attestation,
-} from "@tasq-run/schema";
+  type AttestationV1 as Attestation, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson } from "../util/canonical-json.js";
@@ -129,7 +128,7 @@ export async function issueAttestation(
   ctx: ServiceContext = {},
 ): Promise<Attestation> {
   const parsed = AttestationIssueInputV1.parse(input);
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const issuerPrincipalId = requireAuthenticatedPrincipal(ctx);
   const now = serviceNow(ctx, ctx.now);
   const notBefore = parsed.notBefore ?? now;
@@ -213,7 +212,7 @@ export async function revokeAttestation(
   input: { reasonCode: string; explanation?: string | null; effectiveAt?: number; metadata?: unknown },
   ctx: ServiceContext = {},
 ): Promise<Revocation> {
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const revokerPrincipalId = requireAuthenticatedPrincipal(ctx);
   const now = serviceNow(ctx, ctx.now);
   const request = {
@@ -270,7 +269,7 @@ export async function revokeAttestation(
 export async function getAttestation(
   db: TasqDbOrTx,
   id: string,
-  workspaceId = "gwendall",
+  workspaceId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Attestation | null> {
   const rows = await db.select().from(attestation).where(and(
     eq(attestation.tenantId, workspaceId), eq(attestation.id, id),
@@ -281,7 +280,7 @@ export async function getAttestation(
 export async function getAttestationRevocation(
   db: TasqDbOrTx,
   attestationId: string,
-  workspaceId = "gwendall",
+  workspaceId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Revocation | null> {
   const rows = await db.select().from(attestationRevocation).where(and(
     eq(attestationRevocation.tenantId, workspaceId),
@@ -301,7 +300,7 @@ export async function listCurrentAttestations(
   db: TasqDbOrTx,
   input: ListCurrentAttestationsInput,
 ): Promise<Attestation[]> {
-  const workspaceId = input.workspaceId ?? "gwendall";
+  const workspaceId = input.workspaceId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const subject = AttestationSubjectV1.parse(input.subject);
   if (!Number.isSafeInteger(input.at) || input.at < 0) throw new Error("authority time must be a non-negative unix-ms integer");
   const filters = [
@@ -335,7 +334,7 @@ export async function evaluateAttestationEligibility(
   db: TasqDbOrTx,
   input: { workspaceId?: string; subject: Subject; requirements: Requirement[]; at: number },
 ): Promise<EligibilityDecision> {
-  const workspaceId = input.workspaceId ?? "gwendall";
+  const workspaceId = input.workspaceId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const subject = AttestationSubjectV1.parse(input.subject);
   const requirements = input.requirements.map((value) => AttestationRequirementV1.parse(value));
   const basis = new Set<string>();

@@ -6,8 +6,7 @@ import {
   idempotencyKey,
   type Clock,
   type IdempotencyRecord,
-  type IdempotencyRetentionClass,
-} from "@tasq-run/schema";
+  type IdempotencyRetentionClass, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runOperationalTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";
@@ -88,7 +87,7 @@ export function prepareIdempotency(
   if (key === undefined) return null;
   bounded(key, "idempotencyKey", 500);
   bounded(operation, "idempotency operation", 200);
-  const tenantId = bounded(context.tenantId ?? "gwendall", "idempotency workspace", 500);
+  const tenantId = bounded(context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID, "idempotency workspace", 500);
   const now = safeTime(options.now, "idempotency now");
   const retentionClass = options.retentionClass ?? "standard";
   let expiresAt: number | null = null;
@@ -225,7 +224,7 @@ export async function listIdempotencyRecords(
   db: TasqDb,
   options: ListIdempotencyOptions = {},
 ): Promise<IdempotencyRecord[]> {
-  const filters = [eq(idempotencyKey.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(idempotencyKey.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.callerScope) filters.push(eq(idempotencyKey.callerScope, options.callerScope));
   if (options.operation) filters.push(eq(idempotencyKey.operation, options.operation));
   if (options.key) filters.push(eq(idempotencyKey.key, options.key));
@@ -253,7 +252,7 @@ export async function pruneExpiredIdempotency(
   db: TasqDb,
   options: PruneIdempotencyOptions = {},
 ): Promise<{ pruned: number; through: number }> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = safeTime(serviceNow(options, options.now), "idempotency prune now");
   const limit = options.limit ?? 1_000;
   if (!Number.isSafeInteger(limit) || limit <= 0 || limit > 10_000) {

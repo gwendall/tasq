@@ -32,8 +32,7 @@ import {
   MAX_TASK_DEPTH,
   type Task as TaskT,
   type TaskStatus as TaskStatusT,
-  type Event as EventT,
-} from "@tasq-run/schema";
+  type Event as EventT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit } from "./events.js";
@@ -401,7 +400,7 @@ export async function createTask(
 export async function getTaskDepth(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<number> {
   let depth = 1;
   let currentId: string | null = id;
@@ -437,7 +436,7 @@ export async function getTaskDepth(
 export async function subtreeHeight(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<number> {
   let height = 1;
   let frontier: string[] = [id];
@@ -468,7 +467,7 @@ export async function subtreeHeight(
 export async function getTaskTree(
   db: TasqDb,
   rootId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
   options: { includeDeleted?: boolean } = {},
 ): Promise<TaskT[] | null> {
   const root = await getTask(db, rootId, tenantId);
@@ -508,7 +507,7 @@ export async function getTaskTree(
 export async function getTask(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<TaskT | null> {
   const rows = await db
     .select()
@@ -695,7 +694,7 @@ export async function updateTask(
   ctx: TaskServiceContext = {},
 ): Promise<TaskT> {
   const parsed = TaskUpdate.parse(update);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const expectedRevision = ctx.expectedRevision;
   const now = serviceNow(ctx, ctx.now);
@@ -775,7 +774,7 @@ export async function transitionTaskStatus(
   options: StatusChangeOptions = {},
   recurringCompletionMaterializer?: RecurringCompletionMaterializer,
 ): Promise<TaskT> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = serviceNow(options, options.now);
   const occurredAt = options.occurredAt ?? now;
@@ -1355,7 +1354,7 @@ export async function softDeleteTask(
   id: string,
   ctx: SoftDeleteOptions = {},
 ): Promise<void> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
 
@@ -1509,7 +1508,7 @@ export async function restoreTask(
   id: string,
   ctx: TaskServiceContext = {},
 ): Promise<TaskT> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
 
@@ -1563,7 +1562,7 @@ export async function listTasks(
   db: TasqDb,
   options: ListTasksOptions = {},
 ): Promise<TaskT[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const filters = [eq(task.tenantId, tenantId)];
 
   if (!options.includeDeleted) filters.push(isNull(task.deletedAt));

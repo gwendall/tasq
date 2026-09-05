@@ -81,7 +81,8 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     // refused by every command, doctor included. Refusing to say why the
     // doctor could not run would be the one thing worse than the refusal.
     const reason = error instanceof Error ? error.message : String(error);
-    if (!reason.includes("is not bound to a Tasq space")) throw error;
+    const noSpace = reason.includes("is not bound to a Tasq space") || reason.startsWith("No Tasq space is selected");
+    if (!noSpace) throw error;
     const report = { ok: false, config: configReport, storeSkipped: reason };
     if (json) printJson(report);
     else {

@@ -15,8 +15,7 @@ import {
   type ExtensionEvaluatorRegistration,
   type ExtensionManifest,
   type ExtensionRelease,
-  type ExtensionTypeRegistration,
-} from "@tasq-run/schema";
+  type ExtensionTypeRegistration, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -195,7 +194,7 @@ export async function installExtension(
   options: InstallExtensionOptions = {},
 ): Promise<InstalledExtension> {
   const prepared = prepareExtensionManifest(input);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const installedBy = options.actor ?? "system";
   const now = serviceNow(options, options.now);
   if (!tenantId.trim() || !installedBy.trim()) throw new Error("Extension tenant and actor are required");
@@ -267,7 +266,7 @@ export async function installExtension(
   });
 }
 
-export async function listExtensionReleases(db: TasqDb, tenantId = "gwendall") {
+export async function listExtensionReleases(db: TasqDb, tenantId = LEGACY_DEFAULT_WORKSPACE_ID) {
   const rows = await db.select().from(extensionRelease)
     .where(eq(extensionRelease.tenantId, tenantId))
     .orderBy(asc(extensionRelease.extensionUri), asc(extensionRelease.version));
@@ -278,7 +277,7 @@ export async function getExtensionTypeRegistration(
   db: TasqDbOrTx,
   typeUri: string,
   schemaVersion: number,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ExtensionTypeRegistration | null> {
   const rows = await db.select().from(extensionType).where(and(
     eq(extensionType.tenantId, tenantId),
@@ -292,7 +291,7 @@ export async function getExtensionEvaluatorRegistration(
   db: TasqDbOrTx,
   evaluatorUri: string,
   evaluatorVersion: number,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ExtensionEvaluatorRegistration | null> {
   const rows = await db.select().from(extensionEvaluator).where(and(
     eq(extensionEvaluator.tenantId, tenantId),

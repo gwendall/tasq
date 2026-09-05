@@ -30,8 +30,7 @@ import {
   type CommitmentRelation,
   type CompletionRecord,
   type ExternalRef,
-  type Principal,
-} from "@tasq-run/schema";
+  type Principal, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -200,7 +199,7 @@ export async function proposeAssignment(
 export async function getAssignment(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Assignment | null> {
   const rows = await db.select().from(assignment)
     .where(and(eq(assignment.id, id), eq(assignment.tenantId, tenantId))).limit(1);
@@ -211,7 +210,7 @@ export async function listAssignments(
   db: TasqDb,
   options: { tenantId?: string; taskId?: string; assigneePrincipalId?: string; status?: AssignmentStatus } = {},
 ): Promise<Assignment[]> {
-  const filters = [eq(assignment.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(assignment.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.taskId) filters.push(eq(assignment.taskId, options.taskId));
   if (options.assigneePrincipalId) filters.push(eq(assignment.assigneePrincipalId, options.assigneePrincipalId));
   if (options.status) filters.push(eq(assignment.status, options.status));
@@ -225,7 +224,7 @@ async function transitionAssignment(
   to: AssignmentStatus,
   options: PrincipalContext & { expectedRevision: number },
 ): Promise<Assignment> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const { result, event } = await runInTransaction(db, async (tx) => {
     const before = await getAssignment(tx, id, tenantId);
@@ -383,7 +382,7 @@ async function assertNoDependencyCycle(
 export async function getCommitmentRelation(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CommitmentRelation | null> {
   const rows = await db.select().from(commitmentRelation)
     .where(and(eq(commitmentRelation.id, id), eq(commitmentRelation.tenantId, tenantId))).limit(1);
@@ -512,7 +511,7 @@ export async function listCommitmentRelations(
   db: TasqDb,
   options: { tenantId?: string; commitmentId?: string; activeOnly?: boolean } = {},
 ): Promise<CommitmentRelation[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const rows = await db.select().from(commitmentRelation)
     .where(and(eq(commitmentRelation.tenantId, tenantId), ...(options.activeOnly ? [isNull(commitmentRelation.endedAt)] : [])))
     .orderBy(asc(commitmentRelation.createdAt));
@@ -525,7 +524,7 @@ export async function endCommitmentRelation(
   id: string,
   options: PrincipalContext & { expectedRevision: number },
 ): Promise<CommitmentRelation> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const { result, event } = await runInTransaction(db, async (tx) => {
     const before = await getCommitmentRelation(tx, id, tenantId);
@@ -631,7 +630,7 @@ export async function appendArtifact(
   return result;
 }
 
-export async function getArtifact(db: TasqDbOrTx, id: string, tenantId = "gwendall"): Promise<Artifact | null> {
+export async function getArtifact(db: TasqDbOrTx, id: string, tenantId = LEGACY_DEFAULT_WORKSPACE_ID): Promise<Artifact | null> {
   const rows = await db.select().from(artifact)
     .where(and(eq(artifact.id, id), eq(artifact.tenantId, tenantId))).limit(1);
   return rows[0] ? parseArtifact(rows[0]) : null;
@@ -641,7 +640,7 @@ export async function listArtifacts(
   db: TasqDb,
   options: { tenantId?: string; taskId?: string; attemptId?: string } = {},
 ): Promise<Artifact[]> {
-  const filters = [eq(artifact.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(artifact.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.taskId) filters.push(eq(artifact.taskId, options.taskId));
   if (options.attemptId) filters.push(eq(artifact.attemptId, options.attemptId));
   return (await db.select().from(artifact).where(and(...filters)).orderBy(asc(artifact.createdAt)))
@@ -732,7 +731,7 @@ async function assertRecordExists(tx: TasqDbOrTx, tenantId: string, recordType: 
   return rows[0].taskId;
 }
 
-export async function getExternalRef(db: TasqDbOrTx, id: string, tenantId = "gwendall"): Promise<ExternalRef | null> {
+export async function getExternalRef(db: TasqDbOrTx, id: string, tenantId = LEGACY_DEFAULT_WORKSPACE_ID): Promise<ExternalRef | null> {
   const rows = await db.select().from(externalRef)
     .where(and(eq(externalRef.id, id), eq(externalRef.tenantId, tenantId))).limit(1);
   return rows[0] ? parseExternalRef(rows[0]) : null;
@@ -742,7 +741,7 @@ export async function listExternalRefs(
   db: TasqDb,
   options: { tenantId?: string; recordType?: string; recordId?: string } = {},
 ): Promise<ExternalRef[]> {
-  const filters = [eq(externalRef.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(externalRef.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.recordType) filters.push(eq(externalRef.recordType, options.recordType));
   if (options.recordId) filters.push(eq(externalRef.recordId, options.recordId));
   return (await db.select().from(externalRef).where(and(...filters)).orderBy(asc(externalRef.createdAt)))
@@ -752,7 +751,7 @@ export async function listExternalRefs(
 export async function getCompletionRecord(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionRecord | null> {
   const rows = await db.select().from(completionRecord)
     .where(and(eq(completionRecord.id, id), eq(completionRecord.tenantId, tenantId))).limit(1);
@@ -762,7 +761,7 @@ export async function getCompletionRecord(
 export async function listCompletionRecords(
   db: TasqDb,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionRecord[]> {
   return (await db.select().from(completionRecord).where(and(
     eq(completionRecord.tenantId, tenantId),

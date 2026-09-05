@@ -1,3 +1,4 @@
+import { LEGACY_DEFAULT_WORKSPACE_ID } from "./types.js";
 /** Language-neutral effect request identity and canonicalization contract. */
 
 import { createHash } from "node:crypto";
@@ -333,7 +334,7 @@ export type Effect = z.infer<typeof Effect>;
 
 export const EffectProposal = z.object({
   id: UuidV7.optional(),
-  tenantId: boundedScalarString(1, 256).default("gwendall"),
+  tenantId: boundedScalarString(1, 256).default(LEGACY_DEFAULT_WORKSPACE_ID),
   taskId: UuidV7,
   attemptId: UuidV7.nullable().default(null),
   request: EffectRequestEnvelope,
@@ -376,7 +377,7 @@ export type EffectApproval = z.infer<typeof EffectApproval>;
 
 export const EffectApprovalDecision = z.object({
   id: UuidV7.optional(),
-  tenantId: boundedScalarString(1, 256).default("gwendall"),
+  tenantId: boundedScalarString(1, 256).default(LEGACY_DEFAULT_WORKSPACE_ID),
   effectId: UuidV7,
   decision: ApprovalDecision,
   scope: EffectJsonObject.default({}),

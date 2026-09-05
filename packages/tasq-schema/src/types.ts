@@ -9,6 +9,15 @@
 
 import { z } from "zod";
 
+/**
+ * The workspace a call lands in when neither its input nor its context names
+ * one. It is a compatibility default and a defect: it was a person's name,
+ * hard-coded in more than a hundred places, and every caller that forgot a
+ * tenant wrote into that person's ledger. Naming it in one place is the first
+ * step; the second is to require the workspace and delete this constant.
+ */
+export const LEGACY_DEFAULT_WORKSPACE_ID: string = "gwendall";
+
 // ──────────────────────────────────────────────────────────────────────
 // Enums (kept as branded string unions — single source of truth)
 // ──────────────────────────────────────────────────────────────────────
@@ -401,7 +410,7 @@ export const PrincipalInsert = Principal.omit({
   updatedAt: true,
 }).extend({
   id: z.string().min(1).max(500).optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   kind: PrincipalKind.default("agent"),
   localAlias: z.string().min(1).max(200).nullable().default(null),
   status: PrincipalStatus.default("enabled"),
@@ -435,7 +444,7 @@ export const AreaInsert = Area.omit({
   deletedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   importance: Importance.default(3),
   cadenceTarget: z.string().nullable().default(null),
   description: z.string().nullable().default(null),
@@ -481,7 +490,7 @@ export const GoalInsert = Goal.omit({
   deletedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   description: z.string().nullable().default(null),
   horizon: z.string().nullable().default(null),
   importance: Importance.default(3),
@@ -528,7 +537,7 @@ export const ProjectInsert = Project.omit({
   deletedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   goalId: UuidV7.nullable().default(null),
   areaId: UuidV7.nullable().default(null),
   description: z.string().nullable().default(null),
@@ -608,7 +617,7 @@ export const TaskInsert = Task.omit({
   revision: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   projectId: UuidV7.nullable().optional(),
   goalId: UuidV7.nullable().optional(),
   areaId: UuidV7.nullable().optional(),
@@ -686,7 +695,7 @@ export const TaskDependencyInsert = TaskDependency.omit({
   deletedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   type: DependencyType.default("blocks"),
 });
 export type TaskDependencyInsert = z.infer<typeof TaskDependencyInsert>;
@@ -718,7 +727,7 @@ export const CommitmentRelationInsert = CommitmentRelation.omit({
   endedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
 });
 export type CommitmentRelationInsert = z.infer<typeof CommitmentRelationInsert>;
 
@@ -749,7 +758,7 @@ export const AssignmentInsert = Assignment.omit({
   updatedAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   instructionsRef: z.string().min(1).max(2_000).nullable().default(null),
 });
 export type AssignmentInsert = z.infer<typeof AssignmentInsert>;
@@ -779,7 +788,7 @@ export const ExternalRefInsert = ExternalRef.omit({
   createdAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   url: AbsoluteUri.nullable().default(null),
   version: z.string().min(1).max(500).nullable().default(null),
   digest: z.string().min(1).max(500).nullable().default(null),
@@ -825,7 +834,7 @@ export const TaskClaimInsert = TaskClaim.omit({
   revision: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   metadata: Metadata.default({}),
 });
 export type TaskClaimInsert = z.infer<typeof TaskClaimInsert>;
@@ -865,7 +874,7 @@ export const TaskAttemptInsert = TaskAttempt.omit({
   revision: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   claimId: UuidV7.nullable().default(null),
   runtime: z.string().min(1).max(80).default("local"),
   externalId: z.string().nullable().default(null),
@@ -902,7 +911,7 @@ export const TaskEvidenceInsert = TaskEvidence.omit({
   principalId: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   attemptId: UuidV7.nullable().default(null),
   supersedesEvidenceId: UuidV7.nullable().default(null),
   summary: z.string().min(1).nullable().default(null),
@@ -941,7 +950,7 @@ export const ArtifactInsert = Artifact.omit({
   createdAt: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   attemptId: UuidV7.nullable().default(null),
   schemaVersion: z.number().int().positive().default(1),
   mediaType: z.string().min(1).max(200).nullable().default(null),
@@ -1107,7 +1116,7 @@ export type WaitCondition = z.infer<typeof WaitCondition>;
 
 export const WaitConditionInsert = z.object({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   taskId: UuidV7,
   kind: WaitConditionKind,
   schemaVersion: z.number().int().positive().default(1),
@@ -1171,7 +1180,7 @@ export type Observation = z.infer<typeof Observation>;
 
 export const ObservationInsert = z.object({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   source: z.string().min(1).max(500),
   externalEventId: z.string().min(1).max(1_000),
   kind: ObservationKind,
@@ -1277,7 +1286,7 @@ export const EventInsert = Event.omit({
   principalId: true,
 }).extend({
   id: UuidV7.optional(),
-  tenantId: z.string().min(1).default("gwendall"),
+  tenantId: z.string().min(1).default(LEGACY_DEFAULT_WORKSPACE_ID),
   actor: z.string().min(1).default("system"),
   principalId: z.string().min(1).nullable().optional(),
   payload: EventPayload.default({}),

@@ -26,8 +26,7 @@ import {
   type AgreementTerminationV1 as Termination,
   type AgreementViewV1 as AgreementView,
   type Event,
-  type Metadata,
-} from "@tasq-run/schema";
+  type Metadata, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson } from "../util/canonical-json.js";
@@ -123,7 +122,7 @@ async function requireEnabledParties(db: TasqDbOrTx, workspaceId: string, princi
 
 export async function offerAgreement(db: TasqDb, input: unknown, ctx: ServiceContext = {}): Promise<Offer> {
   const parsed = AgreementOfferInputV1.parse(input);
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const offerorPrincipalId = authenticatedPrincipal(ctx);
   const now = serviceNow(ctx, ctx.now);
   const terms = AgreementTermsV1.parse(parsed.terms);
@@ -170,7 +169,7 @@ export async function offerAgreement(db: TasqDb, input: unknown, ctx: ServiceCon
   });
 }
 
-export async function getAgreementOffer(db: TasqDbOrTx, id: string, workspaceId = "gwendall"): Promise<Offer | null> {
+export async function getAgreementOffer(db: TasqDbOrTx, id: string, workspaceId = LEGACY_DEFAULT_WORKSPACE_ID): Promise<Offer | null> {
   const rows = await db.select().from(agreementOffer).where(and(
     eq(agreementOffer.tenantId, workspaceId), eq(agreementOffer.id, id),
   )).limit(1);
@@ -241,7 +240,7 @@ export async function getAgreementView(
   });
 }
 
-export async function listAgreementOffers(db: TasqDbOrTx, workspaceId = "gwendall"): Promise<Offer[]> {
+export async function listAgreementOffers(db: TasqDbOrTx, workspaceId = LEGACY_DEFAULT_WORKSPACE_ID): Promise<Offer[]> {
   return (await db.select().from(agreementOffer).where(eq(agreementOffer.tenantId, workspaceId))
     .orderBy(asc(agreementOffer.offeredAt), asc(agreementOffer.id))).map(parseOffer);
 }
@@ -320,7 +319,7 @@ export async function acceptAgreement(
   input: { termsDigest: string; metadata?: Metadata },
   ctx: ServiceContext = {},
 ): Promise<AgreementView> {
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const partyPrincipalId = authenticatedPrincipal(ctx);
   const now = serviceNow(ctx, ctx.now);
   const retry = prepareIdempotency({ ...ctx, tenantId: workspaceId }, "agreement.accept", {
@@ -384,7 +383,7 @@ async function terminateAgreement(
   input: { termsDigest: string; reason: string; metadata?: Metadata },
   ctx: ServiceContext,
 ): Promise<AgreementView> {
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actorPrincipalId = authenticatedPrincipal(ctx);
   const now = serviceNow(ctx, ctx.now);
   const retry = prepareIdempotency({ ...ctx, tenantId: workspaceId }, `agreement.${action}`, {

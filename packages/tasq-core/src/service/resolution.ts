@@ -32,8 +32,7 @@ import {
   type ResolutionContract,
   type TaskEvidence,
   type ValidationDecision,
-  type ValidationOutcome,
-} from "@tasq-run/schema";
+  type ValidationOutcome, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type {
   CompletionEvaluationInput,
   CompletionEvaluatorRuntime,
@@ -196,7 +195,7 @@ export async function createResolutionContract(
   ctx: ResolutionContext = {},
 ): Promise<ResolutionContract> {
   const parsed = ResolutionContractInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const identity = retry(ctx, tenantId, "resolution.contract.create", parsed, now);
@@ -276,7 +275,7 @@ export async function createResolutionContractInTransaction(
 export async function getResolutionContract(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ResolutionContract | null> {
   const rows = await db.select().from(resolutionContract).where(and(
     eq(resolutionContract.id, id),
@@ -288,7 +287,7 @@ export async function getResolutionContract(
 export async function listResolutionContracts(
   db: TasqDb,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ResolutionContract[]> {
   return (await db.select().from(resolutionContract).where(and(
     eq(resolutionContract.tenantId, tenantId),
@@ -302,7 +301,7 @@ export async function attestEvidenceTrust(
   ctx: AttestEvidenceTrustOptions = {},
 ): Promise<EvidenceTrustRecord> {
   const parsed = EvidenceTrustAttestationInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const identity = retry(ctx, tenantId, "resolution.evidence-trust.attest", parsed, now);
@@ -377,7 +376,7 @@ export async function revokeEvidenceTrust(
   trustRecordId: string,
   ctx: RevokeEvidenceTrustOptions,
 ): Promise<EvidenceTrustRecord> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   if (!ctx.reason.trim()) throw new Error("Evidence trust revocation requires a reason");
@@ -441,7 +440,7 @@ export async function revokeEvidenceTrust(
 export async function getEvidenceTrustRecord(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EvidenceTrustRecord | null> {
   const rows = await db.select().from(evidenceTrustRecord).where(and(
     eq(evidenceTrustRecord.id, id),
@@ -453,7 +452,7 @@ export async function getEvidenceTrustRecord(
 export async function listEvidenceTrustRecords(
   db: TasqDb,
   evidenceId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EvidenceTrustRecord[]> {
   return (await db.select().from(evidenceTrustRecord).where(and(
     eq(evidenceTrustRecord.tenantId, tenantId),
@@ -467,7 +466,7 @@ export async function proposeCompletion(
   ctx: ResolutionContext = {},
 ): Promise<CompletionProposal> {
   const parsed = CompletionProposalInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const identity = retry(ctx, tenantId, "resolution.proposal.create", parsed, now);
@@ -541,7 +540,7 @@ export async function challengeCompletion(
   ctx: ResolutionContext = {},
 ): Promise<CompletionChallenge> {
   const parsed = CompletionChallengeInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);
   const identity = retry(ctx, tenantId, "resolution.challenge.create", parsed, now);
@@ -598,7 +597,7 @@ export async function evaluateCompletionDeterministically(
   proposalId: string,
   options: DeterministicValidationOptions,
 ): Promise<ValidationDecision> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const idempotencyOperation = "resolution.decision.evaluate";
   const idempotencyRequest = {
@@ -639,7 +638,7 @@ export async function attestCompletion(
   ctx: ResolutionContext = {},
 ): Promise<ValidationDecision> {
   const parsed = ManualValidationDecisionInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(ctx, ctx.now);
   const idempotencyOperation = "resolution.decision.attest";
   const replay = await replayDecision(db, ctx, tenantId, idempotencyOperation, parsed, now);
@@ -665,7 +664,7 @@ export async function settleOptimisticCompletion(
   proposalId: string,
   ctx: ResolutionContext = {},
 ): Promise<ValidationDecision> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(ctx, ctx.now);
   const idempotencyOperation = "resolution.decision.settle-optimistic";
   const idempotencyRequest = { proposalId };
@@ -714,7 +713,7 @@ export async function adjudicateCompletion(
   ctx: ResolutionContext = {},
 ): Promise<ValidationDecision> {
   const parsed = ManualValidationDecisionInsert.parse(input);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(ctx, ctx.now);
   const idempotencyOperation = "resolution.decision.adjudicate";
   const replay = await replayDecision(db, ctx, tenantId, idempotencyOperation, parsed, now);
@@ -1098,7 +1097,7 @@ async function resolveCallerFromDb(
 export async function getCompletionProposal(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionProposal | null> {
   const rows = await db.select().from(completionProposal).where(and(
     eq(completionProposal.id, id),
@@ -1110,7 +1109,7 @@ export async function getCompletionProposal(
 export async function listCompletionProposals(
   db: TasqDb,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionProposal[]> {
   return (await db.select().from(completionProposal).where(and(
     eq(completionProposal.tenantId, tenantId),
@@ -1121,7 +1120,7 @@ export async function listCompletionProposals(
 export async function getCompletionChallenge(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionChallenge | null> {
   const rows = await db.select().from(completionChallenge).where(and(
     eq(completionChallenge.id, id),
@@ -1133,7 +1132,7 @@ export async function getCompletionChallenge(
 export async function listCompletionChallenges(
   db: TasqDb,
   proposalId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionChallenge[]> {
   return (await db.select().from(completionChallenge).where(and(
     eq(completionChallenge.tenantId, tenantId),
@@ -1144,7 +1143,7 @@ export async function listCompletionChallenges(
 export async function getValidationDecision(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ValidationDecision | null> {
   const rows = await db.select().from(validationDecision).where(and(
     eq(validationDecision.id, id),
@@ -1156,7 +1155,7 @@ export async function getValidationDecision(
 export async function listValidationDecisions(
   db: TasqDb,
   proposalId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<ValidationDecision[]> {
   return (await db.select().from(validationDecision).where(and(
     eq(validationDecision.tenantId, tenantId),
@@ -1188,7 +1187,7 @@ async function listValidationDecisionRows(
 export async function getCompletionResolutionChain(
   db: TasqDb,
   contractId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<CompletionResolutionChain | null> {
   const contract = await getResolutionContract(db, contractId, tenantId);
   if (!contract) return null;
