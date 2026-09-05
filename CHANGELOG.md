@@ -22,6 +22,10 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **`tasq-dev` refused every git worktree.** The shim written by `pnpm dev:link`
+  tested for a `.git` directory, and a worktree's `.git` is a file, so a dev
+  build linked from a worktree was reported as a checkout that is gone. The
+  shim now tests that the checkout exists, whichever shape git gave it.
 - **A fresh machine wrote into one person's ledger.** The CLI's built-in
   defaults named a personal space and actor, so any command run before
   `tasq setup` on any machine landed in that person's space. A machine with no
