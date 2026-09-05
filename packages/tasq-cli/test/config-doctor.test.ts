@@ -218,22 +218,39 @@ describe("doctor --config", () => {
     expect(report.ok).toBe(true);
   });
 
-  test("a projection target outside the bound project is an error, one inside is not", async () => {
+  test("a global projection target is ignored in a bound directory, and said so", async () => {
     const { home, base } = sandbox();
     const first = project(base, "first");
     const elsewhere = project(base, "elsewhere");
     await json(home, first, ["setup", "--space", "acme/first", "--actor", "gwendall"]);
     await ok(home, first, ["config", "set", "projectionTarget", join(elsewhere, "TASKS.md")]);
-    const outside = await doctorConfig(home, first);
-    expect(outside.exitCode).toBe(1);
-    expect(outside.report.findings).toEqual([
-      expect.objectContaining({ code: "projection_outside_bound_tree", severity: "error", entityType: "file" }),
+    const ignored = await doctorConfig(home, first);
+    expect(ignored.exitCode).toBe(0);
+    expect(ignored.report.projection).toBeNull();
+    expect(ignored.report.findings).toEqual([
+      expect.objectContaining({ code: "global_projection_ignored_here", severity: "warning", entityType: "directory" }),
     ]);
 
-    await ok(home, first, ["config", "set", "projectionTarget", join(first, "TASKS.md")]);
-    const inside = await doctorConfig(home, first);
-    expect(inside.exitCode).toBe(0);
-    expect(inside.report.findings).toEqual([]);
+    await json(home, first, ["use", "acme/first", "--project-to", "TASKS.md"]);
+    const own = await doctorConfig(home, first);
+    expect(own.report.projection).toBe(join(realpathSync(first), "TASKS.md"));
+    expect(own.report.findings).toEqual([]);
+  });
+
+  test("a hand-edited projection outside its directory is an error", async () => {
+    const { home, base } = sandbox();
+    const first = project(base, "first");
+    const elsewhere = project(base, "elsewhere");
+    await json(home, first, ["setup", "--space", "acme/first", "--actor", "gwendall"]);
+    const path = join(home, ".tasq", "config.json");
+    const config = JSON.parse(readFileSync(path, "utf8"));
+    config.directoryProjections = { [realpathSync(first)]: join(realpathSync(elsewhere), "TASKS.md") };
+    await Bun.write(path, JSON.stringify(config));
+    const { report, exitCode } = await doctorConfig(home, first);
+    expect(exitCode).toBe(1);
+    expect(report.findings).toEqual([
+      expect.objectContaining({ code: "projection_outside_bound_tree", severity: "error", entityType: "file" }),
+    ]);
   });
 
   test("an unreadable config is one finding, not a stack trace", async () => {

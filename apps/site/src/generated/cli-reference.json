@@ -7,8 +7,8 @@
         "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block; the global default moves only with --default"
       },
       {
-        "usage": "use [<space>|--clear|--from-instructions]",
-        "description": "bind/show this directory's space; keep global default; --from-instructions binds what AGENTS.md declares"
+        "usage": "use [<space>|--clear|--from-instructions] [--project-to <file>|--no-projection]",
+        "description": "bind/show this directory's space; keep global default; --from-instructions binds what AGENTS.md declares; --project-to renders this space's TASKS.md inside the project"
       },
       {
         "usage": "whoami",

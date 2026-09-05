@@ -31,6 +31,8 @@ import {
   inheritedSpaceOwnedElsewhere,
   loadConfig,
   resolveEffectiveSpace,
+  resolveProjectionTarget,
+  type EffectiveSpace,
   type TasqConfig,
 } from "./config.js";
 import { loadOrCreateDeviceIdentity } from "./identity.js";
@@ -45,6 +47,10 @@ export interface Runtime extends OpenedDb {
   config: TasqConfig;
   ctx: ServiceContext & { clock: Clock };
   journal: EventJournalBinding | null;
+  /** Where the effective space came from. */
+  effectiveSpace: EffectiveSpace;
+  /** The projection file a mutation in this runtime renders to, if any. */
+  projectionTarget: string | null;
 }
 
 export interface OpenRuntimeOptions {
@@ -185,6 +191,7 @@ export async function openRuntime(
     ...loaded,
     tenantId: effectiveSpace.space,
   };
+  const projectionTarget = resolveProjectionTarget(loaded, effectiveSpace);
   const dbUrl = resolveDbUrl(config);
   if (process.env.TASQ_DB_URL) {
     if (dbUrl.startsWith("file:") && !dbUrl.startsWith("file::memory:")) {
@@ -246,6 +253,8 @@ export async function openRuntime(
     config,
     ctx,
     journal,
+    effectiveSpace,
+    projectionTarget,
     async close() {
       if (closed) return;
       closed = true;
@@ -464,11 +473,13 @@ export async function verifyJournalCheckpointCoverage(
 
 /**
  * Regenerate the markdown projection after a mutation.
- * No-op if `projectionTarget` isn't configured.
+ * No-op when nothing is configured for the space this runtime opened: a
+ * directory binding renders only its own projection, and the global target
+ * renders only the global default space (see `resolveProjectionTarget`).
  */
 export async function regenerateProjection(rt: Runtime): Promise<void> {
   const isolatedDb = Boolean(process.env.TASQ_DB_URL);
-  const target = process.env.TASQ_PROJECTION_TARGET ?? rt.config.projectionTarget;
+  const target = process.env.TASQ_PROJECTION_TARGET ?? rt.projectionTarget;
   if (!target || (isolatedDb && process.env.TASQ_PROJECTION_TARGET === undefined)) return;
   const md = await renderProjection(rt.db, { tenantId: rt.config.tenantId, clock: rt.ctx.clock });
   mkdirSync(dirname(target), { recursive: true });

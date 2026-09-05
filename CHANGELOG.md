@@ -22,6 +22,14 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **One projection file rendered whichever space was effective.** The global
+  `projectionTarget` was written after every mutation with the effective
+  space, so a life instance's `TASKS.md` received a software project's
+  backlog. A directory binding now renders only its own projection, registered
+  with `tasq use <space> --project-to <file>` and required to live inside the
+  bound directory; the global target renders only the global default space.
+  `tasq doctor --config` reports `global_projection_ignored_here` when the
+  global target is set but the directory in effect renders nothing.
 - **`tasq setup` rewrote the global default on every run.** Setting up one
   project made its space the fallback for every unbound directory on the
   machine, so an agent setting up a scratch project redirected every other

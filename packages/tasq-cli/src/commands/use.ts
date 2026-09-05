@@ -1,13 +1,16 @@
 import { CoordinationSpaceId } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import {
+  bindDirectoryProjection,
   bindDirectorySpace,
   canonicalDirectory,
   configPath,
   loadConfig,
+  resolveDirectoryProjection,
   resolveEffectiveSpace,
   saveConfig,
   type EffectiveSpace,
+  type TasqConfig,
 } from "../config.js";
 import { color, printInfo, printJson } from "../output/format.js";
 import { findManagedBlock, type ManagedBlockLocation } from "./agent-instructions.js";
@@ -44,6 +47,36 @@ export function inspectManagedBlock(
   };
 }
 
+/** The projection of the binding in effect, when the space comes from a binding. */
+function projectionInEffect(config: TasqConfig, effective: EffectiveSpace): string | null {
+  return effective.source === "directory" && effective.directory
+    ? resolveDirectoryProjection(config, effective.directory)
+    : null;
+}
+
+/**
+ * Apply `--project-to` / `--no-projection` to a directory that was just bound.
+ * Returns the config to save and the names the journal records the write as.
+ */
+function applyProjectionFlags(
+  args: ParsedArgs,
+  config: TasqConfig,
+  directory: string,
+): { config: TasqConfig; command: string[]; unproject: string[]; changed: boolean } {
+  const target = args.string("project-to");
+  const drop = args.bool("no-projection");
+  if (target !== undefined && drop) throw new Error("use accepts --project-to or --no-projection, not both");
+  if (target !== undefined) {
+    const projected = bindDirectoryProjection(config, directory, target);
+    return { config: projected.config, command: ["--project-to"], unproject: [], changed: projected.changed };
+  }
+  if (drop) {
+    const dropped = bindDirectoryProjection(config, directory, null);
+    return { config: dropped.config, command: ["--no-projection"], unproject: [directory], changed: dropped.changed };
+  }
+  return { config, command: [], unproject: [], changed: false };
+}
+
 function driftAdvice(report: ManagedBlockReport, effective: EffectiveSpace): string {
   return `${color.yellow("!")} ${report.target} names space ${report.space}, but commands here would use `
     + `${effective.space} (${effective.source}).\n  Bind this project as its repository declares: tasq use --from-instructions`;
@@ -60,6 +93,9 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
     throw new Error("use --from-instructions takes the space from AGENTS.md; pass neither a space nor --clear");
   }
   if (args.positional.length > 1) throw new Error("use accepts at most one space");
+  if (clear && (args.string("project-to") !== undefined || args.bool("no-projection"))) {
+    throw new Error("use --clear removes the binding and its projection; it takes no projection flag");
+  }
   const current = loadConfig();
 
   if (fromInstructions) {
@@ -73,9 +109,15 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
       );
     }
     const bound = bindDirectorySpace(current, found.directory, found.space);
-    if (bound.changed) saveConfig(bound.config, { command: ["use", "--from-instructions"] });
+    const projected = applyProjectionFlags(args, bound.config, bound.directory);
+    if (bound.changed || projected.changed) {
+      saveConfig(projected.config, {
+        command: ["use", "--from-instructions", ...projected.command],
+        unproject: projected.unproject,
+      });
+    }
     const effective = resolveEffectiveSpace({
-      config: bound.config,
+      config: projected.config,
       explicit: args.string("tenant"),
       environment: process.env.TASQ_TENANT,
       directory: bound.directory,
@@ -84,12 +126,13 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
     const result = {
       contractVersion: DIRECTORY_SPACE_SELECTION_CONTRACT,
       action: "bound",
-      changed: bound.changed,
+      changed: bound.changed || projected.changed,
       directory: bound.directory,
       binding: found.space,
+      projection: resolveDirectoryProjection(projected.config, bound.directory),
       restoredFrom: { target: found.target, space: found.space },
       effective,
-      globalDefault: bound.config.tenantId,
+      globalDefault: projected.config.tenantId,
       configPath: configPath(),
       ...inspected,
     };
@@ -106,27 +149,36 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
   if (clear || args.positional.length === 1) {
     const space = clear ? null : CoordinationSpaceId.parse(args.positional[0]);
     const bound = bindDirectorySpace(current, process.cwd(), space);
-    if (bound.changed) {
-      saveConfig(bound.config, {
-        command: clear ? ["use", "--clear"] : ["use"],
+    const cleared = clear
+      ? bindDirectoryProjection(bound.config, bound.directory, null)
+      : null;
+    const projected = clear
+      ? { config: cleared!.config, command: [], unproject: [bound.directory], changed: cleared!.changed }
+      : applyProjectionFlags(args, bound.config, bound.directory);
+    if (bound.changed || projected.changed) {
+      saveConfig(projected.config, {
+        command: clear ? ["use", "--clear"] : ["use", ...projected.command],
         unbind: clear ? [bound.directory] : [],
+        unproject: projected.unproject,
       });
     }
     const effective = resolveEffectiveSpace({
-      config: bound.config,
+      config: projected.config,
       explicit: args.string("tenant"),
       environment: process.env.TASQ_TENANT,
       directory: bound.directory,
     });
     const inspected = inspectManagedBlock(bound.directory, effective);
+    const projection = resolveDirectoryProjection(projected.config, bound.directory);
     const result = {
       contractVersion: DIRECTORY_SPACE_SELECTION_CONTRACT,
       action: clear ? "cleared" : "bound",
-      changed: bound.changed,
+      changed: bound.changed || projected.changed,
       directory: bound.directory,
       binding: space,
+      projection,
       effective,
-      globalDefault: bound.config.tenantId,
+      globalDefault: projected.config.tenantId,
       configPath: configPath(),
       ...inspected,
     };
@@ -136,8 +188,9 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
         ? `Cleared Tasq space binding for ${bound.directory}.`
         : `Using Tasq space ${space} in ${bound.directory} and its descendants.`;
       const lines = [
-        `${summary}\nEffective space: ${effective.space} (${effective.source}).\nGlobal default unchanged: ${bound.config.tenantId}.`,
+        `${summary}\nEffective space: ${effective.space} (${effective.source}).\nGlobal default unchanged: ${projected.config.tenantId}.`,
       ];
+      if (projection) lines.push(`Projection: ${projection}`);
       if (inspected.drift && inspected.managedBlock) lines.push(driftAdvice(inspected.managedBlock, effective));
       printInfo(lines.join("\n"));
     }
@@ -156,6 +209,7 @@ export async function useCmd(args: ParsedArgs): Promise<number> {
     action: "show",
     directory,
     effective,
+    projection: projectionInEffect(current, effective),
     globalDefault: current.tenantId,
     configPath: configPath(),
     ...inspected,
