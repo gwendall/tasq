@@ -161,7 +161,8 @@ are told the rules. `--no-bind` and `--no-instructions` skip either half, and it
 refuses to set a project up in your home directory or at the filesystem root.
 The first project a machine sets up becomes the fallback for directories that
 are not bound; later projects leave that fallback alone unless you pass
-`--default`.
+`--default`. To keep a rendered `TASKS.md` next to the code, register it with
+`tasq use <space> --project-to TASKS.md`: a project renders only its own file.
 
 **Repeat it per project.** Each directory gets its own space, so work stays
 separated without you passing `--tenant` anywhere:

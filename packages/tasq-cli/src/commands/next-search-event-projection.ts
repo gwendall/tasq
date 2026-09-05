@@ -164,7 +164,7 @@ export async function projectionCmd(args: ParsedArgs): Promise<number> {
     const target =
       args.string("target") ??
       process.env.TASQ_PROJECTION_TARGET ??
-      (isolatedDb ? undefined : rt.config.projectionTarget);
+      (isolatedDb ? undefined : rt.projectionTarget ?? undefined);
     if (!target) {
       // Print to stdout
       const md = await renderProjection(rt.db, { tenantId: rt.config.tenantId });

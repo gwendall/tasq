@@ -6,7 +6,7 @@
  */
 
 import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, isAbsolute, join, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
 import { CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
 
@@ -21,6 +21,12 @@ export interface TasqConfig {
   defaultActor: string;
   /** Private, machine-local directory bindings written by `tasq use`. */
   directorySpaces?: Record<string, string>;
+  /**
+   * Projection file per bound directory, written by `tasq use --project-to`.
+   * A projection renders ONE space and lives with the project it renders; the
+   * global `projectionTarget` applies only to the global default space.
+   */
+  directoryProjections?: Record<string, string>;
   /**
    * Path to the append-only JSONL event journal — every emitted audit event
    * appends one line. Defaults to `~/.tasq/events.jsonl`. It provides
@@ -43,7 +49,7 @@ export const CONFIG_KEYS = [
   "defaultActor",
   "eventJournalPath",
 ] as const;
-export const CONFIG_OUTPUT_KEYS = [...CONFIG_KEYS, "directorySpaces"] as const;
+export const CONFIG_OUTPUT_KEYS = [...CONFIG_KEYS, "directorySpaces", "directoryProjections"] as const;
 export type TasqConfigKey = (typeof CONFIG_KEYS)[number];
 
 export function isConfigKey(value: string): value is TasqConfigKey {
@@ -106,6 +112,23 @@ export function loadConfig(): TasqConfig {
           throw new Error(`directorySpaces key must be a normalized absolute path: ${directory}`);
         }
         CoordinationSpaceId.parse(space);
+      }
+    }
+    if (merged.directoryProjections !== undefined) {
+      if (
+        merged.directoryProjections === null
+        || typeof merged.directoryProjections !== "object"
+        || Array.isArray(merged.directoryProjections)
+      ) {
+        throw new Error("directoryProjections must be an object when set");
+      }
+      for (const [directory, target] of Object.entries(merged.directoryProjections)) {
+        if (!isAbsolute(directory) || resolve(directory) !== directory) {
+          throw new Error(`directoryProjections key must be a normalized absolute path: ${directory}`);
+        }
+        if (typeof target !== "string" || !isAbsolute(target)) {
+          throw new Error(`directoryProjections value must be an absolute path: ${directory}`);
+        }
       }
     }
     config = merged;
@@ -182,6 +205,81 @@ export interface EffectiveSpace {
 /** Canonicalize a live directory so symlink spellings cannot create two scopes. */
 export function canonicalDirectory(directory: string = process.cwd()): string {
   return realpathSync(resolve(directory));
+}
+
+/**
+ * Canonical spelling of a path that may not exist yet: the nearest existing
+ * ancestor is resolved, so /tmp and /private/tmp compare equal on macOS.
+ */
+export function canonicalPath(path: string): string {
+  const absolute = resolve(path);
+  try {
+    return realpathSync(absolute);
+  } catch {
+    const parent = dirname(absolute);
+    if (parent === absolute) return absolute;
+    return join(canonicalPath(parent), basename(absolute));
+  }
+}
+
+/** True when `candidate` is `root` or lives under it; both already canonical. */
+export function isInsideDirectory(root: string, candidate: string): boolean {
+  return candidate === root || candidate.startsWith(root.endsWith(sep) ? root : root + sep);
+}
+
+/** The projection registered for a binding directory, if any. */
+export function resolveDirectoryProjection(config: TasqConfig, bindingDirectory: string): string | null {
+  return config.directoryProjections?.[bindingDirectory] ?? null;
+}
+
+/**
+ * The file a mutation renders its projection to, given where the space came
+ * from. A directory binding renders only its own projection. The global
+ * `projectionTarget` renders only the global default space - never a space
+ * selected by a binding, a flag or the environment - because rendering
+ * whichever space happened to be effective into one fixed file is how a life
+ * instance received a project's backlog on 2026-08-04.
+ */
+export function resolveProjectionTarget(config: TasqConfig, effective: EffectiveSpace): string | null {
+  if (effective.source === "directory") {
+    return effective.directory ? resolveDirectoryProjection(config, effective.directory) : null;
+  }
+  if (effective.space === config.tenantId) return config.projectionTarget ?? null;
+  return null;
+}
+
+/** Set or clear the projection of one bound directory; the file must live inside it. */
+export function bindDirectoryProjection(
+  config: TasqConfig,
+  directory: string,
+  target: string | null,
+): { config: TasqConfig; directory: string; target: string | null; changed: boolean } {
+  const canonical = canonicalDirectory(directory);
+  const current = config.directoryProjections ?? {};
+  const next = { ...current };
+  const before = next[canonical];
+  let resolved: string | null = null;
+  if (target === null) {
+    delete next[canonical];
+  } else {
+    resolved = canonicalPath(target);
+    if (!isInsideDirectory(canonical, resolved)) {
+      throw new Error(
+        `A projection lives with the project it renders: ${resolved} is outside ${canonical}.\n`
+        + "Choose a file inside the bound directory, for example TASKS.md at its root.",
+      );
+    }
+    next[canonical] = resolved;
+  }
+  return {
+    config: {
+      ...config,
+      directoryProjections: Object.keys(next).length > 0 ? next : undefined,
+    },
+    directory: canonical,
+    target: resolved,
+    changed: before !== next[canonical],
+  };
 }
 
 /** Return the closest directory binding, inheriting from parent directories. */
@@ -286,6 +384,8 @@ export interface SaveConfigOptions {
    * the config says.
    */
   unbind?: readonly string[];
+  /** Directories whose projection this write deliberately removes (their binding stays). */
+  unproject?: readonly string[];
   /** The clock that stamps the journal record; the system clock when absent. */
   clock?: Clock;
 }
@@ -318,14 +418,33 @@ function readDiskConfig(path: string): Record<string, unknown> | null {
   }
 }
 
-function diskBindings(disk: Record<string, unknown> | null): Record<string, string> {
-  const raw = disk?.directorySpaces;
+function diskMap(
+  disk: Record<string, unknown> | null,
+  key: "directorySpaces" | "directoryProjections",
+): Record<string, string> {
+  const raw = disk?.[key];
   if (raw === null || typeof raw !== "object" || Array.isArray(raw)) return {};
-  const bindings: Record<string, string> = {};
-  for (const [directory, space] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof space === "string") bindings[directory] = space;
+  const entries: Record<string, string> = {};
+  for (const [directory, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof value === "string") entries[directory] = value;
   }
-  return bindings;
+  return entries;
+}
+
+/** Merge the caller's map with the file's: on-disk entries survive unless named. */
+function mergeDirectoryMap(
+  inMemory: Record<string, string>,
+  onDisk: Record<string, string>,
+  removed: ReadonlySet<string>,
+): { merged: Record<string, string>; preserved: string[] } {
+  const merged: Record<string, string> = { ...inMemory };
+  const preserved: string[] = [];
+  for (const [directory, value] of Object.entries(onDisk)) {
+    if (directory in merged || removed.has(directory)) continue;
+    merged[directory] = value;
+    preserved.push(directory);
+  }
+  return { merged, preserved: preserved.sort() };
 }
 
 /**
@@ -346,25 +465,30 @@ export function saveConfig(cfg: TasqConfig, options: SaveConfigOptions = {}): Sa
   const path = configPath();
   const disk = readDiskConfig(path);
   const unbind = new Set(options.unbind ?? []);
-  const onDisk = diskBindings(disk);
-  const merged: Record<string, string> = { ...(cfg.directorySpaces ?? {}) };
-  const preserved: string[] = [];
-  for (const [directory, space] of Object.entries(onDisk)) {
-    if (directory in merged || unbind.has(directory)) continue;
-    merged[directory] = space;
-    preserved.push(directory);
-  }
+  // Unbinding a directory removes its projection too: a projection without a
+  // binding would render nothing, and a later binding of the same directory
+  // must not inherit a file it never asked for.
+  const unproject = new Set([...(options.unproject ?? []), ...unbind]);
+  const onDisk = diskMap(disk, "directorySpaces");
+  const onDiskProjections = diskMap(disk, "directoryProjections");
+  const bindings = mergeDirectoryMap(cfg.directorySpaces ?? {}, onDisk, unbind);
+  const projections = mergeDirectoryMap(cfg.directoryProjections ?? {}, onDiskProjections, unproject);
+  const merged = bindings.merged;
+  const preserved = bindings.preserved;
   const next: TasqConfig = {
     ...cfg,
     directorySpaces: Object.keys(merged).length > 0 ? merged : undefined,
+    directoryProjections: Object.keys(projections.merged).length > 0 ? projections.merged : undefined,
   };
   const changes = configChanges(disk, next);
   const bindingChanges = bindingDiff(onDisk, merged);
+  const projectionChanges = bindingDiff(onDiskProjections, projections.merged);
   const changed = disk === null
     || Object.keys(changes).length > 0
-    || bindingChanges.added.length + bindingChanges.removed.length + bindingChanges.changed.length > 0;
+    || bindingChanges.added.length + bindingChanges.removed.length + bindingChanges.changed.length > 0
+    || projectionChanges.added.length + projectionChanges.removed.length + projectionChanges.changed.length > 0;
   if (!changed) {
-    return { path, changed: false, preservedBindings: preserved.sort(), journaled: false };
+    return { path, changed: false, preservedBindings: preserved, journaled: false };
   }
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   chmodSync(dirname(path), 0o700);
@@ -376,9 +500,10 @@ export function saveConfig(cfg: TasqConfig, options: SaveConfigOptions = {}): Sa
     recordedAt: (options.clock ?? systemClock).now(),
     command: options.command ?? [],
     changes,
-    bindings: { ...bindingChanges, preserved: preserved.sort() },
+    bindings: { ...bindingChanges, preserved },
+    projections: { ...projectionChanges, preserved: projections.preserved },
   });
-  return { path, changed: true, preservedBindings: preserved.sort(), journaled };
+  return { path, changed: true, preservedBindings: preserved, journaled };
 }
 
 type ConfigChanges = Record<string, { before: unknown; after: unknown }>;
@@ -417,6 +542,7 @@ function appendConfigJournal(entry: {
   command: readonly string[];
   changes: ConfigChanges;
   bindings: { added: string[]; removed: string[]; changed: string[]; preserved: string[] };
+  projections: { added: string[]; removed: string[]; changed: string[]; preserved: string[] };
 }): boolean {
   const record = {
     contractVersion: CONFIG_CHANGE_CONTRACT,
@@ -425,6 +551,7 @@ function appendConfigJournal(entry: {
     command: [...entry.command],
     changes: entry.changes,
     bindings: entry.bindings,
+    projections: entry.projections,
   };
   try {
     const journal = configJournalPath();

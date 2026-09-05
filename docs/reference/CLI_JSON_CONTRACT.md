@@ -147,12 +147,20 @@ remain part of the current protected release line:
   default. `--apply` delegates Codex/Claude mutation to the host CLI; generic
   application creates one explicit absolute target and refuses overwrite.
   Requested capabilities never grant effect authority.
-- `tasq use [<space>|--clear|--from-instructions] --json` returns
-  `tasq.directory-space-selection.v1` with `contractVersion`, `action`, the
-  canonical `directory`, effective `{space,source,directory}`, unchanged
-  `globalDefault`, `configPath`, `managedBlock` and `drift`; mutations
+- `tasq use [<space>|--clear|--from-instructions] [--project-to <file>|--no-projection] --json`
+  returns `tasq.directory-space-selection.v1` with `contractVersion`, `action`,
+  the canonical `directory`, effective `{space,source,directory}`, unchanged
+  `globalDefault`, `configPath`, `managedBlock`, `drift` and `projection` (the
+  file a mutation in the bound directory renders to, or `null`); mutations
   additionally return `changed` and `binding`, and `--from-instructions` also
-  returns `restoredFrom {target, space}`. Sources are
+  returns `restoredFrom {target, space}`. `--project-to <file>` registers the
+  projection of the directory being bound; the file is resolved against the
+  working directory and must live inside the bound directory, which is refused
+  otherwise. `--no-projection` removes it; `--clear` removes binding and
+  projection together. A directory binding renders only its own projection.
+  The global `projectionTarget` renders only the global default space: a space
+  selected by a binding, `--tenant` or `TASQ_TENANT` is never rendered into
+  it. Sources are
   `explicit_flag|environment|directory|global_default`. `managedBlock` is the
   closest `AGENTS.md` managed block above the directory, as
   `{directory, target, space, version, verified, reason, matchesEffective}`, or
@@ -163,8 +171,9 @@ remain part of the current protected release line:
   exists.
 - Every write to `config.json` appends one `tasq.config-change.v1` record to
   `~/.tasq/config-journal.jsonl` with `recordedAt`, `pid`, the writing
-  `command` (names only, never values), `changes {key: {before, after}}` and
-  `bindings {added, removed, changed, preserved}`. A write merges directory
+  `command` (names only, never values), `changes {key: {before, after}}`,
+  `bindings {added, removed, changed, preserved}` and
+  `projections {added, removed, changed, preserved}`. A write merges directory
   bindings with the file as it is on disk: a binding disappears only when the
   writing command names the directory it unbinds, so a stale copy of the config
   can no longer drop what another session bound.
@@ -208,7 +217,8 @@ These additive operational surfaces are independently versioned:
   `tasq.config-doctor.v1` without opening any store: `contractVersion`, `ok`,
   `configPath`, the canonical `directory`, `effective`, `managedBlock`, `drift`,
   `bindings {total, dangling, temporary}`, `globalDefault {space, boundIn}`,
-  `projectionTarget`, `findings[]` and `repairs {prunedBindings}`. A finding is
+  `projectionTarget` (the global one), `projection` (the file a mutation here
+  would render to), `findings[]` and `repairs {prunedBindings}`. A finding is
   `{code, severity, message, entityType, entityId, repair}` with `severity`
   `error` or `warning`; only errors make `ok` false. Codes: `config_unreadable`,
   `binding_drift` (a verified `AGENTS.md` block names a space commands here
@@ -220,8 +230,11 @@ These additive operational surfaces are independently versioned:
   removes it and journals the removal), `temporary_binding` (a bound directory
   lives under the OS temporary root or a scratchpad, reported only for a home
   that is not itself temporary), `default_space_unbound` (bindings exist and
-  none targets the global default) and `projection_outside_bound_tree` (a
-  global `projectionTarget` outside the directory whose binding is in effect).
+  none targets the global default), `projection_outside_bound_tree` (a
+  directory's registered projection points outside that directory, which only
+  a hand-edited config can do) and `global_projection_ignored_here` (a global
+  `projectionTarget` is set while the directory in effect has no projection of
+  its own, so commands here render none).
   The human rendering prints each finding as `  - <code>: <message>` followed by
   `      <entityType> <entityId>`, the shape the rest of the doctor output
   promises. Exit code 1 when `ok` is false.

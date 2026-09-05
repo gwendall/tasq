@@ -9,15 +9,19 @@
  * command either refused or wrote somewhere else, and nothing said so until a
  * person read the file. These checks say so.
  */
-import { existsSync, realpathSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, isAbsolute, join, sep } from "node:path";
+import { sep } from "node:path";
 import {
   canonicalDirectory,
+  canonicalPath,
   configDir,
   configPath,
+  isInsideDirectory,
   loadConfig,
+  resolveDirectoryProjection,
   resolveEffectiveSpace,
+  resolveProjectionTarget,
   saveConfig,
   type EffectiveSpace,
   type TasqConfig,
@@ -33,7 +37,8 @@ export type ConfigFindingCode =
   | "dangling_binding"
   | "temporary_binding"
   | "default_space_unbound"
-  | "projection_outside_bound_tree";
+  | "projection_outside_bound_tree"
+  | "global_projection_ignored_here";
 
 export interface ConfigFinding {
   code: ConfigFindingCode;
@@ -56,7 +61,10 @@ export interface ConfigDoctorReport {
   drift: boolean;
   bindings: { total: number; dangling: string[]; temporary: string[] };
   globalDefault: { space: string | null; boundIn: string[] };
+  /** The global projection target, which renders only the global default space. */
   projectionTarget: string | null;
+  /** The projection a mutation here would render to, if any. */
+  projection: string | null;
   findings: ConfigFinding[];
   repairs: { prunedBindings: string[] };
 }
@@ -69,27 +77,9 @@ export interface InspectConfigOptions {
   pruneBindings?: boolean;
 }
 
-function isInside(root: string, candidate: string): boolean {
-  return candidate === root || candidate.startsWith(root.endsWith(sep) ? root : root + sep);
-}
-
-/**
- * Canonical spelling of a path that may not exist yet: resolve the nearest
- * existing ancestor, so /tmp and /private/tmp compare equal on macOS.
- */
-function realOrSelf(path: string): string {
-  try {
-    return realpathSync(path);
-  } catch {
-    const parent = dirname(path);
-    if (parent === path) return path;
-    return join(realOrSelf(parent), basename(path));
-  }
-}
-
 /** A directory nobody means to keep: under the OS temporary root, or a scratchpad. */
 function looksTemporary(directory: string): boolean {
-  if (isInside(realOrSelf(tmpdir()), realOrSelf(directory))) return true;
+  if (isInsideDirectory(canonicalPath(tmpdir()), canonicalPath(directory))) return true;
   return directory.split(sep).some((segment) => segment === "scratchpad" || segment === "scratch");
 }
 
@@ -120,6 +110,7 @@ export function inspectConfig(options: InspectConfigOptions = {}): ConfigDoctorR
       bindings: { total: 0, dangling: [], temporary: [] },
       globalDefault: { space: null, boundIn: [] },
       projectionTarget: null,
+      projection: null,
       findings,
       repairs: { prunedBindings: [] },
     };
@@ -129,7 +120,7 @@ export function inspectConfig(options: InspectConfigOptions = {}): ConfigDoctorR
   const dangling = Object.keys(bindings).filter((bound) => !existsSync(bound)).sort();
   // A throwaway ledger may bind throwaway directories: only a real home is
   // told that a scratch directory is bound to one of its spaces.
-  const homeIsTemporary = looksTemporary(realOrSelf(configDir()));
+  const homeIsTemporary = looksTemporary(canonicalPath(configDir()));
   const temporary = homeIsTemporary
     ? []
     : Object.keys(bindings).filter((bound) => !dangling.includes(bound) && looksTemporary(bound)).sort();
@@ -226,19 +217,34 @@ export function inspectConfig(options: InspectConfigOptions = {}): ConfigDoctorR
   }
 
   const projectionTarget = config.projectionTarget ?? null;
+  const projection = resolveProjectionTarget(config, effective);
+  // A per-directory projection is validated when it is set; only a hand-edited
+  // config can point one outside its directory, and that is the one case that
+  // renders a project's backlog into somebody else's file.
+  for (const [bound, target] of Object.entries(config.directoryProjections ?? {}).sort()) {
+    if (isInsideDirectory(bound, canonicalPath(target))) continue;
+    findings.push({
+      code: "projection_outside_bound_tree",
+      severity: "error",
+      message: `${bound} would render its projection to ${target}, outside itself`,
+      entityType: "file",
+      entityId: target,
+      repair: `cd ${bound} && tasq use ${liveBindings[bound] ?? "<space>"} --project-to <a file inside it>`,
+    });
+  }
   if (
     projectionTarget
     && effective.source === "directory"
     && effective.directory
-    && (!isAbsolute(projectionTarget) || !isInside(effective.directory, realOrSelf(projectionTarget)))
+    && resolveDirectoryProjection(config, effective.directory) === null
   ) {
     findings.push({
-      code: "projection_outside_bound_tree",
-      severity: "error",
-      message: `commands here would render the projection of ${effective.space} to ${projectionTarget}, outside ${effective.directory}`,
-      entityType: "file",
-      entityId: projectionTarget,
-      repair: "tasq config set projectionTarget <a path inside the bound directory>",
+      code: "global_projection_ignored_here",
+      severity: "warning",
+      message: `the global projectionTarget ${projectionTarget} renders only the global default space; commands here render no projection`,
+      entityType: "directory",
+      entityId: effective.directory,
+      repair: `tasq use ${effective.space} --project-to <a file inside ${effective.directory}>`,
     });
   }
 
@@ -257,6 +263,7 @@ export function inspectConfig(options: InspectConfigOptions = {}): ConfigDoctorR
     },
     globalDefault: { space: config.tenantId || null, boundIn },
     projectionTarget,
+    projection,
     findings,
     repairs: { prunedBindings },
   };

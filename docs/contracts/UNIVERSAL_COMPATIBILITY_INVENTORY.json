@@ -2559,7 +2559,8 @@
         "tenantId",
         "defaultActor",
         "eventJournalPath",
-        "directorySpaces"
+        "directorySpaces",
+        "directoryProjections"
       ],
       "dynamicForms": [
         "config get returns exactly the requested config key",
