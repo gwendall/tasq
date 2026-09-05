@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "authorized",
+    "state": "published_certified",
     "version": "0.6.1",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-08-27",
-    "rationale": "Authorized for v0.6.1, not yet published. A patch on top of v0.6.0 at the same store format 35. It carries the corrections found by using v0.6.0 rather than by reasoning about it: the capture suggestion prints the command a person has instead of the versioned internal path, the Console updates itself instead of asking for a Refresh click, the installer refuses before creating anything and its dry run predicts that refusal, and the migration receipt records WHICH executable performed the migration. It also carries the first getting-started that matches the product and a skill that can set a project up."
+    "rationale": "Consumed by v0.6.1, published 2026-09-02T10:06:47Z. A patch at store format 35 carrying what USING v0.6.0 revealed: a refusal suggestion that could not be pasted, a live feed that asked for a button click while holding an open SSE connection, an installer that refused after creating things, and a migration receipt that recorded everything except who performed the migration. Plus the first getting-started that matches the product, and a served skill that can set a project up."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,7 +385,7 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "authorized",
+      "state": "published_certified",
       "workflow": "certify-published-release.yml",
       "environment": "release",
       "version": "0.6.1",
@@ -517,40 +517,40 @@
     }
   },
   "publishedRelease": {
-    "version": "0.6.0",
-    "tag": "v0.6.0",
-    "sourceCommit": "fbf59471d546824e679631d74664300f8d2c6ea6",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.0",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/33204772421",
-    "publishedAt": "2026-08-28T19:41:42Z",
+    "version": "0.6.1",
+    "tag": "v0.6.1",
+    "sourceCommit": "c5735fa965924e400ea10b18e98425d830b3db78",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.1",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/33617532379",
+    "publishedAt": "2026-09-02T10:06:47Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "name": "@tasq-run/client",

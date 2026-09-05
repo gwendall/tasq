@@ -41,7 +41,7 @@ uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
 seven original packages. The separately bootstrapped client identity followed
-the same fail-closed handoff. Current `v0.6.0` is published, carrying the seven packages that changed;
+the same fail-closed handoff. Current `v0.6.1` is published, carrying the seven packages that changed;
 `@tasq-run/client` stays at the version it was last published at; the post-release workflow certifies their complete lifecycle
 without a repository checkout on both supported targets. TQ-607 remains the
 retained-data gate for stable graduation, not for the explicitly labeled
@@ -51,7 +51,18 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
-## `v0.6.0` current release
+## `v0.6.1` current release
+
+Published 2026-09-02T10:06:47Z from tag `v0.6.1`, protected run
+[33617532379](https://github.com/gwendall/tasq/actions/runs/33617532379).
+
+A patch at store format 35 carrying what USING v0.6.0 revealed rather than what
+reasoning about it suggested. Its versioned installer is the first one
+GENERATED from the published SHA256SUMS rather than copied from its
+predecessor, which is how v0.6.0's shipped pinning the previous release's
+digests and refusing to install.
+
+## `v0.6.0`
 
 Published 2026-08-28T19:41:42Z from tag `v0.6.0`, protected run
 [33204772421](https://github.com/gwendall/tasq/actions/runs/33204772421).
