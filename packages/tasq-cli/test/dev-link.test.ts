@@ -48,6 +48,36 @@ describe("dev:link", () => {
     expect(printed.stdout).toContain("pnpm build:cli");
   });
 
+  test("a git worktree, whose .git is a file, is a live checkout", async () => {
+    // `git worktree add` leaves a .git FILE that points at the main repository.
+    // The shim tested for a directory, so every worktree was reported as a
+    // checkout that is gone, with the build sitting right there.
+    const { chmodSync, mkdirSync, mkdtempSync, writeFileSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const checkout = mkdtempSync(join(tmpdir(), "tasq-dev-link-worktree-"));
+    writeFileSync(join(checkout, ".git"), "gitdir: /elsewhere/.git/worktrees/main\n");
+    mkdirSync(join(checkout, "dist", "cli"), { recursive: true });
+    const build = join(checkout, "dist", "cli", "index.js");
+    writeFileSync(build, '#!/bin/sh\necho "fake-build $@"\n');
+    chmodSync(build, 0o755);
+    const printed = await run(["--print"], process.env.HOME ?? "");
+    expect(printed.exitCode, printed.stderr).toBe(0);
+    const shim = join(checkout, "tasq-dev");
+    writeFileSync(shim, printed.stdout
+      .replace(/REPO="[^"]*"/, `REPO="${checkout}"`)
+      .replace(/BUILD="[^"]*"/, `BUILD="${build}"`));
+    chmodSync(shim, 0o755);
+    const child = Bun.spawn([shim, "--version"], { stdout: "pipe", stderr: "pipe" });
+    const [stdout, stderr, exitCode] = await Promise.all([
+      new Response(child.stdout).text(),
+      new Response(child.stderr).text(),
+      child.exited,
+    ]);
+    expect(exitCode, stderr).toBe(0);
+    expect(stdout).toContain("fake-build --version");
+  });
+
   test("it refuses to replace a launcher it did not write", async () => {
     const { mkdirSync, writeFileSync, mkdtempSync } = await import("node:fs");
     const { tmpdir } = await import("node:os");

@@ -37,7 +37,7 @@ const shim = `#!/bin/sh
 set -eu
 REPO="${productRoot}"
 BUILD="${build}"
-if [ ! -d "$REPO/.git" ]; then
+if [ ! -e "$REPO/.git" ]; then
   printf '%s\\n' "tasq-dev: the checkout this shim points at is gone: $REPO" >&2
   printf '%s\\n' "tasq-dev: re-run \\\`pnpm dev:link\\\` from a live checkout, or delete ${shimPath}" >&2
   exit 3
