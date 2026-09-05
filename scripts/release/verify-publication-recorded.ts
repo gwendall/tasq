@@ -80,6 +80,21 @@ for (const relative of [
 ]) {
   if (!(await exists(relative))) {
     stale.push(`${relative} does not exist (the documented install path for ${published})`);
+    continue;
+  }
+  // Existence is not correctness. install-v0.6.0.sh was created by copying its
+  // predecessor and replacing the version, so it carried the PREVIOUS release's
+  // checksum-of-checksums and refused to install - and the only thing that
+  // caught it was running it.
+  const installer = await readFile(resolve(root, relative), "utf8");
+  if (!installer.includes(`VERSION="${published}"`)) {
+    stale.push(`${relative} does not pin VERSION="${published}"`);
+  }
+  const pinned = [...installer.matchAll(/CHECKSUMS_SHA256="([0-9a-f]{64})"/g)].map((match) => match[1]!);
+  if (pinned.length !== 2) {
+    stale.push(`${relative} pins ${pinned.length} target digest(s), not 2`);
+  } else if (new Set(pinned).size !== 2) {
+    stale.push(`${relative} pins the same digest for both targets, which no real release produces`);
   }
 }
 
