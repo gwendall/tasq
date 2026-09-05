@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { CoordinationSpaceId } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
 import { printError, printInfo, printJson } from "../output/format.js";
@@ -87,6 +87,71 @@ export function renderAgentInstructions(space: string): { block: string; digest:
     digest: `sha256:${digest}`,
     block: `<!-- tasq:begin v="${BLOCK_VERSION}" space="${validated}" digest="sha256:${digest}" -->\n${content}<!-- tasq:end -->`,
   };
+}
+
+export interface ManagedBlockLocation {
+  /** Directory holding the file that carries the block. */
+  directory: string;
+  /** The file itself. */
+  target: string;
+  /** The space named by the marker, or null when the marker is unreadable. */
+  space: string | null;
+  version: number | null;
+  /** True when the block content still matches the digest in its marker. */
+  verified: boolean;
+  reason: string | null;
+}
+
+/**
+ * Read the managed block a file carries, without an expected space to compare
+ * against: what does this file SAY, and can it be trusted.
+ */
+export function readManagedBlock(target: string): Omit<ManagedBlockLocation, "directory" | "target"> | null {
+  const document = readFileSync(target, "utf8");
+  const matches = [...document.matchAll(LOOSE_BLOCK)];
+  if (matches.length === 0) return null;
+  if (matches.length > 1) {
+    return { space: null, version: null, verified: false, reason: "multiple managed blocks" };
+  }
+  const raw = matches[0]![0];
+  const begin = BEGIN.exec(raw);
+  if (!begin) {
+    return { space: null, version: null, verified: false, reason: "invalid or legacy managed-block marker" };
+  }
+  const version = Number(begin[1]);
+  const space = begin[2]!;
+  const markerDigest = begin[3]!;
+  const content = raw.slice(begin[0].length, -"<!-- tasq:end -->".length);
+  if (sha256(content) !== markerDigest) {
+    return { space, version, verified: false, reason: "content digest differs from marker" };
+  }
+  try {
+    CoordinationSpaceId.parse(space);
+  } catch {
+    return { space: null, version, verified: false, reason: "invalid space in marker" };
+  }
+  return { space, version, verified: true, reason: null };
+}
+
+/**
+ * The closest managed block above a directory: the project this directory
+ * belongs to, as its repository declares it. Walks to the filesystem root.
+ */
+export function findManagedBlock(start: string, fileName = "AGENTS.md"): ManagedBlockLocation | null {
+  let cursor = resolve(start);
+  while (true) {
+    const target = join(cursor, fileName);
+    if (existsSync(target)) {
+      const info = lstatSync(target);
+      if (info.isFile() && !info.isSymbolicLink()) {
+        const block = readManagedBlock(target);
+        if (block) return { directory: cursor, target, ...block };
+      }
+    }
+    const parent = dirname(cursor);
+    if (parent === cursor) return null;
+    cursor = parent;
+  }
 }
 
 type BlockState = "missing" | "current" | "stale" | "hand_edited";

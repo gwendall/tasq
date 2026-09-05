@@ -409,7 +409,7 @@ describe("progressive public adoption", () => {
       "--no-bind", "--no-instructions", "--json",
     ])).stdout);
     expect(setup).toMatchObject({
-      contractVersion: "tasq.human-setup.v2",
+      contractVersion: "tasq.human-setup.v3",
       disposition: "created",
       space: "personal/default",
       actor: "gwendall",

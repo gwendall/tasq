@@ -20,6 +20,7 @@ import {
   inheritedSpaceOwnedElsewhere,
   loadConfig,
   saveConfig,
+  resolveDirectorySpace,
 } from "../config.js";
 import { color, printInfo, printJson, shortId } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
@@ -102,7 +103,11 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   if (args.positional.length > 0) throw new Error("setup accepts flags only");
   const current0 = loadConfig();
   const requested = args.string("space");
-  if (requested === undefined && !current0.tenantId) {
+  // A project that is already bound is set up again for ITS space, never for
+  // whatever the global default happens to be that day.
+  const boundHere = resolveDirectorySpace(current0, process.cwd());
+  const inheritable = boundHere?.space ?? (current0.tenantId || undefined);
+  if (requested === undefined && inheritable === undefined) {
     throw new Error(
       "setup --space <id> --actor <label>\n"
       + "There is no configured space to inherit yet, so the first one has to be named.",
@@ -110,7 +115,12 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
   // The space may be inherited, but never silently: an inherited space is how
   // work lands in someone else's ledger.
-  const space = CoordinationSpaceId.parse(requested ?? current0.tenantId);
+  const space = CoordinationSpaceId.parse(requested ?? inheritable);
+  const spaceSource: "explicit" | "inherited-from-directory" | "inherited-from-config" = requested !== undefined
+    ? "explicit"
+    : boundHere
+      ? "inherited-from-directory"
+      : "inherited-from-config";
   const inherited = requested === undefined;
   const actorInput = args.string("actor") ?? current0.defaultActor;
   if (!actorInput) {
@@ -141,10 +151,21 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
 
   const current = loadConfig();
+  // Setting a project up binds THIS directory. It used to also make the
+  // project's space the global default for every unbound directory on the
+  // machine - so one agent setting up a scratch project redirected every
+  // other checkout, and this project's own lost its binding on 2026-09-02.
+  // The global default now moves only on request, or when there is none yet.
+  const wantsDefault = args.bool("default");
+  // A config that does not exist on disk yet has no default, whatever the
+  // built-in fallback says: the first project a machine sets up becomes it.
+  const hadDefault = existsSync(join(configDir(), "config.json")) && Boolean(current.tenantId);
+  const globalDefault = wantsDefault || !hadDefault ? space : current.tenantId;
+  const globalDefaultSource: "flag" | "first" | "kept" = wantsDefault ? "flag" : hadDefault ? "kept" : "first";
   let next = {
     ...current,
     dbPath: current.dbPath || defaultDbPath(),
-    tenantId: space,
+    tenantId: globalDefault,
     defaultActor: actor,
   };
 
@@ -159,7 +180,7 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     next = bound.config;
     binding = { directory: bound.directory, changed: bound.changed };
   }
-  saveConfig(next);
+  saveConfig(next, { command: ["setup", ...(wantsDefault ? ["--default"] : [])] });
 
   // Establish this installation's device identity here rather than on the
   // first write. The actor label is chosen freely and always will be; the key
@@ -173,11 +194,16 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   }
 
   const result = {
-    contractVersion: "tasq.human-setup.v2",
+    contractVersion: "tasq.human-setup.v3",
     disposition,
     space,
-    spaceSource: inherited ? "inherited-from-config" : "explicit",
+    spaceSource,
     actor,
+    globalDefault: {
+      space: globalDefault,
+      changed: globalDefault !== current.tenantId,
+      source: globalDefaultSource,
+    },
     device: device ? { fingerprint: device.fingerprint, algorithm: device.algorithm } : null,
     configPath: join(configDir(), "config.json"),
     directoryBinding: binding,
@@ -198,12 +224,19 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
       lines.push(color.dim(`  this installation signs as ${device.fingerprint.slice(0, 12)} - see \`tasq whoami\``));
     }
     if (inherited) {
-      lines.push(color.dim(`  space inherited from ${join(configDir(), "config.json")}; pass --space to choose another`));
+      lines.push(color.dim(spaceSource === "inherited-from-directory"
+        ? `  space inherited from this directory's binding; pass --space to choose another`
+        : `  space inherited from ${join(configDir(), "config.json")}; pass --space to choose another`));
     }
     if (binding) {
       lines.push(`${color.green("✓")} Bound ${binding.directory} and everything under it to this space.`);
     } else {
       lines.push(color.dim("  directory not bound (--no-bind); this shell falls back to the global default"));
+    }
+    if (globalDefault !== current.tenantId) {
+      lines.push(`${color.green("✓")} Global default for unbound directories is now ${globalDefault}.`);
+    } else if (globalDefault !== space) {
+      lines.push(color.dim(`  global default stays ${globalDefault}; pass --default to make ${space} the fallback for unbound directories`));
     }
     if (instructions) {
       lines.push(instructions.changed

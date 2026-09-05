@@ -118,19 +118,24 @@ surface before the v1 surface is retired.
 These commands were introduced through the protected `v0.1.1` release and
 remain part of the current protected release line:
 
-- `tasq setup [--space <id>] [--actor <label>] --json` returns
-  `tasq.human-setup.v2` with `contractVersion`, `disposition`, `space`,
-  `spaceSource`, `actor`, `configPath`, `directoryBinding`, `agentInstructions`,
-  `otherDirectoriesUsingThisSpace`, `nextArgv` and `boundary`. It validates
-  identities and joins the space before atomically persisting the selected human
-  defaults, then binds this directory and its descendants and writes the managed
-  block into `AGENTS.md`. `--no-bind` and `--no-instructions` skip either half,
-  and the result says which of the three it did. `spaceSource` is `explicit` or
+- `tasq setup [--space <id>] [--actor <label>] [--default] --json` returns
+  `tasq.human-setup.v3` with `contractVersion`, `disposition`, `space`,
+  `spaceSource`, `actor`, `globalDefault`, `configPath`, `directoryBinding`,
+  `agentInstructions`, `otherDirectoriesUsingThisSpace`, `nextArgv` and
+  `boundary`. It validates identities and joins the space before atomically
+  persisting the selected human defaults, then binds this directory and its
+  descendants and writes the managed block into `AGENTS.md`. `--no-bind` and
+  `--no-instructions` skip either half, and the result says which of the three
+  it did. `spaceSource` is `explicit`, `inherited-from-directory` (this
+  directory is already bound, so it is set up again for its own space) or
   `inherited-from-config`, because a silently inherited space is how work lands
-  in somebody else's ledger. `otherDirectoriesUsingThisSpace` names the
-  directories already bound to it, which is reported rather than refused.
-  Setting a project up in the home directory or at the filesystem root is
-  refused.
+  in somebody else's ledger. Setting a project up never moves the global
+  default for unbound directories once one exists: `globalDefault` reports
+  `{space, changed, source}` where `source` is `first` (no config existed yet),
+  `flag` (`--default` was passed) or `kept`. `otherDirectoriesUsingThisSpace`
+  names the directories already bound to it, which is reported rather than
+  refused. Setting a project up in the home directory or at the filesystem
+  root is refused.
 - `tasq demo --json` returns `tasq.isolated-demo.v1` with
   `contractVersion`, `isolation`, `liveHomeConsulted`, `setup`, `created`,
   `before`, `completed` and `after`. Every nested command executes in a
@@ -142,11 +147,27 @@ remain part of the current protected release line:
   default. `--apply` delegates Codex/Claude mutation to the host CLI; generic
   application creates one explicit absolute target and refuses overwrite.
   Requested capabilities never grant effect authority.
-- `tasq use [<space>|--clear] --json` returns
+- `tasq use [<space>|--clear|--from-instructions] --json` returns
   `tasq.directory-space-selection.v1` with `contractVersion`, `action`, the
   canonical `directory`, effective `{space,source,directory}`, unchanged
-  `globalDefault` and `configPath`; mutations additionally return `changed`
-  and `binding`. Sources are `explicit_flag|environment|directory|global_default`.
+  `globalDefault`, `configPath`, `managedBlock` and `drift`; mutations
+  additionally return `changed` and `binding`, and `--from-instructions` also
+  returns `restoredFrom {target, space}`. Sources are
+  `explicit_flag|environment|directory|global_default`. `managedBlock` is the
+  closest `AGENTS.md` managed block above the directory, as
+  `{directory, target, space, version, verified, reason, matchesEffective}`, or
+  `null`. `drift` is true when a verified block names a space and commands here
+  would not use it from a directory binding; an explicit `--tenant` or
+  `TASQ_TENANT` is never drift. `--from-instructions` binds the block's
+  directory to the space the block declares and refuses when no verified block
+  exists.
+- Every write to `config.json` appends one `tasq.config-change.v1` record to
+  `~/.tasq/config-journal.jsonl` with `recordedAt`, `pid`, the writing
+  `command` (names only, never values), `changes {key: {before, after}}` and
+  `bindings {added, removed, changed, preserved}`. A write merges directory
+  bindings with the file as it is on disk: a binding disappears only when the
+  writing command names the directory it unbinds, so a stale copy of the config
+  can no longer drop what another session bound.
 - `tasq agent instructions --space <id> --json` returns
   `tasq.agent-instructions.v1` with target, space, block version, full digest
   and state. Preview adds `block`; write adds `changed` and `forced`; check adds

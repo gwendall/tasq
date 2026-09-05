@@ -99,8 +99,8 @@ Also on every command:
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
   const byCommand: Record<string, readonly string[]> = {
     init: ["db", "projection"],
-    setup: ["space", "no-bind", "no-instructions", "target", "force"],
-    use: ["clear"],
+    setup: ["space", "no-bind", "no-instructions", "target", "force", "default"],
+    use: ["clear", "from-instructions"],
     whoami: [],
     contention: ["since"],
     feedback: ["details", "repo", "limit", "dry-run"],
@@ -182,10 +182,13 @@ ${color.bold("USAGE")}
   tasq <command> [args...] [--json]
 
 ${color.bold("SETUP")}
-  setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions]
+  setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions] [--default]
                                 everything a new project needs: join the space,
-                                bind this directory, write the AGENTS.md block
-  use [<space>|--clear]          bind/show this directory's space; keep global default
+                                bind this directory, write the AGENTS.md block;
+                                the global default moves only with --default
+  use [<space>|--clear|--from-instructions]
+                                bind/show this directory's space; keep global default;
+                                --from-instructions binds what AGENTS.md declares
   whoami                        who this ledger thinks is writing, and what that proves
   contention [--since 7d]       what the ledger refused: collisions it prevented
   onboard --space <id> --actor <label> --json
