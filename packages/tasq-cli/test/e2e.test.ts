@@ -942,6 +942,7 @@ describe("bounded universal context", () => {
 
   it("fails closed on an invalid portable token budget", async () => {
     const home = await freshHome();
+    await runOk(home, ["init"]);
     const result = await runCli(home, ["context", "--max-tokens", "100", "--json"]);
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("greater than or equal to 1024");
@@ -1151,7 +1152,7 @@ describe("canonical commitment inspection", () => {
     ]);
     expect(snapshot.contractVersion).toBe("tasq.inspect.v1");
     expect(snapshot).not.toHaveProperty("tenantId");
-    expect(snapshot.commitment).toMatchObject({ id: task.id, workspaceId: "gwendall" });
+    expect(snapshot.commitment).toMatchObject({ id: task.id, workspaceId: "local/default" });
     expect(snapshot.commitment).not.toHaveProperty("areaId");
     expect(snapshot.commitment).not.toHaveProperty("nextAction");
     expect(snapshot.resumeCursor).toMatchObject({ afterEventSequence: expect.any(Number) });
@@ -1174,7 +1175,7 @@ describe("machine discovery and onboarding", () => {
     ]);
     expect(discovered).toMatchObject({
       contractVersion: "tasq.discovery.v1",
-      workspaceId: "gwendall",
+      workspaceId: "local/default",
       transportBoundary: "local_process",
       protocol: { versions: [1] },
     });
@@ -1687,8 +1688,9 @@ describe("init + config", () => {
     await runOk(home, ["init"]);
     const r = await runOk(home, ["config", "show", "--json"]);
     const cfg = JSON.parse(r.stdout);
-    expect(cfg.tenantId).toBe("gwendall");
-    expect(cfg.defaultActor).toBe("gwendall");
+    expect(cfg.tenantId).toBe("local/default");
+    expect(typeof cfg.defaultActor).toBe("string");
+    expect(cfg.defaultActor.length).toBeGreaterThan(0);
   });
 
   it("config set persists value", async () => {
@@ -2733,7 +2735,7 @@ describe("durability", () => {
       contractVersion: "tasq.portable-export-result.v1",
       ok: true,
       target: exportPath,
-      workspaceId: "gwendall",
+      workspaceId: "local/default",
       storeFormat: F.current,
     });
     expect(exported.sha256).toMatch(/^[a-f0-9]{64}$/);
@@ -2746,15 +2748,15 @@ describe("durability", () => {
       contractVersion: "tasq.portable-import-result.v1",
       ok: true,
       target: importedPath,
-      workspaceId: "gwendall",
+      workspaceId: "local/default",
       verification: { ok: true, eventCursor: 1 },
       next: {
-        doctor: ["env", `TASQ_DB_URL=file:${importedPath}`, "tasq", "doctor", "--tenant", "gwendall", "--actor", "<stable-label>", "--json"],
+        doctor: ["env", `TASQ_DB_URL=file:${importedPath}`, "tasq", "doctor", "--tenant", "local/default", "--actor", "<stable-label>", "--json"],
       },
     });
     expect(statSync(importedPath).mode & 0o777).toBe(0o600);
 
-    const doctor = await runCli(home, ["doctor", "--tenant", "gwendall", "--actor", "test", "--json"], {
+    const doctor = await runCli(home, ["doctor", "--tenant", "local/default", "--actor", "test", "--json"], {
       env: { TASQ_DB_URL: `file:${importedPath}` },
     });
     expect(doctor.exitCode, doctor.stderr).toBe(0);
@@ -2783,6 +2785,8 @@ describe("durability", () => {
     await runOk(sourceHome, ["add", "created after snapshot", "--area", "k"]);
     const journalAfterBackup = readFileSync(sourceJournal, "utf8");
 
+    // A restored home has a store and a journal but no config, so nothing
+    // selects a space implicitly: every command below names it.
     const restoreHome = await freshHome();
     const restoreDir = join(restoreHome, ".tasq");
     const restoredDb = join(restoreDir, "db.sqlite");
@@ -2792,7 +2796,7 @@ describe("durability", () => {
     chmodSync(restoredDb, 0o600);
     writeFileSync(restoredJournal, journalAfterBackup, { mode: 0o600 });
 
-    const ahead = await runCli(restoreHome, ["doctor", "--json"]);
+    const ahead = await runCli(restoreHome, ["doctor", "--tenant", "local/default", "--json"]);
     expect(ahead.exitCode).toBe(1);
     const aheadReport = JSON.parse(ahead.stdout);
     expect(aheadReport.store.ok).toBe(true);
@@ -2805,20 +2809,20 @@ describe("durability", () => {
     // Pair the snapshot with the journal captured at the same cursor. This is
     // a copy inside the drill; the source append-only journal is never edited.
     writeFileSync(restoredJournal, journalAtBackup, { mode: 0o600 });
-    const healthy = await runOk(restoreHome, ["doctor", "--json"]);
+    const healthy = await runOk(restoreHome, ["doctor", "--tenant", "local/default", "--json"]);
     const healthyReport = JSON.parse(healthy.stdout);
     expect(healthyReport.ok).toBe(true);
     expect(healthyReport.journal.databaseMaxSequence).toBe(backupCursor);
     expect(healthyReport.journal.journalMaxSequence).toBe(backupCursor);
     expect(healthyReport.journal.commonMaxSequence).toBe(backupCursor);
 
-    const restoredTasks = JSON.parse((await runOk(restoreHome, ["list", "--json"])).stdout);
+    const restoredTasks = JSON.parse((await runOk(restoreHome, ["list", "--tenant", "local/default", "--json"])).stdout);
     expect(restoredTasks.map((task: { title: string }) => task.title)).toEqual([
       "present in snapshot",
     ]);
 
-    await runOk(restoreHome, ["add", "first task after restore", "--area", "k"]);
-    const resumed = JSON.parse((await runOk(restoreHome, ["doctor", "--json"])).stdout);
+    await runOk(restoreHome, ["add", "--tenant", "local/default", "first task after restore", "--area", "k"]);
+    const resumed = JSON.parse((await runOk(restoreHome, ["doctor", "--tenant", "local/default", "--json"])).stdout);
     expect(resumed.ok).toBe(true);
     expect(resumed.journal.databaseMaxSequence).toBe(backupCursor + 1);
     expect(resumed.journal.journalMaxSequence).toBe(backupCursor + 1);

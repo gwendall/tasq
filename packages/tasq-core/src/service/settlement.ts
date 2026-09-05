@@ -23,8 +23,7 @@ import {
   type SettlementEntitlementV1 as Entitlement,
   type SettlementMaterializationV1 as Materialization,
   type SettlementPolicyRuleV1 as PolicyRule,
-  type SettlementViewV1 as SettlementView,
-} from "@tasq-run/schema";
+  type SettlementViewV1 as SettlementView, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson } from "../util/canonical-json.js";
@@ -79,7 +78,7 @@ function parseMaterialization(row: typeof settlementMaterialization.$inferSelect
 export async function getSettlementDecision(
   db: TasqDbOrTx,
   id: string,
-  workspaceId = "gwendall",
+  workspaceId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Decision | null> {
   const rows = await db.select().from(settlementDecision).where(and(
     eq(settlementDecision.tenantId, workspaceId),
@@ -90,7 +89,7 @@ export async function getSettlementDecision(
 
 export async function listSettlementDecisions(
   db: TasqDbOrTx,
-  workspaceId = "gwendall",
+  workspaceId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Decision[]> {
   return (await db.select().from(settlementDecision)
     .where(eq(settlementDecision.tenantId, workspaceId))
@@ -111,7 +110,7 @@ async function listMaterializations(
 export async function getSettlementView(
   db: TasqDbOrTx,
   id: string,
-  workspaceId = "gwendall",
+  workspaceId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<SettlementView | null> {
   const decision = await getSettlementDecision(db, id, workspaceId);
   if (!decision) return null;
@@ -363,7 +362,7 @@ export async function evaluateSettlementOrRecourse(
 ): Promise<SettlementView> {
   const parsed = SettlementEvaluationInputV1.parse(input);
   const policy = SettlementPolicyV1.parse(parsed.policy);
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const principalId = authenticatedPrincipal(ctx);
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx, ctx.now);

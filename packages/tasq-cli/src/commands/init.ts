@@ -9,6 +9,7 @@ import {
   saveConfig,
   setConfigField,
   CONFIG_KEYS,
+  LOCAL_DEFAULT_SPACE,
 } from "../config.js";
 import { openRuntime } from "../runtime.js";
 import { color, printError, printInfo, printJson } from "../output/format.js";
@@ -24,7 +25,10 @@ export async function init(args: ParsedArgs): Promise<number> {
   const cfg = loadConfig();
   cfg.dbPath = args.string("db") ?? cfg.dbPath ?? defaultDbPath();
   cfg.projectionTarget = projectionTarget ?? cfg.projectionTarget;
-  cfg.tenantId = args.string("tenant") ?? cfg.tenantId;
+  // `init` is the explicit act of wanting a local default space. When none is
+  // named and none exists, it is created under a neutral name that the file
+  // then states, never a person's name baked into the executable.
+  cfg.tenantId = args.string("tenant") ?? (cfg.tenantId || LOCAL_DEFAULT_SPACE);
 
   mkdirSync(dirname(cfg.dbPath), { recursive: true });
   saveConfig(cfg, { command: ["init"] });

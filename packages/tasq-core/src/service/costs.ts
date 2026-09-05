@@ -9,8 +9,7 @@ import {
   taskClaim,
   uuidv7,
   type ExternalRef,
-  type Task,
-} from "@tasq-run/schema";
+  type Task, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { canonicalJson, sha256Digest } from "../util/canonical-json.js";
@@ -232,7 +231,7 @@ export async function getTaskCostSummary(
   taskId: string,
   options: ServiceContext = {},
 ): Promise<TaskCostSummary> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const claims = await db.select().from(taskClaim).where(and(
     eq(taskClaim.tenantId, tenantId),
@@ -250,7 +249,7 @@ export async function configureTaskCostBudget(
   context: ServiceContext = {},
 ): Promise<Task> {
   const budget = TaskCostBudget.parse(input);
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const task = await getTask(db, taskId, tenantId);
   if (!task || task.deletedAt !== null) throw new Error(`Task not found: ${taskId}`);
   return updateTask(db, taskId, {
@@ -273,7 +272,7 @@ export async function recordAttemptCost(
   context: ServiceContext = {},
 ): Promise<RecordAttemptCostResult> {
   const parsed = RecordAttemptCostInput.parse(input);
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = context.actor ?? "system";
   const now = serviceNow(context, context.now);
   const attemptRows = await db.select().from(taskAttempt).where(and(

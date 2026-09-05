@@ -34,8 +34,7 @@ import {
   type EffectReceipt,
   type EffectJsonObject,
   type EffectStatus,
-  type Principal,
-} from "@tasq-run/schema";
+  type Principal, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import {
   assertEffectAuthority,
   canonicalEffectPermitPayload,
@@ -302,7 +301,7 @@ export async function proposeEffect(
 export async function getEffect(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<Effect | null> {
   const rows = await db.select().from(effect)
     .where(and(eq(effect.id, id), eq(effect.tenantId, tenantId))).limit(1);
@@ -313,7 +312,7 @@ export async function listEffects(
   db: TasqDb,
   options: { tenantId?: string; taskId?: string; status?: EffectStatus } = {},
 ): Promise<Effect[]> {
-  const filters = [eq(effect.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(effect.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.taskId) filters.push(eq(effect.taskId, options.taskId));
   if (options.status) filters.push(eq(effect.status, options.status));
   return (await db.select().from(effect).where(and(...filters)).orderBy(asc(effect.createdAt)))
@@ -323,7 +322,7 @@ export async function listEffects(
 export async function getEffectApproval(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EffectApproval | null> {
   const rows = await db.select().from(effectApproval).where(and(
     eq(effectApproval.id, id),
@@ -336,7 +335,7 @@ export async function listEffectApprovals(
   db: TasqDbOrTx,
   options: { tenantId?: string; effectId?: string; decision?: ApprovalDecision } = {},
 ): Promise<EffectApproval[]> {
-  const filters = [eq(effectApproval.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(effectApproval.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.effectId) filters.push(eq(effectApproval.effectId, options.effectId));
   if (options.decision) filters.push(eq(effectApproval.decision, options.decision));
   return (await db.select().from(effectApproval).where(and(...filters)).orderBy(asc(effectApproval.decidedAt)))
@@ -346,7 +345,7 @@ export async function listEffectApprovals(
 export async function getEffectiveEffectApproval(
   db: TasqDbOrTx,
   effectId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EffectApproval | null> {
   const approvals = await listEffectApprovals(db, { tenantId, effectId });
   if (approvals.length === 0) return null;
@@ -499,7 +498,7 @@ export async function authorizeEffect(
   approvalId: string,
   options: PrincipalContext & { expectedRevision: number },
 ): Promise<Effect> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const { result, event: committedEvent } = await runInTransaction(db, async (tx) => {
     const retry = await retryResult(tx, tenantId, options, "effect.authorize", {
@@ -642,7 +641,7 @@ export async function beginEffectExecution(
   effectId: string,
   options: BeginEffectExecutionOptions,
 ): Promise<BegunEffectExecution> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const { result, event: committedEvent } = await runInTransaction(db, async (tx) => {
     const retry = await retryResult(tx, tenantId, options, "effect.execution.begin", {
@@ -826,7 +825,7 @@ function parseReceipt(row: typeof effectReceipt.$inferSelect): EffectReceipt {
 export async function getEffectReceipt(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EffectReceipt | null> {
   const rows = await db.select().from(effectReceipt).where(and(
     eq(effectReceipt.id, id), eq(effectReceipt.tenantId, tenantId),
@@ -838,7 +837,7 @@ export async function listEffectReceipts(
   db: TasqDbOrTx,
   options: { tenantId?: string; effectId?: string } = {},
 ): Promise<EffectReceipt[]> {
-  const filters = [eq(effectReceipt.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(effectReceipt.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.effectId) filters.push(eq(effectReceipt.effectId, options.effectId));
   return (await db.select().from(effectReceipt).where(and(...filters))
     .orderBy(asc(effectReceipt.recordedAt))).map(parseReceipt);
@@ -1012,7 +1011,7 @@ export async function cancelEffect(
   options: PrincipalContext & { expectedRevision: number },
 ): Promise<Effect> {
   if (!reason.trim()) throw new Error("Effect cancellation requires a reason");
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const { result, event: committedEvent } = await runInTransaction(db, async (tx) => {
     const retry = await retryResult(tx, tenantId, options, "effect.cancel", {

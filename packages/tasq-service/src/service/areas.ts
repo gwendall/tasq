@@ -13,8 +13,7 @@ import {
   AreaInsert,
   AreaUpdate,
   type Area as AreaT,
-  type Event as EventT,
-} from "@tasq-run/schema";
+  type Event as EventT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit } from "./events.js";
@@ -107,7 +106,7 @@ export async function createArea(
 export async function getArea(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<AreaT | null> {
   const rows = await db
     .select()
@@ -121,7 +120,7 @@ export async function getArea(
 export async function getAreaBySlug(
   db: TasqDb,
   slug: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<AreaT | null> {
   const rows = await db
     .select()
@@ -140,7 +139,7 @@ export async function listAreas(
   db: TasqDb,
   options: ListAreasOptions = {},
 ): Promise<AreaT[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const filters = [eq(area.tenantId, tenantId)];
   if (!options.includeDeleted) filters.push(isNull(area.deletedAt));
 
@@ -160,7 +159,7 @@ export async function updateArea(
   ctx: ServiceContext = {},
 ): Promise<AreaT> {
   const parsed = AreaUpdate.parse(update);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
 
   const now = serviceNow(ctx);
@@ -213,7 +212,7 @@ export async function softDeleteArea(
   id: string,
   ctx: SoftDeleteOptions = {},
 ): Promise<void> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 
@@ -278,7 +277,7 @@ export async function restoreArea(
   id: string,
   ctx: ServiceContext = {},
 ): Promise<AreaT> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 

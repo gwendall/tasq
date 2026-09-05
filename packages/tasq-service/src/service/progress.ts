@@ -23,7 +23,7 @@
  */
 
 import { and, eq, gt, isNull } from "drizzle-orm";
-import { task, type Task as TaskT, Task as TaskZ, type Clock } from "@tasq-run/schema";
+import { task, type Task as TaskT, Task as TaskZ, type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb } from "../db.js";
 import { getTaskTree } from "./tasks.js";
 import { serviceNow } from "../util/clock.js";
@@ -172,7 +172,7 @@ export async function getProjectProgress(
   projectId: string,
   options: ProgressOptions = {},
 ): Promise<Progress> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const nowMs = serviceNow(options, options.now);
 
   const rows = await db
@@ -215,7 +215,7 @@ export async function getTaskProgress(
   taskId: string,
   options: ProgressOptions = {},
 ): Promise<Progress | null> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const nowMs = serviceNow(options, options.now);
 
   const tree = await getTaskTree(db, taskId, tenantId);

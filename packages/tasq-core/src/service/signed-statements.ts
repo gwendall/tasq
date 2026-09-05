@@ -30,8 +30,7 @@ import {
   type SignedStatementPayloadV1 as Payload,
   type StoredSignedStatement,
   type SigningCredentialV1 as Credential,
-  type Sha256Digest,
-} from "@tasq-run/schema";
+  type Sha256Digest, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -407,7 +406,7 @@ export async function prepareSignedStatementAcceptance(
   input: AcceptSignedStatementInput,
   ctx: ServiceContext = {},
 ): Promise<PreparedSignedStatementAcceptance> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(ctx, ctx.now);
   const bundle = SignedStatementBundleV1.parse(input.bundle);
   const proof = await input.verify({
@@ -640,13 +639,13 @@ export async function acceptSignedStatement(
       input.binderRegistry ?? DEFAULT_STATEMENT_BINDER_REGISTRY,
     ));
 }
-export async function getSignedStatement(db: TasqDbOrTx, statementId: string, tenantId = "gwendall") {
+export async function getSignedStatement(db: TasqDbOrTx, statementId: string, tenantId = LEGACY_DEFAULT_WORKSPACE_ID) {
   const rows = await db.select().from(signedStatement).where(and(
     eq(signedStatement.tenantId, tenantId), eq(signedStatement.statementId, statementId),
   )).limit(1);
   return rows[0] ? parseStatement(rows[0]) : null;
 }
-export async function getSignedStatementBinding(db: TasqDbOrTx, id: string, tenantId = "gwendall") {
+export async function getSignedStatementBinding(db: TasqDbOrTx, id: string, tenantId = LEGACY_DEFAULT_WORKSPACE_ID) {
   const rows = await db.select().from(signedStatementBinding).where(and(
     eq(signedStatementBinding.tenantId, tenantId), eq(signedStatementBinding.id, id),
   )).limit(1);
@@ -660,7 +659,7 @@ export async function listSignedStatementBindings(
     statementId?: string;
   } = {},
 ) {
-  const filters = [eq(signedStatementBinding.tenantId, input.tenantId ?? "gwendall")];
+  const filters = [eq(signedStatementBinding.tenantId, input.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (input.recordType) filters.push(eq(signedStatementBinding.recordType, input.recordType));
   if (input.recordId) filters.push(eq(signedStatementBinding.recordId, input.recordId));
   if (input.statementId) filters.push(eq(signedStatementBinding.statementId, input.statementId));
@@ -672,7 +671,7 @@ export async function listSignedStatementBindings(
 export async function getSignedStatementProof(
   db: TasqDbOrTx,
   statementId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<{
   statement: StoredSignedStatement;
   credentialSnapshot: CredentialSnapshot;

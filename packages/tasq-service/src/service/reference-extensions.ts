@@ -1,7 +1,7 @@
 /** Bundled compatibility provisioning around the neutral Core registry. */
 
 import type { Client } from "@libsql/client";
-import { uuidv7 } from "@tasq-run/schema";
+import { uuidv7, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import { REFERENCE_EXTENSION_MANIFEST } from "@tasq-internal/reference-extension";
 import type { TasqDb } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -17,7 +17,7 @@ export async function ensureBundledReferenceExtension(
   db: TasqDb,
   options: InstallExtensionOptions = {},
 ): Promise<InstalledExtension> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const prepared = prepareExtensionManifest(REFERENCE_EXTENSION_MANIFEST);
   const prior = await db.query.extensionRelease.findFirst({
     where: (release, { and, eq }) => and(
@@ -36,7 +36,7 @@ export async function ensureBundledReferenceExtensionAvailable(
   db: TasqDb,
   options: InstallExtensionOptions = {},
 ): Promise<void> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const prepared = prepareExtensionManifest(REFERENCE_EXTENSION_MANIFEST);
   const prior = await db.query.extensionRelease.findFirst({
     where: (release, { and, eq }) => and(
@@ -61,7 +61,7 @@ export async function ensureReferenceExtensionRegistry(
 ): Promise<void> {
   const prepared = prepareExtensionManifest(REFERENCE_EXTENSION_MANIFEST);
   const discovered = tenantIds ?? await discoverTenants(client);
-  for (const tenantId of discovered.length > 0 ? discovered : ["gwendall"]) {
+  for (const tenantId of discovered.length > 0 ? discovered : [LEGACY_DEFAULT_WORKSPACE_ID]) {
     await ensureReferenceTenant(client, tenantId, prepared, serviceNow(options, options.now));
   }
 }

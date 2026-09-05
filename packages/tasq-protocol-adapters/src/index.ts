@@ -1,3 +1,4 @@
+import { LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 /** Commitment-safe mappings from remote protocol tasks to Tasq execution records. */
 
 import { Buffer } from "node:buffer";
@@ -261,7 +262,7 @@ function context(input: ProtocolAdapterContext) {
     remoteSystem,
     actor,
     principalId: input.principalId,
-    tenantId: input.tenantId ?? "gwendall",
+    tenantId: input.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID,
     claimId: input.claimId ?? null,
     clock: input.clock,
     observedAt,

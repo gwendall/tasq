@@ -1,6 +1,6 @@
 /** Atomic append boundary for byte-bound evidence prepared by an external capture Module. */
 
-import { ArtifactInsert, TaskEvidenceInsert, type Artifact, type Metadata, type TaskEvidence } from "@tasq-run/schema";
+import { ArtifactInsert, TaskEvidenceInsert, type Artifact, type Metadata, type TaskEvidence, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { getCommitment } from "../commitments.js";
@@ -35,7 +35,7 @@ export async function recordCapturedEvidence(
   input: RecordCapturedEvidenceInput,
   ctx: ServiceContext = {},
 ): Promise<RecordCapturedEvidenceResult> {
-  const workspaceId = ctx.tenantId ?? "gwendall";
+  const workspaceId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const idempotencyKey = input.idempotencyKey.trim();
   if (!idempotencyKey) throw new Error("recordCapturedEvidence requires an idempotencyKey");
   if (!Number.isSafeInteger(input.expectedCommitmentRevision) || input.expectedCommitmentRevision < 1) {

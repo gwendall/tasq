@@ -68,8 +68,7 @@ import {
   type Area as AreaT,
   type Project as ProjectT,
   type TaskClaim,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb } from "./db.js";
 import { parseRow } from "./util/row.js";
 import { unresolvedBlockerMap } from "./service/dependencies.js";
@@ -147,7 +146,7 @@ export async function pickNext(
   db: TasqDb,
   options: PickNextOptions = {},
 ): Promise<NextResult[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
 
   const candidateStatuses = ["open", "in_progress", "blocked"] as const;

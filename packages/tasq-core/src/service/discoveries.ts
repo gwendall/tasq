@@ -7,8 +7,7 @@ import {
   TaskInsert,
   uuidv7,
   type Task,
-  type TaskDependency,
-} from "@tasq-run/schema";
+  type TaskDependency, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -55,7 +54,7 @@ export async function captureDiscovery(
       `Discovery context exceeds ${DISCOVERY_CAPTURE_CONTEXT_MAX_BYTES} UTF-8 bytes`,
     );
   }
-  const tenantId = context.tenantId ?? "gwendall";
+  const tenantId = context.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = context.actor ?? "system";
   const now = serviceNow(context, context.now);
   const retryRequest = { ...parsed, tenantId, actor, principalId: context.principalId ?? null };

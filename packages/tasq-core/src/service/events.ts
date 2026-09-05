@@ -17,8 +17,7 @@ import {
   Event as EventZ,
   type Event as EventT,
   type EntityType,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import { runAfterCommit, type TasqDb, type TasqDbOrTx } from "../db.js";
 import { serviceNow } from "../util/clock.js";
 import { ensureLocalPrincipal, getPrincipal } from "./principals.js";
@@ -155,7 +154,7 @@ export async function listEvents(
   db: TasqDb,
   options: ListEventsOptions = {},
 ): Promise<EventT[]> {
-  const filters = [eq(event.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(event.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
 
   if (options.entityType) filters.push(eq(event.entityType, options.entityType));
   if (options.entityId) filters.push(eq(event.entityId, options.entityId));
@@ -185,7 +184,7 @@ export async function listEvents(
 export async function getEvent(
   db: TasqDb,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<EventT | null> {
   const rows = await db
     .select()

@@ -26,8 +26,7 @@ import {
   type TaskAttempt,
   type TaskClaim,
   type TaskEvidence,
-  type Clock,
-} from "@tasq-run/schema";
+  type Clock, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { parseRow } from "../util/row.js";
@@ -165,7 +164,7 @@ export async function acquireTaskClaim(
   taskId: string,
   options: AcquireClaimOptions = {},
 ): Promise<TaskClaim> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = validateUnixMs(serviceNow(options, options.now), "now");
   const leaseMs = validateLeaseMs(options.leaseMs);
@@ -344,7 +343,7 @@ export async function releaseTaskClaim(
   taskId: string,
   options: ReleaseClaimOptions = {},
 ): Promise<TaskClaim> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = validateUnixMs(serviceNow(options, options.now), "now");
   const identity = retryIdentity({ ...options, tenantId }, "claim.release", {
@@ -441,7 +440,7 @@ export async function releaseTaskClaim(
 export async function getActiveTaskClaim(
   db: TasqDbOrTx,
   taskId: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
   nowOrClock: number | Clock = serviceNow(),
 ): Promise<TaskClaim | null> {
   const now = typeof nowOrClock === "number" ? nowOrClock : nowOrClock.now();
@@ -463,7 +462,7 @@ export async function getActiveTaskClaim(
 export async function getTaskClaim(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<TaskClaim | null> {
   const rows = await db
     .select()
@@ -484,7 +483,7 @@ export async function listTaskClaims(
   taskId: string | null,
   options: ListClaimsOptions = {},
 ): Promise<TaskClaim[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const filters = [eq(taskClaim.tenantId, tenantId)];
   if (taskId) filters.push(eq(taskClaim.taskId, taskId));
   if (options.actorFilter) filters.push(eq(taskClaim.actor, options.actorFilter));
@@ -503,7 +502,7 @@ export async function listTaskClaims(
 /** Batch active claims for actionable queue filtering. */
 export async function activeTaskClaimMap(
   db: TasqDb,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
   nowOrClock: number | Clock = serviceNow(),
 ): Promise<Map<string, TaskClaim>> {
   const now = typeof nowOrClock === "number" ? nowOrClock : nowOrClock.now();
@@ -537,7 +536,7 @@ export async function startTaskAttempt(
   taskId: string,
   options: StartAttemptOptions = {},
 ): Promise<TaskAttempt> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = validateUnixMs(serviceNow(options, options.occurredAt), "occurredAt");
   const parsed = TaskAttemptInsert.parse({
@@ -650,7 +649,7 @@ export async function startTaskAttempt(
 export async function getTaskAttempt(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<TaskAttempt | null> {
   const rows = await db
     .select()
@@ -671,7 +670,7 @@ export async function listTaskAttempts(
   taskId: string | null,
   options: ListAttemptsOptions = {},
 ): Promise<TaskAttempt[]> {
-  const filters = [eq(taskAttempt.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(taskAttempt.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (taskId) filters.push(eq(taskAttempt.taskId, taskId));
   if (options.actorFilter) filters.push(eq(taskAttempt.actor, options.actorFilter));
   if (options.statuses?.length) filters.push(inArray(taskAttempt.status, options.statuses));
@@ -696,7 +695,7 @@ export async function transitionTaskAttempt(
   options: TransitionAttemptOptions = {},
 ): Promise<TaskAttempt> {
   const parsedStatus = AttemptStatus.parse(to);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = options.actor ?? "system";
   const now = validateUnixMs(serviceNow(options, options.occurredAt), "occurredAt");
   const identity = retryIdentity({ ...options, tenantId }, `attempt.transition.${parsedStatus}`, {
@@ -912,7 +911,7 @@ export async function addTaskEvidence(
 export async function getTaskEvidence(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<TaskEvidence | null> {
   const rows = await db
     .select()
@@ -934,7 +933,7 @@ export async function listTaskEvidence(
   taskId: string | null,
   options: ListEvidenceOptions = {},
 ): Promise<TaskEvidence[]> {
-  const filters = [eq(taskEvidence.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(taskEvidence.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (taskId) filters.push(eq(taskEvidence.taskId, taskId));
   if (options.attemptId) filters.push(eq(taskEvidence.attemptId, options.attemptId));
   if (options.kind) filters.push(eq(taskEvidence.kind, options.kind));

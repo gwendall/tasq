@@ -19,8 +19,7 @@ import {
   type DeliveryOutbox as DeliveryOutboxT,
   type DeliveryOutboxStatus,
   type DeliverySink as DeliverySinkT,
-  type Event as EventT,
-} from "@tasq-run/schema";
+  type Event as EventT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runOperationalTransaction } from "../db.js";
 import { serviceNow } from "../util/clock.js";
@@ -91,7 +90,7 @@ export async function ensureDeliverySink(
   options: DeliveryClockOptions = {},
 ): Promise<DeliverySinkT> {
   validateInput(input);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const current = await findSink(db, input.id, tenantId);
   if (current) {
     assertSameBinding(current, input);
@@ -139,7 +138,7 @@ export async function disableDeliverySink(
   id: string,
   options: DeliveryClockOptions = {},
 ): Promise<DeliverySinkT | null> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const current = await findSink(db, id, tenantId);
   if (!current) return null;
   if (current.status === "disabled") return parseSink(current);
@@ -159,7 +158,7 @@ export async function disableDeliverySink(
 export async function getDeliverySink(
   db: TasqDb,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<DeliverySinkT | null> {
   const row = await findSink(db, id, tenantId);
   return row ? parseSink(row) : null;
@@ -177,7 +176,7 @@ export async function listDeliveryOutbox(
   db: TasqDb,
   options: ListDeliveryOutboxOptions = {},
 ): Promise<DeliveryOutboxT[]> {
-  const filters = [eq(deliveryOutbox.tenantId, options.tenantId ?? "gwendall")];
+  const filters = [eq(deliveryOutbox.tenantId, options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID)];
   if (options.sinkId) filters.push(eq(deliveryOutbox.sinkId, options.sinkId));
   if (options.status) filters.push(eq(deliveryOutbox.status, options.status));
   const order = options.ascending ? asc : desc;
@@ -258,7 +257,7 @@ export async function leaseNextDelivery(
   options: LeaseNextDeliveryOptions,
 ): Promise<LeasedDelivery | null> {
   validateLease(options.leaseOwner, options.leaseMs);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const leaseExpiresAt = now + options.leaseMs;
   if (!Number.isSafeInteger(leaseExpiresAt)) {
@@ -320,7 +319,7 @@ export async function leaseDeliveryBatch(
   if (!Number.isSafeInteger(options.maxItems) || options.maxItems < 1 || options.maxItems > 50) {
     throw new Error("delivery maxItems must be an integer in 1..50");
   }
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const leaseExpiresAt = now + options.leaseMs;
   if (!Number.isSafeInteger(leaseExpiresAt)) {
@@ -396,7 +395,7 @@ export async function completeDelivery(
   options: OwnedDeliveryOptions,
 ): Promise<DeliveryOutboxT> {
   validateLeaseOwner(options.leaseOwner);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   return runOperationalTransaction(db, async (tx) => {
     const rows = await tx.update(deliveryOutbox).set({
@@ -429,7 +428,7 @@ export async function completeDeliveryBatch(
     || ids.some((id) => !id.trim() || id.length > 1_500)) {
     throw new Error("delivery batch ids must contain 1..50 unique bounded identities");
   }
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   return runOperationalTransaction(db, async (tx) => {
     const rows = await tx.update(deliveryOutbox).set({
@@ -466,7 +465,7 @@ export async function failDelivery(
   options: FailDeliveryOptions,
 ): Promise<DeliveryOutboxT> {
   validateLeaseOwner(options.leaseOwner);
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   const maxAttempts = options.maxAttempts ?? 5;
   const baseBackoffMs = options.baseBackoffMs ?? 1_000;
@@ -536,7 +535,7 @@ export async function repairDelivery(
   if (!(action === "retry" || action === "mark_delivered" || action === "redeliver")) {
     throw new Error(`Unknown delivery repair action: ${String(action)}`);
   }
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const now = serviceNow(options, options.now);
   return runOperationalTransaction(db, async (tx) => {
     const currentRows = await tx.select().from(deliveryOutbox).where(and(

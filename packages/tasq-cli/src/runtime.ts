@@ -173,6 +173,13 @@ export async function openRuntime(
     explicit: tenantOverride,
     environment: process.env.TASQ_TENANT,
   });
+  if (effectiveSpace.source === "global_default" && !effectiveSpace.space) {
+    throw new Error(
+      "No Tasq space is selected here: this directory is not bound and this machine has no global default.\n"
+      + "Set the project up with `tasq setup --space <id> --actor <label>`, or create a local default "
+      + "space with `tasq init`. Nothing was read or written.",
+    );
+  }
   if (effectiveSpace.source === "global_default") {
     const owners = inheritedSpaceOwnedElsewhere(loaded, effectiveSpace.space, process.cwd());
     if (owners.length > 0) {

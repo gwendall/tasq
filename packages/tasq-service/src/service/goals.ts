@@ -14,8 +14,7 @@ import {
   GoalStatus,
   type Goal as GoalT,
   type GoalStatus as GoalStatusT,
-  type Event as EventT,
-} from "@tasq-run/schema";
+  type Event as EventT, LEGACY_DEFAULT_WORKSPACE_ID } from "@tasq-run/schema";
 import type { TasqDb, TasqDbOrTx } from "../db.js";
 import { runInTransaction } from "../db.js";
 import { recordEvent, emitAfterCommit } from "./events.js";
@@ -148,7 +147,7 @@ export async function createGoal(
 export async function getGoal(
   db: TasqDbOrTx,
   id: string,
-  tenantId = "gwendall",
+  tenantId = LEGACY_DEFAULT_WORKSPACE_ID,
 ): Promise<GoalT | null> {
   const rows = await db
     .select()
@@ -169,7 +168,7 @@ export async function listGoals(
   db: TasqDb,
   options: ListGoalsOptions = {},
 ): Promise<GoalT[]> {
-  const tenantId = options.tenantId ?? "gwendall";
+  const tenantId = options.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const filters = [eq(goal.tenantId, tenantId)];
 
   if (!options.includeDeleted) filters.push(isNull(goal.deletedAt));
@@ -201,7 +200,7 @@ export async function updateGoal(
   ctx: ServiceContext = {},
 ): Promise<GoalT> {
   const parsed = GoalUpdate.parse(update);
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
 
   const now = serviceNow(ctx);
@@ -261,7 +260,7 @@ export async function softDeleteGoal(
   id: string,
   ctx: SoftDeleteOptions = {},
 ): Promise<void> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 
@@ -395,7 +394,7 @@ export async function restoreGoal(
   id: string,
   ctx: ServiceContext = {},
 ): Promise<GoalT> {
-  const tenantId = ctx.tenantId ?? "gwendall";
+  const tenantId = ctx.tenantId ?? LEGACY_DEFAULT_WORKSPACE_ID;
   const actor = ctx.actor ?? "system";
   const now = serviceNow(ctx);
 
