@@ -3,12 +3,12 @@
     "heading": "SETUP",
     "entries": [
       {
-        "usage": "setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions]",
-        "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block"
+        "usage": "setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions] [--default]",
+        "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block; the global default moves only with --default"
       },
       {
-        "usage": "use [<space>|--clear]",
-        "description": "bind/show this directory's space; keep global default"
+        "usage": "use [<space>|--clear|--from-instructions]",
+        "description": "bind/show this directory's space; keep global default; --from-instructions binds what AGENTS.md declares"
       },
       {
         "usage": "whoami",

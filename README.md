@@ -159,6 +159,9 @@ directory **and everything under it** so later commands need no flags, and
 writes the digest-bound managed block into `AGENTS.md` so agents working here
 are told the rules. `--no-bind` and `--no-instructions` skip either half, and it
 refuses to set a project up in your home directory or at the filesystem root.
+The first project a machine sets up becomes the fallback for directories that
+are not bound; later projects leave that fallback alone unless you pass
+`--default`.
 
 **Repeat it per project.** Each directory gets its own space, so work stays
 separated without you passing `--tenant` anywhere:

@@ -35,8 +35,15 @@ came from**. Read `effective.source`, never `effective.space`:
   in another project's ledger.
 
 That distinction is the whole point and it is easy to miss, because the space
-field is populated either way. If the source is not `directory`, the setup is
-one command:
+field is populated either way. Read `drift` next: when it is `true`, this
+repository's `AGENTS.md` carries a verified block naming a space that commands
+here would not use, and the repair is one command that needs no id from anyone:
+
+```bash
+tasq use --from-instructions
+```
+
+Otherwise, if the source is not `directory`, the setup is one command:
 
 ```bash
 tasq setup --space <confirmed-id> --actor <your-stable-label>

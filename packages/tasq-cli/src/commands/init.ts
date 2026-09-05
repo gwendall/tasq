@@ -27,7 +27,7 @@ export async function init(args: ParsedArgs): Promise<number> {
   cfg.tenantId = args.string("tenant") ?? cfg.tenantId;
 
   mkdirSync(dirname(cfg.dbPath), { recursive: true });
-  saveConfig(cfg);
+  saveConfig(cfg, { command: ["init"] });
 
   const rt = await openRuntime();
   await rt.close();
@@ -100,7 +100,7 @@ export async function configCmd(args: ParsedArgs): Promise<number> {
     }
     const value = rest.join(" ");
     const next = setConfigField(loadConfig(), key, value);
-    saveConfig(next);
+    saveConfig(next, { command: ["config", "set", key] });
     if (json) {
       printJson({ ok: true, [key]: value });
     } else {

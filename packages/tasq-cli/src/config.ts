@@ -5,10 +5,10 @@
  * profile from a repository name or HOME layout.
  */
 
-import { chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
+import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
-import { CoordinationSpaceId } from "@tasq-run/schema";
+import { CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
 
 export interface TasqConfig {
   /** Path to the LibSQL database file. */
@@ -274,14 +274,168 @@ export function bindDirectorySpace(
   };
 }
 
-export function saveConfig(cfg: TasqConfig): void {
+export interface SaveConfigOptions {
+  /**
+   * The command that caused this write, as names only (command, subcommand,
+   * flag names), never values. Recorded in the config journal.
+   */
+  command?: readonly string[];
+  /**
+   * Directories whose binding this write deliberately removes. Every other
+   * binding present on disk survives the write, whatever the caller's copy of
+   * the config says.
+   */
+  unbind?: readonly string[];
+  /** The clock that stamps the journal record; the system clock when absent. */
+  clock?: Clock;
+}
+
+export interface SaveConfigReport {
+  path: string;
+  changed: boolean;
+  /** Bindings found on disk but absent from the caller's copy, kept rather than dropped. */
+  preservedBindings: string[];
+  journaled: boolean;
+}
+
+export const CONFIG_CHANGE_CONTRACT = "tasq.config-change.v1" as const;
+
+/** Append-only record of every change to `config.json`: who changed what, from what. */
+export function configJournalPath(): string {
+  return join(configDir(), "config-journal.jsonl");
+}
+
+/** The on-disk config as written, without defaults or validation. */
+function readDiskConfig(path: string): Record<string, unknown> | null {
+  if (!existsSync(path)) return null;
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(path, "utf-8"));
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function diskBindings(disk: Record<string, unknown> | null): Record<string, string> {
+  const raw = disk?.directorySpaces;
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const bindings: Record<string, string> = {};
+  for (const [directory, space] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof space === "string") bindings[directory] = space;
+  }
+  return bindings;
+}
+
+/**
+ * Persist the config without losing what another writer put on disk.
+ *
+ * Every caller works from its own copy of the config, loaded some time before
+ * it saves. Two sessions binding two directories in turn, or one session
+ * saving a copy loaded before another one wrote, used to overwrite the whole
+ * file from that copy - and every binding the copy did not know about was
+ * gone, silently. On 2026-09-02 this project's own checkout lost its binding
+ * that way, and nothing said who had rewritten the file.
+ *
+ * So bindings are merged with the file as it is now, a binding only disappears
+ * when the caller names the directory it unbinds, and each write appends what
+ * changed to the config journal.
+ */
+export function saveConfig(cfg: TasqConfig, options: SaveConfigOptions = {}): SaveConfigReport {
   const path = configPath();
+  const disk = readDiskConfig(path);
+  const unbind = new Set(options.unbind ?? []);
+  const onDisk = diskBindings(disk);
+  const merged: Record<string, string> = { ...(cfg.directorySpaces ?? {}) };
+  const preserved: string[] = [];
+  for (const [directory, space] of Object.entries(onDisk)) {
+    if (directory in merged || unbind.has(directory)) continue;
+    merged[directory] = space;
+    preserved.push(directory);
+  }
+  const next: TasqConfig = {
+    ...cfg,
+    directorySpaces: Object.keys(merged).length > 0 ? merged : undefined,
+  };
+  const changes = configChanges(disk, next);
+  const bindingChanges = bindingDiff(onDisk, merged);
+  const changed = disk === null
+    || Object.keys(changes).length > 0
+    || bindingChanges.added.length + bindingChanges.removed.length + bindingChanges.changed.length > 0;
+  if (!changed) {
+    return { path, changed: false, preservedBindings: preserved.sort(), journaled: false };
+  }
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   chmodSync(dirname(path), 0o700);
   const temporary = `${path}.${process.pid}.tmp`;
-  writeFileSync(temporary, JSON.stringify(cfg, null, 2) + "\n", { encoding: "utf-8", mode: 0o600 });
+  writeFileSync(temporary, JSON.stringify(next, null, 2) + "\n", { encoding: "utf-8", mode: 0o600 });
   renameSync(temporary, path);
   chmodSync(path, 0o600);
+  const journaled = appendConfigJournal({
+    recordedAt: (options.clock ?? systemClock).now(),
+    command: options.command ?? [],
+    changes,
+    bindings: { ...bindingChanges, preserved: preserved.sort() },
+  });
+  return { path, changed: true, preservedBindings: preserved.sort(), journaled };
+}
+
+type ConfigChanges = Record<string, { before: unknown; after: unknown }>;
+
+function configChanges(disk: Record<string, unknown> | null, next: TasqConfig): ConfigChanges {
+  const changes: ConfigChanges = {};
+  for (const key of CONFIG_KEYS) {
+    const before = disk?.[key];
+    const after = next[key];
+    if (JSON.stringify(before ?? null) !== JSON.stringify(after ?? null)) {
+      changes[key] = { before: before ?? null, after: after ?? null };
+    }
+  }
+  return changes;
+}
+
+function bindingDiff(
+  before: Record<string, string>,
+  after: Record<string, string>,
+): { added: string[]; removed: string[]; changed: string[] } {
+  const added: string[] = [];
+  const removed: string[] = [];
+  const changed: string[] = [];
+  for (const directory of Object.keys(after)) {
+    if (!(directory in before)) added.push(directory);
+    else if (before[directory] !== after[directory]) changed.push(directory);
+  }
+  for (const directory of Object.keys(before)) {
+    if (!(directory in after)) removed.push(directory);
+  }
+  return { added: added.sort(), removed: removed.sort(), changed: changed.sort() };
+}
+
+function appendConfigJournal(entry: {
+  recordedAt: number;
+  command: readonly string[];
+  changes: ConfigChanges;
+  bindings: { added: string[]; removed: string[]; changed: string[]; preserved: string[] };
+}): boolean {
+  const record = {
+    contractVersion: CONFIG_CHANGE_CONTRACT,
+    recordedAt: entry.recordedAt,
+    pid: process.pid,
+    command: [...entry.command],
+    changes: entry.changes,
+    bindings: entry.bindings,
+  };
+  try {
+    const journal = configJournalPath();
+    appendFileSync(journal, `${JSON.stringify(record)}\n`, { encoding: "utf-8", mode: 0o600 });
+    chmodSync(journal, 0o600);
+    return true;
+  } catch {
+    // The journal is evidence, not a lock: a config write must not fail
+    // because its record could not be appended.
+    return false;
+  }
 }
 
 /** Read a single typed config field by name. Returns undefined if unset. */

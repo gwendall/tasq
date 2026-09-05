@@ -65,7 +65,7 @@ describe("one-command project setup", () => {
       "setup", "--space", "acme/app", "--actor", "gwendall", "--json",
     ])).stdout);
     expect(first).toMatchObject({
-      contractVersion: "tasq.human-setup.v2",
+      contractVersion: "tasq.human-setup.v3",
       disposition: "created",
       space: "acme/app",
       spaceSource: "explicit",
@@ -77,7 +77,7 @@ describe("one-command project setup", () => {
     // Running it again changes nothing and says so, because a setup command
     // people are afraid to re-run is a setup command they run wrong once.
     const again = JSON.parse((await ok(home, project, ["setup", "--json"])).stdout);
-    expect(again).toMatchObject({ disposition: "joined", spaceSource: "inherited-from-config" });
+    expect(again).toMatchObject({ disposition: "joined", spaceSource: "inherited-from-directory" });
     expect(again.agentInstructions.changed).toBe(false);
   });
 
