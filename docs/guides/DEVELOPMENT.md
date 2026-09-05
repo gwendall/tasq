@@ -24,7 +24,10 @@ The root should contain `package.json`, `pnpm-workspace.yaml`, `AGENTS.md`,
 `docs/roadmap/`. Live ownership is separate: when the managed `AGENTS.md` block
 names a Tasq space, that ledger owns current claims and attempts.
 Preserve unrelated local changes if the worktree is not clean. Run the
-machine-readable preflight after verifying the remote:
+machine-readable preflight after verifying the remote. It also runs
+`tasq doctor --config`, which compares the managed block with this checkout's
+private binding; when it reports `binding_drift`, `tasq use --from-instructions`
+is the repair, and no work should start before it:
 
 ```bash
 pnpm --silent agent:preflight --json

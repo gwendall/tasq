@@ -22,8 +22,27 @@ import {
   type Runtime,
 } from "../runtime.js";
 import { color, printInfo, printJson } from "../output/format.js";
+import { inspectConfig, renderConfigFindings } from "./doctor-config.js";
 
 export async function doctorCmd(args: ParsedArgs): Promise<number> {
+  const json = args.flag("json", "j") !== undefined;
+  // The config decides which store every command reaches, so it is checked
+  // before the store is opened, and can be checked alone: `doctor --config`
+  // opens nothing and is what a preflight or a hook runs.
+  const configReport = inspectConfig({
+    explicit: args.string("tenant"),
+    environment: process.env.TASQ_TENANT,
+    pruneBindings: args.bool("prune-bindings"),
+  });
+  if (args.bool("config")) {
+    if (json) printJson(configReport);
+    else {
+      printInfo(configReport.ok ? `${color.green("✓")} tasq config consistent` : "tasq doctor found configuration issues");
+      printInfo(`  space: ${configReport.effective?.space ?? "(unreadable)"} (${configReport.effective?.source ?? "-"}) in ${configReport.directory}`);
+      for (const line of renderConfigFindings(configReport, color.dim)) printInfo(line);
+    }
+    return configReport.ok ? 0 : 1;
+  }
   // Diagnose before mutating. `openRuntime` migrates on open, so until this
   // check existed `tasq doctor` could irreversibly upgrade the very store it
   // was asked to inspect - which is exactly what happened to this project's own
@@ -54,7 +73,24 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
     return 1;
   }
 
-  const rt = await openRuntime(args.string("actor"), args.string("tenant"));
+  let rt: Runtime;
+  try {
+    rt = await openRuntime(args.string("actor"), args.string("tenant"));
+  } catch (error) {
+    // An unbound directory whose global default belongs to another project is
+    // refused by every command, doctor included. Refusing to say why the
+    // doctor could not run would be the one thing worse than the refusal.
+    const reason = error instanceof Error ? error.message : String(error);
+    if (!reason.includes("is not bound to a Tasq space")) throw error;
+    const report = { ok: false, config: configReport, storeSkipped: reason };
+    if (json) printJson(report);
+    else {
+      printInfo("tasq doctor could not open the store");
+      printInfo(`  ${reason.split("\n")[0]}`);
+      for (const line of renderConfigFindings(configReport, color.dim)) printInfo(line);
+    }
+    return 1;
+  }
   try {
     const outboxRepairs = args.bool("repair-outbox")
       ? await repairOutboxAgainstJournal(rt)
@@ -219,9 +255,10 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
         sequenceMismatches.length === 0 &&
         journalOnly.length === 0 &&
         dbOnly.length === 0);
-    const ok = store.ok && journalOk && permissionIssues.length === 0;
+    const ok = store.ok && journalOk && permissionIssues.length === 0 && configReport.ok;
     const report = {
       ok,
+      config: configReport,
       storeFormat: STORE_FORMAT_COMPATIBILITY,
       store,
       journal: {
@@ -255,10 +292,11 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
       permissionRepairs,
     };
 
-    if (args.bool("json", "j")) {
+    if (json) {
       printJson(report);
     } else {
       printInfo(ok ? `${color.green("✓")} tasq store healthy` : "tasq doctor found issues");
+      for (const line of renderConfigFindings(configReport, color.dim)) printInfo(line);
       printInfo(`  SQLite: ${store.sqliteIntegrity}; FK violations: ${store.foreignKeyViolations}`);
       // An integrity finding without an identifier is a dead end: the operator
       // cannot find, inspect or repair the row it names. DoctorIssue has always

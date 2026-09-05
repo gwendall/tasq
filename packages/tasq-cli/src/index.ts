@@ -158,7 +158,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     backup: ["target", "rotate"],
     export: ["max-records", "max-bytes"],
     import: ["db"],
-    doctor: ["fix-permissions", "repair-outbox"],
+    doctor: ["fix-permissions", "repair-outbox", "config", "prune-bindings"],
     journal: ["accept-database", "reason", "dry-run"],
     claim: ["for", "until", "metadata", "force", "idempotency-key"],
     cost: ["currency", "max-micros", "reserve-micros", "metering", "meter", "observation", "gross-micros", "basis", "observed-at", "idempotency-key"],
@@ -358,8 +358,9 @@ ${color.bold("DURABILITY")}
   export [<path>]                bounded portable workspace export (not a backup)
   import <export.json> --db <new-db-path>
                                  validate fully, then create one new store
-  doctor [--fix-permissions] [--repair-outbox]
-                                verify/repair delivery, journal and private modes
+  doctor [--config] [--fix-permissions] [--repair-outbox] [--prune-bindings]
+                                verify/repair config, delivery, journal and private modes;
+                                --config checks bindings and drift without opening the store
   journal checkpoint --accept-database --reason <text>
                                  archive history and accept the DB cursor baseline
 
