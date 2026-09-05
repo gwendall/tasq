@@ -458,8 +458,8 @@
         "description": "validate fully, then create one new store"
       },
       {
-        "usage": "doctor [--fix-permissions] [--repair-outbox]",
-        "description": "verify/repair delivery, journal and private modes"
+        "usage": "doctor [--config] [--fix-permissions] [--repair-outbox] [--prune-bindings]",
+        "description": "verify/repair config, delivery, journal and private modes; --config checks bindings and drift without opening the store"
       },
       {
         "usage": "journal checkpoint --accept-database --reason <text>",

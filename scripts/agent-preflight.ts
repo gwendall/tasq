@@ -2,6 +2,7 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { inspectConfig, type ConfigDoctorReport } from "../packages/tasq-cli/src/commands/doctor-config.js";
 
 const repositoryRoot = resolve(import.meta.dir, "..");
 const canonicalRepository = "https://github.com/gwendall/tasq.git";
@@ -30,6 +31,21 @@ const remote = run(["git", "remote", "get-url", "origin"]);
 const branch = run(["git", "branch", "--show-current"]);
 const status = run(["git", "status", "--porcelain=v1"]);
 const pnpm = run(["pnpm", "--version"]);
+// The managed block in AGENTS.md names the space this checkout coordinates in.
+// The private config decides whether commands here actually reach it. The two
+// drifted apart on 2026-09-02 and every command was refused; this is the check
+// that would have said so that morning. It opens no store.
+// Called in-process rather than through `tasq doctor --config`: the check is
+// pure and a second Bun start-up would put this script over the budget its
+// own test gives it.
+let configReport: ConfigDoctorReport | null = null;
+let configDoctorError = "";
+try {
+  configReport = inspectConfig({ directory: repositoryRoot, environment: process.env.TASQ_TENANT });
+} catch (error) {
+  configDoctorError = error instanceof Error ? error.message : String(error);
+}
+const configOk = configReport?.ok === true;
 const backlog = readJson("docs/roadmap/BACKLOG.json");
 const dogfood = readJson("docs/contracts/TQ-607_DOGFOOD_STATUS.json");
 const active = backlog.items.find((item: any) => ![
@@ -46,7 +62,7 @@ const canonicalCheckout = gitRoot.exitCode === 0 &&
 
 const result = {
   contractVersion: "tasq.agent-preflight.v1",
-  ok: canonicalCheckout && pnpm.exitCode === 0,
+  ok: canonicalCheckout && pnpm.exitCode === 0 && configOk,
   repository: {
     root: gitRoot.stdout,
     origin: remote.stdout,
@@ -60,6 +76,9 @@ const result = {
     node: { current: process.version.replace(/^v/, ""), minimum: "22.0.0" },
     pnpm: { current: pnpm.stdout, minimum: "10.29.0", available: pnpm.exitCode === 0 },
   },
+  config: configReport
+    ? { ok: configReport.ok, findings: configReport.findings.map(({ code, severity, message, repair }) => ({ code, severity, message, repair })) }
+    : { ok: false, findings: [{ code: "doctor_unavailable", severity: "error", message: configDoctorError || "the configuration could not be inspected", repair: null }] },
   work: {
     activeBacklogItem: active ? { id: active.id, status: active.status, outcome: active.outcome } : null,
     dogfood: {
@@ -76,6 +95,9 @@ const result = {
   warnings: [
     ...(dirtyFiles.length > 0 ? ["Preserve and identify existing worktree changes before editing."] : []),
     ...(!canonicalCheckout ? ["Stop: this is not the canonical standalone Tasq checkout."] : []),
+    ...(configReport?.findings ?? []).map((finding) =>
+      `${finding.severity === "error" ? "Stop" : "Note"}: ${finding.code}: ${finding.message}${finding.repair ? ` (repair: ${finding.repair})` : ""}`),
+    ...(!configReport ? ["Stop: the configuration could not be inspected; the ledger binding of this checkout is unknown."] : []),
   ],
 };
 

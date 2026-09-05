@@ -200,6 +200,31 @@ These additive operational surfaces are independently versioned:
   doctor/onboarding argv arrays. Import refuses an existing target and never
   merges.
 - `tasq doctor --json` additively includes the executable `storeFormat`.
+- `tasq doctor --json` additively includes `config`, the report below, and `ok`
+  is false when that report is. When the directory is not bound and the global
+  default belongs to another project, the store cannot be opened; the report is
+  then `{ok: false, config, storeSkipped}` with the refusal as `storeSkipped`.
+- `tasq doctor --config [--prune-bindings] --json` returns
+  `tasq.config-doctor.v1` without opening any store: `contractVersion`, `ok`,
+  `configPath`, the canonical `directory`, `effective`, `managedBlock`, `drift`,
+  `bindings {total, dangling, temporary}`, `globalDefault {space, boundIn}`,
+  `projectionTarget`, `findings[]` and `repairs {prunedBindings}`. A finding is
+  `{code, severity, message, entityType, entityId, repair}` with `severity`
+  `error` or `warning`; only errors make `ok` false. Codes: `config_unreadable`,
+  `binding_drift` (a verified `AGENTS.md` block names a space commands here
+  would not use from a directory binding, on a machine that has a config;
+  repair `tasq use --from-instructions`), `project_not_set_up` (the same block
+  on a machine with no config at all, which is a fresh clone rather than
+  drift; a warning whose repair is `tasq setup`),
+  `dangling_binding` (a bound directory no longer exists; `--prune-bindings`
+  removes it and journals the removal), `temporary_binding` (a bound directory
+  lives under the OS temporary root or a scratchpad, reported only for a home
+  that is not itself temporary), `default_space_unbound` (bindings exist and
+  none targets the global default) and `projection_outside_bound_tree` (a
+  global `projectionTarget` outside the directory whose binding is in effect).
+  The human rendering prints each finding as `  - <code>: <message>` followed by
+  `      <entityType> <entityId>`, the shape the rest of the doctor output
+  promises. Exit code 1 when `ok` is false.
 
 When a JSON invocation opens an unsupported store, stdout contains
 `tasq.store-compatibility-problem.v1` and the process exits 3. Its code is one

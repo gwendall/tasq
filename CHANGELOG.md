@@ -8,6 +8,18 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Added
+
+- **`tasq doctor` reads the configuration, not only the store.** A new
+  `config` section, also available alone as `tasq doctor --config` without
+  opening any store, reports `binding_drift` (the `AGENTS.md` block names a
+  space commands here would not use), `dangling_binding` and
+  `temporary_binding`, `default_space_unbound` and
+  `projection_outside_bound_tree`, each with the command that repairs it.
+  `--prune-bindings` removes bindings to directories that no longer exist and
+  journals the removal. `pnpm agent:preflight` runs the check and stops on
+  drift. Contract `tasq.config-doctor.v1`.
+
 ### Fixed
 
 - **`tasq setup` rewrote the global default on every run.** Setting up one
