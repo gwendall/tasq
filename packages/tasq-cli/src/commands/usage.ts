@@ -73,7 +73,9 @@ Terminal-only derived context; inspect/audit/evidence remain authoritative.`;
 export const CONTEXT_LINK_USAGE = `context-link attach <commitment-id> --system <absolute-uri> --resource-type <type> --external-id <id> --idempotency-key <key>
                     [--url <absolute-uri>] [--version <version>] [--digest <digest>] [--purpose <absolute-uri>] [--supersedes <link-id>]
 context-link detach <current-link-id> --idempotency-key <key>
-context-link list <commitment-id> [--history] [--limit N]
+context-link list <commitment-id> [--purpose <absolute-uri>] [--history] [--limit N]
+context-link list --system <absolute-uri> --resource-type <type> --external-id <id> [--purpose <absolute-uri>] [--history] [--limit N]
+                    every commitment this external thing is linked to, across the space
 context-link show <link-id>
 Stores an append-only pointer only; external content, retrieval, credentials and authority stay outside Tasq.`;
 export const PROJECTION_USAGE =

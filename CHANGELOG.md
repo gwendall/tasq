@@ -10,6 +10,12 @@ release history selected by ADR-008.
 
 ### Added
 
+- **A context link is found from the thing it points at.** `tasq context-link
+  list --system … --resource-type … --external-id …` lists every commitment an
+  external thing is linked to across the space, and `--purpose` narrows a
+  listing to one purpose. This is how "has this message already become a
+  commitment" and "who reported it" are answered. The chat-provenance
+  vocabulary is documented in `docs/guides/CHAT_PROVENANCE.md`.
 - **`tasq usage` counts what actors actually do.** Per actor and per event
   type over a window, mapped onto the ritual the managed `AGENTS.md` block
   prescribes, with the commands nobody ran named. The block prescribed ten

@@ -52,15 +52,29 @@ export async function contextLinkCmd(args: ParsedArgs, clock: Clock): Promise<nu
     }
 
     const commitmentArg = args.positional[1];
-    if (!commitmentArg) { printError(CONTEXT_LINK_USAGE); return 1; }
-    const commitmentId = await resolveTaskIdOrError(rt, commitmentArg, "commitment");
-    if (!commitmentId) return 1;
+    // `list` answers either "what is this commitment linked to" or "which
+    // commitments is this external thing linked to": a commitment id, or a
+    // target named by the same three flags `attach` takes. Not both, not neither.
+    const targetFlags = { system: args.string("system"), resourceType: args.string("resource-type"), externalId: args.string("external-id") };
+    const namesTarget = Boolean(targetFlags.system || targetFlags.resourceType || targetFlags.externalId);
+    if (action === "list" && namesTarget) {
+      if (commitmentArg) { printError("context-link list takes a commitment id or a target, not both"); return 1; }
+      if (!targetFlags.system || !targetFlags.resourceType || !targetFlags.externalId) {
+        printError("context-link list by target needs --system, --resource-type and --external-id together");
+        return 1;
+      }
+    }
+    if (!commitmentArg && !(action === "list" && namesTarget)) { printError(CONTEXT_LINK_USAGE); return 1; }
+    const commitmentId = commitmentArg ? await resolveTaskIdOrError(rt, commitmentArg, "commitment") : null;
+    if (commitmentArg && !commitmentId) return 1;
 
     if (action === "list") {
       const history = args.bool("history");
       const items = await listExternalContextLinks(rt.db, {
         workspaceId: rt.config.tenantId,
-        commitmentId,
+        ...(commitmentId ? { commitmentId } : {}),
+        ...(namesTarget ? { target: { system: targetFlags.system!, resourceType: targetFlags.resourceType!, externalId: targetFlags.externalId! } } : {}),
+        purposeUri: args.string("purpose"),
         currentOnly: !history,
         limit: args.number("limit"),
       });
@@ -79,7 +93,7 @@ export async function contextLinkCmd(args: ParsedArgs, clock: Clock): Promise<nu
         history ? "(no context-link history)" : "(no active context links; pass --history to inspect old links)",
       ));
       else for (const item of items) {
-        printInfo(`${color.dim(shortId(item.id))}  ${item.state.padEnd(10)}  ${item.binding.padEnd(8)}  ${item.target.system} ${item.target.externalId}`);
+        printInfo(`${color.dim(shortId(item.id))}  ${item.state.padEnd(10)}  ${item.binding.padEnd(8)}  ${namesTarget ? `${color.dim("commitment")} ${shortId(item.commitmentId)}  ` : ""}${item.target.system} ${item.target.externalId}`);
       }
       return 0;
     }
@@ -92,6 +106,7 @@ export async function contextLinkCmd(args: ParsedArgs, clock: Clock): Promise<nu
       printError(CONTEXT_LINK_USAGE);
       return 1;
     }
+    if (!commitmentId) { printError(CONTEXT_LINK_USAGE); return 1; }
     const item = await attachExternalContextLink(rt.db, {
       workspaceId: rt.config.tenantId,
       commitmentId,

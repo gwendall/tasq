@@ -117,7 +117,12 @@ surface before the v1 surface is retired.
 
 These commands were introduced through the protected `v0.1.1` release and
 remain part of the current protected release line:
-
+  `context-link list` also answers by target: `--system`, `--resource-type` and
+  `--external-id` together, without a commitment id, list every commitment the
+  external thing is linked to across the space; `--purpose <absolute-uri>`
+  narrows either listing to one purpose. The vocabulary for chat provenance
+  (purposes, platform URIs, resource types, identifier shapes) is in
+  [`../guides/CHAT_PROVENANCE.md`](../guides/CHAT_PROVENANCE.md).
 - `tasq setup [--space <id>] [--actor <label>] [--default] --json` returns
   `tasq.human-setup.v3` with `contractVersion`, `disposition`, `space`,
   `spaceSource`, `actor`, `globalDefault`, `configPath`, `directoryBinding`,
