@@ -92,7 +92,15 @@ async function recorded(version: string, tags: string[] = [`v${version}`]) {
   ]) {
     const target = join(root, relative);
     await mkdir(dirname(target), { recursive: true });
-    await writeFile(target, "#!/bin/sh\n", "utf8");
+    // A fabricated installer must look like a generated one: the verifier now
+    // checks the VERSION pin and two distinct target digests, not existence.
+    await writeFile(target, [
+      "#!/bin/sh",
+      `VERSION="${version}"`,
+      `CHECKSUMS_SHA256="${"a".repeat(64)}"`,
+      `CHECKSUMS_SHA256="${"b".repeat(64)}"`,
+      "",
+    ].join("\n"), "utf8");
   }
   tagged(root, tags);
   return root;
