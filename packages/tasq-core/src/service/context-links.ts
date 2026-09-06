@@ -47,6 +47,15 @@ export interface ExternalContextLinkContext {
 export interface ListExternalContextLinksOptions {
   workspaceId: string;
   commitmentId?: string;
+  /**
+   * The external thing itself: every commitment this target is linked to,
+   * across the workspace. This is how "has this message already become a
+   * commitment?" and "who reported this?" are answered without scanning
+   * commitments one by one. Served by the existing target index.
+   */
+  target?: { system: string; resourceType: string; externalId: string };
+  /** Only links attached for this purpose URI. */
+  purposeUri?: string;
   currentOnly?: boolean;
   limit?: number;
 }
@@ -113,8 +122,17 @@ export async function listExternalContextLinks(
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > maximum) {
     throw new Error(`context-link limit must be between 1 and ${maximum}`);
   }
+  if (!options.commitmentId && !options.target) {
+    throw new Error("context-link list needs a commitment or a target; a workspace-wide listing is not a query");
+  }
   const filters = [eq(externalContextLink.tenantId, options.workspaceId)];
   if (options.commitmentId) filters.push(eq(externalContextLink.taskId, options.commitmentId));
+  if (options.target) {
+    filters.push(eq(externalContextLink.system, options.target.system));
+    filters.push(eq(externalContextLink.resourceType, options.target.resourceType));
+    filters.push(eq(externalContextLink.externalId, options.target.externalId));
+  }
+  if (options.purposeUri) filters.push(eq(externalContextLink.purposeUri, options.purposeUri));
   if (options.currentOnly) {
     filters.push(eq(externalContextLink.action, "attach"));
     filters.push(sql`NOT EXISTS (

@@ -7,6 +7,7 @@
       {
         "kind": "Added",
         "items": [
+          "**A context link is found from the thing it points at.** `tasq context-link list --system … --resource-type … --external-id …` lists every commitment an external thing is linked to across the space, and `--purpose` narrows a listing to one purpose. This is how \"has this message already become a commitment\" and \"who reported it\" are answered. The chat-provenance vocabulary is documented in `docs/guides/CHAT_PROVENANCE.md`.",
           "**`tasq usage` counts what actors actually do.** Per actor and per event type over a window, mapped onto the ritual the managed `AGENTS.md` block prescribes, with the commands nobody ran named. The block prescribed ten commands; this project's own ledger used five. Reads that leave no event are reported as unobservable, never as zero. Contract `tasq.usage-report.v1`.",
           "**The two hand-done halves of a release are commands.** `release:prepare` advances the release authorization, the TQ-616 program and every candidate surface to the version about to be tagged and opens the changelog entry; `release:publish-surfaces` publishes and certifies the server image and the Python wheel and deploys the Fly private beta; `release:record` advances every public surface from what is actually public and verifies the record. Every surface ships by default: v0.6.2 went out without its server image and Python wheel because nobody had authorized them before the tag."
         ]
