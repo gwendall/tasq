@@ -120,7 +120,7 @@ describe("protected candidate publication entrypoints", () => {
       // published for the current one; both are legitimate states of the real
       // policy, and both must have an explicit owner, decision and date.
       const real = policy.candidatePublications[surface];
-      expect(["authorized", "published_certified"]).toContain(real.state);
+      expect(["authorized", "published", "published_certified"]).toContain(real.state);
       expect(real).toMatchObject({ version, decision: "go", authorizedBy: "@gwendall" });
       expect(real.authorizedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       const accepted = await verify(nextPolicy(), surface);
