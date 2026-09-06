@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.6.2",
+    "state": "authorized",
+    "version": "0.6.3",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-09-06",
-    "rationale": "Consumed by v0.6.2, published 2026-09-06T08:52:19Z. A patch on top of v0.6.1 at the same store format 35. It carries the root-cause fixes behind the 2026-09-02 loss of this project's own directory binding: setup no longer rewrites the global default, config writes merge bindings and are journaled, tasq use sees and repairs drift against the managed AGENTS.md block, tasq doctor --config reads the configuration and the preflight stops on drift, a projection renders one space and lives with the project it renders, and no personal name remains the implicit workspace in the CLI or the kernel fallbacks. Plus a tasq-dev shim that accepts a git worktree. No schema or store-format change."
+    "rationale": "Authorized for v0.6.3, not yet published. Every surface catches up with the CLI: the server image, the Python wheel and the TypeScript client are published, certified and deployed with this release. The pipeline that made v0.6.2 stop after its first npm package now waits for the registry, the two hand-done halves of a release are commands, tasq usage measures the ritual, and a context link is found from the thing it points at."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -342,53 +342,45 @@
   },
   "candidatePublications": {
     "serverImage": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "ghcr.io/gwendall/tasq-server",
       "workflow": "publish-server.yml",
       "environment": "release",
-      "version": "0.4.0",
+      "version": "0.6.3",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-07-31",
-      "digest": "sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31613501777",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31619011510"
+      "authorizedAt": "2026-09-06"
     },
     "pythonWheel": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "tasq-remote",
       "workflow": "publish-python.yml",
       "environment": "release",
-      "version": "0.4.0",
+      "version": "0.6.3",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-07-31",
-      "wheelSha256": "2e59bd0d3554cb94c2c1b086bff2760d53416142912c916e39bdb4bab99293c2",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31518219329",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31619014178"
+      "authorizedAt": "2026-09-06"
     },
     "remoteTypeScriptClient": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "@tasq-run/client",
       "workflow": "release.yml",
       "environment": "release",
-      "version": "0.4.0",
+      "version": "0.6.3",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-07-31",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31497848901",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/31625205138"
+      "authorizedAt": "2026-09-06"
     }
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.6.2",
+      "version": "0.6.3",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
