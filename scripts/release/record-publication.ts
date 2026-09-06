@@ -104,6 +104,10 @@ comparison.tasqClaimBoundary.version = version;
 await writeJson(comparisonPath, comparison);
 const tapePath = resolve(root, "apps/site/media/tasq-demo.tape");
 await writeFile(tapePath, (await readFile(tapePath, "utf8")).replace(/@tasq-run\/cli@[0-9.]+ demo/, `@tasq-run/cli@${version} demo`), "utf8");
+// The README pins the same `npx` line by hand; a release that forgets it keeps
+// advertising the previous release (0.6.1 survived two releases this way).
+const readmePath = resolve(root, "README.md");
+await writeFile(readmePath, (await readFile(readmePath, "utf8")).replace(/@tasq-run\/cli@[0-9.]+ demo/g, `@tasq-run/cli@${version} demo`), "utf8");
 const notesPath = resolve(root, "docs/releases/RELEASES.md");
 let notes = await readFile(notesPath, "utf8");
 const previousTag = previous.tag as string;

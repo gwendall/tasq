@@ -107,6 +107,14 @@ if (!tape.includes(`@tasq-run/cli@${published} demo`)) {
       + "(the homepage recording would show a different release)",
   );
 }
+const readme = await readFile(resolve(root, "README.md"), "utf8");
+const readmePins = [...readme.matchAll(/@tasq-run\/cli@([0-9.]+) demo/g)].map((match) => match[1]);
+if (readmePins.length === 0 || readmePins.some((pin) => pin !== published)) {
+  stale.push(
+    `README.md does not pin @tasq-run/cli@${published} (found ${readmePins.length ? readmePins.join(", ") : "no npx demo line"}; `
+      + "the front page of the repository would tell a newcomer to run a different release)",
+  );
+}
 
 /**
  * The reference point that is not the file being checked.

@@ -19,6 +19,7 @@ const MIRRORED = [
   "apps/site/media/tasq-demo.tape",
   "docs/releases/RELEASES.md",
   "CHANGELOG.md",
+  "README.md",
 ];
 const roots: string[] = [];
 afterAll(async () => { for (const root of roots) await rm(root, { recursive: true, force: true }); });
@@ -147,6 +148,9 @@ describe("release:record", () => {
     const comparison = JSON.parse(await readFile(join(root, "docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json"), "utf8"));
     expect(comparison.tasqClaimBoundary.version).toBe(version);
     expect(await readFile(join(root, "apps/site/media/tasq-demo.tape"), "utf8")).toContain(`@tasq-run/cli@${version} demo`);
+    const readme = await readFile(join(root, "README.md"), "utf8");
+    expect(readme).toContain(`@tasq-run/cli@${version} demo`);
+    expect(readme).not.toMatch(/@tasq-run\/cli@(?!9\.9\.9 )[0-9.]+ demo/);
     const notes = await readFile(join(root, "docs/releases/RELEASES.md"), "utf8");
     expect(notes).toContain(`Current \`v${version}\` is published`);
     expect(notes).toContain(`## \`v${version}\` current release`);

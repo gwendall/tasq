@@ -17,6 +17,7 @@ const MIRRORED = [
   "docs/releases/PUBLIC_RELEASE_POLICY.json",
   "docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json",
   "apps/site/media/tasq-demo.tape",
+  "README.md",
 ] as const;
 
 async function run(root: string) {
@@ -83,6 +84,13 @@ async function recorded(version: string, tags: string[] = [`v${version}`]) {
   await writeFile(
     tapeFile,
     tape.replace(/@tasq-run\/cli@[0-9.]+ demo/, `@tasq-run/cli@${version} demo`),
+    "utf8",
+  );
+  const readmeFile = join(root, MIRRORED[3]);
+  const readme = await readFile(readmeFile, "utf8");
+  await writeFile(
+    readmeFile,
+    readme.replace(/@tasq-run\/cli@[0-9.]+ demo/g, `@tasq-run/cli@${version} demo`),
     "utf8",
   );
 
@@ -228,10 +236,16 @@ describe("publication record", () => {
       const tape = await readFile(tapeFile, "utf8");
       await writeFile(tapeFile, tape.replace("@tasq-run/cli@9.9.9 demo", "@tasq-run/cli@9.9.8 demo"), "utf8");
 
+      // The README pin survived two releases at 0.6.1 while 0.6.3 was current.
+      const readmeFile = join(root, MIRRORED[3]);
+      const readme = await readFile(readmeFile, "utf8");
+      await writeFile(readmeFile, readme.replace("@tasq-run/cli@9.9.9 demo", "@tasq-run/cli@9.9.7 demo"), "utf8");
+
       const refused = await run(root);
       expect(refused.exitCode).not.toBe(0);
       expect(refused.stderr).toContain("comparison.tasqClaimBoundary.version is 9.9.8");
       expect(refused.stderr).toContain("tasq-demo.tape does not record @tasq-run/cli@9.9.9");
+      expect(refused.stderr).toContain("README.md does not pin @tasq-run/cli@9.9.9");
       expect(refused.stderr).toContain("/compare page");
     } finally {
       await rm(root, { recursive: true, force: true });

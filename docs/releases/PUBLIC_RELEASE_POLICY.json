@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.6.3",
+    "state": "authorized",
+    "version": "0.6.4",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-09-06",
-    "rationale": "Consumed by v0.6.3, published 2026-09-06T16:44:03Z. Every surface catches up with the CLI: the server image, the Python wheel and the TypeScript client are published, certified and deployed with this release. The pipeline that made v0.6.2 stop after its first npm package now waits for the registry, the two hand-done halves of a release are commands, tasq usage measures the ritual, and a context link is found from the thing it points at."
+    "rationale": "Authorized for v0.6.4, not yet published. Ship the server image: publish-server can now pass the handoff on a tagged commit (#223), which 0.6.3 could not by construction. Also carries the README release pin into the record step so the front page stops advertising a stale release."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -346,45 +346,41 @@
       "coordinate": "ghcr.io/gwendall/tasq-server",
       "workflow": "publish-server.yml",
       "environment": "release",
-      "version": "0.6.3",
+      "version": "0.6.4",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
       "authorizedAt": "2026-09-06"
     },
     "pythonWheel": {
-      "state": "published",
+      "state": "authorized",
       "coordinate": "tasq-remote",
       "workflow": "publish-python.yml",
       "environment": "release",
-      "version": "0.6.3",
+      "version": "0.6.4",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-06",
-      "wheelSha256": "31cc246a468451b6405527fd3b9f0539c4ca6fe2680b9f23b8c1233258761711",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34046602603"
+      "authorizedAt": "2026-09-06"
     },
     "remoteTypeScriptClient": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "@tasq-run/client",
       "workflow": "release.yml",
       "environment": "release",
-      "version": "0.6.3",
+      "version": "0.6.4",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-06",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34046132573",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34046425533"
+      "authorizedAt": "2026-09-06"
     }
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.6.3",
+      "version": "0.6.4",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",

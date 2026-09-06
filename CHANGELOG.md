@@ -8,6 +8,10 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.4 - 2026-09-06
+
+Ship the server image: publish-server can now pass the handoff on a tagged commit (#223), which 0.6.3 could not by construction. Also carries the README release pin into the record step so the front page stops advertising a stale release.
+
 ### Fixed
 
 - **The server image could not be published for a fresh tag.** `publish-server`
