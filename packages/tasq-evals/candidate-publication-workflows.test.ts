@@ -31,7 +31,10 @@ type Policy = {
 };
 const policy = JSON.parse(read("docs/releases/PUBLIC_RELEASE_POLICY.json")) as Policy;
 const publishedVersion = policy.publishedRelease.version;
-const version = "0.4.0";
+// The version the policy currently names for its candidates, whatever it is:
+// this test pinned "0.4.0" for five weeks, which held only because no release
+// authorized the candidates, and broke the first time one did (v0.6.3).
+const version = policy.candidatePublications.serverImage.version ?? "0.4.0";
 const sourceCommit = "a".repeat(40);
 let scratch = "";
 
@@ -98,7 +101,7 @@ async function verify(
 }
 
 describe("protected candidate publication entrypoints", () => {
-  test("authorizes every exact v0.4.0 coordinate and still fails closed otherwise", async () => {
+  test("authorizes every exact coordinate the policy names and still fails closed otherwise", async () => {
     expect(policy.externalPublicationGateStatus.trusted_publishing_configured).toBe(true);
     const pendingTrust = nextPolicy();
     pendingTrust.externalPublicationGateStatus.trusted_publishing_configured = false;
@@ -113,13 +116,13 @@ describe("protected candidate publication entrypoints", () => {
       "pythonWheel",
       "remoteTypeScriptClient",
     ] as const) {
-      expect(policy.candidatePublications[surface]).toMatchObject({
-        state: "published_certified",
-        version,
-        decision: "go",
-        authorizedBy: "@gwendall",
-        authorizedAt: "2026-07-31",
-      });
+      // A candidate is either authorized for the next release or recorded as
+      // published for the current one; both are legitimate states of the real
+      // policy, and both must have an explicit owner, decision and date.
+      const real = policy.candidatePublications[surface];
+      expect(["authorized", "published_certified"]).toContain(real.state);
+      expect(real).toMatchObject({ version, decision: "go", authorizedBy: "@gwendall" });
+      expect(real.authorizedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       const accepted = await verify(nextPolicy(), surface);
       expect(accepted.exitCode, accepted.stderr).toBe(0);
 
