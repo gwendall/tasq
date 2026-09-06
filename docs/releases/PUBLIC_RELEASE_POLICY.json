@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "authorized",
+    "state": "published_certified",
     "version": "0.6.2",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-09-06",
-    "rationale": "Authorized for v0.6.2, not yet published. A patch on top of v0.6.1 at the same store format 35. It carries the root-cause fixes behind the 2026-09-02 loss of this project's own directory binding: setup no longer rewrites the global default, config writes merge bindings and are journaled, tasq use sees and repairs drift against the managed AGENTS.md block, tasq doctor --config reads the configuration and the preflight stops on drift, a projection renders one space and lives with the project it renders, and no personal name remains the implicit workspace in the CLI or the kernel fallbacks. Plus a tasq-dev shim that accepts a git worktree. No schema or store-format change."
+    "rationale": "Consumed by v0.6.2, published 2026-09-06T08:52:19Z. A patch on top of v0.6.1 at the same store format 35. It carries the root-cause fixes behind the 2026-09-02 loss of this project's own directory binding: setup no longer rewrites the global default, config writes merge bindings and are journaled, tasq use sees and repairs drift against the managed AGENTS.md block, tasq doctor --config reads the configuration and the preflight stops on drift, a projection renders one space and lives with the project it renders, and no personal name remains the implicit workspace in the CLI or the kernel fallbacks. Plus a tasq-dev shim that accepts a git worktree. No schema or store-format change."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,7 +385,7 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "authorized",
+      "state": "published_certified",
       "workflow": "certify-published-release.yml",
       "environment": "release",
       "version": "0.6.2",
@@ -393,7 +393,7 @@
       "decision": "go",
       "authorizedBy": "@gwendall",
       "authorizedAt": "2026-09-06",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/32941390312",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34023140811",
       "historicalIncompatibleReleases": [
         {
           "version": "0.3.0",
@@ -517,40 +517,40 @@
     }
   },
   "publishedRelease": {
-    "version": "0.6.1",
-    "tag": "v0.6.1",
-    "sourceCommit": "c5735fa965924e400ea10b18e98425d830b3db78",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.1",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/33617532379",
-    "publishedAt": "2026-09-02T10:06:47Z",
+    "version": "0.6.2",
+    "tag": "v0.6.2",
+    "sourceCommit": "29f8c595da10095648e816d785d3bf680a061e8e",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.2",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/34022726384",
+    "publishedAt": "2026-09-06T08:52:19Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "name": "@tasq-run/client",
