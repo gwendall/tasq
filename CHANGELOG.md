@@ -8,6 +8,12 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.2 - 2026-09-06
+
+Store format 35, unchanged. A patch carrying the root-cause fixes behind the
+2026-09-02 loss of this project's own directory binding, each found by reading
+the private config that broke rather than by reasoning about it.
+
 ### Added
 
 - **`tasq doctor` reads the configuration, not only the store.** A new
