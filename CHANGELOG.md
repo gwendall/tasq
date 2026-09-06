@@ -8,6 +8,10 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.3 - 2026-09-06
+
+Every surface catches up with the CLI: the server image, the Python wheel and the TypeScript client are published, certified and deployed with this release. The pipeline that made v0.6.2 stop after its first npm package now waits for the registry, the two hand-done halves of a release are commands, tasq usage measures the ritual, and a context link is found from the thing it points at.
+
 ### Added
 
 - **A context link is found from the thing it points at.** `tasq context-link
