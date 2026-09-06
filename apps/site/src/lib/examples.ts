@@ -75,8 +75,8 @@ ${tasq} web status --tenant robotics/team-a --json`,
     kind: "shell",
     title: "local operations",
     display: `${bindTasq}
-${tasq} doctor
-${tasq} backup`,
+${tasq} doctor --tenant robotics/team-a
+${tasq} backup --tenant robotics/team-a`,
   },
   sdk: {
     kind: "typescript",
