@@ -8,6 +8,16 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- **A release stopped after its first npm package.** npm now acknowledges a
+  publish before the version is readable ("Your package is being processed
+  and may take a few minutes to become available"). The verification asked
+  for the version in the same second, got 404 and failed the job, with six
+  packages unpublished and the GitHub release skipped. It now waits for the
+  registry, with backoff up to a deadline (`--wait-seconds`, ten minutes by
+  default); the pre-check that expects "missing" still answers at once.
+
 ## v0.6.2 - 2026-09-06
 
 Store format 35, unchanged. A patch carrying the root-cause fixes behind the

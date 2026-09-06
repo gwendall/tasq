@@ -2,6 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { systemClock } from "@tasq-run/schema";
 
 type RegistryMetadata = {
   name?: unknown;
@@ -73,6 +74,47 @@ export function verifyNpmPublication(input: {
   };
 }
 
+/**
+ * Fetch a published version's metadata, waiting for the registry to finish
+ * processing it.
+ *
+ * npm now acknowledges a publish before the version is readable: "Your package
+ * is being processed and may take a few minutes to become available". On
+ * 2026-09-06 the v0.6.2 release published @tasq-run/cli, asked the registry
+ * for it in the same second, got 404, and stopped there with six packages
+ * unpublished and the GitHub release skipped; the version was readable a
+ * minute later. A 404 right after a publish is "not yet", up to a deadline.
+ * A 404 on the pre-check (`--allow-missing`) is the answer "not published",
+ * and must not wait.
+ */
+export async function fetchPublishedMetadata(input: {
+  endpoint: URL;
+  waitSeconds: number;
+  /** First delay between attempts; doubles up to a minute. Tests shrink it. */
+  initialDelayMs?: number;
+  fetchImpl?: typeof fetch;
+  sleep?: (ms: number) => Promise<void>;
+  now?: () => number;
+}): Promise<{ status: "ok"; metadata: RegistryMetadata } | { status: "missing"; attempts: number } | { status: "error"; httpStatus: number }> {
+  const fetchImpl = input.fetchImpl ?? fetch;
+  const sleep = input.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+  const now = input.now ?? (() => systemClock.now());
+  const deadline = now() + input.waitSeconds * 1000;
+  let attempts = 0;
+  let delayMs = input.initialDelayMs ?? 5_000;
+  while (true) {
+    attempts++;
+    const response = await fetchImpl(input.endpoint, { redirect: "error" });
+    if (response.ok) return { status: "ok", metadata: await response.json() as RegistryMetadata };
+    const transient = response.status === 404 || response.status >= 500;
+    if (!transient || now() >= deadline) {
+      return response.status === 404 ? { status: "missing", attempts } : { status: "error", httpStatus: response.status };
+    }
+    await sleep(Math.min(delayMs, Math.max(0, deadline - now())));
+    delayMs = Math.min(delayMs * 2, 60_000);
+  }
+}
+
 function requiredFlag(name: string): string {
   const index = process.argv.indexOf(name);
   const value = index === -1 ? undefined : process.argv[index + 1];
@@ -87,8 +129,15 @@ async function main(): Promise<void> {
   const tarball = requiredFlag("--tarball");
   const registry = new URL(process.env.npm_config_registry ?? "https://registry.npmjs.org/");
   const endpoint = new URL(`${encodeURIComponent(packageName)}/${encodeURIComponent(version)}`, registry);
-  const response = await fetch(endpoint, { redirect: "error" });
-  if (response.status === 404 && process.argv.includes("--allow-missing")) {
+  const allowMissing = process.argv.includes("--allow-missing");
+  const waitFlag = process.argv.indexOf("--wait-seconds");
+  const waitSeconds = allowMissing ? 0 : waitFlag === -1 ? 600 : Number(process.argv[waitFlag + 1]);
+  if (!Number.isFinite(waitSeconds) || waitSeconds < 0) throw new Error("--wait-seconds must be a non-negative number");
+  const delayFlag = process.argv.indexOf("--initial-delay-ms");
+  const initialDelayMs = delayFlag === -1 ? 5_000 : Number(process.argv[delayFlag + 1]);
+  if (!Number.isFinite(initialDelayMs) || initialDelayMs < 0) throw new Error("--initial-delay-ms must be a non-negative number");
+  const fetched = await fetchPublishedMetadata({ endpoint, waitSeconds, initialDelayMs });
+  if (fetched.status === "missing" && allowMissing) {
     process.stdout.write(`${JSON.stringify({
       contractVersion: "tasq.npm-publication-verification.v1",
       status: "missing",
@@ -98,9 +147,12 @@ async function main(): Promise<void> {
     })}\n`);
     return;
   }
-  if (!response.ok) fail(`registry returned HTTP ${response.status} for ${packageName}@${version}`);
+  if (fetched.status === "missing") {
+    fail(`registry still returned HTTP 404 for ${packageName}@${version} after ${fetched.attempts} attempt(s) over ${waitSeconds}s`);
+  }
+  if (fetched.status === "error") fail(`registry returned HTTP ${fetched.httpStatus} for ${packageName}@${version}`);
   const certificate = verifyNpmPublication({
-    metadata: await response.json() as RegistryMetadata,
+    metadata: fetched.metadata,
     packageName,
     version,
     sourceCommit,
