@@ -112,6 +112,12 @@ jobs:
         with:
           ref: ${{ needs.authorize.outputs.commit }}
           persist-credentials: false
+          # The handoff below checks the publication record against the newest
+          # release tag. A shallow checkout has no tags, so it reported "this
+          # repository has no release tag" and refused every fresh tag (0.6.3
+          # and 0.6.4 both failed here).
+          fetch-depth: 0
+          fetch-tags: true
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:

@@ -30,6 +30,7 @@ pnpm release:prepare --version x.y.z --rationale "<why>"    # before the tag: au
 git tag -a vx.y.z && git push origin vx.y.z                  # the protected release workflow publishes npm and the GitHub release
 gh workflow run certify-published-release.yml -f tag=vx.y.z -f source_commit=<sha>
 pnpm release:publish-surfaces --version x.y.z --fly          # server image, Python wheel, their certifications, the Fly private beta
+#   add --workflow-ref main when a workflow file was fixed after the tag: the definitions run from main, the bytes stay bound to the tag
 pnpm release:record --version x.y.z --certification-run <url> --surfaces-json <file>   # after publication: every public surface, verified
 ```
 
