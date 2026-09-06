@@ -8,6 +8,17 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Added
+
+- **The two hand-done halves of a release are commands.** `release:prepare`
+  advances the release authorization, the TQ-616 program and every candidate
+  surface to the version about to be tagged and opens the changelog entry;
+  `release:publish-surfaces` publishes and certifies the server image and the
+  Python wheel and deploys the Fly private beta; `release:record` advances
+  every public surface from what is actually public and verifies the record.
+  Every surface ships by default: v0.6.2 went out without its server image
+  and Python wheel because nobody had authorized them before the tag.
+
 ### Fixed
 
 - **A release stopped after its first npm package.** npm now acknowledges a

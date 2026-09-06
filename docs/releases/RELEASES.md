@@ -23,6 +23,20 @@ the preflight and runs in the ordinary test suite: it refuses a tree where the
 recorded published release still has surfaces describing an older one, or where
 the installer its own documentation points at does not exist.
 
+The two halves are commands, and every surface ships by default:
+
+```bash
+pnpm release:prepare --version x.y.z --rationale "<why>"    # before the tag: authorization, TQ-616 program, every candidate surface, changelog entry, preflight
+git tag -a vx.y.z && git push origin vx.y.z                  # the protected release workflow publishes npm and the GitHub release
+gh workflow run certify-published-release.yml -f tag=vx.y.z -f source_commit=<sha>
+pnpm release:publish-surfaces --version x.y.z --fly          # server image, Python wheel, their certifications, the Fly private beta
+pnpm release:record --version x.y.z --certification-run <url> --surfaces-json <file>   # after publication: every public surface, verified
+```
+
+`release:prepare --surfaces` narrows the candidates only when a surface must
+not ship. `release:publish-surfaces` refuses a `managed` control database
+unless told so: that decision, and a store-format change, stay human.
+
 Public releases use immutable SemVer tags and are built only by protected
 GitHub Actions workflows. Each release publishes SHA-256 checksums, signatures
 or attestations, CycloneDX SBOMs, SLSA-compatible provenance, compatibility
