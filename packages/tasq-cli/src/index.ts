@@ -73,6 +73,7 @@ import { premiseCmd } from "./commands/premise.js";
 import { useCmd } from "./commands/use.js";
 import { whoamiCmd } from "./commands/whoami.js";
 import { contentionCmd } from "./commands/contention.js";
+import { usageCmd } from "./commands/usage-report.js";
 import { feedbackCmd, recordLastFailure } from "./commands/feedback.js";
 
 declare const TASQ_BUILD_VERSION: string;
@@ -103,6 +104,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     use: ["clear", "from-instructions", "project-to", "no-projection"],
     whoami: [],
     contention: ["since"],
+    usage: ["since"],
     feedback: ["details", "repo", "limit", "dry-run"],
     demo: [],
     agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
@@ -192,6 +194,7 @@ ${color.bold("SETUP")}
                                 --project-to renders this space's TASKS.md inside the project
   whoami                        who this ledger thinks is writing, and what that proves
   contention [--since 7d]       what the ledger refused: collisions it prevented
+  usage [--since 30d]           what actors actually do here, against the prescribed ritual
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes
   demo [--json]                 isolated add → list → done journey; no live data
@@ -484,6 +487,8 @@ async function dispatch(
         return await whoamiCmd(args, clock);
       case "contention":
         return await contentionCmd(args, clock);
+      case "usage":
+        return await usageCmd(args, clock);
       case "feedback":
         return await feedbackCmd(args, clock, VERSION);
       case "demo":

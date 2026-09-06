@@ -10,6 +10,11 @@ release history selected by ADR-008.
 
 ### Added
 
+- **`tasq usage` counts what actors actually do.** Per actor and per event
+  type over a window, mapped onto the ritual the managed `AGENTS.md` block
+  prescribes, with the commands nobody ran named. The block prescribed ten
+  commands; this project's own ledger used five. Reads that leave no event are
+  reported as unobservable, never as zero. Contract `tasq.usage-report.v1`.
 - **The two hand-done halves of a release are commands.** `release:prepare`
   advances the release authorization, the TQ-616 program and every candidate
   surface to the version about to be tagged and opens the changelog entry;

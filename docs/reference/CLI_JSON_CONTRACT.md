@@ -208,6 +208,15 @@ These additive operational surfaces are independently versioned:
   `tasq.portable-import-result.v1`, verification results and exact isolated
   doctor/onboarding argv arrays. Import refuses an existing target and never
   merges.
+- `tasq usage [--since 30d] --json` returns `tasq.usage-report.v1` with
+  `contractVersion`, `workspaceId`, `since`, `from`, `events`, `actors[]`
+  (`{actor, events, byType}` by descending activity), `byType`, `ritual[]`
+  (one entry per command the managed `AGENTS.md` block prescribes, in its
+  order: `{command, observable, count, actors}`, where a read such as `next` or
+  `why` leaves no event and reports `observable: false` with `count: null`
+  rather than zero) and `unusedRitual` (observable commands with no event in
+  the window). `capture` is counted from `dependency_added` events whose
+  relation type is `discovered_from`.
 - `tasq doctor --json` additively includes the executable `storeFormat`.
 - `tasq doctor --json` additively includes `config`, the report below, and `ok`
   is false when that report is. When the directory is not bound and the global
