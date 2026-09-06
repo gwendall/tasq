@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.6.1",
+    "state": "authorized",
+    "version": "0.6.2",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
-    "authorizedAt": "2026-08-27",
-    "rationale": "Consumed by v0.6.1, published 2026-09-02T10:06:47Z. A patch at store format 35 carrying what USING v0.6.0 revealed: a refusal suggestion that could not be pasted, a live feed that asked for a button click while holding an open SSE connection, an installer that refused after creating things, and a migration receipt that recorded everything except who performed the migration. Plus the first getting-started that matches the product, and a served skill that can set a project up."
+    "authorizedAt": "2026-09-06",
+    "rationale": "Authorized for v0.6.2, not yet published. A patch on top of v0.6.1 at the same store format 35. It carries the root-cause fixes behind the 2026-09-02 loss of this project's own directory binding: setup no longer rewrites the global default, config writes merge bindings and are journaled, tasq use sees and repairs drift against the managed AGENTS.md block, tasq doctor --config reads the configuration and the preflight stops on drift, a projection renders one space and lives with the project it renders, and no personal name remains the implicit workspace in the CLI or the kernel fallbacks. Plus a tasq-dev shim that accepts a git worktree. No schema or store-format change."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -385,14 +385,14 @@
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.6.1",
+      "version": "0.6.2",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-08-26",
+      "authorizedAt": "2026-09-06",
       "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/32941390312",
       "historicalIncompatibleReleases": [
         {
