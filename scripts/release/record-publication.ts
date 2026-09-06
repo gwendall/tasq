@@ -75,14 +75,21 @@ program.state = certificationRun ? "published_certified" : "published";
 if (certificationRun) program.certificationWorkflowRun = certificationRun;
 const candidates = policy.candidatePublications;
 const recorded: string[] = [];
-if (surfacesJson?.server && candidates[SURFACES.server.candidate]?.version === version) {
-  Object.assign(candidates[SURFACES.server.candidate], { state: "published_certified", digest: surfacesJson.server.digest, publicationWorkflowRun: surfacesJson.server.publicationWorkflowRun, certificationWorkflowRun: surfacesJson.server.certificationWorkflowRun });
-  recorded.push("serverImage");
+// A surface published without its certification is recorded as published,
+// never as certified: the record says what happened, not what was meant.
+function recordSurface(key: string, facts: Record<string, unknown> | undefined, identity: Record<string, unknown>) {
+  if (!facts || candidates[key]?.version !== version) return;
+  const certified = typeof facts.certificationWorkflowRun === "string" && facts.certificationWorkflowRun.length > 0;
+  Object.assign(candidates[key], {
+    state: certified ? "published_certified" : "published",
+    ...identity,
+    publicationWorkflowRun: facts.publicationWorkflowRun,
+    ...(certified ? { certificationWorkflowRun: facts.certificationWorkflowRun } : {}),
+  });
+  recorded.push(key);
 }
-if (surfacesJson?.python && candidates[SURFACES.python.candidate]?.version === version) {
-  Object.assign(candidates[SURFACES.python.candidate], { state: "published_certified", wheelSha256: surfacesJson.python.wheelSha256, publicationWorkflowRun: surfacesJson.python.publicationWorkflowRun, certificationWorkflowRun: surfacesJson.python.certificationWorkflowRun });
-  recorded.push("pythonWheel");
-}
+recordSurface(SURFACES.server.candidate, surfacesJson?.server, { digest: surfacesJson?.server?.digest });
+recordSurface(SURFACES.python.candidate, surfacesJson?.python, { wheelSha256: surfacesJson?.python?.wheelSha256 });
 const client = candidates[SURFACES.client.candidate];
 if (client?.version === version && client.state === "authorized" && packages.some((pkg) => pkg.name === "@tasq-run/client" && pkg.version === version)) {
   Object.assign(client, { state: "published_certified", publicationWorkflowRun: run.url, ...(certificationRun ? { certificationWorkflowRun: certificationRun } : {}) });

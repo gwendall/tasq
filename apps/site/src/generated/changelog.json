@@ -1,5 +1,18 @@
 [
   {
+    "version": "Unreleased",
+    "date": null,
+    "note": null,
+    "groups": [
+      {
+        "kind": "Fixed",
+        "items": [
+          "**The server image could not be published for a fresh tag.** `publish-server` runs the full handoff on the tagged commit, and the publication record there necessarily still names the previous release, so the record check refused it. The window between a tag and its record is what the policy calls a release in state `authorized`: the check now reports that tag as `inFlight` instead of a lag, and refuses again once the release is recorded and a newer tag appears. A surface published without its certification is recorded as `published`, never as certified."
+        ]
+      }
+    ]
+  },
+  {
     "version": "v0.6.3",
     "date": "2026-09-06",
     "note": null,
