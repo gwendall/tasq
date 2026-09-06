@@ -157,7 +157,10 @@ function verifyCandidateShape(
   // success. A published candidate is simply not re-authorized for this
   // version, which the caller below already handles by only publishing
   // candidates whose state is exactly "authorized".
-  if (!["prepared_not_authorized", "authorized", "published_certified"].includes(candidate.state)) {
+  // `published` is a surface that shipped without its certification, recorded
+  // as exactly that: the Python wheel of v0.6.3 could not be certified because
+  // the certification needs the server image digest of the same release.
+  if (!["prepared_not_authorized", "authorized", "published", "published_certified"].includes(candidate.state)) {
     fail(`${surface} has unknown authorization state`);
   }
   return candidate;
