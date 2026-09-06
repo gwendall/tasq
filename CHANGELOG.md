@@ -8,6 +8,17 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- **The server image could not be published for a fresh tag.** `publish-server`
+  runs the full handoff on the tagged commit, and the publication record there
+  necessarily still names the previous release, so the record check refused
+  it. The window between a tag and its record is what the policy calls a
+  release in state `authorized`: the check now reports that tag as `inFlight`
+  instead of a lag, and refuses again once the release is recorded and a newer
+  tag appears. A surface published without its certification is recorded as
+  `published`, never as certified.
+
 ## v0.6.3 - 2026-09-06
 
 Every surface catches up with the CLI: the server image, the Python wheel and the TypeScript client are published, certified and deployed with this release. The pipeline that made v0.6.2 stop after its first npm package now waits for the registry, the two hand-done halves of a release are commands, tasq usage measures the ritual, and a context link is found from the thing it points at.

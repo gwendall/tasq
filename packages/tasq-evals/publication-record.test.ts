@@ -137,6 +137,31 @@ describe("publication record", () => {
     }
   });
 
+  test("accepts the tag of the release the policy authorizes as in flight, not as a lag", async () => {
+    // Between the tag and the record, the tagged commit itself must pass: the
+    // server publication runs the whole handoff there.
+    const root = await recorded("9.9.8", ["v9.9.8", "v9.9.9"]);
+    try {
+      const policyFile = join(root, MIRRORED[0]);
+      const policy = JSON.parse(await readFile(policyFile, "utf8"));
+      policy.releaseAuthorization = { ...policy.releaseAuthorization, state: "authorized", version: "9.9.9" };
+      await writeFile(policyFile, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+      const accepted = await run(root);
+      expect(accepted.exitCode, accepted.stderr).toBe(0);
+      expect(JSON.parse(accepted.stdout)).toMatchObject({ inFlight: "v9.9.9" });
+
+      // Once that release is recorded as published, the same tree with a still
+      // newer tag is a lag again.
+      policy.releaseAuthorization.state = "published_certified";
+      await writeFile(policyFile, `${JSON.stringify(policy, null, 2)}\n`, "utf8");
+      const refused = await run(root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).toContain("newest release tag is v9.9.9");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   test("accepts a newer tag that is recorded as having published nothing", async () => {
     const root = await recorded("9.9.8", ["v9.9.8", "v9.9.9"]);
     try {

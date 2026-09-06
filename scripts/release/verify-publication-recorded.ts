@@ -154,6 +154,7 @@ for (const entry of retiredEntries) {
 }
 const retired = new Set(retiredEntries.map((entry) => entry.tag));
 
+let inFlight: string | null = null;
 const candidates = tags
   .filter((tag) => !retired.has(tag))
   .map((tag) => tag.slice(1))
@@ -163,7 +164,17 @@ if (candidates.length === 0) {
   stale.push("this repository has no release tag, so nothing corroborates the recorded release");
 } else {
   const newest = candidates.reduce((best, version) => (newer(version, best) ? version : best));
-  if (newest !== published) {
+  // Between the tag and the record, the policy says exactly what is going on:
+  // the release authorization is in state "authorized" for that version, and
+  // the record is written after the protected workflow publishes. That window
+  // is not the repository lagging a release; it is a release in flight. The
+  // server publication runs the full handoff on the tagged commit itself, and
+  // refused v0.6.3 for this very reason on 2026-09-06.
+  const authorization = policy.releaseAuthorization ?? {};
+  inFlight = authorization.state === "authorized" && authorization.version === newest && newer(newest, published)
+    ? newest
+    : null;
+  if (newest !== published && !inFlight) {
     stale.push(
       `policy.publishedRelease.version is ${published}, but the newest release tag is v${newest}. `
         + (newer(newest, published)
@@ -183,6 +194,7 @@ if (stale.length > 0) {
 }
 
 process.stdout.write(`${JSON.stringify({
+  ...(inFlight ? { inFlight: `v${inFlight}` } : {}),
   contractVersion: "tasq.publication-record.v1",
   publishedVersion: published,
   corroboratedBy: `v${published}`,
