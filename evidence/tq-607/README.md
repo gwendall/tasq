@@ -17,6 +17,7 @@ cursor and bounded observable results.
 | `baseline-2026-07-22.json` | exact candidate, clean-room install and verified live backup/isolated restore |
 | `clean-room-install-friction-2026-07-22.json` | first discovered package-install friction and resolution |
 | `denshin-journey-2026-07-22.json` | attempt lifecycle, restart recovery, two runs, separate completion authority and run/rebase/merge provenance |
+| `denshin-journey-2026-09-07.json` | the same four interactive-runtime journeys replayed by the unchanged Denshin adapter against the published 0.6.4 CLI installed from its release installer |
 | `kami-robotics-journey-2026-07-22.json` | contention, expiry/reclaim, stale-fence rejection, observable receipt and merged-adopter provenance |
 | `life-pilot-activation-2026-07-22.json` | explicit live-space onboarding without private content |
 | `journal-checkpoint-2026-07-22.json` | audited legacy parity finding and preserved forensic checkpoint |
