@@ -69,8 +69,15 @@ if (surfaces.includes("server")) {
 }
 if (surfaces.includes("python")) {
   if (!serverDigest) serverDigest = ghcrDigestForVersion(version);
-  const runs = await publishAndCertify("python", {}, async () => ({ server_digest: serverDigest! }));
-  result.python = { wheelSha256: await pypiWheelSha256(version), ...runs };
+  // The certification workflow binds the published wheel by its exact digest,
+  // so the wheel must already be on PyPI when it is dispatched: read it after
+  // the publication run, not before.
+  let wheelSha256: string | null = null;
+  const runs = await publishAndCertify("python", {}, async () => {
+    wheelSha256 = await pypiWheelSha256(version);
+    return { server_digest: serverDigest!, wheel_sha256: wheelSha256 };
+  });
+  result.python = { wheelSha256, ...runs };
 }
 if (flags.has("--fly")) {
   if (!serverDigest) serverDigest = ghcrDigestForVersion(version);
