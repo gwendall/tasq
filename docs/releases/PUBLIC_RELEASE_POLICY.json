@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "authorized",
+    "state": "published_certified",
     "version": "0.6.4",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-09-06",
-    "rationale": "Authorized for v0.6.4, not yet published. Ship the server image: publish-server can now pass the handoff on a tagged commit (#223), which 0.6.3 could not by construction. Also carries the README release pin into the record step so the front page stops advertising a stale release."
+    "rationale": "Consumed by v0.6.4, published 2026-09-06T23:25:38Z. Ship the server image: publish-server can now pass the handoff on a tagged commit (#223), which 0.6.3 could not by construction. Also carries the README release pin into the record step so the front page stops advertising a stale release."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -342,7 +342,7 @@
   },
   "candidatePublications": {
     "serverImage": {
-      "state": "authorized",
+      "state": "published_certified",
       "coordinate": "ghcr.io/gwendall/tasq-server",
       "workflow": "publish-server.yml",
       "environment": "release",
@@ -350,10 +350,13 @@
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-06"
+      "authorizedAt": "2026-09-06",
+      "digest": "sha256:84161d8e3fab3554bc02150db0e493817d2bbbf5d2d9adbda0da0849c3345c8b",
+      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34070983142",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34071912851"
     },
     "pythonWheel": {
-      "state": "authorized",
+      "state": "published_certified",
       "coordinate": "tasq-remote",
       "workflow": "publish-python.yml",
       "environment": "release",
@@ -361,10 +364,13 @@
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-06"
+      "authorizedAt": "2026-09-06",
+      "wheelSha256": "fbc1d5a8e8a5819f9c890a2be8f9558983d745dd255eaede40693fb2c3cf1e72",
+      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34072047262",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34072440108"
     },
     "remoteTypeScriptClient": {
-      "state": "authorized",
+      "state": "published_certified",
       "coordinate": "@tasq-run/client",
       "workflow": "release.yml",
       "environment": "release",
@@ -372,12 +378,14 @@
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-06"
+      "authorizedAt": "2026-09-06",
+      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34066646904",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34067000727"
     }
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "authorized",
+      "state": "published_certified",
       "workflow": "certify-published-release.yml",
       "environment": "release",
       "version": "0.6.4",
@@ -385,7 +393,7 @@
       "decision": "go",
       "authorizedBy": "@gwendall",
       "authorizedAt": "2026-09-06",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34046425533",
+      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34067000727",
       "historicalIncompatibleReleases": [
         {
           "version": "0.3.0",
@@ -509,44 +517,44 @@
     }
   },
   "publishedRelease": {
-    "version": "0.6.3",
-    "tag": "v0.6.3",
-    "sourceCommit": "53e6142a8b15e51585dfbb082cb7654183b370b4",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.3",
-    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/34046132573",
-    "publishedAt": "2026-09-06T16:44:03Z",
+    "version": "0.6.4",
+    "tag": "v0.6.4",
+    "sourceCommit": "d0b93f59a8caf21a2b826c0f8217ac6a5da64f95",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.4",
+    "workflowRun": "https://github.com/gwendall/tasq/actions/runs/34066646904",
+    "publishedAt": "2026-09-06T23:25:38Z",
     "publishedPackages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/client",
-        "version": "0.6.3"
+        "version": "0.6.4"
       }
     ],
     "certification": "docs/releases/PUBLIC_RELEASE_POLICY.json"
