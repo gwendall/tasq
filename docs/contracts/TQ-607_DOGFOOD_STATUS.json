@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.private-dogfood.v1",
-  "revision": 19,
+  "revision": 23,
   "status": "program-open-evidence-pending",
   "startedAt": "2026-07-22",
   "minimumCalendarDays": 30,
@@ -110,27 +110,28 @@
       "completedJourneys": [
         {
           "id": "explicit-evidence-completion",
-          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
-          "completedAt": "2026-07-22T13:07:19Z"
+          "evidence": "evidence/tq-607/denshin-journey-2026-09-07.json",
+          "completedAt": "2026-09-07T01:33:01Z"
         },
         {
           "id": "input-required-resume",
-          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
-          "completedAt": "2026-07-22T13:07:16Z"
+          "evidence": "evidence/tq-607/denshin-journey-2026-09-07.json",
+          "completedAt": "2026-09-07T01:33:01Z"
         },
         {
           "id": "lost-response-recovery",
-          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
-          "completedAt": "2026-07-22T13:07:18Z"
+          "evidence": "evidence/tq-607/denshin-journey-2026-09-07.json",
+          "completedAt": "2026-09-07T01:33:01Z"
         },
         {
           "id": "multiple-runs-one-conversation",
-          "evidence": "evidence/tq-607/denshin-journey-2026-07-22.json",
-          "completedAt": "2026-07-22T13:07:17Z"
+          "evidence": "evidence/tq-607/denshin-journey-2026-09-07.json",
+          "completedAt": "2026-09-07T01:33:01Z"
         }
       ],
       "evidence": [
-        "evidence/tq-607/denshin-journey-2026-07-22.json"
+        "evidence/tq-607/denshin-journey-2026-07-22.json",
+        "evidence/tq-607/denshin-journey-2026-09-07.json"
       ]
     }
   ],
@@ -275,6 +276,26 @@
       "revision": 19,
       "action": "drill",
       "at": "2026-07-22T13:25:25Z"
+    },
+    {
+      "revision": 20,
+      "action": "journey",
+      "at": "2026-09-07T01:33:01Z"
+    },
+    {
+      "revision": 21,
+      "action": "journey",
+      "at": "2026-09-07T01:33:01Z"
+    },
+    {
+      "revision": 22,
+      "action": "journey",
+      "at": "2026-09-07T01:33:01Z"
+    },
+    {
+      "revision": 23,
+      "action": "journey",
+      "at": "2026-09-07T01:33:01Z"
     }
   ],
   "publicLaunchDecision": "undecided",

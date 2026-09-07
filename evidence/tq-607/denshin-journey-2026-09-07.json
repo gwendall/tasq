@@ -1,0 +1,31 @@
+{
+  "contractVersion": "denshin.tasq-dogfood-evidence.v1",
+  "observedAt": "2026-09-07T01:33:01Z",
+  "sourceCommit": "d0b93f59a8caf21a2b826c0f8217ac6a5da64f95",
+  "tasqVersion": "0.6.4",
+  "adopterCommit": "5b0aad14f4c7033f01bb680bcc102186a5f72d29",
+  "pullRequest": "https://github.com/gwendall/denshin/pull/396",
+  "candidateInstallation": "published-cli-installed-from-release-installer",
+  "tenant": "dogfood/denshin",
+  "commitmentId": "01a0797e-8f84-7441-80b4-49a54b144175",
+  "firstRunLifecycle": [
+    "running",
+    "input_required",
+    "running",
+    "succeeded"
+  ],
+  "lostResponseObserved": true,
+  "recoveredDisposition": "unchanged",
+  "secondRunTerminalStatus": "succeeded",
+  "attemptCountBeforeDecision": 2,
+  "commitmentStatusAfterRuntimeSuccess": "open",
+  "explicitEvidenceId": "01a0797f-3255-705c-b1e7-49543aa491ab",
+  "commitmentStatusAfterEvidenceDecision": "done",
+  "journeys": {
+    "input-required-resume": true,
+    "multiple-runs-one-conversation": true,
+    "lost-response-recovery": true,
+    "explicit-evidence-completion": true
+  },
+  "privateProseIncluded": false
+}
