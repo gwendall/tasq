@@ -8,7 +8,7 @@
 Website and documentation: [tasq.run](https://tasq.run)
 
 ```bash
-npx @tasq-run/cli@0.6.3 demo    # fifteen seconds, no install, touches no data
+npx @tasq-run/cli@0.6.4 demo    # fifteen seconds, no install, touches no data
 ```
 
 ## For you
@@ -118,7 +118,7 @@ Requirements: Node 22+, Bun 1.3+, and npm 10+.
 ### 1. See what it does, without installing anything
 
 ```bash
-npx @tasq-run/cli@0.6.3 demo
+npx @tasq-run/cli@0.6.4 demo
 ```
 
 Two agents, one task, in a throwaway home. It shows you three refusals in a

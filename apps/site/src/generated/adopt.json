@@ -6,42 +6,42 @@
   "distribution": {
     "mode": "npm_and_github_release",
     "published": true,
-    "version": "0.6.3",
-    "tag": "v0.6.3",
+    "version": "0.6.4",
+    "tag": "v0.6.4",
     "repository": "https://github.com/gwendall/tasq",
-    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.3",
+    "githubRelease": "https://github.com/gwendall/tasq/releases/tag/v0.6.4",
     "packages": [
       {
         "name": "@tasq-run/schema",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/core",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/cli",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/mcp",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/extension-sdk",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/protocol-adapters",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/console",
-        "version": "0.6.3"
+        "version": "0.6.4"
       },
       {
         "name": "@tasq-run/client",
-        "version": "0.6.3"
+        "version": "0.6.4"
       }
     ],
     "cliTargets": [
@@ -50,9 +50,9 @@
     ],
     "integrity": {
       "kind": "npm-provenance-and-github-attestation",
-      "sourceCommit": "53e6142a8b15e51585dfbb082cb7654183b370b4",
-      "releaseManifestPattern": "tasq-v0.6.3-{target}.release.json",
-      "checksumPattern": "tasq-v0.6.3-{target}.SHA256SUMS"
+      "sourceCommit": "d0b93f59a8caf21a2b826c0f8217ac6a5da64f95",
+      "releaseManifestPattern": "tasq-v0.6.4-{target}.release.json",
+      "checksumPattern": "tasq-v0.6.4-{target}.SHA256SUMS"
     }
   },
   "requirements": [
@@ -84,7 +84,7 @@
           "--prefix",
           "{installPrefix}",
           "--ignore-scripts",
-          "@tasq-run/cli@0.6.3"
+          "@tasq-run/cli@0.6.4"
         ],
         "mutatesHost": true
       }
