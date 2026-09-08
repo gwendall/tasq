@@ -45,7 +45,8 @@ tasq setup --space <confirmed-id> --actor <stable-label>
 
 It joins or creates the space, binds this directory and everything under it so
 later commands need no `--tenant`, and writes the managed Tasq block into
-`AGENTS.md`.
+`AGENTS.md` plus a `CLAUDE.md` that imports it, because Claude Code reads
+`CLAUDE.md` and not `AGENTS.md`.
 
 This does not weaken the rendezvous rule above. Proposing an id derived from
 the repository and having a human confirm or replace it is not inferring one,

@@ -186,7 +186,8 @@ ${color.bold("USAGE")}
 ${color.bold("SETUP")}
   setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions] [--default]
                                 everything a new project needs: join the space,
-                                bind this directory, write the AGENTS.md block;
+                                bind this directory, write the AGENTS.md block
+                                and the CLAUDE.md that imports it;
                                 the global default moves only with --default
   use [<space>|--clear|--from-instructions] [--project-to <file>|--no-projection]
                                 bind/show this directory's space; keep global default;
@@ -277,7 +278,7 @@ ${color.bold("AGENT COORDINATION")}
                                  --force takes work whose blockers are unresolved
   release <id>                   release the current claim
   attempt start <id> [...]       record one concrete execution
-  attempt succeed|fail <id>      close an execution attempt
+  attempt succeed|fail <id>      close an execution attempt; <id> is the attempt, or its task when one attempt is open
   evidence add <id> --kind ...   attach an observable receipt
   evidence list [<id>]           inspect completion evidence
   cost budget|record|show ...    bound and inspect observed attempt cost
