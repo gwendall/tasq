@@ -18,8 +18,8 @@ import {
 } from "@tasq-internal/local-service";
 import { enumArg, parseDateArg, positiveIntegerArg, type ParsedArgs } from "../args.js";
 import { color, printError, printInfo, printJson, printWarn, shortId } from "../output/format.js";
-import { openRuntime, regenerateProjection } from "../runtime.js";
-import { resolveTaskIdOrError } from "./_resolve.js";
+import { openRuntime, regenerateProjection, type Runtime } from "../runtime.js";
+import { resolveTaskId, resolveTaskIdOrError } from "./_resolve.js";
 import { ATTEMPT_USAGE, CLAIM_USAGE, EVIDENCE_USAGE, RELEASE_USAGE } from "./usage.js";
 
 function parseMetadata(raw: string | undefined): Metadata {
@@ -129,6 +129,42 @@ const ATTEMPT_ALIASES: Record<string, AttemptStatus> = {
   resume: "running",
 };
 
+const OPEN_ATTEMPT_STATUSES = new Set<AttemptStatus>(["running", "input_required"]);
+
+/**
+ * An attempt is addressed by its own id, or by the task it belongs to when
+ * that task has exactly one open attempt. The managed AGENTS.md block spells
+ * the whole ritual in task ids, so a worker that never copied the attempt id
+ * out of `attempt start` must still be able to close what it opened.
+ */
+async function resolveAttemptIdOrError(
+  rt: Runtime,
+  raw: string,
+  attempts: Awaited<ReturnType<typeof listTaskAttempts>>,
+): Promise<string | null> {
+  const byAttempt = attempts.filter((attempt) => attempt.id === raw || attempt.id.startsWith(raw));
+  if (byAttempt.length === 1) return byAttempt[0]!.id;
+  if (byAttempt.length > 1) {
+    printError(`ambiguous attempt id prefix '${raw}':`);
+    for (const attempt of byAttempt) printError(`  ${attempt.id}`);
+    return null;
+  }
+  const task = await resolveTaskId(rt, raw);
+  if (task.kind !== "found") {
+    printError(`attempt not found: ${raw}`);
+    return null;
+  }
+  const open = attempts.filter((attempt) => attempt.taskId === task.id && OPEN_ATTEMPT_STATUSES.has(attempt.status));
+  if (open.length === 1) return open[0]!.id;
+  if (open.length === 0) {
+    printError(`no open attempt on task ${shortId(task.id)}; start one with \`tasq attempt start ${shortId(task.id)}\``);
+    return null;
+  }
+  printError(`task ${shortId(task.id)} has ${open.length} open attempts; name one:`);
+  for (const attempt of open) printError(`  ${attempt.id}  ${attempt.status}  ${attempt.actor ?? ""}`.trimEnd());
+  return null;
+}
+
 export async function attemptCmd(args: ParsedArgs): Promise<number> {
   const [sub, raw] = args.positional;
   if (!sub) {
@@ -176,7 +212,7 @@ export async function attemptCmd(args: ParsedArgs): Promise<number> {
       limit: 10_000,
     });
     if (!raw) throw new Error(ATTEMPT_USAGE);
-    const id = await resolveRelatedId(raw, "attempt", attempts.map((attempt) => attempt.id));
+    const id = await resolveAttemptIdOrError(rt, raw, attempts);
     if (!id) return 1;
     if (sub === "show") {
       const attempt = await getTaskAttempt(rt.db, id, rt.config.tenantId);

@@ -118,6 +118,8 @@ describe("standalone documentation contract", () => {
   test("keeps the repository root focused on public and agent entrypoints", () => {
     const allowedRootMarkdown = new Set([
       "AGENTS.md",
+  // Claude Code reads CLAUDE.md and not AGENTS.md; this one only imports it.
+  "CLAUDE.md",
       "CHANGELOG.md",
       "CODE_OF_CONDUCT.md",
       "CONTRIBUTING.md",

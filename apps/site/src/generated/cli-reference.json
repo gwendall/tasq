@@ -4,7 +4,7 @@
     "entries": [
       {
         "usage": "setup [--space <id>] [--actor <label>] [--no-bind] [--no-instructions] [--default]",
-        "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block; the global default moves only with --default"
+        "description": "everything a new project needs: join the space, bind this directory, write the AGENTS.md block and the CLAUDE.md that imports it; the global default moves only with --default"
       },
       {
         "usage": "use [<space>|--clear|--from-instructions] [--project-to <file>|--no-projection]",
@@ -235,7 +235,7 @@
       },
       {
         "usage": "attempt succeed|fail <id>",
-        "description": "close an execution attempt"
+        "description": "close an execution attempt; <id> is the attempt, or its task when one attempt is open"
       },
       {
         "usage": "evidence add <id> --kind ...",

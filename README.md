@@ -152,12 +152,15 @@ tasq setup --space kami/my-api --actor gwendall
   this installation signs as 9aadf4704e67 - see `tasq whoami`
 ✓ Bound ~/Code/my-api and everything under it to this space.
 ✓ Wrote the managed Tasq block into AGENTS.md, so agents here know the rules.
+✓ Wrote CLAUDE.md importing it, because Claude Code reads CLAUDE.md and not AGENTS.md.
 ```
 
 It does three things and says which. It joins or creates the space, binds this
 directory **and everything under it** so later commands need no flags, and
 writes the digest-bound managed block into `AGENTS.md` so agents working here
-are told the rules. `--no-bind` and `--no-instructions` skip either half, and it
+are told the rules. Claude Code reads `CLAUDE.md` and not `AGENTS.md`, so setup
+also writes a `CLAUDE.md` that imports the block, or adds the `@AGENTS.md` line
+to the one you already have. `--no-bind` and `--no-instructions` skip either half, and it
 refuses to set a project up in your home directory or at the filesystem root.
 The first project a machine sets up becomes the fallback for directories that
 are not bound; later projects leave that fallback alone unless you pass
@@ -179,7 +182,7 @@ tasq agent install claude --space kami/my-api --actor claude:main --apply
 ```
 
 Or nothing at all: an agent with a shell reads the `AGENTS.md` block that
-`setup` already wrote, and `tasq onboard --json` hands it 45 executable argv
+`setup` already wrote (Claude Code through the `CLAUDE.md` import), and `tasq onboard --json` hands it 45 executable argv
 recipes carrying the same capability labels the MCP surface uses. ADR-024
 records why the CLI is the default door for a local agent and MCP is the door
 for remote and sandboxed ones.
@@ -257,6 +260,7 @@ Codex and Claude Code can also install the shared native skill described in the
 | [`plugins/`](plugins) | Host-native Codex and Claude Code integration source |
 | [`evidence/`](evidence) | Retained certification and dogfood evidence |
 | [`AGENTS.md`](AGENTS.md) | Coding-agent entrypoint for this repository |
+| [`CLAUDE.md`](CLAUDE.md) | Imports `AGENTS.md` for Claude Code, which reads only `CLAUDE.md` |
 | [`SKILL.md`](SKILL.md) | Short contract for agents operating a Tasq ledger |
 
 Start with the [documentation map](docs/README.md). Contributors should read

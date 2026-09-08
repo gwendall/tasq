@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
-import { existsSync, lstatSync } from "node:fs";
+import { appendFileSync, existsSync, lstatSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
-import { dirname, isAbsolute, join, resolve } from "node:path";
+import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import {
   bootstrapCoordinationSpace,
 } from "@tasq-internal/local-service";
@@ -98,6 +98,29 @@ function assertSafeHome(): void {
  * is NOT optional is saying what happened: silent directory binding is the
  * defect that migrated this project's own ledger under the wrong binary.
  */
+/**
+ * Claude Code reads CLAUDE.md and not AGENTS.md, so a project taught only
+ * through AGENTS.md teaches Codex and leaves Claude blind. The recipe the
+ * Claude Code documentation gives for a repository that already carries an
+ * AGENTS.md is a CLAUDE.md that imports it, so that is what setup writes:
+ * created when absent, one appended line when present without the import,
+ * and untouched when the import is already there or the file is a symlink
+ * (a symlink to AGENTS.md is the other documented recipe).
+ */
+export function ensureClaudeImport(agentsTarget: string): { target: string; changed: boolean; state: "created" | "appended" | "present" | "symlink" } {
+  const target = join(dirname(agentsTarget), "CLAUDE.md");
+  const importLine = `@${basename(agentsTarget)}`;
+  if (!existsSync(target)) {
+    writeFileSync(target, `${importLine}\n`, { encoding: "utf8", flag: "wx" });
+    return { target, changed: true, state: "created" };
+  }
+  if (lstatSync(target).isSymbolicLink()) return { target, changed: false, state: "symlink" };
+  const current = readFileSync(target, "utf8");
+  if (current.split("\n").some((line) => line.trim() === importLine)) return { target, changed: false, state: "present" };
+  appendFileSync(target, `${current.endsWith("\n") || current.length === 0 ? "" : "\n"}\n${importLine}\n`, "utf8");
+  return { target, changed: true, state: "appended" };
+}
+
 export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> {
   const json = args.bool("json", "j");
   if (args.positional.length > 0) throw new Error("setup accepts flags only");
@@ -188,9 +211,11 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
   const device = loadOrCreateDeviceIdentity(clock.now());
 
   let instructions: { target: string; changed: boolean; digest: string } | null = null;
+  let claudeImport: ReturnType<typeof ensureClaudeImport> | null = null;
   if (teach) {
     const written = writeManagedBlock(instructionsTarget, space, force);
     instructions = { target: written.target, changed: written.changed, digest: written.digest };
+    if (basename(written.target) === "AGENTS.md") claudeImport = ensureClaudeImport(written.target);
   }
 
   const result = {
@@ -208,6 +233,7 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     configPath: join(configDir(), "config.json"),
     directoryBinding: binding,
     agentInstructions: instructions,
+    claudeImport,
     otherDirectoriesUsingThisSpace: conflicts,
     nextArgv: [
       ["tasq", "add", "The first thing an agent should pick up", "--next", "Open the relevant file"],
@@ -242,6 +268,13 @@ export async function setupCmd(args: ParsedArgs, clock: Clock): Promise<number> 
       lines.push(instructions.changed
         ? `${color.green("✓")} Wrote the managed Tasq block into AGENTS.md, so agents here know the rules.`
         : `${color.green("✓")} AGENTS.md already carries the current managed Tasq block.`);
+      if (claudeImport?.state === "created") {
+        lines.push(`${color.green("✓")} Wrote CLAUDE.md importing it, because Claude Code reads CLAUDE.md and not AGENTS.md.`);
+      } else if (claudeImport?.state === "appended") {
+        lines.push(`${color.green("✓")} Added @AGENTS.md to the existing CLAUDE.md, so Claude Code reads the same rules.`);
+      } else if (claudeImport?.state === "symlink") {
+        lines.push(color.dim("  CLAUDE.md is a symlink; left alone"));
+      }
     } else {
       lines.push(color.dim("  AGENTS.md untouched (--no-instructions); agents here will not be told about Tasq"));
     }

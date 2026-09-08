@@ -73,12 +73,28 @@ describe("one-command project setup", () => {
     expect(first.directoryBinding).toMatchObject({ directory: realpathSync(project), changed: true });
     expect(first.agentInstructions).toMatchObject({ changed: true });
     expect(readFileSync(join(project, "AGENTS.md"), "utf8")).toContain('space="acme/app"');
+    // Claude Code reads CLAUDE.md and not AGENTS.md, so without this line the
+    // block teaches Codex and leaves Claude blind.
+    expect(first.claudeImport).toMatchObject({ changed: true, state: "created" });
+    expect(readFileSync(join(project, "CLAUDE.md"), "utf8")).toBe("@AGENTS.md\n");
 
     // Running it again changes nothing and says so, because a setup command
     // people are afraid to re-run is a setup command they run wrong once.
     const again = JSON.parse((await ok(home, project, ["setup", "--json"])).stdout);
     expect(again).toMatchObject({ disposition: "joined", spaceSource: "inherited-from-directory" });
     expect(again.agentInstructions.changed).toBe(false);
+    expect(again.claudeImport).toMatchObject({ changed: false, state: "present" });
+  });
+
+  test("adds the import once to a CLAUDE.md that already exists, and never rewrites it", async () => {
+    const { home, project } = sandbox();
+    writeFileSync(join(project, "CLAUDE.md"), "# House rules\nRun the tests.", "utf8");
+    const first = JSON.parse((await ok(home, project, ["setup", "--space", "acme/app", "--actor", "gwendall", "--json"])).stdout);
+    expect(first.claudeImport).toMatchObject({ changed: true, state: "appended" });
+    const once = readFileSync(join(project, "CLAUDE.md"), "utf8");
+    expect(once).toBe("# House rules\nRun the tests.\n\n@AGENTS.md\n");
+    await ok(home, project, ["setup", "--json"]);
+    expect(readFileSync(join(project, "CLAUDE.md"), "utf8")).toBe(once);
   });
 
   test("names the other projects already bound to the space, without refusing", async () => {
@@ -217,6 +233,42 @@ describe("managed agent instructions", () => {
     expect(symlink.exitCode).toBe(1);
     expect(symlink.stderr).toContain("not a symlink");
     expect(readFileSync(victim, "utf8")).toBe("do not overwrite\n");
+  });
+});
+
+describe("the managed block, executed", () => {
+  // The block is what every agent in a project reads first. A command it
+  // prescribes that does not run as written is a defect in the block, not in
+  // the agent, so this runs the block's own lines instead of reading them.
+  test("every command the block prescribes runs, in order, as written", async () => {
+    const { home, project } = sandbox();
+    await ok(home, project, ["setup", "--space", "acme/api", "--actor", "claude:main"]);
+    const block = readFileSync(join(project, "AGENTS.md"), "utf8");
+    const fence = block.match(/```bash\n([\s\S]*?)```/);
+    expect(fence).not.toBeNull();
+    const lines = fence![1]!.split("\n").filter((line) => line.startsWith('"$TASQ" '));
+    expect(lines.length).toBeGreaterThanOrEqual(7);
+
+    const added = JSON.parse((await ok(home, project, ["add", "Fix the login redirect", "--json"])).stdout) as { id: string };
+    const fill: Record<string, string> = {
+      "<stable-label>": "claude:main",
+      "<task-id>": added.id,
+      "<sha>": "deadbeef",
+      "<observable result>": "redirect fixed",
+    };
+    for (const line of lines) {
+      let argvText = line.slice('"$TASQ" '.length);
+      for (const [placeholder, value] of Object.entries(fill)) argvText = argvText.split(placeholder).join(value);
+      const argv = argvText.match(/"[^"]*"|\S+/g)!.map((token) => token.replace(/^"|"$/g, ""));
+      const result = await run(home, project, argv);
+      expect(`${argv.join(" ")} -> ${result.exitCode}\n${result.stderr}`).toBe(`${argv.join(" ")} -> 0\n`);
+      if (argv[0] === "evidence") {
+        const evidence = JSON.parse((await ok(home, project, ["evidence", "list", added.id, "--json"])).stdout) as Array<{ id: string }>;
+        fill["<evidence-id>"] = evidence[0]!.id;
+      }
+    }
+    const shown = JSON.parse((await ok(home, project, ["show", added.id, "--json"])).stdout) as { status: string };
+    expect(shown.status).toBe("done");
   });
 });
 
