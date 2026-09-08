@@ -18,6 +18,7 @@ const MIRRORED = [
   "docs/contracts/TQ-621_MULTI_AGENT_COMPARISON.json",
   "apps/site/media/tasq-demo.tape",
   "README.md",
+  "docs/integrations/llms.txt",
 ] as const;
 
 async function run(root: string) {
@@ -90,7 +91,17 @@ async function recorded(version: string, tags: string[] = [`v${version}`]) {
   const readme = await readFile(readmeFile, "utf8");
   await writeFile(
     readmeFile,
-    readme.replace(/@tasq-run\/cli@[0-9.]+ demo/g, `@tasq-run/cli@${version} demo`),
+    // The README names the release in prose as well as in the pin, and the
+    // gate now reads all of it; a fixture current in one line only would be
+    // the drift the gate exists to refuse.
+    readme.replace(/\b(v?)\d+\.\d+\.\d+\b/g, `$1${version}`),
+    "utf8",
+  );
+  const llmsFile = join(root, MIRRORED[4]);
+  const llms = await readFile(llmsFile, "utf8");
+  await writeFile(
+    llmsFile,
+    llms.replace(/Tasq Local \d+\.\d+\.\d+ is published/, `Tasq Local ${version} is published`),
     "utf8",
   );
 
@@ -241,12 +252,38 @@ describe("publication record", () => {
       const readme = await readFile(readmeFile, "utf8");
       await writeFile(readmeFile, readme.replace("@tasq-run/cli@9.9.9 demo", "@tasq-run/cli@9.9.7 demo"), "utf8");
 
+      // llms.txt said 0.4.2 was published while 0.6.4 was, for three releases:
+      // the page agents read had no check at all.
+      const llmsFile = join(root, MIRRORED[4]);
+      const llms = await readFile(llmsFile, "utf8");
+      await writeFile(llmsFile, llms.replace("Tasq Local 9.9.9 is published", "Tasq Local 9.9.6 is published"), "utf8");
+
       const refused = await run(root);
       expect(refused.exitCode).not.toBe(0);
       expect(refused.stderr).toContain("comparison.tasqClaimBoundary.version is 9.9.8");
       expect(refused.stderr).toContain("tasq-demo.tape does not record @tasq-run/cli@9.9.9");
       expect(refused.stderr).toContain("README.md does not pin @tasq-run/cli@9.9.9");
+      expect(refused.stderr).toContain("README.md names v9.9.7 where only v9.9.9 is published");
+      expect(refused.stderr).toContain("llms.txt says Tasq Local 9.9.6 is published where v9.9.9 is");
       expect(refused.stderr).toContain("/compare page");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test("refuses a README whose prose names another release while its pin is current", async () => {
+    // The pin was checked and stayed current; five prose mentions two lines
+    // away said v0.6.1 while v0.6.4 was published. A check narrower than the
+    // page it protects.
+    const root = await recorded("9.9.9");
+    try {
+      const readmeFile = join(root, MIRRORED[3]);
+      const readme = await readFile(readmeFile, "utf8");
+      await writeFile(readmeFile, readme.replace("**Public alpha:** `v9.9.9`", "**Public alpha:** `v9.9.5`"), "utf8");
+      const refused = await run(root);
+      expect(refused.exitCode).not.toBe(0);
+      expect(refused.stderr).not.toContain("does not pin");
+      expect(refused.stderr).toContain("README.md names v9.9.5 where only v9.9.9 is published");
     } finally {
       await rm(root, { recursive: true, force: true });
     }

@@ -15,10 +15,10 @@
  * named explicitly.
  *
  * `--workflow-ref` names the ref whose workflow *definitions* run; the code
- * they publish is always the tagged commit. It exists for one situation: a
- * workflow file was fixed after the tag, and the fix is on main. The
- * protected workflows accept main or the release tag as their own ref and
- * still bind the published bytes to the tagged commit.
+ * they publish is always the tagged commit, bound by `source_commit`. It
+ * defaults to main because that is the ref every provenance check in those
+ * workflows expects; pass the tag only to prove that a release's own
+ * definitions still work, knowing its certifications will refuse the result.
  */
 import {
   FLY_CONFIRMATION, STABLE_VERSION, SURFACES, dispatch, fail, findRun, ghcrDigestForVersion, parseFlags, parseSurfaces, pypiWheelSha256,
@@ -29,7 +29,13 @@ const flags = parseFlags(process.argv.slice(2), ["--version", "--surfaces", "--f
 const version = flags.require("--version");
 if (!STABLE_VERSION.test(version)) fail(`--version must be a stable SemVer, got ${version}`);
 const tag = `v${version}`;
-const workflowRef = flags.get("--workflow-ref") ?? tag;
+// Every provenance verification these workflows run (the server and Python
+// certifications, the Fly deploy) expects `--source-ref refs/heads/main`, and
+// the ref a workflow is dispatched on is the ref its provenance names. A tag
+// default therefore built images no certifier could accept; v0.6.4 passed only
+// because it was run with `--workflow-ref main` by hand, and v0.6.5 failed on
+// the default. The bytes are bound to the tag by `source_commit` either way.
+const workflowRef = flags.get("--workflow-ref") ?? "main";
 const surfaces = parseSurfaces(flags.get("--surfaces")).filter((surface) => surface !== "client");
 const flyMode = flags.get("--fly-mode") ?? "local";
 if (!["local", "managed"].includes(flyMode)) fail(`--fly-mode must be local or managed, got ${flyMode}`);

@@ -107,7 +107,14 @@ await writeFile(tapePath, (await readFile(tapePath, "utf8")).replace(/@tasq-run\
 // The README pins the same `npx` line by hand; a release that forgets it keeps
 // advertising the previous release (0.6.1 survived two releases this way).
 const readmePath = resolve(root, "README.md");
-await writeFile(readmePath, (await readFile(readmePath, "utf8")).replace(/@tasq-run\/cli@[0-9.]+ demo/g, `@tasq-run/cli@${version} demo`), "utf8");
+// The README names the release in prose as well as in the pin (the alpha
+// notice, the package versions, the wheel pin, the release link), and the
+// publication check reads all of it, so all of it advances here: a writer
+// narrower than its checker leaves the next release to a hand edit.
+await writeFile(readmePath, (await readFile(readmePath, "utf8")).replace(/\b(v?)\d+\.\d+\.\d+\b/g, `$1${version}`), "utf8");
+// llms.txt is the page agents read to learn which release exists.
+const llmsPath = resolve(root, "docs/integrations/llms.txt");
+await writeFile(llmsPath, (await readFile(llmsPath, "utf8")).replace(/Tasq Local \d+\.\d+\.\d+ is published/, `Tasq Local ${version} is published`), "utf8");
 const notesPath = resolve(root, "docs/releases/RELEASES.md");
 let notes = await readFile(notesPath, "utf8");
 const previousTag = previous.tag as string;
