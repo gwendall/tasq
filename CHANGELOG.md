@@ -8,6 +8,26 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.5 - 2026-09-08
+
+The managed AGENTS.md block failed at its fifth step as written, and setup taught Codex while Claude Code read nothing; both fixed in #230 and only a published release puts them in an installation
+
+The onboarding path, walked as a stranger: install from tasq.run into an empty home, `tasq setup` in a fresh project, then the AGENTS.md block executed line by line. Two defects, both fixed (#230).
+
+### Fixed
+
+- **The managed AGENTS.md block failed at its fifth step as written.** It
+  prescribed `attempt succeed <task-id>` and the command wanted an attempt
+  id, so every agent following the block hit `attempt not found`. No test
+  executed the block; they read its prose. A task id now resolves to the
+  task's single open attempt, ambiguity and absence are both named, and a
+  test runs the block's own lines in order and fails without the fix.
+- **`tasq setup` taught Codex and left Claude Code blind.** Claude Code reads
+  `CLAUDE.md` and not `AGENTS.md`, so the block setup wrote was never loaded
+  by a Claude Code session. Setup now writes a `CLAUDE.md` that imports the
+  block, the recipe the Claude Code documentation gives, appends the
+  `@AGENTS.md` line once to an existing file, and leaves a symlink alone.
+
 ## v0.6.4 - 2026-09-06
 
 Ship the server image: publish-server can now pass the handoff on a tagged commit (#223), which 0.6.3 could not by construction. Also carries the README release pin into the record step so the front page stops advertising a stale release.

@@ -1,5 +1,19 @@
 [
   {
+    "version": "v0.6.5",
+    "date": "2026-09-08",
+    "note": null,
+    "groups": [
+      {
+        "kind": "Fixed",
+        "items": [
+          "**The managed AGENTS.md block failed at its fifth step as written.** It prescribed `attempt succeed <task-id>` and the command wanted an attempt id, so every agent following the block hit `attempt not found`. No test executed the block; they read its prose. A task id now resolves to the task's single open attempt, ambiguity and absence are both named, and a test runs the block's own lines in order and fails without the fix.",
+          "**`tasq setup` taught Codex and left Claude Code blind.** Claude Code reads `CLAUDE.md` and not `AGENTS.md`, so the block setup wrote was never loaded by a Claude Code session. Setup now writes a `CLAUDE.md` that imports the block, the recipe the Claude Code documentation gives, appends the `@AGENTS.md` line once to an existing file, and leaves a symlink alone."
+        ]
+      }
+    ]
+  },
+  {
     "version": "v0.6.4",
     "date": "2026-09-06",
     "note": null,
