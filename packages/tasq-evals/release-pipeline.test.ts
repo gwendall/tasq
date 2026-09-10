@@ -20,6 +20,7 @@ const MIRRORED = [
   "docs/releases/RELEASES.md",
   "CHANGELOG.md",
   "README.md",
+  "docs/integrations/llms.txt",
 ];
 const roots: string[] = [];
 afterAll(async () => { for (const root of roots) await rm(root, { recursive: true, force: true }); });
@@ -151,6 +152,9 @@ describe("release:record", () => {
     const readme = await readFile(join(root, "README.md"), "utf8");
     expect(readme).toContain(`@tasq-run/cli@${version} demo`);
     expect(readme).not.toMatch(/@tasq-run\/cli@(?!9\.9\.9 )[0-9.]+ demo/);
+    const llms = await readFile(join(root, "docs/integrations/llms.txt"), "utf8");
+    expect(llms).toContain(`Tasq Local ${version} is published`);
+    expect(llms).not.toMatch(/Tasq Local (?!9\.9\.9 )[0-9.]+ is published/);
     const notes = await readFile(join(root, "docs/releases/RELEASES.md"), "utf8");
     expect(notes).toContain(`Current \`v${version}\` is published`);
     expect(notes).toContain(`## \`v${version}\` current release`);
