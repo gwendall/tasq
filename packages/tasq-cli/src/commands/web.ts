@@ -1,7 +1,7 @@
 /** Local, unauthenticated and strictly read-only web inspection surface. */
 
 import { CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
-import type { ParsedArgs } from "../args.js";
+import { requiredFlag, type ParsedArgs } from "../args.js";
 import { printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 import {
@@ -37,7 +37,7 @@ export async function webCmd(
   waitForShutdown: () => Promise<void> = waitForShutdownSignal,
   productVersion = "0.1.0",
 ): Promise<number> {
-  const workspaceId = CoordinationSpaceId.parse(args.string("tenant"));
+  const workspaceId = CoordinationSpaceId.parse(requiredFlag(args, "space", "web [status] --space <id>"));
   const subcommand = args.positional[0];
   if (args.positional.length > 1 || (subcommand !== undefined && subcommand !== "status")) {
     throw new Error("Expected `web` or `web status`");
@@ -87,7 +87,7 @@ export async function webCmd(
       if (current.state === "running") {
         throw new Error(`Console is already registered at ${current.descriptor!.endpoint.url}`);
       }
-      throw new Error(`Console registration changed during startup; run tasq web status --tenant ${JSON.stringify(workspaceId)}`);
+      throw new Error(`Console registration changed during startup; run tasq web status --space ${JSON.stringify(workspaceId)}`);
     }
     registered = true;
     if (machine) process.stdout.write(`${JSON.stringify(server.descriptor)}\n`);

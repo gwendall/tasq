@@ -150,7 +150,7 @@ managed-service claim. The open-source local product does not depend on Cloud.
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
 | Local MCP | `tasq mcp --space <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; remote MCP is a distinct Server surface |
 | Embedded Core | `@tasq-run/core@0.4.0` `createLocalTasq` | Published and Node/Bun certified | Trusted in-process integration; explicit store/workspace/actor/clock; no runtime ownership |
-| Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
+| Local Console | `tasq web --space <id>`; `tasq web status --space <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |
 | Generic agent entrypoints | `/SKILL.md`; `/agents/`; `/llms.txt`; `/integration.json` | Implemented static guidance and host recipes | Explicit executable/store/space/actor still required |
 | Progressive human setup | `tasq setup`; `tasq demo` | Published and certified in `v0.4.0` | Explicit space and actor; demo is isolated |

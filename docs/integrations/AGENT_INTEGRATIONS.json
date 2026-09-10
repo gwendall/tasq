@@ -105,15 +105,15 @@
     "hostRecipes": {
       "codex": {
         "source": "https://developers.openai.com/codex/mcp/",
-        "argv": ["codex", "mcp", "add", "tasq", "--", "{tasqExecutable}", "mcp", "--tenant", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
+        "argv": ["codex", "mcp", "add", "tasq", "--", "{tasqExecutable}", "mcp", "--space", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
       },
       "claude": {
         "source": "https://docs.anthropic.com/en/docs/claude-code/mcp",
-        "argv": ["claude", "mcp", "add", "tasq", "--scope", "user", "--", "{tasqExecutable}", "mcp", "--tenant", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
+        "argv": ["claude", "mcp", "add", "tasq", "--scope", "user", "--", "{tasqExecutable}", "mcp", "--space", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
       },
       "generic": {
         "command": "{tasqExecutable}",
-        "args": ["mcp", "--tenant", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
+        "args": ["mcp", "--space", "{space}", "--actor", "{actor}", "--capabilities", "{capabilities}"]
       }
     },
     "deterministicHelper": {

@@ -60,7 +60,7 @@ Every recipe item in the versioned bootstrap envelope contains:
 - a stable ID and version;
 - a `read`, `propose` or `coordinate` group;
 - whether it mutates;
-- an `argvTemplate` array with explicit `--tenant`, `--actor` and `--json`;
+- an `argvTemplate` array with explicit `--space`, `--actor` and `--json`;
 - a one-to-one declaration for every placeholder; and
 - the expected output contract.
 

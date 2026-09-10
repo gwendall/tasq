@@ -15,8 +15,8 @@ read models and migrations are bundled into the same release artifact. Install
 never starts a process, opens a port or changes `TASQ_HOME`.
 
 ```bash
-tasq web --tenant robotics/team-a
-tasq web status --tenant robotics/team-a --json
+tasq web --space robotics/team-a
+tasq web status --space robotics/team-a --json
 ```
 
 `web` owns one explicit foreground process. `SIGINT` or `SIGTERM` closes the

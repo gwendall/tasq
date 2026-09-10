@@ -49,10 +49,10 @@ The embedded kernel exports `appendCommitmentSummary`,
 `https://schemas.tasq.dev/capabilities/commitment-summaries`.
 
 ```bash
-tasq summary current --limit 20 --tenant <space> --actor <actor> --json
-tasq summary list <commitment-id> --tenant <space> --actor <actor> --json
+tasq summary current --limit 20 --space <space> --actor <actor> --json
+tasq summary list <commitment-id> --space <space> --actor <actor> --json
 tasq summary add <commitment-id> --text "..." \
-  --idempotency-key <stable-key> --tenant <space> --actor <actor> --json
+  --idempotency-key <stable-key> --space <space> --actor <actor> --json
 ```
 
 Corrections add `--supersedes <current-summary-id>`. Cold onboarding returns

@@ -28,7 +28,7 @@ systems may consume the packet, but their policy is not kernel semantics.
 
 ```bash
 tasq context \
-  --tenant robotics/team-a \
+  --space robotics/team-a \
   --actor agent:planner \
   --max-records 20 \
   --max-tokens 8192 \

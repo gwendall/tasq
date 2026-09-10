@@ -18,14 +18,14 @@ canonical services those surfaces use.
 
 ## 2. Honest current baseline
 
-`tasq web --tenant <space>` starts the TQ-703 server-rendered, read-only,
+`tasq web --space <space>` starts the TQ-703 server-rendered, read-only,
 loopback-only Console. It has bounded canonical section and commitment graph
 routes, strict Host checks, no write route, no-store responses and a self-only
 CSP. A small self-hosted client provides TQ-702 live invalidation, page-local
 filters and preview-before-download support bundles; the SSR baseline remains
 usable without it. TQ-704 bundles this full surface into installed Tasq Local:
 `--json` emits one `tasq.console-listener.v1` NDJSON announcement and
-`tasq web status --tenant <space> --json` proves the saved identity against
+`tasq web status --space <space> --json` proves the saved identity against
 `/api/console/runtime`. The listener stays an explicit foreground process.
 
 The product has no cross-workspace overview or remediation flow. Full

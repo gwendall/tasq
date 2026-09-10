@@ -73,7 +73,7 @@
       "id": "local_console",
       "support": "implemented_local_only",
       "transport": "loopback_http",
-      "entrypoint": "tasq web --tenant <id>; tasq web status --tenant <id> --json",
+      "entrypoint": "tasq web --space <id>; tasq web status --space <id> --json",
       "mutations": false,
       "authorityBoundary": "unauthenticated_loopback_read_only_foreground_proof_of_life"
     },

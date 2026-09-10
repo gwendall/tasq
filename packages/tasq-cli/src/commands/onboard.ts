@@ -53,7 +53,11 @@ function recipes(
   actor: string,
   capabilities: readonly BootstrapRecipeCapability[],
 ): BootstrapRecipe[] {
-  const scope = ["--tenant", workspaceId, "--actor", actor, "--json"];
+  // `--space`, not `--tenant`: this command refuses `--tenant` on its own input
+  // as the wrong vocabulary, and then handed an agent 47 recipes that use it.
+  // A zero-context agent executes these verbatim, so the recipes are where the
+  // word is actually taught.
+  const scope = ["--space", workspaceId, "--actor", actor, "--json"];
   const all: BootstrapRecipe[] = [
     {
       id: "discovery.read", version: 1, requiredCapability: "read", mutates: false,
@@ -65,7 +69,7 @@ function recipes(
       id: "transport.mcp.stdio", version: 1, requiredCapability: "read", mutates: false,
       description: "Start a capability-scoped local MCP stdio server bound to this exact space and actor.",
       argvTemplate: [
-        executable, "mcp", "--tenant", workspaceId, "--actor", actor,
+        executable, "mcp", "--space", workspaceId, "--actor", actor,
         "--capabilities", capabilities.join(","),
       ],
       parameters: [],
@@ -165,7 +169,7 @@ function recipes(
       id: "audit.list", version: 1, requiredCapability: "read", mutates: false,
       description: "Read the unfiltered ordered workspace audit stream; use audit.resume after persisting a cursor. The event command reserves --actor for an optional event-producer filter, so this recipe intentionally omits it.",
       argvTemplate: [
-        executable, "event", "list", "--tenant", workspaceId, "--json",
+        executable, "event", "list", "--space", workspaceId, "--json",
       ], parameters: [],
       outputContract: "tasq.cli-json.v1/EventV1[]",
     },
@@ -174,7 +178,7 @@ function recipes(
       description: "Resume the unfiltered ordered workspace audit stream strictly after one persisted numeric sequence.",
       argvTemplate: [
         executable, "event", "list", "--after-sequence", "{afterSequence}",
-        "--ascending", "--tenant", workspaceId, "--json",
+        "--ascending", "--space", workspaceId, "--json",
       ],
       parameters: [parameter(
         "afterSequence",
@@ -773,7 +777,10 @@ export async function onboardCmd(
 ): Promise<number> {
   // Validate output mode before any storage side effect.
   const json = args.bool("json", "j");
-  if (args.flag("tenant") !== undefined) {
+  // Asks what was TYPED, not what resolves: the two names are one flag
+  // everywhere else in this CLI, so `--space` answers `flag("tenant")` too and
+  // reading it through the alias refused the very word this command teaches.
+  if ("tenant" in args.flags) {
     throw new Error("--tenant is not accepted by onboard; --space is the single explicit coordination context");
   }
   const workspaceId = args.string("space") ?? args.positional[0];

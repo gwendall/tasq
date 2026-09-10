@@ -274,11 +274,11 @@
         "description": "[--completion assertion|evidence] run a capability-scoped local MCP stdio server"
       },
       {
-        "usage": "web --tenant <space> [--host 127.0.0.1] [--port 4137]",
+        "usage": "web --space <space> [--host 127.0.0.1] [--port 4137]",
         "description": "explicit foreground read-only Local Console"
       },
       {
-        "usage": "web status --tenant <space> --json",
+        "usage": "web status --space <space> --json",
         "description": "prove a registered Console listener is live"
       }
     ]
@@ -496,8 +496,12 @@
         "description": "override default actor"
       },
       {
+        "usage": "--space <id>",
+        "description": "act on this space instead of the bound one"
+      },
+      {
         "usage": "--tenant <id>",
-        "description": "override default tenant (rare)"
+        "description": "the older name for --space"
       }
     ]
   }

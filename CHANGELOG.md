@@ -10,6 +10,19 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **The documented loop refused the word the documents teach.** `tasq setup`
+  and `tasq onboard` take `--space`, and so does every guide, contract and
+  AGENTS.md block. The next line those same instructions tell a new user to run
+  answered `Unknown flag: --space`: `claim`, `attempt`, `evidence`, `done`,
+  `whoami`, `add` and `list` read `--tenant` only. The two are one flag now,
+  whichever a command reads, and passing both with different values is refused
+  rather than resolved to a guess about whose ledger to write to. `onboard`
+  still teaches `--space` alone.
+- **A missing required flag answered with a raw schema dump.** A first
+  `tasq agent install claude-code` printed a zod `invalid_type` array that
+  named neither the flag that was missing nor the command that wanted it. It
+  now names the flag and the usage line, on `agent install`, `agent
+  instructions`, `mcp` and `web`.
 - **The npm publish job was cancelled mid-release.** Its 20 minute budget had
   to cover install, build, attestation and then a serial publish loop that
   waits for the registry to serve each package as `latest` before starting the

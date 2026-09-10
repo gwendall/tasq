@@ -215,7 +215,7 @@ export const ConsoleHealth = z.object({
     checked: z.literal(false),
     reason: z.literal("full_doctor_is_explicit_and_not_request_bounded"),
     argv: z.tuple([
-      z.literal("tasq"), z.literal("doctor"), z.literal("--tenant"), WorkspaceId,
+      z.literal("tasq"), z.literal("doctor"), z.literal("--space"), WorkspaceId,
     ]),
   }).strict(),
   workspaceExists: z.boolean(),

@@ -121,10 +121,10 @@ to primary prose.
 ## 7. CLI composition
 
 ```bash
-tasq web --tenant robotics/team-a --host 127.0.0.1 --port 4137
+tasq web --space robotics/team-a --host 127.0.0.1 --port 4137
 ```
 
-`--tenant` is mandatory. Host defaults to `127.0.0.1`; only loopback aliases
+`--space` is mandatory. Host defaults to `127.0.0.1`; only loopback aliases
 are accepted. Port `0` asks the OS for an isolated test port. The startup line
 states the exact bound URL and that the surface is unauthenticated local read
 access. The process closes the HTTP listener before closing the database.

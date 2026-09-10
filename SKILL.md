@@ -50,7 +50,7 @@ tasq setup --space <confirmed-id> --actor <your-stable-label>
 ```
 
 It joins or creates the space, binds this directory **and everything under
-it** so later commands need no `--tenant`, and writes the managed Tasq block
+it** so later commands need no `--space`, and writes the managed Tasq block
 into `AGENTS.md`.
 
 **Ask for the space id once. Do not choose it alone.** Proposing an id derived
@@ -163,7 +163,7 @@ setup mistake:
   new project, not a new space and never a new home.
 
 Use an isolated `TASQ_HOME` **only for tests and experiments**. For real work,
-select the space with `--tenant` or `TASQ_TENANT` instead, which leaves the
+select the space with `--space` or `TASQ_TENANT` instead, which leaves the
 operator's configured default untouched. Running `setup` rewrites that default.
 
 ## Storage and recovery

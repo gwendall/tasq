@@ -385,7 +385,7 @@ export async function buildConsoleHealth(
     fullIntegrity: {
       checked: false,
       reason: "full_doctor_is_explicit_and_not_request_bounded",
-      argv: ["tasq", "doctor", "--tenant", workspaceId],
+      argv: ["tasq", "doctor", "--space", workspaceId],
     },
     workspaceExists,
     counts,

@@ -25,6 +25,24 @@ export interface ParsedArgs {
   assertKnown(allowed: readonly string[]): void;
 }
 
+/**
+ * Flags that are two names for one thing.
+ *
+ * `--space` is the product's word for a ledger and the one `tasq setup`,
+ * `tasq onboard` and every document teach. `--tenant` is the name the CLI grew
+ * up with, and it is what most commands actually read. So a user who learned
+ * `--space` from setup was answered `Unknown flag: --space` by `claim`,
+ * `attempt`, `evidence`, `done` and `whoami` - the entire loop those same
+ * documents tell them to run next. Rather than rewrite dozens of call sites
+ * for that, the two names resolve to each other here, and only a command that
+ * passes BOTH with different values is refused: that is a real disagreement
+ * about which ledger to write to, and guessing would pick someone's ledger.
+ */
+const FLAG_ALIASES: Readonly<Record<string, string>> = {
+  space: "tenant",
+  tenant: "space",
+};
+
 export function parseArgs(argv: string[]): ParsedArgs {
   const positional: string[] = [];
   const flags: Record<string, string | true> = {};
@@ -76,6 +94,15 @@ export function parseArgs(argv: string[]): ParsedArgs {
     i++;
   }
 
+  for (const [name, alias] of Object.entries(FLAG_ALIASES)) {
+    if (name in flags && alias in flags && flags[name] !== flags[alias]) {
+      throw new Error(
+        `--${name} and --${alias} are the same flag and were given different values: `
+          + `"${String(flags[name])}" and "${String(flags[alias])}". Pass one.`,
+      );
+    }
+  }
+
   return {
     positional,
     flags,
@@ -83,6 +110,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
     flag(name: string, shortName?: string): string | true | undefined {
       if (name in flags) return flags[name];
       if (shortName && shortName in flags) return flags[shortName];
+      const alias = FLAG_ALIASES[name];
+      if (alias !== undefined && alias in flags) return flags[alias];
       return undefined;
     },
     string(name: string, shortName?: string): string | undefined {
@@ -112,6 +141,34 @@ export function parseArgs(argv: string[]): ParsedArgs {
       }
     },
   };
+}
+
+/**
+ * A flag whose absence is a usage error, not a schema error.
+ *
+ * `CoordinationSpaceId.parse(args.string("space"))` on a missing flag answered
+ * with a raw zod array - `[{"code":"invalid_type","expected":"string",
+ * "received":"undefined","path":[],"message":"Required"}]` - which names
+ * neither the flag that is missing nor the command that wanted it. A first
+ * run of `tasq agent install claude-code` is exactly where that landed. The
+ * schema still validates the value; this only makes the missing case say what
+ * to type.
+ */
+/**
+ * The flags every command accepts, wherever the allowlist is applied.
+ *
+ * `resource` kept its own hand-typed copy of this list and so never learned
+ * about `--space`: the recipe `onboard` handed an agent was refused by the
+ * command the recipe named. One list, imported by both.
+ */
+export const COMMON_FLAGS = ["json", "j", "actor", "space", "tenant", "help", "h"] as const;
+
+export function requiredFlag(args: ParsedArgs, name: string, usage: string): string {
+  const value = args.string(name);
+  if (value === undefined || value.trim() === "") {
+    throw new Error(`--${name} is required: ${usage}`);
+  }
+  return value;
 }
 
 /**

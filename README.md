@@ -169,7 +169,7 @@ are not bound; later projects leave that fallback alone unless you pass
 `tasq use <space> --project-to TASKS.md`: a project renders only its own file.
 
 **Repeat it per project.** Each directory gets its own space, so work stays
-separated without you passing `--tenant` anywhere:
+separated without you passing `--space` anywhere:
 
 ```bash
 cd ~/Code/my-api  && tasq list   # only my-api's work

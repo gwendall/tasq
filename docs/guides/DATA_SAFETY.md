@@ -58,7 +58,7 @@ run the matching binary against that path first:
 
 ```bash
 TASQ_DB_URL=file:/private/recovery/tasq.sqlite \
-  tasq doctor --tenant <space> --actor <operator> --json
+  tasq doctor --space <space> --actor <operator> --json
 ```
 
 Only an operator should decide whether that verified copy replaces the normal
