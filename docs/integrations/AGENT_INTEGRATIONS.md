@@ -74,18 +74,18 @@ project-local registration is preferable.
 Try the exact scoped package without persistent installation:
 
 ```bash
-bunx @tasq-run/cli@0.6.5 version
-npm exec --yes --package=@tasq-run/cli@0.6.5 -- tasq version
+bunx @tasq-run/cli@0.6.6 version
+npm exec --yes --package=@tasq-run/cli@0.6.6 -- tasq version
 ```
 
 For a persistent native lifecycle, download and inspect the versioned
 installer before executing it:
 
 ```bash
-curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.6.5.sh
+curl -fsSLo /tmp/tasq-install.sh https://tasq.run/install-v0.6.6.sh
 less /tmp/tasq-install.sh
-sh /tmp/tasq-install.sh --dry-run --version 0.6.5 --prefix "$HOME/.local"
-sh /tmp/tasq-install.sh --version 0.6.5 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --dry-run --version 0.6.6 --prefix "$HOME/.local"
+sh /tmp/tasq-install.sh --version 0.6.6 --prefix "$HOME/.local"
 ```
 
 The script selects only a certified platform, authenticates the downloaded
