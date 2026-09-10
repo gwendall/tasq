@@ -284,13 +284,13 @@
     }
   },
   "releaseAuthorization": {
-    "state": "published_certified",
-    "version": "0.6.7",
+    "state": "authorized",
+    "version": "0.6.8",
     "channel": "public-alpha",
     "decision": "go",
     "authorizedBy": "@gwendall",
     "authorizedAt": "2026-09-10",
-    "rationale": "Consumed by v0.6.7, published 2026-09-10T20:09:08Z. Fixes found by installing 0.6.6 from the public installer and using it as a new adopter: the MCP handshake reported the wrong version, mcp refused --space, agent install refused its own contract's host id, backup wrote a database into a mistyped subcommand, and an unknown command named nothing to try."
+    "rationale": "Authorized for v0.6.8, not yet published. The CLI refused --space, the word its own setup command, guides and agent contract teach, on every command of the loop those documents describe next; a missing required flag answered with a raw schema dump; and a flag value beginning with a dash was silently dropped."
   },
   "sourceCandidateCheckpoint": {
     "status": "v0_4_0_published_and_protected_replay_passed",
@@ -342,53 +342,45 @@
   },
   "candidatePublications": {
     "serverImage": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "ghcr.io/gwendall/tasq-server",
       "workflow": "publish-server.yml",
       "environment": "release",
-      "version": "0.6.7",
+      "version": "0.6.8",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-10",
-      "digest": "sha256:ccd22a6651a1a9ee77f54b65901daa5272beeadacdaec29f92491d4081c7eae3",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34524869906",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34526725610"
+      "authorizedAt": "2026-09-10"
     },
     "pythonWheel": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "tasq-remote",
       "workflow": "publish-python.yml",
       "environment": "release",
-      "version": "0.6.7",
+      "version": "0.6.8",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-10",
-      "wheelSha256": "04c4201aed29b942c9c041336475286b0110aa2d8e9d0944916299bd4e14778a",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34526949635",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34527190959"
+      "authorizedAt": "2026-09-10"
     },
     "remoteTypeScriptClient": {
-      "state": "published_certified",
+      "state": "authorized",
       "coordinate": "@tasq-run/client",
       "workflow": "release.yml",
       "environment": "release",
-      "version": "0.6.7",
+      "version": "0.6.8",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
-      "authorizedAt": "2026-09-10",
-      "publicationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34522233347",
-      "certificationWorkflowRun": "https://github.com/gwendall/tasq/actions/runs/34524668924"
+      "authorizedAt": "2026-09-10"
     }
   },
   "certificationPrograms": {
     "tq616SignedStatements": {
-      "state": "published_certified",
+      "state": "authorized",
       "workflow": "certify-published-release.yml",
       "environment": "release",
-      "version": "0.6.7",
+      "version": "0.6.8",
       "sourceBinding": "protected_immutable_version_tag_runtime_commit",
       "decision": "go",
       "authorizedBy": "@gwendall",
