@@ -8,7 +8,7 @@
 Website and documentation: [tasq.run](https://tasq.run)
 
 ```bash
-npx @tasq-run/cli@0.6.4 demo    # fifteen seconds, no install, touches no data
+npx @tasq-run/cli@0.6.5 demo    # fifteen seconds, no install, touches no data
 ```
 
 ## For you
@@ -59,7 +59,7 @@ Tasq is not an agent runtime. It does not launch agents or call providers. It
 gives the tools you already use one shared, inspectable place to agree on what
 is done.
 
-> **Public alpha:** `v0.6.1` is available from npm and as an attested GitHub
+> **Public alpha:** `v0.6.5` is available from npm and as an attested GitHub
 > release for macOS arm64 and Linux x64. The Server image and Python client are
 > also published and exact-artifact certified. This is an
 > intentionally early pre-1.0 line: keep backups of retained ledgers and expect
@@ -68,7 +68,7 @@ is done.
 ## What is available today
 
 - **Tasq Core** - the embeddable TypeScript library behind the CLI, with no
-  opinion about your domain. `@tasq-run/core@0.6.1` exposes the high-level `createLocalTasq`
+  opinion about your domain. `@tasq-run/core@0.6.5` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
 - **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
@@ -80,7 +80,7 @@ is done.
 Tasq Server ships as an exact-digest-certified multi-architecture image with
 remote REST/MCP, enrollment and a hosted Console whose small human action
 surface reuses the same live authorization guard. Authenticated offline
-replication, `@tasq-run/client`, the remote CLI and `tasq-remote==0.4.0` are
+replication, `@tasq-run/client`, the remote CLI and `tasq-remote==0.6.5` are
 published and exact-artifact certified. A private-beta Server runs at
 `api.tasq.run`.
 
@@ -105,7 +105,7 @@ pending independent review.
 An attempt succeeding never completes its commitment automatically.
 Validated commitments also cannot be completed by evidence alone.
 
-Published `v0.6.1` implements opt-in independent completion resolution across
+Published `v0.6.5` implements opt-in independent completion resolution across
 Core, embedded client, CLI, local MCP and Console. Ordinary commitments retain
 the short evidence-backed path; validated commitments use frozen policies,
 proposals, challenges and explicit decisions. See the
@@ -118,7 +118,7 @@ Requirements: Node 22+, Bun 1.3+, and npm 10+.
 ### 1. See what it does, without installing anything
 
 ```bash
-npx @tasq-run/cli@0.6.4 demo
+npx @tasq-run/cli@0.6.5 demo
 ```
 
 Two agents, one task, in a throwaway home. It shows you three refusals in a
@@ -271,10 +271,10 @@ the [development guide](docs/guides/DEVELOPMENT.md) and
 
 The public packages are `@tasq-run/schema`, `@tasq-run/core`, `@tasq-run/cli`,
 `@tasq-run/mcp`, `@tasq-run/extension-sdk`, `@tasq-run/protocol-adapters`,
-`@tasq-run/console`, and `@tasq-run/client`. Version `0.6.1` is published from
+`@tasq-run/console`, and `@tasq-run/client`. Version `0.6.5` is published from
 protected GitHub Actions
 OIDC with npm provenance; native assets, checksums, SBOMs and attestations are
-on the [`v0.6.1` release](https://github.com/gwendall/tasq/releases/tag/v0.6.1).
+on the [`v0.6.5` release](https://github.com/gwendall/tasq/releases/tag/v0.6.5).
 A package that carries no change in a release is not republished, so
 `@tasq-run/client` remains at the version it was last published at.
 The exact registry and release bytes pass the published lifecycle, migration,

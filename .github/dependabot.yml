@@ -1,0 +1,17 @@
+# Dependabot was told nothing, so it treated `apps/site` as its own project
+# and rewrote `apps/site/package.json` alone. The pnpm lockfile lives at the
+# workspace root, outside that directory, so it never moved and every job of
+# every Dependabot pull request died at `pnpm install --frozen-lockfile`.
+# Pointing the npm ecosystem at `/` gives Dependabot the whole pnpm workspace,
+# lockfile included.
+#
+# `open-pull-requests-limit: 0` turns off scheduled version updates. Security
+# updates ignore that limit and still open pull requests, and they now use the
+# directory named here.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
