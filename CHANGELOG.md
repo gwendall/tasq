@@ -8,6 +8,15 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- **The npm publish job was cancelled mid-release.** Its 20 minute budget had
+  to cover install, build, attestation and then a serial publish loop that
+  waits for the registry to serve each package as `latest` before starting the
+  next one. npm took over two minutes on one package during v0.6.7, the job
+  hit its timeout with a package still unpublished, and the GitHub release was
+  skipped. The budget now covers the whole loop.
+
 ## v0.6.7 - 2026-09-10
 
 Fixes found by installing 0.6.6 from the public installer and using it as a new adopter: the MCP handshake reported the wrong version, mcp refused --space, agent install refused its own contract's host id, backup wrote a database into a mistyped subcommand, and an unknown command named nothing to try.

@@ -1,5 +1,18 @@
 [
   {
+    "version": "Unreleased",
+    "date": null,
+    "note": null,
+    "groups": [
+      {
+        "kind": "Fixed",
+        "items": [
+          "**The npm publish job was cancelled mid-release.** Its 20 minute budget had to cover install, build, attestation and then a serial publish loop that waits for the registry to serve each package as `latest` before starting the next one. npm took over two minutes on one package during v0.6.7, the job hit its timeout with a package still unpublished, and the GitHub release was skipped. The budget now covers the whole loop."
+        ]
+      }
+    ]
+  },
+  {
     "version": "v0.6.7",
     "date": "2026-09-10",
     "note": null,
