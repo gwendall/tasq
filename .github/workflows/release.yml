@@ -101,7 +101,13 @@ jobs:
     needs: [identity, cli]
     runs-on: ubuntu-latest
     environment: release
-    timeout-minutes: 20
+    # The publish loop is serial and every package waits on registry
+    # propagation before the next one starts: npm accepted a tarball in
+    # seconds but took over two minutes to serve it as `latest`. Eight
+    # packages of that, plus install and build, ran past a 20 minute budget
+    # on v0.6.7 and the job was cancelled mid-loop with one package left.
+    # The budget has to cover the whole loop, not a typical package.
+    timeout-minutes: 45
     permissions:
       contents: read
       id-token: write

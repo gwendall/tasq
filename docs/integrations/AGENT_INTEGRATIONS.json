@@ -24,25 +24,25 @@
     "agents": "https://tasq.run/agents/",
     "llms": "https://tasq.run/llms.txt",
     "integration": "https://tasq.run/integration.json",
-    "installer": "https://tasq.run/install-v0.6.6.sh"
+    "installer": "https://tasq.run/install-v0.6.7.sh"
   },
   "acquisition": {
-    "version": "0.6.6",
+    "version": "0.6.7",
     "quickTry": [
-      ["bunx", "@tasq-run/cli@0.6.6", "version"],
-      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.6.6", "--", "tasq", "version"]
+      ["bunx", "@tasq-run/cli@0.6.7", "version"],
+      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.6.7", "--", "tasq", "version"]
     ],
     "persistentInstall": [
       "sh",
       "{downloadedInstallerPath}",
       "--version",
-      "0.6.6",
+      "0.6.7",
       "--prefix",
       "{absolutePrefix}"
     ],
     "inspectBeforeRun": [
-      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.6.6.sh"],
-      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.6.6", "--prefix", "{absolutePrefix}"]
+      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.6.7.sh"],
+      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.6.7", "--prefix", "{absolutePrefix}"]
     ],
     "uninstallPreservesData": true
   },

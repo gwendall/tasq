@@ -25,7 +25,7 @@ Local-first. One file you own. No account, no cloud, no telemetry.
 Try it without installing:
   npx @tasq-run/cli demo
 
-Current boundary: Tasq Local 0.6.6 is published for macOS ARM64 and Linux x64
+Current boundary: Tasq Local 0.6.7 is published for macOS ARM64 and Linux x64
 GNU. Local actors coordinate only when they share the same store and exact
 space. Tasq Server, remote MCP and the remote TypeScript, CLI and Python
 clients are published and certified. Managed Tasq Cloud is not available, and
