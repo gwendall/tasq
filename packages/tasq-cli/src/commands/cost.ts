@@ -1,4 +1,4 @@
-/** `tasq cost` — task budgets and observed attempt-cost receipts. */
+/** `tasq cost` - task budgets and observed attempt-cost receipts. */
 
 import {
   configureTaskCostBudget,

@@ -9,7 +9,7 @@
 #
 #   @libsql/client requires a platform-specific native module (.node)
 #   that Bun's `--compile` cannot fully bundle today. The launcher
-#   approach uses Bun + node_modules in-place — works perfectly on the
+#   approach uses Bun + node_modules in-place - works perfectly on the
 #   machine where you installed, and is trivially debuggable.
 #
 #   Migration to a true standalone binary is tracked for v0.2+ once we

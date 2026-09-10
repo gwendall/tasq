@@ -1,17 +1,17 @@
 /**
- * Recurrence (SPEC §6.4-H) — minimal neutral stored recurrence.
+ * Recurrence (SPEC §6.4-H) - minimal neutral stored recurrence.
  *
  * Two pieces:
  *   - recurrence calculation belongs to the DB-free life-planning profile;
  *     this module re-exports it for v1 compatibility.
- *   - `materializeNextInstance` — injected into `transitionTaskStatus` ONLY on the
+ *   - `materializeNextInstance` - injected into `transitionTaskStatus` ONLY on the
  *     done transition of a recurring task. It spawns a fresh `open` task one
  *     cadence-step from the chosen anchor, copying the template's identity +
  *     recurrence config, carries the streak forward, and records an
  *     `instance_generated` event. The completed instance stays terminal.
  *
  * The scheduling *intelligence* (which exact day, skip policy, on-time vs late)
- * stays L2 — L1 only steps the calendar and materializes the next row.
+ * stays L2 - L1 only steps the calendar and materializes the next row.
  */
 
 import {
@@ -36,7 +36,7 @@ export interface MaterializedInstance {
   /**
    * The deferred `instance_generated` event. The caller emits it via
    * `emitAfterCommit` once the surrounding transaction commits (so the external
-   * journal mirrors only what durably landed — matching the other mutations).
+   * journal mirrors only what durably landed - matching the other mutations).
    */
   event: EventT;
 }

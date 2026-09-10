@@ -1,5 +1,5 @@
 /**
- * ADR-021 — shared assumptions.
+ * ADR-021 - shared assumptions.
  *
  * An assumption is one immutable sentence that work rests on. Several
  * commitments share it, so withdrawing it once reaches all of them: at many

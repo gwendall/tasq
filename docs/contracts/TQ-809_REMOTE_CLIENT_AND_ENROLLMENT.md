@@ -1,6 +1,6 @@
-# TQ-809 — Remote client, CLI and enrollment
+# TQ-809 - Remote client, CLI and enrollment
 
-> **Status:** implemented and repository-certified — 2026-07-24
+> **Status:** implemented and repository-certified - 2026-07-24
 > **Public package status:** source candidate; not present in published `v0.3.0`
 > **Deployable Server status:** repository-certified container candidate; not published
 > **Decision:** `../decisions/ADR-010_REMOTE_CLIENT_AND_ENROLLMENT_BOUNDARY.md`

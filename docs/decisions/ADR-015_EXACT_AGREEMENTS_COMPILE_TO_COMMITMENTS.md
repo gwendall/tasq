@@ -1,6 +1,6 @@
-# ADR-015 — Exact agreements compile to commitments
+# ADR-015 - Exact agreements compile to commitments
 
-> **Status:** Accepted — 2026-08-10
+> **Status:** Accepted - 2026-08-10
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-627
 

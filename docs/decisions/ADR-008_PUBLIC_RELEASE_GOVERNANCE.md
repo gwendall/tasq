@@ -1,6 +1,6 @@
-# ADR-008 — Public release, package and governance boundary
+# ADR-008 - Public release, package and governance boundary
 
-> **Status:** Accepted — 2026-07-20
+> **Status:** Accepted - 2026-07-20
 > **Decision owner:** `@gwendall`
 > **Machine contract:** `../releases/PUBLIC_RELEASE_POLICY.json`
 > **Execution:** TQ-603 published protected `v0.1.0` after every external

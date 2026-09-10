@@ -1,4 +1,4 @@
-# TQ-628 — Settlement and Recourse Modules
+# TQ-628 - Settlement and Recourse Modules
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` gate

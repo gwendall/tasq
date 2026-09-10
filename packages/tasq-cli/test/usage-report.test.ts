@@ -78,3 +78,27 @@ describe("usage report", () => {
     expect(() => windowStart("soon", 0)).toThrow("--since takes a window");
   });
 });
+
+describe("reading a machine that runs several projects", () => {
+  test("says which spaces a directory is actually bound to", async () => {
+    // `--all` lists every space the store holds. On a working machine most of
+    // them are test residue - 16 of 18 here - and nothing separated those from
+    // a real project, so the first cross-project read was mostly noise. A
+    // space no directory is bound to was never set up by anyone.
+    const { home, project } = sandbox();
+    await json(home, project, ["setup", "--space", "acme/app", "--actor", "gwendall"]);
+    // A space created without ever binding a directory: the shape every test
+    // fixture leaves behind.
+    await json(home, project, ["onboard", "--space", "scratch/residue", "--actor", "gwendall", "--capabilities", "read"]);
+
+    const report = await json(home, project, ["usage", "--all"]);
+    const spaces = Object.fromEntries(
+      report.spaces.map((space: { workspaceId: string; boundDirectories: number }) => [space.workspaceId, space.boundDirectories]),
+    );
+    expect(spaces["acme/app"]).toBe(1);
+    expect(spaces["scratch/residue"]).toBe(0);
+
+    const human = await run(home, project, ["usage", "--all"]);
+    expect(human).toContain("1 space(s) no directory is bound to");
+  });
+});

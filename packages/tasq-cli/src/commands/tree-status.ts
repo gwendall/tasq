@@ -1,7 +1,7 @@
 /**
- * `tasq tree <task-id>`         — print a task + descendants
- * `tasq task status <task-id>`  — progress + ETA for a task with sub-tasks
- * `tasq project status <id>`    — progress + ETA for a project
+ * `tasq tree <task-id>`         - print a task + descendants
+ * `tasq task status <task-id>`  - progress + ETA for a task with sub-tasks
+ * `tasq project status <id>`    - progress + ETA for a project
  *
  * All accept --json and short id prefixes.
  */
@@ -151,7 +151,7 @@ function renderProgressText(progress: Progress, scope: "task" | "project"): void
     printInfo(`  ${color.bold("ETA")}  ${formatDuration(eta.remainingMs)}  ${color.dim(`(based on ${eta.sampleSize} similar completions ; mean interval ${formatDuration(eta.meanCompletionIntervalMs)})`)}`);
     printInfo(`         ${color.dim("→ ~" + new Date(eta.estimatedCompletionAt).toISOString().slice(0, 10))}`);
   } else {
-    printInfo(`  ${color.dim("ETA  (insufficient data — need ≥ 3 recent completions in the same area)")}`);
+    printInfo(`  ${color.dim("ETA  (insufficient data - need ≥ 3 recent completions in the same area)")}`);
   }
 }
 

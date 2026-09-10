@@ -1,4 +1,4 @@
-# TQ-305 — Universal connector conformance
+# TQ-305 - Universal connector conformance
 
 > **Implemented 2026-07-18.** `@tasq-run/extension-sdk` now contains a
 > provider-neutral declaration, classified failure envelope and DB-free

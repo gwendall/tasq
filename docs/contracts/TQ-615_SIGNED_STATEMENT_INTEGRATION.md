@@ -1,4 +1,4 @@
-# TQ-615 — Signed-statement domain and surface integration
+# TQ-615 - Signed-statement domain and surface integration
 
 > **Status:** done in source
 > **Date:** 2026-07-24

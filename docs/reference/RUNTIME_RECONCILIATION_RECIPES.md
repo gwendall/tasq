@@ -1,4 +1,4 @@
-# TQ-304 — durable-runtime reconciliation recipes
+# TQ-304 - durable-runtime reconciliation recipes
 
 > Implemented 2026-07-19. These recipes integrate Temporal, Restate and
 > LangGraph with Tasq without adding any of those runtimes to the kernel or to

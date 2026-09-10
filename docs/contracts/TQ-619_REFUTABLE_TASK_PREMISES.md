@@ -1,4 +1,4 @@
-# TQ-619 — Observation-backed, refutable task premises
+# TQ-619 - Observation-backed, refutable task premises
 
 > **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11

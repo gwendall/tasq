@@ -53,14 +53,14 @@ describe("Markdown projection snapshot", () => {
 
       await createArea(db, {
         id: kamiId,
-        name: "Career — Kami",
+        name: "Career - Kami",
         slug: "kami",
         importance: 5,
         cadenceTarget: "daily",
       });
       await createArea(db, {
         id: bodyId,
-        name: "Health — Body",
+        name: "Health - Body",
         slug: "body",
         importance: 5,
         cadenceTarget: "3x/week",
@@ -152,10 +152,10 @@ describe("Markdown projection snapshot", () => {
       const md = await renderProjection(db, { now: FIXED_NOW });
 
       // Structural assertions (insensitive to timestamp/short-id which vary)
-      expect(md).toContain("# TASKS.md — Active tasks (projection of tasq)");
+      expect(md).toContain("# TASKS.md - Active tasks (projection of tasq)");
       expect(md).toContain("## 🎯 Top priorities");
-      expect(md).toContain("## Career — Kami");
-      expect(md).toContain("## Health — Body");
+      expect(md).toContain("## Career - Kami");
+      expect(md).toContain("## Health - Body");
       expect(md).toContain("📥 Inbox");
       expect(md).toContain("Closed in last 30 days");
 

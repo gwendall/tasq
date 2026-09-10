@@ -1,4 +1,4 @@
-# TQ-813 — Attention webhook
+# TQ-813 - Attention webhook
 
 > **Status:** done
 > **Date:** 2026-07-24

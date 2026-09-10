@@ -1,4 +1,4 @@
-# TQ-632 — Delegated-action certification and physical-verification Profile
+# TQ-632 - Delegated-action certification and physical-verification Profile
 
 > **Status:** source certified; private reference Profile, not a marketplace,
 > provider network, hosted service or remote-effect release
@@ -19,7 +19,7 @@ exact target + bounded authority + accepted terms + qualification
 ```
 
 No test adds a provider field or domain branch to Core. Each domain composes
-the TQ-622–TQ-631 Interfaces and keeps the distinctions that carry safety:
+the TQ-622-TQ-631 Interfaces and keeps the distinctions that carry safety:
 identity is not authority; assignment is not consent; runtime success is not
 completion; evidence is not truth; settlement is not payment execution; a
 signed observation is not custody election.

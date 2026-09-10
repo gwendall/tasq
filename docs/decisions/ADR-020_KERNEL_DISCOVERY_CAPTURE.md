@@ -1,4 +1,4 @@
-# ADR-020 — Discovery capture belongs to the kernel
+# ADR-020 - Discovery capture belongs to the kernel
 
 - **Status:** Accepted - 2026-08-26
 - **Decision owner:** Tasq kernel ontology and agent-facing surfaces
@@ -24,8 +24,8 @@ writer transaction, without widening, renewing or releasing the caller's claim.
 It is unreachable from MCP.
 
 `captureDiscovery` lives in `packages/tasq-service/src/service/discoveries.ts`.
-The MCP server consumes `@tasq-run/core`. So the flagship integration — *point
-Claude Code, Codex or any MCP client at the same ledger* — exposes 44 tools and
+The MCP server consumes `@tasq-run/core`. So the flagship integration - *point
+Claude Code, Codex or any MCP client at the same ledger* - exposes 44 tools and
 none of them can report a defect. The agents best placed to notice one have no
 way to record it without leaving their task and shelling out to a CLI.
 
@@ -117,8 +117,8 @@ unable to report, and the shared-ledger direction cannot work: a commons where
 users' agents publish findings requires that agents can file at all.
 
 **Rejected alternative: a thin MCP-only wrapper calling the service.** It would
-invert the dependency the architecture is built on — the MCP server would reach
-past `@tasq-run/core` into a profile package — for the sake of avoiding a kernel
+invert the dependency the architecture is built on - the MCP server would reach
+past `@tasq-run/core` into a profile package - for the sake of avoiding a kernel
 decision that P10 supports.
 
 ## 6. Verification

@@ -1,4 +1,4 @@
-# Tasq CLI JSON contract — v1
+# Tasq CLI JSON contract - v1
 
 > Stable machine interface for `tasq ... --json`. This contract covers the
 > agentic commitment primitives, typed external waits and evidence-backed completion. The Zod entity
@@ -141,10 +141,14 @@ remain part of the current protected release line:
   names the directories already bound to it, which is reported rather than
   refused. Setting a project up in the home directory or at the filesystem
   root is refused.
-- `tasq demo --json` returns `tasq.isolated-demo.v1` with
+- `tasq demo --json` returns `tasq.isolated-demo.v2` with
   `contractVersion`, `isolation`, `liveHomeConsulted`, `setup`, `created`,
-  `before`, `completed` and `after`. Every nested command executes in a
-  temporary `TASQ_HOME` removed before the parent command exits.
+  `claimed`, `refusals`, `evidence`, `completed` and `after`. `refusals`
+  reports the three the demo provokes on purpose - `secondClaim`,
+  `closeByNonHolder` and `closeWithoutEvidence` - because a demo that only
+  shows the happy path shows nothing about what the ledger refuses. Every
+  nested command executes in a temporary `TASQ_HOME` removed before the parent
+  command exits.
 - `tasq agent install <host> ... --json` returns
   `tasq.agent-install-plan.v1` with `contractVersion`, `host`, `executable`,
   `space`, `actor`, `capabilities`, `mutatesHost`, `applyArgv`,
@@ -222,27 +226,41 @@ These additive operational surfaces are independently versioned:
   rather than zero) and `unusedRitual` (observable commands with no event in
   the window). `capture` is counted from `dependency_added` events whose
   relation type is `discovered_from`. With `--all` it additively carries
-  `spaces[]` (`{workspaceId, adoptedAt, lastActivityAt, events, actors, ritual,
-  unusedRitual}`, most recently active first), which is how one machine running
-  several projects is read without running the report once per project. When
+  `spaces[]` (`{workspaceId, boundDirectories, adoptedAt, lastActivityAt,
+  events, actors, ritual, unusedRitual}`, most recently active first), which is
+  how one machine running several projects is read without running the report
+  once per project. `boundDirectories` counts the directories bound to that
+  space: a space nobody bound was never set up by anyone, which is what
+  separates a real project from test residue in the same store. When
   the private command journal holds anything in the window it additively
   carries `commands` (`{invocations, failures, byHarness, byVersion, failing[],
-  reads}`), described below.
+  reads}`), described below. `reads` counts read commands the ledger cannot
+  see, keyed by the shape actually invoked: a top-level verb (`next`) or a verb
+  and its read subcommand (`attempt list`).
 - `~/.tasq/commands.jsonl` holds one `tasq.command-record.v1` line per
   invocation, successes included: `contractVersion`, `recordedAt`, `version`,
-  `platform`, `architecture`, `harness`, `space`, `actor`, `command`,
+  `platform`, `architecture`, `harness`, `space`, `command`,
   `subcommand`, `flags`, `exitCode`, `code`, `message`, `durationMs`. The
   ledger records only mutations that SUCCEED, so reads and refusals - the two
   signals that say whether the product fits the hand using it - were invisible
   to every report. The file is private (`0600`), never leaves the machine on
   its own, and obeys the offline-feedback privacy rule (TQ-636): the
   `subcommand` comes from the same vetted allowlist, positional and flag VALUES
-  are never stored, and identifiers are redacted out of `message`.
+  are never stored, the actor label is not recorded at all, and identifiers are
+  redacted out of `message`.
 - `tasq doctor --json` additively includes the executable `storeFormat`.
 - `tasq doctor --json` additively includes `config`, the report below, and `ok`
   is false when that report is. When the directory is not bound and the global
   default belongs to another project, the store cannot be opened; the report is
   then `{ok: false, config, storeSkipped}` with the refusal as `storeSkipped`.
+- `tasq doctor --json` additively includes `agentInstructions`
+  `{state, target, version, expectedVersion, reason}`, where `state` is
+  `current`, `stale`, `unverified` or `absent`. It describes the managed block
+  the closest `AGENTS.md` above the working directory carries, because
+  upgrading the executable never rewrites a block a project already has. It
+  never changes `ok`: a stale block is drift to repair, and failing `doctor`
+  everywhere a project has not re-run `setup` would turn an upgrade into an
+  outage.
 - `tasq doctor --config [--prune-bindings] --json` returns
   `tasq.config-doctor.v1` without opening any store: `contractVersion`, `ok`,
   `configPath`, the canonical `directory`, `effective`, `managedBlock`, `drift`,
@@ -604,9 +622,9 @@ are:
 ```text
 contractVersion, inspectedAt, workspaceId, commitment, principals,
 assignments, relations, claims, attempts, artifacts, effects, effectApprovals,
-effectReceipts, evidence,
+effectReceipts, evidence, completionRecords,
 resolutionContracts, evidenceTrustRecords, completionProposals,
-completionChallenges, validationDecisions, completionRecords,
+completionChallenges, validationDecisions, signedStatementProofs,
 conditions, observations, reconciliations, externalRefs,
 externalContextLinks, events, resumeCursor
 ```

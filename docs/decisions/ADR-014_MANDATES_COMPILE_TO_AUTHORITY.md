@@ -1,6 +1,6 @@
-# ADR-014 — Mandates compile to live authority
+# ADR-014 - Mandates compile to live authority
 
-> **Status:** Accepted — 2026-08-10
+> **Status:** Accepted - 2026-08-10
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-626
 

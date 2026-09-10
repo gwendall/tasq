@@ -1,5 +1,5 @@
 /**
- * CLI E2E tests — spawn `bun run src/index.ts` as a subprocess with
+ * CLI E2E tests - spawn `bun run src/index.ts` as a subprocess with
  * isolated HOME and verify outputs.
  *
  * These tests exercise the actual command-line surface the way an agent
@@ -371,7 +371,7 @@ describe("CLI meta commands", () => {
     expect(r.stdout).toContain("next [--limit N]");
   });
 
-  it("`--json` is NOT mistaken for help — `next --json` still runs", async () => {
+  it("`--json` is NOT mistaken for help - `next --json` still runs", async () => {
     const home = await freshHome();
     await runOk(home, ["init"]);
     const r = await runOk(home, ["next", "--json"]);
@@ -1746,7 +1746,7 @@ describe("areas", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Tasks — full lifecycle
+// Tasks - full lifecycle
 // ──────────────────────────────────────────────────────────────────────
 
 describe("tasks lifecycle", () => {
@@ -1883,7 +1883,7 @@ describe("tasks lifecycle", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Dependencies — depend / undepend, show surfacing, cycle guard, just-unblocked
+// Dependencies - depend / undepend, show surfacing, cycle guard, just-unblocked
 // ──────────────────────────────────────────────────────────────────────
 
 describe("dependencies", () => {
@@ -1991,7 +1991,7 @@ describe("dependencies", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Goal + project — short-id resolution + transitions
+// Goal + project - short-id resolution + transitions
 // ──────────────────────────────────────────────────────────────────────
 
 describe("goal + project commands", () => {
@@ -2375,7 +2375,7 @@ describe("concurrency", () => {
     expect(creates.length).toBe(5);
   });
 
-  it("20 simultaneous adds — stress check, no lost writes", async () => {
+  it("20 simultaneous adds - stress check, no lost writes", async () => {
     // Harder version of the test above. If retry isn't wired or busy_timeout
     // is too low, this is the case that flakes.
     const home = await freshHome();
@@ -2412,7 +2412,7 @@ describe("concurrency", () => {
     expect(creates.length).toBe(1);
   });
 
-  it("`add` is NOT idempotent — running it twice creates TWO tasks", async () => {
+  it("`add` is NOT idempotent - running it twice creates TWO tasks", async () => {
     // Documents the corrected mental model: each `tasq add` mints a fresh
     // uuidv7, so a whole-command replay would DUPLICATE (which is exactly why
     // runWithRetry no longer replays mutating commands). Two explicit adds of
@@ -2439,7 +2439,7 @@ describe("concurrency", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Durability — event journal + backup
+// Durability - event journal + backup
 // ──────────────────────────────────────────────────────────────────────
 
 describe("durability", () => {
@@ -2697,7 +2697,7 @@ describe("durability", () => {
     rmSync(join(home, ".tasq", "db.sqlite-wal"), { force: true });
     rmSync(join(home, ".tasq", "db.sqlite-shm"), { force: true });
 
-    // Journal is untouched — recovery is possible
+    // Journal is untouched - recovery is possible
     expect(existsSync(journalPath)).toBe(true);
     const linesAfter = readFileSync(journalPath, "utf-8").trim().split("\n");
     expect(linesAfter).toEqual(linesBefore);
@@ -2833,7 +2833,7 @@ describe("durability", () => {
     await runOk(home, ["init"]);
     await runOk(home, ["area", "add", "K", "--slug", "k", "--importance", "3"]);
 
-    // Make 3 backups, then a 4th with --rotate 2 — should keep the 2 most recent.
+    // Make 3 backups, then a 4th with --rotate 2 - should keep the 2 most recent.
     for (let i = 0; i < 3; i++) {
       await runOk(home, ["backup", "--json"]);
       // tiny delay so mtimes differ enough for sort stability

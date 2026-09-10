@@ -2,7 +2,7 @@
  * Shared CLI helpers for resolving entity ids from short prefixes.
  *
  * UUIDv7 prefixes encode a millisecond timestamp, so two entities created in
- * the same millisecond share their first 8 chars — short prefixes are
+ * the same millisecond share their first 8 chars - short prefixes are
  * ergonomic but can legitimately collide. The lookup distinguishes
  * "not found" from "ambiguous" so callers can surface the full candidate
  * ids and let the user disambiguate with a longer prefix.

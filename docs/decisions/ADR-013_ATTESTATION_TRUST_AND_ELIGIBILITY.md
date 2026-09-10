@@ -1,6 +1,6 @@
-# ADR-013 — Attestation trust and eligibility separation
+# ADR-013 - Attestation trust and eligibility separation
 
-> **Status:** Accepted — 2026-08-10
+> **Status:** Accepted - 2026-08-10
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-625
 

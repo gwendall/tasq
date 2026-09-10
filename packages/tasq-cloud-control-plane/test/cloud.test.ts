@@ -41,7 +41,7 @@ function authority(now: () => number) {
   };
 }
 
-describe("TQ-901–TQ-905 managed Cloud source candidate", () => {
+describe("TQ-901-TQ-905 managed Cloud source candidate", () => {
   test("requires secret-free local URLs and separate credentials for remote libSQL", () => {
     expect(cloudControlPlaneDatabase({ url: " file:/tmp/control.sqlite " })).toEqual({
       url: "file:/tmp/control.sqlite",

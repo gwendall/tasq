@@ -183,6 +183,9 @@ export async function waitCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(conditions);
+      // Silence on an empty list reads as a broken command to whoever runs it
+      // first, which is exactly when there is nothing to list.
+      else if (conditions.length === 0) printInfo(color.dim("(nothing is waiting on anything - `tasq wait create <task-id>`)"));
       else for (const item of conditions) {
         printInfo(`${color.dim(shortId(item.id))}  ${colorizeStatus(item.status).padEnd(12)} ${item.kind}  task:${shortId(item.taskId)}`);
       }
@@ -222,6 +225,7 @@ export async function waitCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(candidates);
+      else if (candidates.length === 0) printInfo(color.dim("(no observation matches this condition yet)"));
       else for (const item of candidates) printInfo(`${color.dim(shortId(item.id))}  ${item.kind}  ${item.source}  ${item.subjectRef}`);
       return 0;
     }
@@ -309,6 +313,7 @@ export async function observationCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(observations);
+      else if (observations.length === 0) printInfo(color.dim("(no observations recorded here)"));
       else for (const item of observations) printInfo(`${color.dim(shortId(item.id))}  ${item.kind}  ${item.source}  ${new Date(item.recordedAt).toISOString()}`);
       return 0;
     }
@@ -357,6 +362,7 @@ export async function reconcileCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(rows);
+      else if (rows.length === 0) printInfo(color.dim("(nothing has been reconciled here)"));
       else for (const item of rows) printInfo(`${color.dim(shortId(item.id))}  ${item.decision.padEnd(10)} ${item.effect.padEnd(18)} wait:${shortId(item.conditionId)} obs:${shortId(item.observationId)}`);
       return 0;
     }

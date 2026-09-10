@@ -1,5 +1,5 @@
 /**
- * `tasq store` — the recovery half of the migration safety envelope.
+ * `tasq store` - the recovery half of the migration safety envelope.
  *
  * PUBLIC_RELEASE_POLICY names `restore-matching-verified-pre-migration-snapshot-and-binary`
  * as the rollback rule in three places, and the migration machinery already

@@ -1,4 +1,4 @@
-# TQ-811 — Hosted human actions
+# TQ-811 - Hosted human actions
 
 > **Status:** exact published Server image browser gate passed
 > **Date:** 2026-08-12

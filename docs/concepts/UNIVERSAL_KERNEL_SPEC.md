@@ -1,7 +1,7 @@
-# Tasq Universal Coordination Kernel — specification
+# Tasq Universal Coordination Kernel - specification
 
-> **Status:** accepted v1.0 — 2026-07-15  
-> **Acceptance:** UK-001–UK-008, UK-EXT and generic TQ-107 inspection are
+> **Status:** accepted v1.0 - 2026-07-15<br>
+> **Acceptance:** UK-001-UK-008, UK-EXT and generic TQ-107 inspection are
 > completed; five cross-domain watcher fixtures and the real isolated `_life`
 > adapter loop, machine onboarding (UK-009), neutral MCP Tasks/A2A mappings
 > (UK-010) and cross-runtime universal acceptance (UK-011) now pass.
@@ -96,80 +96,80 @@ may silently take ownership of another layer's truth.
 
 ## 3. Design principles
 
-### P1 — Commitment is not execution
+### P1 - Commitment is not execution
 
 A commitment describes an outcome that must become true. An attempt describes
 one execution toward it. A successful tool call, workflow or remote-agent task
 may close an attempt without completing the commitment.
 
-### P2 — Assignment is not a claim
+### P2 - Assignment is not a claim
 
 Assignment records responsibility or delegation. A claim is an exclusive,
 expiring coordination lease. An assignee may be responsible while temporarily
 holding no claim; a runtime may hold a claim only while actively executing.
 
-### P3 — Output is not evidence
+### P3 - Output is not evidence
 
 An artifact is something an attempt produced. Evidence is an immutable binding
 that says why an artifact, observation or receipt supports a success criterion.
 Not every artifact is evidence, and evidence must retain provenance.
 
-### P4 — Observation is not interpretation
+### P4 - Observation is not interpretation
 
 A connector records a typed fact. A deterministic reconciler relates it to a
 condition. A model may propose a decision for an unsupported semantic case, but
 cannot rewrite an observation or impersonate a deterministic matcher.
 
-### P5 — Authorization is not execution
+### P5 - Authorization is not execution
 
 An approval binds a principal to an exact effect digest, scope, limits and
 expiry. Execution creates a distinct attempt. Provider success creates a
 receipt. None of these records substitutes for another.
 
-### P6 — Current state is authoritative
+### P6 - Current state is authoritative
 
 Tasq is state-based with append-only audit. Events provide ordering,
 attribution and integration cursors; they are not a replay-complete event
 sourcing protocol.
 
-### P7 — Extensions are data plus trusted code, never stored code
+### P7 - Extensions are data plus trusted code, never stored code
 
 Records name absolute, versioned type identifiers. Installed extension code
 parses and evaluates those types. Tasq never evaluates JavaScript, SQL, prompts
 or expressions supplied inside a record.
 
-### P8 — Historical meaning is frozen
+### P8 - Historical meaning is frozen
 
 Schema version, evaluator version and meaningful identity fields never change
 silently. A changed interpretation requires a new version and an explicit
 migration or reconciliation policy.
 
-### P9 — The kernel is portable; policy is replaceable
+### P9 - The kernel is portable; policy is replaceable
 
 The same records must be usable by a local CLI, an embedded process, an MCP
 server, an A2A adapter or a durable runtime without changing their semantics.
 
-### P10 — Universality is demonstrated, not asserted
+### P10 - Universality is demonstrated, not asserted
 
 No primitive enters the kernel merely because it sounds general. It must
 prevent a concrete failure in at least two unrelated domains and pass the
 cross-domain conformance suite.
 
-### P11 — Lifecycle and actionability are different
+### P11 - Lifecycle and actionability are different
 
 `blocked` is an explicit commitment lifecycle state chosen by an authorized
 caller. Dependencies, conditions, schedules and claims contribute to a derived
 actionability view; they MUST NOT silently rewrite lifecycle state. This keeps
 facts, policy and intent distinguishable.
 
-### P12 — Exactly-once stops at the ledger boundary
+### P12 - Exactly-once stops at the ledger boundary
 
 Tasq can guarantee one accepted ledger mutation for one idempotency identity.
 It cannot guarantee exactly-once behavior in an arbitrary external provider.
 Effects therefore require provider idempotency where available, durable
 receipts and an `indeterminate` outcome when dispatch cannot be proven.
 
-### P13 — Generic metadata is not a shadow schema
+### P13 - Generic metadata is not a shadow schema
 
 Metadata MUST be size-bounded, JSON-serializable and namespace-owned. Kernel
 invariants MUST NOT depend on unregistered metadata fields. A field that drives
@@ -181,7 +181,7 @@ schema.
 The target model is split into three capability tiers. Tiers describe semantic
 dependency, not separate products.
 
-### 4.1 K0 — Commitment and collaboration
+### 4.1 K0 - Commitment and collaboration
 
 #### `workspace`
 
@@ -256,11 +256,11 @@ revision, created_by, created_at, ended_by, ended_at
 First-party relation types. Every one has a writer; a declared type nothing
 produces is indistinguishable, to a reader, from one that works (ADR-023):
 
-- `depends_on` — the `from` commitment is not actionable until `to` resolves;
-- `discovered_from` — informational provenance from newly captured work to the
+- `depends_on` - the `from` commitment is not actionable until `to` resolves;
+- `discovered_from` - informational provenance from newly captured work to the
   commitment whose execution exposed it; never affects actionability;
-- `relates_to` — non-causal association;
-- `duplicates` — identity/intent overlap.
+- `relates_to` - non-causal association;
+- `duplicates` - identity/intent overlap.
 
 **Decomposition is not a relation.** A commitment has exactly one parent or
 none, and `task.parentTaskId` gets that from a foreign key; a relation table
@@ -269,8 +269,8 @@ Decomposition answers *what is this made of*, dependency answers *who is
 waiting on what*, and only the second is many-to-many.
 
 **Correction lineage is not a relation either.** What supersedes what is
-type-specific — `supersedesEvidenceId`, `supersedesSummaryId`,
-`supersedesLinkId` — each with its own uniqueness rule.
+type-specific - `supersedesEvidenceId`, `supersedesSummaryId`,
+`supersedesLinkId` - each with its own uniqueness rule.
 
 Extensions may add namespaced types. Relation descriptors declare direction,
 allowed endpoint types, symmetry and whether cycles are forbidden.
@@ -395,7 +395,7 @@ new one. The initial kernel ships only explicit `assertion` and
 `evidence-required` policies; stricter domain policy may prevent a caller from
 requesting completion but cannot forge kernel evidence.
 
-### 4.2 K1 — External world bridge
+### 4.2 K1 - External world bridge
 
 #### `condition`
 
@@ -469,7 +469,7 @@ The tuple `(condition, observation, evaluator URI, evaluator version,
 implementation digest)` has one durable result. Conflicting retry output is an
 integrity failure, not a second opinion.
 
-### 4.3 K2 — Authority and effects
+### 4.3 K2 - Authority and effects
 
 K2 is required before Tasq can safely coordinate consequential external writes.
 
@@ -771,20 +771,20 @@ code, money, network and filesystem facts.
 
 Kernelisation must be additive and preserve every existing Tasq store.
 
-### Phase U0 — Freeze and inventory
+### Phase U0 - Freeze and inventory
 
 - preserve this accepted specification as the UK-001 boundary;
 - inventory every current field, event and CLI JSON key;
 - classify each as kernel, extension, policy or legacy compatibility;
 - freeze the current v1 JSON contract before changing representation.
 
-No v1 field or command is removed during U0–U5. Deprecation begins only after
+No v1 field or command is removed during U0-U5. Deprecation begins only after
 UK-011. Removal requires an opt-in public v2, at least one preceding minor
 release with warnings, an automatic migration, and a `doctor` check proving no
 legacy-only record remains. This criterion-based window replaces an arbitrary
 calendar deadline.
 
-### Phase U1 — Introduce generic identities
+### Phase U1 - Introduce generic identities
 
 - add principal and external-reference records;
 - map existing actor strings to local self-asserted principal aliases;
@@ -792,9 +792,9 @@ calendar deadline.
 - backfill first-party URIs deterministically;
 - add monotone revisions beside timestamp-based mutation checks;
 - continue reading and writing old fields through one service-owned
-  compatibility adapter—never two independent sources of truth.
+  compatibility adapter - never two independent sources of truth.
 
-### Phase U2 — Extract extensions
+### Phase U2 - Extract extensions
 
 - introduce the extension manifest/registry;
 - snapshot canonical schemas and manifests by digest;
@@ -802,14 +802,14 @@ calendar deadline.
 - have the core depend only on extension interfaces;
 - prove byte-equivalent decisions for every historical fixture.
 
-### Phase U3 — Separate policy and planning profile
+### Phase U3 - Separate policy and planning profile
 
 - move cadence, avoidance scoring and `_life` projection behind policy/profile
   interfaces;
 - preserve existing commands through the bundled planning profile;
 - allow a minimal deployment with commitments and relations only.
 
-### Phase U4 — Complete collaboration records
+### Phase U4 - Complete collaboration records
 
 - add explicit assignment/delegation;
 - add artifacts distinct from evidence;
@@ -817,7 +817,7 @@ calendar deadline.
 - make principal references available on claims, attempts, evidence and events;
 - preserve actor-string output aliases in CLI JSON v1 until a deliberate v2.
 
-### Phase U5 — Adapter and conformance release
+### Phase U5 - Adapter and conformance release
 
 - add MCP Tasks and A2A mappings;
 - publish the embedded API and extension SDK;
@@ -833,7 +833,7 @@ may remain historical while public semantics and interfaces generalize.
 All three scenarios must run on the same unmodified kernel. Domain packages may
 provide schemas, evaluators and policies; they may not add kernel tables.
 
-### Scenario A — Software delivery
+### Scenario A - Software delivery
 
 ```text
 commitment: ship a bug fix
@@ -853,7 +853,7 @@ Required failures: stale worker effect rejected, duplicate webhook deduplicated,
 remote task success without merge evidence leaves the commitment open, and
 reversing dependency direction is caught by the actionability assertion.
 
-### Scenario B — Research and human acceptance
+### Scenario B - Research and human acceptance
 
 ```text
 commitment: produce a decision-ready market report
@@ -870,7 +870,7 @@ Required failures: replacing the report invalidates approval, an agent cannot
 self-approve a human-bound criterion, rejected work remains inspectable, and a
 reopened/recompleted report retains both completion records.
 
-### Scenario C — Operations and external health
+### Scenario C - Operations and external health
 
 ```text
 commitment: deploy service version N and establish health
@@ -1010,10 +1010,10 @@ question:
    the registry by content digest. Evaluator code remains installed trusted code
    and each evaluator identity is permanently bound to an implementation
    digest.
-4. **Compatibility window:** preserve all v1 commands/fields throughout U0–U5
+4. **Compatibility window:** preserve all v1 commands/fields throughout U0-U5
    and the first universal release. Removal requires opt-in v2, one prior minor
    release with warnings, an automatic migration and a clean legacy `doctor`
-   check—not an arbitrary date.
+   check - not an arbitrary date.
 5. **Artifacts:** artifacts are first-class before protocol adapters and
    cross-domain acceptance. Evidence cannot safely stand in for produced
    outputs.
@@ -1074,17 +1074,17 @@ runtime execution into the kernel.
 ## 15. Accepted implementation order
 
 ```text
-UK-001  DONE — accepted universal boundary and terminology
-UK-002  DONE — executable inventory + compatibility matrix
-UK-003  DONE — generic type/evaluator URI registry beside current enums
-UK-004  DONE — extract five current domains as reference extensions
-UK-005  DONE — extract life planning/prioritization/projection profile
-UK-006  DONE — principal + assignment + relation + external_ref + artifact + completion records
-UK-007  DONE — three-domain conformance harness
-UK-008  DONE — authorized generic TQ-107 inspection/projection/cursor integration
-UK-009  DONE — machine discovery + safe cold-start onboarding
-UK-010  DONE — MCP Tasks + A2A attempt adapters
-UK-011  DONE — real cross-runtime dogfood and universal-kernel acceptance
+UK-001  DONE - accepted universal boundary and terminology
+UK-002  DONE - executable inventory + compatibility matrix
+UK-003  DONE - generic type/evaluator URI registry beside current enums
+UK-004  DONE - extract five current domains as reference extensions
+UK-005  DONE - extract life planning/prioritization/projection profile
+UK-006  DONE - principal + assignment + relation + external_ref + artifact + completion records
+UK-007  DONE - three-domain conformance harness
+UK-008  DONE - authorized generic TQ-107 inspection/projection/cursor integration
+UK-009  DONE - machine discovery + safe cold-start onboarding
+UK-010  DONE - MCP Tasks + A2A attempt adapters
+UK-011  DONE - real cross-runtime dogfood and universal-kernel acceptance
 ```
 
 Effect/approval implementation begins only after the generic identity and

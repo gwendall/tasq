@@ -1,6 +1,6 @@
-# ADR-003 — Replica identity, synchronization order and conflict model
+# ADR-003 - Replica identity, synchronization order and conflict model
 
-- **Status:** Accepted — 2026-07-19
+- **Status:** Accepted - 2026-07-19
 - **Implements:** TQ-404
 - **Depends on:** TQ-402 ordered delivery, TQ-403 durable idempotency,
   ADR-UK-006 collaboration records, ADR-006 machine discovery
@@ -522,7 +522,7 @@ key rotation even after local sync conformance passes.
 
 ## 17. Alternatives and adopted ideas
 
-### Replicache-style mutation replay and rebase — adopted selectively
+### Replicache-style mutation replay and rebase - adopted selectively
 
 Replicache gives each client sequential mutation IDs, reruns named mutations
 on canonical server state and rebases pending local mutations after pull. That
@@ -532,7 +532,7 @@ effect authority rather than letting arbitrary mutator code silently choose a
 branch. See the official [sync model](https://doc.replicache.dev/concepts/how-it-works)
 and [push contract](https://doc.replicache.dev/reference/server-push).
 
-### Electric immutable synced state plus persistent optimistic state — adopted
+### Electric immutable synced state plus persistent optimistic state - adopted
 
 Separating canonical synced state from pending local writes makes rollback and
 rebase intelligible. Tasq uses this logical separation even when both live in
@@ -540,7 +540,7 @@ one SQLite file. Electric's current write guide likewise calls out manual
 conflict display and causal rollback for rejected offline writes. See
 [Electric writes](https://electric-sql.com/docs/guides/writes).
 
-### Automerge/CRDT for the complete ledger — rejected
+### Automerge/CRDT for the complete ledger - rejected
 
 Automerge's actor+counter operations and inspectable multi-value conflicts are
 useful precedents. Its generic JSON merge is not sufficient for guarded task
@@ -548,7 +548,7 @@ state machines, graph cycles, approval chains, leases or external effects.
 Tasq adopts stable operation dots and visible variants, not CRDT ownership of
 domain semantics. See [Automerge conflicts](https://automerge.org/docs/reference/documents/conflicts/).
 
-### CouchDB revision trees and deterministic hidden winner — rejected as UX
+### CouchDB revision trees and deterministic hidden winner - rejected as UX
 
 CouchDB correctly treats conflicts as durable state and retains losing
 revisions, but default reads expose a deterministic arbitrary winner unless a
@@ -557,24 +557,24 @@ in normal inspection and keeps the authority's already-accepted state merely
 as a provisional canonical base. See the official
 [replication/conflict model](https://docs.couchdb.org/en/stable/replication/conflicts.html).
 
-### Wall-clock LWW — rejected
+### Wall-clock LWW - rejected
 
 Edit-time LWW cannot distinguish causality, rewards clock skew and silently
 turns a testing clock into business authority. Preserving a loser in an audit
 event is not enough if normal reads claim the winner is resolved.
 
-### Raw LibSQL/Turso or SQLite row replication — rejected
+### Raw LibSQL/Turso or SQLite row replication - rejected
 
 It would bypass service validation, CAS, idempotency, events, extension parsing
 and effect authority while copying local delivery/configuration state.
 
-### Audit event replay — rejected
+### Audit event replay - rejected
 
 Tasq is state-based, not event-sourced. Current event payloads are intentionally
 human/audit projections and do not contain every validated command input,
 generated ID, precondition or multi-row result.
 
-### Symmetric peer-to-peer multi-master — deferred
+### Symmetric peer-to-peer multi-master - deferred
 
 It would require consensus or domain-specific CRDTs for leases, fences,
 deadline races and effect authority. Authority-coordinated sync solves the

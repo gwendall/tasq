@@ -1,4 +1,4 @@
-/** TQ-314 — hermetic Level-A/B zero-integrator onboarding matrix. */
+/** TQ-314 - hermetic Level-A/B zero-integrator onboarding matrix. */
 
 import { afterAll, beforeAll, describe, expect, test, setDefaultTimeout } from "bun:test";
 import {
@@ -113,7 +113,7 @@ afterAll(() => {
   while (roots.length > 0) rmSync(roots.pop()!, { recursive: true, force: true });
 });
 
-describe("TQ-314 Level A — cold package-independent clients", () => {
+describe("TQ-314 Level A - cold package-independent clients", () => {
   test("warm pointer is idempotent and completes in under one second", async () => {
     const home = temporary("tasq-tq314-latency-");
     await ok(pointer("latency", "cold"), { home });
@@ -259,7 +259,7 @@ describe("TQ-314 Level A — cold package-independent clients", () => {
   });
 });
 
-describe("TQ-314 Level B — contention, loss, kill and controlled time", () => {
+describe("TQ-314 Level B - contention, loss, kill and controlled time", () => {
   test("elects exactly one winner across ten cold clients in separate process directories", async () => {
     const home = temporary("tasq-tq314-race-");
     const runs = await Promise.all(Array.from({ length: 10 }, (_, index) => {

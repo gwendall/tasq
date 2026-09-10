@@ -250,7 +250,7 @@ export async function captureCommitmentDiscovery(
 }
 
 /**
- * ADR-021 — record why a commitment exists, in the kernel's vocabulary.
+ * ADR-021 - record why a commitment exists, in the kernel's vocabulary.
  *
  * Assumptions are matched by their text inside a workspace, so two agents that
  * phrase one belief differently attach to the same record and a single

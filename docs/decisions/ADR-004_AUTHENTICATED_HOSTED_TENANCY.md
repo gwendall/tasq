@@ -1,6 +1,6 @@
-# ADR-004 / TQ-505 — Authenticated hosted tenancy
+# ADR-004 / TQ-505 - Authenticated hosted tenancy
 
-> **Status:** accepted design; TQ-801–TQ-804 internal foundations implemented — 2026-07-21
+> **Status:** accepted design; TQ-801-TQ-804 internal foundations implemented - 2026-07-21
 > **Implementation:** strict DTOs/evaluator plus the durable authority control
 > plane, opaque ledger router and host-integrated read/mutation handlers exist;
 > no deployable transport, concrete verifier or bundled domain adapter ships
@@ -426,7 +426,7 @@ matrix without pretending it has passed.
 
 ## 13. Deliberate non-claims
 
-The accepted design and completed TQ-801–TQ-804 slices do not ship:
+The accepted design and completed TQ-801-TQ-804 slices do not ship:
 
 - a hosted Tasq service, deployable REST endpoint, remote MCP route or hosted
   inspector;

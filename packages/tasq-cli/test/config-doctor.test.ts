@@ -265,3 +265,62 @@ describe("doctor --config", () => {
     expect(report.effective).toBeNull();
   });
 });
+
+/**
+ * Upgrading the executable leaves the managed block a project already carries
+ * exactly where it was. A project set up by an older release keeps teaching
+ * its agents that release's rules - a v1 block never mentions `tasq feedback`,
+ * the only channel that reaches the people who can fix Tasq - and nothing
+ * announced the drift, so nobody re-ran `setup`.
+ */
+describe("tasq doctor: the managed block this project carries", () => {
+  test("reports a block written by an older release, without failing the health check", async () => {
+    const { home, base } = sandbox();
+    const dir = project(base, "adopted");
+    await ok(home, dir, ["setup", "--space", "drift/proj", "--actor", "u", "--json"]);
+    const agents = join(dir, "AGENTS.md");
+    const current = readFileSync(agents, "utf8");
+    // Exactly what an older release left behind: the same bytes under an
+    // older version marker, digest intact, so only the version is stale.
+    await Bun.write(agents, current.replace(/<!-- tasq:begin v="\d+"/, '<!-- tasq:begin v="1"'));
+
+    const report = await json(home, dir, ["doctor", "--json"]);
+    expect(report.agentInstructions).toMatchObject({
+      state: "stale",
+      version: 1,
+      expectedVersion: 2,
+      target: expect.stringContaining("AGENTS.md"),
+    });
+    // Drift to repair, never a broken store: an upgrade must not fail doctor
+    // in every project that has not re-run setup yet.
+    expect(report.ok).toBe(true);
+
+    const human = await ok(home, dir, ["doctor"]);
+    expect(human.stdout).toContain("managed block v1");
+    expect(human.stdout).toContain("tasq setup");
+  });
+
+  test("says nothing when the block is current, and nothing when there is none", async () => {
+    const { home, base } = sandbox();
+    const adopted = project(base, "adopted");
+    await ok(home, adopted, ["setup", "--space", "fresh/proj", "--actor", "u", "--json"]);
+    const fresh = await json(home, adopted, ["doctor", "--json"]);
+    expect(fresh.agentInstructions).toMatchObject({ state: "current", version: 2 });
+    expect((await ok(home, adopted, ["doctor"])).stdout).not.toContain("agent instructions");
+  });
+
+  test("reports a block whose content no longer matches its own digest", async () => {
+    const { home, base } = sandbox();
+    const dir = project(base, "edited");
+    await ok(home, dir, ["setup", "--space", "edited/proj", "--actor", "u", "--json"]);
+    const agents = join(dir, "AGENTS.md");
+    const current = readFileSync(agents, "utf8");
+    await Bun.write(agents, current.replace("Coordinating work with Tasq", "Coordinating work with Tasq (edited)"));
+
+    const report = await json(home, dir, ["doctor", "--json"]);
+    expect(report.agentInstructions).toMatchObject({ state: "unverified" });
+    expect(report.agentInstructions.reason).toBeTruthy();
+    expect(report.ok).toBe(true);
+    expect((await ok(home, dir, ["doctor"])).stdout).toContain("tasq setup");
+  });
+});

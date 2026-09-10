@@ -139,6 +139,43 @@ if (!llmsBoundary || llmsBoundary[1] !== published) {
   );
 }
 
+// The two acquisition manifests an agent host reads. They were written once and
+// then never advanced with a release, so both sat on v0.4.0 while the record
+// said 0.6.5: an agent following the "Executable acquisition" section installed
+// a CLI two releases old and never learned that anything newer existed. The
+// pins here are the acquisition ones only - `minimumVersion` fields deliberately
+// name the release a capability first shipped in and must stay where they are.
+for (const relative of [
+  "docs/integrations/AGENT_INTEGRATIONS.json",
+  "apps/site/public/integration.json",
+  "docs/integrations/AGENT_INTEGRATIONS.md",
+]) {
+  const source = await readFile(resolve(root, relative), "utf8");
+  const pins = new Set<string>([
+    ...[...source.matchAll(/@tasq-run\/cli@(\d+\.\d+\.\d+)/g)].map((match) => match[1]!),
+    ...[...source.matchAll(/install-v(\d+\.\d+\.\d+)\.sh/g)].map((match) => match[1]!),
+    ...[...source.matchAll(/--version"?,? "?(\d+\.\d+\.\d+)/g)].map((match) => match[1]!),
+  ]);
+  const drifted = [...pins].filter((pin) => pin !== published);
+  if (pins.size === 0) {
+    stale.push(`${relative} pins no acquisition version at all, so nothing tells an agent what to install`);
+  } else if (drifted.length > 0) {
+    stale.push(
+      `${relative} tells an agent to acquire v${drifted.join(", v")} where v${published} is published `
+        + "(a host following it installs a stale CLI)",
+    );
+  }
+}
+
+// The JSON half is read by machines, so its declared acquisition version has to
+// be the pin itself, not merely consistent with the examples around it.
+for (const relative of ["docs/integrations/AGENT_INTEGRATIONS.json", "apps/site/public/integration.json"]) {
+  const manifest = JSON.parse(await readFile(resolve(root, relative), "utf8")) as Record<string, any>;
+  if (manifest.acquisition?.version !== published) {
+    stale.push(`${relative} declares acquisition.version ${manifest.acquisition?.version ?? "nothing"}, not the published ${published}`);
+  }
+}
+
 /**
  * The reference point that is not the file being checked.
  *

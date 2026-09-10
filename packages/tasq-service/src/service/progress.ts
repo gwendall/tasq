@@ -1,9 +1,9 @@
 /**
- * Progress + ETA — pure read-only computation over the current DB state.
+ * Progress + ETA - pure read-only computation over the current DB state.
  *
  * No caching. Single-user, small datasets ; computing on the fly is well
  * under 10ms even with hundreds of tasks. If we ever scale past that,
- * add a `progress_cache` table — but not before.
+ * add a `progress_cache` table - but not before.
  *
  * Two scopes :
  *   - Project progress : aggregates all tasks belonging to a project_id
@@ -223,7 +223,7 @@ export async function getTaskProgress(
 
   // Exclude the root itself from the counts so progress reflects sub-tasks.
   // If a task has no sub-tasks, progress is trivially 0% or 100% based on
-  // its own status — we still return a Progress for symmetry, including
+  // its own status - we still return a Progress for symmetry, including
   // the root in counts in that case.
   const hasSubtasks = tree.length > 1;
   const subset = hasSubtasks ? progressLeaves(tree.slice(1)) : tree;

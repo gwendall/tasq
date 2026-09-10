@@ -1,6 +1,6 @@
-# TQ-405 — Explicit mutation and snapshot replication
+# TQ-405 - Explicit mutation and snapshot replication
 
-**Status:** Implemented — 2026-07-19
+**Status:** Implemented - 2026-07-19
 **Contract:** `../decisions/ADR-003_REPLICA_CONFLICT_MODEL.md`
 **Follow-on proof:** TQ-406 crash, reorder, expiry and restore chaos passed; see
 `TQ-406_SYNC_CHAOS_AND_RECOVERY.md`

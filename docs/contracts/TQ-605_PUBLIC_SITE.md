@@ -1,6 +1,6 @@
-# TQ-605 — Public product and documentation site
+# TQ-605 - Public product and documentation site
 
-> **Status:** implemented, certified and deployed from public `main` — 2026-07-23
+> **Status:** implemented, certified and deployed from public `main` - 2026-07-23
 > **Deployment status:** live at <https://tasq.run>
 > **Authority:** `../concepts/PRODUCT_SURFACE_MATRIX.json`, `../roadmap/BACKLOG.json` and
 > `../releases/PUBLIC_RELEASE_POLICY.json`, never hand-authored website state
@@ -66,19 +66,19 @@ first-release candidate set.
 
 The static application provides:
 
-- `/` — product thesis, failure model, kernel boundary and product shapes;
-- `/docs/getting-started` — current installation and causal onboarding handoff;
-- `/docs/agents` — safe loop, claims, revisions, cursors and untrusted prose;
-- `/docs/mcp` — Local stdio launch, host-owned capability closure and the
+- `/` - product thesis, failure model, kernel boundary and product shapes;
+- `/docs/getting-started` - current installation and causal onboarding handoff;
+- `/docs/agents` - safe loop, claims, revisions, cursors and untrusted prose;
+- `/docs/mcp` - Local stdio launch, host-owned capability closure and the
   distinct authenticated Server transport;
-- `/docs/humans` — CLI mutation and read-only Local Console inspection;
-- `/docs/sdk` — integrator-owned store, identity and injected `Clock`;
-- `/docs/operators` — Local storage, backup and diagnosis plus the explicit
+- `/docs/humans` - CLI mutation and read-only Local Console inspection;
+- `/docs/sdk` - integrator-owned store, identity and injected `Clock`;
+- `/docs/operators` - Local storage, backup and diagnosis plus the explicit
   self-hosted Server operator boundary;
-- `/docs/architecture` — commitment/claim/attempt/evidence separation;
-- `/docs/support` — exact current product and publication non-claims;
-- `/status` — generated release gates, surfaces and source-contract digests;
-- `/product-truth.json` — the exact versioned machine-readable snapshot.
+- `/docs/architecture` - commitment/claim/attempt/evidence separation;
+- `/docs/support` - exact current product and publication non-claims;
+- `/status` - generated release gates, surfaces and source-contract digests;
+- `/product-truth.json` - the exact versioned machine-readable snapshot.
 
 Copy is deliberately clear before clever: there are no invented metrics,
 customers, testimonials or availability claims. The only product-state

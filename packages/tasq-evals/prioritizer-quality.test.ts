@@ -70,7 +70,7 @@ const LOW_GOAL: Goal = { ...HIGH_GOAL, id: "lg", title: "Random low-priority", i
 const HIGH_AREA: Area = {
   id: "a",
   tenantId: "gwendall",
-  name: "Career — Kami",
+  name: "Career - Kami",
   slug: "kami",
   importance: 5,
   cadenceTarget: "daily",
@@ -144,13 +144,13 @@ describe("Prioritizer quality on realistic comparisons", () => {
     const s = scoreTask({ task: inProgress, goal: HIGH_GOAL, area: null, now: NOW });
     expect(s.avoidance).toBe(0);
     // The avoidance an open task would have accrued is replaced by the
-    // explicit active boost (SPEC §5.2.1 W_active — "finish what you started").
+    // explicit active boost (SPEC §5.2.1 W_active - "finish what you started").
     expect(s.active).toBe(5);
     expect(s.reasons).toContain("in-progress-boost");
   });
 
   it("starting a task never lowers its score (in_progress boost ≥ lost avoidance)", () => {
-    // Same task, same age, same goal — only the status differs. Before the
+    // Same task, same age, same goal - only the status differs. Before the
     // W_active term, the open task accrued avoidance and the in_progress one
     // did not, so *starting* it dropped its score. The active boost must fully
     // compensate so engaged work ranks at least as high as untouched work.
@@ -193,7 +193,7 @@ describe("Prioritizer quality on realistic comparisons", () => {
   });
 });
 
-describe("Prioritizer balance — sanity comparisons", () => {
+describe("Prioritizer balance - sanity comparisons", () => {
   it("same leverage, different urgency: more urgent wins", () => {
     const t1 = task({ dueAt: NOW + DAY }); // due tomorrow
     const t2 = task({ dueAt: NOW + 7 * DAY }); // due in a week

@@ -1,4 +1,4 @@
-# TQ-616 — Signed-statement adversarial certification
+# TQ-616 - Signed-statement adversarial certification
 
 > **Status:** implementation candidate complete; protected artifact gate open
 > **Date:** 2026-07-30
@@ -47,7 +47,7 @@ Python hostile-replay result as JSON workflow evidence. This wiring is not
 execution evidence and does not close the protected-artifact or unbriefed-human
 gate.
 
-The replay is version-gated. Published `v0.3.0` predates the TQ-613–TQ-615
+The replay is version-gated. Published `v0.3.0` predates the TQ-613-TQ-615
 public package APIs and is explicitly registered as historical/incompatible,
 so rerunning its existing post-release certification skips TQ-616 without
 weakening the already certified `v0.3.0` evidence. Any other release fails

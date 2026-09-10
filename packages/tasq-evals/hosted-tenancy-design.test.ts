@@ -1,4 +1,4 @@
-/** ADR-004 / TQ-505 — machine guard for the accepted hosted-tenancy design. */
+/** ADR-004 / TQ-505 - machine guard for the accepted hosted-tenancy design. */
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";

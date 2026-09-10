@@ -1,4 +1,4 @@
-# ADR-025 — What would end this
+# ADR-025 - What would end this
 
 - **Status:** Proposed - 2026-08-28
 - **Decision owner:** @gwendall

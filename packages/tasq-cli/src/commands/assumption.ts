@@ -1,5 +1,5 @@
 /**
- * `tasq wrong` / `tasq why` / `tasq resume` — ADR-021.
+ * `tasq wrong` / `tasq why` / `tasq resume` - ADR-021.
  *
  * The kernel noun is `assumption`. The words a user types are `because`,
  * `wrong` and `why`, because those are the words people already use when they
@@ -87,7 +87,7 @@ export async function wrongCmd(args: ParsedArgs): Promise<number> {
   }
 }
 
-/** `tasq why <id>` — the whole chain in one screen. */
+/** `tasq why <id>` - the whole chain in one screen. */
 export async function whyCmd(args: ParsedArgs): Promise<number> {
   const raw = args.positional[0];
   if (!raw) {
@@ -136,7 +136,7 @@ export async function whyCmd(args: ParsedArgs): Promise<number> {
   }
 }
 
-/** `tasq resume <id> --reason <text>` — the recovery path from a withdrawal. */
+/** `tasq resume <id> --reason <text>` - the recovery path from a withdrawal. */
 export async function resumeCmd(args: ParsedArgs): Promise<number> {
   const raw = args.positional[0];
   const reason = args.string("reason");
@@ -162,7 +162,7 @@ export async function resumeCmd(args: ParsedArgs): Promise<number> {
   }
 }
 
-/** `tasq because list|attach` — what this workspace believes, and binding one. */
+/** `tasq because list|attach` - what this workspace believes, and binding one. */
 export async function becauseCmd(args: ParsedArgs): Promise<number> {
   const sub = args.positional[0] ?? "list";
   if (sub !== "list" && sub !== "attach") {

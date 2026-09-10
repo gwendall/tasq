@@ -1,5 +1,5 @@
 /**
- * ADR-021 — shared assumptions.
+ * ADR-021 - shared assumptions.
  *
  * These tests pin the three limits the design depends on, because each one is
  * a place where a well-meaning change would make the primitive dangerous:

@@ -1,5 +1,5 @@
 /**
- * Goal service — CRUD with event logging + status state machine.
+ * Goal service - CRUD with event logging + status state machine.
  */
 
 import { and, asc, eq, inArray, isNull, or } from "drizzle-orm";

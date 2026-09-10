@@ -1,4 +1,4 @@
-# ADR-018 — Fly for the first hosted private beta
+# ADR-018 - Fly for the first hosted private beta
 
 > **Status:** accepted for the first hosted Server beta; exact-image deployment gate open
 > **Date:** 2026-08-11

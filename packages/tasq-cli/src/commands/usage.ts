@@ -1,5 +1,5 @@
 /**
- * Per-command usage strings — single source of truth.
+ * Per-command usage strings - single source of truth.
  *
  * Each value is the one-line (or short multi-line) usage shown both by the
  * `--help` / `help <cmd>` intercept in index.ts AND by a command's own
@@ -39,7 +39,7 @@ discover negotiate --hello <json> [--json]`;
 export const UPDATE_USAGE =
   `update <id> [--title ...] [--description ...] [--next ...] [--success ...] [--completion assertion|evidence] [--validated[=true|false]] [--priority 1-5] [--due <iso>] [--schedule <iso>] [--est <min>] [--area <slug>] [--goal <id>] [--project <id>] [--parent <id>] [--recurrence daily|weekly|monthly|yearly] [--interval N] [--anchor due|scheduled|completion] [--metadata <json>|--metadata-patch <json>] [--clear-description|--clear-next|--clear-success|--clear-priority|--clear-est|--clear-due|--clear-schedule|--clear-area|--clear-goal|--clear-project|--clear-parent|--clear-recurrence|--clear-metadata]
 ${COMPLETION_MODE_REQUIREMENTS}`;
-export const TREE_USAGE = "tree <id> — shows a task + its sub-tasks";
+export const TREE_USAGE = "tree <id> - shows a task + its sub-tasks";
 export const TASK_STATUS_USAGE =
   "task status <id>  (shows progress + ETA for a task with sub-tasks)";
 export const SEARCH_USAGE = 'search "<query>"';
@@ -62,9 +62,9 @@ export const CAPTURE_USAGE =
 
 export const LIST_USAGE =
   "list [--status ...] [--area <slug>] [--goal <id>] [--project <id>] [--priority 1-5] [--limit N] [--include-scheduled] [--include-deferred]";
-export const INBOX_USAGE = "inbox [--limit N] [--include-scheduled] [--include-deferred] — tasks without a project";
+export const INBOX_USAGE = "inbox [--limit N] [--include-scheduled] [--include-deferred] - tasks without a project";
 export const NEXT_USAGE = "next [--limit N] [--area <slug>] [--goal <id>] [--project <id>] [--priority 1-5] [--include-scheduled] [--include-deferred] [--include-claimed] - prioritized next-action list";
-export const CONTEXT_USAGE = "context [--max-records N] [--max-tokens N] [--include-deferred] [--json] — bounded profile-neutral context packet (`brief` alias)";
+export const CONTEXT_USAGE = "context [--max-records N] [--max-tokens N] [--include-deferred] [--json] - bounded profile-neutral context packet (`brief` alias)";
 export const SUMMARY_USAGE = `summary add <commitment-id> --text <text> --idempotency-key <key> [--supersedes <summary-id>]
 summary list <commitment-id> [--limit N]
 summary current [--limit N]
@@ -132,7 +132,7 @@ web status --tenant <space> [--json]
 Start an explicit foreground, unauthenticated read-only Console on loopback, or
 prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;
-export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--actor <label>] [--metadata <json>] [--idempotency-key <key>] — acquire or renew a lease";
+export const CLAIM_USAGE = "claim <task-id> [--for 30m|--until <iso>] [--actor <label>] [--metadata <json>] [--idempotency-key <key>] - acquire or renew a lease";
 export const COST_USAGE = `cost budget <task-id> --currency USD --max-micros <integer> [--reserve-micros <integer>] [--metering required|best_effort]
 cost record <attempt-id> --meter <absolute-uri> --observation <external-id> --currency USD --gross-micros <integer>
                          --basis provider_receipt|runtime_meter|operator_attestation --idempotency-key <key> [--observed-at <iso>]

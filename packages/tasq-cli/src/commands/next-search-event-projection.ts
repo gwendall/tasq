@@ -53,7 +53,7 @@ export async function nextCmd(args: ParsedArgs): Promise<number> {
       return 0;
     }
     if (results.length === 0) {
-      printInfo(color.dim("(nothing to surface — `tasq add <title>` to create one)"));
+      printInfo(color.dim("(nothing to surface - `tasq add <title>` to create one)"));
       return 0;
     }
     results.forEach((r, i) => {

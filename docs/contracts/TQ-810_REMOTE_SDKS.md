@@ -1,4 +1,4 @@
-# TQ-810 — Stable remote schemas and Python client
+# TQ-810 - Stable remote schemas and Python client
 
 > **Status:** `tasq-remote==0.4.0` published and exact-artifact certified
 > **Date:** 2026-08-12

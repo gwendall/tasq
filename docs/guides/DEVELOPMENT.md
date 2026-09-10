@@ -62,17 +62,17 @@ temporary database URL. Never delete a user ledger to obtain a clean test.
 
 Read in this order:
 
-1. [README.md](../../README.md) — product summary, current entrypoints and source
+1. [README.md](../../README.md) - product summary, current entrypoints and source
    build.
-2. [CURRENT_STATE.md](../concepts/CURRENT_STATE.md) — authoritative implemented versus
+2. [CURRENT_STATE.md](../concepts/CURRENT_STATE.md) - authoritative implemented versus
    unimplemented boundary.
 3. [PRODUCT_CONSUMPTION_SPEC.md](../concepts/PRODUCT_CONSUMPTION_SPEC.md) and
-   [PRODUCT_SURFACE_MATRIX.json](../concepts/PRODUCT_SURFACE_MATRIX.json) — product shapes,
+   [PRODUCT_SURFACE_MATRIX.json](../concepts/PRODUCT_SURFACE_MATRIX.json) - product shapes,
    consumers and machine-readable support truth.
-4. [ARCHITECTURE.md](../concepts/ARCHITECTURE.md) — layers, dependencies and invariants.
-5. [BACKLOG.md](../roadmap/BACKLOG.md) and [BACKLOG.json](../roadmap/BACKLOG.json) — versioned
+4. [ARCHITECTURE.md](../concepts/ARCHITECTURE.md) - layers, dependencies and invariants.
+5. [BACKLOG.md](../roadmap/BACKLOG.md) and [BACKLOG.json](../roadmap/BACKLOG.json) - versioned
    release scope, dependencies and external gates, not live ownership.
-6. [SECURITY.md](../../SECURITY.md) — trust boundaries and vulnerability handling.
+6. [SECURITY.md](../../SECURITY.md) - trust boundaries and vulnerability handling.
 
 Read the owning ADR or TQ contract before changing a specific subsystem. The
 TQ and ADR documents are engineering contracts and evidence, not the default
@@ -197,8 +197,16 @@ Then update all affected layers of truth:
    affected.
 
 Run `pnpm docs:check` after documentation changes. It verifies links,
-workspace READMEs, canonical commands, package metadata and onboarding
-guardrails. See [TESTING.md](TESTING.md) for the complete test ownership map.
+workspace READMEs, canonical commands, package metadata, onboarding
+guardrails and prose style. See [TESTING.md](TESTING.md) for the complete test
+ownership map.
+
+House style for punctuation is the plain hyphen: no em-dash and no en-dash,
+anywhere - prose, UI copy, code comments, commit messages. `docs:check`
+enforces it. The one exemption is
+`packages/tasq-core/src/migrations/*.sql`: applied migration bytes are
+checksummed and immutable, so editing even a comment in one makes every
+existing store refuse to open.
 
 ## 8. Handoff and pull request checklist
 

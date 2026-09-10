@@ -1,4 +1,4 @@
-# TQ-623 — Deep embedded delegated-action journeys
+# TQ-623 - Deep embedded delegated-action journeys
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` release gate
@@ -73,7 +73,7 @@ This work does not yet provide `delegate`, `accept-and-start`,
 `resolve-and-settle` or `recover` as complete delegated-action workflows.
 Assignments express responsibility, not exact agreement. The journey does not
 invent qualification, mandate, settlement, custody or provider dispatch.
-Those remain TQ-625–TQ-631. Effect execution still requires the existing exact
+Those remain TQ-625-TQ-631. Effect execution still requires the existing exact
 approval, live claim fence, connector policy and permit issuer.
 
 ## Executable evidence

@@ -1,4 +1,4 @@
-# TQ-902 — Same-origin Cloud BFF and authenticated Console
+# TQ-902 - Same-origin Cloud BFF and authenticated Console
 
 > **Status:** hardened reference browser matrix passed; real-identity and independent gates open
 > **Date:** 2026-08-20

@@ -1,4 +1,4 @@
-# TQ-206/TQ-207 — Effect receipts, uncertainty recovery and compensation
+# TQ-206/TQ-207 - Effect receipts, uncertainty recovery and compensation
 
 > Implemented universal outcome boundary for external writes. Connectors verify
 > provider facts; Tasq preserves the exact authority, execution and evidence

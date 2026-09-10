@@ -1,5 +1,5 @@
 /**
- * Zod schemas + TS types — single source of truth for entity shapes.
+ * Zod schemas + TS types - single source of truth for entity shapes.
  *
  * Mirrors `tables.ts` (Drizzle) one-to-one. The Drizzle tables are the
  * storage shape ; the Zod schemas here are the validation + API shape.
@@ -19,7 +19,7 @@ import { z } from "zod";
 export const LEGACY_DEFAULT_WORKSPACE_ID: string = "gwendall";
 
 // ──────────────────────────────────────────────────────────────────────
-// Enums (kept as branded string unions — single source of truth)
+// Enums (kept as branded string unions - single source of truth)
 // ──────────────────────────────────────────────────────────────────────
 
 export const TASK_STATUSES = [
@@ -159,7 +159,7 @@ export type EntityType = z.infer<typeof EntityType>;
  * Recurrence cadence units (SPEC §6.4-H). The minimal neutral stored-recurrence
  * primitive: a task with `recurrence != null` materializes the next instance on
  * completion (one cadence-step from its anchor). The scheduling *intelligence*
- * (which day, skip policy, etc.) stays L2 — L1 only steps the calendar.
+ * (which day, skip policy, etc.) stays L2 - L1 only steps the calendar.
  */
 export const RECURRENCE_UNITS = ["daily", "weekly", "monthly", "yearly"] as const;
 export const RecurrenceUnit = z.enum(RECURRENCE_UNITS);
@@ -167,9 +167,9 @@ export type RecurrenceUnit = z.infer<typeof RecurrenceUnit>;
 
 /**
  * Which timestamp the next recurring instance is computed from:
- *   - `due`        — step from the completed instance's `due_at` (default).
- *   - `scheduled`  — step from its `scheduled_at`.
- *   - `completion` — step from the completion time (now).
+ *   - `due`        - step from the completed instance's `due_at` (default).
+ *   - `scheduled`  - step from its `scheduled_at`.
+ *   - `completion` - step from the completion time (now).
  */
 export const RECURRENCE_ANCHORS = ["due", "scheduled", "completion"] as const;
 export const RecurrenceAnchor = z.enum(RECURRENCE_ANCHORS);
@@ -177,18 +177,18 @@ export type RecurrenceAnchor = z.infer<typeof RecurrenceAnchor>;
 
 /**
  * Peer task-dependency edge types (SPEC §4.5).
- *   - `blocks`      — v1 compatibility label: `from` depends on `to`;
+ *   - `blocks`      - v1 compatibility label: `from` depends on `to`;
  *                     transitive and cycle-guarded. The universal target stores
  *                     the unambiguous relation name `depends_on`.
- *   - `relates_to`  — informational link, non-transitive.
- *   - `duplicates`  — informational link, non-transitive.
+ *   - `relates_to`  - informational link, non-transitive.
+ *   - `duplicates`  - informational link, non-transitive.
  */
 export const DEPENDENCY_TYPES = ["blocks", "discovered_from", "relates_to", "duplicates"] as const;
 export const DependencyType = z.enum(DEPENDENCY_TYPES);
 export type DependencyType = z.infer<typeof DependencyType>;
 
 /**
- * Event types are an open vocabulary — anything an actor wants to record.
+ * Event types are an open vocabulary - anything an actor wants to record.
  * Canonical types are listed for documentation + autocomplete, but the
  * column is plain text to allow new types without migration.
  */
@@ -290,10 +290,10 @@ export type Slug = z.infer<typeof Slug>;
 /** Unix-ms timestamp. */
 export const UnixMs = z.number().int().nonnegative();
 
-/** Importance score 1–5. */
+/** Importance score 1-5. */
 export const Importance = z.number().int().min(1).max(5);
 
-/** Priority score 1–5 (optional on task). */
+/** Priority score 1-5 (optional on task). */
 export const Priority = z.number().int().min(1).max(5);
 
 /** Free-form JSON-storable metadata. */
@@ -580,7 +580,7 @@ export const Task = z.object({
   dueAt: UnixMs.nullable(),
   startedAt: UnixMs.nullable(),
   completedAt: UnixMs.nullable(),
-  // Recurrence (SPEC §6.4-H) — neutral cadence-enum + anchor. NULL recurrence =
+  // Recurrence (SPEC §6.4-H) - neutral cadence-enum + anchor. NULL recurrence =
   // one-shot (the pre-v0.3 default). On completion of a recurring task the
   // service materializes the next instance; `lastDoneAt`/`streak` are
   // engine-owned signals fed to the prioritizer (surfaced, not reweighted).
@@ -607,7 +607,7 @@ export const TaskInsert = Task.omit({
   id: true,
   startedAt: true,
   completedAt: true,
-  // streak / lastDoneAt are engine-owned (like startedAt/completedAt) — set by
+  // streak / lastDoneAt are engine-owned (like startedAt/completedAt) - set by
   // the recurrence materializer, never by a direct caller.
   lastDoneAt: true,
   streak: true,
@@ -673,7 +673,7 @@ export type TaskUpdate = z.infer<typeof TaskUpdate>;
 export const MAX_TASK_DEPTH = 5;
 
 // ──────────────────────────────────────────────────────────────────────
-// Task dependency — first-class peer edge (SPEC §4.5)
+// Task dependency - first-class peer edge (SPEC §4.5)
 // ──────────────────────────────────────────────────────────────────────
 
 export const TaskDependency = z.object({
@@ -797,7 +797,7 @@ export const ExternalRefInsert = ExternalRef.omit({
 export type ExternalRefInsert = z.infer<typeof ExternalRefInsert>;
 
 // ──────────────────────────────────────────────────────────────────────
-// Agentic execution primitives — claim, attempt, evidence
+// Agentic execution primitives - claim, attempt, evidence
 // ──────────────────────────────────────────────────────────────────────
 
 /** A time-bounded, exclusive coordination claim on a commitment. */
@@ -985,7 +985,7 @@ export const CompletionRecord = z.object({
 export type CompletionRecord = z.infer<typeof CompletionRecord>;
 
 // ──────────────────────────────────────────────────────────────────────
-// Wait condition — durable typed expectation attached to one task
+// Wait condition - durable typed expectation attached to one task
 // ──────────────────────────────────────────────────────────────────────
 
 /** Minimal ledger-only task template used by a future deadline fallback. */
@@ -1140,7 +1140,7 @@ export const WaitConditionInsert = z.object({
 export type WaitConditionInsert = z.infer<typeof WaitConditionInsert>;
 
 // ──────────────────────────────────────────────────────────────────────
-// Observation — immutable normalized external fact
+// Observation - immutable normalized external fact
 // ──────────────────────────────────────────────────────────────────────
 
 export const Observation = z.object({
@@ -1295,7 +1295,7 @@ export const EventInsert = Event.omit({
 export type EventInsert = z.infer<typeof EventInsert>;
 
 // ──────────────────────────────────────────────────────────────────────
-// Durable delivery — local sink registry + transactional event outbox
+// Durable delivery - local sink registry + transactional event outbox
 // ──────────────────────────────────────────────────────────────────────
 
 export const DELIVERY_SINK_STATUSES = ["enabled", "disabled"] as const;

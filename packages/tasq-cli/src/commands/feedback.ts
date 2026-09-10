@@ -182,13 +182,21 @@ function writePrivateAtomic(path: string, value: string): void {
 function safeCommandShape(argv: string[]): Pick<z.infer<typeof LastFailure>, "command" | "subcommand" | "flags"> {
   const rawCommand = argv[0] ?? "unknown";
   const command = /^[A-Za-z0-9-]{1,100}$/.test(rawCommand) ? rawCommand : "unknown";
-  const candidate = argv.find((value, index) => index > 0 && !value.startsWith("-"));
+  // `--` ends the options, and every token after it is a positional the user
+  // deliberately escaped BECAUSE it looks like a flag. Scanning past it stored
+  // that content as a flag name: `tasq add -- "--internal-codename"` wrote the
+  // codename into a file whose whole contract is that values never reach it.
+  const optionsEnd = argv.indexOf("--");
+  const options = optionsEnd === -1 ? argv : argv.slice(0, optionsEnd);
+  const candidate = options.find((value, index) => index > 0 && !value.startsWith("-"));
   const known = SAFE_SUBCOMMANDS[command];
   const subcommand = candidate && known?.has(candidate) ? candidate : null;
-  const flags = [...new Set(argv.flatMap((value) => {
+  const flags = [...new Set(options.flatMap((value) => {
     const match = /^--([A-Za-z0-9-]{1,100})(?:=|$)/.exec(value);
     if (match) return [match[1]!];
-    if (/^-[A-Za-z]{1,8}$/.test(value)) return [value.slice(1)];
+    // `-jf` is two flags, and recording it as the single name "jf" made a
+    // report count a shape nobody ever typed.
+    if (/^-[A-Za-z]{1,8}$/.test(value)) return [...value.slice(1)];
     return [];
   }))].sort();
   return { command, subcommand, flags };

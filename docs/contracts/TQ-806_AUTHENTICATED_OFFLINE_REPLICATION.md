@@ -1,11 +1,11 @@
-# TQ-806 — Authenticated optional offline replication
+# TQ-806 - Authenticated optional offline replication
 
 > **Status:** done
 > **Date:** 2026-08-13
 > **Machine certificate:** `TQ-806_OFFLINE_REPLICATION_CERTIFICATION.json`
 
 Tasq Server now composes the existing ADR-003/TQ-405 replication protocol with
-the ADR-004 authority guard and TQ-613–TQ-616 signed-origin primitive.
+the ADR-004 authority guard and TQ-613-TQ-616 signed-origin primitive.
 
 ## Remote journey
 

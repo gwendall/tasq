@@ -130,7 +130,7 @@ their argv arrays without converting them to shell strings. Use
    identifiers.
 6. Acquire and verify a resource lease and fencing token immediately before I/O
    involving an opaque shared resource.
-7. Leave high-stakes effects—money, important communications, signatures—to
+7. Leave high-stakes effects - money, important communications, signatures - to
    explicit human confirmation.
 
 Use Tasq's returned authority timestamps and lease disposition for coordination.

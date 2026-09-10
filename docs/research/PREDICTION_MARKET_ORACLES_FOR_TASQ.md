@@ -74,7 +74,7 @@ The current Polymarket documentation also constrains post-launch clarification:
 additional context may guide resolution but cannot change the fundamental
 intent of the original question. This is a useful anti-goalpost-moving rule for
 Tasq success criteria
-([Polymarket, “Resolution — Clarifications”](https://docs.polymarket.com/concepts/resolution#clarifications)).
+([Polymarket, “Resolution - Clarifications”](https://docs.polymarket.com/concepts/resolution#clarifications)).
 
 The official UMA CTF adapter shows the operational escalation in code-level
 architecture: an undisputed answer becomes available after liveness, the first
@@ -143,12 +143,12 @@ must not silently weaken the original success condition.
 
 The kernel should not collapse these concepts:
 
-1. **Evidence** — an immutable observation or artifact with provenance.
-2. **Completion proposal** — a claim that named criteria are satisfied by
+1. **Evidence** - an immutable observation or artifact with provenance.
+2. **Completion proposal** - a claim that named criteria are satisfied by
    specific evidence.
-3. **Validation decision** — accepted, rejected, challenged, too early or
+3. **Validation decision** - accepted, rejected, challenged, too early or
    indeterminate, with policy identity and reason.
-4. **Completion record** — the durable transition to `done`, referencing the
+4. **Completion record** - the durable transition to `done`, referencing the
    accepted decision and evidence.
 
 This preserves Tasq's existing rule that successful execution is not commitment
@@ -200,11 +200,11 @@ must be reasoned and append-only. Tasq should not invent a universal jury.
 For commitments, Polymarket's economic `50/50` settlement is usually the wrong
 semantic result. Tasq should distinguish:
 
-- `accepted` — criteria proved under the declared policy;
-- `rejected` — criteria not met;
-- `too_early` — outcome is not yet eligible to evaluate;
-- `indeterminate` — allowed sources cannot establish the result;
-- `challenged` — decision awaits escalation.
+- `accepted` - criteria proved under the declared policy;
+- `rejected` - criteria not met;
+- `too_early` - outcome is not yet eligible to evaluate;
+- `indeterminate` - allowed sources cannot establish the result;
+- `challenged` - decision awaits escalation.
 
 Only `accepted` may authorize `done`. `too_early` and `indeterminate` keep the
 obligation visible, normally open or blocked. Policy may later permit a human
@@ -240,7 +240,7 @@ The common abstraction is not “a task with an attachment.” It is:
 > a durable obligation, explicit success criteria, observable evidence, a
 > declared decision policy and an inspectable resolution.
 
-## What to build — and what not to claim
+## What to build - and what not to claim
 
 Candidate future work, subject to the normal Tasq backlog/ADR process:
 
@@ -264,11 +264,11 @@ Until those gates pass, public copy should distinguish:
 
 ## Primary sources
 
-- [UMA — How does UMA's Oracle work?](https://docs.uma.xyz/protocol-overview/how-does-umas-oracle-work)
-- [UMA — Setting Custom Bond and Liveness Parameters](https://docs.uma.xyz/developers/setting-custom-bond-and-liveness-parameters)
-- [UMA — Escalation Managers](https://docs.uma.xyz/developers/optimistic-oracle-v3/escalation-managers)
-- [UMA — Data Asserter](https://docs.uma.xyz/developers/optimistic-oracle-v3/data-asserter)
-- [UMA — Prediction Market example](https://docs.uma.xyz/developers/optimistic-oracle-v3/prediction-market)
-- [Polymarket — Resolution](https://docs.polymarket.com/concepts/resolution)
-- [Polymarket — `uma-ctf-adapter`](https://github.com/Polymarket/uma-ctf-adapter)
-- [Chainlink — Data Feeds](https://docs.chain.link/data-feeds)
+- [UMA - How does UMA's Oracle work?](https://docs.uma.xyz/protocol-overview/how-does-umas-oracle-work)
+- [UMA - Setting Custom Bond and Liveness Parameters](https://docs.uma.xyz/developers/setting-custom-bond-and-liveness-parameters)
+- [UMA - Escalation Managers](https://docs.uma.xyz/developers/optimistic-oracle-v3/escalation-managers)
+- [UMA - Data Asserter](https://docs.uma.xyz/developers/optimistic-oracle-v3/data-asserter)
+- [UMA - Prediction Market example](https://docs.uma.xyz/developers/optimistic-oracle-v3/prediction-market)
+- [Polymarket - Resolution](https://docs.polymarket.com/concepts/resolution)
+- [Polymarket - `uma-ctf-adapter`](https://github.com/Polymarket/uma-ctf-adapter)
+- [Chainlink - Data Feeds](https://docs.chain.link/data-feeds)

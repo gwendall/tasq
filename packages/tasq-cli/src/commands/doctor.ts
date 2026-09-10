@@ -23,6 +23,71 @@ import {
 } from "../runtime.js";
 import { color, printInfo, printJson } from "../output/format.js";
 import { inspectConfig, renderConfigFindings } from "./doctor-config.js";
+import { BLOCK_VERSION, findManagedBlock } from "./agent-instructions.js";
+
+export type AgentInstructionsHealth = {
+  state: "current" | "stale" | "unverified" | "absent";
+  target: string | null;
+  version: number | null;
+  expectedVersion: number;
+  reason: string | null;
+};
+
+/**
+ * Upgrading the executable does not touch the managed block a project already
+ * carries. It stays at whatever version wrote it, so every agent working in
+ * that project keeps reading the previous release's rules: a v1 block never
+ * mentions `tasq feedback`, and a rollout cannot hear from the projects that
+ * most need fixing. Nothing announced the drift, so nobody re-ran `setup`.
+ *
+ * Reported, never fatal. A stale block is drift to repair; failing `doctor`
+ * in every project that has not re-run `setup` since an upgrade would turn a
+ * routine upgrade into an outage, including in CI.
+ */
+export function inspectAgentInstructions(start: string): AgentInstructionsHealth {
+  let found: ReturnType<typeof findManagedBlock>;
+  try {
+    found = findManagedBlock(start);
+  } catch {
+    // An unreadable AGENTS.md is not a store problem, and doctor's job here
+    // is the store: say nothing rather than fail the health check.
+    return { state: "absent", target: null, version: null, expectedVersion: BLOCK_VERSION, reason: null };
+  }
+  if (!found) {
+    return { state: "absent", target: null, version: null, expectedVersion: BLOCK_VERSION, reason: null };
+  }
+  if (!found.verified) {
+    return {
+      state: "unverified",
+      target: found.target,
+      version: found.version,
+      expectedVersion: BLOCK_VERSION,
+      reason: found.reason,
+    };
+  }
+  if (found.version !== BLOCK_VERSION) {
+    return {
+      state: "stale",
+      target: found.target,
+      version: found.version,
+      expectedVersion: BLOCK_VERSION,
+      reason: null,
+    };
+  }
+  return { state: "current", target: found.target, version: found.version, expectedVersion: BLOCK_VERSION, reason: null };
+}
+
+export function renderAgentInstructionsFinding(health: AgentInstructionsHealth): string | null {
+  if (health.state === "stale") {
+    return `  - agent instructions: ${health.target} carries managed block v${health.version}, `
+      + `this Tasq writes v${health.expectedVersion} - run \`tasq setup\` to update it`;
+  }
+  if (health.state === "unverified") {
+    return `  - agent instructions: ${health.target} ${health.reason ?? "cannot be verified"} `
+      + "- run `tasq setup` to rewrite it";
+  }
+  return null;
+}
 
 export async function doctorCmd(args: ParsedArgs): Promise<number> {
   const json = args.flag("json", "j") !== undefined;
@@ -257,6 +322,7 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
         journalOnly.length === 0 &&
         dbOnly.length === 0);
     const ok = store.ok && journalOk && permissionIssues.length === 0 && configReport.ok;
+    const agentInstructions = inspectAgentInstructions(process.cwd());
     const report = {
       ok,
       config: configReport,
@@ -291,6 +357,7 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
       },
       permissionIssues,
       permissionRepairs,
+      agentInstructions,
     };
 
     if (json) {
@@ -306,6 +373,8 @@ export async function doctorCmd(args: ParsedArgs): Promise<number> {
         printInfo(`  - ${issue.code}: ${issue.message}`);
         printInfo(`      ${color.dim(`${issue.entityType} ${issue.entityId}`)}`);
       }
+      const instructionsFinding = renderAgentInstructionsFinding(agentInstructions);
+      if (instructionsFinding) printInfo(instructionsFinding);
       for (const issue of permissionIssues) printInfo(`  - permissions: ${issue}`);
       for (const repair of permissionRepairs) printInfo(`  - permissions repaired: ${repair.path} ${repair.before} → ${repair.after}`);
       for (const repair of outboxRepairs) {

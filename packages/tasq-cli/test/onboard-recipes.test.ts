@@ -112,6 +112,19 @@ describe("onboard recipes", () => {
     }
   });
 
+  test("the README's recipe count is the count onboard actually returns", async () => {
+    // The README tells a reader how many recipes an agent is handed. That
+    // number is written by hand and nothing read it back, so it said 45 while
+    // onboard returned 47 - a small lie in the one paragraph that decides
+    // whether someone believes the CLI path is as complete as the MCP one.
+    const { home, project } = sandbox();
+    const recipes = await onboard(home, project);
+    const readme = readFileSync(join(productRoot, "README.md"), "utf8");
+    const claimed = readme.match(/hands it (\d+) executable argv/);
+    expect(claimed, "README.md no longer states how many recipes onboard returns").not.toBeNull();
+    expect(Number(claimed![1]), "README.md states a recipe count onboard does not return").toBe(recipes.length);
+  });
+
   test("every declared parameter appears in the argv it is declared for", async () => {
     // A parameter nobody substitutes is a question asked for nothing; a
     // placeholder with no parameter is a vector an agent cannot complete.

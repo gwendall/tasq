@@ -1,4 +1,4 @@
-# TQ-624 — Trusted signed-statement binder registry
+# TQ-624 - Trusted signed-statement binder registry
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` release gate

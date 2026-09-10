@@ -1,4 +1,4 @@
-# ADR-002 — Canonical effect request and identity
+# ADR-002 - Canonical effect request and identity
 
 - **Status:** Accepted
 - **Date:** 2026-07-15
@@ -220,12 +220,12 @@ a new provider idempotency key after timeout or process restart.
 
 Provider formats vary. A connector contract declares one of:
 
-- `native` — send the full Tasq key unchanged;
-- `mapped` — deterministically map it while retaining at least 128 bits of
+- `native` - send the full Tasq key unchanged;
+- `mapped` - deterministically map it while retaining at least 128 bits of
   collision resistance and pin the mapping algorithm/version;
-- `resource_identity` — use a provider resource/operation identity with equal
+- `resource_identity` - use a provider resource/operation identity with equal
   conflict semantics;
-- `none` — no durable provider deduplication.
+- `none` - no durable provider deduplication.
 
 `none` never silently degrades to retryable. Protected effects then require a
 lookup-before-write strategy, a provable non-dispatch result or human handling.
@@ -280,8 +280,8 @@ The renderer must:
 - produce a secret-minimized dispatch summary for receipt comparison.
 
 Provider authentication credentials are excluded because rotation should not
-change the business effect. A secret that is itself effect content—for example
-an exact deployment configuration or encrypted attachment—uses a versioned
+change the business effect. A secret that is itself effect content - for example
+an exact deployment configuration or encrypted attachment - uses a versioned
 binding in the digest. Raw secret values never enter the ledger, canonical
 bytes, approval, event log or error output.
 
@@ -404,8 +404,8 @@ ADR-002 is accepted when:
 
 ## References
 
-- [RFC 8785 — JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html)
+- [RFC 8785 - JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html)
 - [RFC 8785 verified errata](https://www.rfc-editor.org/errata/rfc8785)
-- [RFC 9110 §9.2.2 — Idempotent Methods](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)
+- [RFC 9110 §9.2.2 - Idempotent Methods](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2)
 - [AWS EC2 idempotency and parameter mismatch](https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html)
 - [Stripe idempotent requests](https://docs.stripe.com/api/idempotent_requests)

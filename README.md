@@ -70,11 +70,11 @@ is done.
 - **Tasq Core** - the embeddable TypeScript library behind the CLI, with no
   opinion about your domain. `@tasq-run/core@0.6.5` exposes the high-level `createLocalTasq`
   interface as compiled ESM with declarations, certified on Node 22 and Bun.
-- **Tasq Local** — a JSON-first CLI, capability-scoped local stdio MCP, and a
+- **Tasq Local** - a JSON-first CLI, capability-scoped local stdio MCP, and a
   read-only loopback Console over one LibSQL ledger.
-- **Integration contracts** — extension, connector, MCP Tasks, and A2A adapter
+- **Integration contracts** - extension, connector, MCP Tasks, and A2A adapter
   boundaries that keep provider policy and runtime state outside Core.
-- **Data safety** — verified pre-migration snapshots, doctor checks, backups,
+- **Data safety** - verified pre-migration snapshots, doctor checks, backups,
   bounded export/import, and explicit store compatibility metadata.
 
 Tasq Server ships as an exact-digest-certified multi-architecture image with
@@ -151,6 +151,7 @@ tasq setup --space kami/my-api --actor gwendall
 ✓ Created kami/my-api as gwendall.
   this installation signs as 9aadf4704e67 - see `tasq whoami`
 ✓ Bound ~/Code/my-api and everything under it to this space.
+✓ Global default for unbound directories is now kami/my-api.
 ✓ Wrote the managed Tasq block into AGENTS.md, so agents here know the rules.
 ✓ Wrote CLAUDE.md importing it, because Claude Code reads CLAUDE.md and not AGENTS.md.
 ```
@@ -182,7 +183,7 @@ tasq agent install claude --space kami/my-api --actor claude:main --apply
 ```
 
 Or nothing at all: an agent with a shell reads the `AGENTS.md` block that
-`setup` already wrote (Claude Code through the `CLAUDE.md` import), and `tasq onboard --json` hands it 45 executable argv
+`setup` already wrote (Claude Code through the `CLAUDE.md` import), and `tasq onboard --json` hands it 47 executable argv
 recipes carrying the same capability labels the MCP surface uses. ADR-024
 records why the CLI is the default door for a local agent and MCP is the door
 for remote and sandboxed ones.

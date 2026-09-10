@@ -1,4 +1,4 @@
-# TQ-307 — public-surface compatibility suite
+# TQ-307 - public-surface compatibility suite
 
 > Implemented 2026-07-19. This is an executable compatibility proof over one
 > local ledger, not a claim that Tasq already ships a hosted remote transport.

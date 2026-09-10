@@ -1,4 +1,4 @@
-# TQ-201 — Effect and authority threat model
+# TQ-201 - Effect and authority threat model
 
 - **Status:** Accepted
 - **Date:** 2026-07-15

@@ -1,4 +1,4 @@
-# TQ-903 — Cloud identity, device and workload lifecycle
+# TQ-903 - Cloud identity, device and workload lifecycle
 
 > **Status:** lifecycle drill passed; identity-provider gate open
 > **Date:** 2026-08-20

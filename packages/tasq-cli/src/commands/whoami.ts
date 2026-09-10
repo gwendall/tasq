@@ -1,5 +1,5 @@
 /**
- * `tasq whoami` — who this ledger thinks is writing, and what that is worth.
+ * `tasq whoami` - who this ledger thinks is writing, and what that is worth.
  *
  * The honest part matters as much as the identity. `--actor` is self-asserted,
  * and locally that is not a hole: anyone who can pass the flag can also open

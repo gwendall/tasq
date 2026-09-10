@@ -17,7 +17,7 @@ describe("zero-context agent integration candidate", () => {
 
     expect(contract).toMatchObject({
       contractVersion: "tasq.agent-integrations.v1",
-      revision: 3,
+      revision: 4,
       integrationVersion: "0.1.2",
       rendezvous: {
         required: ["space", "actor", "capabilities"],

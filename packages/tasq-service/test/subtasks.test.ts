@@ -312,7 +312,7 @@ describe("Prioritizer + sub-tasks", () => {
       const ids = next.map((n) => n.task.id);
       expect(ids).toContain(child.id);
       expect(ids).toContain(standalone.id);
-      expect(ids).not.toContain(parent.id); // parent excluded — child is the real next action
+      expect(ids).not.toContain(parent.id); // parent excluded - child is the real next action
     } finally {
       await close();
     }

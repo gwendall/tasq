@@ -1,4 +1,4 @@
-# TQ-321 — Zero-context agent integration
+# TQ-321 - Zero-context agent integration
 
 **Status:** integrations `0.1.1` and `0.1.2` passed on native Codex and Claude
 Code

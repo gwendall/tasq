@@ -115,6 +115,23 @@ await writeFile(readmePath, (await readFile(readmePath, "utf8")).replace(/\b(v?)
 // llms.txt is the page agents read to learn which release exists.
 const llmsPath = resolve(root, "docs/integrations/llms.txt");
 await writeFile(llmsPath, (await readFile(llmsPath, "utf8")).replace(/Tasq Local \d+\.\d+\.\d+ is published/, `Tasq Local ${version} is published`), "utf8");
+// The acquisition manifests agent hosts read. Nothing advanced them, so both
+// halves sat on v0.4.0 for two releases and told every host to install a stale
+// CLI. Only the acquisition pins move: `minimumVersion` names the release a
+// capability first shipped in and is history, not a pin.
+for (const relative of [
+  "docs/integrations/AGENT_INTEGRATIONS.json",
+  "docs/integrations/AGENT_INTEGRATIONS.md",
+  "apps/site/public/integration.json",
+]) {
+  const path = resolve(root, relative);
+  const advanced = (await readFile(path, "utf8"))
+    .replace(/@tasq-run\/cli@\d+\.\d+\.\d+/g, `@tasq-run/cli@${version}`)
+    .replace(/install-v\d+\.\d+\.\d+\.sh/g, `install-v${version}.sh`)
+    .replace(/(--version"?,?\s+"?)\d+\.\d+\.\d+/g, `$1${version}`)
+    .replace(/("acquisition":\s*\{\s*"version":\s*")\d+\.\d+\.\d+/g, `$1${version}`);
+  await writeFile(path, advanced, "utf8");
+}
 const notesPath = resolve(root, "docs/releases/RELEASES.md");
 let notes = await readFile(notesPath, "utf8");
 const previousTag = previous.tag as string;

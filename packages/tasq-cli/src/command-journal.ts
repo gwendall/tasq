@@ -1,11 +1,11 @@
 /**
- * `~/.tasq/commands.jsonl` — one private local line per invocation.
+ * `~/.tasq/commands.jsonl` - one private local line per invocation.
  *
  * The ledger records what SUCCEEDS: every mutation leaves an event. It records
  * almost nothing about what fails, and nothing at all about reads. `next`,
  * `why` and `onboard` leave no trace, so `tasq usage` has to report them as
  * unobservable rather than as zero, and a refusal left only `last-failure.json`
- * — a single slot, overwritten by the next failure, carrying no message.
+ * - a single slot, overwritten by the next failure, carrying no message.
  *
  * Two real defects found on 2026-09-09 (`attempt succeed <task-id>` refusing a
  * task id, `capture` refusing every commitment carrying a planning scope) were
@@ -15,7 +15,7 @@
  * collecting the half of the story that already works.
  *
  * Privacy: this file never leaves the machine on its own. It records the SHAPE
- * of a command — verb, subcommand, flag NAMES — never positional values or flag
+ * of a command - verb, subcommand, flag NAMES - never positional values or flag
  * values, exactly as `tasq feedback` does. It additionally keeps a truncated
  * error message, because "capture failed 40 times" without the reason cannot be
  * acted on; `tasq feedback push` still publishes only what an operator reviews.
@@ -36,15 +36,25 @@ const MAX_MESSAGE = 200;
 const IDENTIFIER = /\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b|\b[0-9a-f]{12,}\b/gi;
 
 /**
- * `attempt not found: <id>` is exactly as actionable as the same line carrying
- * the id, so the id is dropped: what a report needs is the SHAPE of the
- * refusal, and an identifier is the part most likely to name someone's work.
+ * Only the authored prefix of a refusal, never the value it quotes back.
+ *
+ * Roughly eighty error strings in this CLI interpolate what the user typed:
+ * `--metadata must be valid JSON, got: <the raw value>`, `Invalid date:
+ * <value>`, `Unknown flag: <name>`. Storing the whole line put a secret pasted
+ * into `--metadata` in a file, and `tasq usage` printed it back. Every one of
+ * those strings interpolates AFTER a `: ` or inside quotes, and the part before
+ * is the authored shape - which is the only part a report can act on.
+ *
+ * `attempt not found: <id>` is exactly as actionable as `attempt not found`,
+ * and an identifier is the part most likely to name someone's work.
  */
 export function redactMessage(message: string): string {
-  return message.replace(IDENTIFIER, "<id>").slice(0, MAX_MESSAGE);
+  const valueStarts = message.search(/:\s|["'`]/);
+  const shape = valueStarts === -1 ? message : message.slice(0, valueStarts);
+  return shape.replace(IDENTIFIER, "<id>").trim().slice(0, MAX_MESSAGE);
 }
 
-export const CommandRecord = z.object({
+const CommandRecordShape = z.object({
   contractVersion: z.literal(COMMAND_RECORD_CONTRACT),
   recordedAt: z.number().int().nonnegative(),
   version: z.string(),
@@ -53,7 +63,6 @@ export const CommandRecord = z.object({
   /** Which agent harness ran it, when the environment names one. */
   harness: z.string(),
   space: z.string().nullable(),
-  actor: z.string().nullable(),
   command: z.string(),
   subcommand: z.string().nullable(),
   flags: z.array(z.string()),
@@ -62,13 +71,28 @@ export const CommandRecord = z.object({
   code: z.string().nullable(),
   message: z.string().nullable(),
   durationMs: z.number().int().nonnegative(),
-}).strict();
-export type CommandRecordT = z.infer<typeof CommandRecord>;
+});
+/**
+ * Written strictly, read leniently.
+ *
+ * Writing rejects any field this version did not mean to store, which is the
+ * privacy guard. Reading must not: a record written by a NEWER Tasq carries a
+ * field this one has never heard of, and a strict read rejected the whole
+ * line. Every record then failed, and `tasq usage` reported "no command
+ * journal yet" - the one answer that reads as "nothing happened" instead of
+ * "these are newer than me". An unknown field is dropped and the record kept.
+ */
+export const CommandRecord = CommandRecordShape.strict();
+export type CommandRecordT = z.infer<typeof CommandRecordShape>;
 
 /**
  * Agent harnesses announce themselves in the environment. Reading the name lets
  * a rollout answer "does Codex trip over what Claude Code sails through", which
  * an actor label cannot: an actor is chosen by whoever typed the setup command.
+ * The label itself is never recorded. It is content a person wrote, it often
+ * carries their name, and no report reads it - and recording it only when it
+ * arrived through TASQ_ACTOR, while dropping the identical label passed as
+ * `--actor`, was one rule applied two ways.
  */
 export function detectHarness(env: NodeJS.ProcessEnv = process.env): string {
   if (env.CLAUDECODE || env.CLAUDE_CODE_ENTRYPOINT) return "claude-code";
@@ -107,15 +131,59 @@ function usableHome(): string | null {
   return home;
 }
 
-function rotate(path: string): void {
-  const lines = readFileSync(path, "utf8").split("\n").filter(Boolean);
-  const kept = lines.slice(Math.floor(lines.length * (1 - KEEP_ON_ROTATE)));
+/**
+ * Trim the journal to its most recent records, at most one process at a time.
+ *
+ * Rotation reads the whole file and renames a rewritten copy over it, so two
+ * agents working the same machine could both read, both rewrite, and the second
+ * rename would drop whatever the first had appended. The exclusive lock file is
+ * the whole guard: a process that cannot take it skips rotating, the journal
+ * stays a few lines over its bound for one more invocation, and nothing is
+ * lost. Instrumentation is never worth losing a record over.
+ *
+ * The lock carries the holder's pid, and a lock whose process is gone is
+ * reclaimed, so a killed writer cannot wedge rotation forever. The liveness
+ * check is deliberately not a timeout: an expiry needs a clock, and only
+ * `systemClock` may read the host clock.
+ */
+function rotate(path: string, ownPid: number): void {
+  const lock = `${path}.rotate.lock`;
+  try {
+    const holder = Number(readFileSync(lock, "utf8").trim());
+    // Signal 0 tests for existence without delivering anything. EPERM means the
+    // process is alive and owned by somebody else, which still counts as held.
+    if (Number.isInteger(holder) && holder > 0) process.kill(holder, 0);
+    else unlinkSync(lock);
+  } catch (error) {
+    // ENOENT: no lock, take it below. ESRCH: the holder died, reclaim it.
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ESRCH") {
+      try {
+        unlinkSync(lock);
+      } catch {
+        // Another process reclaimed the same dead lock first: it wins.
+      }
+    } else if (code !== "ENOENT") {
+      return; // held, or unreadable: skip rotating rather than risk the file
+    }
+  }
+  let fd: number;
+  try {
+    fd = openSync(lock, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o600);
+  } catch {
+    return; // another process is rotating; this record still appends below
+  }
+  writeSync(fd, `${ownPid}\n`, undefined, "utf8");
+  closeSync(fd);
   const temporary = `${path}.${process.pid}.rotate.tmp`;
   try {
+    const lines = readFileSync(path, "utf8").split("\n").filter(Boolean);
+    const kept = lines.slice(Math.floor(lines.length * (1 - KEEP_ON_ROTATE)));
     writeFileSync(temporary, `${kept.join("\n")}\n`, { encoding: "utf8", mode: 0o600, flag: "w" });
     renameSync(temporary, path);
   } finally {
     if (existsSync(temporary)) unlinkSync(temporary);
+    if (existsSync(lock)) unlinkSync(lock);
   }
 }
 
@@ -135,7 +203,7 @@ export function recordCommand(input: Omit<CommandRecordT, "contractVersion" | "p
   if (existsSync(path)) {
     const info = lstatSync(path);
     if (!info.isFile() || info.isSymbolicLink() || (info.mode & 0o077) !== 0) return;
-    if (info.size + Buffer.byteLength(line) > MAX_BYTES) rotate(path);
+    if (info.size + Buffer.byteLength(line) > MAX_BYTES) rotate(path, process.pid);
   }
   const fd = openSync(path, constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY | constants.O_NOFOLLOW, 0o600);
   try {
@@ -148,15 +216,23 @@ export function recordCommand(input: Omit<CommandRecordT, "contractVersion" | "p
 
 /** Every well-formed record, oldest first. A corrupt line is skipped, never fatal. */
 export function readCommandJournal(sinceMs = 0): CommandRecordT[] {
-  const path = journalPath();
-  if (!existsSync(path)) return [];
-  const info = lstatSync(path);
-  if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_BYTES * 2) return [];
-  const lines = readFileSync(path, "utf8").split("\n").filter(Boolean).slice(-MAX_RECORDS);
+  let lines: string[];
+  try {
+    const path = journalPath();
+    if (!existsSync(path)) return [];
+    const info = lstatSync(path);
+    if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_BYTES * 2) return [];
+    lines = readFileSync(path, "utf8").split("\n").filter(Boolean).slice(-MAX_RECORDS);
+  } catch {
+    // An unreadable journal is a report with less in it, never a failed
+    // `tasq usage`: `chmod 000` on this file used to take the command down
+    // with a raw EACCES, which is the opposite of what instrumentation owes.
+    return [];
+  }
   const records: CommandRecordT[] = [];
   for (const line of lines) {
     try {
-      const parsed = CommandRecord.safeParse(JSON.parse(line));
+      const parsed = CommandRecordShape.safeParse(JSON.parse(line));
       if (parsed.success && parsed.data.recordedAt >= sinceMs) records.push(parsed.data);
     } catch {
       // A truncated tail from a killed process must not blind the whole report.

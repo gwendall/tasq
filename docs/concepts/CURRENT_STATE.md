@@ -38,7 +38,7 @@ source candidates into shipped features: the comparison is pinned to Tasq
 `v0.4.2`, distinguishes same-machine Local from the published self-hosted
 Server and unavailable managed Cloud, and labels classifications inferred from
 first-party or normative sources. The defensible boundary is durable,
-runtime-neutral commitment, claim, attempt, evidence and decision state — not
+runtime-neutral commitment, claim, attempt, evidence and decision state - not
 parallel execution, worktree isolation or vendor-native subagent orchestration.
 
 TQ-623 deepens the local embedded Interface without adding Kernel state.
@@ -96,8 +96,8 @@ remote product and public distribution support remain unchanged.
 
 TQ-632 composes the delegated-action Interfaces into a private
 `physical-verification/property-exterior@1` reference Profile and one
-cross-domain certifier. Six scenarios—physical verification, remote hands,
-software deployment, procurement, custody and a compromised agent—share exact
+cross-domain certifier. Six scenarios - physical verification, remote hands,
+software deployment, procurement, custody and a compromised agent - share exact
 target, authority, execution, validation, recovery and portability invariants.
 The hostile matrix denies target drift, revoked/denied routing, no-access,
 partial/timeout completion, self-review and concurrent custody successors. One
@@ -444,7 +444,7 @@ Full lifecycle, migration, TQ-616 and client replays pass on Linux/macOS.
 Dogfood and blind-human adoption continue after the alpha; remote effects stay
 disabled.
 
-TQ-901–TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
+TQ-901-TQ-905 add a private managed-Cloud source candidate. Two-tenant hostile
 tests pass colliding names, isolated storage bindings, concurrent quota,
 cross-tenant denial, BFF CSRF/origin rules, revocation epochs, provider
 reconciliation, rotation, backup/restore, retention, support and deletion

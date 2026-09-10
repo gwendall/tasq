@@ -1,4 +1,4 @@
-# TQ-703 — Local operator Console
+# TQ-703 - Local operator Console
 
 ## Outcome
 

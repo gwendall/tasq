@@ -19,7 +19,22 @@ const MIRRORED = [
   "apps/site/media/tasq-demo.tape",
   "README.md",
   "docs/integrations/llms.txt",
+  // The acquisition manifests: what an agent host reads to decide which CLI to
+  // install. They sat two releases behind a published one, so the gate reads
+  // them and every fixture has to carry them.
+  "docs/integrations/AGENT_INTEGRATIONS.json",
+  "docs/integrations/AGENT_INTEGRATIONS.md",
+  "apps/site/public/integration.json",
 ] as const;
+
+/** The acquisition pins the recorder advances, applied to one file's text. */
+function acquiring(source: string, version: string): string {
+  return source
+    .replace(/@tasq-run\/cli@\d+\.\d+\.\d+/g, `@tasq-run/cli@${version}`)
+    .replace(/install-v\d+\.\d+\.\d+\.sh/g, `install-v${version}.sh`)
+    .replace(/(--version"?,?\s+"?)\d+\.\d+\.\d+/g, `$1${version}`)
+    .replace(/("acquisition":\s*\{\s*"version":\s*")\d+\.\d+\.\d+/g, `$1${version}`);
+}
 
 async function run(root: string) {
   const child = Bun.spawn([process.execPath, checker, "--policy-root", root], {
@@ -104,6 +119,11 @@ async function recorded(version: string, tags: string[] = [`v${version}`]) {
     llms.replace(/Tasq Local \d+\.\d+\.\d+ is published/, `Tasq Local ${version} is published`),
     "utf8",
   );
+
+  for (const relative of MIRRORED.slice(5)) {
+    const target = join(root, relative);
+    await writeFile(target, acquiring(await readFile(target, "utf8"), version), "utf8");
+  }
 
   for (const relative of [
     `scripts/release/install-v${version}.sh`,
@@ -266,6 +286,28 @@ describe("publication record", () => {
       expect(refused.stderr).toContain("README.md names v9.9.7 where only v9.9.9 is published");
       expect(refused.stderr).toContain("llms.txt says Tasq Local 9.9.6 is published where v9.9.9 is");
       expect(refused.stderr).toContain("/compare page");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  test("refuses acquisition manifests that install a release older than the published one", async () => {
+    // What actually happened: 0.6.5 was published and all three manifests still
+    // said 0.4.0, so an agent host that followed "Executable acquisition" to the
+    // letter installed a two-release-old CLI and nothing complained.
+    const root = await recorded("9.9.9");
+    try {
+      for (const relative of MIRRORED.slice(5)) {
+        const file = join(root, relative);
+        await writeFile(file, acquiring(await readFile(file, "utf8"), "9.9.4"), "utf8");
+      }
+      const refused = await run(root);
+      expect(refused.exitCode).not.toBe(0);
+      for (const relative of MIRRORED.slice(5)) {
+        expect(refused.stderr).toContain(`${relative} tells an agent to acquire v9.9.4`);
+      }
+      expect(refused.stderr).toContain("installs a stale CLI");
+      expect(refused.stderr).toContain("declares acquisition.version 9.9.4");
     } finally {
       await rm(root, { recursive: true, force: true });
     }

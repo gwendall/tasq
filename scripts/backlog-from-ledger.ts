@@ -197,7 +197,7 @@ function readLedgerTasks(): LedgerTask[] {
 }
 
 function importedTitle(item: BacklogItem): string {
-  const title = `${item.id} — ${item.outcome}`;
+  const title = `${item.id} - ${item.outcome}`;
   return title.length <= 500 ? title : `${title.slice(0, 497)}...`;
 }
 

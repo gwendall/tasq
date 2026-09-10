@@ -1,4 +1,4 @@
-# ADR-023 — Decomposition is a column, not a relation
+# ADR-023 - Decomposition is a column, not a relation
 
 - **Status:** Proposed - 2026-08-27
 - **Decision owner:** Kernel ontology
@@ -14,9 +14,9 @@
 UNIVERSAL_KERNEL_SPEC §Relation types documents all six. **Two of them have no
 writer anywhere in the repository:**
 
-- `parent_of` — "structural decomposition". Hierarchy actually lives in the
+- `parent_of` - "structural decomposition". Hierarchy actually lives in the
   `task.parentTaskId` column.
-- `supersedes` — "append-only correction lineage". The `supersedes*`
+- `supersedes` - "append-only correction lineage". The `supersedes*`
   identifiers elsewhere in the codebase are unrelated scalar columns on
   evidence, decisions, summaries and context links.
 

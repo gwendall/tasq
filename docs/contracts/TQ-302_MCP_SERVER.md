@@ -1,4 +1,4 @@
-# TQ-302 — capability-separated MCP server
+# TQ-302 - capability-separated MCP server
 
 > Implemented 2026-07-18. This describes the shipped local MCP transport, not
 > hosted authentication or remote tenancy.

@@ -1,4 +1,4 @@
-# TQ-631 — Experimental Custody Module
+# TQ-631 - Experimental Custody Module
 
 > **Status:** source implemented and cross-domain repository certified;
 > private experimental Module, not Kernel or remote product support

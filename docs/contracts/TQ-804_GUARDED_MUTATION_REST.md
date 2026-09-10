@@ -1,6 +1,6 @@
-# TQ-804 — Guarded mutation REST
+# TQ-804 - Guarded mutation REST
 
-> **Status:** implemented and repository-certified — 2026-07-21
+> **Status:** implemented and repository-certified - 2026-07-21
 > **Machine certificate:** `TQ-804_MUTATION_REST_CERTIFICATION.json`
 > **Deployable Server status:** implemented later as the unpublished TQ-807
 > source candidate

@@ -1,10 +1,10 @@
-# ADR-006 — machine discovery and safe cold-start onboarding
+# ADR-006 - machine discovery and safe cold-start onboarding
 
-> **Status:** accepted — 2026-07-15  
-> **Implementation:** complete — embedded API, local CLI and black-box
+> **Status:** accepted - 2026-07-15<br>
+> **Implementation:** complete - embedded API, local CLI and black-box
 > package-independent client eval
-> **Decision scope:** UK-009  
-> **Depends on:** UK-001–UK-008, ADR-UK-EXT, ADR-UK-006 collaboration records  
+> **Decision scope:** UK-009<br>
+> **Depends on:** UK-001-UK-008, ADR-UK-EXT, ADR-UK-006 collaboration records<br>
 > **Does not authorize:** remote authentication, capability grants, extension
 > installation, effect execution or protocol-specific task mapping
 

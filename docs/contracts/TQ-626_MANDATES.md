@@ -1,4 +1,4 @@
-# TQ-626 — Mandates Module
+# TQ-626 - Mandates Module
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` release gate

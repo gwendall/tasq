@@ -18,6 +18,7 @@ import { readCommandJournal, type CommandRecordT } from "../command-journal.js";
 import type { ParsedArgs } from "../args.js";
 import { color, printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
+import { loadConfig } from "../config.js";
 
 export const USAGE_REPORT_CONTRACT = "tasq.usage-report.v1" as const;
 
@@ -82,6 +83,16 @@ export interface CommandActivity {
 
 export interface SpaceUsage {
   workspaceId: string;
+  /**
+   * How many directories on this machine are bound to this space.
+   *
+   * `--all` lists every space the store holds, and on a developer machine most
+   * of them are test residue: `acme`, `context-e2e`, `race`, `shape`. Nothing
+   * separated those from a real project, so the first cross-project read was
+   * mostly noise. A space no directory is bound to was never set up by anyone;
+   * that is the cheapest honest signal available without a new schema.
+   */
+  boundDirectories: number;
   adoptedAt: number | null;
   lastActivityAt: number | null;
   events: number;
@@ -107,7 +118,44 @@ export interface UsageReport {
 }
 
 /** Reads the ritual prescribes; only the journal can observe them. */
-const READ_COMMANDS = new Set(["onboard", "next", "why", "list", "show", "search", "usage", "contention", "doctor"]);
+const READ_COMMANDS = new Set(["onboard", "next", "why", "list", "show", "search", "usage", "contention", "doctor", "fleet", "inspect", "audit"]);
+
+/**
+ * Reads that live under a verb rather than at the top level.
+ *
+ * Matching on `record.command` alone made `attempt list` and `evidence list`
+ * invisible: they are reads, they leave no ledger event, and the whole point of
+ * the `reads` counter is that the journal is the only place they show up. The
+ * counter then under-reported exactly the commands an adopter uses most while
+ * finding their way around a space.
+ */
+const READ_SUBCOMMANDS: Record<string, ReadonlySet<string>> = {
+  area: new Set(["list", "show"]),
+  attempt: new Set(["list"]),
+  config: new Set(["show", "get"]),
+  contextLink: new Set(["list", "show"]),
+  cost: new Set(["show"]),
+  evidence: new Set(["list"]),
+  observation: new Set(["list", "show"]),
+  premise: new Set(["show"]),
+  project: new Set(["list", "show", "status"]),
+  remote: new Set(["status", "list", "show", "events", "operations"]),
+  resolution: new Set(["show"]),
+  resource: new Set(["get", "list", "events"]),
+  signature: new Set(["show", "bindings"]),
+  summary: new Set(["list", "show"]),
+  task: new Set(["status"]),
+  wait: new Set(["list"]),
+  web: new Set(["status"]),
+};
+
+/** The key a read is counted under, or null when the record is not a read. */
+export function readKey(command: string, subcommand: string | null): string | null {
+  if (subcommand !== null) {
+    return READ_SUBCOMMANDS[command]?.has(subcommand) ? `${command} ${subcommand}` : null;
+  }
+  return READ_COMMANDS.has(command) ? command : null;
+}
 
 export function buildCommandActivity(records: readonly CommandRecordT[]): CommandActivity {
   const byHarness: Record<string, number> = {};
@@ -118,7 +166,8 @@ export function buildCommandActivity(records: readonly CommandRecordT[]): Comman
   for (const record of records) {
     byHarness[record.harness] = (byHarness[record.harness] ?? 0) + 1;
     byVersion[record.version] = (byVersion[record.version] ?? 0) + 1;
-    if (READ_COMMANDS.has(record.command)) reads[record.command] = (reads[record.command] ?? 0) + 1;
+    const read = readKey(record.command, record.subcommand);
+    if (read !== null) reads[read] = (reads[read] ?? 0) + 1;
     const key = record.subcommand ? `${record.command} ${record.subcommand}` : record.command;
     const row = perCommand.get(key) ?? { command: record.command, subcommand: record.subcommand, failures: 0, invocations: 0, messages: new Map<string, number>() };
     row.invocations++;
@@ -207,6 +256,10 @@ export async function usageCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     // times and joining the answers by hand.
     if (all) {
       const spaces = await listCoordinationSpaces(rt.db);
+      const bound = new Map<string, number>();
+      for (const space of Object.values(loadConfig().directorySpaces ?? {})) {
+        bound.set(space, (bound.get(space) ?? 0) + 1);
+      }
       report.spaces = [];
       for (const space of spaces) {
         const spaceEvents = await listEvents(rt.db, { tenantId: space.workspaceId, sinceMs: from > 0 ? from : undefined, ascending: true, limit: 1_000_000 });
@@ -219,6 +272,7 @@ export async function usageCmd(args: ParsedArgs, clock: Clock): Promise<number> 
         const timestamps = spaceEvents.map((event) => event.createdAt);
         report.spaces.push({
           workspaceId: space.workspaceId,
+          boundDirectories: bound.get(space.workspaceId) ?? 0,
           adoptedAt: space.createdAt,
           lastActivityAt: timestamps.length > 0 ? Math.max(...timestamps) : null,
           events: spaceReport.events,
@@ -255,11 +309,19 @@ export async function usageCmd(args: ParsedArgs, clock: Clock): Promise<number> 
     }
     if (report.spaces) {
       printInfo("");
-      printInfo(color.bold(`Every space on this machine (${report.spaces.length}):`));
+      const adoptedSpaces = report.spaces.filter((space) => space.boundDirectories > 0);
+      const unbound = report.spaces.length - adoptedSpaces.length;
+      printInfo(color.bold(`Every space on this machine (${report.spaces.length}, ${adoptedSpaces.length} bound to a directory):`));
       for (const space of report.spaces) {
         const last = space.lastActivityAt === null ? "silent in window" : new Date(space.lastActivityAt).toISOString().slice(0, 10);
         const adopted = space.adoptedAt === null ? "unknown" : new Date(space.adoptedAt).toISOString().slice(0, 10);
-        printInfo(`  ${space.workspaceId.padEnd(22)} ${String(space.events).padStart(5)} ev  ${String(space.actors).padStart(2)} actor(s)  ${color.dim(`adopted ${adopted}, last ${last}`)}`);
+        const binding = space.boundDirectories > 0
+          ? `${space.boundDirectories} dir${space.boundDirectories === 1 ? "" : "s"}`
+          : color.dim("unbound");
+        printInfo(`  ${space.workspaceId.padEnd(22)} ${String(space.events).padStart(5)} ev  ${String(space.actors).padStart(2)} actor(s)  ${binding.padEnd(8)} ${color.dim(`adopted ${adopted}, last ${last}`)}`);
+      }
+      if (unbound > 0) {
+        printInfo(color.dim(`  ${unbound} space(s) no directory is bound to: nobody ran \`tasq setup\` there, so they are most likely test residue.`));
       }
     }
     if (report.commands) {

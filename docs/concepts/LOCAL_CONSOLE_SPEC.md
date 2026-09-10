@@ -1,6 +1,6 @@
-# TQ-601 — Tasq Local Console product specification
+# TQ-601 - Tasq Local Console product specification
 
-> **Status:** accepted design baseline — 2026-07-20
+> **Status:** accepted design baseline - 2026-07-20
 > **Current implementation:** TQ-504 inspector plus TQ-701 canonical read models
 > **Product contract:** `PRODUCT_CONSUMPTION_SPEC.md`
 
@@ -45,19 +45,19 @@ integrity remains an explicit CLI operation rather than a request-time claim.
 
 The complete Local Console has seven bounded views:
 
-1. **Overview** — counts and attention queues for active, waiting, blocked,
+1. **Overview** - counts and attention queues for active, waiting, blocked,
    contended and recently changed commitments.
-2. **Work** — commitment list, dependency/relationship graph, assignment,
+2. **Work** - commitment list, dependency/relationship graph, assignment,
    claim, attempts, evidence, artifacts and completion basis.
-3. **Agents and resources** — principals, active claims, generic resource
+3. **Agents and resources** - principals, active claims, generic resource
    leases, fences, contention and expiry.
-4. **Waits and facts** — active waits, observations, candidate routing,
+4. **Waits and facts** - active waits, observations, candidate routing,
    reconciliations, deadline fallbacks and late facts.
-5. **Effects** — exact proposals, revisions, approval chains, permits,
+5. **Effects** - exact proposals, revisions, approval chains, permits,
    dispatch attempts, receipts, uncertainty and compensation links.
-6. **Audit** — cursor-addressed events and record histories with explicit
+6. **Audit** - cursor-addressed events and record histories with explicit
    provenance; never an inferred narrative that hides source records.
-7. **Health** — version, schema/migration state, doctor findings, journal and
+7. **Health** - version, schema/migration state, doctor findings, journal and
    backup posture, replication role and bounded support diagnostics.
 
 Every aggregate links to its canonical records. Empty states distinguish
@@ -143,10 +143,10 @@ injected clock once per batch. See `../contracts/TQ-702_CONSOLE_LIVE_TRANSPORT.m
 | Phase | Scope | Gate |
 |---|---|---|
 | Existing baseline | TQ-504 read-first inspector | Already certified |
-| TQ-701 | Canonical bounded overview/read models | Complete — empty, mature, hostile and large fixtures |
-| TQ-702 | Cursor-driven SSE plus polling fallback | Complete — reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
-| TQ-703 | Accessible responsive navigation, search and support bundle | Complete — SSR/no-JS baseline plus six real Chromium journeys |
-| TQ-704 | Release/install integration, stable URLs and lifecycle | Complete for `v0.1.0` — published standalone/npm start, proof-of-life discovery, upgrade and uninstall certified on both targets |
+| TQ-701 | Canonical bounded overview/read models | Complete - empty, mature, hostile and large fixtures |
+| TQ-702 | Cursor-driven SSE plus polling fallback | Complete - reconnect, overflow, gap, expiry, backpressure and injected-clock tests |
+| TQ-703 | Accessible responsive navigation, search and support bundle | Complete - SSR/no-JS baseline plus six real Chromium journeys |
+| TQ-704 | Release/install integration, stable URLs and lifecycle | Complete for `v0.1.0` - published standalone/npm start, proof-of-life discovery, upgrade and uninstall certified on both targets |
 | TQ-705 | Operator acceptance | Unknown operator resolves staged incidents without repository knowledge |
 
 ## 9. Acceptance scenarios

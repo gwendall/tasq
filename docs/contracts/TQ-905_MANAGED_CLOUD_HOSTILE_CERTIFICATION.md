@@ -1,4 +1,4 @@
-# TQ-905 — Managed Cloud hostile certification
+# TQ-905 - Managed Cloud hostile certification
 
 > **Status:** source and experimental provider drills complete; independent gate open
 > **Date:** 2026-08-20

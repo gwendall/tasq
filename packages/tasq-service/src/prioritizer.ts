@@ -1,5 +1,5 @@
 /**
- * Prioritizer — the `tasq next` formula.
+ * Prioritizer - the `tasq next` formula.
  *
  * Returns tasks sorted by a transparent score combining four signals:
  *
@@ -10,11 +10,11 @@
  *
  * Each component is normalized to [0, 5] so weights stay legible.
  *
- *   leverage  — derived from goal.importance (or area.importance if loose task).
+ *   leverage  - derived from goal.importance (or area.importance if loose task).
  *               If the task has a `priority`, it overrides upward.
  *               High goal importance + matching priority = high leverage.
  *
- *   urgency   — derived from `due_at` and `scheduled_at`.
+ *   urgency   - derived from `due_at` and `scheduled_at`.
  *               • overdue (due_at < now)         → 5
  *               • due today                       → 4
  *               • due within 3 days               → 3
@@ -23,19 +23,19 @@
  *               • no due_at                       → 0
  *               If `scheduled_at <= now`, urgency floor is 2.
  *
- *   avoidance — derived from age in `open` state (or in `blocked`).
+ *   avoidance - derived from age in `open` state (or in `blocked`).
  *               • created > 14 days ago, never started → 5
  *               • > 7 days                              → 4
  *               • > 3 days                              → 3
  *               • > 1 day                               → 1
  *               If status is `blocked`, multiply by 0.5 (it's a known wait).
  *
- *   active    — "finish what you started" (SPEC §5.2.1's W_active term).
+ *   active    - "finish what you started" (SPEC §5.2.1's W_active term).
  *               • status == in_progress → 5
  *               • else                  → 0
  *               Without this term, an `open` task that has aged accrues
  *               avoidance, but the moment it becomes `in_progress` its
- *               avoidance drops to 0 — so *starting* a task would LOWER its
+ *               avoidance drops to 0 - so *starting* a task would LOWER its
  *               score. The active term compensates: ACTIVE_WEIGHT*5 = 1.0
  *               exactly offsets the max avoidance contribution
  *               (AVOIDANCE_WEIGHT*5 = 1.0) an open task could have, so an
@@ -89,7 +89,7 @@ export type {
 import type { ScoreBreakdown } from "@tasq-internal/life-planning-profile";
 
 // ──────────────────────────────────────────────────────────────────────
-// `tasq next` — DB-aware
+// `tasq next` - DB-aware
 // ──────────────────────────────────────────────────────────────────────
 
 export interface PickNextOptions {
@@ -100,7 +100,7 @@ export interface PickNextOptions {
   projectId?: string;
   /**
    * If true, parent tasks with open sub-tasks are also returned.
-   * Default false — sub-tasks are the natural next-action ; surfacing the
+   * Default false - sub-tasks are the natural next-action ; surfacing the
    * parent too would be a duplicate distraction in the daily push.
    */
   includeParentsWithOpenSubtasks?: boolean;
@@ -118,7 +118,7 @@ export interface PickNextOptions {
   actor?: string;
   /** Surface work currently claimed by another actor. */
   includeClaimed?: boolean;
-  /** Override now() — useful for tests. */
+  /** Override now() - useful for tests. */
   now?: number;
   clock?: Clock;
 }
@@ -139,7 +139,7 @@ export interface NextResult {
  * loads their referenced goal + area, computes the score, sorts, slices.
  *
  * Tasks with open / in_progress / blocked sub-tasks are EXCLUDED from the
- * result by default — their sub-tasks are the real next-actions. Pass
+ * result by default - their sub-tasks are the real next-actions. Pass
  * `includeParentsWithOpenSubtasks: true` to override (useful for tree views).
  */
 export async function pickNext(
@@ -270,7 +270,7 @@ export async function pickNext(
 
   // W_blocked down-weight input (SPEC §4.5 / §5.2.1). One tenant-scoped SELECT
   // of live `blocks` edges, aggregated in-memory against the already-loaded
-  // task statuses — no N+1, no extra per-candidate query. The status map is
+  // task statuses - no N+1, no extra per-candidate query. The status map is
   // built from the UNFILTERED candidate rows (every live open/in_progress/
   // blocked task in the tenant), not the post-defer/parent-filtered `tasks`, so
   // a blocker that is itself deferred or parent-excluded still counts as a real

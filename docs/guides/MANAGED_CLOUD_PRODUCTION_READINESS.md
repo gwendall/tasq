@@ -8,11 +8,11 @@ security review or make Tasq Cloud available.
 The normative machine files are:
 
 - [`MANAGED_CLOUD_PRODUCTION_READINESS.schema.json`](../contracts/MANAGED_CLOUD_PRODUCTION_READINESS.schema.json)
-  — portable JSON Schema;
+  - portable JSON Schema;
 - [`MANAGED_CLOUD_PRODUCTION_READINESS.template.json`](../contracts/MANAGED_CLOUD_PRODUCTION_READINESS.template.json)
-  — deliberately incomplete starting point;
+  - deliberately incomplete starting point;
 - [`validate-managed-cloud-readiness.ts`](../../scripts/validate-managed-cloud-readiness.ts)
-  — deterministic semantic validator.
+  - deterministic semantic validator.
 
 The manifest never grants domain, administrative or effect authority.
 `managedCloudAvailable`, `remoteEffectsEnabled` and
@@ -81,7 +81,7 @@ or erase the original failure record.
 | TQ-905 | Exact artifact deployment; off-site restore and region failover; independent multi-tenant security review; unbriefed-operator incident drill |
 
 The reliability section additionally requires a non-trivial production
-availability target of at least 99%, an explicit 28–366 day measurement
+availability target of at least 99%, an explicit 28-366 day measurement
 window, RPO, RTO, SLO evidence and disaster-recovery evidence. This is a
 readiness floor, not a Tasq service promise. These are deployment claims and
 cannot be inferred from repository tests.

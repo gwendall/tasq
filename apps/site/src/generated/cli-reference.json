@@ -104,7 +104,7 @@
     ]
   },
   {
-    "heading": "TASKS — the core verbs",
+    "heading": "TASKS - the core verbs",
     "entries": [
       {
         "usage": "add <title> [--area <slug>] [--goal <id>] [--project <id>]",

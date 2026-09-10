@@ -1,5 +1,5 @@
 /**
- * Event log — append-only, immutable. Internal to the service layer.
+ * Event log - append-only, immutable. Internal to the service layer.
  *
  * Planning, coordination and reconciliation mutations emit one or more
  * task-scoped events. Immutable observation ingestion deliberately emits none
@@ -60,7 +60,7 @@ export function emitAfterCommit(e: EventT): void {
       // Journal failure must never prevent the mutation from being durable
       // in the DB. Log + continue.
       process.stderr.write(
-        `tasq: event-journal listener threw — ${err instanceof Error ? err.message : String(err)}\n`,
+        `tasq: event-journal listener threw - ${err instanceof Error ? err.message : String(err)}\n`,
       );
     }
   });
@@ -68,7 +68,7 @@ export function emitAfterCommit(e: EventT): void {
 
 export interface RecordEventOptions {
   /**
-   * When true, the listener is NOT fired inline — the event row is inserted
+   * When true, the listener is NOT fired inline - the event row is inserted
    * (typically against a `tx`) and the parsed event is returned so the
    * caller can `emitAfterCommit(event)` once the transaction commits. This
    * keeps the external journal in sync with what actually durably landed in

@@ -51,7 +51,7 @@ export async function init(args: ParsedArgs): Promise<number> {
     if (cfg.projectionTarget) {
       printInfo(`  projection: ${cfg.projectionTarget}`);
     } else {
-      printInfo(color.dim(`  projection: (not set — run \`tasq config set projectionTarget <path>\`)`));
+      printInfo(color.dim(`  projection: (not set - run \`tasq config set projectionTarget <path>\`)`));
     }
     printInfo(`  tenant:     ${cfg.tenantId}`);
   }

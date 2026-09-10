@@ -114,7 +114,7 @@ describe("experimental GCP Compute Engine deployment", () => {
   test("documents the experimental claim and refuses to imply an applied managed service", async () => {
     const readme = await deploymentFile("README.md");
     expect(readme).toContain("experimental self-hosting infrastructure");
-    expect(readme).toMatch(/not the\s+TQ-901–TQ-905 managed Cloud/);
+    expect(readme).toMatch(/not the\s+TQ-901-TQ-905 managed Cloud/);
     expect(readme).toContain("not highly available");
     expect(readme).toContain("Effects remain disabled");
     expect(readme).toContain("No resources were created");

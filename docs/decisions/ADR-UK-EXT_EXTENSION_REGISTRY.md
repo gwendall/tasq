@@ -1,8 +1,8 @@
-# ADR UK-EXT — Extension identity and registry
+# ADR UK-EXT - Extension identity and registry
 
-> **Status:** accepted — 2026-07-15  
+> **Status:** accepted - 2026-07-15<br>
 > **Decision:** immutable, workspace-scoped registry of releases, type schemas
-> and deterministic evaluators.  
+> and deterministic evaluators.<br>
 > **Implements:** UK-003; prerequisite for UK-004.
 
 ## 1. Context

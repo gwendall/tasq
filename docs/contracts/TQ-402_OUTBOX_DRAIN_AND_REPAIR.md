@@ -1,4 +1,4 @@
-# TQ-402 — Outbox drain, retry, quarantine and repair
+# TQ-402 - Outbox drain, retry, quarantine and repair
 
 > **Status:** implemented 2026-07-19. TQ-401 made delivery intent atomic;
 > TQ-402 now makes local JSONL delivery recoverable and observably idempotent.

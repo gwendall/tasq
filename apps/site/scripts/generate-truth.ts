@@ -480,11 +480,11 @@ function parseChangelog(source: string): Array<{
   for (const raw of source.split("\n")) {
     const heading = /^##\s+(.+?)\s*$/.exec(raw);
     if (heading) {
-      // Accept both separators. Splitting only on the em-dash meant a heading
-      // written with the plain hyphen this repository's style requires parsed
-      // as one version string with a null date, silently rendering a published
-      // release as "not released" and emitting a broken tag link.
-      const [version, date] = heading[1]!.split(/\s+[—-]\s+/).map((part) => part.trim());
+      // The separator is the spaced hyphen this repository's style requires.
+      // Splitting on the wrong character meant a heading parsed as one version
+      // string with a null date, silently rendering a published release as
+      // "not released" and emitting a broken tag link.
+      const [version, date] = heading[1]!.split(/\s+-\s+/).map((part) => part.trim());
       if (date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         throw new Error(`Changelog heading has an unparseable date: ${heading[1]}`);
       }
@@ -570,7 +570,7 @@ function parseCliReference(output: string): Array<{
   let current: { heading: string; entries: Array<{ usage: string; description: string }> } | null = null;
 
   for (const raw of lines) {
-    const headingMatch = /^([A-Z][A-Z /]*(?:—.*)?)$/.exec(raw.trim());
+    const headingMatch = /^([A-Z][A-Z /]*(?: - .*)?)$/.exec(raw.trim());
     if (headingMatch) {
       current = { heading: headingMatch[1]!.trim(), entries: [] };
       sections.push(current);

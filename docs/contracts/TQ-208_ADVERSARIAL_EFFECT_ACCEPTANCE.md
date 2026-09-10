@@ -1,6 +1,6 @@
-# TQ-208 — Adversarial effect acceptance
+# TQ-208 - Adversarial effect acceptance
 
-> **Status:** passed — 2026-07-16  
+> **Status:** passed - 2026-07-16<br>
 > **Scope:** black-box acceptance of the complete generic effect boundary across
 > four unrelated write domains, using only public kernel and connector-SDK APIs.
 

@@ -1,5 +1,5 @@
 /**
- * Recurrence (SPEC §6.4-H) — the pure `nextOccurrence` stepper + the
+ * Recurrence (SPEC §6.4-H) - the pure `nextOccurrence` stepper + the
  * materializer wired through the public `completeTask` verb.
  */
 
@@ -239,7 +239,7 @@ describe("materializer via completeTask", () => {
         dueAt: Date.now() + DAY,
       });
       await completeTask(db, t.id);
-      // Re-complete the already-done task — assertTransition's from===to early
+      // Re-complete the already-done task - assertTransition's from===to early
       // return makes this a no-op; the materializer must not fire again.
       await completeTask(db, t.id);
       const open = await listTasks(db, { status: "open", includeScheduled: true });

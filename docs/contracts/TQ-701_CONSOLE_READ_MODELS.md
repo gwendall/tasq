@@ -1,4 +1,4 @@
-# TQ-701 — bounded Console read models
+# TQ-701 - bounded Console read models
 
 > **Status:** implemented and certified
 > **Contracts:** `tasq.console-overview.v1`, `tasq.console-page.v1`,

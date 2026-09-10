@@ -1,4 +1,4 @@
-# TQ-633 — npm default-tag safety
+# TQ-633 - npm default-tag safety
 
 Status: complete; the supported protected `v0.4.0` release is the npm default.
 

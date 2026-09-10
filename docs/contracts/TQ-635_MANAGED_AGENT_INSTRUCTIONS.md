@@ -1,4 +1,4 @@
-# TQ-635 — Managed agent instructions and work-authority split
+# TQ-635 - Managed agent instructions and work-authority split
 
 Status: published and protected-byte certified in `v0.4.0`.
 

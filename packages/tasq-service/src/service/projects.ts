@@ -1,5 +1,5 @@
 /**
- * Project service — CRUD with event logging + status state machine.
+ * Project service - CRUD with event logging + status state machine.
  */
 
 import { and, asc, eq, isNull, or, sql } from "drizzle-orm";

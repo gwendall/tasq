@@ -1,6 +1,6 @@
-# ADR-012 — Trusted statement binder registry
+# ADR-012 - Trusted statement binder registry
 
-> **Status:** Accepted — 2026-08-10
+> **Status:** Accepted - 2026-08-10
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-624
 

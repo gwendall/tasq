@@ -1,4 +1,4 @@
-# TQ-904 — Cloud lifecycle and operations
+# TQ-904 - Cloud lifecycle and operations
 
 > **Status:** provider backup/restore and rotation drills passed; human gate open
 > **Date:** 2026-08-20

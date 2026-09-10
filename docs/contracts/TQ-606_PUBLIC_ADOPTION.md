@@ -1,7 +1,7 @@
-# TQ-606 — Blind public adoption gate
+# TQ-606 - Blind public adoption gate
 
 > **Status:** exact published-byte automation certified; independent-human
-> evidence pending; external session kit ready — 2026-07-30
+> evidence pending; external session kit ready - 2026-07-30
 > **Machine certificate:** `TQ-606_ADOPTION_CERTIFICATION.json`
 > **Candidate pointers:** `/docs/getting-started/`, `/adopt.json` and
 > `/product-truth.json`

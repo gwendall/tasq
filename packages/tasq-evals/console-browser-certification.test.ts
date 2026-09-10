@@ -1,4 +1,4 @@
-/** TQ-705 — machine guard for the cross-platform browser certificate. */
+/** TQ-705 - machine guard for the cross-platform browser certificate. */
 
 import { describe, expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";

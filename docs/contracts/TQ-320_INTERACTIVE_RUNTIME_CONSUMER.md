@@ -1,4 +1,4 @@
-# TQ-320 — interactive agent-runtime consumer conformance
+# TQ-320 - interactive agent-runtime consumer conformance
 
 > **Status:** complete; candidate and exact protected `0.3.0` package replays
 > pass on both supported targets

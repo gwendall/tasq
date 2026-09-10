@@ -6,7 +6,7 @@ Container-Optimized OS VM in `europe-west9`, one zonal persistent data disk, a
 regional off-VM backup bucket, Secret Manager access and Caddy-managed HTTPS.
 
 It is explicitly **experimental self-hosting infrastructure**. It is not the
-TQ-901–TQ-905 managed Cloud, not highly available, not multi-region and not a
+TQ-901-TQ-905 managed Cloud, not highly available, not multi-region and not a
 production support claim. Effects remain disabled. A zone, VM or operator
 failure can cause downtime; recovery is from the persistent disk or the latest
 completed application backup.

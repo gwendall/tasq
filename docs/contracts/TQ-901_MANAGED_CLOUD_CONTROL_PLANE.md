@@ -1,4 +1,4 @@
-# TQ-901 — Managed Cloud control plane
+# TQ-901 - Managed Cloud control plane
 
 > **Status:** managed-database Fly experiment deployed; independent review gate open
 > **Date:** 2026-08-21

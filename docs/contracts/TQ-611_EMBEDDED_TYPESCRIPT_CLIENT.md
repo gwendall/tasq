@@ -1,4 +1,4 @@
-# TQ-611 — Deep local TypeScript client
+# TQ-611 - Deep local TypeScript client
 
 > **Status:** complete; protected `v0.3.0` publication and exact published-byte
 > certification passed

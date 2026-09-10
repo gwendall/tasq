@@ -1,5 +1,5 @@
 /**
- * UUIDv7 generation — time-ordered, sortable, globally unique.
+ * UUIDv7 generation - time-ordered, sortable, globally unique.
  *
  * Why UUIDv7 over v4: lexicographic sort = creation-time sort. Better DB
  * locality (sequential inserts), better debugging (eyeball-sortable),

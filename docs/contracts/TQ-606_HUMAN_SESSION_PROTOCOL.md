@@ -1,4 +1,4 @@
-# TQ-606 — Independent blind-human session protocol
+# TQ-606 - Independent blind-human session protocol
 
 This protocol prepares the sole external TQ-606 gate. It does not replace the
 session and cannot make the gate pass without an unfamiliar external human.

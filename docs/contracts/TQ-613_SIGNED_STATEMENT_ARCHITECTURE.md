@@ -1,6 +1,6 @@
-# TQ-613–TQ-616 — signed-statement architecture and delivery contract
+# TQ-613-TQ-616 - signed-statement architecture and delivery contract
 
-> **Status:** TQ-613–TQ-615 implemented in source; TQ-616 source candidate
+> **Status:** TQ-613-TQ-615 implemented in source; TQ-616 source candidate
 > passes and the protected downloaded-byte gate remains
 >
 > **Decision:** [ADR-009](../decisions/ADR-009_SIGNED_STATEMENTS_AND_CREDENTIALS.md)
@@ -587,7 +587,7 @@ Critical adversarial cases include:
 
 ## 11. Delivery sequence
 
-### TQ-613 — Portable statement contract
+### TQ-613 - Portable statement contract
 
 Deliver:
 
@@ -604,7 +604,7 @@ Acceptance:
 - malformed/ambiguous encoding fails before verification;
 - no private-key API enters Core.
 
-### TQ-614 — Credential authority and signer boundary
+### TQ-614 - Credential authority and signer boundary
 
 Depends on TQ-613 and TQ-802.
 
@@ -625,7 +625,7 @@ Acceptance:
 - no secret appears in database, logs, CLI/MCP or export;
 - a same-user test adapter is labeled as a weaker isolation class.
 
-### TQ-615 — Domain and surface integration — done in source
+### TQ-615 - Domain and surface integration - done in source
 
 Depends on TQ-614, TQ-612, TQ-205 and TQ-405.
 
@@ -645,7 +645,7 @@ Acceptance:
 - signed offline operation cannot obtain authority-required capability;
 - old unsigned simple journeys remain byte-compatible at their API boundary.
 
-### TQ-616 — Adversarial and clean-room certification — source candidate;
+### TQ-616 - Adversarial and clean-room certification - source candidate;
 protected-byte gate open
 
 Depends on TQ-615 and the deployed Server certification boundary TQ-808.

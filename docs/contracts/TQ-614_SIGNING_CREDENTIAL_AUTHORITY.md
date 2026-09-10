@@ -1,4 +1,4 @@
-# TQ-614 — Signing credential authority
+# TQ-614 - Signing credential authority
 
 > **Status:** done
 > **Date:** 2026-07-24
