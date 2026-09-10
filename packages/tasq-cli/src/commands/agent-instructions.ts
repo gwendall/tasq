@@ -11,7 +11,7 @@ export const AGENT_INSTRUCTIONS_EXIT = Object.freeze({
   handEdited: 12,
 });
 
-const BLOCK_VERSION = 1;
+const BLOCK_VERSION = 2;
 const LOOSE_BLOCK = /<!-- tasq:begin\b[^>]*-->[\s\S]*?<!-- tasq:end -->/g;
 const BEGIN = /^<!-- tasq:begin v="(\d+)" space="([^"\n]+)" digest="sha256:([0-9a-f]{64})" -->\n/;
 
@@ -56,6 +56,16 @@ task that surfaced it before moving on:
 Capturing never widens, renews or releases your claim, so it is safe mid-task.
 Do not wait for an error to give you permission: most defects are visible while
 commands succeed, and an observation you do not capture dies with your context.
+
+When the tool itself is what got in your way, say so to its authors instead:
+
+\`\`\`bash
+"$TASQ" feedback "<what Tasq did that you did not expect>"
+\`\`\`
+
+That stays a private local file until someone runs \`feedback push\`, and it is
+the only channel that reaches the people who can fix Tasq. A capture belongs to
+this project's work; feedback belongs to the tool.
 
 Say when a reason turns out to be wrong. Work can rest on a stated belief, and
 what you learn can kill it. Withdraw the belief instead of cancelling the tasks

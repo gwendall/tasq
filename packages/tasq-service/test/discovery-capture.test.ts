@@ -129,3 +129,51 @@ describe("discovery capture", () => {
     }
   });
 });
+
+describe("a discovery on a commitment written before the flat-hierarchy kernel", () => {
+  /**
+   * Ledgers written before ADR-023 carry a planning scope on almost every row.
+   * The kernel refuses that vocabulary, and capture copied the source's scope
+   * into the discovery, so capture refused every scoped commitment: 97 of this
+   * project's own 100. The managed AGENTS.md block prescribes capture, which
+   * made the prescribed command the one that could not run.
+   */
+  it("files the discovery instead of refusing the source's inherited scope", async () => {
+    const f = await fixture();
+    try {
+      // Reach past the service: a scoped row is exactly what the kernel now
+      // refuses to CREATE, and exactly what an older ledger already holds.
+      const area = "019fcd05-95fc-726b-a5ce-36663a57165b";
+      const project = "01a03981-a008-7268-bee0-adef53ff19b6";
+      const at = 1_700_000_000_000;
+      await f.client.execute({
+        sql: "INSERT INTO area (id, tenant_id, name, slug, created_at, updated_at) VALUES (?, 'gwendall', 'Release', 'release', ?, ?)",
+        args: [area, at, at],
+      });
+      await f.client.execute({
+        sql: "INSERT INTO project (id, tenant_id, area_id, title, created_at, updated_at) VALUES (?, 'gwendall', ?, 'Public adoption', ?, ?)",
+        args: [project, area, at, at],
+      });
+      await f.client.execute({
+        sql: "UPDATE task SET project_id = ?, area_id = ?, revision = revision + 1 WHERE id = ?",
+        args: [project, area, f.source.id],
+      });
+
+      const captured = await captureDiscovery(f.db, {
+        sourceTaskId: f.source.id,
+        title: "The installer names a release two versions old",
+        sourceCommand: "tasq capture",
+      }, { tenantId: "gwendall", actor: "agent-a", now: 1_800_000_000_000 });
+
+      expect(captured.task.title).toBe("The installer names a release two versions old");
+      // The kernel carries no planning vocabulary, so the copy is dropped, and
+      // the real tie to the source survives as the relation.
+      expect(captured.task.projectId).toBeNull();
+      expect(captured.task.areaId).toBeNull();
+      expect(captured.relation.type).toBe("discovered_from");
+      expect(captured.relation.toTaskId).toBe(f.source.id);
+    } finally {
+      f.client.close();
+    }
+  });
+});

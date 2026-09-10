@@ -210,9 +210,14 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(publish).toContain("test \"$INPUT_CONFIRMATION\" = \"publish-tasq-server\"");
     expect(publish).toContain('test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"');
-    expect(publish).toContain(
-      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
-    );
+    // A PUBLISHING workflow must run on main and nowhere else. Provenance names
+    // the ref a run was dispatched on, every verification downstream demands
+    // `refs/heads/main`, and `ensure-oci-tag.sh` pins the release tag to
+    // whatever was pushed - so a tag dispatch published an artifact no
+    // certifier could accept and no rerun could replace. Certification
+    // workflows stay permissive: they verify, they never push.
+    expect(publish).toContain('test "$GITHUB_REF" = "refs/heads/main"');
+    expect(publish).not.toContain('|| test "$GITHUB_REF" = "refs/tags/${release_tag}"');
     expect(publish).toContain(
       'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
     );
@@ -310,9 +315,14 @@ describe("protected candidate publication entrypoints", () => {
     expect(publish).toContain("INPUT_CONFIRMATION: ${{ inputs.confirmation }}");
     expect(publish).toContain("test \"$INPUT_CONFIRMATION\" = \"publish-tasq-python\"");
     expect(publish).toContain('test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"');
-    expect(publish).toContain(
-      'test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"',
-    );
+    // A PUBLISHING workflow must run on main and nowhere else. Provenance names
+    // the ref a run was dispatched on, every verification downstream demands
+    // `refs/heads/main`, and `ensure-oci-tag.sh` pins the release tag to
+    // whatever was pushed - so a tag dispatch published an artifact no
+    // certifier could accept and no rerun could replace. Certification
+    // workflows stay permissive: they verify, they never push.
+    expect(publish).toContain('test "$GITHUB_REF" = "refs/heads/main"');
+    expect(publish).not.toContain('|| test "$GITHUB_REF" = "refs/tags/${release_tag}"');
     expect(publish).toContain(
       'test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"',
     );

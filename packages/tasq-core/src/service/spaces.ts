@@ -1,6 +1,6 @@
 /** Explicit create-or-join lifecycle for universal coordination spaces. */
 
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import {
   BootstrapActorAlias,
   CoordinationSpace as CoordinationSpaceZ,
@@ -78,4 +78,17 @@ export async function getCoordinationSpace(
     .where(eq(coordinationSpace.workspaceId, workspaceId))
     .limit(1);
   return rows[0] ? parseSpace(rows[0]) : null;
+}
+
+/**
+ * Every space this store holds, newest first.
+ *
+ * A rollout across several projects is several spaces on one machine, and
+ * until now every read named exactly one of them: judging adoption meant
+ * running the same report once per project and joining the answers by hand.
+ */
+export async function listCoordinationSpaces(db: TasqDbOrTx): Promise<CoordinationSpace[]> {
+  const rows = await db.select().from(coordinationSpace)
+    .orderBy(desc(coordinationSpace.createdAt));
+  return rows.map(parseSpace);
 }

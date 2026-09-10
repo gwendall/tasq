@@ -52,12 +52,22 @@ jobs:
         run: |
           set -euo pipefail
           test "$GITHUB_REPOSITORY" = "gwendall/tasq"
+          # Every provenance verification downstream (this workflow's own reuse
+          # gate, both certifications, the Fly deploy) demands
+          # `--source-ref refs/heads/main`, and provenance names the ref the run
+          # was DISPATCHED on, not the commit it built. A tag-dispatched run
+          # therefore publishes an image no certifier can ever accept, and
+          # `ensure-oci-tag.sh` then pins the release tag to it, so no later
+          # main-dispatched rerun can replace it: v0.6.5 deadlocked exactly
+          # this way and only a registry deletion broke it. Refuse before
+          # anything is pushed. The bytes stay bound to the tag by
+          # `source_commit`, which is verified just below.
+          test "$GITHUB_REF" = "refs/heads/main"
           test "$INPUT_CONFIRMATION" = "publish-tasq-python"
           [[ "$INPUT_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
           [[ "$INPUT_SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
           test "$(git rev-parse HEAD)" = "$INPUT_SOURCE_COMMIT"
           release_tag="v${INPUT_VERSION}"
-          test "$GITHUB_REF" = "refs/heads/main" || test "$GITHUB_REF" = "refs/tags/${release_tag}"
           test "$(git rev-parse "refs/tags/${release_tag}^{commit}")" = "$INPUT_SOURCE_COMMIT"
           test "$(
             gh release view "$release_tag" \

@@ -195,6 +195,8 @@ function safeCommandShape(argv: string[]): Pick<z.infer<typeof LastFailure>, "co
 }
 
 /** Persist only command shape, never positionals, flag values or error text. */
+export { safeCommandShape };
+
 export function recordLastFailure(argv: string[], exitCode: number, clock: Clock): void {
   // Preserve cold validation's zero-mutation contract. Explicit `feedback`
   // capture may create its own private store, but an unrelated failed command

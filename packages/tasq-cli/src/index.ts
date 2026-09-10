@@ -26,6 +26,7 @@ import { parseArgs } from "./args.js";
 import { errorMatches, errorMessage } from "./errors.js";
 import { color, printError, printInfo, printJson, takeLastErrorMessage } from "./output/format.js";
 import { configCmd, init } from "./commands/init.js";
+import { loadConfig } from "./config.js";
 import { areaCmd } from "./commands/area.js";
 import { goalCmd, projectCmd } from "./commands/goal-project.js";
 import {
@@ -74,7 +75,8 @@ import { useCmd } from "./commands/use.js";
 import { whoamiCmd } from "./commands/whoami.js";
 import { contentionCmd } from "./commands/contention.js";
 import { usageCmd } from "./commands/usage-report.js";
-import { feedbackCmd, recordLastFailure } from "./commands/feedback.js";
+import { feedbackCmd, recordLastFailure, safeCommandShape } from "./commands/feedback.js";
+import { recordCommand } from "./command-journal.js";
 
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
@@ -104,7 +106,7 @@ function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): 
     use: ["clear", "from-instructions", "project-to", "no-projection"],
     whoami: [],
     contention: ["since"],
-    usage: ["since"],
+    usage: ["since", "all"],
     feedback: ["details", "repo", "limit", "dry-run"],
     demo: [],
     agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
@@ -195,7 +197,9 @@ ${color.bold("SETUP")}
                                 --project-to renders this space's TASKS.md inside the project
   whoami                        who this ledger thinks is writing, and what that proves
   contention [--since 7d]       what the ledger refused: collisions it prevented
-  usage [--since 30d]           what actors actually do here, against the prescribed ritual
+  usage [--since 30d] [--all]   what actors actually do here, against the prescribed ritual;
+                                --all adds every space on this machine, plus the
+                                refusals and reads the ledger cannot record
   onboard --space <id> --actor <label> --json
                                 create/join a space + return executable recipes
   demo [--json]                 isolated add → list → done journey; no live data
@@ -835,14 +839,17 @@ export async function runTasqCli(
   clock: Clock = systemClock,
   executable = "tasq",
 ): Promise<number> {
+  const startedAt = clock.now();
   try {
     const code = await runWithRetry(argv, clock, executable);
+    tryRecordCommand(argv, code, startedAt, clock);
     if (code !== 0) {
       if (argv[0] !== "feedback") tryRecordLastFailure(argv, code, clock);
       printCaptureSuggestion(argv, executable, code);
     }
     return code;
   } catch (err) {
+    tryRecordCommand(argv, 1, startedAt, clock, errorMessage(err));
     if (argv[0] === "onboard" && argv.some((value) => value === "--json" || value === "-j" || value.startsWith("--json="))) {
       return printOnboardProblem(err, executable);
     }
@@ -850,6 +857,48 @@ export async function runTasqCli(
     if (argv[0] !== "feedback") tryRecordLastFailure(argv, 1, clock);
     printCaptureSuggestion(argv, executable, 1);
     return 1;
+  }
+}
+
+/**
+ * One private local line per invocation, successes included.
+ *
+ * The ledger only records mutations that succeeded, so reads and refusals -
+ * the two things that say whether the product fits the hand using it - left no
+ * trace at all. Recording must never be able to change what the operator sees:
+ * an unwritable home is often the very failure being reported.
+ */
+function tryRecordCommand(
+  argv: string[],
+  exitCode: number,
+  startedAt: number,
+  clock: Clock,
+  message?: string,
+): void {
+  try {
+    const now = clock.now();
+    recordCommand({
+      recordedAt: now,
+      version: VERSION,
+      space: process.env.TASQ_TENANT ?? readSpaceQuietly(),
+      actor: process.env.TASQ_ACTOR ?? null,
+      ...safeCommandShape(argv),
+      exitCode: Number.isSafeInteger(exitCode) && exitCode >= 0 && exitCode <= 255 ? exitCode : 1,
+      code: null,
+      message: message ?? takeLastErrorMessage(),
+      durationMs: Math.max(0, now - startedAt),
+    });
+  } catch {
+    // Never let instrumentation mask the command's own outcome.
+  }
+}
+
+/** The bound space, or null: reading it must never fail an unrelated command. */
+function readSpaceQuietly(): string | null {
+  try {
+    return loadConfig().tenantId ?? null;
+  } catch {
+    return null;
   }
 }
 

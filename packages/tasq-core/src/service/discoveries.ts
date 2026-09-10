@@ -125,6 +125,7 @@ export async function captureDiscovery(
       principalId: context.principalId,
       now,
       hierarchyPolicy: context.hierarchyPolicy,
+      scopeOrigin: "inherited",
       eventContext: { source: `discovery:${source.id}` },
     });
     const principal = await ensureLocalPrincipal(tx, tenantId, actor, now);

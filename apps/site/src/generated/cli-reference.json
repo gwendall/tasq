@@ -19,8 +19,8 @@
         "description": "what the ledger refused: collisions it prevented"
       },
       {
-        "usage": "usage [--since 30d]",
-        "description": "what actors actually do here, against the prescribed ritual"
+        "usage": "usage [--since 30d] [--all]",
+        "description": "what actors actually do here, against the prescribed ritual; --all adds every space on this machine, plus the refusals and reads the ledger cannot record"
       },
       {
         "usage": "onboard --space <id> --actor <label> --json",
