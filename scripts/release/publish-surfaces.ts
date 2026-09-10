@@ -22,7 +22,7 @@
  */
 import {
   FLY_CONFIRMATION, STABLE_VERSION, SURFACES, dispatch, fail, findRun, ghcrDigestForVersion, parseFlags, parseSurfaces, pypiWheelSha256,
-  tagCommit, waitForRun,
+  sh, tagCommit, waitForRun,
 } from "./release-pipeline";
 
 const flags = parseFlags(process.argv.slice(2), ["--version", "--surfaces", "--fly-mode", "--workflow-ref"], ["--fly", "--fly-initialize", "--allow-managed"]);
@@ -51,11 +51,60 @@ if (!release || release.conclusion !== "success") {
 
 const result: Record<string, unknown> = { contractVersion: "tasq.release-surfaces.v1", version, tag, sourceCommit: commit, releaseRun: release.url };
 
+/**
+ * The commit a ref points at ON ORIGIN, which is the head a workflow run
+ * dispatched on that ref carries. A local ref would be a different answer
+ * whenever this checkout is behind, and the run listing only knows origin's.
+ */
+function refHead(ref: string): string {
+  const lines = sh(["git", "ls-remote", "origin", ref, `${ref}^{}`]).split("\n").filter(Boolean);
+  // An annotated tag lists twice: the tag object, then `^{}` for the commit.
+  const line = lines.find((entry) => entry.endsWith("^{}")) ?? lines[0] ?? "";
+  const sha = line.split(/\s+/)[0] ?? "";
+  if (!/^[a-f0-9]{40}$/.test(sha)) fail(`ref ${ref} does not resolve on origin`);
+  return sha;
+}
+
+/** Whether the registry this surface publishes to already holds this version. */
+async function isPublished(surface: "server" | "python"): Promise<boolean> {
+  if (surface === "python") {
+    const response = await fetch(`https://pypi.org/pypi/tasq-remote/${version}/json`, { cache: "no-store" });
+    return response.ok;
+  }
+  try {
+    ghcrDigestForVersion(version);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function publishAndCertify(surface: "server" | "python", extra: Record<string, string>, certifyExtra: () => Promise<Record<string, string>>) {
   const spec = SURFACES[surface];
-  const publish = await dispatch(spec.publishWorkflow, workflowRef, { version, source_commit: commit, confirmation: spec.publishConfirmation!, ...extra });
-  process.stderr.write(`${surface}: publishing, ${publish.url}\n`);
-  const published = await waitForRun(publish.databaseId);
+  // A certification can fail for a reason the publication is innocent of - the
+  // PyPI simple index lagging behind its own JSON API cost v0.6.6 exactly that
+  // - and neither publish workflow will accept the same version twice, because
+  // neither registry accepts a version twice. Without this the only way forward
+  // was dispatching the certification by hand, which is how a release skips a
+  // step nobody notices. So the registry, not a run listing, decides whether
+  // publication already happened; the run is looked up only to record where.
+  const alreadyPublic = await isPublished(surface);
+  let published: { conclusion: string; url: string };
+  if (alreadyPublic) {
+    const existing = findRun(spec.publishWorkflow, refHead(workflowRef));
+    if (!existing || existing.conclusion !== "success") {
+      fail(
+        `${surface} ${version} is already public but no successful ${spec.publishWorkflow} run was found to record it; `
+          + "the registry will refuse a republish, so pass the run yourself",
+      );
+    }
+    process.stderr.write(`${surface}: already published, reusing ${existing.url}\n`);
+    published = { conclusion: existing.conclusion!, url: existing.url };
+  } else {
+    const publish = await dispatch(spec.publishWorkflow, workflowRef, { version, source_commit: commit, confirmation: spec.publishConfirmation!, ...extra });
+    process.stderr.write(`${surface}: publishing, ${publish.url}\n`);
+    published = await waitForRun(publish.databaseId);
+  }
   if (published.conclusion !== "success") fail(`${spec.publishWorkflow} concluded ${published.conclusion}: ${published.url}`);
   const certifyInputs = await certifyExtra();
   const certify = await dispatch(spec.certifyWorkflow, workflowRef, { version, source_commit: commit, confirmation: spec.certifyConfirmation!, ...certifyInputs });

@@ -165,14 +165,39 @@ export function ghcrDigestForVersion(version: string): string {
   return match.name;
 }
 
-/** The sha256 PyPI records for the wheel of a version. */
-export async function pypiWheelSha256(version: string): Promise<string> {
-  const response = await fetch(`https://pypi.org/pypi/tasq-remote/${version}/json`);
-  if (!response.ok) fail(`PyPI returned HTTP ${response.status} for tasq-remote ${version}`);
-  const body = await response.json() as { urls: Array<{ filename: string; digests: { sha256: string } }> };
-  const wheel = body.urls.find((entry) => entry.filename.endsWith(".whl"));
-  if (!wheel) fail(`PyPI holds no wheel for tasq-remote ${version}`);
-  return wheel.digests.sha256;
+/**
+ * The sha256 PyPI records for the wheel of a version, once `pip` can see it.
+ *
+ * PyPI serves two indexes and they do not update together: the JSON API
+ * carries a new release before the simple index `pip` resolves against does.
+ * v0.6.6 read the digest from the JSON API, dispatched the certification two
+ * minutes later, and the certifier's `pip download` failed with "from
+ * versions: 0.4.0, 0.6.3, 0.6.4, 0.6.5" - the wheel was published, and the
+ * index it installs from had not caught up. So both indexes are polled here,
+ * and the digest is only returned once the file the certifier will ask for is
+ * one the simple index lists.
+ */
+export async function pypiWheelSha256(version: string, attempts = 20, pollMs = 15_000): Promise<string> {
+  let wheel: { filename: string; digests: { sha256: string } } | undefined;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    if (attempt > 0) await Bun.sleep(pollMs);
+    if (!wheel) {
+      const response = await fetch(`https://pypi.org/pypi/tasq-remote/${version}/json`, { cache: "no-store" });
+      if (response.status === 404) continue;
+      if (!response.ok) fail(`PyPI returned HTTP ${response.status} for tasq-remote ${version}`);
+      const body = await response.json() as { urls: Array<{ filename: string; digests: { sha256: string } }> };
+      wheel = body.urls.find((entry) => entry.filename.endsWith(".whl"));
+      if (!wheel) continue;
+    }
+    const simple = await fetch("https://pypi.org/simple/tasq-remote/", { cache: "no-store" });
+    if (!simple.ok) fail(`PyPI simple index returned HTTP ${simple.status} for tasq-remote`);
+    if ((await simple.text()).includes(wheel.filename)) return wheel.digests.sha256;
+  }
+  fail(
+    wheel
+      ? `PyPI still does not list ${wheel.filename} on its simple index; the certifier's pip download would fail`
+      : `PyPI holds no wheel for tasq-remote ${version}`,
+  );
 }
 
 export function npmVersionExists(pkg: string, version: string): boolean {

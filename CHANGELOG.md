@@ -8,6 +8,24 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- **A release stopped dead when PyPI certified a wheel it had just published.**
+  PyPI serves two indexes that do not update together: the JSON API carries a
+  new release before the simple index `pip` resolves against does. v0.6.6 read
+  the wheel digest from the JSON API, dispatched the certification two minutes
+  later, and the certifier's `pip download` failed with `from versions: 0.4.0,
+  0.6.3, 0.6.4, 0.6.5` - the wheel was published, and the index it installs
+  from had not caught up. The release now waits until the simple index lists
+  the exact file the certifier will ask for.
+- **A failed certification forced the rest of the release to be done by hand.**
+  No registry accepts a version twice, so a rerun of `release:publish-surfaces`
+  failed on the publication step it had already completed, and the only way
+  forward was dispatching the remaining workflows one by one - which is how
+  v0.6.2 shipped without two of its surfaces. Publication is now decided by
+  the registry rather than by rerunning it, so a resumed release re-certifies
+  and continues.
+
 ## v0.6.6 - 2026-09-10
 
 Ships the private command journal and tasq usage, the first read of how the CLI is actually used across projects, plus the acquisition-manifest gate and nine reads that no longer print nothing on a first run.
