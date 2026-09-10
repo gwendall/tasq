@@ -30,7 +30,7 @@ pnpm release:prepare --version x.y.z --rationale "<why>"    # before the tag: au
 git tag -a vx.y.z && git push origin vx.y.z                  # the protected release workflow publishes npm and the GitHub release
 gh workflow run certify-published-release.yml -f tag=vx.y.z -f source_commit=<sha>
 pnpm release:publish-surfaces --version x.y.z --fly          # server image, Python wheel, their certifications, the Fly private beta
-#   add --workflow-ref main when a workflow file was fixed after the tag: the definitions run from main, the bytes stay bound to the tag
+#   definitions run from main (the ref every provenance check expects); the bytes stay bound to the tag by source_commit
 pnpm release:record --version x.y.z --certification-run <url> --surfaces-json <file>   # after publication: every public surface, verified
 ```
 
@@ -56,7 +56,7 @@ uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
 seven original packages. The separately bootstrapped client identity followed
-the same fail-closed handoff. Current `v0.6.4` is published, carrying the seven packages that changed;
+the same fail-closed handoff. Current `v0.6.5` is published, carrying the seven packages that changed;
 `@tasq-run/client` stays at the version it was last published at; the post-release workflow certifies their complete lifecycle
 without a repository checkout on both supported targets. TQ-607 remains the
 retained-data gate for stable graduation, not for the explicitly labeled
@@ -66,7 +66,16 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
-## `v0.6.4` current release
+## `v0.6.5` current release
+
+Published 2026-09-08T19:05:42Z from tag `v0.6.5`, protected run
+[34266352550](https://github.com/gwendall/tasq/actions/runs/34266352550).
+Certified by [34266997353](https://github.com/gwendall/tasq/actions/runs/34266997353).
+Surfaces recorded: serverImage, pythonWheel, remoteTypeScriptClient.
+
+The managed AGENTS.md block failed at its fifth step as written, and setup taught Codex while Claude Code read nothing; both fixed in #230 and only a published release puts them in an installation
+
+## `v0.6.4`
 
 Published 2026-09-06T23:25:38Z from tag `v0.6.4`, protected run
 [34066646904](https://github.com/gwendall/tasq/actions/runs/34066646904).

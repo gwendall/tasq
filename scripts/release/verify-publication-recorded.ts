@@ -115,6 +115,29 @@ if (readmePins.length === 0 || readmePins.some((pin) => pin !== published)) {
       + "the front page of the repository would tell a newcomer to run a different release)",
   );
 }
+// The pin above is one line; the README names the release in prose as well
+// (the alpha notice, the package versions, the release link), and those
+// drifted three releases while the pin stayed current, because the check
+// covered less than the page promises. Every version the README names is
+// the published one: it has no history section, the changelog has that.
+const readmeVersions = [...new Set([...readme.matchAll(/\bv?(\d+\.\d+\.\d+)\b/g)].map((match) => match[1]))];
+const readmeStale = readmeVersions.filter((version) => version !== published);
+if (readmeStale.length > 0) {
+  stale.push(
+    `README.md names ${readmeStale.map((version) => `v${version}`).join(", ")} where only v${published} is published `
+      + "(the prose around the pin would describe a release that is no longer current)",
+  );
+}
+// llms.txt is the page written for agents that arrive without a human, and
+// its boundary line is where they read which release exists.
+const llms = await readFile(resolve(root, "docs/integrations/llms.txt"), "utf8");
+const llmsBoundary = llms.match(/Tasq Local (\d+\.\d+\.\d+) is published/);
+if (!llmsBoundary || llmsBoundary[1] !== published) {
+  stale.push(
+    `docs/integrations/llms.txt ${llmsBoundary ? `says Tasq Local ${llmsBoundary[1]} is published` : "has no 'Tasq Local x.y.z is published' boundary line"} `
+      + `where v${published} is (agents reading tasq.run/llms.txt would learn a different release)`,
+  );
+}
 
 /**
  * The reference point that is not the file being checked.

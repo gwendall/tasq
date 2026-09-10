@@ -8,6 +8,16 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Fixed
+
+- **`release:publish-surfaces` dispatched on the tag by default, and no
+  certifier could accept what that built.** Every provenance verification in
+  the server, Python and Fly workflows expects `refs/heads/main`, and a
+  workflow's provenance names the ref it was dispatched on. v0.6.4 passed only
+  because it was run with `--workflow-ref main` by hand; v0.6.5 failed on the
+  default. The default is now `main`; the bytes stay bound to the tag by
+  `source_commit`.
+
 ## v0.6.5 - 2026-09-08
 
 The managed AGENTS.md block failed at its fifth step as written, and setup taught Codex while Claude Code read nothing; both fixed in #230 and only a published release puts them in an installation
