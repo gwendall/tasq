@@ -8,6 +8,10 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.8 - 2026-09-10
+
+The CLI refused --space, the word its own setup command, guides and agent contract teach, on every command of the loop those documents describe next; a missing required flag answered with a raw schema dump; and a flag value beginning with a dash was silently dropped.
+
 ### Fixed
 
 - **The documented loop refused the word the documents teach.** `tasq setup`
