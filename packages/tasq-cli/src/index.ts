@@ -99,84 +99,130 @@ Also on every command:
   --tenant <id>                  override the default space (rare)`;
 }
 
+/**
+ * The flags each command accepts beyond the ones that work everywhere.
+ *
+ * Also the only enumeration of the commands themselves: `dispatch` is a
+ * switch, and a second hand-kept list would be one more thing to drift. A
+ * test asserts every case in that switch is a key here.
+ */
+export const COMMAND_FLAGS: Record<string, readonly string[]> = {
+  init: ["db", "projection"],
+  setup: ["space", "no-bind", "no-instructions", "target", "force", "default"],
+  use: ["clear", "from-instructions", "project-to", "no-projection"],
+  whoami: [],
+  contention: ["since"],
+  usage: ["since", "all"],
+  feedback: ["details", "repo", "limit", "dry-run"],
+  demo: [],
+  agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
+  onboard: ["space", "capabilities"],
+  resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
+  mcp: ["capabilities", "completion", "space"],
+  remote: [
+    "profile", "endpoint", "workspace", "token", "replace", "cursor", "limit",
+    "after-sequence", "resource-kind", "resource-id", "input", "idempotency-key",
+    "expected-revision", "request-id",
+  ],
+  web: ["host", "port"],
+  config: [],
+  area: ["slug", "importance", "cadence", "description", "name", "cascade"],
+  goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
+  project: ["area", "goal", "status", "description", "title", "cascade"],
+  add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "because", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
+  list: ["area", "goal", "project", "status", "priority", "limit", "include-scheduled", "include-deferred"],
+  show: [],
+  inspect: [],
+  discover: ["hello"],
+  update: ["title", "description", "next", "success", "completion", "validated", "priority", "est", "due", "schedule", "area", "goal", "project", "parent", "recurrence", "interval", "anchor", "metadata", "metadata-patch", "clear-description", "clear-next", "clear-success", "clear-priority", "clear-est", "clear-due", "clear-schedule", "clear-area", "clear-goal", "clear-project", "clear-parent", "clear-recurrence", "clear-metadata"],
+  start: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
+  done: ["reason", "note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key", "force"],
+  complete: ["reason", "note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key", "force"],
+  block: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
+  unblock: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
+  cancel: ["reason", "note", "source", "at", "expected-revision", "idempotency-key", "force"],
+  reopen: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
+  delete: ["cascade"],
+  rm: ["cascade"],
+  restore: [],
+  next: ["limit", "area", "goal", "project", "priority", "include-scheduled", "include-deferred", "include-claimed"],
+  context: ["max-records", "max-tokens", "include-deferred"],
+  brief: ["max-records", "max-tokens", "include-deferred"],
+  summary: ["text", "supersedes", "limit", "idempotency-key"],
+  "context-link": ["system", "resource-type", "external-id", "url", "version", "digest", "purpose", "supersedes", "history", "limit", "idempotency-key"],
+  search: [],
+  inbox: ["limit", "include-scheduled", "include-deferred"],
+  tree: [],
+  task: [],
+  depend: ["on", "type"],
+  undepend: ["on", "type"],
+  capture: ["next", "context", "source", "idempotency-key"],
+  wrong: ["reason", "evidence"],
+  why: [],
+  resume: ["reason"],
+  because: ["status"],
+  store: ["force", "to"],
+  fleet: [],
+  event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
+  projection: ["target"],
+  backup: ["target", "rotate"],
+  export: ["max-records", "max-bytes"],
+  import: ["db"],
+  doctor: ["fix-permissions", "repair-outbox", "config", "prune-bindings"],
+  journal: ["accept-database", "reason", "dry-run"],
+  claim: ["for", "until", "metadata", "force", "idempotency-key"],
+  cost: ["currency", "max-micros", "reserve-micros", "metering", "meter", "observation", "gross-micros", "basis", "observed-at", "idempotency-key"],
+  release: ["reason", "force"],
+  attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
+  evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
+  resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
+  premise: ["verdict", "evidence", "reason", "proposal", "counter-evidence", "outcome", "idempotency-key"],
+  signature: [],
+  wait: ["kind", "parameters", "schema-version", "not-before", "deadline", "fallback-kind", "fallback-spec", "fallback-task", "supersedes", "idempotency-key", "status", "reason", "at", "matcher-version", "limit", "ascending"],
+  observation: ["source", "external-event-id", "kind", "payload", "schema-version", "occurred-at", "verification-level", "verification-method", "raw-ref", "digest", "metadata", "occurred-from", "occurred-to", "after-recorded-at", "after-id", "limit", "ascending"],
+  reconcile: ["matcher-version", "observation", "decision", "effect", "limit", "ascending"],
+};
+
 function assertKnownFlags(command: string, args: ReturnType<typeof parseArgs>): void {
-  const byCommand: Record<string, readonly string[]> = {
-    init: ["db", "projection"],
-    setup: ["space", "no-bind", "no-instructions", "target", "force", "default"],
-    use: ["clear", "from-instructions", "project-to", "no-projection"],
-    whoami: [],
-    contention: ["since"],
-    usage: ["since", "all"],
-    feedback: ["details", "repo", "limit", "dry-run"],
-    demo: [],
-    agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
-    onboard: ["space", "capabilities"],
-    resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
-    mcp: ["capabilities", "completion", "space"],
-    remote: [
-      "profile", "endpoint", "workspace", "token", "replace", "cursor", "limit",
-      "after-sequence", "resource-kind", "resource-id", "input", "idempotency-key",
-      "expected-revision", "request-id",
-    ],
-    web: ["host", "port"],
-    config: [],
-    area: ["slug", "importance", "cadence", "description", "name", "cascade"],
-    goal: ["area", "status", "horizon", "importance", "description", "target-date", "title", "cascade"],
-    project: ["area", "goal", "status", "description", "title", "cascade"],
-    add: ["area", "goal", "project", "parent", "next", "description", "success", "completion", "validated", "priority", "est", "due", "schedule", "recurrence", "interval", "anchor", "metadata", "because", "premise-observation", "premise", "premise-validators", "premise-adjudicators", "premise-allow-self", "idempotency-key"],
-    list: ["area", "goal", "project", "status", "priority", "limit", "include-scheduled", "include-deferred"],
-    show: [],
-    inspect: [],
-    discover: ["hello"],
-    update: ["title", "description", "next", "success", "completion", "validated", "priority", "est", "due", "schedule", "area", "goal", "project", "parent", "recurrence", "interval", "anchor", "metadata", "metadata-patch", "clear-description", "clear-next", "clear-success", "clear-priority", "clear-est", "clear-due", "clear-schedule", "clear-area", "clear-goal", "clear-project", "clear-parent", "clear-recurrence", "clear-metadata"],
-    start: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
-    done: ["reason", "note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key", "force"],
-    complete: ["reason", "note", "source", "at", "evidence", "decision", "expected-revision", "idempotency-key", "force"],
-    block: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
-    unblock: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
-    cancel: ["reason", "note", "source", "at", "expected-revision", "idempotency-key", "force"],
-    reopen: ["reason", "note", "source", "at", "expected-revision", "idempotency-key"],
-    delete: ["cascade"],
-    rm: ["cascade"],
-    restore: [],
-    next: ["limit", "area", "goal", "project", "priority", "include-scheduled", "include-deferred", "include-claimed"],
-    context: ["max-records", "max-tokens", "include-deferred"],
-    brief: ["max-records", "max-tokens", "include-deferred"],
-    summary: ["text", "supersedes", "limit", "idempotency-key"],
-    "context-link": ["system", "resource-type", "external-id", "url", "version", "digest", "purpose", "supersedes", "history", "limit", "idempotency-key"],
-    search: [],
-    inbox: ["limit", "include-scheduled", "include-deferred"],
-    tree: [],
-    task: [],
-    depend: ["on", "type"],
-    undepend: ["on", "type"],
-    capture: ["next", "context", "source", "idempotency-key"],
-    wrong: ["reason", "evidence"],
-    why: [],
-    resume: ["reason"],
-    because: ["status"],
-    store: ["force", "to"],
-    fleet: [],
-    event: ["since", "before", "after-sequence", "before-sequence", "entity-id", "entity-type", "limit", "ascending"],
-    projection: ["target"],
-    backup: ["target", "rotate"],
-    export: ["max-records", "max-bytes"],
-    import: ["db"],
-    doctor: ["fix-permissions", "repair-outbox", "config", "prune-bindings"],
-    journal: ["accept-database", "reason", "dry-run"],
-    claim: ["for", "until", "metadata", "force", "idempotency-key"],
-    cost: ["currency", "max-micros", "reserve-micros", "metering", "meter", "observation", "gross-micros", "basis", "observed-at", "idempotency-key"],
-    release: ["reason", "force"],
-    attempt: ["runtime", "external-id", "context-id", "claim", "metadata", "status", "message", "note", "at", "limit", "expected-revision", "idempotency-key"],
-    evidence: ["kind", "summary", "uri", "digest", "source", "attempt", "supersedes", "observed-at", "metadata", "limit", "idempotency-key"],
-    resolution: ["criteria", "policy", "policy-uri", "policy-version", "implementation-digest", "validators", "adjudicators", "challenge-window-ms", "allow-self-validation", "not-before", "metadata", "contract", "criterion-evidence", "summary", "evidence", "reason", "retention-until", "reason-code", "explanation", "counter-evidence", "outcome", "supersedes", "idempotency-key"],
-    premise: ["verdict", "evidence", "reason", "proposal", "counter-evidence", "outcome", "idempotency-key"],
-    signature: [],
-    wait: ["kind", "parameters", "schema-version", "not-before", "deadline", "fallback-kind", "fallback-spec", "fallback-task", "supersedes", "idempotency-key", "status", "reason", "at", "matcher-version", "limit", "ascending"],
-    observation: ["source", "external-event-id", "kind", "payload", "schema-version", "occurred-at", "verification-level", "verification-method", "raw-ref", "digest", "metadata", "occurred-from", "occurred-to", "after-recorded-at", "after-id", "limit", "ascending"],
-    reconcile: ["matcher-version", "observation", "decision", "effect", "limit", "ascending"],
-  };
-  args.assertKnown([...COMMON_FLAGS, ...(byCommand[command] ?? [])]);
+  args.assertKnown([...COMMON_FLAGS, ...(COMMAND_FLAGS[command] ?? [])]);
+}
+
+/**
+ * The closest command to what was typed, when there is an obvious one.
+ *
+ * "unknown command: status" told a first-time user nothing they could act on,
+ * and `status`, `tasks` and `claims` are exactly what someone types before
+ * they have read the help. Distance is capped so a genuine typo is corrected
+ * and an unrelated word is not answered with a guess.
+ */
+export function nearestCommand(typed: string, known: readonly string[] = Object.keys(COMMAND_FLAGS)): string | null {
+  const budget = typed.length <= 4 ? 1 : typed.length <= 7 ? 2 : 3;
+  let best: string | null = null;
+  let bestDistance = budget + 1;
+  for (const candidate of known) {
+    const distance = candidate.startsWith(typed) || typed.startsWith(candidate)
+      ? Math.abs(candidate.length - typed.length)
+      : editDistance(typed, candidate);
+    if (distance < bestDistance) { best = candidate; bestDistance = distance; }
+  }
+  return bestDistance <= budget ? best : null;
+}
+
+/** Levenshtein, one row at a time: the command list is short and this is a typo check. */
+function editDistance(a: string, b: string): number {
+  let previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    for (let j = 1; j <= b.length; j++) {
+      row[j] = Math.min(
+        previous[j]! + 1,
+        row[j - 1]! + 1,
+        previous[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    previous = row;
+  }
+  return previous[b.length]!;
 }
 
 function printHelp(): void {
@@ -639,10 +685,13 @@ async function dispatch(
       case "reconcile":
         return await reconcileCmd(args);
 
-      default:
+      default: {
         printError(`unknown command: ${command}`);
+        const nearest = nearestCommand(command);
+        if (nearest) printError(`did you mean \`tasq ${nearest}\`?`);
         printError(`run \`tasq help\` for usage`);
         return 1;
+      }
     }
   }
 }

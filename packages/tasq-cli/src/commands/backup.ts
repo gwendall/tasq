@@ -25,9 +25,26 @@ import type { ParsedArgs } from "../args.js";
 import { configDir } from "../config.js";
 import { STORE_FORMAT_COMPATIBILITY, verifyDatabaseFile } from "@tasq-internal/local-service";
 
+/**
+ * Words that are a subcommand everywhere else in this CLI.
+ *
+ * `backup` takes a bare path, so `tasq backup list` - which every other noun
+ * in this CLI accepts - wrote a 1.4 MB database into a file literally named
+ * `list`, in whatever directory the user was standing in, and reported
+ * success. A backup nobody asked for, in a repository somebody may commit.
+ * `--target list` or `./list` still means the file.
+ */
+const SUBCOMMAND_WORDS = new Set(["list", "ls", "show", "status", "info", "add", "create", "delete", "remove", "rm"]);
+
 export async function backupCmd(args: ParsedArgs): Promise<number> {
   const json = args.bool("json", "j");
   const explicitTarget = args.string("target") ?? args.positional[0];
+  if (args.string("target") === undefined && explicitTarget !== undefined && SUBCOMMAND_WORDS.has(explicitTarget)) {
+    throw new Error(
+      `backup takes a file path, and "${explicitTarget}" is not one: it would write a database to a file of that name here. `
+        + `Run \`tasq backup\` for the default snapshot directory, or pass \`./${explicitTarget}\` if you really mean the file.`,
+    );
+  }
   const rotate = args.number("rotate");
   if (rotate != null && (!Number.isInteger(rotate) || rotate < 1)) {
     throw new Error("Invalid value for --rotate: expected an integer greater than or equal to 1");

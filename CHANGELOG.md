@@ -10,6 +10,18 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **`tasq backup list` wrote a 1.4 MB database into a file named `list`.**
+  Every other noun in this CLI takes `list`, so that is what a new user types;
+  `backup` takes a bare path, so it took the word as the path, wrote the file
+  into whatever directory they were standing in, and reported success. A
+  backup nobody asked for, in a repository somebody may commit. A target that
+  is really a mistyped subcommand is now refused, and `--target list` or
+  `./list` still means the file.
+- **An unknown command named nothing to try.** `unknown command: tasks` and
+  `run tasq help for usage` is not something a first-time user can act on, and
+  `tasks`, `claime` and `evidenc` are exactly what someone types before
+  reading the help. The nearest command is now suggested when there is an
+  obvious one, and nothing is guessed when there is not.
 - **Every MCP host logged `0.1.0` whichever release it was talking to.** The
   handshake is the only place a host learns which Tasq is on the other end,
   and the version it reported was the workspace package version, hardcoded.
