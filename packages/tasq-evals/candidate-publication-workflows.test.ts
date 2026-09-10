@@ -258,6 +258,16 @@ describe("protected candidate publication entrypoints", () => {
       '--signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"',
     );
     expect(publish).toContain('--source-ref "refs/heads/main"');
+    // A bare `gh attestation verify` failure reads as a transient registry
+    // problem, and the operator reruns. Rerunning is the one thing that
+    // cannot work: the tag stays pinned to the unverifiable digest. The
+    // refusal has to name the deletion, or v0.6.5 repeats.
+    expect(publish).toContain(
+      "ensure-oci-tag.sh refuses to move an existing tag",
+    );
+    expect(publish).toContain(
+      "gh api --method DELETE /user/packages/container/tasq-server/versions/",
+    );
     expect(publish).toContain(
       'reference="${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"',
     );
