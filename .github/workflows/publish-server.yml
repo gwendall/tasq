@@ -211,13 +211,35 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh attestation verify
-          "oci://${{ needs.authorize.outputs.image }}@${{ steps.selected-image.outputs.digest }}"
-          --repo "$GITHUB_REPOSITORY"
-          --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml"
-          --source-ref "refs/heads/main"
-          --deny-self-hosted-runners
+          IMAGE: ${{ needs.authorize.outputs.image }}
+          DIGEST: ${{ steps.selected-image.outputs.digest }}
+          VERSION: ${{ needs.authorize.outputs.version }}
+          COMMIT: ${{ needs.authorize.outputs.commit }}
+        run: |
+          set -uo pipefail
+          if gh attestation verify \
+            "oci://$IMAGE@$DIGEST" \
+            --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "gwendall/tasq/.github/workflows/publish-server.yml" \
+            --source-ref "refs/heads/main" \
+            --deny-self-hosted-runners
+          then
+            exit 0
+          fi
+          # Refusing here is correct but not enough on its own. Rebuilding
+          # cannot rescue this run: `ensure-oci-tag.sh` refuses to move an
+          # existing tag, so the unverifiable digest stays pinned and every
+          # rerun resolves back to it. v0.6.5 spent three runs discovering
+          # that from a bare `gh` error. Say what the only exit is.
+          {
+            echo "::error::$IMAGE@$DIGEST is already published under $VERSION or sha-$COMMIT, and its provenance does not name refs/heads/main."
+            echo "Rerunning cannot fix this. ensure-oci-tag.sh refuses to move an existing tag, so every rerun resolves back to this digest."
+            echo "Delete the ghcr versions carrying it, then dispatch this workflow again from main:"
+            echo "  gh api /user/packages/container/tasq-server/versions --paginate --jq '.[] | select(.name == \"$DIGEST\") | .id'"
+            echo "  gh api --method DELETE /user/packages/container/tasq-server/versions/<id>"
+            echo "That needs a token with delete:packages and read:packages: gh auth refresh -s delete:packages,read:packages"
+          } >&2
+          exit 1
       - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         if: steps.resume.outputs.action == 'build'
         with:
