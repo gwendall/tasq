@@ -150,6 +150,12 @@ const READ_SUBCOMMANDS: Record<string, ReadonlySet<string>> = {
 };
 
 /** The key a read is counted under, or null when the record is not a read. */
+/** One legible line: no embedded newline, no run past a terminal width. */
+function oneLine(message: string, width = 96): string {
+  const flat = message.split("\n", 1)[0]!.replace(/\s+/g, " ").trim();
+  return flat.length > width ? `${flat.slice(0, width - 1)}\u2026` : flat;
+}
+
 export function readKey(command: string, subcommand: string | null): string | null {
   if (subcommand !== null) {
     return READ_SUBCOMMANDS[command]?.has(subcommand) ? `${command} ${subcommand}` : null;
@@ -335,7 +341,12 @@ export async function usageCmd(args: ParsedArgs, clock: Clock): Promise<number> 
       for (const row of activity.failing.slice(0, 8)) {
         const name = row.subcommand ? `${row.command} ${row.subcommand}` : row.command;
         printInfo(`  ${color.yellow("!")} ${name.padEnd(20)} ${row.failures}/${row.invocations} refused`);
-        for (const message of row.messages) printInfo(color.dim(`      ${message}`));
+        // Records written before 0.6.7 can still carry a multi-line usage
+        // banner, and one of those turns this whole column into a wall of
+        // argument syntax with the counts lost inside it. The journal is read
+        // leniently by contract, so the reader repairs the shape rather than
+        // trusting what an older writer stored.
+        for (const message of row.messages) printInfo(color.dim(`      ${oneLine(message)}`));
       }
       if (activity.failing.length === 0) printInfo(color.dim("  nothing was refused in this window"));
     } else {

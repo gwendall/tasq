@@ -10,6 +10,29 @@ release history selected by ADR-008.
 
 ### Fixed
 
+- **Every MCP host logged `0.1.0` whichever release it was talking to.** The
+  handshake is the only place a host learns which Tasq is on the other end,
+  and the version it reported was the workspace package version, hardcoded.
+  So the one field that would say what actually runs where said the same
+  thing everywhere, forever. It is now the version the same binary reports
+  for `--version`, proven against the built artifact.
+- **`tasq mcp` refused `--space`.** Every other command that names a space
+  takes `--space`; this one took `--tenant` only, which its own help calls
+  the rare override. Both work now. The space is still required and never
+  inferred from the working directory, which the agent contract forbids on
+  purpose: a server that guesses its space guesses whose ledger an agent
+  writes to.
+- **`tasq agent install claude-code` was refused, by the id the machine
+  contract itself uses.** `AGENT_INTEGRATIONS.json` names that host
+  `claude-code`, so that is what an agent has in hand when it reaches for the
+  deterministic fallback, and the CLI took `claude` only. The refusal now
+  also names what is accepted.
+- **One refusal could make `tasq usage` unreadable.** A command called with no
+  arguments answers with its whole usage banner, and the journal stored it
+  whole, so the report reprinted a dozen lines of argument syntax inside an
+  indented column and the counts were lost in it. Only the first line is
+  recorded now, and the reader repairs anything older, because records
+  already on disk would otherwise break the report forever.
 - **A release stopped dead when PyPI certified a wheel it had just published.**
   PyPI serves two indexes that do not update together: the JSON API carries a
   new release before the simple index `pip` resolves against does. v0.6.6 read

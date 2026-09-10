@@ -167,5 +167,41 @@ describe("released CLI artifact", () => {
     expect(await consoleProcess.exited).toBe(0);
     await startup.reader.cancel();
     expect(await consoleStderr).toBe("");
+
+    // The MCP handshake is the only place a host learns which Tasq it is
+    // talking to, and it reported the workspace package version - so every
+    // host logged 0.1.0 whichever release was installed, which is exactly the
+    // field that would say what actually runs where. It must be the version
+    // the same binary reports for --version, and nothing else.
+    const reported = Bun.spawn([join(artifact, "index.js"), "--version"], {
+      cwd: root, env: { PATH: process.env.PATH ?? "", TASQ_HOME: tasqHome }, stdout: "pipe", stderr: "pipe",
+    });
+    const executableVersion = (await new Response(reported.stdout).text()).trim();
+    expect(await reported.exited).toBe(0);
+    expect(executableVersion).not.toBe("0.1.0");
+
+    // `--space` is the vocabulary every other command uses; this server took
+    // `--tenant` only, which its own help calls the rare override.
+    const mcp = Bun.spawn([
+      join(artifact, "index.js"), "mcp", "--space", "artifact-smoke", "--actor", "artifact-smoke", "--capabilities", "read",
+    ], {
+      cwd: root, env: { PATH: process.env.PATH ?? "", TASQ_HOME: tasqHome }, stdin: "pipe", stdout: "pipe", stderr: "pipe",
+    });
+    mcp.stdin.write(`${JSON.stringify({
+      jsonrpc: "2.0", id: 1, method: "initialize",
+      params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "artifact-smoke", version: "1" } },
+    })}\n`);
+    await mcp.stdin.flush();
+    const mcpStderr = new Response(mcp.stderr).text();
+    let handshake: Awaited<ReturnType<typeof firstLine>>;
+    try {
+      handshake = await firstLine(mcp.stdout);
+    } catch (error) {
+      throw new Error(`mcp --space produced no handshake: ${await mcpStderr}`, { cause: error });
+    }
+    expect(JSON.parse(handshake.line).result.serverInfo).toEqual({ name: "tasq", version: executableVersion });
+    mcp.kill("SIGTERM");
+    await mcp.exited;
+    await handshake.reader.cancel();
   });
 });

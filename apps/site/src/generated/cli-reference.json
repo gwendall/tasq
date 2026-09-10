@@ -270,7 +270,7 @@
         "description": "coordinate any opaque external resource key"
       },
       {
-        "usage": "mcp --tenant <space> --actor <label> [--capabilities read,coordinate]",
+        "usage": "mcp --space <id> --actor <label> [--capabilities read,coordinate]",
         "description": "[--completion assertion|evidence] run a capability-scoped local MCP stdio server"
       },
       {

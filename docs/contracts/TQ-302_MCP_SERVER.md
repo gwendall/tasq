@@ -78,7 +78,7 @@ The executable migrates the strict kernel schema without installing the
 bundled reference extension. Identity is mandatory:
 
 ```bash
-tasq mcp --tenant robotics-lab --actor agent:planner \
+tasq mcp --space robotics-lab --actor agent:planner \
   --capabilities read,propose,coordinate
 ```
 

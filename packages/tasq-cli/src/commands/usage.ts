@@ -122,7 +122,7 @@ resource list [--active-only] [--holder <principal-id>] [--limit N]
 resource events [key] [--after-sequence N] [--limit N]
 resource sweep [--limit N]
 All forms require --tenant <space> --actor <stable-label>; agents should pass --json.`;
-export const MCP_USAGE = `mcp --tenant <space> --actor <stable-label> [--capabilities read,propose,coordinate] [--completion assertion|evidence]
+export const MCP_USAGE = `mcp --space <id> --actor <stable-label> [--capabilities read,propose,coordinate] [--completion assertion|evidence]
 Start a capability-scoped local MCP JSON-RPC server on stdio. Generic stdio
 never grants effect dispatch authority. --completion sets the policy for
 commitments this server creates when the caller states none; agent install
