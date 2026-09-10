@@ -8,6 +8,10 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.7 - 2026-09-10
+
+Fixes found by installing 0.6.6 from the public installer and using it as a new adopter: the MCP handshake reported the wrong version, mcp refused --space, agent install refused its own contract's host id, backup wrote a database into a mistyped subcommand, and an unknown command named nothing to try.
+
 ### Fixed
 
 - **`tasq backup list` wrote a 1.4 MB database into a file named `list`.**
