@@ -2725,6 +2725,24 @@ describe("durability", () => {
     expect(events[1].payload.after.title).toBe("important task");
   });
 
+  it("refuses a backup target that is really a mistyped subcommand", async () => {
+    // Every other noun in this CLI takes `list`, so `tasq backup list` is what
+    // a new user types. It wrote a 1.4 MB database into a file named `list` in
+    // whatever directory they were standing in, and reported success - a
+    // backup nobody asked for, in a repository somebody may commit.
+    const home = await freshHome();
+    await runOk(home, ["init"]);
+    const refused = await runCli(home, ["backup", "list"]);
+    expect(refused.exitCode).not.toBe(0);
+    expect(refused.stderr).toContain("backup takes a file path");
+    expect(existsSync(join(workspaceIn(home), "list"))).toBe(false);
+
+    // Naming the file explicitly still means the file.
+    const target = join(home, "list");
+    await runOk(home, ["backup", "--target", target, "--json"]);
+    expect(existsSync(target)).toBe(true);
+  });
+
   it("tasq backup writes a self-contained SQLite snapshot", async () => {
     const home = await freshHome();
     await runOk(home, ["init"]);
