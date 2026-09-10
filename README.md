@@ -305,7 +305,10 @@ determine who is executing work now.
 
 Capture a reproducible bug or onboarding friction without leaving the terminal
 with `tasq feedback "summary"`; it remains private and offline until an explicit
-`tasq feedback push --repo owner/name`. GitHub issue activity remains an
+`tasq feedback push --repo owner/name`. Every invocation also leaves one private
+local line in `~/.tasq/commands.jsonl`, so `tasq usage --all` can report what was
+refused and what was merely read, neither of which the ledger records; that file
+never leaves the machine on its own and stores no positional or flag values. GitHub issue activity remains an
 observation and never completes a Tasq commitment. Report vulnerabilities
 through the private process in
 [`SECURITY.md`](SECURITY.md).

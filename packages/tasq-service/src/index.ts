@@ -120,6 +120,7 @@ export {
 export {
   bootstrapCoordinationSpace,
   getCoordinationSpace,
+  listCoordinationSpaces,
 } from "./service/spaces.js";
 export type {
   BootstrapCoordinationSpaceInput,

@@ -106,7 +106,7 @@ surface or support state changes. The repository map, change routing, test
 matrix and pull-request checklist are in
 [DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
-<!-- tasq:begin v="1" space="tasq/dev" digest="sha256:b2b7cd6d8b58d0b25c8d5c53998e67fcae2b291a22ab294a1025d87d70ba83b9" -->
+<!-- tasq:begin v="2" space="tasq/dev" digest="sha256:8d51c280ebf247c08ac37e412e2de39ca903916bd88f95ca62ad043231f0857b" -->
 ## Coordinating work with Tasq
 
 This project coordinates its live outstanding work in Tasq space `tasq/dev`.
@@ -141,6 +141,16 @@ task that surfaced it before moving on:
 Capturing never widens, renews or releases your claim, so it is safe mid-task.
 Do not wait for an error to give you permission: most defects are visible while
 commands succeed, and an observation you do not capture dies with your context.
+
+When the tool itself is what got in your way, say so to its authors instead:
+
+```bash
+"$TASQ" feedback "<what Tasq did that you did not expect>"
+```
+
+That stays a private local file until someone runs `feedback push`, and it is
+the only channel that reaches the people who can fix Tasq. A capture belongs to
+this project's work; feedback belongs to the tool.
 
 Say when a reason turns out to be wrong. Work can rest on a stated belief, and
 what you learn can kill it. Withdraw the belief instead of cancelling the tasks

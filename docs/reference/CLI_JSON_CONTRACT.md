@@ -221,7 +221,23 @@ These additive operational surfaces are independently versioned:
   `why` leaves no event and reports `observable: false` with `count: null`
   rather than zero) and `unusedRitual` (observable commands with no event in
   the window). `capture` is counted from `dependency_added` events whose
-  relation type is `discovered_from`.
+  relation type is `discovered_from`. With `--all` it additively carries
+  `spaces[]` (`{workspaceId, adoptedAt, lastActivityAt, events, actors, ritual,
+  unusedRitual}`, most recently active first), which is how one machine running
+  several projects is read without running the report once per project. When
+  the private command journal holds anything in the window it additively
+  carries `commands` (`{invocations, failures, byHarness, byVersion, failing[],
+  reads}`), described below.
+- `~/.tasq/commands.jsonl` holds one `tasq.command-record.v1` line per
+  invocation, successes included: `contractVersion`, `recordedAt`, `version`,
+  `platform`, `architecture`, `harness`, `space`, `actor`, `command`,
+  `subcommand`, `flags`, `exitCode`, `code`, `message`, `durationMs`. The
+  ledger records only mutations that SUCCEED, so reads and refusals - the two
+  signals that say whether the product fits the hand using it - were invisible
+  to every report. The file is private (`0600`), never leaves the machine on
+  its own, and obeys the offline-feedback privacy rule (TQ-636): the
+  `subcommand` comes from the same vetted allowlist, positional and flag VALUES
+  are never stored, and identifiers are redacted out of `message`.
 - `tasq doctor --json` additively includes the executable `storeFormat`.
 - `tasq doctor --json` additively includes `config`, the report below, and `ok`
   is false when that report is. When the directory is not bound and the global

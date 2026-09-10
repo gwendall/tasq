@@ -67,6 +67,17 @@ export interface TaskScopeInput {
   goalId?: string | null;
   projectId?: string | null;
   parentTaskId?: string | null;
+  /**
+   * Where the planning scope came from. `"requested"` (the default) means a
+   * caller named an area, goal or project and must be refused when no planning
+   * profile is injected. `"inherited"` means the scope was copied off another
+   * commitment - `tasq capture` copies its source's - and the copy must not
+   * turn the kernel's refusal of planning vocabulary into a refusal to file a
+   * discovery. Ledgers written before ADR-023 still carry scope on most rows,
+   * so under the flat policy `capture` failed on 97 of this project's own 100
+   * commitments while the managed block prescribed it.
+   */
+  scopeOrigin?: "requested" | "inherited";
 }
 
 export interface CanonicalTaskScope {
@@ -116,12 +127,16 @@ export interface TaskHierarchyPolicy {
  */
 const flatHierarchyPolicy: TaskHierarchyPolicy = {
   async resolveScope(db, tenantId, input) {
-    if (input.projectId != null || input.goalId != null || input.areaId != null) {
+    const scoped = input.projectId != null || input.goalId != null || input.areaId != null;
+    if (scoped && input.scopeOrigin !== "inherited") {
       throw new Error(
         "area, goal and project require an injected planning-profile policy; "
           + "the kernel carries decomposition only",
       );
     }
+    // Inherited scope is dropped, never refused: the kernel carries no
+    // planning vocabulary, and the discovery keeps its real, kernel-level tie
+    // to its source through the `discovered_from` relation.
     if (input.parentTaskId == null) {
       return { parentTaskId: null, projectId: null, goalId: null, areaId: null };
     }
@@ -176,6 +191,8 @@ export interface CreateTaskInTransactionOptions {
   /** Extra immutable provenance included in the task creation event. */
   eventContext?: { note?: string; reason?: string; source?: string };
   hierarchyPolicy?: TaskHierarchyPolicy;
+  /** See `TaskScopeInput.scopeOrigin`; `TaskInsert` strips it, so it rides here. */
+  scopeOrigin?: TaskScopeInput["scopeOrigin"];
 }
 
 /**
@@ -199,7 +216,8 @@ export async function createTaskInTransaction(
     throw new Error("Independently validated tasks must use evidence completion mode");
   }
   const id = parsed.id ?? uuidv7(now);
-  const scope = await (options.hierarchyPolicy ?? flatHierarchyPolicy).resolveScope(tx, tenantId, parsed);
+  const scope = await (options.hierarchyPolicy ?? flatHierarchyPolicy)
+    .resolveScope(tx, tenantId, { ...parsed, scopeOrigin: options.scopeOrigin });
   if (scope.parentTaskId) {
     const parentDepth = await getTaskDepth(tx, scope.parentTaskId, tenantId);
     if (parentDepth + 1 > MAX_TASK_DEPTH) {
