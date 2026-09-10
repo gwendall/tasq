@@ -56,7 +56,7 @@ uses a revocable granular environment secret to publish attested
 `0.1.0-alpha.0` identities under the non-default `alpha-bootstrap` tag, then
 the secret and token are removed after `release.yml` trust is verified for all
 seven original packages. The separately bootstrapped client identity followed
-the same fail-closed handoff. Current `v0.6.7` is published, carrying the seven packages that changed;
+the same fail-closed handoff. Current `v0.6.8` is published, carrying the seven packages that changed;
 `@tasq-run/client` stays at the version it was last published at; the post-release workflow certifies their complete lifecycle
 without a repository checkout on both supported targets. TQ-607 remains the
 retained-data gate for stable graduation, not for the explicitly labeled
@@ -66,7 +66,16 @@ ADR-010 added `@tasq-run/client` as the eighth public package. Its protected
 bootstrap, trusted-publisher binding, `v0.4.0` publication and Node/Bun
 clean-room replay are complete.
 
-## `v0.6.7` current release
+## `v0.6.8` current release
+
+Published 2026-09-10T22:40:54Z from tag `v0.6.8`, protected run
+[34536831374](https://github.com/gwendall/tasq/actions/runs/34536831374).
+Certified by [34538672213](https://github.com/gwendall/tasq/actions/runs/34538672213).
+Surfaces recorded: serverImage, pythonWheel, remoteTypeScriptClient.
+
+The CLI refused --space, the word its own setup command, guides and agent contract teach, on every command of the loop those documents describe next; a missing required flag answered with a raw schema dump; and a flag value beginning with a dash was silently dropped.
+
+## `v0.6.7`
 
 Published 2026-09-10T20:09:08Z from tag `v0.6.7`, protected run
 [34522233347](https://github.com/gwendall/tasq/actions/runs/34522233347).
