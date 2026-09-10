@@ -8,6 +8,10 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+## v0.6.6 - 2026-09-10
+
+Ships the private command journal and tasq usage, the first read of how the CLI is actually used across projects, plus the acquisition-manifest gate and nine reads that no longer print nothing on a first run.
+
 ### Added
 
 - **A private local record of what every `tasq` command was asked to do.**
