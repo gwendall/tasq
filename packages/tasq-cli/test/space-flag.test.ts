@@ -49,3 +49,30 @@ describe("a required flag that was not passed", () => {
     expect(requiredFlag(parseArgs(["--space", "team/ledger"]), "space", usage)).toBe("team/ledger");
   });
 });
+
+describe("a flag value that begins with a dash", () => {
+  test("is a value, not the next flag", () => {
+    // Filing evidence about a flag is exactly where this bites: the summary
+    // was read as a flag and the flag became a bare boolean.
+    const args = parseArgs(["--summary", "--space is refused everywhere", "--json"]);
+    expect(args.string("summary")).toBe("--space is refused everywhere");
+    expect(args.bool("json")).toBe(true);
+  });
+
+  test("does not swallow the flag that follows it", () => {
+    const args = parseArgs(["--json", "--actor", "reader"]);
+    expect(args.bool("json")).toBe(true);
+    expect(args.string("actor")).toBe("reader");
+    // A negative number is still a value.
+    expect(parseArgs(["--offset", "-5"]).number("offset")).toBe(-5);
+    // A lone token that really does look like a flag stays one.
+    expect(parseArgs(["--summary", "--json"]).flag("summary")).toBe(true);
+  });
+
+  test("says what happened when a value is still read as a flag", () => {
+    // The value landed where no flag precedes it, so it is read as one.
+    const args = parseArgs(["--summary=filed", "--space is refused"]);
+    expect(() => args.assertKnown([...COMMON_FLAGS, "summary"]))
+      .toThrow(/A value that begins with "-" has to be attached/);
+  });
+});

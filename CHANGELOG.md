@@ -18,6 +18,11 @@ release history selected by ADR-008.
   whichever a command reads, and passing both with different values is refused
   rather than resolved to a guess about whose ledger to write to. `onboard`
   still teaches `--space` alone.
+- **A flag value that begins with a dash was silently dropped.** Any token
+  starting with `-` was taken for the next flag, so `--summary "--space is
+  refused everywhere"` set `--summary` to true and then reported the sentence
+  itself as an unknown flag. Filing evidence about a flag is exactly where that
+  bites. A flag is one word; a sentence is not, and is now read as the value.
 - **A missing required flag answered with a raw schema dump.** A first
   `tasq agent install claude-code` printed a zod `invalid_type` array that
   named neither the flag that was missing nor the command that wanted it. It

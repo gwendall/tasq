@@ -26,6 +26,18 @@ export interface ParsedArgs {
 }
 
 /**
+ * Whether a token is another flag, or a value that merely starts with `-`.
+ *
+ * `--summary "--space is refused everywhere"` used to set `--summary` to true
+ * and then report the sentence itself as an unknown flag, because any token
+ * starting with `-` was taken for a flag. A real flag is one word: `--name`,
+ * `--name=value` or `-j`. A sentence is not.
+ */
+function looksLikeFlag(token: string): boolean {
+  return /^--?[A-Za-z][A-Za-z0-9-]*(=|$)/.test(token);
+}
+
+/**
  * Flags that are two names for one thing.
  *
  * `--space` is the product's word for a ledger and the one `tasq setup`,
@@ -68,7 +80,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       }
       const k = a.slice(2);
       const next = i + 1 < argv.length ? (argv[i + 1] as string) : undefined;
-      if (next != null && (!next.startsWith("-") || /^-\d/.test(next))) {
+      if (next != null && !looksLikeFlag(next)) {
         flags[k] = next;
         i += 2;
       } else {
@@ -81,7 +93,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       // single-char flag(s) ; for v0.1 we treat them like long ones
       const k = a.slice(1);
       const next = i + 1 < argv.length ? (argv[i + 1] as string) : undefined;
-      if (next != null && (!next.startsWith("-") || /^-\d/.test(next))) {
+      if (next != null && !looksLikeFlag(next)) {
         flags[k] = next;
         i += 2;
       } else {
@@ -137,7 +149,16 @@ export function parseArgs(argv: string[]): ParsedArgs {
       const known = new Set(allowed);
       const unknown = Object.keys(flags).filter((name) => !known.has(name));
       if (unknown.length > 0) {
-        throw new Error(`Unknown flag${unknown.length > 1 ? "s" : ""}: ${unknown.map((name) => `--${name}`).join(", ")}`);
+        // A name with a space in it is not something anyone typed as a flag: it
+        // is a value that was read as one. Say so, because "Unknown flag: --x
+        // is refused everywhere" reads as though the sentence were the flag.
+        const spilled = unknown.find((name) => /\s/.test(name));
+        throw new Error(
+          `Unknown flag${unknown.length > 1 ? "s" : ""}: ${unknown.map((name) => `--${name}`).join(", ")}`
+            + (spilled === undefined
+              ? ""
+              : `\nA value that begins with "-" has to be attached: --<flag>="${spilled}"`),
+        );
       }
     },
   };
