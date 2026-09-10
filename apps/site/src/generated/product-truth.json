@@ -125,7 +125,7 @@
       "id": "mcp_stdio",
       "support": "implemented_local_only",
       "transport": "stdio",
-      "entrypoint": "tasq mcp --tenant <id> --actor <label> --capabilities <set>",
+      "entrypoint": "tasq mcp --space <id> --actor <label> --capabilities <set>",
       "mutations": true,
       "authorityBoundary": "host_bound_capabilities"
     },
@@ -1059,7 +1059,7 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "9c62f47f1644df1f9a03eda6f97e88d792d3c3f19af2a4a50c99fcc287debc55"
+      "sha256": "86c3733c5c31b661c9d0088c75e7b33ab89d74f16260053493900c6045a0bf1d"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",

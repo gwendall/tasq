@@ -134,7 +134,15 @@ describe("what a refusal is allowed to carry", () => {
     // A message that interpolates nothing survives whole: that is the signal.
     expect(redactMessage("area, goal and project require an injected planning-profile policy"))
       .toBe("area, goal and project require an injected planning-profile policy");
-  });
+
+
+    // A refusal that answers with a usage banner is a dozen lines of argument
+    // syntax. `tasq usage` reprints this in an indented column, so storing the
+    // banner whole turned the report into a wall of syntax with the counts
+    // lost inside it. Only the first line is the refusal.
+    expect(redactMessage("claim <task-id> [--for 30m]\nclaim list\nclaim show <id>"))
+      .toBe("claim <task-id> [--for 30m]");
+    expect(redactMessage("wrapped   over\n  several\n  lines")).toBe("wrapped over");  });
 
   test("a positional escaped with -- is never stored as a flag name", () => {
     // `--` ends the options. Everything after it is a positional the user

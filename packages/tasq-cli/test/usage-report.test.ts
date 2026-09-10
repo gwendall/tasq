@@ -5,7 +5,7 @@
  * known instead of assumed.
  */
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -100,5 +100,38 @@ describe("reading a machine that runs several projects", () => {
 
     const human = await run(home, project, ["usage", "--all"]);
     expect(human).toContain("1 space(s) no directory is bound to");
+  });
+});
+
+describe("a refusal that answered with a usage banner", () => {
+  test("stays one line in the report, however it was recorded", async () => {
+    // `tasq claim` with no task id answers with its whole usage banner. Stored
+    // whole, it was reprinted inside an indented column and the report became
+    // a wall of argument syntax with the counts lost inside it. The writer now
+    // keeps the first line only; the reader repairs anything older, because
+    // the journal is read leniently by contract and records already on disk
+    // would otherwise break the report forever.
+    const { home, project } = sandbox();
+    await json(home, project, ["setup", "--space", "acme/app", "--actor", "gwendall"]);
+
+    const child = Bun.spawn([process.execPath, "run", cli, "claim"], {
+      cwd: project,
+      env: { ...process.env, HOME: home, TASQ_HOME: join(home, ".tasq"), TASQ_DB_URL: "", TASQ_EVENT_JOURNAL_PATH: "", TASQ_TENANT: "" },
+      stdout: "pipe", stderr: "pipe",
+    });
+    await child.exited;
+
+    const journal = join(home, ".tasq", "commands.jsonl");
+    const lines = readFileSync(journal, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
+    const refusal = lines.find((record) => record.command === "claim");
+    expect(refusal?.message).not.toContain("\n");
+
+    // The shape an older writer left behind, replayed through the reader.
+    lines.push({ ...refusal, message: "claim <task-id> [--for 30m]\nclaim list\nclaim show <id>" });
+    writeFileSync(journal, `${lines.map((record) => JSON.stringify(record)).join("\n")}\n`, { encoding: "utf8", mode: 0o600 });
+
+    const human = await run(home, project, ["usage"]);
+    for (const line of human.split("\n")) expect(line.length).toBeLessThan(140);
+    expect(human).not.toContain("claim list");
   });
 });

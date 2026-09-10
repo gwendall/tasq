@@ -57,7 +57,7 @@
       "id": "mcp_stdio",
       "support": "implemented_local_only",
       "transport": "stdio",
-      "entrypoint": "tasq mcp --tenant <id> --actor <label> --capabilities <set>",
+      "entrypoint": "tasq mcp --space <id> --actor <label> --capabilities <set>",
       "mutations": true,
       "authorityBoundary": "host_bound_capabilities"
     },

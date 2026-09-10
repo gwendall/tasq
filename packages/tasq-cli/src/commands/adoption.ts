@@ -531,10 +531,15 @@ export async function agentCmd(
   if (subcommand !== "install" || !rawHost || args.positional.length !== 2) {
     throw new Error("agent install <codex|claude|generic> --space <id> --actor <label> [--apply]");
   }
-  if (!["codex", "claude", "generic"].includes(rawHost)) {
-    throw new Error(`unsupported agent host: ${rawHost}`);
+  // The machine contract calls this host `claude-code`, and that is the id an
+  // agent reading AGENT_INTEGRATIONS.json has in hand when it reaches for the
+  // deterministic fallback. Refusing its own vocabulary made the two surfaces
+  // disagree about the same host; the refusal now also says what is accepted,
+  // because "unsupported agent host: claude-code" named no way forward.
+  const host = ({ "claude-code": "claude", "claude_code": "claude" }[rawHost] ?? rawHost) as AgentHost;
+  if (!["codex", "claude", "generic"].includes(host)) {
+    throw new Error(`unsupported agent host: ${rawHost} - use codex, claude (or claude-code) or generic`);
   }
-  const host = rawHost as AgentHost;
   const space = CoordinationSpaceId.parse(args.string("space"));
   const actor = BootstrapActorAlias.parse(args.string("actor"));
   const capabilities = parseCapabilities(args.string("capabilities"));

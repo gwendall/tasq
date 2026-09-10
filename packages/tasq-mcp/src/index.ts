@@ -106,6 +106,16 @@ export interface CreateTasqMcpServerOptions {
    */
   defaultCompletionPolicy?: "assertion" | "evidence";
   clock: Clock;
+  /**
+   * The version this server reports in the MCP `initialize` handshake.
+   *
+   * It was hardcoded to the workspace package version, so every host that
+   * logged which Tasq it was talking to logged `0.1.0` no matter which
+   * release was installed - the one field that would say what actually runs
+   * where. The composition root passes the executable's stamped version; the
+   * fallback is the workspace version, which is what a source checkout is.
+   */
+  version?: string;
   /** Trusted host-only resolver. Connector policy and signing material never cross MCP. */
   resolveDispatchAuthority?: (effectId: string) => DispatchAuthority | Promise<DispatchAuthority>;
 }
@@ -227,7 +237,7 @@ export function createTasqMcpServer(options: CreateTasqMcpServerOptions): McpSer
     throw new Error("direction capability requires propose");
   }
 
-  const server = new McpServer({ name: "tasq", version: "0.1.0" }, {
+  const server = new McpServer({ name: "tasq", version: options.version ?? "0.1.0" }, {
     instructions: [
       "Call tasq_discover before assuming Tasq or extension capabilities.",
       "A commitment, claim, attempt, evidence record and effect are distinct.",

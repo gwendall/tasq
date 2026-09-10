@@ -33,6 +33,13 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
 
 - Tasq Local is a single-host product. Actor labels are attribution, not
   authentication.
+- Every `tasq` invocation appends one line to `~/.tasq/commands.jsonl`, mode
+  `0600`, bounded and rotated. It records the SHAPE of the command - the verb,
+  an allowlisted subcommand, the flag NAMES, the exit code and the authored
+  prefix of a refusal - and never a positional argument, a flag value or an
+  actor label. `tasq usage` reads it; nothing sends it anywhere. It leaves the
+  machine only when someone runs `tasq feedback push`, which is explicit and
+  names the repository it posts to.
 - Local MCP capabilities are selected and enforced by its host.
 - The Local Console is loopback-only and read-only; it is not safe to expose
   through a generic reverse proxy.

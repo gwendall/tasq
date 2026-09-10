@@ -148,7 +148,7 @@ managed-service claim. The open-source local product does not depend on Cloud.
 |---|---|---|---|
 | Local CLI | `tasq ...` | Published public alpha | Bun 1.3+; macOS arm64 and Linux x64 |
 | Autonomous bootstrap | `tasq onboard --space <id> --actor <label> --json` | Certified after executable handoff | Cannot discover or install Tasq without a causal pointer |
-| Local MCP | `tasq mcp --tenant <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; remote MCP is a distinct Server surface |
+| Local MCP | `tasq mcp --space <id> --actor <label> --capabilities ...` | Implemented stdio | Host configuration required; remote MCP is a distinct Server surface |
 | Embedded Core | `@tasq-run/core@0.4.0` `createLocalTasq` | Published and Node/Bun certified | Trusted in-process integration; explicit store/workspace/actor/clock; no runtime ownership |
 | Local Console | `tasq web --tenant <id>`; `tasq web status --tenant <id> --json` | Implemented read-only with live invalidation and proof-of-life discovery | Explicit foreground loopback process, no mutation |
 | Public product/docs site | `https://tasq.run`; `/product-truth.json`; `/adopt.json` | Implemented, certified and deployed | Static and ledger-free; no agent API |

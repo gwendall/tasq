@@ -49,8 +49,13 @@ const IDENTIFIER = /\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b|\b[0-9a-f]{1
  * and an identifier is the part most likely to name someone's work.
  */
 export function redactMessage(message: string): string {
-  const valueStarts = message.search(/:\s|["'`]/);
-  const shape = valueStarts === -1 ? message : message.slice(0, valueStarts);
+  // A refusal that prints a usage banner is many lines long, and `tasq usage`
+  // reprints what is stored here inside an indented column. Storing the banner
+  // whole turned the report into a wall of argument syntax with the counts
+  // lost inside it. Only the first line is the refusal; the rest is help.
+  const firstLine = message.split("\n", 1)[0]!.replace(/\s+/g, " ");
+  const valueStarts = firstLine.search(/:\s|["'`]/);
+  const shape = valueStarts === -1 ? firstLine : firstLine.slice(0, valueStarts);
   return shape.replace(IDENTIFIER, "<id>").trim().slice(0, MAX_MESSAGE);
 }
 

@@ -465,6 +465,26 @@ describe("progressive public adoption", () => {
     expect(live[0].title).toBe("Keep this live");
   });
 
+  it("accepts the host id the machine contract itself uses", async () => {
+    // AGENT_INTEGRATIONS.json names this host `claude-code`, so that is the id
+    // an agent has in hand when it reaches for the deterministic fallback.
+    // The CLI took `claude` only, and refused its own contract's vocabulary
+    // with a message that named no way forward.
+    const home = await freshHome();
+    const plan = JSON.parse((await runOk(home, [
+      "agent", "install", "claude-code",
+      "--space", "robotics/team-a", "--actor", "claude:gwendall", "--json",
+    ])).stdout);
+    expect(plan).toMatchObject({ contractVersion: "tasq.agent-install-plan.v1", host: "claude" });
+
+    const contract = JSON.parse(readFileSync(join(__dirname, "..", "..", "..", "docs/integrations/AGENT_INTEGRATIONS.json"), "utf8"));
+    expect(contract.hosts.map((host: { id: string }) => host.id)).toContain("claude-code");
+
+    const refused = await runCli(home, ["agent", "install", "cursor", "--space", "robotics/team-a", "--actor", "a"]);
+    expect(refused.exitCode).not.toBe(0);
+    expect(refused.stderr).toContain("use codex, claude (or claude-code) or generic");
+  });
+
   it("previews exact host MCP registration and writes generic config only explicitly", async () => {
     const home = await freshHome();
     const plan = JSON.parse((await runOk(home, [
