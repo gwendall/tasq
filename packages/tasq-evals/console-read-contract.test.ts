@@ -64,7 +64,7 @@ describe("TQ-701 through TQ-704 public Console contracts", () => {
       const health = await buildConsoleHealth(handle.db, { workspaceId, clock });
       expect(health).toMatchObject({
         scope: "bounded_operational_signals",
-        fullIntegrity: { checked: false, argv: ["tasq", "doctor", "--tenant", workspaceId] },
+        fullIntegrity: { checked: false, argv: ["tasq", "doctor", "--space", workspaceId] },
       });
 
       const live = await buildConsoleEventBatch(handle.db, { workspaceId, clock });

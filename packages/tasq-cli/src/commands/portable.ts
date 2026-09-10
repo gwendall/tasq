@@ -80,7 +80,7 @@ export async function portableImportCmd(args: ParsedArgs, clock: Clock): Promise
     ok: true,
     ...result,
     next: {
-      doctor: ["env", `TASQ_DB_URL=file:${result.target}`, "tasq", "doctor", "--tenant", result.workspaceId, "--actor", "<stable-label>", "--json"],
+      doctor: ["env", `TASQ_DB_URL=file:${result.target}`, "tasq", "doctor", "--space", result.workspaceId, "--actor", "<stable-label>", "--json"],
       use: ["env", `TASQ_DB_URL=file:${result.target}`, "tasq", "onboard", "--space", result.workspaceId, "--actor", "<stable-label>", "--json"],
     },
   };

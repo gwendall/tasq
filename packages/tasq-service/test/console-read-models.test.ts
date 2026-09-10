@@ -67,7 +67,7 @@ describe("bounded Console read models", () => {
         fullIntegrity: {
           checked: false,
           reason: "full_doctor_is_explicit_and_not_request_bounded",
-          argv: ["tasq", "doctor", "--tenant", h.workspaceId],
+          argv: ["tasq", "doctor", "--space", h.workspaceId],
         },
         cursors: { eventSequence: 0, resourceEventSequence: 0 },
       });

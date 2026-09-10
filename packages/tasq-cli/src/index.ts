@@ -22,7 +22,7 @@ import {
   systemClock,
   type Clock,
 } from "@tasq-internal/local-service";
-import { parseArgs } from "./args.js";
+import { COMMON_FLAGS, parseArgs } from "./args.js";
 import { errorMatches, errorMessage } from "./errors.js";
 import { color, printError, printInfo, printJson, takeLastErrorMessage } from "./output/format.js";
 import { configCmd, init } from "./commands/init.js";
@@ -54,7 +54,7 @@ import { commandUsage } from "./commands/usage.js";
 import { inspectCmd } from "./commands/inspect.js";
 import { discoverCmd } from "./commands/discover.js";
 import { onboardCmd, printOnboardProblem } from "./commands/onboard.js";
-import { resourceCmd } from "./commands/resource.js";
+import { RESOURCE_FLAGS, resourceCmd } from "./commands/resource.js";
 import { mcpCmd } from "./commands/mcp.js";
 import { contextCmd } from "./commands/context.js";
 import { summaryCmd } from "./commands/summary.js";
@@ -81,8 +81,6 @@ import { recordCommand } from "./command-journal.js";
 declare const TASQ_BUILD_VERSION: string;
 const VERSION = typeof TASQ_BUILD_VERSION === "string" ? TASQ_BUILD_VERSION : "0.1.0";
 
-const COMMON_FLAGS = ["json", "j", "actor", "tenant", "help", "h"] as const;
-
 /**
  * Per-command help used to omit the flags that work on EVERY command, so a
  * reader of `tasq help evidence` never learned that `--actor` exists there.
@@ -96,7 +94,8 @@ function withGlobalFlags(usage: string): string {
 Also on every command:
   --json / -j                    machine-readable JSON output
   --actor <name>                 attribute this call to a principal
-  --tenant <id>                  override the default space (rare)`;
+  --space <id>                   act on this space instead of the bound one
+  --tenant <id>                  the older name for --space`;
 }
 
 /**
@@ -117,7 +116,7 @@ export const COMMAND_FLAGS: Record<string, readonly string[]> = {
   demo: [],
   agent: ["space", "capabilities", "executable", "target", "apply", "write", "check", "force"],
   onboard: ["space", "capabilities"],
-  resource: ["lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason", "active-only", "holder", "limit", "after-sequence"],
+  resource: RESOURCE_FLAGS,
   mcp: ["capabilities", "completion", "space"],
   remote: [
     "profile", "endpoint", "workspace", "token", "replace", "cursor", "limit",
@@ -343,9 +342,9 @@ ${color.bold("AGENT COORDINATION")}
   mcp --space <id> --actor <label> [--capabilities read,coordinate]
       [--completion assertion|evidence]
                                  run a capability-scoped local MCP stdio server
-  web --tenant <space> [--host 127.0.0.1] [--port 4137]
+  web --space <space> [--host 127.0.0.1] [--port 4137]
                                  explicit foreground read-only Local Console
-  web status --tenant <space> --json
+  web status --space <space> --json
                                  prove a registered Console listener is live
 
 ${color.bold("REMOTE SERVER")}
@@ -426,7 +425,8 @@ ${color.bold("META")}
 ${color.bold("FLAGS")}
   --json / -j                    machine-readable JSON output
   --actor <name>                 override default actor
-  --tenant <id>                  override default tenant (rare)
+  --space <id>                   act on this space instead of the bound one
+  --tenant <id>                  the older name for --space
 
 ${color.dim("Agent start: tasq onboard --space <id> --actor <label> --json")}`);
 }
@@ -747,7 +747,7 @@ function handleCommandError(
       // a "Invalid value for --<flag>" message - that is a validation error, same
       // class as a Zod parse failure, so it shares exit code 2.
       const isEnumArg = /^Invalid value for --/.test(message);
-      const isArgError = /^(Unknown flag|Missing value for --|Invalid (number|boolean) for --|Invalid JSON for --|--.+ must be a JSON object)/.test(message);
+      const isArgError = /^(Unknown flag|Missing value for --|Invalid (number|boolean) for --|Invalid JSON for --|--.+ must be a JSON object|--.+ is required:|--.+ are the same flag)/.test(message);
 
       if (command === "onboard" && args.flag("json", "j") !== undefined) {
         return printOnboardProblem(err, executable);

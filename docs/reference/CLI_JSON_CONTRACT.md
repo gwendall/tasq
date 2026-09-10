@@ -168,13 +168,13 @@ remain part of the current protected release line:
   otherwise. `--no-projection` removes it; `--clear` removes binding and
   projection together. A directory binding renders only its own projection.
   The global `projectionTarget` renders only the global default space: a space
-  selected by a binding, `--tenant` or `TASQ_TENANT` is never rendered into
+  selected by a binding, `--space` or `TASQ_TENANT` is never rendered into
   it. Sources are
   `explicit_flag|environment|directory|global_default`. `managedBlock` is the
   closest `AGENTS.md` managed block above the directory, as
   `{directory, target, space, version, verified, reason, matchesEffective}`, or
   `null`. `drift` is true when a verified block names a space and commands here
-  would not use it from a directory binding; an explicit `--tenant` or
+  would not use it from a directory binding; an explicit `--space` or
   `TASQ_TENANT` is never drift. `--from-instructions` binds the block's
   directory to the space the block declares and refuses when no verified block
   exists.
@@ -318,7 +318,7 @@ With `--json`, every resource failure writes only
 Its keys are `contractVersion`, `status`, `code`, `message`, `retryable`,
 `workspaceId`, `resourceKey`, `currentLease` and `nextActions`. Contention
 includes the active holder/expiry/fence and executable inspect/retry guidance.
-All resource commands require explicit `--tenant` and `--actor`; mutations also
+All resource commands require explicit `--space` and `--actor`; mutations also
 require `--idempotency-key`.
 
 ## `TaskClaimV1`

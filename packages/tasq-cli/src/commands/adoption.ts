@@ -11,7 +11,7 @@ import {
   CoordinationSpaceId,
   type Clock,
 } from "@tasq-run/schema";
-import type { ParsedArgs } from "../args.js";
+import { requiredFlag, type ParsedArgs } from "../args.js";
 import {
   bindDirectorySpace,
   canonicalDirectory,
@@ -474,7 +474,7 @@ function agentPlan(
   target: string | undefined,
 ) {
   const serverArgv = [
-    executable, "mcp", "--tenant", space, "--actor", actor,
+    executable, "mcp", "--space", space, "--actor", actor,
     "--capabilities", capabilities.join(","),
     // Agent integrations default to evidence-backed completion: this is the
     // registration that makes "they cannot mark anything done without a
@@ -540,8 +540,8 @@ export async function agentCmd(
   if (!["codex", "claude", "generic"].includes(host)) {
     throw new Error(`unsupported agent host: ${rawHost} - use codex, claude (or claude-code) or generic`);
   }
-  const space = CoordinationSpaceId.parse(args.string("space"));
-  const actor = BootstrapActorAlias.parse(args.string("actor"));
+  const space = CoordinationSpaceId.parse(requiredFlag(args, "space", "agent install <codex|claude|generic> --space <id> --actor <label> [--apply]"));
+  const actor = BootstrapActorAlias.parse(requiredFlag(args, "actor", "agent install <codex|claude|generic> --space <id> --actor <label> [--apply]"));
   const capabilities = parseCapabilities(args.string("capabilities"));
   const executableInput = args.string("executable") ?? executableFromHost;
   const executable = resolve(executableInput);

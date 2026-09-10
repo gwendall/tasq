@@ -98,17 +98,17 @@ tasq context-link attach <commitment-id> \
   --external-id robotics/calibration/left-arm \
   --version v7 \
   --idempotency-key agent-link-7 \
-  --tenant robotics --actor agent:planner --json
+  --space robotics --actor agent:planner --json
 
 tasq context-link list <commitment-id> \
-  --tenant robotics --actor agent:reader --json
+  --space robotics --actor agent:reader --json
 
 tasq context-link list <commitment-id> --history \
-  --tenant robotics --actor agent:reader --json
+  --space robotics --actor agent:reader --json
 
 tasq context-link detach <current-link-id> \
   --idempotency-key agent-detach-7 \
-  --tenant robotics --actor agent:planner --json
+  --space robotics --actor agent:planner --json
 ```
 
 CLI `list` returns current active leaves by default. Empty current items do not

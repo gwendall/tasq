@@ -59,7 +59,7 @@ describe("tasq web composition", () => {
     const home = freshHome();
     const help = await runCli(home, ["web", "--help"]);
     expect(help).toMatchObject({ exitCode: 0, stderr: "" });
-    expect(help.stdout).toContain("web --tenant <space>");
+    expect(help.stdout).toContain("web --space <space>");
     expect(help.stdout).toContain("unauthenticated read-only Console on loopback");
 
     const missingSpace = await runCli(home, ["web", "--port", "0"]);

@@ -485,6 +485,60 @@ describe("progressive public adoption", () => {
     expect(refused.stderr).toContain("use codex, claude (or claude-code) or generic");
   });
 
+  it("runs the documented loop with --space, the word the documents teach", async () => {
+    // `tasq setup` and `tasq onboard` take `--space`, so that is the word a new
+    // user has when they reach the next line of the same instructions. Every
+    // command in that loop read `--tenant` and answered `Unknown flag: --space`.
+    const home = await freshHome();
+    await runOk(home, ["setup", "--space", "docs/loop", "--actor", "reader", "--json"]);
+    const task = JSON.parse((await runOk(home, [
+      "add", "Follow the documented loop", "--space", "docs/loop", "--actor", "reader", "--json",
+    ])).stdout);
+    for (const argv of [
+      ["claim", task.id, "--for", "30m"],
+      ["attempt", "start", task.id],
+      ["attempt", "succeed", task.id],
+    ]) {
+      const result = await runCli(home, [...argv, "--space", "docs/loop", "--actor", "reader", "--json"]);
+      expect({ argv, stderr: result.stderr, code: result.exitCode }).toMatchObject({ argv, code: 0 });
+    }
+    const evidence = JSON.parse((await runOk(home, [
+      "evidence", "add", task.id, "--kind", "note", "--uri", "note:loop",
+      "--summary", "the loop ran", "--space", "docs/loop", "--actor", "reader", "--json",
+    ])).stdout);
+    await runOk(home, [
+      "done", task.id, "--evidence", evidence.id, "--space", "docs/loop", "--actor", "reader", "--json",
+    ]);
+    expect((await runOk(home, ["whoami", "--space", "docs/loop"])).stdout).toContain("docs/loop");
+
+    // Two names for one flag, pointed at two ledgers, is a question only the
+    // caller can answer.
+    const conflicted = await runCli(home, ["list", "--space", "docs/loop", "--tenant", "other/space"]);
+    expect(conflicted.exitCode).not.toBe(0);
+    expect(conflicted.stderr).toContain("same flag and were given different values");
+
+    // `onboard` is the surface that teaches the word, and it still refuses the
+    // older name on purpose. That refusal has to read what was typed, not what
+    // the alias resolves, or it refuses `--space` itself.
+    const onboarded = await runCli(home, ["onboard", "--space", "docs/loop", "--actor", "reader", "--json"]);
+    expect(onboarded.exitCode).toBe(0);
+    const olderName = await runCli(home, ["onboard", "--tenant", "docs/loop", "--actor", "reader", "--json"]);
+    expect(olderName.exitCode).not.toBe(0);
+    expect(olderName.stdout).toContain("--tenant is not accepted by onboard");
+  });
+
+  it("names the flag it is missing instead of dumping a schema error", async () => {
+    // `CoordinationSpaceId.parse(undefined)` answered a first `tasq agent
+    // install claude-code` with a raw zod array, which names neither the flag
+    // nor the command.
+    const home = await freshHome();
+    const refused = await runCli(home, ["agent", "install", "claude-code", "--json"]);
+    expect(refused.exitCode).not.toBe(0);
+    expect(refused.stderr).not.toContain("invalid_type");
+    expect(refused.stderr).toContain("--space is required");
+    expect(refused.stderr).toContain("agent install <codex|claude|generic>");
+  });
+
   it("previews exact host MCP registration and writes generic config only explicitly", async () => {
     const home = await freshHome();
     const plan = JSON.parse((await runOk(home, [
@@ -588,7 +642,7 @@ describe("autonomous zero-integrator bootstrap", () => {
         created.recipes.some((recipe: any) => recipe.id === id))).toBe(true);
     }
     for (const recipe of created.recipes) {
-      expect(recipe.argvTemplate).toContain("--tenant");
+      expect(recipe.argvTemplate).toContain("--space");
       expect(recipe.argvTemplate).toContain("robotics/team-a");
       if (recipe.id.startsWith("audit.")) {
         expect(recipe.argvTemplate).not.toContain("--actor");
@@ -2789,7 +2843,7 @@ describe("durability", () => {
       workspaceId: "local/default",
       verification: { ok: true, eventCursor: 1 },
       next: {
-        doctor: ["env", `TASQ_DB_URL=file:${importedPath}`, "tasq", "doctor", "--tenant", "local/default", "--actor", "<stable-label>", "--json"],
+        doctor: ["env", `TASQ_DB_URL=file:${importedPath}`, "tasq", "doctor", "--space", "local/default", "--actor", "<stable-label>", "--json"],
       },
     });
     expect(statSync(importedPath).mode & 0o777).toBe(0o600);

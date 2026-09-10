@@ -5,7 +5,7 @@ Status: published and protected-byte certified in `v0.4.0`.
 ## Problem and primitive
 
 One Tasq home intentionally contains several coordination spaces. Requiring
-`--tenant` on every command is repetitive, while `tasq setup` changes the
+`--space` on every command is repetitive, while `tasq setup` changes the
 operator's global human defaults. The missing primitive is a private local
 context binding, not another workspace record and not repository state.
 
@@ -16,7 +16,7 @@ source; `tasq use --clear` removes only the exact current-directory binding.
 
 Selection precedence is exact:
 
-1. explicit `--tenant`;
+1. explicit `--space`;
 2. non-empty `TASQ_TENANT`;
 3. closest canonical directory binding;
 4. configured global default.

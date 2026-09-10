@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { CoordinationSpaceId } from "@tasq-run/schema";
-import type { ParsedArgs } from "../args.js";
+import { requiredFlag, type ParsedArgs } from "../args.js";
 import { printError, printInfo, printJson } from "../output/format.js";
 
 export const AGENT_INSTRUCTIONS_EXIT = Object.freeze({
@@ -244,7 +244,7 @@ export async function agentInstructionsCmd(args: ParsedArgs): Promise<number> {
   if (args.positional.length !== 1 || args.positional[0] !== "instructions") {
     throw new Error("agent instructions --space <id> [--target AGENTS.md] [--write|--check] [--force]");
   }
-  const space = CoordinationSpaceId.parse(args.string("space"));
+  const space = CoordinationSpaceId.parse(requiredFlag(args, "space", "agent instructions --space <id> [--target AGENTS.md] [--write|--check]"));
   const write = args.bool("write");
   const check = args.bool("check");
   const force = args.bool("force");

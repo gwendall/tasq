@@ -141,7 +141,7 @@
       "id": "local_console",
       "support": "implemented_local_only",
       "transport": "loopback_http",
-      "entrypoint": "tasq web --tenant <id>; tasq web status --tenant <id> --json",
+      "entrypoint": "tasq web --space <id>; tasq web status --space <id> --json",
       "mutations": false,
       "authorityBoundary": "unauthenticated_loopback_read_only_foreground_proof_of_life"
     },
@@ -1059,7 +1059,7 @@
     {
       "path": "docs/concepts/PRODUCT_SURFACE_MATRIX.json",
       "contractVersion": "tasq.product-surface-matrix.v1",
-      "sha256": "86c3733c5c31b661c9d0088c75e7b33ab89d74f16260053493900c6045a0bf1d"
+      "sha256": "9a2a943ab118383f794760b9a909814d9103ad4eacc5af424b57835e6e007127"
     },
     {
       "path": "docs/roadmap/BACKLOG.json",

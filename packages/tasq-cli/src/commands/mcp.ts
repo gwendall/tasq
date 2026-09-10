@@ -1,7 +1,7 @@
 /** Self-hosted local MCP transport discovered through autonomous onboarding. */
 
 import { BootstrapActorAlias, CoordinationSpaceId, systemClock, type Clock } from "@tasq-run/schema";
-import type { ParsedArgs } from "../args.js";
+import { requiredFlag, type ParsedArgs } from "../args.js";
 import { openRuntime } from "../runtime.js";
 
 export async function mcpCmd(args: ParsedArgs, clock: Clock = systemClock, version?: string): Promise<number> {
@@ -15,8 +15,8 @@ export async function mcpCmd(args: ParsedArgs, clock: Clock = systemClock, versi
   // directory: `autoDiscoveryFromCwd: false` in the agent contract is
   // deliberate, because a server that guesses its space guesses whose ledger
   // an agent is writing to.
-  const workspaceId = CoordinationSpaceId.parse(args.string("space") ?? args.string("tenant"));
-  const actor = BootstrapActorAlias.parse(args.string("actor"));
+  const workspaceId = CoordinationSpaceId.parse(requiredFlag(args, "space", "mcp --space <id> --actor <label> [--capabilities read,coordinate]"));
+  const actor = BootstrapActorAlias.parse(requiredFlag(args, "actor", "mcp --space <id> --actor <label> [--capabilities read,coordinate]"));
   // Keep the MCP SDK out of every ordinary one-shot CLI process. Cold shell
   // bootstrap must remain sub-second after warm-up.
   const { parseTasqMcpCapabilities, serveTasqMcpStdio } = await import("@tasq-run/mcp");

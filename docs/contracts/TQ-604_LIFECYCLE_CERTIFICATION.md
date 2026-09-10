@@ -56,7 +56,7 @@ Upgrade means:
 1. create and retain a verified `tasq backup` snapshot;
 2. install the new release beside the old release;
 3. let `install` atomically activate the new binary;
-4. run `tasq doctor --tenant <workspace> --actor <actor> --json` and inspect
+4. run `tasq doctor --space <workspace> --actor <actor> --json` and inspect
    the ledger;
 5. keep the prior binary and snapshot through the observation window.
 

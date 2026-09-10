@@ -68,7 +68,7 @@ Expiry and overdue decisions compare persisted values only with the one
 injected `inspectedAt`. Neither the read layer nor the HTTP handler reads the
 device clock. The health model reports `scope: bounded_operational_signals`.
 It explicitly says full integrity was not checked and returns a structured
-`["tasq", "doctor", "--tenant", workspaceId]` argv recipe rather than a
+`["tasq", "doctor", "--space", workspaceId]` argv recipe rather than a
 shell-interpolated command.
 
 ## Frozen budgets

@@ -38,7 +38,7 @@ The persistent navigation exposes seven canonical TQ-701 projections:
 7. ordered audit timeline.
 
 The top-level overview shows bounded attention signals and six operational
-counts. Full integrity remains an explicit `tasq doctor --tenant <workspace>`
+counts. Full integrity remains an explicit `tasq doctor --space <workspace>`
 command. The UI never turns a nominal bounded-health response into a complete
 integrity claim.
 

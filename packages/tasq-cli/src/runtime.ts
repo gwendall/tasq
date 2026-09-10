@@ -189,7 +189,7 @@ export async function openRuntime(
         + `${owners.join(", ")}.\n`
         + "Refusing, because a command here would read and write another project's ledger while "
         + "appearing to succeed.\n"
-        + `Bind this directory with \`tasq use <space>\`, or pass --tenant ${effectiveSpace.space} `
+        + `Bind this directory with \`tasq use <space>\`, or pass --space ${effectiveSpace.space} `
         + "to say you meant that one.",
       );
     }

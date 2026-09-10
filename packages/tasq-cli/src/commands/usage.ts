@@ -121,14 +121,14 @@ resource get <key>
 resource list [--active-only] [--holder <principal-id>] [--limit N]
 resource events [key] [--after-sequence N] [--limit N]
 resource sweep [--limit N]
-All forms require --tenant <space> --actor <stable-label>; agents should pass --json.`;
+All forms require --space <id> --actor <stable-label>; agents should pass --json.`;
 export const MCP_USAGE = `mcp --space <id> --actor <stable-label> [--capabilities read,propose,coordinate] [--completion assertion|evidence]
 Start a capability-scoped local MCP JSON-RPC server on stdio. Generic stdio
 never grants effect dispatch authority. --completion sets the policy for
 commitments this server creates when the caller states none; agent install
 registers evidence.`;
-export const WEB_USAGE = `web --tenant <space> [--host 127.0.0.1|localhost|::1] [--port 4137] [--json]
-web status --tenant <space> [--json]
+export const WEB_USAGE = `web --space <space> [--host 127.0.0.1|localhost|::1] [--port 4137] [--json]
+web status --space <space> [--json]
 Start an explicit foreground, unauthenticated read-only Console on loopback, or
 prove whether its registered listener is live. Port 0 selects an ephemeral port.
 JSON start emits one versioned NDJSON announcement. No daemon is installed.`;

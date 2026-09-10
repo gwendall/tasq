@@ -59,7 +59,7 @@ adds the second platform rather than weakening the first.
 It proves the operator projection stays bounded, escaped, redacted and useful
 across the five high-risk states on both supported OS families. It also proves
 that corruption fails closed in the browser and that full integrity remains an
-explicit `tasq doctor --tenant <workspace>` action.
+explicit `tasq doctor --space <workspace>` action.
 
 It does not certify a hosted Console, authentication, remote access, every
 browser engine, arbitrary ledger sizes or a latency SLA. Those require their

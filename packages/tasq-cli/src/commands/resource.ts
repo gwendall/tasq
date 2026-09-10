@@ -20,11 +20,18 @@ import {
   systemClock,
   type Clock,
 } from "@tasq-internal/local-service";
-import type { ParsedArgs } from "../args.js";
+import { COMMON_FLAGS, type ParsedArgs } from "../args.js";
 import { color, printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 import { RESOURCE_USAGE } from "./usage.js";
 import { errorMatches, errorMessage } from "../errors.js";
+
+/** The flags `resource` adds to the ones every command takes. */
+export const RESOURCE_FLAGS = [
+  "lease", "fence", "revision", "idempotency-key", "for", "metadata", "reason",
+  "active-only", "holder", "limit", "after-sequence",
+] as const;
+
 
 function parseDuration(raw: string | undefined): number | undefined {
   if (raw === undefined) return undefined;
@@ -70,7 +77,7 @@ function explicitScope(args: ParsedArgs) {
   const workspaceId = args.string("tenant") ?? process.env.TASQ_TENANT;
   const actor = args.string("actor") ?? process.env.TASQ_ACTOR;
   if (!workspaceId) {
-    throw new Error("Missing required --tenant <space>; resource coordination never guesses a space from config, HOME or cwd");
+    throw new Error("Missing required --space <id>; resource coordination never guesses a space from config, HOME or cwd");
   }
   if (!actor) {
     throw new Error("Missing required --actor <stable-label>; resource coordination never guesses identity from config, HOME or cwd");
@@ -84,7 +91,7 @@ function explicitScope(args: ParsedArgs) {
 function retryTemplate(workspaceId: string, actor: string, resourceKey: string) {
   return [
     "tasq", "resource", "acquire", resourceKey,
-    "--tenant", workspaceId,
+    "--space", workspaceId,
     "--actor", actor,
     "--idempotency-key", "{newIdempotencyKey}",
     "--json",
@@ -114,7 +121,7 @@ function problemFor(
     nextActions.push({
       kind: "inspect",
       description: "Inspect the current lease before deciding what to do.",
-      argvTemplate: ["tasq", "resource", "get", resourceKey, "--tenant", workspaceId, "--actor", actor, "--json"],
+      argvTemplate: ["tasq", "resource", "get", resourceKey, "--space", workspaceId, "--actor", actor, "--json"],
     });
   }
   if (code === "contended" && currentLease) {
@@ -173,11 +180,7 @@ export async function resourceCmd(
   let resourceKey: string | null = null;
   try {
     json = args.bool("json", "j");
-    args.assertKnown([
-      "json", "j", "actor", "tenant", "help", "h", "lease", "fence", "revision",
-      "idempotency-key", "for", "metadata", "reason", "active-only", "holder",
-      "limit", "after-sequence",
-    ]);
+    args.assertKnown([...COMMON_FLAGS, ...RESOURCE_FLAGS]);
     const scope = explicitScope(args);
     workspaceId = scope.workspaceId;
     actor = scope.actor;
