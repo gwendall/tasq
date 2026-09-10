@@ -1,6 +1,6 @@
-# ADR-017 — Custody is an experimental lineage, not a lease or observation
+# ADR-017 - Custody is an experimental lineage, not a lease or observation
 
-> **Status:** Accepted — 2026-08-11
+> **Status:** Accepted - 2026-08-11
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-631
 

@@ -1,4 +1,4 @@
-# TQ-503 — Reusable context stays external
+# TQ-503 - Reusable context stays external
 
 > **Status:** implemented 2026-07-20
 > **Contracts:** `tasq.external-context-link.v1`,
@@ -52,8 +52,8 @@ An external context link contains only:
 
 `binding` is deliberately honest:
 
-- `pinned` — a version or digest identifies the referenced external content;
-- `floating` — the external identity is known but its content can change.
+- `pinned` - a version or digest identifies the referenced external content;
+- `floating` - the external identity is known but its content can change.
 
 Neither state claims authenticity, freshness, readability, safety or
 authorization. Target fields are actor-provided data, never runtime control.

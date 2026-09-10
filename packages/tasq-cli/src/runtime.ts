@@ -1,5 +1,5 @@
 /**
- * CLI runtime — opens the DB, runs migrations, returns the handle.
+ * CLI runtime - opens the DB, runs migrations, returns the handle.
  * Shared across all commands.
  */
 
@@ -294,7 +294,7 @@ export async function openRuntime(
             // durable outbox row for the next startup, never turn success into
             // a false command failure that an agent might retry.
             console.error(
-              "tasq: event-journal drain deferred — " +
+              "tasq: event-journal drain deferred - " +
               (error instanceof Error ? error.message : String(error)),
             );
           }

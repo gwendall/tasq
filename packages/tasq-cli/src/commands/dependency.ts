@@ -1,5 +1,5 @@
 /**
- * `tasq depend` / `tasq undepend` — first-class peer task dependencies (SPEC §4.5).
+ * `tasq depend` / `tasq undepend` - first-class peer task dependencies (SPEC §4.5).
  *
  *   tasq depend   <id> --on <other-id> [--type blocks|relates_to|duplicates]
  *   tasq undepend <id> --on <other-id> [--type blocks|relates_to|duplicates]

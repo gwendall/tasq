@@ -21,6 +21,12 @@ const MIRRORED = [
   "CHANGELOG.md",
   "README.md",
   "docs/integrations/llms.txt",
+  // The manifests an agent host reads to decide which CLI to install. They are
+  // advanced by the record, so a fabricated tree without them tests a record
+  // that leaves an adopter installing the previous release.
+  "docs/integrations/AGENT_INTEGRATIONS.json",
+  "docs/integrations/AGENT_INTEGRATIONS.md",
+  "apps/site/public/integration.json",
 ];
 const roots: string[] = [];
 afterAll(async () => { for (const root of roots) await rm(root, { recursive: true, force: true }); });
@@ -161,6 +167,16 @@ describe("release:record", () => {
     expect(notes).toContain("The release that proves the record command.");
     expect(notes).toContain(`## \`${previousTag}\`\n`);
     expect(notes).not.toContain(`## \`${previousTag}\` current release`);
+    for (const relative of ["docs/integrations/AGENT_INTEGRATIONS.json", "apps/site/public/integration.json"]) {
+      const manifest = JSON.parse(await readFile(join(root, relative), "utf8"));
+      expect(manifest.acquisition.version).toBe(version);
+    }
+    for (const relative of ["docs/integrations/AGENT_INTEGRATIONS.json", "docs/integrations/AGENT_INTEGRATIONS.md", "apps/site/public/integration.json"]) {
+      const manifest = await readFile(join(root, relative), "utf8");
+      expect(manifest).toContain(`@tasq-run/cli@${version}`);
+      expect(manifest).not.toMatch(/@tasq-run\/cli@(?!9\.9\.9)[0-9.]+/);
+      expect(manifest).not.toMatch(/install-v(?!9\.9\.9)[0-9.]+\.sh/);
+    }
   });
 
   test("refuses to record a version the policy already records", async () => {

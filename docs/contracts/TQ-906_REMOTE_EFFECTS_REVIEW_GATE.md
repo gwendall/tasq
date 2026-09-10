@@ -1,4 +1,4 @@
-# TQ-906 — Remote effects independent review gate
+# TQ-906 - Remote effects independent review gate
 
 > **Status:** blocked on independent authority review and deployed evidence
 > **Date:** 2026-08-12

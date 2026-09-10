@@ -1,4 +1,4 @@
-# TQ-501 — bounded, reason-traced context packets
+# TQ-501 - bounded, reason-traced context packets
 
 > **Status:** implemented 2026-07-19  
 > **Contract:** `tasq.context-packet.v1`  
@@ -13,13 +13,13 @@ exceeds every model context window.
 
 A useful cold-start packet therefore needs five properties at once:
 
-1. **bounded** — a caller chooses hard record and portable-token ceilings;
-2. **sufficient as an index** — current commitments, coordination pressure and
+1. **bounded** - a caller chooses hard record and portable-token ceilings;
+2. **sufficient as an index** - current commitments, coordination pressure and
    an exact drill-down operation are present;
-3. **explainable** — ordering, inclusion reasons, truncation and omissions are
+3. **explainable** - ordering, inclusion reasons, truncation and omissions are
    data, not undocumented ranking behavior;
-4. **resumable** — the packet returns the workspace event frontier;
-5. **non-destructive** — projection never replaces raw records or audit.
+4. **resumable** - the packet returns the workspace event frontier;
+5. **non-destructive** - projection never replaces raw records or audit.
 
 This is not a planner, vector search result or conversation checkpoint. Those
 systems may consume the packet, but their policy is not kernel semantics.

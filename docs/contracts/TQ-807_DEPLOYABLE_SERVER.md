@@ -1,6 +1,6 @@
-# TQ-807 — Deployable Tasq Server
+# TQ-807 - Deployable Tasq Server
 
-> **Status:** protected multi-architecture image published and exact-digest certified — 2026-08-12
+> **Status:** protected multi-architecture image published and exact-digest certified - 2026-08-12
 > **Distribution status:** `ghcr.io/gwendall/tasq-server:0.4.0` at immutable
 > `sha256:35ef0553dd370b6c7731152cb0fcc56775a9ddd926a1b3999c43bccc20f38452`
 > **Machine certificate:** `TQ-807_SERVER_CERTIFICATION.json` (the original
@@ -94,7 +94,7 @@ inputs are enforced.
 ## Operations and lifecycle
 
 The runtime provides state-free liveness, readiness, version and support
-metadata. Prometheus text metrics contain only process-wide counters—no
+metadata. Prometheus text metrics contain only process-wide counters - no
 workspace IDs, titles, principals or credentials. Readiness is reached only
 after every configured Core and receipt binding has migrated successfully.
 

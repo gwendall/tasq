@@ -1,4 +1,4 @@
-# ADR-019 — Bound the first experimental Cloud composition
+# ADR-019 - Bound the first experimental Cloud composition
 
 > **Status:** accepted for the private experiment; production and managed-service gates open
 > **Date:** 2026-08-20

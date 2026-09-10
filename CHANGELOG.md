@@ -8,7 +8,38 @@ release history selected by ADR-008.
 
 ## Unreleased
 
+### Added
+
+- **A private local record of what every `tasq` command was asked to do.**
+  The ledger records mutations that SUCCEED. A read left no trace and a
+  refusal left none at all, so the two signals that say whether the product
+  fits the hand using it were invisible: both defects found on 2026-09-09
+  existed in the ledger as nothing whatsoever. `~/.tasq/commands.jsonl` now
+  takes one line per invocation, successes included, and `tasq usage
+  [--since 30d] [--all]` reports refusals, reads, harnesses and versions, and
+  every space on this machine at once. The file is `0600`, bounded, and
+  leaves the machine only when someone runs `tasq feedback push`. It records
+  the SHAPE of a command - verb, allowlisted subcommand, flag NAMES - and
+  never a positional, a flag value or an actor label.
+- **Agents are told where to send what the tool got wrong.** The managed
+  `AGENTS.md` block now names `tasq feedback`, and says how it differs from a
+  capture: a capture belongs to the project's work, feedback belongs to the
+  tool. Blocks written before this are version 1.
+- **`tasq doctor` says when this project's managed block is older than the
+  executable.** Upgrading the binary does not touch a block a project already
+  carries, so an adopted project kept teaching its agents the previous
+  release's rules, and nothing announced the drift. Reported and never fatal:
+  failing `doctor` in every project that has not re-run `setup` would turn a
+  routine upgrade into an outage.
+
 ### Fixed
+
+- **`tasq capture` refused every commitment carrying a planning scope.** 97
+  of 100 live commitments could not take a capture, because a discovery
+  copied its source's area, goal and project into the kernel, which refuses
+  planning vocabulary without an injected planning-profile policy. Inherited
+  scope is now dropped rather than refused: the kernel still owns no planning
+  vocabulary, and the observation is still filed.
 
 - **`release:publish-surfaces` dispatched on the tag by default, and no
   certifier could accept what that built.** Every provenance verification in
@@ -17,6 +48,61 @@ release history selected by ADR-008.
   because it was run with `--workflow-ref main` by hand; v0.6.5 failed on the
   default. The default is now `main`; the bytes stay bound to the tag by
   `source_commit`.
+- **A publish dispatched on the release tag deadlocked the release.** Every
+  certifier demands `refs/heads/main`, and provenance names the ref a run was
+  dispatched on, so a tag-dispatched build produced an image no certifier
+  could ever accept, which `ensure-oci-tag.sh` then pinned to the release tag
+  where no rerun could replace it. v0.6.5 hit exactly this and only a
+  registry deletion broke it. Both publish workflows now refuse that dispatch
+  before anything is pushed, and the reuse refusal names the deletion that is
+  the only exit rather than reading as a transient registry error.
+- **Every Dependabot pull request failed on its first step.** With no
+  configuration, Dependabot rewrote `apps/site/package.json` alone while the
+  pnpm lockfile sits at the workspace root, so all seven jobs died on
+  `ERR_PNPM_OUTDATED_LOCKFILE`. The npm ecosystem is now pointed at the
+  workspace root.
+- **The manifests agent hosts read to acquire Tasq pinned v0.4.0.** Nothing
+  advanced `AGENT_INTEGRATIONS.json`, its Markdown companion or the mirrored
+  `integration.json` at release time, so a host following the documented
+  "Executable acquisition" path installed a CLI two releases old and never
+  learned anything newer existed. Recording a release now advances them, and
+  the publication gate refuses a repository where they name anything but the
+  published version.
+- **`tasq usage` could not see a read that lives under a verb.** `attempt
+  list` and `evidence list` are reads, a read leaves no ledger event, and the
+  journal was the only place they could be counted - but the counter matched
+  on the top-level verb alone, so both were invisible. Reads are now keyed by
+  the shape actually invoked.
+- **Two agents rotating the command journal at once could lose records.**
+  Rotation read the whole file and renamed a rewritten copy over it, so the
+  second rename dropped whatever the first had appended. Rotation now takes an
+  exclusive lock and skips rather than races; the record is appended either
+  way. The lock names its holder's pid, so a writer killed mid-rotation is
+  reclaimed rather than wedging it forever - an expiry would need a clock, and
+  only `systemClock` may read the host clock.
+- **The CLI JSON contract described a `tasq demo` output that no longer
+  existed.** It documented `tasq.isolated-demo.v1` with a `before` key while
+  `demo` had moved to v2 with `claimed`, `refusals` and `evidence`, and
+  `CommitmentInspectionV1` omitted `signedStatementProofs`. Nothing read that
+  reference, which is why it drifted; `docs:check` now does.
+- **The README stated a recipe count `tasq onboard` does not return** (45,
+  against 47) and its `setup` transcript omitted the global-default line the
+  command prints. Both are now checked against the running CLI.
+- **Five reads printed nothing at all on an empty space.** `attempt list`,
+  `evidence list`, `wait list`, `observation list` and `signature bindings`
+  exited 0 with no output, which is indistinguishable from a command that
+  silently failed - and an empty space is exactly what a first-time user has.
+  They now say what is missing and how to create the first one, while `--json`
+  still returns `[]`.
+- **`tasq usage --all` could not tell a real project from test residue.** It
+  listed every space in the store, and on a working machine 16 of 18 were left
+  by tests, so the first cross-project read was mostly noise. Each space now
+  reports `boundDirectories`, and the human report says how many spaces no
+  directory is bound to.
+- **House punctuation is the plain hyphen everywhere.** 851 em-dashes and
+  en-dashes had accumulated across 219 files; `pnpm docs:check` now refuses
+  them. Applied migrations are exempt and must be: their bytes are checksummed,
+  so editing a comment in one makes every existing store refuse to open.
 
 ## v0.6.5 - 2026-09-08
 
@@ -545,7 +631,7 @@ retired rather than reused.
   package manifests now derive external dependency versions from their source
   manifests, and wrapped driver errors retain safe contention classification.
 
-## v0.3.0 — 2026-07-23
+## v0.3.0 - 2026-07-23
 
 [Release](https://github.com/gwendall/tasq/releases/tag/v0.3.0) · store format 26
 
@@ -556,7 +642,7 @@ retired rather than reused.
   decisions. Validated tasks can no longer be completed by evidence alone.
 - Append-only evidence trust, proposal, challenge and validation records.
 
-## v0.2.0 — 2026-07-23
+## v0.2.0 - 2026-07-23
 
 [Release](https://github.com/gwendall/tasq/releases/tag/v0.2.0)
 
@@ -565,7 +651,7 @@ retired rather than reused.
 - `createLocalTasq`, the embedded TypeScript client, published as compiled ESM
   with declarations and certified on Node 22 and Bun.
 
-## v0.1.1 — 2026-07-23
+## v0.1.1 - 2026-07-23
 
 [Release](https://github.com/gwendall/tasq/releases/tag/v0.1.1)
 
@@ -578,7 +664,7 @@ retired rather than reused.
 
 - Made the public adoption examples executable rather than illustrative.
 
-## v0.1.0 — 2026-07-23
+## v0.1.0 - 2026-07-23
 
 [Release](https://github.com/gwendall/tasq/releases/tag/v0.1.0) · first public alpha
 

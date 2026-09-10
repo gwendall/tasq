@@ -1,9 +1,9 @@
-# TQ-801 — Hosted authority foundation
+# TQ-801 - Hosted authority foundation
 
-> **Status:** implemented and repository-certified — 2026-07-21
+> **Status:** implemented and repository-certified - 2026-07-21
 > **Machine certificate:** `TQ-801_AUTHORITY_CERTIFICATION.json`
 > **Remote surface status:** implemented later as an unpublished Server source
-> candidate by TQ-803–TQ-809
+> candidate by TQ-803-TQ-809
 
 ## Outcome
 
@@ -14,7 +14,7 @@ one strict allow/deny decision at one injected timestamp.
 
 This closed the first implementation slice of ADR-004. The evaluator itself
 does not implement credential verification, persistence, routing, audit or a
-listener; those outer layers are now composed by the unpublished TQ-802–TQ-809
+listener; those outer layers are now composed by the unpublished TQ-802-TQ-809
 Server source candidate.
 
 ## Contracts

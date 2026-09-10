@@ -1,4 +1,4 @@
-# TQ-702 — Console live transport
+# TQ-702 - Console live transport
 
 ## Outcome
 
@@ -94,7 +94,7 @@ cannot supply domain time.
 | opaque cursor input | 2,048 characters |
 | queued SSE frames per connection | 1 |
 | production poll cadence | 1,000 ms |
-| configurable cadence range | 1–60,000 ms |
+| configurable cadence range | 1-60,000 ms |
 
 ## Verification
 

@@ -1,6 +1,6 @@
-# ADR-016 — Settlement is a new decision, never rewritten completion
+# ADR-016 - Settlement is a new decision, never rewritten completion
 
-> **Status:** Accepted — 2026-08-11
+> **Status:** Accepted - 2026-08-11
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-628
 

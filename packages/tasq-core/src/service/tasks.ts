@@ -1,6 +1,6 @@
 import { ContentionError, withContentionRecorded } from "./contention.js";
 /**
- * Task service — the core verbs (create, update, status transitions, list).
+ * Task service - the core verbs (create, update, status transitions, list).
  *
  * Every mutation:
  *   1. Validates input via Zod
@@ -413,7 +413,7 @@ export async function createTask(
  *   - ...
  * Implementation: walk parent_task_id upward. Stops at MAX_TASK_DEPTH+1 as
  * a safety net (a cycle would have been rejected on create, but defensive
- * coding doesn't hurt — this is read-only).
+ * coding doesn't hurt - this is read-only).
  */
 export async function getTaskDepth(
   db: TasqDbOrTx,
@@ -1438,7 +1438,7 @@ export async function softDeleteTaskTx(
   const events: EventT[] = [];
   // Idempotency: if this row was already tombstoned earlier in the same cascade
   // (overlapping ancestry paths) or a prior run, leave its original deletedAt
-  // and emit nothing — no double-tombstone, no duplicate `deleted` event.
+  // and emit nothing - no double-tombstone, no duplicate `deleted` event.
   const existing = await tx
     .select({ deletedAt: task.deletedAt })
     .from(task)
@@ -1568,7 +1568,7 @@ export interface ListTasksOptions extends TaskServiceContext {
    * include deferred tasks.
    */
   includeScheduled?: boolean;
-  /** Override now() — useful for tests. */
+  /** Override now() - useful for tests. */
   now?: number;
   limit?: number;
   /** Exclusive stable cursor for the `updatedAt DESC, id DESC` ordering. */

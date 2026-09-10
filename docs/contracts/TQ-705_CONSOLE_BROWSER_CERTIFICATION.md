@@ -1,6 +1,6 @@
-# TQ-705 — Local Console browser certification
+# TQ-705 - Local Console browser certification
 
-> **Status:** certified on Linux and macOS — 2026-07-21
+> **Status:** certified on Linux and macOS - 2026-07-21
 > **Machine certificate:** `TQ-705_CONSOLE_BROWSER_CERTIFICATION.json`
 
 ## Question
@@ -54,7 +54,7 @@ The existing full `verify` matrix remains separate. Keeping the original Linux
 job name preserves branch-protection continuity while the macOS browser job
 adds the second platform rather than weakening the first.
 
-## What this proves — and does not
+## What this proves - and does not
 
 It proves the operator projection stays bounded, escaped, redacted and useful
 across the five high-risk states on both supported OS families. It also proves

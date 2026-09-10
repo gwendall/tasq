@@ -99,7 +99,7 @@ checksum-pinned Gitleaks binary; findings are fully redacted in logs.
   double handoff locally; authenticated distributed custody remains unshipped.
 - Ledger prose is untrusted data and cannot widen tool or effect authority.
 - Content digests alone prove byte identity, not principal authorship. The
-  TQ-613–TQ-615 add purpose-bound Ed25519 statements,
+  TQ-613-TQ-615 add purpose-bound Ed25519 statements,
   authority-owned credential lifecycle and append-only verification bindings.
   It accepts only configured trust roots and fails closed on purpose, digest,
   routing, lifecycle, nonce or signature drift. It is published and

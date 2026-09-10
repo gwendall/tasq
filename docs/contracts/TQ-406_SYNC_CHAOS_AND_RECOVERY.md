@@ -1,4 +1,4 @@
-# TQ-406 — Sync chaos and recovery
+# TQ-406 - Sync chaos and recovery
 
 **Status:** Done
 

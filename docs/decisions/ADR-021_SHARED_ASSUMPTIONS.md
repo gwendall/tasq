@@ -1,4 +1,4 @@
-# ADR-021 — Shared assumptions are a separate, cheap primitive
+# ADR-021 - Shared assumptions are a separate, cheap primitive
 
 - **Status:** Proposed - 2026-08-26
 - **Decision owner:** Tasq kernel ontology and agent-facing surfaces

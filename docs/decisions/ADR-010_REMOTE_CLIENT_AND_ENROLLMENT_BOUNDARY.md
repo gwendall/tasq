@@ -1,6 +1,6 @@
-# ADR-010 — Remote client package and enrollment boundary
+# ADR-010 - Remote client package and enrollment boundary
 
-> **Status:** Accepted — 2026-07-24
+> **Status:** Accepted - 2026-07-24
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-809
 

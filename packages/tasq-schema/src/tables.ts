@@ -1,5 +1,5 @@
 /**
- * Drizzle table definitions — the storage shape.
+ * Drizzle table definitions - the storage shape.
  *
  * One LibSQL file ; SQLite dialect via @libsql/client. All tables carry
  * `tenant_id` (default 'gwendall' in v0.1) for forward-compat with the
@@ -10,7 +10,7 @@
  *
  * Conventions:
  *   - text PKs (UUIDv7 hex)
- *   - integer timestamps (unix-ms — JS Number-safe up to year 2255)
+ *   - integer timestamps (unix-ms - JS Number-safe up to year 2255)
  *   - JSON columns stored as text and parsed in the service layer
  *   - tombstones via deleted_at, never DELETE
  *   - status / type enums kept as text + CHECK constraints
@@ -20,7 +20,7 @@ import { sql } from "drizzle-orm";
 import { check, sqliteTable, text, integer, index, uniqueIndex, primaryKey, foreignKey, type AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 
 // ──────────────────────────────────────────────────────────────────────
-// Principal — stable attribution identity; authority remains a separate guard
+// Principal - stable attribution identity; authority remains a separate guard
 // ──────────────────────────────────────────────────────────────────────
 
 /**
@@ -106,7 +106,7 @@ export const principal = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Coordination space — explicit durable workspace existence
+// Coordination space - explicit durable workspace existence
 // ──────────────────────────────────────────────────────────────────────
 
 /**
@@ -127,7 +127,7 @@ export const coordinationSpace = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Generic resource leases — opaque coordination identity, never fake work
+// Generic resource leases - opaque coordination identity, never fake work
 // ──────────────────────────────────────────────────────────────────────
 
 export const resourceLease = sqliteTable(
@@ -207,8 +207,7 @@ export const area = sqliteTable(
     name: text("name").notNull(),
     slug: text("slug").notNull(),
     importance: integer("importance").notNull().default(3),
-    // Free-form advisory cadence text ("3x/week", "1/month"). ADVISORY ONLY —
-    // no engine reads it (interpreting it would be L2 metric interpretation,
+    // Free-form advisory cadence text ("3x/week", "1/month"). ADVISORY ONLY - // no engine reads it (interpreting it would be L2 metric interpretation,
     // anti-pattern #19). The real engine recurrence signal is the task-level
     // `recurrence` enum below (SPEC §6.4-H).
     cadenceTarget: text("cadence_target"),
@@ -352,7 +351,7 @@ export const task = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Commitment summary — append-only, source-bound terminal projection
+// Commitment summary - append-only, source-bound terminal projection
 // ──────────────────────────────────────────────────────────────────────
 
 export const commitmentSummary = sqliteTable(
@@ -392,7 +391,7 @@ export const commitmentSummary = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Event — append-only, immutable
+// Event - append-only, immutable
 // ──────────────────────────────────────────────────────────────────────
 
 export const event = sqliteTable(
@@ -426,7 +425,7 @@ export const event = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Durable delivery — local-only sinks and transactional event outbox
+// Durable delivery - local-only sinks and transactional event outbox
 // ──────────────────────────────────────────────────────────────────────
 
 /**
@@ -514,16 +513,16 @@ export const deliveryOutbox = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Task dependency — first-class peer edge (SPEC §4.5)
+// Task dependency - first-class peer edge (SPEC §4.5)
 // ──────────────────────────────────────────────────────────────────────
 
 /**
  * A directed dependency edge between two tasks (SPEC §4.5). `type='blocks'`
- * means `from_task_id` depends on `to_task_id` — i.e. `to_task_id` must resolve
+ * means `from_task_id` depends on `to_task_id` - i.e. `to_task_id` must resolve
  * before `from_task_id` is actionable. `relates_to` / `duplicates` are
  * informational (non-transitive, no cycle guard).
  *
- * Dependencies have no `cancelled` state — DELETE is a soft-delete (SPEC §5.3),
+ * Dependencies have no `cancelled` state - DELETE is a soft-delete (SPEC §5.3),
  * so the UNIQUE index is PARTIAL (WHERE deleted_at IS NULL) to let an edge be
  * re-added after removal; `dependTask` reactivates a soft-deleted match rather
  * than inserting a duplicate.
@@ -620,7 +619,7 @@ export const assignment = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Idempotency — durable command deduplication
+// Idempotency - durable command deduplication
 // ──────────────────────────────────────────────────────────────────────
 
 export const idempotencyKey = sqliteTable(
@@ -697,7 +696,7 @@ export const externalRef = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// External context links — append-only associations, never memory content
+// External context links - append-only associations, never memory content
 // ──────────────────────────────────────────────────────────────────────
 
 export const externalContextLink = sqliteTable(
@@ -893,7 +892,7 @@ export const artifact = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// ADR-005 independently validated completion — immutable resolution chain
+// ADR-005 independently validated completion - immutable resolution chain
 // ──────────────────────────────────────────────────────────────────────
 
 export const resolutionContract = sqliteTable(
@@ -1124,7 +1123,7 @@ export const completionRecord = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Universal extension registry — immutable trusted meaning snapshots
+// Universal extension registry - immutable trusted meaning snapshots
 // ──────────────────────────────────────────────────────────────────────
 
 export const extensionRelease = sqliteTable(
@@ -1212,7 +1211,7 @@ export const extensionEvaluator = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Wait condition — monotone typed expectation lifecycle
+// Wait condition - monotone typed expectation lifecycle
 // ──────────────────────────────────────────────────────────────────────
 
 export const waitCondition = sqliteTable(
@@ -1304,7 +1303,7 @@ export const waitCondition = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Observation — immutable normalized fact from a watcher/connector
+// Observation - immutable normalized fact from a watcher/connector
 // ──────────────────────────────────────────────────────────────────────
 
 export const observation = sqliteTable(
@@ -1441,7 +1440,7 @@ export const reconciliation = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// K2 effect ledger — exact request, immutable approvals and monotone state
+// K2 effect ledger - exact request, immutable approvals and monotone state
 // ──────────────────────────────────────────────────────────────────────
 
 export const effect = sqliteTable(
@@ -1640,7 +1639,7 @@ export const effectReceipt = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// ADR-003 replication — explicit operations, authority log and conflicts
+// ADR-003 replication - explicit operations, authority log and conflicts
 // ──────────────────────────────────────────────────────────────────────
 
 export const replicationAuthority = sqliteTable(
@@ -1883,7 +1882,7 @@ export const replicationMaterializedRecord = sqliteTable(
 );
 
 // ──────────────────────────────────────────────────────────────────────
-// Purpose-bound signed statements — public proof only, never private keys
+// Purpose-bound signed statements - public proof only, never private keys
 // ──────────────────────────────────────────────────────────────────────
 
 export const workspaceCheckpoint = sqliteTable("workspace_checkpoint", {
@@ -2046,7 +2045,7 @@ export const signedStatementBinding = sqliteTable("signed_statement_binding", {
 }));
 
 // ──────────────────────────────────────────────────────────────────────
-// Attestations — assertions and append-only revocation, never authority
+// Attestations - assertions and append-only revocation, never authority
 // ──────────────────────────────────────────────────────────────────────
 
 export const attestation = sqliteTable("attestation", {
@@ -2220,7 +2219,7 @@ export const settlementMaterialization = sqliteTable("settlement_materialization
 // ──────────────────────────────────────────────────────────────────────
 
 /**
- * ADR-021 — one immutable sentence that work rests on, shared by many
+ * ADR-021 - one immutable sentence that work rests on, shared by many
  * commitments. Identity within a tenant is `normalizedText`, which is what lets
  * two agents attach to the same belief without looking up an id.
  */

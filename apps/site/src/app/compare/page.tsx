@@ -39,7 +39,7 @@ export default function ComparePage() {
             Parallel is not the same as coordinated.
           </h1>
           <p className="mt-8 max-w-3xl text-lg leading-8 text-white/60">
-            Several products can run agents at once. The useful question is what happens when those agents reach for the same commitment — and who can prove what happened afterward.
+            Several products can run agents at once. The useful question is what happens when those agents reach for the same commitment - and who can prove what happened afterward.
           </p>
           <div className="mt-9 inline-flex max-w-3xl items-start gap-3 border border-white/20 bg-white/[0.04] p-4 text-sm leading-6 text-white/65">
             <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[var(--signal)]" />

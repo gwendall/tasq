@@ -105,7 +105,7 @@ async function resolveAreaId(rt: Awaited<ReturnType<typeof openRuntime>>, slug: 
 }
 
 /**
- * Per-line dependency annotations (additive — appended after the existing
+ * Per-line dependency annotations (additive - appended after the existing
  * title/priority/due so prior format assertions still hold):
  *   - `blockers` > 0     → a `🔒N` marker (this task has N unresolved blockers)
  *   - `unblocked` (true) → a "just unblocked" tag (had blockers, now has none)
@@ -214,7 +214,7 @@ export async function addCmd(args: ParsedArgs): Promise<number> {
  * can consume. Returns `null` on resolution failure (error already printed).
  * Returns an object with only the keys the user explicitly provided so the
  * service can distinguish "inherit from parent" (key omitted) from "detach"
- * (key set to null) — see TaskInsert in @tasq-run/schema.
+ * (key set to null) - see TaskInsert in @tasq-run/schema.
  */
 async function resolveHierarchyFlags(
   rt: Awaited<ReturnType<typeof openRuntime>>,
@@ -258,7 +258,7 @@ async function resolveHierarchyFlags(
 
 // ──────────────────────────────────────────────────────────────────────
 // `tasq list [--status X] [--area X] [--goal X] [--project X] [--json]`
-// `tasq inbox` — tasks without a project_id (the "untriaged" pile)
+// `tasq inbox` - tasks without a project_id (the "untriaged" pile)
 // ──────────────────────────────────────────────────────────────────────
 
 export async function listCmd(args: ParsedArgs): Promise<number> {
@@ -317,7 +317,7 @@ async function listImpl(args: ParsedArgs, opts: { orphanOnly: boolean }): Promis
       // Compute dependency annotations once per list call (no N+1). The blocker
       // map needs the live status of EVERY candidate task in the tenant (a
       // blocker may sit outside the filtered slice), so source statuses from a
-      // tenant-wide open/in_progress/blocked listing — not just the printed set.
+      // tenant-wide open/in_progress/blocked listing - not just the printed set.
       const liveStatuses = await listTasks(rt.db, {
         tenantId: rt.config.tenantId,
         limit: 5000,
@@ -437,7 +437,7 @@ async function printDependencySections(
     printInfo(color.bold("\nBlocked by:"));
     for (const d of blockedBy) printInfo(line(d.toTaskId));
     if (unresolvedBlockers === 0) {
-      printInfo(color.green("  (just unblocked — no unresolved blockers remain)"));
+      printInfo(color.green("  (just unblocked - no unresolved blockers remain)"));
     }
   }
   if (blocks.length > 0) {
@@ -467,7 +467,7 @@ async function printDependencySections(
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// Status transitions — start, done, block, unblock, cancel, reopen, restore, delete
+// Status transitions - start, done, block, unblock, cancel, reopen, restore, delete
 // ──────────────────────────────────────────────────────────────────────
 
 export type Transition =
@@ -483,7 +483,7 @@ export type Transition =
 /**
  * The status-changing service functions all share the same call shape:
  *   (db, id, StatusChangeOptions) → Promise<Task>.
- * `restoreTask` differs (it takes only ServiceContext — no reason/note/source),
+ * `restoreTask` differs (it takes only ServiceContext - no reason/note/source),
  * so we wrap it in a thin adapter to make the dispatch table monomorphic.
  */
 type StatusFn = (db: TasqDb, id: string, options?: StatusChangeOptions) => Promise<Task>;

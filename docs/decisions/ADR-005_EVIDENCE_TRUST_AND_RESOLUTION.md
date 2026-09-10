@@ -1,6 +1,6 @@
-# ADR-005 — Evidence trust, authenticity and commitment resolution
+# ADR-005 - Evidence trust, authenticity and commitment resolution
 
-- **Status:** Accepted — 2026-07-23
+- **Status:** Accepted - 2026-07-23
 - **Implements:** decision prerequisite for TQ-612
 - **Unlocks:** independently validated completion and the future TQ-906 remote-effect review
 - **Depends on:** ADR-UK-EXT extension identity, ADR-UK-006 collaboration records,

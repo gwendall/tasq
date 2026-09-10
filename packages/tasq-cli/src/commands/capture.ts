@@ -1,4 +1,4 @@
-/** `tasq capture` — explicitly file local work discovered mid-task. */
+/** `tasq capture` - explicitly file local work discovered mid-task. */
 
 import { captureDiscovery } from "@tasq-internal/local-service";
 import type { Clock } from "@tasq-run/schema";

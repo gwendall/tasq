@@ -1,4 +1,4 @@
-# ADR-022 — What Tasq is, and what it shows first
+# ADR-022 - What Tasq is, and what it shows first
 
 - **Status:** Proposed - 2026-08-27
 - **Decision owner:** Product shape and adoption

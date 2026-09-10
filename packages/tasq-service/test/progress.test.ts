@@ -37,7 +37,7 @@ async function freshDb() {
   return h;
 }
 
-describe("Project progress — counts + percent", () => {
+describe("Project progress - counts + percent", () => {
   it("empty project returns 0/0 0%", async () => {
     const { db, close } = await freshDb();
     try {
@@ -104,7 +104,7 @@ describe("Project progress — counts + percent", () => {
   });
 });
 
-describe("ETA — sample size + computation", () => {
+describe("ETA - sample size + computation", () => {
   it("returns null when sample size below threshold", async () => {
     const { db, close } = await freshDb();
     try {
@@ -216,7 +216,7 @@ describe("Task progress (task with sub-tasks)", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Helpers — seed historical completed tasks
+// Helpers - seed historical completed tasks
 // ──────────────────────────────────────────────────────────────────────
 
 async function seedCompletedTasks(

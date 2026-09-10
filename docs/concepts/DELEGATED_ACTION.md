@@ -190,7 +190,7 @@ Every candidate below is evaluated against the six rules in
 non-reconstructible invariants, independent lifecycle, non-derivability,
 stable meaning and one transactional write path.
 
-### 4.1 Mandate — Module view, not a second authority record
+### 4.1 Mandate - Module view, not a second authority record
 
 A mandate is important but derivable from existing grants, delegations,
 permission sets, scopes and approvals. Making another authoritative record
@@ -204,7 +204,7 @@ Decision:
 - preserve immediate revocation through the existing guard;
 - do not add a generic `mandate` table to Core.
 
-### 4.2 Target reference — foundational value and binding candidate
+### 4.2 Target reference - foundational value and binding candidate
 
 Target identity recurs across conditions, observations, authority, resource
 coordination, effects and external references. Identity fragmentation can
@@ -222,7 +222,7 @@ Decision, completed by TQ-622 and
 - keep the target reference as a schema value contract, with no new Kernel
   record or storage migration.
 
-### 4.3 Agreement — shared Module, not commitment fields
+### 4.3 Agreement - shared Module, not commitment fields
 
 Exact mutual assent has an independent lifecycle and audit requirement, but
 the resulting obligations are already expressible as reciprocal commitments,
@@ -237,7 +237,7 @@ Decision:
 - compile accepted terms to reciprocal commitment/effect graphs transactionally;
 - do not add price, currency or cancellation fields to `commitment`.
 
-### 4.4 Attestation — shared trust Module
+### 4.4 Attestation - shared trust Module
 
 A purpose-scoped assertion about a principal or target has independent
 identity, validity, issuer, scope and revocation. Task-scoped evidence trust and
@@ -250,7 +250,7 @@ Decision:
 - make current-at-time queries and append-only revocation first class;
 - never infer authority, availability or truth from a signature alone.
 
-### 4.5 Settlement — shared Module above effects
+### 4.5 Settlement - shared Module above effects
 
 Settlement policy is replaceable and may be commercial, organizational or
 jurisdiction-specific. The resulting decision and external effect still need
@@ -264,7 +264,7 @@ Decision:
 - never describe a payment connector as escrow without the corresponding
   legal and funds-flow role.
 
-### 4.6 Custody — experimental first-class Module
+### 4.6 Custody - experimental first-class Module
 
 Custody cannot be reconstructed safely from an expiring lease or uncoordinated
 photos. TQ-631 passes the repository cross-domain Module test, but not the
@@ -424,7 +424,7 @@ The Review Inbox projects, without creating another source of truth:
 The high-level embedded Interface now exposes the existing assignments,
 artifacts, external references and effects. TQ-623 also adds atomic
 `claimAndStart` and `submitOutcome` journeys over those same records; the
-remaining journeys below are compositions of the completed TQ-625–TQ-631
+remaining journeys below are compositions of the completed TQ-625-TQ-631
 Modules and still require an integrator-owned runtime, authority and providers.
 
 Target journeys include:
@@ -612,9 +612,9 @@ direction in increasing order of commitment:
 2. **done (TQ-623):** expose existing records plus atomic claim/start and
    submit-outcome journeys;
 3. **done (TQ-624):** make signed-statement binders safely extensible;
-4. **done (TQ-625–TQ-626):** add Attestations and Mandates;
-5. **done (TQ-627–TQ-628):** add Agreements and Settlement/Recourse;
-6. **done (TQ-629–TQ-630):** build the reference Runner, Evidence Capture,
+4. **done (TQ-625-TQ-626):** add Attestations and Mandates;
+5. **done (TQ-627-TQ-628):** add Agreements and Settlement/Recourse;
+6. **done (TQ-629-TQ-630):** build the reference Runner, Evidence Capture,
    Review Inbox and Outcome Bundle;
 7. **done (TQ-631):** graduate Custody to a private experimental Module while
    declining Kernel admission;

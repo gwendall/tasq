@@ -107,7 +107,7 @@ if (process.argv.includes("--json")) {
   console.log(`Tasq agent preflight: ${result.ok ? "OK" : "FAILED"}`);
   console.log(`Repository: ${result.repository.origin} (${result.repository.branch || "detached"})`);
   console.log(`Worktree: ${result.repository.dirty ? `${dirtyFiles.length} changed path(s)` : "clean"}`);
-  console.log(`Current: ${result.work.activeBacklogItem?.id ?? "none"} — ${result.work.dogfood.nextAction}`);
+  console.log(`Current: ${result.work.activeBacklogItem?.id ?? "none"} - ${result.work.dogfood.nextAction}`);
   for (const warning of result.warnings) console.log(`Warning: ${warning}`);
 }
 

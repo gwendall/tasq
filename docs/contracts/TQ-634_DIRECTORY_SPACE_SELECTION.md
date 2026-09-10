@@ -1,4 +1,4 @@
-# TQ-634 — Directory-scoped space selection
+# TQ-634 - Directory-scoped space selection
 
 Status: published and protected-byte certified in `v0.4.0`.
 

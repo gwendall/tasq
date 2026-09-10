@@ -1,4 +1,4 @@
-/** TQ-606 — deterministic preparation for the still-external blind-human gate. */
+/** TQ-606 - deterministic preparation for the still-external blind-human gate. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";

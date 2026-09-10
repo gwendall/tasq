@@ -11,7 +11,7 @@ export const AGENT_INSTRUCTIONS_EXIT = Object.freeze({
   handEdited: 12,
 });
 
-const BLOCK_VERSION = 2;
+export const BLOCK_VERSION = 2;
 const LOOSE_BLOCK = /<!-- tasq:begin\b[^>]*-->[\s\S]*?<!-- tasq:end -->/g;
 const BEGIN = /^<!-- tasq:begin v="(\d+)" space="([^"\n]+)" digest="sha256:([0-9a-f]{64})" -->\n/;
 

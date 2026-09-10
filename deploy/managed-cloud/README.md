@@ -1,6 +1,6 @@
 # Managed Cloud experimental deployment
 
-This profile runs the private TQ-901–TQ-905 source candidate on Fly. It is not
+This profile runs the private TQ-901-TQ-905 source candidate on Fly. It is not
 an available managed service. Remote effects stay disabled and the current
 reference identity provider is not a production identity provider.
 

@@ -81,7 +81,7 @@ operation through real adopters, not more repository-only architecture.
 
 ## Current gates
 
-- **Fly private beta — deployed; off-site restore passed.** ADR-018
+- **Fly private beta - deployed; off-site restore passed.** ADR-018
   replaces GKE as the first hosted-beta step. Fly app `tasq-api`, one encrypted
   `cdg` volume with 30-day snapshots, ingress, certificate request, registrar
   DNS and GitHub environment `beta` exist. `api.tasq.run` is the sole future
@@ -94,24 +94,24 @@ operation through real adopters, not more repository-only architecture.
   On 2026-08-13 a native Server backup was encrypted, uploaded off-site and
   restored with an exact plaintext digest match.
 
-- **Public Local alpha — live.** Anonymous users can clone `main`, install all
+- **Public Local alpha - live.** Anonymous users can clone `main`, install all
   eight `@tasq-run/*@0.4.0` packages from npm, or download the attested
   macOS-arm64/Linux-x64 assets from the immutable
   [`v0.4.0`](https://github.com/gwendall/tasq/releases/tag/v0.4.0) release.
   The historical `alpha-bootstrap` tag is not a supported channel.
-- **TQ-633 — done.** The one-shot
+- **TQ-633 - done.** The one-shot
   client workflow serializes with protected releases, preserves
   `alpha-bootstrap`, removes a bootstrap-only `latest`, and verifies the result.
   Every protected release verifies each public package's `latest` against the
   exact release version. The public registry now resolves `latest` to `0.4.0`.
-- **TQ-321 — done, zero-context agent integration.** Native Codex and Claude
+- **TQ-321 - done, zero-context agent integration.** Native Codex and Claude
   Code marketplace paths pass real isolated install, two-process behavioral and
   uninstall trials. Both hosts read before mutation, resume the same attempt
   from an exclusive cursor, reject stale resource authority, complete with
   evidence and preserve the ledger byte-for-byte through uninstall. See
   `../contracts/TQ-321_AGENT_PLUGIN_CERTIFICATION.json` and
   `../../evidence/tq-321/latest.json`.
-- **TQ-608 — done for v0.4.0.** The
+- **TQ-608 - done for v0.4.0.** The
   executable and release manifests declare store compatibility; existing-store
   upgrades create verified private snapshots and durable receipts, fail closed
   on ambiguous/newer history, reconcile real process kills, run post-checks and
@@ -125,7 +125,7 @@ operation through real adopters, not more repository-only architecture.
   Exact published `v0.4.0` attestations and migration replay passed in run
   [31625205138](https://github.com/gwendall/tasq/actions/runs/31625205138).
 
-- **TQ-607 — in progress, private multi-application dogfood.** The program must
+- **TQ-607 - in progress, private multi-application dogfood.** The program must
   span at least 30 calendar days, including at least 20 active personal-use
   days, real Kami resource contention/fence/reclaim, and a Denshin-shaped or
   equivalent interactive-runtime lifecycle. It also requires two retained-data
@@ -137,7 +137,7 @@ operation through real adopters, not more repository-only architecture.
   forward upgrade are retained. The personal track is at 1/20 active days and
   1/3 required journeys; run `pnpm --silent dogfood status --json` for the
   authoritative live counters and next action.
-- **TQ-603 — done, first protected release published.** The maintainer
+- **TQ-603 - done, first protected release published.** The maintainer
   authorized `v0.1.0` as an explicitly labeled public alpha on 2026-07-23.
   The authenticated `gwendall` operator controls the `tasq-run` npm
   organization; `npm team ls tasq-run` returned its developers team on
@@ -156,7 +156,7 @@ operation through real adopters, not more repository-only architecture.
   maintainer decision and channel-specific gates match. Unreviewed workstation
   builds, implicit visibility changes and long-lived automation tokens remain
   forbidden.
-- **TQ-604 — done.** Protected run
+- **TQ-604 - done.** Protected run
   [30015923266](https://github.com/gwendall/tasq/actions/runs/30015923266)
   downloaded the exact `v0.1.0` release, verified every GitHub attestation and
   passed install, onboarding, contention, Console, backup, upgrade, restore and
@@ -192,36 +192,36 @@ ledger-free CI. CI tests the pure projection contract. The rest of
 
 ### 1. Harden the public alpha
 
-- **TQ-321 — done:** the full native Codex and Claude Code two-process matrix
+- **TQ-321 - done:** the full native Codex and Claude Code two-process matrix
   passes from the public marketplace with no repository briefing.
-- **TQ-608 — done for current release:** exact published `v0.4.0` replay and
+- **TQ-608 - done for current release:** exact published `v0.4.0` replay and
   the exact `v0.2.0`/`v0.3.0` N-2 migration matrix pass on both targets.
 
 ### 2. Finish Local alpha distribution
 
-- **TQ-603 — done:** `v0.1.0`, seven npm packages and both native artifact
+- **TQ-603 - done:** `v0.1.0`, seven npm packages and both native artifact
   sets are published with immutable coordinates and provenance.
-- **TQ-604 — done:** downloaded release, target, source commit and protected
+- **TQ-604 - done:** downloaded release, target, source commit and protected
   workflow evidence are recorded in the lifecycle certificate.
 
 ### 3. Complete the Local Console
 
-- **TQ-701 — done:** the audited inspector now shares bounded canonical JSON
+- **TQ-701 - done:** the audited inspector now shares bounded canonical JSON
   read models for active commitments, actors, claims, resources, waits,
   effects, redacted audit and honest operational health. Pages use scoped
   keyset cursors and every read has one injected time snapshot. See
   `../contracts/TQ-701_CONSOLE_READ_MODELS.md`.
-- **TQ-702 — done:** cursor-driven loopback SSE and bounded polling now share a
+- **TQ-702 - done:** cursor-driven loopback SSE and bounded polling now share a
   redacted event-batch contract with exclusive reconnect, typed gap/ahead
   recovery, one-frame backpressure and exact overflow continuation. It creates
   no second truth and injects both authority time and transport scheduling. See
   `../contracts/TQ-702_CONSOLE_LIVE_TRANSPORT.md`.
-- **TQ-703 — done:** the server-rendered operator Console now provides
+- **TQ-703 - done:** the server-rendered operator Console now provides
   accessible responsive navigation, bounded page filters, an audit timeline,
   explicit live/stale states and a preview-before-download redacted support
   bundle. It stays read-only and unauthenticated only because it stays on
   loopback. See `../contracts/TQ-703_OPERATOR_CONSOLE.md`.
-- **TQ-704 — done:** installed Tasq Local
+- **TQ-704 - done:** installed Tasq Local
   now starts one explicit foreground Console, emits a versioned machine
   announcement, proves live discovery with `web status`, cleans crash-safe
   private registration, and preserves same-ledger Console behavior through
@@ -232,20 +232,20 @@ ledger-free CI. CI tests the pure projection contract. The rest of
 
 ### 4. Explain and validate the public product
 
-- **TQ-605 — done:** the distinct static Next.js + TypeScript + Tailwind +
+- **TQ-605 - done:** the distinct static Next.js + TypeScript + Tailwind +
   shadcn/ui product/docs app covers every current consumer journey, renders
   support and release gates from versioned repository truth, exports the same
   machine JSON and uses only synthetic illustrations. It is deployed from
   public `main` at <https://tasq.run>. See
   `../contracts/TQ-605_PUBLIC_SITE.md`.
-- **TQ-609 — done:** every public command, example, product promise and Local
+- **TQ-609 - done:** every public command, example, product promise and Local
   limitation is now exact and executable. The prefix-install/PATH mismatch,
   rendered `+` markers, illustrative onboarding JSON, nonexistent SDK API,
   stale pre-publication prose and overly architectural first explanation are
   removed. Site tests execute the displayed install, onboarding, MCP, Console,
   operations and Core examples against the published release; browser
   acceptance verifies the real Local Console evidence and Local-only boundary.
-- **TQ-610 — done:**
+- **TQ-610 - done:**
   verified `bunx`/`npm exec` try paths, the versioned checksum-authenticating
   persistent installer, stable `/SKILL.md`, `/agents`, `/llms.txt` and
   `/integration.json` entrypoints, explicit Codex/Claude/generic MCP recipes,
@@ -255,7 +255,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
   protected npm/native release and downloaded-byte recertification pass on
   macOS ARM64 and Linux x64 GNU. See
   `../contracts/TQ-610_ACQUISITION_AND_AGENT_ENTRYPOINT.md`.
-- **TQ-611 — done:**
+- **TQ-611 - done:**
   `createLocalTasq` now binds an explicit store, workspace, actor and clock
   behind one deep `@tasq-run/core` interface. Generated candidates contain
   compiled ESM and declarations; fresh Node 22 and Bun consumers both pass the
@@ -264,7 +264,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
   published; exact registry tarballs pass the same Node/Bun restart journey
   and both native targets pass the full post-release replay. See
   `../contracts/TQ-611_EMBEDDED_TYPESCRIPT_CLIENT.md`.
-- **TQ-612 — done:** ADR-005 is accepted.
+- **TQ-612 - done:** ADR-005 is accepted.
   Core, embedded client, CLI, capability-scoped local MCP, canonical
   inspection and Local Console now separate evidence trust, completion
   proposals, challenges, versioned decisions and final completion.
@@ -274,7 +274,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
   `v0.3.0`, all seven registry tarballs and both native targets pass the exact
   downloaded-byte certification; see
   `../contracts/TQ-612_INDEPENDENT_COMPLETION_RESOLUTION.md`.
-- **TQ-606 — published-byte automation complete, human gate:** `/adopt.json` now closes the
+- **TQ-606 - published-byte automation complete, human gate:** `/adopt.json` now closes the
   machine path before the executable. Package-independent Python/Node consumers
   install candidate bytes outside the checkout, onboard two actors, recover
   typed contention with a higher fence, complete with evidence and inspect the
@@ -284,7 +284,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
   validator are ready; run
   `pnpm --silent adoption:validate -- --evidence <record.json>` after the real
   session. See `../contracts/TQ-606_PUBLIC_ADOPTION.md`.
-- **TQ-705 — done:** fixed-clock, process-isolated empty, mature, hostile,
+- **TQ-705 - done:** fixed-clock, process-isolated empty, mature, hostile,
   corrupt and 2,501-commitment fixtures now run through the production Console
   in real Chromium on Linux and macOS. The gate proves safe corruption failure,
   escaping/redaction, bounded keyset pages, responsive operation and HTTP
@@ -292,7 +292,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
 
 ### 5. Certify external interactive runtimes
 
-- **TQ-320 — done:** a clean-room runtime
+- **TQ-320 - done:** a clean-room runtime
   now installs generated `@tasq-run/*` tarballs and proves explicit assignment,
   lost-response retry, claim expiry and higher-fence reclaim,
   `input_required` resume on the same attempt, two runs in one conversation,
@@ -318,35 +318,35 @@ ledger-free CI. CI tests the pure projection contract. The rest of
 
 ### 7. Build self-hosted Tasq Server
 
-- **TQ-801 — done:** strict verified-identity/binding/grant/decision contracts,
+- **TQ-801 - done:** strict verified-identity/binding/grant/decision contracts,
   16 digest-bound actions and one pure injected-clock evaluator implement the
   inner ADR-004 guard without claiming a remote surface. See
   `../contracts/TQ-801_HOSTED_AUTHORITY_FOUNDATION.md`.
-- **TQ-802 — done:** a checksum-migrated authority control plane now owns
+- **TQ-802 - done:** a checksum-migrated authority control plane now owns
   revisioned/idempotent bindings, grants, delegation, eligibility, decisions
   and append-only audit. The host-configured opaque router opens no workspace
   ledger before an allow; see `../contracts/TQ-802_AUTHORITY_STORE_ROUTER.md`.
-- **TQ-803 — done:** host-integrated Fetch REST handler with RFC 9728
+- **TQ-803 - done:** host-integrated Fetch REST handler with RFC 9728
   discovery, strict verifier boundary, live authorization, bounded commitment
   reads and payload-free event metadata. It has no listener or concrete
   credential adapter; see `../contracts/TQ-803_HOSTED_READ_REST.md`.
-- **TQ-804 — done:** registered mutation REST now requires caller-scoped
+- **TQ-804 - done:** registered mutation REST now requires caller-scoped
   idempotency and holds the live authority writer gate through the host's
   durable domain commit. Cross-database loss becomes typed exact recovery, not
   fake ACID; see `../contracts/TQ-804_GUARDED_MUTATION_REST.md`.
-- **TQ-805 — done:** stateless Streamable HTTP remote MCP authenticates each
+- **TQ-805 - done:** stateless Streamable HTTP remote MCP authenticates each
   exact request, discards raw credentials and projects registered read and
   mutation tools through the same TQ-803/TQ-804 handlers and live ADR-004
   guard. It adds no listener, concrete verifier or deployable Server; see
   `../contracts/TQ-805_REMOTE_MCP.md`.
-- **TQ-809 — done:** the Fetch-only `@tasq-run/client`,
+- **TQ-809 - done:** the Fetch-only `@tasq-run/client`,
   `tasq remote` CLI profiles and one-use human/workload enrollment now use an
   explicit endpoint/workspace, private local credential storage, exact
   idempotent replay, live revocation and cursor-expiry recovery. Two-client
   claim/resource contention and REST/MCP parity pass. The package ships in
   `v0.4.0`, and the private-beta endpoint is available at `api.tasq.run`; see
   `../contracts/TQ-809_REMOTE_CLIENT_AND_ENROLLMENT.md`.
-- **TQ-807 — done:** the Bun daemon and local
+- **TQ-807 - done:** the Bun daemon and local
   Linux container now include strict config/bootstrap, concrete RS256 and
   opaque verification, real Core operations, immutable mutation receipts,
   the same-origin authenticated Console BFF base, health/metrics and checksummed
@@ -354,7 +354,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
   current bounded guarded actions. The protected multi-architecture image,
   immutable registry digest, SBOM, checksums and provenance are published; see
   `../contracts/TQ-807_DEPLOYABLE_SERVER.md`.
-- **TQ-808 — candidate complete, external gate:** the production daemon passes
+- **TQ-808 - candidate complete, external gate:** the production daemon passes
   two independent issuers/workspaces, hostile credentials, REST/MCP/CLI
   parity, live revocation race, `SIGKILL` restart, older-backup recovery and
   support-bundle redaction. Exact published multi-arch client replay and one
@@ -366,7 +366,7 @@ ledger-free CI. CI tests the pure projection contract. The rest of
 These are consumer adapters over the certified Server. They do not add task
 state, provider schemas or notification policy to Core.
 
-- **TQ-811 — done:** the authenticated
+- **TQ-811 - done:** the authenticated
   Console now supports create, claim, block, evidence, explicit unverified
   evidence-trust attribution, completion proposal and independent approval.
   Every action is a bounded same-origin form translated into the same
@@ -374,14 +374,14 @@ state, provider schemas or notification policy to Core.
   used by REST and MCP. Console owns no mutation semantics. Exact
   published-image browser certification passed against the exact digest; see
   `../contracts/TQ-811_HOSTED_HUMAN_ACTIONS.md`.
-- **TQ-812 — done:** `@tasq-internal/github-bridge` freezes one owner per issue
+- **TQ-812 - done:** `@tasq-internal/github-bridge` freezes one owner per issue
   field, produces Core-compatible immutable `external_ref` inputs and verifies
   exact GitHub webhook bytes before emitting typed issue, pull-request, check
   and deployment observations. Foreign URLs, signature tampering and
   unsupported events fail closed. GitHub discussion stays in GitHub and every
   observation carries `completionMapping: none`; see
   `../contracts/TQ-812_GITHUB_BRIDGE.md`.
-- **TQ-813 — done:** `@tasq-internal/webhook-notifier` turns assignment,
+- **TQ-813 - done:** `@tasq-internal/webhook-notifier` turns assignment,
   blocking, authority expiry, recovery, validation and challenge attention
   into a bounded neutral envelope with stable delivery identity, HMAC
   signature and exact receiver acknowledgement. It is a handler for the
@@ -392,25 +392,25 @@ state, provider schemas or notification policy to Core.
 
 The first managed alpha may operate one dedicated certified Server deployment
 per user or team. A shared multi-tenant control plane, billing and broad
-support claims remain TQ-901–TQ-905.
+support claims remain TQ-901-TQ-905.
 
 ### 7B. Add portable signed statements
 
-- **ADR-009 — accepted:** use a purpose-bound signed statement over canonical
+- **ADR-009 - accepted:** use a purpose-bound signed statement over canonical
   bytes, not a generic signed document. Private keys remain host-owned;
   signature verification, principal binding, live authorization, semantic
   validation and witnessed presence remain separate.
-- **TQ-613 — done:** strict portable payload/envelope/credential/verification
+- **TQ-613 - done:** strict portable payload/envelope/credential/verification
   schemas, DSSE PAE, baseline Ed25519 signing and verification, nonce
   consumption and TypeScript/Python/OpenSSL vectors pass.
-- **TQ-614 — done:** the separate Server authority database now owns
+- **TQ-614 - done:** the separate Server authority database now owns
   proof-of-possession enrollment, explicit isolation classes, immutable public
   material, rotation/recovery links and CAS-gated
   suspension/resumption/revocation/compromise/retirement with append-only
   credential events. The Extension SDK signer is purpose-scoped and has no
   arbitrary-byte signing entrypoint; see
   `../contracts/TQ-614_SIGNING_CREDENTIAL_AUTHORITY.md`.
-- **TQ-615 — done in source:** migration 27 persists exact statements,
+- **TQ-615 - done in source:** migration 27 persists exact statements,
   verification records, immutable public credential snapshots, nonces,
   checkpoints and six typed bindings. Current store format 32 additionally
   binds replica generations to principals, freezes trusted binder descriptors
@@ -419,7 +419,7 @@ support claims remain TQ-901–TQ-905.
   Server, CLI, MCP, Console, doctor and portable-data projections pass; the
   unsigned journey is unchanged. See
   `../contracts/TQ-615_SIGNED_STATEMENT_INTEGRATION.md`.
-- **TQ-616 — published-artifact certification passed; human trial remains:** the critical machine
+- **TQ-616 - published-artifact certification passed; human trial remains:** the critical machine
   threat matrix, Python cross-language vector, nonce/identity replay,
   revocation race, process-loss migration and restore tests pass. Public
   exact downloaded-byte replay passes on both supported platforms across
@@ -434,7 +434,7 @@ This work does not interrupt TQ-607 retained-data dogfood. Signed statements
 ship in `v0.4.0` and pass exact release-byte replay. The unbriefed
 agent/operator trial remains a distinct external observation.
 
-- **TQ-806 — done:** guarded Server
+- **TQ-806 - done:** guarded Server
   enrollment/push/pull now bind each replica generation to one principal and
   require one atomically persisted signed-origin proof per pushed operation.
   Existing chaos, cursor, conflict and old-backup recovery pass; claims,
@@ -442,7 +442,7 @@ agent/operator trial remains a distinct external observation.
   disabled clean-room run against the public `0.4.0` packages closed the final
   multi-machine gate, including negative unsigned and foreign-principal cases. See
   `../contracts/TQ-806_AUTHENTICATED_OFFLINE_REPLICATION.md`.
-- **TQ-810 — done:** the checked-in OpenAPI
+- **TQ-810 - done:** the checked-in OpenAPI
   contract and dependency-free Python 3.11+ client cover reads, event cursors,
   operation discovery, idempotent mutation and enrollment without embedding
   Core or migrations. PyPI publication, provenance and exact-wheel replay
@@ -464,30 +464,30 @@ prevent it - locks plus shared state do
 (<https://arxiv.org/html/2606.19616v1>). Public postmortems of uncapped agents
 reaching $4,200 and $47,000 motivate the cost bound.
 
-- **TQ-617 — done in v0.4.0:**
+- **TQ-617 - done in v0.4.0:**
   `discovered_from` is a first-class relation plus
   a zero-cost capture command: an agent that finds work mid-task files it as a
   linked task without releasing its claim or widening its diff, and the CLI
   prints the ready capture command at the moment of a refusal or error.
   Capture stays local and explicit by default.
-- **TQ-618 — done in v0.4.0:** provider-neutral observed cost
+- **TQ-618 - done in v0.4.0:** provider-neutral observed cost
   is attributed per attempt through explicit immutable meter receipts and
   aggregated per task. A typed hard bound can refuse lease renewal without
   instrumenting agent reasoning; strict mode also refuses an unmetered active
   attempt. This adds no migration and makes no billing-truth claim; the exact
   implementation ships in `v0.4.0`.
-- **TQ-619 — done in v0.4.0:** a task can atomically record
+- **TQ-619 - done in v0.4.0:** a task can atomically record
   the exact observation and proposition that motivate it. That premise is
   refutable through proposal, challenge and independent decision mechanics;
   accepted refutation invalidates actionability, releases active authority and
   preserves the commitment plus its full history. The exact Local/Core
   implementation ships in `v0.4.0`.
-- **TQ-620 — done:** human attention is a bounded resource. Digest-bound
+- **TQ-620 - done:** human attention is a bounded resource. Digest-bound
   `input_required` requests batch through the existing durable outbox; absolute
   do-not-disturb intervals suppress transport, and cohort metrics compare
   solicitations only with full delivery coverage and externally assessed
   decision quality.
-- **TQ-621 — done:** a sourced public comparison page answers the one
+- **TQ-621 - done:** a sourced public comparison page answers the one
   question that separates coordination tools - what happens when several
   agents work the same backlog in parallel - with every claim carrying its
   source and no claim exceeding what the shipped product does. The canonical
@@ -503,57 +503,57 @@ human, agent, service or runtime. Physical work is the initial stress test, not
 a new task kind. These items do not interrupt the authorized `v0.4.0`
 publication sequence and create no current support claim.
 
-- **TQ-622 — done:** ADR-011 compares store-owned, URI-only and structured
+- **TQ-622 - done:** ADR-011 compares store-owned, URI-only and structured
   target designs and selects a provider-neutral schema value contract with no
   new Kernel record. One pure Interface derives `external_ref`, authority,
   resource, observation and signed-statement bindings from an exact canonical
   digest; cross-domain drift, privacy and hostile cases are executable tests.
-- **TQ-623 — done:** `createLocalTasq` exposes existing assignments, artifacts,
+- **TQ-623 - done:** `createLocalTasq` exposes existing assignments, artifacts,
   external references and the complete effect ledger. Reentrant root
   transactions compose atomic `claimAndStart` and `submitOutcome` journeys,
   including child idempotency and post-commit journal delivery. Rollback,
   lost-response restart and exact generated-tarball Node/Bun tests pass while
   the original `add -> list -> done` example remains byte-unchanged.
-- **TQ-624 — done:** ADR-012 replaces the closed signed-statement binding list
+- **TQ-624 - done:** ADR-012 replaces the closed signed-statement binding list
   with portable versioned descriptors paired only with trusted host code.
   Unknown, stale, conflicting, unpinned and cross-workspace binders fail closed;
   migration 29 preserves the six historical meanings and exact descriptors
   survive portable restore. TypeScript and Python share the canonical vector.
-- **TQ-625 — done:** ADR-013 and the embedded Attestations Module freeze
+- **TQ-625 - done:** ADR-013 and the embedded Attestations Module freeze
   purpose-scoped assertions, canonical scope, evidence, validity,
   supersession and issuer-only append-only revocation. Explicit-time current
   queries and exact eligibility policies keep claim truth, availability and
   authority separate; a pinned custom binder authenticates the issuer and
   exact bytes without upgrading those assurances. Licence, access, provenance,
   hostile workspace, temporal and portable-restore tests pass.
-- **TQ-626 — done:** ADR-014 and the private Server Mandates Module freeze
+- **TQ-626 - done:** ADR-014 and the private Server Mandates Module freeze
   issue, inspect, authorize and revoke over a checked projection of existing
   permission, grant and delegation rows. Issue/revoke are one CAS-serialized
   authority mutation; the next request sees revocation. Denials expose only a
   protected target digest. Generic limits and budgets fail typed rather than
   pretending enforcement, effect limits stay in approval policy, and remote
   dispatch remains disabled through TQ-906.
-- **TQ-627 — done:** ADR-015 and the embedded Agreements Module freeze
+- **TQ-627 - done:** ADR-015 and the embedded Agreements Module freeze
   canonical offers, exact party acceptances, termination, expiry and amendment.
   The final acceptance atomically compiles reciprocal evidence commitments and
   TQ-612 resolution contracts; failure rolls everything back. Accepted
   amendments cancel prior non-terminal obligations without rewriting history.
   Assignment acceptance remains responsibility only and grants neither consent
   nor effect authority.
-- **TQ-628 — done:** ADR-016 and the embedded Settlement/Recourse Modules
+- **TQ-628 - done:** ADR-016 and the embedded Settlement/Recourse Modules
   snapshot exact agreement, commitment, attempt, validation and prior-effect
   facts. Versioned rules derive full, partial, show-up, cancellation, rework,
   credit or indeterminate entitlements and atomically create new commitments
   plus optional proposed effects. Completion is never rewritten, effect
   authority stays separate, and no escrow or record-role claim is made.
-- **TQ-629 — done:** the private reference delegated-action Runner consumes
+- **TQ-629 - done:** the private reference delegated-action Runner consumes
   durable outbox leases, requires a live claim/fence callback at the connector
   mutation boundary, reconciles persisted executing or indeterminate effects
   by provider lookup, and reuses Core's exactly-once settlement/recourse
   boundary. Its bounded Review Inbox re-reads assignment, agreement, injected
   eligibility, attempt, evidence-resolution, effect, settlement, overdue
   recourse and experimental custody facts without persisted shadow state.
-- **TQ-630 — done:** private Evidence Capture and Outcome Bundle Modules freeze
+- **TQ-630 - done:** private Evidence Capture and Outcome Bundle Modules freeze
   exact session/byte/source/attempt/target/criterion bindings, verify immutable
   store acknowledgements and atomically append Artifact plus Evidence. Complete
   redaction, original-byte, retention, deletion and omission disclosures travel
@@ -561,14 +561,14 @@ publication sequence and create no current support claim.
   attempt, evidence, resolution and effect records plus external authority,
   custody and raw-byte references or omissions; signatures authenticate only
   canonical bytes, and live re-read distinguishes stale from missing records.
-- **TQ-631 — done:** ADR-017 rejects leases as custody and signed observations
+- **TQ-631 - done:** ADR-017 rejects leases as custody and signed observations
   as successor election, then graduates atomic first-class handoff to a private
   experimental Module. Exact target/condition/evidence binding, offer,
   accept/refuse, one-successor election, incident lineage, retry, expiry and
   create-only portability pass parcel, equipment and cryptographic-control
   scenarios. Kernel/remote admission, physical truth, ownership and effect
   authority remain explicitly unclaimed.
-- **TQ-632 — done:** one closed certifier passes physical verification, remote
+- **TQ-632 - done:** one closed certifier passes physical verification, remote
   hands, software deployment, procurement, custody and compromised-agent
   denial without provider-specific Core changes. Hostile target drift,
   no-access, partial/timeout, revocation, self-review, unsafe redispatch and
@@ -579,24 +579,24 @@ publication sequence and create no current support claim.
 
 ### 7E. Keep unsupported bootstrap off default install
 
-- **TQ-633 — done:** protected
+- **TQ-633 - done:** protected
   bootstrap and release workflows now serialize package publication and prove
   their intended dist-tags. Public observation shows `latest=0.4.0` and keeps
   the unsupported bootstrap isolated on `alpha-bootstrap`.
 
 ### 7F. Make local multi-space work and feedback self-describing
 
-- **TQ-634 — done in v0.4.0:**
+- **TQ-634 - done in v0.4.0:**
   `tasq use` privately binds a canonical directory tree to a validated space,
   inherits the closest binding and preserves explicit flag/environment
   precedence without changing the global default or writing repository state.
-- **TQ-635 — done in v0.4.0:**
+- **TQ-635 - done in v0.4.0:**
   `tasq agent instructions` renders static protocol text with only a validated
   space as input. Full digest markers, atomic idempotent writes, hand-edit
   refusal/force and distinct missing/stale/edited CI exits keep one root block
   current. Documentation now consistently distinguishes live ledger ownership,
   versioned backlog scope and product support truth.
-- **TQ-636 — done in v0.4.0:**
+- **TQ-636 - done in v0.4.0:**
   `tasq feedback` fsyncs a bounded private report while offline and records
   only secret-free failed-command shape. Listing, dry-run and explicit
   token-from-environment GitHub batch publication retain local receipts and
@@ -604,7 +604,7 @@ publication sequence and create no current support claim.
 
 ### 8. Build managed Tasq Cloud
 
-- **TQ-901 — managed-database experiment deployed; independent gate remains:** the private,
+- **TQ-901 - managed-database experiment deployed; independent gate remains:** the private,
   provider-neutral control-plane package implements authorized tenant
   lifecycle, isolated workspace bindings, durable provisioning intent,
   reconciliation and concurrent quota admission. The 2026-08-13 Fly experiment
@@ -616,7 +616,7 @@ publication sequence and create no current support claim.
   matrix. The original volume and snapshots remain available for rollback.
   Database replacement is evidenced; independent multi-tenant infrastructure
   review remains.
-- **TQ-902 — hardened reference browser matrix passed; external gates remain:** the same-origin
+- **TQ-902 - hardened reference browser matrix passed; external gates remain:** the same-origin
   BFF keeps Server credentials out of browsers, binds sessions to tenant and
   device, requires CSRF plus exact Origin for mutations and strips cookies.
   Current source adds an explicit operator authentication gate after review
@@ -624,25 +624,25 @@ publication sequence and create no current support claim.
   Protected run `32406910459` deployed that correction and passed anonymous
   denial plus the Chromium, Firefox and WebKit callback/session/BFF/logout
   matrix on 2026-08-20. A real IdP and independent security review remain.
-- **TQ-903 — lifecycle drill passed; external identity gate remains:** HMACed identity
+- **TQ-903 - lifecycle drill passed; external identity gate remains:** HMACed identity
   subjects, device-bound sessions, recovery/tenant epochs and revision-checked
   workload revocation are implemented. The recovery/revocation drill passed;
   the deployed Basic-gated reference flow is bounded evidence only. Real OIDC
   and secret-manager workload issuance remain.
-- **TQ-904 — provider drills passed; human operations gates remain:** quotas,
+- **TQ-904 - provider drills passed; human operations gates remain:** quotas,
   expiring exports/backups, retention sweep, retryable deletion, restore,
   credential-reference rotation, incidents, restricted support and
   non-authoritative billing are implemented. Native/off-site restore and
   secret-reference rotation passed. Provider export plus verified byte
   deletion and an unbriefed on-call drill remain.
-- **TQ-905 — automated provider gates narrowed; independent operations gate remains:** the
+- **TQ-905 - automated provider gates narrowed; independent operations gate remains:** the
   two-tenant hostile source matrix passes isolation, quota race, BFF,
   revocation, reconciliation, rotation, backup/restore, retention and
   deletion recovery. The exact Server digest, provider rotation and encrypted
   off-site restore were exercised. The current Basic-gated identity runtime
   and hardened three-engine browser matrix are also deployed and certified.
   Region recovery, independent review and an unbriefed incident remain.
-- **TQ-906 — pending independent review:** ADR-005 and TQ-612 are accepted,
+- **TQ-906 - pending independent review:** ADR-005 and TQ-612 are accepted,
   TQ-616 is published-artifact certified, but the current author cannot
   independently approve their own authority boundary. Server reports effects
   disabled, Cloud denies every `/effects` path and no remote dispatch
@@ -670,7 +670,7 @@ maintainer launch decision.
 ## Decisions still required
 
 ADR-005 and ADR-009 are accepted. TQ-612 is published and certified;
-TQ-613–TQ-616 are published and exact-artifact certified; TQ-616 still requires
+TQ-613-TQ-616 are published and exact-artifact certified; TQ-616 still requires
 unbriefed-agent evidence. TQ-906 remote effects requires
 its own independent authority review and deployment evidence; completion trust
 and a valid principal signature do not grant effect authority.

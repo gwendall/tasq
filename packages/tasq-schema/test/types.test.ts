@@ -1,5 +1,5 @@
 /**
- * Zod validator tests — ensure the type layer catches invalid input
+ * Zod validator tests - ensure the type layer catches invalid input
  * before it reaches the DB. The service layer parses every input
  * through these schemas ; if a violation gets past them, we have a
  * silent corruption channel.
@@ -277,7 +277,7 @@ describe("Task recurrence schema (SPEC §6.4-H)", () => {
     expect(parsed.recurrence).toBeNull();
     expect(parsed.recurrenceInterval).toBe(1);
     expect(parsed.recurrenceAnchor).toBe("due");
-    // streak / lastDoneAt are engine-owned — omitted from the insert shape.
+    // streak / lastDoneAt are engine-owned - omitted from the insert shape.
     expect("streak" in parsed).toBe(false);
     expect("lastDoneAt" in parsed).toBe(false);
     expect(parsed.recurrenceParentId).toBeUndefined();

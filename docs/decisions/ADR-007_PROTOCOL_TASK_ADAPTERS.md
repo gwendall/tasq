@@ -1,9 +1,9 @@
-# ADR-007 — MCP Tasks and A2A execution adapters
+# ADR-007 - MCP Tasks and A2A execution adapters
 
-> **Status:** accepted — 2026-07-15  
-> **Decision scope:** UK-010  
-> **Protocol pins:** MCP `2025-11-25` Tasks; A2A `1.0` data model  
-> **Depends on:** UK-006 collaboration records, UK-009 machine discovery  
+> **Status:** accepted - 2026-07-15<br>
+> **Decision scope:** UK-010<br>
+> **Protocol pins:** MCP `2025-11-25` Tasks; A2A `1.0` data model<br>
+> **Depends on:** UK-006 collaboration records, UK-009 machine discovery<br>
 > **Does not authorize:** remote calls, authentication, task cancellation,
 > effect execution, evidence promotion or commitment completion
 

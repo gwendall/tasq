@@ -1,4 +1,4 @@
-# TQ-617 — Atomic discovery capture
+# TQ-617 - Atomic discovery capture
 
 > **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11
@@ -54,7 +54,7 @@ REST, Server and background runtimes do not receive an automatic capture tool.
 
 When a task-targeted CLI command returns non-zero, the executable prints a
 shell-quoted, secret-free `tasq capture` recipe on stderr. The recipe includes
-only the command name, task identifier and exit code—never the original flags,
+only the command name, task identifier and exit code - never the original flags,
 payload or error text. Executing it files linked work and leaves the source
 claim intact. `capture` itself never prints another capture recipe.
 

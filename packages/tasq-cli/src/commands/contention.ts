@@ -1,5 +1,5 @@
 /**
- * `tasq contention` — what the ledger refused.
+ * `tasq contention` - what the ledger refused.
  *
  * Everything else in this CLI reports work that happened. This reports work
  * that was PREVENTED, which is the only thing a shared ledger does that a

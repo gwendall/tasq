@@ -1,4 +1,4 @@
-# TQ-808 — Hostile self-hosted Server certification
+# TQ-808 - Hostile self-hosted Server certification
 
 > **Status:** protected image and clean-client matrix certified; unbriefed-operator gate remains
 > **Date:** 2026-08-12

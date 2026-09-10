@@ -1,6 +1,6 @@
 {
   "contractVersion": "tasq.agent-integrations.v1",
-  "revision": 3,
+  "revision": 4,
   "integrationVersion": "0.1.2",
   "sourceRepository": "https://github.com/gwendall/tasq",
   "executable": {
@@ -24,25 +24,25 @@
     "agents": "https://tasq.run/agents/",
     "llms": "https://tasq.run/llms.txt",
     "integration": "https://tasq.run/integration.json",
-    "installer": "https://tasq.run/install-v0.4.0.sh"
+    "installer": "https://tasq.run/install-v0.6.5.sh"
   },
   "acquisition": {
-    "version": "0.4.0",
+    "version": "0.6.5",
     "quickTry": [
-      ["bunx", "@tasq-run/cli@0.4.0", "version"],
-      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.4.0", "--", "tasq", "version"]
+      ["bunx", "@tasq-run/cli@0.6.5", "version"],
+      ["npm", "exec", "--yes", "--package=@tasq-run/cli@0.6.5", "--", "tasq", "version"]
     ],
     "persistentInstall": [
       "sh",
       "{downloadedInstallerPath}",
       "--version",
-      "0.4.0",
+      "0.6.5",
       "--prefix",
       "{absolutePrefix}"
     ],
     "inspectBeforeRun": [
-      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.4.0.sh"],
-      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.4.0", "--prefix", "{absolutePrefix}"]
+      ["curl", "-fsSLo", "{downloadedInstallerPath}", "https://tasq.run/install-v0.6.5.sh"],
+      ["sh", "{downloadedInstallerPath}", "--dry-run", "--version", "0.6.5", "--prefix", "{absolutePrefix}"]
     ],
     "uninstallPreservesData": true
   },

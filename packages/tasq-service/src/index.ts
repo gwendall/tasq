@@ -1,14 +1,14 @@
 /**
- * @tasq-internal/local-service — public surface.
+ * @tasq-internal/local-service - public surface.
  *
  * Layered access:
- *   - `openDb` / `defaultDbUrl` — connection management
- *   - `runMigrations`           — schema bootstrap (idempotent)
- *   - service functions          — planning, coordination, execution and facts;
+ *   - `openDb` / `defaultDbUrl` - connection management
+ *   - `runMigrations`           - schema bootstrap (idempotent)
+ *   - service functions          - planning, coordination, execution and facts;
  *                                  task-scoped mutations emit audit events
- *   - `listEvents` / `getEvent` — read-only audit log access
- *   - `pickNext`                — the `tasq next` prioritizer
- *   - `renderProjection`        — DB → markdown
+ *   - `listEvents` / `getEvent` - read-only audit log access
+ *   - `pickNext`                - the `tasq next` prioritizer
+ *   - `renderProjection`        - DB → markdown
  *
  * Future surfaces (CLI, MCP, REST) consume from here. No SQL is written
  * outside this package.
@@ -514,11 +514,11 @@ export type {
   DeadlineSweepResult,
 } from "./service/deadlines.js";
 
-// Service: recurrence (SPEC §6.4-H — cadence-enum + anchor; materialize next instance)
+// Service: recurrence (SPEC §6.4-H - cadence-enum + anchor; materialize next instance)
 export { nextOccurrence, materializeNextInstance } from "./service/recurrence.js";
 export type { MaterializedInstance } from "./service/recurrence.js";
 
-// Service: dependencies (SPEC §4.5 — first-class peer task_dependency)
+// Service: dependencies (SPEC §4.5 - first-class peer task_dependency)
 export {
   dependTask,
   undependTask,

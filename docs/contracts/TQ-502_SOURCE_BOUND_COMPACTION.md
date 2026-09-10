@@ -1,6 +1,6 @@
-# TQ-502 — Source-bound compaction for terminal work
+# TQ-502 - Source-bound compaction for terminal work
 
-**Status:** implemented — 2026-07-20
+**Status:** implemented - 2026-07-20
 **Contracts:** `tasq.commitment-summary.v1`, `tasq.commitment-summary-page.v1`
 **Depends on:** TQ-501 bounded context, TQ-403 durable idempotency, M4 audit
 and retention rules

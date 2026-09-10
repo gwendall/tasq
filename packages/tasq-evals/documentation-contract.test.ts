@@ -42,6 +42,18 @@ function trackedMarkdown(): string[] {
   return listed.stdout.split("\0").filter(Boolean).map((value) => join(repositoryRoot, value));
 }
 
+/** Source files git tracks, repository-relative. Same reason as trackedMarkdown. */
+function trackedFiles(pattern: string): string[] {
+  const listed = spawnSync("git", ["ls-files", "-z", "--", pattern], {
+    cwd: repositoryRoot,
+    encoding: "utf8",
+  });
+  if (listed.status !== 0) {
+    throw new Error(`git ls-files failed: ${listed.stderr}`);
+  }
+  return listed.stdout.split("\0").filter(Boolean);
+}
+
 function read(path: string): string {
   return readFileSync(join(repositoryRoot, path), "utf8");
 }
@@ -170,6 +182,64 @@ describe("standalone documentation contract", () => {
     // The block informs; it must never carry ledger content, which agents read
     // as instructions. Only the space id and static protocol text belong here.
     expect(block![1]).not.toMatch(/\b019[0-9a-f]{5,}/);
+  });
+
+  test("every JSON contract version the CLI reference names is one the code emits", () => {
+    // Nothing read CLI_JSON_CONTRACT.md, and it is the document an integrator
+    // builds a parser against. Two entries had drifted: it described
+    // `tasq.isolated-demo.v1` with a `before` key long after `demo` started
+    // emitting v2 with `claimed`, `refusals` and `evidence`. A reference no
+    // test reads is a promise nobody keeps.
+    const reference = read("docs/reference/CLI_JSON_CONTRACT.md");
+    const documented = new Set(
+      Array.from(reference.matchAll(/`(tasq\.[a-z0-9-]+\.v\d+)`/g), (match) => match[1]!),
+    );
+    expect(documented.size).toBeGreaterThan(20);
+
+    const sources = [
+      ...trackedFiles("packages/tasq-cli/src/*.ts"),
+      ...trackedFiles("packages/tasq-cli/src/**/*.ts"),
+      ...trackedFiles("packages/tasq-core/src/*.ts"),
+      ...trackedFiles("packages/tasq-core/src/**/*.ts"),
+    ].map((path) => read(path)).join("\n");
+    // Asserted as a boolean, not with toContain: the corpus is megabytes, and a
+    // failure that prints the whole CLI source is a failure nobody reads.
+    const unemitted = [...documented].filter((version) => !sources.includes(version));
+    expect(unemitted, "CLI_JSON_CONTRACT.md documents contract versions nothing emits").toEqual([]);
+
+    // The reverse direction is the one that let the demo contract drift: the
+    // code moved to a new major and the document kept describing the old one.
+    const superseded = [...documented].filter((version) => {
+      const [name, major] = [version.replace(/\.v\d+$/, ""), Number(version.match(/\.v(\d+)$/)![1])];
+      return sources.includes(`${name}.v${major + 1}`);
+    });
+    expect(superseded, "CLI_JSON_CONTRACT.md documents a contract version the code has already superseded").toEqual([]);
+  });
+
+  test("no tracked text uses an em-dash or en-dash", () => {
+    // House style is the plain hyphen. 851 of these had accumulated across 219
+    // files, which is enough for the punctuation itself to read as machine
+    // output in the one repository whose whole pitch is that a human wrote it.
+    //
+    // Two exemptions, both for the same reason: their bytes are pinned by a
+    // digest somewhere else, so restyling them does not tidy a file, it
+    // falsifies a record. Applied migrations are checksummed, and editing a
+    // comment in one makes every existing store refuse to open. Recorded
+    // evidence under `evidence/` is a transcript of a run that happened, bound
+    // by sha256 from the certificate that cites it.
+    const exempt = /^(packages\/tasq-core\/src\/migrations\/\d{4}_.*\.sql|evidence\/.*)$/;
+    const offenders: string[] = [];
+    for (const path of trackedFiles("*")) {
+      if (exempt.test(path)) continue;
+      let text: string;
+      try {
+        text = read(path);
+      } catch {
+        continue; // binary or unreadable: nothing to style
+      }
+      if (text.includes("\u2014") || text.includes("\u2013")) offenders.push(path);
+    }
+    expect(offenders, "these files use an em-dash or en-dash where house style is a plain hyphen").toEqual([]);
   });
 
   test("root onboarding identifies the canonical repository and safe work loop", () => {

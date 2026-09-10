@@ -1,5 +1,5 @@
 /**
- * CLI configuration — `~/.tasq/config.json`.
+ * CLI configuration - `~/.tasq/config.json`.
  *
  * Minimal in v0.1. Projection is opt-in; universal setup never infers a
  * profile from a repository name or HOME layout.
@@ -28,7 +28,7 @@ export interface TasqConfig {
    */
   directoryProjections?: Record<string, string>;
   /**
-   * Path to the append-only JSONL event journal — every emitted audit event
+   * Path to the append-only JSONL event journal - every emitted audit event
    * appends one line. Defaults to `~/.tasq/events.jsonl`. It provides
    * off-database forensic parity evidence, not replay-complete recovery. Set
    * to empty string to disable.

@@ -1,6 +1,6 @@
-# TQ-805 — Authenticated remote MCP
+# TQ-805 - Authenticated remote MCP
 
-> **Status:** implemented and repository-certified — 2026-07-24
+> **Status:** implemented and repository-certified - 2026-07-24
 > **Deployable Server status:** implemented as the unpublished TQ-807 source
 > candidate
 > **Machine certificate:** `TQ-805_REMOTE_MCP_CERTIFICATION.json`

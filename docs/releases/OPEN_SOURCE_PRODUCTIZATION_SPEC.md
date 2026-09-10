@@ -1,6 +1,6 @@
-# TQ-601/TQ-602 — Open-source productization specification
+# TQ-601/TQ-602 - Open-source productization specification
 
-> **Status:** protected public alpha `v0.3.0` published and certified — 2026-07-23
+> **Status:** protected public alpha `v0.3.0` published and certified - 2026-07-23
 > **Current truth:** canonical source, seven `@tasq-run/*@0.3.0` packages and
 > attested macOS-arm64/Linux-x64 release artifacts are public
 > **Product contract:** `../concepts/PRODUCT_CONSUMPTION_SPEC.md`
@@ -186,18 +186,18 @@ Failures block release. Repository-local success is not a substitute.
 
 | Item | Outcome |
 |---|---|
-| TQ-321 | DONE — zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
-| TQ-608 | DONE FOR CURRENT RELEASE — data-preserving migration envelope and exact `v0.3.0` multi-target replay; exact N-2 becomes mandatory once three protected lines exist |
+| TQ-321 | DONE - zero-context Codex/Claude integration with native discovery, MCP/CLI fallback and two-process blind certification |
+| TQ-608 | DONE FOR CURRENT RELEASE - data-preserving migration envelope and exact `v0.3.0` multi-target replay; exact N-2 becomes mandatory once three protected lines exist |
 | TQ-607 | Three-consumer retained-data dogfood and explicit stable-graduation decision; non-blocking for the labeled pre-1.0 alpha |
 | TQ-602 / ADR-008 | Legal, identity, package, governance and support decisions |
-| TQ-603 | DONE — first protected release at `v0.1.0`; current seven OIDC/provenance packages and attested native artifacts at `v0.3.0` |
-| TQ-604 | DONE — exact published-byte install/upgrade/rollback/uninstall/backup certification on both supported targets |
-| TQ-605 | DONE — versioned static public docs and product app; deployed from public `main` at `tasq.run` |
-| TQ-606 | CANDIDATE — published-byte automated human path plus blind agent pass; independent human pending |
-| TQ-609 | DONE — public copy, examples and product truth execute against the published release |
-| TQ-610 | DONE — verified acquisition, simple setup, agent entrypoints and MCP helpers retained and recertified at `v0.3.0` |
-| TQ-611 | DONE — `createLocalTasq`, compiled ESM/declarations and exact published Node/Bun restart certification at `v0.3.0` |
-| TQ-612 | DONE — opt-in independent completion resolution, store format 26 and exact registry/native replay at `v0.3.0` |
+| TQ-603 | DONE - first protected release at `v0.1.0`; current seven OIDC/provenance packages and attested native artifacts at `v0.3.0` |
+| TQ-604 | DONE - exact published-byte install/upgrade/rollback/uninstall/backup certification on both supported targets |
+| TQ-605 | DONE - versioned static public docs and product app; deployed from public `main` at `tasq.run` |
+| TQ-606 | CANDIDATE - published-byte automated human path plus blind agent pass; independent human pending |
+| TQ-609 | DONE - public copy, examples and product truth execute against the published release |
+| TQ-610 | DONE - verified acquisition, simple setup, agent entrypoints and MCP helpers retained and recertified at `v0.3.0` |
+| TQ-611 | DONE - `createLocalTasq`, compiled ESM/declarations and exact published Node/Bun restart certification at `v0.3.0` |
+| TQ-612 | DONE - opt-in independent completion resolution, store format 26 and exact registry/native replay at `v0.3.0` |
 
 Tasq Server and Cloud are later products. Their absence does not block a useful
 local open-source release, and open-sourcing Core/Local does not make those

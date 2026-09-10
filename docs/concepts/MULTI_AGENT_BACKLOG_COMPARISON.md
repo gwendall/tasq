@@ -9,9 +9,9 @@
 Parallel-agent products solve three different problems that are often bundled
 together:
 
-1. **execution isolation** — separate worktrees, branches, VMs or sandboxes;
-2. **team orchestration** — one lead splits work among its own subagents;
-3. **durable backlog coordination** — independent runtimes agree who currently
+1. **execution isolation** - separate worktrees, branches, VMs or sandboxes;
+2. **team orchestration** - one lead splits work among its own subagents;
+3. **durable backlog coordination** - independent runtimes agree who currently
    owns a commitment, what execution happened and what proves completion.
 
 Codex, Cursor and GitHub document strong execution isolation and review

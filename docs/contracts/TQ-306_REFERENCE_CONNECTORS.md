@@ -1,4 +1,4 @@
-# TQ-306 — reference read and effect connectors
+# TQ-306 - reference read and effect connectors
 
 > **Implemented 2026-07-19.** This is a separately packaged, executable example
 > of the TQ-305 connector contract. It does not add a provider ontology or a

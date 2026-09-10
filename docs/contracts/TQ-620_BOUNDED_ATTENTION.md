@@ -1,4 +1,4 @@
-# TQ-620 — Bounded human attention
+# TQ-620 - Bounded human attention
 
 > **Status:** done in source
 > **Date:** 2026-08-11

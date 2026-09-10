@@ -382,12 +382,12 @@ calculator officiel doit être figé dans les preuves avant provisioning.
 
 | Poste | Enveloppe beta |
 |---|---:|
-| GKE Autopilot control plane actif + DR | 75–150 USD |
-| BFF/control plane, deux petits Pods | 80–140 USD |
-| Cloud SQL PostgreSQL HA + replica DR | 250–500 USD |
-| Load balancer, Armor, DNS | 25–70 USD |
-| Logs, métriques, registry, secrets, backups | 20–100 USD |
-| **Total fixe** | **450–960 USD/mois** |
+| GKE Autopilot control plane actif + DR | 75-150 USD |
+| BFF/control plane, deux petits Pods | 80-140 USD |
+| Cloud SQL PostgreSQL HA + replica DR | 250-500 USD |
+| Load balancer, Armor, DNS | 25-70 USD |
+| Logs, métriques, registry, secrets, backups | 20-100 USD |
+| **Total fixe** | **450-960 USD/mois** |
 
 GKE facture les ressources demandées par les Pods et applique un crédit mensuel
 de 74,40 USD, équivalent à un cluster Autopilot ou zonal. Un second cluster
@@ -402,7 +402,7 @@ règles, puis le trafic traité
 
 Avec un Pod Server de 1 vCPU / 2 Gio et 20 Gio de disque régional :
 
-- prévoir **45–80 USD par tenant actif et par mois** ;
+- prévoir **45-80 USD par tenant actif et par mois** ;
 - un tenant à plusieurs workspaces partage ce Pod et ce volume ;
 - l'isolation par tenant rend le coût lisible mais linéaire.
 
@@ -426,7 +426,7 @@ réel n'a pas validé le coût marginal.
 
 ## Plan de montée en charge
 
-### Phase A — beta, 1 à 10 tenants
+### Phase A - beta, 1 à 10 tenants
 
 - un Server par tenant ;
 - 1 vCPU, 2 Gio, 20 Gio ;
@@ -436,7 +436,7 @@ réel n'a pas validé le coût marginal.
 - drills backup hebdomadaires ;
 - admission mainteneur uniquement.
 
-### Phase B — 10 à 25 tenants
+### Phase B - 10 à 25 tenants
 
 - augmenter verticalement les tenants qui dépassent les seuils ;
 - automatiser provisioning, rotation, backup et suppression vérifiée ;
@@ -455,7 +455,7 @@ Déclencheurs de capacity review :
 - backup supérieur à 15 minutes ;
 - coût marginal supérieur à 80 USD par tenant.
 
-### Phase C — au-delà de 25 tenants ou d'un seuil dépassé
+### Phase C - au-delà de 25 tenants ou d'un seuil dépassé
 
 Trancher entre :
 
@@ -468,7 +468,7 @@ Le port PostgreSQL complet doit être traité comme une migration de format et
 de recovery, avec dual-run, comparaison state-based, rollback et certification
 TQ-608. Il ne doit jamais être une substitution mécanique de driver SQL.
 
-### Phase D — cible élastique
+### Phase D - cible élastique
 
 Après certification PostgreSQL complète seulement :
 

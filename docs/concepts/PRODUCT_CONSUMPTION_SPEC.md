@@ -1,6 +1,6 @@
-# TQ-601 — Tasq product and consumption contract
+# TQ-601 - Tasq product and consumption contract
 
-> **Status:** accepted product contract — updated 2026-08-20
+> **Status:** accepted product contract - updated 2026-08-20
 > **Implementation claim:** only the rows marked implemented in
 > `PRODUCT_SURFACE_MATRIX.json` exist today
 > **Purpose:** make Tasq understandable as a product without confusing its
@@ -433,7 +433,7 @@ deploy -> configure issuer -> create workspace -> bind principal -> grant
 ```
 
 The repository and protected releases now contain the Server image and remote
-client journeys through TQ-801–TQ-810. The image, npm client/CLI and Python
+client journeys through TQ-801-TQ-810. The image, npm client/CLI and Python
 wheel are exact-artifact certified, and one private-beta Server is operated.
 This does not transfer HTTPS, identity, durable-storage or support ownership
 from a self-hosting operator, nor does it make Cloud generally available.

@@ -1,4 +1,4 @@
-# TQ-612 — independent completion resolution
+# TQ-612 - independent completion resolution
 
 **Status:** published and exact-byte certified in `v0.3.0`
 

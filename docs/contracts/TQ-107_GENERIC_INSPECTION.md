@@ -1,6 +1,6 @@
-# TQ-107 — Generic inspection, projection and cursor integration
+# TQ-107 - Generic inspection, projection and cursor integration
 
-> **Status:** implemented — 2026-07-15
+> **Status:** implemented - 2026-07-15
 
 TQ-107 adds one canonical, additive read contract over the complete graph of a
 commitment: `tasq.inspect.v1`. It is available through the embedded minimal

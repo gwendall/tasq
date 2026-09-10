@@ -28,7 +28,7 @@ async function list(args: ParsedArgs): Promise<number> {
     if (json) {
       printJson(areas);
     } else if (areas.length === 0) {
-      printInfo(color.dim("(no areas — `tasq area add <name> --slug <slug>`)"));
+      printInfo(color.dim("(no areas - `tasq area add <name> --slug <slug>`)"));
     } else {
       for (const a of areas) {
         const importance = color.dim(`imp:${a.importance}`);
@@ -96,7 +96,7 @@ async function add(args: ParsedArgs): Promise<number> {
     );
     await regenerateProjection(rt);
     if (json) printJson(a);
-    else printInfo(color.green("✓") + ` area #${a.slug} created — ${shortId(a.id)}`);
+    else printInfo(color.green("✓") + ` area #${a.slug} created - ${shortId(a.id)}`);
     return 0;
   } finally {
     await rt.close();

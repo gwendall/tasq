@@ -1,4 +1,4 @@
-# Agentic primitives — positioning and gap analysis
+# Agentic primitives - positioning and gap analysis
 
 ## Thesis
 
@@ -222,7 +222,7 @@ the predicate is satisfied. Agents must not mark it satisfied from prose alone.
 Wait conditions, immutable observation ingestion, deterministic reconciliation,
 strict deadline evaluation and exactly-once ledger fallback are implemented.
 The CLI contracts and first Gmail watcher recipe are now exposed. UK-001/002
-accepted and inventoried the universal boundary, UK-003–005 extracted extension
+accepted and inventoried the universal boundary, UK-003-005 extracted extension
 and planning concerns, and UK-006 implemented universal collaboration records.
 UK-007 proved those records across three narratives, UK-008 authorized generic
 projection/cursor work, and TQ-107 delivered the canonical inspection graph.
@@ -231,7 +231,7 @@ projection/cursor work, and TQ-107 delivered the canonical inspection graph.
 
 `UNIVERSAL_KERNEL_SPEC.md` defines the target coordination algebra, namespaced
 extension/evaluator contract, additive migration, protocol mappings and three
-cross-domain conformance scenarios. UK-001–UK-011 now pass, including the
+cross-domain conformance scenarios. UK-001-UK-011 now pass, including the
 unfamiliar-extension/two-runtime proof in
 `packages/tasq-evals/universal-kernel-acceptance.test.ts`. No provider kind or
 life policy should be added to core.
@@ -260,11 +260,11 @@ context pointers with explicit pinned/floating semantics.
   by the existing CLI/MCP paths. It remains a sibling read surface, not a
   second state model or write path.
 - ADR-004 defines authenticated remote principals, workspace tenancy and
-  hosted transport. TQ-801–TQ-813 now implement repository Server,
+  hosted transport. TQ-801-TQ-813 now implement repository Server,
   client/bridge and attention-loop source candidates without making them
   published services. Local actor labels remain attribution, not
   authentication.
-- ADR-009 and TQ-613–TQ-615 implement purpose-bound signed statements and
+- ADR-009 and TQ-613-TQ-615 implement purpose-bound signed statements and
   host-owned signing credentials as the portable authorship layer. Signature
   verification, credential binding, authorization, validation and witnessed
   presence remain separate. TQ-616 still requires protected downloaded

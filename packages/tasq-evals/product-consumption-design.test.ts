@@ -1,4 +1,4 @@
-/** TQ-601 — executable guard for the product and consumption contract. */
+/** TQ-601 - executable guard for the product and consumption contract. */
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";

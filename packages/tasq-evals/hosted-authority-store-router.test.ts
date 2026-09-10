@@ -1,4 +1,4 @@
-/** TQ-802 — clean-process durable authority and isolated-routing eval. */
+/** TQ-802 - clean-process durable authority and isolated-routing eval. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";

@@ -1,4 +1,4 @@
-# TQ-625 — Provider-neutral Attestations Module
+# TQ-625 - Provider-neutral Attestations Module
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` release gate

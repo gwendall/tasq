@@ -1,5 +1,5 @@
 /**
- * `tasq backup` — atomic snapshot of the LibSQL DB to a file path.
+ * `tasq backup` - atomic snapshot of the LibSQL DB to a file path.
  *
  * Uses SQLite's `VACUUM INTO '<path>'` which (a) writes a defragmented copy
  * of the DB (b) flushes WAL frames into it (c) is atomic with respect to
@@ -10,7 +10,7 @@
  * defense-in-depth: the journal mirrors emitted task-scoped audit events;
  * backups are replay-complete point-in-time DB snapshots.
  *
- * No `tasq restore` command on purpose — restore is a destructive operation
+ * No `tasq restore` command on purpose - restore is a destructive operation
  * that an agent could trigger by accident. Recovery stays a deliberate
  * manual step: `cp ~/.tasq/snapshots/<file> ~/.tasq/db.sqlite` (after
  * removing the WAL sidecars).

@@ -1,4 +1,4 @@
-# TQ-205 — Authenticated connector dispatch gate
+# TQ-205 - Authenticated connector dispatch gate
 
 > **Status:** implemented (2026-07-16)
 > **Scope:** the only sanctioned transition from pre-dispatch authority to an

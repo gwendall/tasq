@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * @tasq-run/cli — the `tasq` binary.
+ * @tasq-run/cli - the `tasq` binary.
  *
  * Routes the first positional arg to a command handler. Commands consume
  * `@tasq-internal/local-service` ; the CLI itself has no SQL.
@@ -224,7 +224,7 @@ ${color.bold("PROJECTS")}
   project add <title> [--goal <id>] [--area <slug>]
   project update <id> [--status ...]
 
-${color.bold("TASKS — the core verbs")}
+${color.bold("TASKS - the core verbs")}
   add <title> [--area <slug>] [--goal <id>] [--project <id>]
               [--next <text>] [--due <iso>] [--est <min>] [--priority 1-5]
               [--recurrence daily|weekly|monthly|yearly] [--interval N]
@@ -429,7 +429,7 @@ export async function main(
 
   // Help intercept: `tasq <cmd> --help`/`-h` (the flag lands in `rest`, so the
   // command handler would otherwise run with empty positionals and fall through
-  // to a misleading default — e.g. `event` dumping the log, `task` printing the
+  // to a misleading default - e.g. `event` dumping the log, `task` printing the
   // status line). Also `tasq <cmd> help`. Print THAT command's usage on stdout
   // and exit 0, before dispatch. Only --help/-h/bare `help` trigger this; the
   // --json/-j machine-output flag is untouched.
@@ -461,7 +461,7 @@ export async function main(
           contractVersion: "tasq.command-problem.v1",
           ok: false,
           command,
-          code: dispatched === 2 ? "validation" : dispatched === 3 ? "storage" : dispatched === 4 ? "config" : "refused",
+          code: problemCode(dispatched),
           summary,
           exitCode: dispatched,
         });
@@ -572,7 +572,7 @@ async function dispatch(
       case "task":
         return await taskCmd(args);
 
-      // Dependencies (SPEC §4.5 — first-class peer task_dependency)
+      // Dependencies (SPEC §4.5 - first-class peer task_dependency)
       case "depend":
         return await dependCmd(args);
       case "undepend":
@@ -658,7 +658,7 @@ function handleCommandError(
       // Transient SQLite contention bubbles up to runWithRetry, which only
       // replays read-only commands (mutations are atomic + serialized; see
       // its doc comment). Mutating commands surface exit 3 there rather than
-      // risk a double-apply on replay — so we just re-throw here.
+      // risk a double-apply on replay - so we just re-throw here.
       if (errorMatches(err, /SQLITE_BUSY|database is locked/i)) throw err;
 
       // Zod errors are common ; surface them cleanly
@@ -695,7 +695,7 @@ function handleCommandError(
       const isUnique = errorMatches(err, /UNIQUE constraint/);
       const isCheck = errorMatches(err, /CHECK constraint/);
       // enumArg rejects an out-of-set flag value (e.g. --recurrence hourly) with
-      // a "Invalid value for --<flag>" message — that is a validation error, same
+      // a "Invalid value for --<flag>" message - that is a validation error, same
       // class as a Zod parse failure, so it shares exit code 2.
       const isEnumArg = /^Invalid value for --/.test(message);
       const isArgError = /^(Unknown flag|Missing value for --|Invalid (number|boolean) for --|Invalid JSON for --|--.+ must be a JSON object)/.test(message);
@@ -726,7 +726,7 @@ function handleCommandError(
               : "refused";
 
       // A `--json` caller drives Tasq programmatically. Printing only to stderr
-      // and leaving stdout empty tells an agent nothing it can act on — and it
+      // and leaving stdout empty tells an agent nothing it can act on - and it
       // hit the product's own differentiator, since an evidence-mode completion
       // refusal came back as an empty machine channel. Every non-zero exit now
       // carries a problem contract. Typed contracts above (store compatibility,
@@ -768,7 +768,7 @@ function handleCommandError(
  *
  *   - Every mutation is transactional. For task-scoped mutations, the row
  *     write + `recordEvent` insert commit or roll back together inside one
- *     `db.transaction` (serialized per connection — see tasq-service
+ *     `db.transaction` (serialized per connection - see tasq-service
  *     `runInTransaction`). Observation ingestion is also atomic but has no
  *     task event until reconciliation. A SQLITE_BUSY *during* a mutation
  *     rolls the WHOLE transaction back, leaving zero committed rows.
@@ -782,9 +782,9 @@ function handleCommandError(
  * The safe-replay test is therefore exact, not a command-name guess: sample
  * the process-global committed-domain-mutation count before each attempt. If
  * a transient BUSY is thrown and the count did NOT advance, then no domain
- * mutation committed this attempt — the BUSY hit connection-open, WAL
+ * mutation committed this attempt - the BUSY hit connection-open, WAL
  * recovery (`SQLITE_BUSY_RECOVERY` on cold-start fan-out), migration, a read,
- * local delivery bookkeeping, or a fully rolled-back transaction — so replay
+ * local delivery bookkeeping, or a fully rolled-back transaction - so replay
  * cannot double-apply and we retry. If the count advanced, a domain mutation
  * already committed (and some *later* step tripped BUSY), so we must NOT
  * replay: surface exit 3 instead. (True
@@ -809,7 +809,7 @@ export async function runWithRetry(
       const isTransient = errorMatches(err, /SQLITE_BUSY|database is locked/i);
       if (!isTransient) throw err;
       // Did a domain mutation commit during this attempt? If so, replaying the
-      // whole command would double-apply (fresh uuidv7) — never replay; exit 3.
+      // whole command would double-apply (fresh uuidv7) - never replay; exit 3.
       const committedThisAttempt = committedMutationCount() > committedBefore;
       // Autonomous bootstrap is create-or-join with deterministic principal
       // identity, so a lost response after commit is contractually replayable.
@@ -817,7 +817,7 @@ export async function runWithRetry(
       const contractuallyReplayable = argv[0] === "onboard";
       if ((committedThisAttempt && !contractuallyReplayable) || attempt === maxAttempts) {
         const finalMessage = committedThisAttempt && !contractuallyReplayable
-          ? `${msg} (a mutation already committed — not retrying to avoid a duplicate)`
+          ? `${msg} (a mutation already committed - not retrying to avoid a duplicate)`
           : `${msg} (retried ${maxAttempts} times)`;
         if (argv[0] === "onboard" && argv.some((value) => value === "--json" || value === "-j" || value.startsWith("--json="))) {
           return printOnboardProblem(new Error(finalMessage), executable);
@@ -830,7 +830,7 @@ export async function runWithRetry(
       await new Promise((r) => setTimeout(r, delay));
     }
   }
-  // Unreachable — the loop either returns or throws.
+  // Unreachable - the loop either returns or throws.
   return 1;
 }
 
@@ -868,6 +868,18 @@ export async function runTasqCli(
  * trace at all. Recording must never be able to change what the operator sees:
  * an unwritable home is often the very failure being reported.
  */
+/**
+ * The exit code, named. `tasq usage` groups refusals by this, because a
+ * fixed vocabulary survives redaction where an authored sentence cannot.
+ */
+export function problemCode(exitCode: number): string | null {
+  if (exitCode === 0) return null;
+  if (exitCode === 2) return "validation";
+  if (exitCode === 3) return "storage";
+  if (exitCode === 4) return "config";
+  return "refused";
+}
+
 function tryRecordCommand(
   argv: string[],
   exitCode: number,
@@ -881,10 +893,9 @@ function tryRecordCommand(
       recordedAt: now,
       version: VERSION,
       space: process.env.TASQ_TENANT ?? readSpaceQuietly(),
-      actor: process.env.TASQ_ACTOR ?? null,
       ...safeCommandShape(argv),
       exitCode: Number.isSafeInteger(exitCode) && exitCode >= 0 && exitCode <= 255 ? exitCode : 1,
-      code: null,
+      code: problemCode(exitCode),
       message: message ?? takeLastErrorMessage(),
       durationMs: Math.max(0, now - startedAt),
     });

@@ -1,4 +1,4 @@
-# TQ-630 — Evidence Capture and Outcome Bundle Modules
+# TQ-630 - Evidence Capture and Outcome Bundle Modules
 
 > **Status:** source implemented and repository certified; private Modules,
 > not a hosted evidence store, identity service or proof-of-truth claim

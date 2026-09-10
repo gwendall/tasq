@@ -1,5 +1,5 @@
 /**
- * Tiny CLI argument parser — no external dependency.
+ * Tiny CLI argument parser - no external dependency.
  *
  * Convention:
  *   - positional arguments come first (before any --flag)

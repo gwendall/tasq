@@ -1,4 +1,4 @@
-# Architecture — tasq
+# Architecture - tasq
 
 > **Layered, service-owned writes, state-based with an append-only audit log, runtime-agnostic.** Tasq is not event-sourced: current rows are authoritative and events provide ordering, attribution and recovery evidence.
 
@@ -251,27 +251,27 @@ date construction outside `tasq-schema/src/clock.ts`.
 
 | Entity | Purpose | Status enum | Cardinality |
 |---|---|---|---|
-| **area** | A domain of life ("Health — Body", "Career — Kami") | — | small (typ. 11) |
+| **area** | A domain of life ("Health - Body", "Career - Kami") | - | small (typ. 11) |
 | **goal** | Long-term outcome inside an area | active / paused / done / abandoned | ~10-30 |
 | **project** | Deliverable that achieves part of a goal | active / blocked / waiting / done / cancelled | ~20-100 |
 | **task** | Concrete next step | open / in_progress / blocked / done / cancelled | unbounded |
 | **task_claim** | Exclusive expiring ownership lease + fencing token | active/released derived from timestamps | bounded history |
 | **resource_lease** | Exclusive lease over an opaque provider-neutral resource key | active/expired/released derived from injected time | bounded history per key |
-| **resource_event** | Immutable ordered acquire/renew/release/expiry stream | — | unbounded |
+| **resource_event** | Immutable ordered acquire/renew/release/expiry stream | - | unbounded |
 | **task_attempt** | One execution against a task | running / input_required / succeeded / failed / cancelled | unbounded |
-| **task_evidence** | Immutable observable receipt linked to task/attempt | — | unbounded |
+| **task_evidence** | Immutable observable receipt linked to task/attempt | - | unbounded |
 | **external_context_link** | Append-only pointer from a commitment to externally owned reusable context | active / detached / superseded (derived) | bounded history per commitment/purpose/target |
-| **extension_release** | Immutable installed manifest snapshot | — | small append-only history |
-| **extension_type** | Frozen URI/schema-version registration | — | bounded per release |
-| **extension_evaluator** | Frozen deterministic evaluator identity and accepted inputs | — | bounded per release |
+| **extension_release** | Immutable installed manifest snapshot | - | small append-only history |
+| **extension_type** | Frozen URI/schema-version registration | - | bounded per release |
+| **extension_evaluator** | Frozen deterministic evaluator identity and accepted inputs | - | bounded per release |
 | **wait_condition** | Typed external expectation with deadline/fallback config | waiting / satisfied / expired / cancelled | unbounded history |
-| **observation** | Immutable normalized external fact + provenance | — | unbounded history |
-| **observation_route** | Derived multi-key candidate lookup | — | bounded per observation |
+| **observation** | Immutable normalized external fact + provenance | - | unbounded history |
+| **observation_route** | Derived multi-key candidate lookup | - | bounded per observation |
 | **reconciliation** | Frozen matcher decision and committed effect | matched / rejected / ambiguous | unbounded history |
 | **effect** | Exact immutable external-write occurrence and guarded lifecycle | proposed / authorized / executing / committed / failed / indeterminate / cancelled | unbounded history |
 | **effect_approval** | Immutable exact-digest authority decision and validity provenance | approved / denied / revoked | unbounded history |
 | **effect_receipt** | Immutable verified provider report bound to effect execution and task evidence | committed / failed / indeterminate | unbounded history |
-| **event** | Ordered append-only task-scoped audit log | — | unbounded |
+| **event** | Ordered append-only task-scoped audit log | - | unbounded |
 | **delivery_sink** | Local digest-bound event consumer declaration | enabled / disabled | small local set |
 | **delivery_outbox** | Crash-safe per-sink event delivery control state | pending / delivering / delivered / quarantined | bounded by retention policy |
 
@@ -368,7 +368,7 @@ When the prioritizer or projection ranks tasks, it does so by traversing `task �
   every task in an importance-5 area scored identically and `tasq next`
   degraded to creation order. Filter the queue with `tasq next --priority N`.
 
-**But** : goal ancestry is a guide for *what to surface*, never a filter for *what is allowed*. The system never refuses to log a spontaneous action that doesn't trace cleanly — personal life has a legitimate non-traceable surface (a friend in crisis, a parent in grief, a creative intuition).
+**But** : goal ancestry is a guide for *what to surface*, never a filter for *what is allowed*. The system never refuses to log a spontaneous action that doesn't trace cleanly - personal life has a legitimate non-traceable surface (a friend in crisis, a parent in grief, a creative intuition).
 
 ## Event log = ordered audit trail
 
@@ -386,11 +386,11 @@ reconciliation_recorded · wait_satisfied · wait_expired
 ```
 
 Events carry:
-- `sequence` — monotone SQLite cursor; use this for lossless pagination
-- `actor` — `gwendall`, `hermes`, `claude-code`, or custom
-- `createdAt` — recording time; `occurredAt` — optional domain time
-- `payload.before` / `payload.after` — diff
-- `payload.note`, `payload.reason`, `payload.source` — agent annotation
+- `sequence` - monotone SQLite cursor; use this for lossless pagination
+- `actor` - `gwendall`, `hermes`, `claude-code`, or custom
+- `createdAt` - recording time; `occurredAt` - optional domain time
+- `payload.before` / `payload.after` - diff
+- `payload.note`, `payload.reason`, `payload.source` - agent annotation
 
 This is how:
 - Hermes detects "what changed since my last brief" (`afterSequence` cursor)
@@ -458,7 +458,7 @@ current adapter gate.
 Ordered manual SQL files + a small runner. Reasons:
 - Applied migrations are immutable and checksum-verified
 - Existing databases receive a pre-migration snapshot
-- Fully inspectable — no magic generation step
+- Fully inspectable - no magic generation step
 - CHECK constraints + indexes spelled out, not inferred
 - Lexicographic migrations are applied atomically and tracked in `_migration`
 
@@ -548,7 +548,7 @@ implements its pure authority contracts and evaluator, while its machine
 matrix and all remote surfaces remain explicitly unshipped. `CURRENT_STATE.md`
 is the implemented compatibility boundary.
 
-ADR-009 and TQ-613–TQ-615 implement the further trust seam: public signing
+ADR-009 and TQ-613-TQ-615 implement the further trust seam: public signing
 credentials live in the authority/control plane, private signing capabilities
 remain in host-owned signers, and append-only signed statements plus
 verification records live with the workspace records they support.
@@ -557,7 +557,7 @@ effects, replication or checkpoints; no generic signature may reach a domain
 mutation. TQ-616 remains a protected-artifact and unbriefed-agent gate, so this
 is a repository source candidate rather than published support.
 
-TQ-901–TQ-905 add a private provider-neutral Cloud control plane beside Server,
+TQ-901-TQ-905 add a private provider-neutral Cloud control plane beside Server,
 never inside Core. It owns tenant/workspace lifecycle, same-origin browser
 sessions, opaque deployment/secret references, quota and operations records.
 Its BFF re-enters the exact Server guard and unconditionally excludes remote

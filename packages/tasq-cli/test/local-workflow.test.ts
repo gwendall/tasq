@@ -320,3 +320,39 @@ describe("offline feedback", () => {
     expect(missingToken.stderr).toContain("GH_TOKEN or GITHUB_TOKEN");
   });
 });
+
+describe("what a read prints when there is nothing to read", () => {
+  test("every list says so instead of printing nothing at all", async () => {
+    // A first-time user runs these on an empty space, which is exactly when
+    // they return nothing. Printing nothing and exiting 0 is indistinguishable
+    // from a command that silently failed, and `attempt list`, `evidence
+    // list`, `wait list`, `observation list` and `signature bindings` all did
+    // it while `next`, `fleet` and `area list` did not.
+    const { home, project } = sandbox();
+    await ok(home, project, ["setup", "--space", "acme/empty", "--actor", "gwendall", "--json"]);
+
+    for (const argv of [
+      ["attempt", "list"],
+      ["evidence", "list"],
+      ["wait", "list"],
+      ["observation", "list"],
+      ["signature", "bindings"],
+      ["next"],
+      ["fleet"],
+      ["area", "list"],
+      ["project", "list"],
+    ]) {
+      const result = await ok(home, project, argv);
+      expect(result.stdout.trim(), `\`tasq ${argv.join(" ")}\` prints nothing on an empty space`).not.toBe("");
+    }
+  });
+
+  test("the JSON surface stays an empty array, because a parser is not a reader", async () => {
+    const { home, project } = sandbox();
+    await ok(home, project, ["setup", "--space", "acme/empty", "--actor", "gwendall", "--json"]);
+    for (const argv of [["attempt", "list"], ["evidence", "list"], ["wait", "list"], ["observation", "list"]]) {
+      const result = await ok(home, project, [...argv, "--json"]);
+      expect(JSON.parse(result.stdout), `tasq ${argv.join(" ")} --json`).toEqual([]);
+    }
+  });
+});

@@ -1,4 +1,4 @@
-# TQ-618 — Observed attempt cost and hard claim bounds
+# TQ-618 - Observed attempt cost and hard claim bounds
 
 > **Status:** published and protected-byte certified in `v0.4.0`
 > **Date:** 2026-08-11
@@ -56,8 +56,8 @@ metering: required | best_effort
 ```
 
 An initial claim may start before the first receipt. In `required` mode, a live
-claim cannot renew until at least one receipt—including a valid zero-cost
-receipt—is linked to an attempt under that exact claim. This makes unsupported
+claim cannot renew until at least one receipt - including a valid zero-cost
+receipt - is linked to an attempt under that exact claim. This makes unsupported
 runtime observability explicit without instrumenting model reasoning. In
 `best_effort` mode, missing receipts remain visible but do not alone refuse.
 

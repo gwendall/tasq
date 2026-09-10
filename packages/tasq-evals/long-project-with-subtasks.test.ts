@@ -41,7 +41,7 @@ async function freshDb() {
   return h;
 }
 
-describe("Long project with sub-tasks — full agent journey", () => {
+describe("Long project with sub-tasks - full agent journey", () => {
   it("Renover salon: 3 phases with sub-tasks, progress + projection", async () => {
     const { db, close } = await freshDb();
     try {
@@ -66,19 +66,19 @@ describe("Long project with sub-tasks — full agent journey", () => {
 
       // ─── 3 top-level "phase" tasks under the project ───
       const phase1 = await createTask(db, {
-        title: "Phase 1 — Choix matériaux",
+        title: "Phase 1 - Choix matériaux",
         projectId: reno.id,
         areaId: home.id,
         goalId: lifeQuality.id,
       });
       const phase2 = await createTask(db, {
-        title: "Phase 2 — Travaux",
+        title: "Phase 2 - Travaux",
         projectId: reno.id,
         areaId: home.id,
         goalId: lifeQuality.id,
       });
       const phase3 = await createTask(db, {
-        title: "Phase 3 — Finitions",
+        title: "Phase 3 - Finitions",
         projectId: reno.id,
         areaId: home.id,
         goalId: lifeQuality.id,
@@ -102,9 +102,9 @@ describe("Long project with sub-tasks — full agent journey", () => {
       // Phase tasks should be EXCLUDED from `next` because they have open sub-tasks
       const earlyNext = await pickNext(db, { limit: 10 });
       const earlyTitles = earlyNext.map((r) => r.task.title);
-      expect(earlyTitles).not.toContain("Phase 1 — Choix matériaux");
-      expect(earlyTitles).not.toContain("Phase 2 — Travaux");
-      expect(earlyTitles).not.toContain("Phase 3 — Finitions");
+      expect(earlyTitles).not.toContain("Phase 1 - Choix matériaux");
+      expect(earlyTitles).not.toContain("Phase 2 - Travaux");
+      expect(earlyTitles).not.toContain("Phase 3 - Finitions");
       // Sub-tasks ARE in next
       expect(earlyTitles).toContain("Visiter Castorama");
 
@@ -125,9 +125,9 @@ describe("Long project with sub-tasks — full agent journey", () => {
       // → phase1 should reappear in `next` (as the natural close-the-phase action)
       const midNext = await pickNext(db, { limit: 10 });
       const midTitles = midNext.map((r) => r.task.title);
-      expect(midTitles).toContain("Phase 1 — Choix matériaux");
+      expect(midTitles).toContain("Phase 1 - Choix matériaux");
       // phase2 + phase3 still hidden (their subs are still open)
-      expect(midTitles).not.toContain("Phase 2 — Travaux");
+      expect(midTitles).not.toContain("Phase 2 - Travaux");
 
       // ─── Close phase1 itself ───
       await completeTask(db, phase1.id);

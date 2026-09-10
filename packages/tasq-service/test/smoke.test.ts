@@ -1,5 +1,5 @@
 /**
- * Smoke test — end-to-end happy path on an in-memory LibSQL.
+ * Smoke test - end-to-end happy path on an in-memory LibSQL.
  * Validates: migrations, schema, service create/update/transitions, event log.
  */
 
@@ -59,7 +59,7 @@ describe("tasq-zero smoke", () => {
     try {
       // 1. Create area
       const corps = await createArea(db, {
-        name: "Health — Body",
+        name: "Health - Body",
         slug: "body",
         importance: 5,
         cadenceTarget: "3x/week",
@@ -110,9 +110,9 @@ describe("tasq-zero smoke", () => {
 
       // 6. Update (after completion is allowed)
       const updated = await updateTask(db, t.id, {
-        nextAction: "Already done — leave for the record",
+        nextAction: "Already done - leave for the record",
       });
-      expect(updated.nextAction).toBe("Already done — leave for the record");
+      expect(updated.nextAction).toBe("Already done - leave for the record");
 
       // 7. Event log
       const events = await listEvents(db, { entityId: t.id, ascending: true });

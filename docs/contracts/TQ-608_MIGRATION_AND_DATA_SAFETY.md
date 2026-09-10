@@ -1,4 +1,4 @@
-# TQ-608 — Migration and data-safety envelope
+# TQ-608 - Migration and data-safety envelope
 
 **Status:** complete for published `v0.4.0`; format-32 source and exact
 published-byte N-2 replay pass on both supported targets

@@ -1,4 +1,4 @@
-# Working on Tasq — agent entrypoint
+# Working on Tasq - agent entrypoint
 
 This is the canonical standalone repository for Tasq:
 `https://github.com/gwendall/tasq`. Do not edit a historical

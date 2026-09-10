@@ -1,5 +1,5 @@
 /**
- * Area service — CRUD with event logging.
+ * Area service - CRUD with event logging.
  */
 
 import { and, asc, eq, isNull } from "drizzle-orm";

@@ -1,5 +1,5 @@
 /**
- * Task dependency service — first-class peer edges (SPEC §4.5).
+ * Task dependency service - first-class peer edges (SPEC §4.5).
  *
  * A `blocks` edge means `from_task_id` depends on `to_task_id`: the dependent
  * (`from`) is held up until its blocker (`to`) resolves. `relates_to` /
@@ -11,8 +11,8 @@
  *   3. Records a `dependency_added` / `dependency_removed` event
  *
  * `event.event_type` is open-vocab (only `entity_type` is CHECK-constrained),
- * so these events use `entityType: 'task'` with `entityId = fromTaskId` — the
- * dependent task whose actionability changes — and need no enum migration
+ * so these events use `entityType: 'task'` with `entityId = fromTaskId` - the
+ * dependent task whose actionability changes - and need no enum migration
  * (SPEC §4.8).
  *
  * A `blocks` edge NEVER auto-flips the dependent's status to `blocked`
@@ -72,7 +72,7 @@ function parseDiscoveryRelation(
  * Walk the live `blocks` graph downward from `to` (following `from_task_id =
  * cursor` → its `to_task_id`s), maintaining a seen-set; if `from` is reachable
  * the edge would create a cycle. Same cursor + seen-set + reachability-throw
- * structure as the reparent guard in tasks.ts — only the traversal source
+ * structure as the reparent guard in tasks.ts - only the traversal source
  * changes (task_dependency live blocks edges vs task.parentTaskId).
  *
  * Only meaningful for `type='blocks'`; relates_to/duplicates are non-transitive.
@@ -312,7 +312,7 @@ export interface UndependOptions extends ServiceContext {
 }
 
 /**
- * Soft-delete a dependency edge — by edge id, or (when `id` is omitted) by the
+ * Soft-delete a dependency edge - by edge id, or (when `id` is omitted) by the
  * natural key `{fromTaskId,toTaskId,type}`. Emits `dependency_removed`
  * (entityType 'task', entityId = fromTaskId). Idempotent: removing an
  * already-removed / nonexistent edge is a no-op throw-free skip.
@@ -491,7 +491,7 @@ export async function listDependencies(
 }
 
 /**
- * Count unresolved blockers of a task — live `blocks` edges where `from_task_id
+ * Count unresolved blockers of a task - live `blocks` edges where `from_task_id
  * = taskId` (the tasks that block this one, SPEC §4.5) whose `to_task_id` task
  * is still live and NOT done/cancelled. Integer fed to the prioritizer's
  * W_blocked down-weight.
@@ -573,7 +573,7 @@ export interface JustUnblockedOptions extends ServiceContext {
  * Tasks that have ZERO current unresolved blockers but whose last blocker
  * resolution (a `dependency_removed` event, or a blocker task reaching
  * done/cancelled) is recent. Conservative, read-only, never drives a status
- * change — surfaced as a "just unblocked" hint only.
+ * change - surfaced as a "just unblocked" hint only.
  *
  * Returns the set of dependent task ids that recently became unblocked.
  */

@@ -1,8 +1,8 @@
 /**
- * Atomicity tests — a mutation and its event are ONE transaction.
+ * Atomicity tests - a mutation and its event are ONE transaction.
  *
  * The append-only event log is the trust foundation (ARCHITECTURE: "every
- * mutation emits an event — impossible to bypass"). Before this work each
+ * mutation emits an event - impossible to bypass"). Before this work each
  * mutation did the row write and the `recordEvent` insert as two separate
  * awaits, so a torn write could desync the row from the log. These tests
  * prove the two halves now commit or roll back TOGETHER, that the external
@@ -11,7 +11,7 @@
  *
  * Injection technique: `DROP TABLE event` after setup. The row write inside
  * the transaction still succeeds, but `recordEvent`'s insert into the now
- * missing table throws — exercising the REAL rollback path (not a mock).
+ * missing table throws - exercising the REAL rollback path (not a mock).
  */
 
 import { afterEach, describe, expect, it } from "bun:test";
@@ -127,7 +127,7 @@ describe("Atomic mutation + event", () => {
 
       await restoreEventTable(client, eventSchema);
 
-      // The UPDATE rolled back with the failed event — fields are untouched.
+      // The UPDATE rolled back with the failed event - fields are untouched.
       // (The task row survived because only `event` was dropped, and the
       // failed mutation's UPDATE was rolled back atomically.)
       const after = await getTask(db, t.id);
@@ -223,7 +223,7 @@ describe("Atomic mutation + event", () => {
       await expect(updateTask(db, t.id, { title: "nope" })).rejects.toThrow();
       await restoreEventTable(client, eventSchema);
 
-      // Still 3 — the rolled-back mutation never journaled.
+      // Still 3 - the rolled-back mutation never journaled.
       expect(journaled).toHaveLength(3);
     } finally {
       await close();
@@ -267,7 +267,7 @@ describe("Atomic mutation + event", () => {
       const tasks = await listTasks(db, { limit: 100 });
       expect(tasks).toHaveLength(8);
 
-      // Exactly one 'created' event per task — none lost, none duplicated.
+      // Exactly one 'created' event per task - none lost, none duplicated.
       const events = await listEvents(db, { entityType: "task", limit: 100 });
       expect(events).toHaveLength(8);
       expect(events.every((e) => e.eventType === "created")).toBe(true);

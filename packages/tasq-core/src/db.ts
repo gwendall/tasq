@@ -1,5 +1,5 @@
 /**
- * DB connection — open a LibSQL file in WAL mode, return a Drizzle handle.
+ * DB connection - open a LibSQL file in WAL mode, return a Drizzle handle.
  *
  * Single point of access. The service layer holds one handle per process.
  * Concurrent `tasq` invocations across processes are safe because LibSQL
@@ -35,7 +35,7 @@ export type TasqDbOrTx = BaseSQLiteDatabase<"async", ResultSet, typeof schema>;
  * libsql client for a "write" transaction), which grabs the writer lock up
  * front. We hold exactly ONE connection per process, so two transactions
  * started concurrently (e.g. `Promise.all([startTask(a), startTask(b)])`)
- * would both try to `BEGIN IMMEDIATE` on the same connection — the second
+ * would both try to `BEGIN IMMEDIATE` on the same connection - the second
  * one trips `SQLITE_BUSY` *immediately*, and `busy_timeout` cannot resolve
  * it because the lock is held by this very connection's other transaction
  * (a self-deadlock the timer can't break).
@@ -81,7 +81,7 @@ export function runAfterCommit(callback: () => void): void {
  * thrown and the count did NOT advance, then NO domain mutation committed
  * during that attempt (the BUSY hit connection-open / migration, local
  * delivery bookkeeping, or a rolled-back domain transaction), so a
- * whole-command replay is provably safe — it cannot double-apply. If the
+ * whole-command replay is provably safe - it cannot double-apply. If the
  * count advanced, a domain mutation already committed and the command must
  * NOT be replayed.
  */
@@ -110,7 +110,7 @@ async function runSerializedTransaction<T>(
   const afterCommit: Array<() => void> = [];
   const run = prior.catch(() => {}).then(() => db.transaction((tx) =>
     transactionScopes.run({ root: db, tx, afterCommit }, () => fn(tx))));
-  // Keep the chain alive even if `run` rejects — the next caller must still
+  // Keep the chain alive even if `run` rejects - the next caller must still
   // proceed after this one settles.
   txChains.set(db, run.catch(() => {}));
   // A resolved `run` means the transaction COMMITTED (drizzle resolves only

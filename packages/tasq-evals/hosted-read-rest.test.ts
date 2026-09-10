@@ -1,4 +1,4 @@
-/** TQ-803 — clean-room authenticated read-only REST eval. */
+/** TQ-803 - clean-room authenticated read-only REST eval. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";

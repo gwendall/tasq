@@ -5,7 +5,7 @@ import {
 } from "@tasq-run/client";
 import type { Clock } from "@tasq-run/schema";
 import type { ParsedArgs } from "../args.js";
-import { printInfo, printJson } from "../output/format.js";
+import { color, printInfo, printJson } from "../output/format.js";
 import {
   hasRemoteProfile,
   loadRemoteProfile,
@@ -128,6 +128,7 @@ export async function remoteCmd(args: ParsedArgs, clock: Clock): Promise<number>
         limit: args.number("limit"),
       });
       if (json) printJson(page);
+      else if (page.items.length === 0) printInfo(color.dim("(this remote space holds nothing yet)"));
       else for (const item of page.items) printInfo(`${item.id}\t${item.status}\t${item.title}`);
       return 0;
     }
@@ -145,6 +146,7 @@ export async function remoteCmd(args: ParsedArgs, clock: Clock): Promise<number>
         limit: args.number("limit"),
       });
       if (json) printJson(page);
+      else if (page.items.length === 0) printInfo(color.dim("(no events in this window)"));
       else for (const event of page.items) {
         printInfo(`${event.sequence}\t${event.eventType}\t${event.entityType}:${event.entityId}`);
       }

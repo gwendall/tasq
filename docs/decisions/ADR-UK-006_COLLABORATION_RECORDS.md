@@ -1,10 +1,10 @@
-# ADR UK-006 — Universal collaboration records
+# ADR UK-006 - Universal collaboration records
 
-> **Status:** accepted and implemented — 2026-07-15
+> **Status:** accepted and implemented - 2026-07-15
 > **Decision:** stable principals, explicit assignments, directed commitment
 > relations, immutable artifacts/external references/completion records and
 > optimistic revisions.
-> **Implements:** UK-006; constrains UK-007–UK-011 and ADR-004/005. ADR-004 and
+> **Implements:** UK-006; constrains UK-007-UK-011 and ADR-004/005. ADR-004 and
 > ADR-005 are accepted; their Server/Cloud compositions are source candidates
 > whose external release and deployment gates remain open.
 

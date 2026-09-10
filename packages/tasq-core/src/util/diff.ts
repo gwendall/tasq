@@ -2,7 +2,7 @@
  * Shallow record diff used by all updateX services to compute the
  * `before` / `after` payload of an "updated" event.
  *
- * Two values are considered equal if `JSON.stringify` is equal — fine
+ * Two values are considered equal if `JSON.stringify` is equal - fine
  * for our needs: scalars compare structurally, arrays/objects compare
  * by content, and the dataset is small (single record, one mutation).
  */

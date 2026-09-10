@@ -1,6 +1,6 @@
-# TQ-607 — Retained-data dogfood and stable-graduation gate
+# TQ-607 - Retained-data dogfood and stable-graduation gate
 
-> **Status:** accepted and in progress — 2026-07-22
+> **Status:** accepted and in progress - 2026-07-22
 > **Machine status:** `TQ-607_DOGFOOD_STATUS.json`
 > **Unlocks:** stable graduation after the pre-1.0 public alpha
 
@@ -36,20 +36,20 @@ Run `pnpm --silent dogfood status --json` for the current progress and next
 action. The tool records evidence coordinates only; it never opens or mutates
 an adopter ledger.
 
-1. **Baseline and activation — 2026-07-22 onward.** Record the exact candidate
+1. **Baseline and activation - 2026-07-22 onward.** Record the exact candidate
    version/commit, take and verify the first isolated backup, and activate all
    three consumer tracks. The immediate next action is to record that baseline
    and backup evidence in `TQ-607_DOGFOOD_STATUS.json`.
-2. **First complete journeys — week 1.** Complete one real personal
+2. **First complete journeys - week 1.** Complete one real personal
    commitment loop, the Kami contention/fence/reclaim journey and one
    interactive `input_required` resume. Log friction at discovery time.
-3. **Repeated operation — weeks 2–4.** Reach the 20 personal active-use days,
+3. **Repeated operation - weeks 2-4.** Reach the 20 personal active-use days,
    run multiple independent commitments and conversations, and fix or
    explicitly accept recurring friction without wiping retained data.
-4. **Resilience drills — throughout, complete before review.** Perform two
+4. **Resilience drills - throughout, complete before review.** Perform two
    forward upgrades, backup/restore, replacement-actor recovery, cold-agent
    onboarding and support-bundle review against the same evolving data.
-5. **Decision review — no earlier than 2026-08-21.** Reconcile every required
+5. **Decision review - no earlier than 2026-08-21.** Reconcile every required
    proof and critical failure, then record `go`, `extend` or `no_go`. A `go`
    authorizes stable graduation but does not publish anything by itself.
 
@@ -117,13 +117,13 @@ No test may wipe or rewrite a live dogfood ledger to manufacture success.
 
 Every material failure or workaround is classified as exactly one of:
 
-- `kernel_invariant` — the neutral coordination model is insufficient or
+- `kernel_invariant` - the neutral coordination model is insufficient or
   unsafe;
-- `profile_policy` — adopter-specific planning or prioritization concern;
-- `adapter_connector` — runtime/provider mapping or final I/O boundary;
-- `product_ergonomics` — installation, commands, Console or operator flow;
-- `documentation_onboarding` — a human or agent could not discover the path;
-- `external_environment` — dependency or platform failure outside Tasq.
+- `profile_policy` - adopter-specific planning or prioritization concern;
+- `adapter_connector` - runtime/provider mapping or final I/O boundary;
+- `product_ergonomics` - installation, commands, Console or operator flow;
+- `documentation_onboarding` - a human or agent could not discover the path;
+- `external_environment` - dependency or platform failure outside Tasq.
 
 Each entry records the consumer, observable symptom, intervention, affected
 version/commit, whether data or authority was at risk, and the durable fix or
@@ -148,11 +148,11 @@ The stable-graduation decision cannot be `go` while any of these remain unresolv
 
 At or after the minimum date, the maintainer records one explicit decision:
 
-- `go` — TQ-607 closes and Tasq may graduate beyond the explicitly labeled
+- `go` - TQ-607 closes and Tasq may graduate beyond the explicitly labeled
   pre-1.0 alpha after the separate release gates;
-- `extend` — dogfood continues with named missing evidence and a new review
+- `extend` - dogfood continues with named missing evidence and a new review
   date;
-- `no_go` — stable graduation remains blocked and only the failed product
+- `no_go` - stable graduation remains blocked and only the failed product
   boundary is reopened; already published alpha bytes remain governed by the
   incident and compatibility policies.
 

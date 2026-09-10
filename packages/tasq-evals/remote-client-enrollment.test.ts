@@ -1,4 +1,4 @@
-/** TQ-809 — two-client enrollment, contention, retry, revocation and MCP parity. */
+/** TQ-809 - two-client enrollment, contention, retry, revocation and MCP parity. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";

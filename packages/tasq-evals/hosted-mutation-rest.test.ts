@@ -1,4 +1,4 @@
-/** TQ-804 — clean-room registered mutation, restart and revocation eval. */
+/** TQ-804 - clean-room registered mutation, restart and revocation eval. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { createClient, type Client } from "@libsql/client";

@@ -1,5 +1,5 @@
 /**
- * UUIDv7 tests — round-trip, ordering, format, helpers.
+ * UUIDv7 tests - round-trip, ordering, format, helpers.
  *
  * UUIDv7 is the foundation of the tasq ID system. If these break, all
  * downstream invariants (lexicographic = chronologic, FK refs, audit
@@ -55,7 +55,7 @@ describe("uuidv7 time-encoding", () => {
   });
 
   it("supports unix-ms timestamps near upper bound", () => {
-    // 48-bit unsigned max = 2^48 - 1 ≈ year 10889 — but JS Date is safe to year 275760
+    // 48-bit unsigned max = 2^48 - 1 ≈ year 10889 - but JS Date is safe to year 275760
     const ms = 99_999_999_999_999; // year ~5138
     const id = uuidv7(ms);
     expect(timestampFromUuidv7(id)).toBe(ms);

@@ -1,4 +1,4 @@
-/** TQ-805 — clean-room remote MCP, live guard and revocation eval. */
+/** TQ-805 - clean-room remote MCP, live guard and revocation eval. */
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";

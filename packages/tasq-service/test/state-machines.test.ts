@@ -276,7 +276,7 @@ describe("Project state machine", () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// Helpers — drive an entity to a target state via valid transitions
+// Helpers - drive an entity to a target state via valid transitions
 // ──────────────────────────────────────────────────────────────────────
 
 async function tryTransition(db: TasqDb, id: string, to: TaskStatus) {
@@ -310,7 +310,7 @@ async function driveToState(db: TasqDb, id: string, target: TaskStatus): Promise
   if (target === "blocked") return blockTask(db, id);
   if (target === "done") return completeTask(db, id);
   if (target === "cancelled") return cancelTask(db, id);
-  // Exhaustive — typeguard ensures the above are the only TaskStatus values.
+  // Exhaustive - typeguard ensures the above are the only TaskStatus values.
   const _exhaustive: never = target;
   throw new Error(`unreachable target ${_exhaustive}`);
 }

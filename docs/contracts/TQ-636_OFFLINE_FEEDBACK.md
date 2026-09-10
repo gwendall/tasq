@@ -1,4 +1,4 @@
-# TQ-636 — Offline-first CLI feedback
+# TQ-636 - Offline-first CLI feedback
 
 Status: published and protected-byte certified in `v0.4.0`.
 

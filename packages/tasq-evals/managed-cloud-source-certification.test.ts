@@ -8,7 +8,7 @@ async function json(path: string): Promise<Record<string, unknown>> {
   return JSON.parse(await readFile(resolve(root, path), "utf8")) as Record<string, unknown>;
 }
 
-describe("TQ-901–TQ-906 managed Cloud truth gate", () => {
+describe("TQ-901-TQ-906 managed Cloud truth gate", () => {
   test("keeps every source candidate distinct from deployed availability", async () => {
     const matrix = await json("docs/concepts/PRODUCT_SURFACE_MATRIX.json");
     const backlog = await json("docs/roadmap/BACKLOG.json");

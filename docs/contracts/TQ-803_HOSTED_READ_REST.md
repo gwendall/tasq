@@ -1,7 +1,7 @@
-# TQ-803 — Authenticated hosted read REST
+# TQ-803 - Authenticated hosted read REST
 
-> **Status:** implemented and repository-certified — 2026-07-21  
-> **Machine certificate:** `TQ-803_READ_REST_CERTIFICATION.json`  
+> **Status:** implemented and repository-certified - 2026-07-21<br>
+> **Machine certificate:** `TQ-803_READ_REST_CERTIFICATION.json`<br>
 > **Deployable Server status:** implemented later as the unpublished TQ-807
 > source candidate
 
@@ -15,7 +15,7 @@ binding.
 
 This was the first remote-protocol implementation and intentionally contained
 no listener, TLS stack, concrete verifier, mutation route, remote MCP transport
-or deployment lifecycle. TQ-804–TQ-809 now compose those outer source
+or deployment lifecycle. TQ-804-TQ-809 now compose those outer source
 candidate layers; they remain unpublished and undeployed.
 
 ## Host contract

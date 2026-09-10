@@ -1,4 +1,4 @@
-/** TQ-801 — clean-room, transport-neutral hosted authority evals. */
+/** TQ-801 - clean-room, transport-neutral hosted authority evals. */
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";

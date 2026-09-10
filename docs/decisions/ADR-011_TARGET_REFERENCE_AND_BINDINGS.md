@@ -1,6 +1,6 @@
-# ADR-011 — Portable target reference and derived bindings
+# ADR-011 - Portable target reference and derived bindings
 
-> **Status:** Accepted — 2026-08-10
+> **Status:** Accepted - 2026-08-10
 > **Decision owner:** `@gwendall`
 > **Execution:** TQ-622
 

@@ -86,7 +86,7 @@ because their invariants, lifetimes and authority differ.
 | Output | artifact | Kernel | Implemented |
 | Proof | evidence | Kernel | Implemented |
 | Validation | proposal → decision → completion | Kernel/policy seam | Contracts, trust, proposals, challenges and decisions implemented by TQ-612 |
-| Cryptographic authorship | signed statement + signing credential | Trust/authority seam | TQ-613–TQ-615 source candidate implemented; TQ-616 published-artifact gate open |
+| Cryptographic authorship | signed statement + signing credential | Trust/authority seam | TQ-613-TQ-615 source candidate implemented; TQ-616 published-artifact gate open |
 | External action | effect → approval → receipt | Kernel/connector seam | Implemented locally; remote effects remain disabled |
 | Provenance | principal, event, external reference | Kernel | Implemented |
 | Recovery | revision, idempotency, cursor, backup | Durability | Implemented locally |
@@ -380,7 +380,7 @@ The existence of advanced primitives must not force advanced workflow. All
 levels use the same ledger and commitment semantics; a user adopts only the
 next capability needed.
 
-### Level 0 — Simple todo
+### Level 0 - Simple todo
 
 ```text
 add -> list -> done
@@ -391,7 +391,7 @@ add -> list -> done
 - appropriate for one human or one agent with no contention;
 - advanced records remain absent rather than filled with meaningless defaults.
 
-### Level 1 — Shared coordination
+### Level 1 - Shared coordination
 
 ```text
 next -> claim -> work -> done
@@ -401,7 +401,7 @@ next -> claim -> work -> done
 - appropriate when several humans or agents can duplicate work;
 - claim expiry and fences stay behind the journey interface.
 
-### Level 2 — Durable execution and proof
+### Level 2 - Durable execution and proof
 
 ```text
 claim -> attempt -> artifact/evidence -> validate -> complete
@@ -411,7 +411,7 @@ claim -> attempt -> artifact/evidence -> validate -> complete
 - success criteria and evidence mode are explicit;
 - replacement agents resume from durable identity and cursors.
 
-### Level 3 — External-world coordination
+### Level 3 - External-world coordination
 
 ```text
 condition/observation -> reconciliation

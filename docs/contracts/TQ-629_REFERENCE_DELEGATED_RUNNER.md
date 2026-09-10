@@ -1,4 +1,4 @@
-# TQ-629 — Reference delegated-action Runner and Review Inbox
+# TQ-629 - Reference delegated-action Runner and Review Inbox
 
 > **Status:** source implemented and repository certified; private reference
 > composition, not a published runtime or remote-effect claim

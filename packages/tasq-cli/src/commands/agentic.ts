@@ -203,6 +203,10 @@ export async function attemptCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(attempts);
+      // An empty list that prints nothing at all reads as a broken command to
+      // someone running it for the first time, which is exactly when nothing
+      // has happened yet. Every other list here says so; these two did not.
+      else if (attempts.length === 0) printInfo(color.dim(taskId ? "(no attempts on this task yet - `tasq attempt start <task-id>`)" : "(no attempts in this space yet - `tasq attempt start <task-id>`)"));
       else for (const item of attempts) printInfo(`${color.dim(shortId(item.id))}  ${item.status.padEnd(14)} ${item.runtime}  task:${shortId(item.taskId)}  ${item.actor}`);
       return 0;
     }
@@ -322,6 +326,7 @@ export async function evidenceCmd(args: ParsedArgs): Promise<number> {
         limit: args.number("limit") ?? 100,
       });
       if (args.bool("json", "j")) printJson(evidence);
+      else if (evidence.length === 0) printInfo(color.dim(taskId ? "(no evidence on this task yet - `tasq evidence add <task-id> --kind commit --uri <uri> --summary <text>`)" : "(no evidence in this space yet)"));
       else for (const item of evidence) printInfo(`${color.dim(shortId(item.id))}  ${item.kind.padEnd(14)} task:${shortId(item.taskId)}  ${item.summary ?? item.uri ?? ""}`);
       return 0;
     }

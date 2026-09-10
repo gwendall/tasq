@@ -1,4 +1,4 @@
-/** `tasq premise` — inspect and independently refute motivating premises. */
+/** `tasq premise` - inspect and independently refute motivating premises. */
 
 import {
   challengeTaskPremise,

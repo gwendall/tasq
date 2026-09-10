@@ -1,5 +1,5 @@
 /**
- * Row helpers — turn raw Drizzle rows (where JSON columns come back as
+ * Row helpers - turn raw Drizzle rows (where JSON columns come back as
  * stringified text from SQLite) into shapes a Zod schema can validate.
  */
 

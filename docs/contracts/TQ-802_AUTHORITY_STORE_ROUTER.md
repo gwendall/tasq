@@ -1,8 +1,8 @@
-# TQ-802 — Durable authority store and isolated workspace router
+# TQ-802 - Durable authority store and isolated workspace router
 
-> **Status:** implemented and repository-certified — 2026-07-30
+> **Status:** implemented and repository-certified - 2026-07-30
 > **Machine certificate:** `TQ-802_AUTHORITY_STORE_CERTIFICATION.json`
-> **Remote surface status:** implemented later as an unpublished TQ-803–TQ-809
+> **Remote surface status:** implemented later as an unpublished TQ-803-TQ-809
 > Server source candidate
 
 ## Outcome

@@ -1,4 +1,4 @@
-# TQ-812 — GitHub bridge
+# TQ-812 - GitHub bridge
 
 > **Status:** done
 > **Date:** 2026-07-24

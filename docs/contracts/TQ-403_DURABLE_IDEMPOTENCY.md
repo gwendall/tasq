@@ -1,4 +1,4 @@
-# TQ-403 — Scoped durable idempotency
+# TQ-403 - Scoped durable idempotency
 
 > **Status:** implemented 2026-07-19. Every mutation exposed as retryable by
 > the universal MCP boundary now has a transactional, caller-scoped replay

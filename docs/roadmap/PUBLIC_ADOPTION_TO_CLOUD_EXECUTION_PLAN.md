@@ -181,22 +181,22 @@ at all.
 | parallel after ADR-005 | TQ-612 | Independently validated, contestable completion policies | High-trust completion, TQ-906 |
 | 4 | TQ-606 | Independent human completes the public Local adoption journey | Public adoption closure |
 | parallel | TQ-607 | Retained three-consumer dogfood and stable decision | Stable graduation |
-| 5 | TQ-805 — done | Remote MCP uses the same ADR-004 guard as REST | TQ-807 |
-| 6 | TQ-809 — done | Remote CLI/client, enrollment and online workspace rendezvous | TQ-807 |
-| 7 | TQ-807 — candidate done | Deployable online Tasq Server artifact and operator lifecycle | TQ-808 |
-| 8 | TQ-808 — candidate done | Hostile multi-surface self-host certification | Cloud, offline sync, remote SDKs |
-| 9 | TQ-811 — candidate done | Minimal authenticated human action loop over registered Server operations | Daily human/agent collaboration |
-| 10 | TQ-812 — candidate done | GitHub Issues, PR, check and deployment bridge with explicit authority | Existing-work adoption |
-| 11 | TQ-813 — candidate done | Retry-safe assignment, blocking, expiry, recovery and validation attention loop | Timely coordination |
-| 12 | TQ-901–TQ-905 — candidate done | Thin managed Cloud source and hostile operations proof | External managed deployment gates |
-| parallel after TQ-808 | TQ-806 — candidate done | Authenticated optional offline replication | Published artifacts and multi-machine trial |
-| parallel after TQ-808 | TQ-810 — candidate done | Remote schema and Python client | PyPI/provenance/exact-digest replay |
+| 5 | TQ-805 - done | Remote MCP uses the same ADR-004 guard as REST | TQ-807 |
+| 6 | TQ-809 - done | Remote CLI/client, enrollment and online workspace rendezvous | TQ-807 |
+| 7 | TQ-807 - candidate done | Deployable online Tasq Server artifact and operator lifecycle | TQ-808 |
+| 8 | TQ-808 - candidate done | Hostile multi-surface self-host certification | Cloud, offline sync, remote SDKs |
+| 9 | TQ-811 - candidate done | Minimal authenticated human action loop over registered Server operations | Daily human/agent collaboration |
+| 10 | TQ-812 - candidate done | GitHub Issues, PR, check and deployment bridge with explicit authority | Existing-work adoption |
+| 11 | TQ-813 - candidate done | Retry-safe assignment, blocking, expiry, recovery and validation attention loop | Timely coordination |
+| 12 | TQ-901-TQ-905 - candidate done | Thin managed Cloud source and hostile operations proof | External managed deployment gates |
+| parallel after TQ-808 | TQ-806 - candidate done | Authenticated optional offline replication | Published artifacts and multi-machine trial |
+| parallel after TQ-808 | TQ-810 - candidate done | Remote schema and Python client | PyPI/provenance/exact-digest replay |
 | last | TQ-906 | Reviewed remote effects, disabled by default until accepted | Remote effect support |
 
 Items in the same “parallel” band may proceed concurrently, but each item keeps
 its own dependencies and evidence gate.
 
-## 5. TQ-609 — Public adoption truth and copy repair
+## 5. TQ-609 - Public adoption truth and copy repair
 
 **Status:** done
 
@@ -248,9 +248,9 @@ its own dependencies and evidence gate.
 - Machine-readable certification listing every displayed command and result.
 - Browser captures for the full homepage and core onboarding routes.
 
-## 6. TQ-610 — Acquisition lifecycle and universal agent entrypoint
+## 6. TQ-610 - Acquisition lifecycle and universal agent entrypoint
 
-**Status:** done — see
+**Status:** done - see
 [`TQ-610_RELEASE_CERTIFICATION.json`](../contracts/TQ-610_RELEASE_CERTIFICATION.json)
 
 **Depends on:** TQ-609
@@ -336,9 +336,9 @@ Never recommend the unrelated unscoped package name.
 - Every public acquisition route is version-pinned or resolves through a
   versioned machine contract.
 
-## 7. TQ-611 — Deep local TypeScript client
+## 7. TQ-611 - Deep local TypeScript client
 
-**Status:** done — protected `v0.3.0` publication and published-byte replay
+**Status:** done - protected `v0.3.0` publication and published-byte replay
 passed
 
 **Depends on:** TQ-609
@@ -398,9 +398,9 @@ registry bytes pass the Node 22 and Bun fresh-install plus same-ledger restart
 journey. CLI, MCP, Console and protocol adapters retain their Bun-only runtime
 boundary.
 
-## 8. TQ-612 — Completion validation and dispute policy
+## 8. TQ-612 - Completion validation and dispute policy
 
-**Status:** done — published in `v0.3.0` and exact-byte certified on both
+**Status:** done - published in `v0.3.0` and exact-byte certified on both
 supported native targets
 
 **Depends on:** ADR-005
@@ -436,7 +436,7 @@ reviewer revocation and lost decision responses. CLI, Console, MCP and Server
 must expose the complete resolution chain without treating validator prose as
 code or authority.
 
-## 9. TQ-606 and TQ-607 — External learning gates
+## 9. TQ-606 and TQ-607 - External learning gates
 
 TQ-606 is rerun only after TQ-609 and TQ-610. The unbriefed participant starts
 at `https://tasq.run`, installs Tasq, connects an agent, resolves a contention
@@ -456,9 +456,9 @@ workaround discovered through dogfood is classified as:
 
 No synthetic test can replace its minimum duration or maintainer decision.
 
-## 10. TQ-805 — Guarded remote MCP
+## 10. TQ-805 - Guarded remote MCP
 
-**Status:** done — host-integrated surface only
+**Status:** done - host-integrated surface only
 
 **Depends on:** TQ-804
 
@@ -476,9 +476,9 @@ Remote effects, listeners, concrete verifiers and deployable Server lifecycle
 remain absent. Evidence is frozen in
 `../contracts/TQ-805_REMOTE_MCP_CERTIFICATION.json`.
 
-## 11. TQ-809 — Remote CLI, client and enrollment
+## 11. TQ-809 - Remote CLI, client and enrollment
 
-**Status:** done — repository-certified source candidate; not in published `v0.3.0`
+**Status:** done - repository-certified source candidate; not in published `v0.3.0`
 
 **Depends on:** TQ-804, TQ-611
 
@@ -526,7 +526,7 @@ and
 Those pieces were deliberately absent from TQ-809 itself. TQ-807 now supplies
 them as a separate unpublished Server source candidate.
 
-## 12. TQ-807 — Deployable online Tasq Server
+## 12. TQ-807 - Deployable online Tasq Server
 
 **Status:** source candidate complete; publication and operator gates open
 
@@ -563,7 +563,7 @@ first deployable online Server.
   route.
 - Image provenance, SBOM, checksums and version compatibility are published.
 
-## 13. TQ-808 — Self-hosted hostile certification
+## 13. TQ-808 - Self-hosted hostile certification
 
 **Status:** repository hostile candidate complete; published-image,
 cross-platform clean-room and unbriefed-operator gates open
@@ -584,9 +584,9 @@ passes:
 Only this gate may change Server from an unpublished source candidate to a
 shipped self-hostable product.
 
-## 14. TQ-613–TQ-616 — Purpose-bound signed statements
+## 14. TQ-613-TQ-616 - Purpose-bound signed statements
 
-**Status:** ADR-009 accepted; TQ-613–TQ-615 complete in source; TQ-616
+**Status:** ADR-009 accepted; TQ-613-TQ-615 complete in source; TQ-616
 protected-artifact and unbriefed-agent gates open
 
 **Depends on:** TQ-802, TQ-808, TQ-612, TQ-205 and TQ-405
@@ -621,7 +621,7 @@ The full design and threat matrix are
 and
 [`SIGNED_STATEMENT_ACCEPTANCE.json`](../contracts/SIGNED_STATEMENT_ACCEPTANCE.json).
 
-## 15. TQ-806 — Optional authenticated offline replication
+## 15. TQ-806 - Optional authenticated offline replication
 
 **Status:** source candidate complete; published Server/client and clean-room
 multi-machine gates open
@@ -642,7 +642,7 @@ first multi-machine transport.
 - Certify long disconnect, malicious reorder/duplication, stale backup and
   authority-epoch rotation.
 
-## 16. TQ-901–TQ-905 — Thin managed Cloud alpha
+## 16. TQ-901-TQ-905 - Thin managed Cloud alpha
 
 **Status:** source candidates complete; deployed operations gates open
 
@@ -683,7 +683,7 @@ secret-manager rotation, off-site restore, region failover, protected deployed
 artifacts, independent security review and an unbriefed operator incident drill
 remain external gates. Consequently `managedCloudAvailable` remains false.
 
-## 17. TQ-810 — Remote cross-language SDKs
+## 17. TQ-810 - Remote cross-language SDKs
 
 **Status:** source candidate complete; publication gate open
 

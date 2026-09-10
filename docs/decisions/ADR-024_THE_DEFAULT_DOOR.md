@@ -1,4 +1,4 @@
-# ADR-024 — The CLI is the default door; MCP is the remote one
+# ADR-024 - The CLI is the default door; MCP is the remote one
 
 - **Status:** Proposed - 2026-08-27
 - **Decision owner:** Product surface
@@ -42,9 +42,9 @@ transport is the only path in, and the lattice *is* the security model. That is
 the case MCP serves, and it is a good one.
 
 The vocabulary is not an MCP feature either. `tasq onboard --json` already
-returns 41 executable argv recipes carrying the same capability labels: 16
-`read`, 2 `propose`, 23 `coordinate`. The same intent is declarable on the CLI
-path.
+returns executable argv recipes carrying the same capability labels - 47 of
+them when this was written, split 17 `read`, 5 `propose`, 25 `coordinate`. The
+same intent is declarable on the CLI path.
 
 ## 3. The tool-list tax is real and one-directional
 

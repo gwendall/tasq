@@ -1,4 +1,4 @@
-/** TQ-316 — release-artifact cold-start portability and rendezvous matrix. */
+/** TQ-316 - release-artifact cold-start portability and rendezvous matrix. */
 
 import { afterAll, beforeAll, describe, expect, setDefaultTimeout, test } from "bun:test";
 import {

@@ -4,7 +4,7 @@ import {
   listSignedStatementBindings,
 } from "@tasq-internal/local-service";
 import type { ParsedArgs } from "../args.js";
-import { printError, printInfo, printJson } from "../output/format.js";
+import { color, printError, printInfo, printJson } from "../output/format.js";
 import { openRuntime } from "../runtime.js";
 
 const USAGE = "signature show <statement-id> | signature bindings [record-id]";
@@ -29,6 +29,7 @@ export async function signatureCmd(args: ParsedArgs): Promise<number> {
         ...(id ? { recordId: id } : {}),
       });
       if (args.bool("json", "j")) printJson(bindings);
+      else if (bindings.length === 0) printInfo(color.dim("(nothing here carries a signed statement)"));
       else for (const binding of bindings) {
         printInfo(`${binding.bindingKind}  ${binding.recordType}:${binding.recordId}  statement:${binding.statementId}`);
       }

@@ -1,5 +1,5 @@
 /**
- * Output formatting — human-readable text + colors when TTY.
+ * Output formatting - human-readable text + colors when TTY.
  *
  * Single low-overhead formatter ; no external dep on chalk/ansi-colors.
  */

@@ -75,7 +75,7 @@ async function chain(db: Parameters<typeof createArea>[0]) {
   return { area, goal, project, task };
 }
 
-describe("soft-delete integrity — block (default)", () => {
+describe("soft-delete integrity - block (default)", () => {
   it("softDeleteArea throws and tombstones nothing when live children exist", async () => {
     const { db, close } = await freshDb();
     try {
@@ -143,7 +143,7 @@ describe("soft-delete integrity — block (default)", () => {
   });
 });
 
-describe("soft-delete integrity — cascade (opt-in)", () => {
+describe("soft-delete integrity - cascade (opt-in)", () => {
   it("softDeleteArea({cascade}) tombstones the whole subtree, one event each", async () => {
     const { db, close } = await freshDb();
     try {
@@ -155,7 +155,7 @@ describe("soft-delete integrity — cascade (opt-in)", () => {
       expect((await getProject(db, project.id))?.deletedAt).not.toBeNull();
       expect((await getTask(db, task.id))?.deletedAt).not.toBeNull();
 
-      // Exactly one `deleted` event per entity — proves service-layer cascade,
+      // Exactly one `deleted` event per entity - proves service-layer cascade,
       // not a raw bulk UPDATE.
       for (const id of [area.id, goal.id, project.id, task.id]) {
         const deletes = (await listEvents(db, { entityId: id })).filter(
@@ -260,7 +260,7 @@ describe("soft-delete integrity — cascade (opt-in)", () => {
   });
 });
 
-describe("soft-delete integrity — create/update/reparent rejection", () => {
+describe("soft-delete integrity - create/update/reparent rejection", () => {
   it("createTask rejects an explicitly soft-deleted goalId / areaId / projectId", async () => {
     const { db, close } = await freshDb();
     try {
@@ -279,7 +279,7 @@ describe("soft-delete integrity — create/update/reparent rejection", () => {
         /Project is deleted/,
       );
 
-      // Area has a live goal/project still — but both are now deleted; also no
+      // Area has a live goal/project still - but both are now deleted; also no
       // live tasks. Delete the area and assert create rejects.
       await softDeleteArea(db, area.id, { cascade: true });
       await expect(createTask(db, { title: "t", areaId: area.id })).rejects.toThrow(
@@ -383,7 +383,7 @@ describe("soft-delete integrity — create/update/reparent rejection", () => {
   });
 });
 
-describe("soft-delete integrity — dead ancestors cannot anchor live tasks", () => {
+describe("soft-delete integrity - dead ancestors cannot anchor live tasks", () => {
   it("keeps a cascaded task tombstoned until its goal is restored", async () => {
     const { db, close } = await freshDb();
     try {

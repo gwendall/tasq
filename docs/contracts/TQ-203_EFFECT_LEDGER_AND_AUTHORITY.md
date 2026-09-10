@@ -1,4 +1,4 @@
-# TQ-203/TQ-204 — Effect ledger and exact authority
+# TQ-203/TQ-204 - Effect ledger and exact authority
 
 > **Status:** implemented (2026-07-16)  
 > **Scope:** durable pre-dispatch intent and authority. This milestone does not

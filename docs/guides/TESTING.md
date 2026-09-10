@@ -1,4 +1,4 @@
-# TESTING — tasq
+# TESTING - tasq
 
 > How tests are organized, what they verify, and how to run them.
 
@@ -18,9 +18,9 @@ The codebase distinguishes **thirteen test layers**, each living with its owning
 
 **Question** : *Are the foundations of the type system correct?*
 
-- `ids.test.ts` — UUIDv7 generation: format (8-4-4-4-12 hex), version nibble, variant bits, timestamp encoding round-trip, lexicographic ordering matches chronological, 1000-id uniqueness in tight loop
-- `clock.test.ts` — controlled clock snapshots, explicit overrides, advancement and invalid-time rejection
-- `types.test.ts` — Zod schema validators: each enum, each numeric range, each required field, each default value, each forward-compat invariant
+- `ids.test.ts` - UUIDv7 generation: format (8-4-4-4-12 hex), version nibble, variant bits, timestamp encoding round-trip, lexicographic ordering matches chronological, 1000-id uniqueness in tight loop
+- `clock.test.ts` - controlled clock snapshots, explicit overrides, advancement and invalid-time rejection
+- `types.test.ts` - Zod schema validators: each enum, each numeric range, each required field, each default value, each forward-compat invariant
 
 Run :
 ```bash
@@ -106,9 +106,9 @@ idempotency, exact replay/conflict, redaction, cross-workspace denial,
 denial and exact recovery after a domain commit returns a corrupt outcome.
 The certificate explicitly rejects a false cross-database ACID claim.
 
-TQ-807–TQ-810 add real daemon/container, official REST/MCP/CLI parity,
+TQ-807-TQ-810 add real daemon/container, official REST/MCP/CLI parity,
 multi-issuer isolation, signed credential lifecycle, principal-bound
-replication and Python remote-client tests. TQ-901–TQ-905 add a private Cloud
+replication and Python remote-client tests. TQ-901-TQ-905 add a private Cloud
 control-plane suite with two colliding tenants, concurrent quota admission,
 same-origin/CSRF BFF failures, device/recovery/tenant revocation, provider
 reconciliation, key-reference rotation, backup/restore, retention,
@@ -131,38 +131,38 @@ pnpm --filter @tasq-internal/evals test -- managed-cloud-source-certification.te
 
 **Question** : *Does the service layer enforce the contract?*
 
-- `smoke.test.ts` — full happy-path lifecycle on a temp-file SQLite
-- `state-machines.test.ts` — every allowed and forbidden transition for task / goal / project (48 transitions verified). Side effects (`startedAt`, `completedAt`) and event payloads
-- `prioritizer-projection.test.ts` — scoring formula in isolation + DB-aware `pickNext` + markdown projection happy path
-- `migrations-events.test.ts` — migration idempotency, static populated historical fixtures (`0000 → current` and `0005 → current`), data/event preservation, table creation, FK enforcement, event log ordering, actor filtering, multi-actor scenarios
-- `waits.test.ts`, `observations.test.ts`, `reconciliation.test.ts` — typed wait/fact lifecycles, immutable delivery provenance, indexed matching, replay and race behavior
-- `deadlines.test.ts` — strict two-clock boundaries, queued-fact reconciliation, exactly-once create/activate fallback, concurrent retry, rollback isolation and direct-SQL guards
-- `clock.test.ts` — one injected clock drives migrations, row timestamps,
+- `smoke.test.ts` - full happy-path lifecycle on a temp-file SQLite
+- `state-machines.test.ts` - every allowed and forbidden transition for task / goal / project (48 transitions verified). Side effects (`startedAt`, `completedAt`) and event payloads
+- `prioritizer-projection.test.ts` - scoring formula in isolation + DB-aware `pickNext` + markdown projection happy path
+- `migrations-events.test.ts` - migration idempotency, static populated historical fixtures (`0000 → current` and `0005 → current`), data/event preservation, table creation, FK enforcement, event log ordering, actor filtering, multi-actor scenarios
+- `waits.test.ts`, `observations.test.ts`, `reconciliation.test.ts` - typed wait/fact lifecycles, immutable delivery provenance, indexed matching, replay and race behavior
+- `deadlines.test.ts` - strict two-clock boundaries, queued-fact reconciliation, exactly-once create/activate fallback, concurrent retry, rollback isolation and direct-SQL guards
+- `clock.test.ts` - one injected clock drives migrations, row timestamps,
   UUIDv7 timestamps, lifecycle transitions and transactional event timestamps
-- `resources.test.ts` — opaque-key validation, mandatory clocks/idempotency,
+- `resources.test.ts` - opaque-key validation, mandatory clocks/idempotency,
   one-winner contention, exact replay, CAS renewal/release, fence monotonicity,
   exact expiry/reclaim, clock rewind, sweep/cursor replay and SQL immutability
-- `delivery.test.ts` — registration baselines, fail-closed sink binding,
+- `delivery.test.ts` - registration baselines, fail-closed sink binding,
   trigger-enqueued event delivery, real rollback on outbox failure and durable
   pending state after close/reopen with no listener; ordered lease contention,
   expiry reclaim, deterministic backoff, quarantine and repair use controlled time
-- `discovery.test.ts` — exact implemented capabilities, bounded canonical
+- `discovery.test.ts` - exact implemented capabilities, bounded canonical
   schemas and digests, injected cache time, strict negotiation failures,
   zero-mutation onboarding and minimal-kernel provider neutrality
-- `effects.test.ts` — exact proposal identity, durable retries, immutable linear
+- `effects.test.ts` - exact proposal identity, durable retries, immutable linear
   authority, revocation/expiry, corrections, workspace/type isolation,
   authenticated dispatch permits, attempt/claim/fence enforcement, immutable
   verified receipts, timeout recovery, independent compensation and doctor
   detection after simulated SQL-guard bypass
-- `resolution.test.ts` — frozen validation contracts, explicit evidence trust,
+- `resolution.test.ts` - frozen validation contracts, explicit evidence trust,
   independent attestation, self-validation refusal, deterministic evaluator
   identity, optimistic challenge/adjudication, supersession and durable
   lost-response replay after terminal completion
-- `inspection.test.ts` — complete profile-neutral commitment graph including
+- `inspection.test.ts` - complete profile-neutral commitment graph including
   exact effects, approval histories and outcome receipts
-- `inspector-index.test.ts` — hard bounds, literal search, coordination signal
+- `inspector-index.test.ts` - hard bounds, literal search, coordination signal
   aggregates, status filtering and mandatory injected time
-- `console-read-models.test.ts` — missing/empty, mature, hostile and
+- `console-read-models.test.ts` - missing/empty, mature, hostile and
   2,501-commitment views; scoped keyset cursors, redaction, injected expiry,
   honest health scope and coarse request budgets
 
@@ -341,80 +341,80 @@ pnpm --filter @tasq-internal/site test:browser
 
 Not unit/integration tests. **Scenarios** that simulate full agent sessions and assert on the kind of state and outputs the agent observes.
 
-- `hermes-daily-brief.test.ts` — morning brief flow with a realistic seed (11 areas-style state), priority ranking, evening completion via observed watcher signal, area-scoped review, audit attribution
-- `prioritizer-quality.test.ts` — realistic side-by-side comparisons (overdue vs scary-avoided, high-leverage vs fresh-low-priority, blocked discount, in-progress zero-avoidance, reason traces)
-- `markdown-snapshot.test.ts` — comprehensive board renders correctly, empty DB doesn't crash, area-with-only-closed-tasks hidden from active, status icons stay stable across runs
-- service `agentic.test.ts` — exclusive lease races, fencing, retry idempotence, immutable attempts/evidence, claim-aware next, deletion cleanup, evidence-backed completion, raw-SQL guard enforcement and `doctor` detection after simulated guard removal
-- eval `agentic-resilience.test.ts` — assertion/evidence agent journeys through lost responses, worker crash, lease takeover, stale retries, orphan-attempt reconciliation and duplicate terminal callbacks
-- eval `outbox-drain-recovery.test.ts` — two generic replacement-agent journeys
+- `hermes-daily-brief.test.ts` - morning brief flow with a realistic seed (11 areas-style state), priority ranking, evening completion via observed watcher signal, area-scoped review, audit attribution
+- `prioritizer-quality.test.ts` - realistic side-by-side comparisons (overdue vs scary-avoided, high-leverage vs fresh-low-priority, blocked discount, in-progress zero-avoidance, reason traces)
+- `markdown-snapshot.test.ts` - comprehensive board renders correctly, empty DB doesn't crash, area-with-only-closed-tasks hidden from active, status icons stay stable across runs
+- service `agentic.test.ts` - exclusive lease races, fencing, retry idempotence, immutable attempts/evidence, claim-aware next, deletion cleanup, evidence-backed completion, raw-SQL guard enforcement and `doctor` detection after simulated guard removal
+- eval `agentic-resilience.test.ts` - assertion/evidence agent journeys through lost responses, worker crash, lease takeover, stale retries, orphan-attempt reconciliation and duplicate terminal callbacks
+- eval `outbox-drain-recovery.test.ts` - two generic replacement-agent journeys
   prove effect-before-ack deduplication, strict poison blocking and explicit
   repair under a controlled clock
-- eval `universal-kernel-acceptance.test.ts` — UK-011 runs two package-independent
+- eval `universal-kernel-acceptance.test.ts` - UK-011 runs two package-independent
   MCP/A2A subprocesses against a discovered unfamiliar extension, loses their
   in-memory continuity, resumes through an exclusive event cursor and proves
   the complete SQLite schema fingerprint never changes
-- eval `life-filesystem-loop.test.ts` — DB-free read-only adapter, deterministic
+- eval `life-filesystem-loop.test.ts` - DB-free read-only adapter, deterministic
   filesystem fact, duplicate replay, typed reconciliation, explicit
   evidence-backed completion, injected clock and unchanged source artifact
-- eval `machine-onboarding.test.ts` — a package-independent subprocess starts
+- eval `machine-onboarding.test.ts` - a package-independent subprocess starts
   with only a discovery document and schemas, verifies every canonical digest,
   constructs a strict hello and negotiates the exact compatible subset
-- service `context-packet.test.ts` plus CLI/MCP scenarios — exact bounded
+- service `context-packet.test.ts` plus CLI/MCP scenarios - exact bounded
   context accounting, reasons, omissions, large-ledger scan bounds and clock
   injection across all shipped surfaces
-- eval `external-context-links.test.ts` — one external runbook/method identity
+- eval `external-context-links.test.ts` - one external runbook/method identity
   is reused by several commitments without becoming a task, artifact, evidence
   or memory body; floating pointers and concurrent append/detach stay explicit
-- eval `protocol-interoperability.test.ts` — MCP and A2A successes become two
+- eval `protocol-interoperability.test.ts` - MCP and A2A successes become two
   attempts and digest-bound artifacts while the commitment remains open until
   a separate coordinator binds evidence and explicitly completes it
-- eval `effect-authority-adversarial.test.ts` — one generic protected-write
+- eval `effect-authority-adversarial.test.ts` - one generic protected-write
   boundary survives money, communication, filesystem and deployment mutation,
   approval races, crash recovery, receipt attacks, workspace isolation and a
   controlled-clock production scan
-- eval `connector-conformance.test.ts` — the real DB-free filesystem watcher
+- eval `connector-conformance.test.ts` - the real DB-free filesystem watcher
   passes the universal observation profile/replay/conflict checks using an
   explicit clock snapshot while its source artifact remains byte-identical
-- eval `reference-connectors.test.ts` — the TQ-306 work-item reader and effect
+- eval `reference-connectors.test.ts` - the TQ-306 work-item reader and effect
   connector compose with an unmodified minimal kernel; exact retry performs one
   provider write, a verified receipt becomes evidence, and the commitment stays
   open pending a separate completion decision
-- eval `completion-resolution-adversarial.test.ts` — TQ-612 drives independent
+- eval `completion-resolution-adversarial.test.ts` - TQ-612 drives independent
   attestation and optimistic dispute/adjudication over exact trust/evidence
   inputs, rejects identity and freshness drift, and proves a completed
   validated chain survives portable export/import
-- eval `surface-compatibility.test.ts` — TQ-307 drives one commitment through
+- eval `surface-compatibility.test.ts` - TQ-307 drives one commitment through
   the real CLI, official MCP client and A2A adapter over one SQLite ledger;
   replay reuses the remote attempt/artifact, the lease is released explicitly,
   and only a separate evidence-bound CLI decision completes the commitment
-- eval `runtime-reconciliation-recipes.test.ts` — TQ-304 executes
+- eval `runtime-reconciliation-recipes.test.ts` - TQ-304 executes
   Temporal/Restate/LangGraph-shaped lifecycles through the same MCP contract
   without importing their SDKs; stable attempt identity, suspension/resume,
   retry idempotency, injected time and zero implicit completion are asserted
-- eval `delivery-crash-recovery.test.ts` — TQ-401 closes the process immediately
+- eval `delivery-crash-recovery.test.ts` - TQ-401 closes the process immediately
   after a robot commitment commits, then proves a replacement process sees the
   same commitment/event and its pending sink delivery under injected time
-- service `idempotency.test.ts` — TQ-403 proves caller/operation isolation,
+- service `idempotency.test.ts` - TQ-403 proves caller/operation isolation,
   lost-response CAS replay, conflict rejection, inspectable outcomes and exact
   injected retention boundaries
-- eval `durable-idempotency-recovery.test.ts` — two unrelated runtimes reuse a
+- eval `durable-idempotency-recovery.test.ts` - two unrelated runtimes reuse a
   local key safely, one recovers a lost mutable response, and durable protocol
   identity survives explicit pruning under a mutable clock
-- eval `replica-conflict-contract.test.ts` — TQ-404's pre-implementation oracle
+- eval `replica-conflict-contract.test.ts` - TQ-404's pre-implementation oracle
   freezes same-base offline conflict behavior, same-dot corruption failure,
   tombstone resurrection defense and typed cursor expiry without clock-based
   ordering
-- service `replication.test.ts` — TQ-405 replaces that oracle with independent
+- service `replication.test.ts` - TQ-405 replaces that oracle with independent
   SQLite stores and proves atomic capture/apply rollback, lost-response retry
   identity, authenticated pull, clock-independent conflicts, independently
   verified snapshot pages, safe rebase, retired tombstones, discovery honesty,
   authority-regression refusal and injected-clock cursor retention
-- eval `sync-chaos-recovery.test.ts` — TQ-406 kills independent processes after
+- eval `sync-chaos-recovery.test.ts` - TQ-406 kills independent processes after
   local operation, authority accept, local ack, snapshot install, recovery
   rotation and outbox intent/lease/external-effect/ack commits; reopened SQLite stores prove
   exact retry, hostile-order rejection, visible offline conflict, injected
   cursor expiry and fresh-generation old-backup failover
-- eval `cold-start-configuration-matrix.test.ts` — TQ-316 builds the real CLI
+- eval `cold-start-configuration-matrix.test.ts` - TQ-316 builds the real CLI
   artifact, moves it outside the repository and runs it with a scrubbed
   environment through absolute and PATH invocation. Python, Node and POSIX+jq
   clients execute discovered argv unchanged across spaces/non-ASCII paths,
@@ -427,7 +427,7 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   also continues through raw MCP and rejects corrupt storage, unsafe modes,
   truncated/unknown/malformed contracts. GitHub Actions executes this built
   artifact gate on Linux and macOS from a frozen filtered install.
-- eval `cold-start-configuration-matrix.test.ts` — TQ-316 through TQ-319 make operation
+- eval `cold-start-configuration-matrix.test.ts` - TQ-316 through TQ-319 make operation
   selection observable instead of handing deterministic clients a recipe ID.
   Python, Node and POSIX+jq select by advertised mutation/output/input metadata;
   a raw MCP client selects by annotations, description and input schema.
@@ -436,48 +436,48 @@ Not unit/integration tests. **Scenarios** that simulate full agent sessions and 
   fail before storage, and caller-defined context bounds run without argv
   reconstruction. The content-addressed blind runner adds Codex, Claude Code
   and OpenCode under pointer-only natural-language intent.
-- eval `hosted-tenancy-design.test.ts` — ADR-004/TQ-505 distinguishes the
+- eval `hosted-tenancy-design.test.ts` - ADR-004/TQ-505 distinguishes the
   integration-required read handler from future remote surfaces, freezes the
   six trust layers, three identity
   classes, hostile cross-workspace/revocation/delegation/key/clock scenarios,
   non-compensable failures and state-based release evidence. It validates a
   design matrix, not a hosted implementation certificate.
-- eval `hosted-authority-foundation.test.ts` — TQ-801 independently composes
+- eval `hosted-authority-foundation.test.ts` - TQ-801 independently composes
   browser-human, delegated headless-agent and SPIFFE connector-service inputs
   through the pure guard; it checks transport normalization parity,
   issuer/workspace isolation, live revocation, privilege separation and a
   freeze/advance/rewind injected-clock matrix.
-- eval `hosted-authority-store-router.test.ts` — TQ-802 races two independent
+- eval `hosted-authority-store-router.test.ts` - TQ-802 races two independent
   cold migrators, restarts the authority store, routes one robotics workspace
   only through its opaque host binding, then revokes/restarts and proves the
   decoy ledger was never opened.
-- eval `hosted-read-rest.test.ts` — TQ-803 independently composes a protected
+- eval `hosted-read-rest.test.ts` - TQ-803 independently composes a protected
   resource under a non-root path, verified agent identity, fresh authority
   store and opaque robotics ledger, then proves discovery, isolation,
   payload-free reads and immediate revocation.
-- eval `hosted-mutation-rest.test.ts` — TQ-804 lets a clean client select a
+- eval `hosted-mutation-rest.test.ts` - TQ-804 lets a clean client select a
   registered operation by action identity, commits it once, closes/reopens the
   domain store, recovers the exact result and then observes live revocation.
-- eval `product-consumption-design.test.ts` — TQ-601 freezes the four product
+- eval `product-consumption-design.test.ts` - TQ-601 freezes the four product
   shapes, the closed support vocabulary and consumer inputs. TQ-604 extends
   the claims guard with a candidate-only public install lifecycle while REST,
   remote MCP and self-host lifecycle remain explicitly absent. The machine
   certificate cannot claim published-byte completion before a release exists.
-- eval `public-adoption.test.ts` — TQ-606 installs a real candidate outside the
+- eval `public-adoption.test.ts` - TQ-606 installs a real candidate outside the
   checkout, then sends a human-shell proxy and a package-independent Node agent
   from the public adoption contract through semantic recipe selection,
   contention, higher-fence recovery, evidence completion and same-ledger
   installed Console inspection. The harness and clients contain no Tasq import
   or device-clock read; published bytes and a real blind human remain external.
-- eval `public-adoption-human-evidence.test.ts` — freezes the independent-human
+- eval `public-adoption-human-evidence.test.ts` - freezes the independent-human
   observation format and proves its validator accepts only a complete redacted
   record while rejecting coaching, repository access, incomplete checkpoints
   and metric drift. The validator never mutates the still-pending certificate.
-- eval `public-roadmap.test.ts` — freezes the canonical public execution order,
+- eval `public-roadmap.test.ts` - freezes the canonical public execution order,
   closed task states, dependency closure, the machine-tracked TQ-607 dogfood
   gate, npm/publication blockers, remote non-claims and the authority/clock
   invariants every future checkpoint keeps.
-- eval `documentation-contract.test.ts` — verifies relative documentation
+- eval `documentation-contract.test.ts` - verifies relative documentation
   links, workspace READMEs, canonical root commands, onboarding/release
   guardrails and public/private package metadata.
 
@@ -503,9 +503,9 @@ pnpm --filter @tasq-internal/site test:browser
 
 ## What's NOT tested (intentionally)
 
-- **Bun runtime itself** — we assume `bun test` works
-- **drizzle-orm query correctness** — we use a small subset and trust the library
-- **Platform-specific ACLs beyond POSIX modes** — POSIX 0700/0600 behavior is checked by `tasq doctor`.
+- **Bun runtime itself** - we assume `bun test` works
+- **drizzle-orm query correctness** - we use a small subset and trust the library
+- **Platform-specific ACLs beyond POSIX modes** - POSIX 0700/0600 behavior is checked by `tasq doctor`.
 
 ## Adding a test for new code
 

@@ -1,6 +1,6 @@
-# ADR-009 — Purpose-bound signed statements and signing credentials
+# ADR-009 - Purpose-bound signed statements and signing credentials
 
-- **Status:** Accepted — 2026-07-24
+- **Status:** Accepted - 2026-07-24
 - **Decision owner:** Tasq trust, authority and portability boundary
 - **Depends on:** ADR-002, ADR-003, ADR-004, ADR-005 and ADR-UK-006
 - **Implementation:** TQ-613 through TQ-615 complete in source; TQ-616
@@ -444,9 +444,9 @@ completion does not make the published `v0.3.0` accept signed statements.
 
 ## References
 
-- [RFC 8032 — Edwards-Curve Digital Signature Algorithm](https://www.rfc-editor.org/rfc/rfc8032.html)
-- [RFC 8785 — JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html)
-- [RFC 9421 — HTTP Message Signatures](https://www.rfc-editor.org/rfc/rfc9421.html)
-- [DSSE — Dead Simple Signing Envelope](https://github.com/secure-systems-lab/dsse)
+- [RFC 8032 - Edwards-Curve Digital Signature Algorithm](https://www.rfc-editor.org/rfc/rfc8032.html)
+- [RFC 8785 - JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html)
+- [RFC 9421 - HTTP Message Signatures](https://www.rfc-editor.org/rfc/rfc9421.html)
+- [DSSE - Dead Simple Signing Envelope](https://github.com/secure-systems-lab/dsse)
 - [Web Authentication Level 3](https://www.w3.org/TR/webauthn-3/)
 - [Sigstore keyless signing](https://docs.sigstore.dev/cosign/signing/overview/)

@@ -1,4 +1,4 @@
-# TQ-401 — Transactional delivery outbox
+# TQ-401 - Transactional delivery outbox
 
 > **Status:** implemented 2026-07-19. Database events remain authoritative;
 > delivery intent is now durable across the commit/process boundary. Drain,

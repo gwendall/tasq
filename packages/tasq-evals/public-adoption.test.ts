@@ -1,4 +1,4 @@
-/** TQ-606 — black-box public-entrypoint adoption across human and agent consumers. */
+/** TQ-606 - black-box public-entrypoint adoption across human and agent consumers. */
 
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test";
 import { chmod, copyFile, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";

@@ -1,4 +1,4 @@
-# TQ-627 — Exact multi-party Agreements Module
+# TQ-627 - Exact multi-party Agreements Module
 
 > **Status:** source implemented and repository certified; publication remains
 > part of the authorized `v0.4.0` release gate
